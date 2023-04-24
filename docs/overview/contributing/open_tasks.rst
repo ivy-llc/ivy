@@ -4,9 +4,6 @@ Open Tasks
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
-.. _`Ivy Frontends`: https://lets-unify.ai/docs/ivy/deep_dive/ivy_frontends.html
-.. _`Ivy Frontend Tests`: https://lets-unify.ai/docs/ivy/deep_dive/ivy_frontends_tests.html
-.. _`Ivy Tests`: https://lets-unify.ai/docs/ivy/deep_dive/14_ivy_tests.html
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
 .. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
@@ -117,8 +114,8 @@ Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/i
 The general workflow for this task is:
 
 #. Find the correct location for the function by following the *Where to place a frontend function* subsection below
-#. Implement the function by following the `Ivy Frontends`_ guide
-#. Write tests for your function by following the `Ivy Frontend Tests`_ guide
+#. Implement the function by following the :ref:`Ivy Frontends` guide
+#. Write tests for your function by following the :ref:`Ivy Frontend Tests` guide
 #. Verify that the tests for your function are passing
 
 If you feel as though there is an ivy function :code:`ivy.<func_name>` clearly missing, which would make your frontend function much simpler to implement, then you should first do the following:
@@ -132,7 +129,7 @@ At some point, a member of our team will assess whether it should be added, and 
 
 After this, you then have two options for how to proceed:
 
-#. Try to implement the function as a composition of currently present ivy functions, as explained in the "Temporary Compositions" sub-section of the `Ivy Frontends`_ guide, and add the :code:`#ToDo` comment in the implementation as explained.
+#. Try to implement the function as a composition of currently present ivy functions, as explained in the "Temporary Compositions" sub-section of the :ref:`Ivy Frontends` guide, and add the :code:`#ToDo` comment in the implementation as explained.
    Once the PR is merged, your sub-task issue will then be closed as normal.
 #. Alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
    You could also choose to work on another open task entirely at this point if you wanted to.
@@ -232,7 +229,7 @@ A general workflow for these tasks would be:
    Refer the `Ivy API Guide <https://lets-unify.ai/docs/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
 #. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
    in :mod:`ivy/array/experimental/[relevant_submodule].py`
-#. Write tests for the function using the `Ivy Tests`_ guide, and make sure they are passing.
+#. Write tests for the function using the :ref:`Ivy Tests` guide, and make sure they are passing.
 
 A few points to keep in mind while doing this:
 
