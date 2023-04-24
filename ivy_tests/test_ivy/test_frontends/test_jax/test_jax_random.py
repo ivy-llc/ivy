@@ -404,7 +404,7 @@ def test_jax_gamma(
         min_dim_size=2,
         max_dim_size=2,
     ),
-    shape=helpers.get_shape(allow_none=False),
+    shape=helpers.get_shape(min_dim_size=1, max_num_dims=6, allow_none=False),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_gumbel(
