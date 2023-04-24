@@ -595,7 +595,7 @@ def frombuffer(
     count: Optional[int] = -1,
     offset: Optional[int] = 0,
 ) -> ivy.Array:
-    """
+    r"""
     Interpret a buffer as a 1-dimensional array.
 
     .. note::

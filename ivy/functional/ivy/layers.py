@@ -155,7 +155,6 @@ def linear(
     )
 
     if ivy.exists(bias):
-
         # OBS x [1]*len(IBS) x OF
         bias_broadcast = ivy.reshape(
             bias, outer_batch_shape + [1] * num_inner_batch_dims + [num_out_feats]
@@ -538,7 +537,6 @@ def scaled_dot_product_attention(
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
 
     if ivy.exists(mask):
-
         # BS x Q x K
         sim = ivy.where(
             ivy.logical_not(mask),

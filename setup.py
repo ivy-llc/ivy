@@ -25,7 +25,6 @@ def _strip(line):
 
 
 def _replace_logos_html(txt):
-
     # html-containing chunks
     chunks = txt.split(".. raw:: html")
 

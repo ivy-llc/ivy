@@ -234,7 +234,6 @@ class SGD(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({})
 
 
@@ -313,7 +312,6 @@ class LARS(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({})
 
 
@@ -422,7 +420,6 @@ class Adam(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({"mw": self._mw, "vw": self._vw})
 
 
@@ -538,5 +535,4 @@ class LAMB(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({"mw": self._mw, "vw": self._vw})

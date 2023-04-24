@@ -161,9 +161,7 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
 
 
 def _flatten_frontend_return(*, ret):
-    """
-    Flattening the returned frontend value to a list of numpy arrays.
-    """
+    """Flattening the returned frontend value to a list of numpy arrays."""
     current_backend = ivy.current_backend_str()
     if not isinstance(ret, tuple):
         if not ivy.is_ivy_array(ret):
