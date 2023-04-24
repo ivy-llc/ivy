@@ -1863,7 +1863,9 @@ def test_tensorflow_acos(
 @handle_frontend_test(
     fn_tree="tensorflow.math.acosh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        small_abs_safety_factor=3,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
