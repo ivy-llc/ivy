@@ -321,9 +321,7 @@ def test_jax_poisson(
         min_dim_size=2,
         max_dim_size=2,
     ),
-    shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=5
-    ),
+    shape=helpers.get_shape(),
     dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_jax_rademacher(
