@@ -380,7 +380,7 @@ class Array(
             if ivy.current_backend_str() == "torch":
                 self._data = self._data.detach()
             self._data.__setitem__(query, val)
-        except (AttributeError, TypeError):
+        except (AttributeError, TypeError, ValueError):
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
             self._dtype = ivy.dtype(self._data)
 

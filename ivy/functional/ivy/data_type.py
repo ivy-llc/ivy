@@ -163,7 +163,6 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         # skip if it's not a function
 
         if not (inspect.isfunction(fn) or inspect.ismethod(fn)):
-
             continue
 
         fl = _get_function_list(fn)
@@ -196,7 +195,7 @@ def _get_dtypes(fn, complement=True):
         ("supported_dtypes", set.intersection, ivy.valid_dtypes),
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
-    for (key, merge_fn, base) in basic:
+    for key, merge_fn, base in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
             # only einops allowed to be a dictionary

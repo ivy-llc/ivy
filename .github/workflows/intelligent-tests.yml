@@ -8,6 +8,7 @@ permissions:
   actions: read
 jobs:
   display_test_results:
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
       - run_tests_1

@@ -169,23 +169,44 @@ def jac(func: Callable):
     return callback_fn
 
 
-def grad(f):
-
+def grad(f, argnums=0):
     if grad.nth == 0:
         grad.f_original = f
 
     def _nth_derivative(n):
         @outputs_to_ivy_arrays
         @inputs_to_native_arrays
-        def _inner(x):
+        def _inner(*args, **kwargs):
+            max_argnum = argnums if isinstance(argnums, int) else max(argnums)
+            if max_argnum >= len(args):
+                raise TypeError(
+                    f"differentiating with respect to {argnums=} requires at least "
+                    f"{max_argnum + 1} positional arguments to be passed by the "
+                    f"caller, but got only {len(args)} positional arguments."
+                )
+            if isinstance(argnums, int):
+                x = args[argnums]
+            elif isinstance(argnums, (tuple, list)):
+                x = []
+                for i in argnums:
+                    x.append(args[i])
+            else:
+                raise TypeError(
+                    f"argnums should be passed as int or a list/tuple of ints."
+                    f" Found {type(argnums)}"
+                )
             if n == 0:
-                ret = grad.f_original(x) if grad.f_original is not None else f(x)
+                ret = (
+                    grad.f_original(*args, **kwargs)
+                    if grad.f_original is not None
+                    else f(*args, **kwargs)
+                )
                 grad.nth = 0
                 return ret
             else:
                 with tf.GradientTape() as tape:
                     tape.watch(x)
-                    y = _nth_derivative(n - 1)(x)
+                    y = _nth_derivative(n - 1)(*args, *kwargs)
                     ret = tape.gradient(y, x)
                 return ret
 

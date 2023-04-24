@@ -14,7 +14,6 @@ from ivy.functional.frontends.torch.func_wrapper import _to_ivy_array
 
 class Tensor:
     def __init__(self, array, device=None, _init_overload=False):
-
         if _init_overload:
             self._ivy_array = (
                 ivy.array(array) if not isinstance(array, ivy.Array) else array
@@ -800,6 +799,9 @@ class Tensor:
     def unbind(self, dim=0):
         return torch_frontend.unbind(self, dim=dim)
 
+    def remainder(self, other, *, out=None):
+        return torch_frontend.remainder(self, other, out=out)
+
     def bitwise_and_(self, other):
         self.ivy_array = self.bitwise_and(other).ivy_array
 
@@ -838,7 +840,7 @@ class Tensor:
         ret = ivy.get_item(*ivy_args)
         return torch_frontend.Tensor(ret, _init_overload=True)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value, /):
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
 
