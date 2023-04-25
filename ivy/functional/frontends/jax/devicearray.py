@@ -61,6 +61,9 @@ class DeviceArray:
             keepdims=keepdims,
         )
 
+    def conj(self, /):
+        return jax_frontend.numpy.conj(self._ivy_array)
+    
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 
