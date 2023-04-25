@@ -372,7 +372,7 @@ def get_axis(
 
 @st.composite
 def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
-    """Draws a random x and filters for a convolution.  # TODO: What should be done here?
+    """Draws a random x and filters for a convolution.
 
     Parameters
     ----------
