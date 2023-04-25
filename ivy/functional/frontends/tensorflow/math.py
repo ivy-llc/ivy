@@ -641,3 +641,15 @@ def cosh(x, name=None):
 )
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
+
+
+@to_ivy_arrays_and_back
+def unsorted_segment_sum(
+    data, segment_ids, num_segments, name="unsorted_segment_sum"
+):
+    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    x = ivy.full(tuple([num_segments] + (list(data.shape))[1:]), 0)
+    for i in range((segment_ids).shape[0]):
+        x[segment_ids[i]] = x[segment_ids[i]] + data[i]
+    return x
+
