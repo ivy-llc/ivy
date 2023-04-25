@@ -580,7 +580,6 @@ def eye_like(
     )
 
 
-
 eye_like.mixed_function = True
 
 

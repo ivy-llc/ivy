@@ -485,6 +485,11 @@ def set_torch_backend():
     set_backend("torch")
 
 
+def set_paddle_backend():
+    """Sets paddle to be the global backend. equivalent to `ivy.set_backend("paddle")`."""  # noqa
+    set_backend("paddle")
+
+
 @prevent_access_locally
 def previous_backend():
     """Unsets the current global backend, and adjusts the ivy dict such that either

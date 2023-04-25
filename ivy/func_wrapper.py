@@ -17,8 +17,10 @@ FN_DECORATORS = [
     "handle_array_function",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
+    "outputs_to_ivy_shapes",
     "outputs_to_native_arrays",
     "inputs_to_native_arrays",
+    "inputs_to_native_shapes",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
     "handle_view_indexing",
@@ -314,6 +316,30 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
     _inputs_to_ivy_arrays.inputs_to_ivy_arrays = True
     return _inputs_to_ivy_arrays
+
+
+def inputs_to_native_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        args, kwargs = ivy.nested_map(
+            [args, kwargs], lambda x: x.shape if isinstance(x, ivy.Shape) else x
+        )
+        return fn(*args, **kwargs)
+
+    new_fn.inputs_to_native_shapes = True
+    return new_fn
+
+
+def outputs_to_ivy_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        args, kwargs = ivy.nested_map(
+            [args, kwargs], lambda x: x.shape if isinstance(x, ivy.Shape) else x
+        )
+        return fn(*args, **kwargs)
+
+    new_fn.outputs_to_ivy_shapes = True
+    return new_fn
 
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
