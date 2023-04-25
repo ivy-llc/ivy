@@ -207,7 +207,6 @@ class Shape:
             self._shape = shape_tup
         elif isinstance(shape_tup, ivy.Array):
             self._shape = ivy.to_native_shape(shape_tup)
-            print(self._shape)
         elif isinstance(shape_tup, int):
             self._shape = (shape_tup,)
         elif isinstance(shape_tup, list):
@@ -222,6 +221,9 @@ class Shape:
         return (
             f"Ivy.Shape({shape_repr})" if self._shape is not None else "Ivy.Shape(None)"
         )
+
+    def __add__(self, other):
+        return to_ivy(self._shape + other)
 
     def __dir__(self):
         self._shape.__dir__()
