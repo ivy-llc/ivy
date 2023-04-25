@@ -646,3 +646,7 @@ def isin(
 
 def itemsize(x: paddle.Tensor) -> int:
     return x.element_size()
+
+
+def strides(x: paddle.Tensor) -> Tuple[int]:
+    return x.stride()

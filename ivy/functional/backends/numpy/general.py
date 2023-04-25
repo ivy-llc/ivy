@@ -473,8 +473,5 @@ def itemsize(x: np.ndarray) -> int:
     return x.itemsize
 
 
-def strides(
-    x: np.ndarray,
-    /,
-) -> Tuple[int]:
+def strides(x: np.ndarray) -> Tuple[int]:
     return x.strides
