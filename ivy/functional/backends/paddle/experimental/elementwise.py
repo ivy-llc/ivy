@@ -345,10 +345,11 @@ def fix(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x = paddle.floor(x)
     if out is not None:
-        ivy.assign(paddle.fix(x), out)
+        ivy.assign(x.numpy(), out)
         return out
-    return paddle.fix(x)
+    return x.numpy()
 
 
 def nextafter(
