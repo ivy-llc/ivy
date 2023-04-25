@@ -482,3 +482,8 @@ norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def fingerprint(data, method='farmhash64', name=None):
+    return ivy.fingerprint(input, 'farmhash64')
