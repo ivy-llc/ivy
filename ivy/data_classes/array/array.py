@@ -153,6 +153,7 @@ class Array(
             functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         )
         self._itemsize = ivy.itemsize(self._data)
+        self._strides = ivy.strides(self._data)
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.as_ivy_dev(self._device)
@@ -260,6 +261,11 @@ class Array(
     def itemsize(self) -> Optional[int]:
         """Size of array elements in bytes."""
         return self._itemsize
+
+    @property
+    def strides(self) -> Optional[int]:
+        """Strides across each dimension."""
+        return self._strides
 
     @property
     def T(self) -> ivy.Array:
