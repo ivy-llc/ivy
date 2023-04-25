@@ -30,7 +30,16 @@ ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda create --name multienv python==$pycon
 
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
-
+RUN apt-get update && \
+    apt-get install -y python3-pip python3-tk && \
+    apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
+    apt-get install -y python-opengl && \
+    apt-get install -y git && \
+    apt-get install -y rsync && \
+    apt-get install -y libusb-1.0-0 && \
+    apt-get install -y libglib2.0-0 && \
+    pip3 install --upgrade pip && \
+    pip3 install setuptools==58.5.3
 
 RUN pip3 install --no-cache-dir torch --extra-index-url https://download.pytorch.org/whl/cpu
 RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
