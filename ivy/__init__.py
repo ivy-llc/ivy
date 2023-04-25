@@ -203,14 +203,8 @@ class Shape:
                 current_backend(shape_tup).NativeArray,
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
-        if isinstance(shape_tup, (ivy.NativeShape, tuple)):
-            self._shape = shape_tup
-        elif isinstance(shape_tup, ivy.Array):
-            self._shape = ivy.to_native_shape(shape_tup)
-        elif isinstance(shape_tup, int):
-            self._shape = (shape_tup,)
-        elif isinstance(shape_tup, list):
-            self._shape = tuple(shape_tup)
+        if isinstance(shape_tup, valid_types):
+            self._shape = ivy.to_native(shape_tup)
         else:
             self._shape = None
 
@@ -223,7 +217,27 @@ class Shape:
         )
 
     def __add__(self, other):
-        return to_ivy(self._shape + other)
+        self._shape = self._shape + other
+        return self
+
+    def __mul__(self, other):
+        self._shape = self._shape * other
+        return self
+
+    def __eq__(self, other):
+        return self._shape == other
+
+    def __ge__(self, other):
+        return self._shape >= other
+
+    def __gt__(self, other):
+        return self._shape > other
+
+    def __le__(self, other):
+        return self._shape <= other
+
+    def __lt__(self, other):
+        return self._shape < other
 
     def __dir__(self):
         self._shape.__dir__()
