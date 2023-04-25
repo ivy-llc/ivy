@@ -5,7 +5,6 @@ from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
-
 @to_ivy_arrays_and_back
 def inv(a):
     return ivy.inv(a)
@@ -152,3 +151,7 @@ def cond(x, p=None):
     nan_mask = ivy.logical_and(ivy.isnan(r), ~ivy.isnan(x).any(axis=(-2, -1)))
     r = ivy.where(orig_nan_check, ivy.where(nan_mask, ivy.inf, r), r)
     return r
+
+@to_ivy_arrays_and_back
+def lstsq(a, b):
+    return ivy.lstsq(a, b)
