@@ -611,7 +611,7 @@ def top_k(operand, k):
     return [values, indices]
 
 
-def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
+def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
     def _pad(arr, pads, pad_value):
         out = ivy.astype(
             ivy.pad(arr, ivy.maximum(0, pads).to_list(), mode='constant',
@@ -660,7 +660,7 @@ def _dilate(operand, factors, fill_value=0):
     ).to_list()
     out = ivy.full(
         (operand.shape[:2] + tuple(outspace)),
-        ivy.to_scalar(fill_value),
+        ivy.to_scalar(ivy.array(fill_value, dtype=operand.dtype)),
         dtype=operand.dtype,
     )
     lhs_slices = tuple(_slice(None, None, step) for step in factors)
@@ -727,9 +727,8 @@ def reduce_window(
         pads = padding
     op = op.reshape((1, 1) + op.shape)
     if base_dilation:
-        op = _dilate(op, base_dilation, init_value)
-    view = _conv_view(op, (1, 1) + tuple(dims), strides, pads,
-                      pad_value=init_value)[0]
+        op = _dilate(op, base_dilation)
+    view = _conv_view(op, (1, 1) + tuple(dims), strides, pads)[0]
     view = view.reshape(view.shape[1:1 + len(dims)] + (-1,))
     reducer = _make_reducer(computation, init_value)
     return ivy.array(reducer(view, axis=-1))
