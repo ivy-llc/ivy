@@ -814,7 +814,7 @@ def test_geomspace(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.csingle",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("complex"))
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"))
 )
 def test_jax_numpy_csingle(
     dtype_and_x,
