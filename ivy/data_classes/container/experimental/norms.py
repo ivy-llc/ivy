@@ -198,7 +198,6 @@ class _ContainerWithNormsExperimental(ContainerBase):
               Default value is 0.1.
         out
             optional output arrays, for writing the result to.
-            Parameters
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -298,7 +297,6 @@ class _ContainerWithNormsExperimental(ContainerBase):
               Default value is 0.1.
         out
             optional output array, for writing the result to.
-            Parameters
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -398,7 +396,6 @@ class _ContainerWithNormsExperimental(ContainerBase):
               Default value is 0.1.
         out
             optional output arrays, for writing the result to.
-            Parameters
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -498,7 +495,6 @@ class _ContainerWithNormsExperimental(ContainerBase):
               Default value is 0.1.
         out
             optional output array, for writing the result to.
-            Parameters
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply

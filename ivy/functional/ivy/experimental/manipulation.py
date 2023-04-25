@@ -17,17 +17,17 @@ import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
     inputs_to_ivy_arrays,
-    handle_array_function, outputs_to_ivy_arrays,
+    handle_array_function,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
@@ -263,6 +263,7 @@ def ndenumerate(
             for idx in _iter_product(*i):
                 yield idx, input[idx]
 
+    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
     return _ndenumerate(input)
 
 
@@ -292,7 +293,6 @@ def ndindex(
     (1, 0)
     (1, 1)
     """
-
     args = [range(k) for k in shape]
     return _iter_product(*args)
 
@@ -953,7 +953,6 @@ def _check_arguments(
     )
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1201,6 +1200,9 @@ def pad(
     return padded
 
 
+pad.mixed_function = True
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_view
@@ -1408,8 +1410,6 @@ def atleast_2d(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_view
 @handle_nestable
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
@@ -1580,6 +1580,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 
 
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
@@ -1615,8 +1616,8 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
+@inputs_to_native_shapes
 @inputs_to_ivy_arrays
-@outputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1671,6 +1672,9 @@ def as_strided(
         ivy.frombuffer(buffer, dtype=x.dtype, count=size),
         shape,
     )
+
+
+as_strided.mixed_function = True
 
 
 @to_native_arrays_and_back
@@ -1771,7 +1775,6 @@ def associative_scan(
     reverse: bool = False,
     axis: int = 0,
 ) -> ivy.Array:
-
     """
     Perform an associative scan over the given array.
 
@@ -1792,7 +1795,6 @@ def associative_scan(
         The result of the scan.
 
     """
-
     elems = [x]
 
     if reverse:

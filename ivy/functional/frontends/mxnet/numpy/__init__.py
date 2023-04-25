@@ -1,4 +1,3 @@
-# flake8: noqa
 import ivy
 from ivy.utils.exceptions import handle_exceptions
 from numbers import Number

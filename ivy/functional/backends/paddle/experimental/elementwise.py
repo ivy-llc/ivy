@@ -282,13 +282,17 @@ def diff(
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        return ivy.less_equal(x, 0)
 
 
 def hypot(
@@ -484,3 +488,20 @@ def count_nonzero(
 ) -> paddle.Tensor:
     non_zero_count = paddle.sum(x != 0, axis=axis, keepdim=keepdims, name=name)
     return paddle.to_tensor(non_zero_count, dtype=dtype)
+
+
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "complex64",
+            "complex128",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
+def conj(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    return paddle.conj(x)
