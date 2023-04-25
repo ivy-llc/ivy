@@ -12,39 +12,12 @@ import tensorflow as tf
 # local
 import ivy
 from ivy.functional.ivy.gradients import _is_variable
-from ivy.functional.ivy.general import _parse_ellipsis
+from ivy.functional.ivy.general import _parse_ellipsis, _parse_index
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
 _round = round
-
-
-def _parse_index(indices, shape):
-    ind = list()
-    for so in indices:
-        pre = list()
-        for s in so:
-            if s == -1:
-                pre.append(shape[len(pre) :][0] - 1)
-                break
-            pre.append(s.numpy())
-        post = list()
-        for s in reversed(so):
-            if s == -1:
-                break
-            post.append(s.numpy())
-        ind.append(
-            tuple(
-                pre
-                + [
-                    slice(None, None, None)
-                    for _ in range(len(shape) - len(pre) - len(post))
-                ]
-                + list(reversed(post))
-            )
-        )
-    return ind
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -325,7 +298,7 @@ def scatter_flat(
 scatter_flat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -495,9 +468,11 @@ def scatter_nd(
     if sum(updates.shape) < sum(expected_shape):
         updates = ivy.broadcast_to(updates, expected_shape)._data
     elif sum(updates.shape) > sum(expected_shape):
-        indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])._data
-    elif updates.shape != expected_shape:
-        updates = ivy.broadcast_to(updates, expected_shape)._data
+        indices_shape = updates.shape[:1] + indices.shape[-1]
+        if sum(indices.shape) < sum(indices_shape):
+            indices = ivy.broadcast_to(indices, indices_shape)._data
+        else:
+            updates = ivy.broadcast_to(updates, expected_shape)._data
     # implementation
     target = out
     target_given = ivy.exists(target)

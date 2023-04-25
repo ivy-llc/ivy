@@ -75,7 +75,6 @@ def _train_task(
     num_tasks,
     stop_gradients,
 ):
-
     # init
     total_cost = 0
     all_grads = list()
@@ -86,7 +85,6 @@ def _train_task(
 
     # iterate through inner loop training steps
     for i in range(inner_grad_steps):
-
         # compute inner gradient for update the inner variables
         cost, inner_update_grads = ivy.execute_with_gradients(
             lambda v: inner_cost_fn(

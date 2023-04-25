@@ -268,6 +268,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         data_format: str = "NHWC",
         count_include_pad: bool = False,
         ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -292,6 +293,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
             Whether to include padding in the averaging calculation.
         ceil_mode
             Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If given, it will be used as the divisor,
+            otherwise kernel_size will be used.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -327,6 +331,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             data_format=data_format,
             count_include_pad=count_include_pad,
             ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             out=out,
         )
 
@@ -340,6 +345,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         data_format: str = "NDHWC",
         count_include_pad: bool = False,
         ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -362,6 +368,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
             Whether to include padding in the averaging calculation.
         ceil_mode
             Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as divisor,
+            otherwise kernel_size will be used.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -391,6 +400,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             data_format=data_format,
             count_include_pad=count_include_pad,
             ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             out=out,
         )
 

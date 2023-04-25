@@ -304,32 +304,8 @@ def _variable_data(
     return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
-# Extra #
-# ------#
-
 with_grads_stack = list()
 
-
-class GradientTracking:
-    """Gradient tracking Context Manager."""
-
-    # noinspection PyShadowingNames
-    def __init__(self, with_grads):
-        self._with_grads = with_grads
-
-    def __enter__(self):
-        set_with_grads(self._with_grads)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        unset_with_grads()
-        if self and (exc_type is not None):
-            print(exc_tb)
-            raise exc_val
-        return self
-
-
-# Gradient Mode #
 
 # noinspection PyShadowingNames
 @handle_array_function
@@ -675,7 +651,7 @@ jac.computes_gradients = True
 
 
 @handle_exceptions
-def grad(func: Callable) -> Callable:
+def grad(func: Callable, argnums: Union[int, Sequence[int]] = 0) -> Callable:
     """Call function func, and return func's gradients.
 
     Parameters
@@ -683,6 +659,8 @@ def grad(func: Callable) -> Callable:
     func
         Function for which we compute the gradients of the output with respect to xs
         input.
+    argnums
+        Indices of the input arrays to compute gradients with respect to. Default is 0.
 
     Returns
     -------
@@ -700,7 +678,7 @@ def grad(func: Callable) -> Callable:
     ...        [0.933, 0.433, 2.07 ]])
 
     """
-    return current_backend(None).grad(func)
+    return current_backend(None).grad(func, argnums=argnums)
 
 
 grad.computes_gradients = True
