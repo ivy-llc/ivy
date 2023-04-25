@@ -111,7 +111,6 @@ def test_numpy_ndarray_property_T(
                 available_dtypes=helpers.get_dtypes("numeric"),
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     order=st.sampled_from(["C", "F", "A", "K"]),
     copy=st.booleans(),
