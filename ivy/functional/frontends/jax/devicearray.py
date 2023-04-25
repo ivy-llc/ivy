@@ -3,7 +3,6 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-from ivy.functional.frontends.numpy import dtype
 
 
 class DeviceArray:
@@ -15,8 +14,9 @@ class DeviceArray:
 
     def __repr__(self):
         main = (
-            "ivy.frontends.jax.DeviceArray("
-            + str(ivy.to_list(self.ivy_array))
+            str(self.ivy_array.__repr__())
+            .replace("ivy.array", "ivy.frontends.jax.DeviceArray")
+            .replace(")", "")
             + ", dtype="
             + str(self.ivy_array.dtype)
         )
@@ -33,7 +33,7 @@ class DeviceArray:
 
     @property
     def dtype(self):
-        return dtype(self.ivy_array.dtype)
+        return self.ivy_array.dtype
 
     @property
     def shape(self):
@@ -172,3 +172,9 @@ class DeviceArray:
 
     def __getitem__(self, idx):
         return self.at[idx].get()
+
+    def __setitem__(self, idx, val):
+        raise ivy.utils.exceptions.IvyException(
+            "ivy.functional.frontends.jax.DeviceArray object "
+            "doesn't support assignment"
+        )

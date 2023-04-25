@@ -179,7 +179,6 @@ ne = not_equal
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def isin(elements, test_elements, *, assume_unique=False, invert=False):
-
     input_elements_copy = ivy.reshape(ivy.to_ivy(elements), (-1,))
     test_elements_copy = ivy.reshape(ivy.to_ivy(test_elements), (-1,))
 
@@ -263,7 +262,6 @@ def maximum(input, other, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
-
     sorted_input = ivy.sort(input, axis=dim)
     sort_indices = ivy.argsort(input, axis=dim)
 

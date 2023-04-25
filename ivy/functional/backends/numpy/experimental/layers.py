@@ -21,7 +21,6 @@ def max_pool1d(
     data_format: str = "NWC",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel]
     elif len(kernel) == 1:
@@ -79,7 +78,6 @@ def max_pool2d(
     ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel] * 2
     elif len(kernel) == 1:
@@ -176,7 +174,6 @@ def max_pool3d(
     data_format: str = "NDHWC",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel] * 3
     elif len(kernel) == 1:
@@ -270,7 +267,6 @@ def avg_pool1d(
     ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel]
     elif len(kernel) == 1:
@@ -351,6 +347,7 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(kernel, int):
@@ -398,8 +395,15 @@ def avg_pool2d(
     )
 
     # B x OH x OW x O
-    res = np.mean(sub_matrices, axis=(3, 4))
-    if (not count_include_pad or ceil_mode) and any(pad_specific):
+    if divisor_override is not None:
+        res = np.sum(sub_matrices, axis=(3, 4)) / divisor_override
+    else:
+        res = np.mean(sub_matrices, axis=(3, 4))
+    if (
+        (not count_include_pad or ceil_mode)
+        and any(pad_specific)
+        and not divisor_override
+    ):
         if not count_include_pad:
             num_padded_values = [
                 np.array(
@@ -449,9 +453,10 @@ def avg_pool3d(
     *,
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel] * 3
     elif len(kernel) == 1:
@@ -466,17 +471,15 @@ def avg_pool3d(
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
     x_shape = list(x.shape[1:4])
-    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
+    padding, pad_specific, c = _get_padded_values(
+        x_shape, kernel, strides, padding, ceil_mode, 3
+    )
 
     x = np.pad(
         x,
         [
             (0, 0),
-            (pad_d // 2, pad_d - pad_d // 2),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
+            *padding,
             (0, 0),
         ],
         constant_values=0.0,
@@ -503,27 +506,41 @@ def avg_pool3d(
     )
 
     # B x OH x OW x O
-    res = np.mean(sub_matrices, axis=(4, 5, 6))
-    if not count_include_pad and (pad_w or pad_h or pad_d):
-        padded = [pad_d, pad_h, pad_w]
-        num_padded_values = [
-            np.array(
-                ivy.map(
-                    _get_num_padded_values,
-                    constant={
-                        "p": padded[i],
-                        "n": x.shape[i + 1] - padded[i],
-                        "k": kernel[i],
-                        "s": strides[i],
-                    },
-                    unique={
-                        "i": np.arange(res.shape[i + 1]),
-                    },
-                ),
-                dtype=res.dtype,
-            )
-            for i in range(3)
-        ]
+    if divisor_override is not None:
+        res = np.sum(sub_matrices, axis=(4, 5, 6)) / divisor_override
+    else:
+        res = np.mean(sub_matrices, axis=(4, 5, 6))
+
+    if (
+        (not count_include_pad or ceil_mode)
+        and any(pad_specific)
+        and not divisor_override
+    ):
+        if not count_include_pad:
+            num_padded_values = [
+                np.array(
+                    ivy.map(
+                        _get_num_padded_values,
+                        constant={
+                            "p": pad_specific[i],
+                            "n": x.shape[i + 1] - pad_specific[i],
+                            "k": kernel[i],
+                            "s": strides[i],
+                        },
+                        unique={
+                            "i": np.arange(res.shape[i + 1]),
+                        },
+                    ),
+                    dtype=res.dtype,
+                )
+                for i in range(3)
+            ]
+        else:
+            num_padded_values = []
+            for i in range(3):
+                num_pad = np.zeros(res.shape[i + 1], dtype=res.dtype)
+                num_pad[-1] = c[i]
+                num_padded_values.append(num_pad)
         num_padded_values1 = num_padded_values[0].reshape((-1, 1, 1))
         num_padded_values2 = num_padded_values[1].reshape((1, -1, 1))
         num_padded_values3 = num_padded_values[2].reshape((1, 1, -1))

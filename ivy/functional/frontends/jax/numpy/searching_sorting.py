@@ -150,3 +150,51 @@ def flatnonzero(a):
 @to_ivy_arrays_and_back
 def sort_complex(a):
     return ivy.sort(a)
+
+
+@to_ivy_arrays_and_back
+def searchsorted(a, v, side="left", sorter=None, *, method="scan"):
+    return ivy.searchsorted(a, v, side=side, sorter=sorter, ret_dtype="int32")
+
+
+@to_ivy_arrays_and_back
+def where(condition, x=None, y=None, size=None, fill_value=0):
+    if x is not None and y is not None:
+        return ivy.where(condition, x, y)
+    else:
+        raise ValueError("Both x and y should be given.")
+
+
+@to_ivy_arrays_and_back
+def unique(
+    ar,
+    return_index=False,
+    return_inverse=False,
+    return_counts=False,
+    axis=None,
+    *,
+    size=None,
+    fill_value=None,
+):
+    uniques = list(ivy.unique_all(ar, axis=axis))
+    if size is not None:
+        fill_value = fill_value if fill_value is not None else 1  # default fill_value 1
+        pad_len = size - len(uniques[0])
+        if pad_len > 0:
+            # padding
+            num_dims = len(uniques[0].shape) - 1
+            padding = [(0, 0)] * num_dims + [(0, pad_len)]
+            uniques[0] = ivy.pad(uniques[0], padding, constant_values=fill_value)
+            # padding the indices and counts with zeros
+            for i in range(1, len(uniques)):
+                if i == 2:
+                    continue
+                uniques[i] = ivy.pad(uniques[i], padding[-1], constant_values=0)
+        else:
+            for i in range(len(uniques)):
+                uniques[i] = uniques[i][..., :size]
+    # constructing a list of bools for indexing
+    bools = [return_index, return_inverse, return_counts]
+    # indexing each element whose condition is True except for the values
+    uniques = [uniques[0]] + [uni for idx, uni in enumerate(uniques[1:]) if bools[idx]]
+    return uniques

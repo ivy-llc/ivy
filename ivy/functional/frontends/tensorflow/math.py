@@ -9,6 +9,15 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def imag(input, name=None):
+    return ivy.imag(input)
+
+
 @to_ivy_arrays_and_back
 def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
     return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
@@ -182,6 +191,16 @@ def is_strictly_increasing(x, name="is_strictly_increasing"):
 @to_ivy_arrays_and_back
 def log_sigmoid(x, name=None):
     return -ivy.softplus(-x)
+
+
+@to_ivy_arrays_and_back
+def logical_not(x, name="logical_not"):
+    return ivy.logical_not(x)
+
+
+@to_ivy_arrays_and_back
+def log1p(x, name=None):
+    return ivy.log1p(x)
 
 
 @to_ivy_arrays_and_back
@@ -449,6 +468,11 @@ def floor(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def floordiv(x, y, name=None):
+    return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
 
@@ -627,3 +651,9 @@ def cosh(x, name=None):
 )
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater_equal(x, y)

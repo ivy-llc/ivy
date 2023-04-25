@@ -62,28 +62,28 @@ if __name__ == "__main__":
                     shell=True,
                 )
         try:
-            import tensorflow
+            import tensorflow  # noqa
         except:
             subprocess.run(
                 f"pip3 install tensorflow-cpu --default-timeout=100  --no-cache-dir",
                 shell=True,
             )
         try:
-            import torch
+            import torch  # noqa
         except:
             subprocess.run(
                 f"pip3 install torch --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu  --no-cache-dir",
                 shell=True,
             )
         try:
-            import jaxlib
+            import jaxlib  # noqa
         except:
             subprocess.run(
                 f"pip3 install jaxlib --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_releases.html  --no-cache-dir",
                 shell=True,
             )
         try:
-            import jax
+            import jax  # noqa
         except:
             subprocess.run(
                 f"pip3 install jax  --default-timeout=100   --no-cache-dir", shell=True

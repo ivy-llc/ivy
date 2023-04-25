@@ -30,7 +30,7 @@ def _to_ivy_array(x):
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_ivy_arrays_mxnet(*args, **kwargs):
         """
         Converts all `ndarray.NDArray` instances in both the positional and keyword
         arguments into `ivy.Array` instances, and then calls the function with the
@@ -45,13 +45,13 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         return fn(*new_args, **new_kwargs)
 
-    new_fn.inputs_to_ivy_arrays = True
-    return new_fn
+    _inputs_to_ivy_arrays_mxnet.inputs_to_ivy_arrays = True
+    return _inputs_to_ivy_arrays_mxnet
 
 
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _outputs_to_frontend_arrays_mxnet(*args, **kwargs):
         """
         Calls the function, and then converts all `ivy.Array` instances in
         the function return into `ndarray.NDArray` instances.
@@ -62,8 +62,8 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
         return ivy.nested_map(ret, _ivy_array_to_mxnet, include_derived={tuple: True})
 
-    new_fn.outputs_to_frontend_arrays = True
-    return new_fn
+    _outputs_to_frontend_arrays_mxnet.outputs_to_frontend_arrays = True
+    return _outputs_to_frontend_arrays_mxnet
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -76,7 +76,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 def handle_mxnet_out(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, out=None, **kwargs):
+    def _handle_mxnet_out(*args, out=None, **kwargs):
         if len(args) > (out_pos + 1):
             out = args[out_pos]
             kwargs = {
@@ -103,5 +103,5 @@ def handle_mxnet_out(fn: Callable) -> Callable:
         return fn(*args, **kwargs)
 
     out_pos = list(inspect.signature(fn).parameters).index("out")
-    new_fn.handle_numpy_out = True
-    return new_fn
+    _handle_mxnet_out.handle_numpy_out = True
+    return _handle_mxnet_out

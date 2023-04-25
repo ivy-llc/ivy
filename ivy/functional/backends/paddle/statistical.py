@@ -174,6 +174,7 @@ def sum(
 ) -> paddle.Tensor:
     if x.dtype in [paddle.int8, paddle.uint8]:
         dtype = x.dtype if dtype is None else dtype
+        dtype = ivy.as_ivy_dtype(dtype)
         return paddle.sum(
             x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims
         ).cast(dtype)
@@ -200,7 +201,8 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int16")}},
+    backend_version,
 )
 def cumprod(
     x: paddle.Tensor,
