@@ -636,22 +636,22 @@ def test_jax_rademacher(
     ),
     shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
     dtype=helpers.get_dtypes("integer", full=False),
-    minval=st.integers(min_value=-100, max_value=100),
-    maxval=st.integers(min_value=101, max_value=1000),
+    min_max=helpers.general_helpers.get_bounds(dtype="int16")
+
 )
 def test_jax_randint(
-    *,
-    dtype_key,
-    shape,
-    dtype,
-    minval,
-    maxval,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_key,
+        shape,
+        dtype,
+        min_max,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, key = dtype_key
+    minval, maxval = min_max
 
     def call():
         return helpers.test_frontend_function(
