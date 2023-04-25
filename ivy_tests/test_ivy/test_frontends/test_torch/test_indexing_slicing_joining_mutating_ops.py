@@ -1342,48 +1342,44 @@ def test_torch_index_copy(
 
 
 @st.composite
-def _dtype_input_idx_axis(draw):
-    dtype_x_axis_shape = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
-            force_int_axis=True,
-            ret_shape=True,
-            valid_axis=True,
-            min_num_dims=1,
+def _dtypes_input_mask(draw):
+    _shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    _mask = draw(helpers.array_values(dtype=helpers.get_dtypes("bool"), shape=_shape))
+    _dtype, _x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            shape=_shape,
         )
     )
 
-    input_dtype, x, axis, shape = dtype_x_axis_shape
-    max_idx = 0
-    if shape:
-        max_idx = shape[axis] - 1
-    idx = draw(helpers.ints(min_value=0, max_value=max_idx))
-    x = x[0]
-
-    return input_dtype, x, idx, axis
+    return _dtype, _x, _mask
 
 
 @handle_frontend_test(
-    fn_tree="torch.select",
-    dtype_x_idx_axis=_dtype_input_idx_axis(),
+    fn_tree="torch.masked_select",
+    dtype_input_mask=_dtypes_input_mask(),
 )
-def test_torch_select(
+def test_torch_masked_select(
     *,
-    dtype_x_idx_axis,
+    dtype_input_mask,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x, idx, axis = dtype_x_idx_axis
+    (
+        input_dtype,
+        x,
+        mask,
+    ) = dtype_input_mask
 
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtype + ["bool"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
-        dim=axis,
-        index=idx,
+        input=x[0],
+        mask=mask,
     )
