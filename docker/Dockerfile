@@ -58,7 +58,7 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 
 # Install local optional
 COPY requirements/optional.txt .
-COPY requirements/optional_gpu.txt .
+COPY requirements/requirements.txt .
 RUN pip3 install --no-cache-dir -r optional.txt && \
     pip3 install --no-cache-dir -r requirements.txt
 
