@@ -15,12 +15,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     test_with_out=st.just(False),
 )
 def test_numpy_random_sample(
-    input_dtypes,
-    size,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        input_dtypes,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -51,12 +51,12 @@ def test_numpy_random_sample(
     test_with_out=st.just(False),
 )
 def test_numpy_dirichlet(
-    dtype_and_x,
-    size,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        dtype_and_x,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -82,14 +82,14 @@ def test_numpy_dirichlet(
     ),
 )
 def test_numpy_uniform(
-    input_dtypes,
-    size,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    low,
-    high,
+        input_dtypes,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        low,
+        high,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -115,14 +115,14 @@ def test_numpy_uniform(
     ),
 )
 def test_numpy_normal(
-    input_dtypes,
-    size,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    loc,
-    scale,
+        input_dtypes,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        loc,
+        scale,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -151,12 +151,12 @@ def test_numpy_normal(
     ),
 )
 def test_numpy_poisson(
-    dtype_and_x,
-    size,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
+        dtype_and_x,
+        size,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -186,13 +186,13 @@ def test_numpy_poisson(
     ),
 )
 def test_numpy_geometric(
-    input_dtypes,
-    size,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    p,
+        input_dtypes,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        p,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -216,13 +216,13 @@ def test_numpy_geometric(
     ),
 )
 def test_numpy_multinomial(
-    n,
-    dtype,
-    size,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
+        n,
+        dtype,
+        size,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -245,11 +245,11 @@ def test_numpy_multinomial(
     ),
 )
 def test_numpy_permutation(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -278,14 +278,14 @@ def test_numpy_permutation(
     ),
 )
 def test_numpy_beta(
-    input_dtypes,
-    size,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    a,
-    b,
+        input_dtypes,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        a,
+        b,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -308,11 +308,11 @@ def test_numpy_beta(
     ),
 )
 def test_numpy_shuffle(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -333,12 +333,12 @@ def test_numpy_shuffle(
     test_with_out=st.just(False),
 )
 def test_numpy_standard_normal(
-    input_dtypes,
-    size,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        input_dtypes,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -364,14 +364,14 @@ def test_numpy_standard_normal(
     test_with_out=st.just(False),
 )
 def test_numpy_standard_gamma(
-    shape,
-    shape_dtypes,
-    size,
-    size_dtypes,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        shape,
+        shape_dtypes,
+        size,
+        size_dtypes,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     assume("float16" not in shape_dtypes)
     helpers.test_frontend_function(
@@ -419,19 +419,19 @@ def test_numpy_standard_gamma(
     test_with_out=st.just(False),
 )
 def test_numpy_chisquare(
-    dtypes,
-    df,
-    size,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        dtypes,
+        df,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     # make sure `size` is something `df` can be broadcast to
     if (
-        hasattr(df, "__len__")
-        and size is not None
-        and (len(size) == 0 or size[-1] != len(df))
+            hasattr(df, "__len__")
+            and size is not None
+            and (len(size) == 0 or size[-1] != len(df))
     ):
         size = (*size, len(df))
     helpers.test_frontend_function(
@@ -444,3 +444,37 @@ def test_numpy_chisquare(
         df=df,
         size=size,
     )
+
+
+# lognormal
+@handle_frontend_test(
+    fn_tree="numpy.random.lognormal",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    mean=st.floats(allow_nan=False, allow_infinity=False, width=32),
+    sigma=st.floats(allow_nan=False, allow_infinity=False, width=32, min_value=0),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_lognormal(
+        input_dtypes,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        mean,
+        sigma,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mean=mean,
+        sigma=sigma,
+        size=size,
+    )
+
