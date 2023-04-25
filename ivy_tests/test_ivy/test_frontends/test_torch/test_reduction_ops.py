@@ -855,7 +855,7 @@ def test_torch_mode(
     frontend,
     test_flags,
 ):
-    input_dtype, x, dim = dtype_and_x
+    input_dtype, x, dim = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
