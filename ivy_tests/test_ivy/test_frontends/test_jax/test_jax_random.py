@@ -502,7 +502,7 @@ def test_jax_t(
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -562,7 +562,7 @@ def test_jax_generalized_normal(
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -616,7 +616,7 @@ def test_jax_rademacher(
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 

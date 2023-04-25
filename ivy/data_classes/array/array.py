@@ -8,7 +8,7 @@ from typing import Optional
 
 # local
 import ivy
-from .conversions import *
+from .conversions import args_to_native, to_ivy
 from .activations import _ArrayWithActivations
 from .creation import _ArrayWithCreation
 from .data_type import _ArrayWithDataTypes
