@@ -304,6 +304,9 @@ def _variable_data(
     return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
+with_grads_stack = list()
+
+
 # noinspection PyShadowingNames
 @handle_array_function
 @handle_exceptions
