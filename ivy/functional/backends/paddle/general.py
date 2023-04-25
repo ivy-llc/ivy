@@ -649,4 +649,4 @@ def itemsize(x: paddle.Tensor) -> int:
 
 
 def strides(x: paddle.Tensor) -> Tuple[int]:
-    return x.stride()
+    return x.numpy().strides
