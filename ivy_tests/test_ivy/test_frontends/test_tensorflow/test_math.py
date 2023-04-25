@@ -2431,7 +2431,6 @@ def test_tensorflow_zeta(
     ),
     test_with_out=st.just(False),
 )
-
 def test_tensorflow_greater_equal(
     *,
     dtype_and_x,
@@ -2450,8 +2449,8 @@ def test_tensorflow_greater_equal(
         x=x[0],
         y=x[1],
     )
-    
-    
+
+
 # xlog1py
 @handle_frontend_test(
     fn_tree="tensorflow.math.xlog1py",
@@ -2480,4 +2479,3 @@ def test_tensorflow_xlog1py(  # NOQA
         x=xs[0],
         y=xs[1],
     )
-
