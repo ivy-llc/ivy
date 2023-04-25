@@ -12,6 +12,7 @@ import ivy.functional.frontends.numpy as np_frontend
 # Helpers #
 # ------- #
 
+
 # general casting
 def _assert_array(args, dtype, scalar_check=False, casting="safe"):
     if args and dtype:

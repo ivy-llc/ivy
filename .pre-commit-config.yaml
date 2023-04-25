@@ -1,10 +1,18 @@
 repos:
 -   repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 23.3.0
     hooks:
     - id: black
       language_version: python3
+-   repo: https://github.com/PyCQA/autoflake
+    rev: v2.1.1
+    hooks:
+    -   id: autoflake
 -   repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
+    rev: 6.0.0
     hooks:
     - id: flake8
+-   repo: https://github.com/pycqa/pydocstyle
+    rev: 6.3.0
+    hooks:
+    -   id: pydocstyle

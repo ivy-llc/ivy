@@ -174,7 +174,6 @@ class ndarray:
         keepdims=False,
         out=None,
     ):
-
         return np_frontend.argmin(
             self,
             axis=axis,
@@ -462,7 +461,7 @@ class ndarray:
         ret = ivy.get_item(*ivy_args)
         return np_frontend.ndarray(ret, _init_overload=True)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value, /):
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
 

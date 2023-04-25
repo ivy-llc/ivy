@@ -1,4 +1,3 @@
-# flake8: noqa
 from . import array_contents
 from .array_contents import *
 from . import array_type_testing

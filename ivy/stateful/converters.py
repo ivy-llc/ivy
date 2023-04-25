@@ -440,6 +440,97 @@ class ModuleConverters:
         )
 
     @staticmethod
+    def from_paddle_module(
+        native_module=None,
+        constructor_args: Optional[List] = None,
+        constructor_kwargs: Optional[Dict] = None,
+        instance_args: Optional[List] = None,
+        instance_kwargs: Optional[Dict] = None,
+        device=None,
+        devices=None,
+    ):
+        """
+        Converts a Paddle layer instance to an Ivy module instance.
+
+        Parameters
+        ----------
+        native_module
+            The module in the native framework to convert(class or instance)
+        constructor_args
+            Positional arguments to pass to the constructor of the native module.
+            Default is ``None``.
+        constructor_kwargs
+            Key-word arguments to pass to the constructor of the native module.
+             Default is ``None``.
+        instance_args
+            Positional arguments to pass to the forward pass of the native module.
+            Default is ``None``.
+        instance_kwargs
+            Key-word arguments to pass to the forward pass of the native module.
+             Default is ``None``.
+        device
+            The device on which to create module variables. Default is ``None``.
+        devices
+            The devices on which to create module variables. Default is ``None``.
+
+        Returns
+        -------
+        ret
+            The new trainable ivy.Module instance.
+        """
+
+        class PaddleIvyModule(ivy.Module):
+            def __init__(self, *args, native_module, device, devices, **kwargs):
+                self._native_module = native_module
+                self._args = args
+                self._kwargs = kwargs
+
+                ivy.Module.__init__(
+                    self, *args, device=device, devices=devices, **kwargs
+                )
+
+            def _create_variables(self, device=None, dtype=None):
+                return self._native_params
+
+            def _build(self, *args, **kwargs):
+                self._native_params = ivy.Container(
+                    OrderedDict(
+                        sorted(
+                            [
+                                (k.replace(".", "/"), v)
+                                for k, v in dict(
+                                    self._native_module.named_parameters()
+                                ).items()
+                            ]
+                        )
+                    ),
+                    dynamic_backend=False,
+                )
+
+            def _forward(self, *a, **kw):
+                a, kw = ivy.args_to_native(*a, **kw)
+                ret = self._native_module(*a, **kw)
+                if isinstance(ret, tuple):
+                    return ivy.args_to_native(*ret)
+                return ivy.to_native(ret)
+
+        c_args = ivy.default(constructor_args, [])
+        c_kwargs = ivy.default(constructor_kwargs, {})
+        i_args = ivy.default(instance_args, [])
+        i_kwargs = ivy.default(instance_kwargs, {})
+
+        if inspect.isclass(native_module):
+            native_module = native_module(*c_args, **c_kwargs)
+
+        return PaddleIvyModule(
+            *i_args,
+            native_module=native_module,
+            device=device,
+            devices=devices,
+            **i_kwargs,
+        )
+
+    @staticmethod
     def from_torch_module(
         native_module=None,
         constructor_args: Optional[List] = None,

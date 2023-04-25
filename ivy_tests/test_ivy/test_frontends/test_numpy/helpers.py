@@ -30,6 +30,68 @@ def dtype_x_bounded_axis(draw, **kwargs):
 
 
 @st.composite
+def dtype_value1_value2_axis(
+    draw,
+    available_dtypes,
+    abs_smallest_val=None,
+    min_value=None,
+    max_value=None,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+    specific_dim_size=3,
+    large_abs_safety_factor=4,
+    small_abs_safety_factor=4,
+    safety_factor_scale="log",
+):
+    # Taken from functional helpers
+    # For cross product, a dim with size 3 is required
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    axis = draw(helpers.ints(min_value=0, max_value=len(shape)))
+    # make sure there is a dim with specific dim size
+    shape = list(shape)
+    shape = shape[:axis] + [specific_dim_size] + shape[axis:]
+    shape = tuple(shape)
+
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
+
+    values = []
+    for i in range(2):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    abs_smallest_val=abs_smallest_val,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
+                )
+            )
+        )
+
+    value1, value2 = values[0], values[1]
+    return [dtype], value1, value2, axis
+
+
+@st.composite
 def _array_and_axes_permute_helper(
     draw,
     *,
@@ -161,9 +223,7 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
 
 
 def _flatten_frontend_return(*, ret):
-    """
-    Flattening the returned frontend value to a list of numpy arrays.
-    """
+    """Flattening the returned frontend value to a list of numpy arrays."""
     current_backend = ivy.current_backend_str()
     if not isinstance(ret, tuple):
         if not ivy.is_ivy_array(ret):
