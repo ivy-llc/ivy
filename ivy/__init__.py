@@ -211,9 +211,10 @@ class Shape:
     def __repr__(self):
         pattern = r"\d+(?:,\s*\d+)*"
         shape_repr = re.findall(pattern, self._shape.__str__())
-        shape_repr = shape_repr[0] + "," if len(shape_repr[0]) == 1 else shape_repr[0]
+        shape_repr = ", ".join([str(i) for i in shape_repr])
+        shape_repr = shape_repr + "," if len(shape_repr) == 1 else shape_repr
         return (
-            f"Ivy.Shape({shape_repr})" if self._shape is not None else "Ivy.Shape(None)"
+            f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
 
     def __add__(self, other):
