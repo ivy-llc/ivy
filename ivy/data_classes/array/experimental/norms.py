@@ -92,7 +92,6 @@ class _ArrayWithNormsExperimental(abc.ABC):
               Default value is 0.1.
         out
             optional output array, for writing the result to.
-            Parameters
 
         Returns
         -------
@@ -166,7 +165,6 @@ class _ArrayWithNormsExperimental(abc.ABC):
               Default value is 0.1.
         out
             optional output array, for writing the result to.
-            Parameters
 
         Returns
         -------

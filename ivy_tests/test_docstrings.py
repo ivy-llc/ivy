@@ -184,7 +184,7 @@ def check_docstring_examples_run(
     num_output = num_output.split(",")
     num_parsed_output = num_parsed_output.split(",")
     docstr_result = True
-    for (doc_u, doc_v) in zip(num_output, num_parsed_output):
+    for doc_u, doc_v in zip(num_output, num_parsed_output):
         try:
             docstr_result = np.allclose(
                 np.nan_to_num(complex(doc_u)),

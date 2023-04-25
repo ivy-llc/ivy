@@ -167,7 +167,6 @@ def unify(
     with_numpy: bool = False,
     **transpile_kwargs,
 ) -> Callable:
-
     return _unify(
         *objs,
         source=source,

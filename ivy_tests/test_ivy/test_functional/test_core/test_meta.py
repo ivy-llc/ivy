@@ -18,6 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 # First Order #
 # ------------#
 
+
 # fomaml step unique vars
 @handle_test(
     fn_tree="functional.ivy.fomaml_step",
@@ -40,7 +41,6 @@ def test_fomaml_step_unique_vars(
     return_inner_v,
     backend_fw,
 ):
-
     # Numpy does not support gradients, and jax does not support gradients on
     # custom nested classes
     if backend_fw.current_backend_str() == "numpy":
@@ -599,6 +599,7 @@ def test_reptile_step(
 
 # Second Order #
 # -------------#
+
 
 # maml step unique vars
 @pytest.mark.parametrize("inner_grad_steps", [1, 2, 3])
