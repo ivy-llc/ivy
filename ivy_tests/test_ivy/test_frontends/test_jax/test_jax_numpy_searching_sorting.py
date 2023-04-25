@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -336,4 +337,134 @@ def test_jax_numpy_sort_complex(
         on_device=on_device,
         a=x[0],
         test_values=False,
+    )
+
+
+# searchsorted
+@st.composite
+def _searchsorted(draw):
+    dtype_x, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            shape=(draw(st.integers(min_value=1, max_value=10)),),
+        ),
+    )
+    dtype_v, v = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            min_num_dims=1,
+        )
+    )
+
+    input_dtypes = dtype_x + dtype_v
+    xs = x + v
+    side = draw(st.sampled_from(["left", "right"]))
+    sorter = None
+    xs[0] = np.sort(xs[0], axis=-1)
+    return input_dtypes, xs, side, sorter
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.searchsorted",
+    dtype_x_v_side_sorter=_searchsorted(),
+    test_with_out=st.just(False),
+)
+def test_numpy_searchsorted(
+    dtype_x_v_side_sorter,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        v=xs[1],
+        side=side,
+        sorter=sorter,
+    )
+
+
+# where
+@handle_frontend_test(
+    fn_tree="jax.numpy.where",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_where(
+    *,
+    dtype_and_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    x = x[0]
+    condition = x > 0.5
+    x1 = x * 2
+    x2 = x * -2
+
+    # Convert input_dtype from list to string
+    input_dtype = input_dtype[0]
+
+    helpers.test_frontend_function(
+        input_dtypes=["bool", input_dtype, input_dtype],
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        frontend=frontend,
+        condition=condition,
+        x=x1,
+        y=x2,
+    )
+
+
+# unique
+@st.composite
+def _unique_helper(draw):
+    arr_dtype, arr, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            min_num_dims=1,
+            min_dim_size=2,
+            ret_shape=True,
+        )
+    )
+    axis = draw(st.sampled_from(list(range(len(shape))) + [None]))
+    return_index = draw(st.booleans())
+    return_inverse = draw(st.booleans())
+    return_counts = draw(st.booleans())
+    return arr_dtype, arr, return_index, return_inverse, return_counts, axis
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.unique", fn_inputs=_unique_helper(), test_with_out=st.just(False)
+)
+def test_jax_numpy_unique(fn_inputs, frontend, test_flags, fn_tree, on_device):
+    arr_dtype, arr, return_index, return_inverse, return_counts, axis = fn_inputs
+    helpers.test_frontend_function(
+        input_dtypes=arr_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ar=arr[0],
+        return_index=return_index,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        axis=axis,
     )

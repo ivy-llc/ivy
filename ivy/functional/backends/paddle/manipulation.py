@@ -1,5 +1,4 @@
 # global
-import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
@@ -7,11 +6,9 @@ import paddle
 
 # local
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # noinspection PyProtectedMember
-from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
 
@@ -39,11 +36,11 @@ def concat(
         raise ivy.utils.exceptions.IvyException(
             "Tensor list contains more than two dtypes"
         )
-    if dtype == "int16":
-        xs = [array.cast("int32") for array in xs]
+    if dtype == paddle.int16:
+        xs = list(map(lambda x: x.cast("int32"), xs))
         return paddle.concat(xs, axis).cast("int16")
     else:
-        xs = [array.cast(dtype) for array in xs]
+        xs = list(map(lambda x: x.cast(dtype), xs))
         return paddle.concat(xs, axis)
 
 
@@ -214,8 +211,6 @@ def stack(
     axis: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # The input list is converted to a tensor to promote the dtypes of the elements to the same dtype.
-    # This is necessary because the stack function does not support mixed dtypes.
     dtype_list = set(map(lambda x: x.dtype, arrays))
     if len(dtype_list) == 1:
         dtype = dtype_list.pop()
@@ -350,19 +345,20 @@ def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if ivy.min(repeats) == 0:
-        # This logic is to mimic other backends behaviour when a 0 in repeat
-        # is received since paddle doesn't natively support it
-        if len(repeats) < x.ndim:
-            shape = x.shape
-            shape[-len(repeat) :] = ivy.multiply(
-                shape[-len(repeat) :], repeats
-            ).to_list()
-        elif len(repeats) > x.ndim:
-            shape = repeats
-            shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
-        else:
-            shape = ivy.multiply(x.shape, repeats).to_list()
-        return paddle.zeros(shape).cast(x.dtype)
+        with ivy.ArrayMode(False):
+            # This logic is to mimic other backends behaviour when a 0 in repeat
+            # is received since paddle doesn't natively support it
+            if len(repeats) < x.ndim:
+                shape = x.shape
+                shape[-len(repeat) :] = ivy.multiply(
+                    shape[-len(repeat) :], repeats
+                ).to_list()
+            elif len(repeats) > x.ndim:
+                shape = repeats
+                shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
+            else:
+                shape = ivy.multiply(x.shape, repeats).to_list()
+            return ivy.zeros(shape).cast(x.dtype)
 
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.tile(x.cast("float32"), repeats).cast(x.dtype)

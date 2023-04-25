@@ -45,7 +45,7 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
 
 
 def _handle_nestable_dtype_info(fn):
-    def new_fn(type):
+    def _handle_nestable_dtype_info_wrapper(type):
         if isinstance(type, ivy.Container):
             type = type.cont_map(lambda x, kc: fn(x))
             type.__dict__["max"] = type.cont_map(lambda x, kc: x.max)
@@ -53,7 +53,7 @@ def _handle_nestable_dtype_info(fn):
             return type
         return fn(type)
 
-    return new_fn
+    return _handle_nestable_dtype_info_wrapper
 
 
 # Unindent every line in the source such that
@@ -163,7 +163,6 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         # skip if it's not a function
 
         if not (inspect.isfunction(fn) or inspect.ismethod(fn)):
-
             continue
 
         fl = _get_function_list(fn)
@@ -196,7 +195,7 @@ def _get_dtypes(fn, complement=True):
         ("supported_dtypes", set.intersection, ivy.valid_dtypes),
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
-    for (key, merge_fn, base) in basic:
+    for key, merge_fn, base in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
             # only einops allowed to be a dictionary
@@ -997,7 +996,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     return current_backend(type).closest_valid_dtype(type)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def default_float_dtype(
@@ -1139,7 +1138,7 @@ def infer_default_dtype(
     return default_dtype
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_dtype(
     *,
@@ -1199,7 +1198,7 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_int_dtype(
     *,
@@ -1308,7 +1307,7 @@ def default_int_dtype(
     return ivy.IntDtype(ivy.as_ivy_dtype(ret))
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_uint_dtype(
     *,
@@ -1404,7 +1403,7 @@ def default_uint_dtype(
     return ivy.UintDtype(ivy.as_ivy_dtype(ret))
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def default_complex_dtype(
@@ -1907,7 +1906,7 @@ def is_uint_dtype(
     return "uint" in as_ivy_dtype(dtype_in)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def is_complex_dtype(
@@ -2365,15 +2364,6 @@ def promote_types_of_inputs(
 
     ivy.utils.assertions._check_jax_x64_flag(x1.dtype)
     return ivy.to_native(x1), ivy.to_native(x2)
-
-
-# global
-from typing import Union
-
-# local
-import ivy
-from ivy.utils.backend import current_backend
-from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions

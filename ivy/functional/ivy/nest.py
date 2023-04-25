@@ -1046,9 +1046,7 @@ def nested_map(
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
-
     """
-
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
@@ -1156,9 +1154,12 @@ def nested_map(
             for k, v in x.items()
         }
         if shallow:
-            x.update(**ret)
+            x.update(ret)
             return x
-        return class_instance(**ret)
+        return class_instance(ret)
+    elif isinstance(x, slice):
+        # TODO: add tests for this
+        return slice(*nested_map([x.start, x.stop, x.step], fn))
     return fn(x)
 
 

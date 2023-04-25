@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -25,10 +26,11 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_array_function
+@inputs_to_ivy_arrays
+@handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@inputs_to_ivy_arrays
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -154,7 +156,6 @@ def linear(
     )
 
     if ivy.exists(bias):
-
         # OBS x [1]*len(IBS) x OF
         bias_broadcast = ivy.reshape(
             bias, outer_batch_shape + [1] * num_inner_batch_dims + [num_out_feats]
@@ -350,7 +351,6 @@ def dropout(
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_exceptions
-@inputs_to_ivy_arrays
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -538,7 +538,6 @@ def scaled_dot_product_attention(
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
 
     if ivy.exists(mask):
-
         # BS x Q x K
         sim = ivy.where(
             ivy.logical_not(mask),
@@ -551,6 +550,9 @@ def scaled_dot_product_attention(
 
     # BS x Q x F
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
+
+
+scaled_dot_product_attention.mixed_function = True
 
 
 @handle_array_function
@@ -797,7 +799,7 @@ def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -883,6 +885,7 @@ def conv1d(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1023,7 +1026,7 @@ def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -1143,6 +1146,7 @@ def conv2d(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1407,7 +1411,7 @@ def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -1515,6 +1519,7 @@ def conv3d(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1631,7 +1636,7 @@ def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,
@@ -1698,6 +1703,7 @@ def conv_general_dilated(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1769,6 +1775,7 @@ def conv_general_transpose(
     )
 
 
+@inputs_to_native_shapes
 @handle_array_function
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -2003,3 +2010,27 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
             return "NCDHW"
         else:
             return "NDHWC"
+
+
+def _get_num_padded_values(i, p, n, k, s):
+    """
+    Get number of padded values in a specific window.
+
+    Parameters
+    ----------
+    i window index
+    p total amount of padding
+    n input size
+    k kernel size
+    s stride
+
+    Returns
+    -------
+        number of padded values in a particular window represented by i
+
+    """
+    current_index = s * i
+    left_padding = p // 2
+    return max(0, left_padding - current_index) + max(
+        0, current_index + k - n - left_padding
+    )

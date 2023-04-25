@@ -1,25 +1,42 @@
-# flake8: noqa
-
-from ivy import (
-    uint8,
-    int8,
-    int16,
-    int32,
-    int64,
-    float16,
-    float32,
-    float64,
-    bfloat16,
-    bool,
-    complex64,
-    complex128,
-)
 import ivy
 from ivy.utils.exceptions import handle_exceptions
 
 # global
 from numbers import Number
 from typing import Union, Tuple, Iterable
+
+# Constructing dtypes are required as ivy.<dtype>
+# will change dynamically on the backend and may not be available
+int8 = ivy.IntDtype("int8")
+int16 = ivy.IntDtype("int16")
+int32 = ivy.IntDtype("int32")
+int64 = ivy.IntDtype("int64")
+uint8 = ivy.UintDtype("uint8")
+bfloat16 = ivy.FloatDtype("bfloat16")
+float16 = ivy.FloatDtype("float16")
+float32 = ivy.FloatDtype("float32")
+float64 = ivy.FloatDtype("float64")
+complex64 = ivy.ComplexDtype("complex64")
+complex128 = ivy.ComplexDtype("complex128")
+bool = ivy.Dtype("bool")
+
+# Constructing dtypes are required as ivy.<dtype>
+# will change dynamically on the backend and may not be available
+int8 = ivy.IntDtype("int8")
+int16 = ivy.IntDtype("int16")
+int32 = ivy.IntDtype("int32")
+int64 = ivy.IntDtype("int64")
+uint8 = ivy.UintDtype("uint8")
+uint16 = ivy.UintDtype("uint16")
+uint32 = ivy.UintDtype("uint32")
+uint64 = ivy.UintDtype("uint64")
+bfloat16 = ivy.FloatDtype("bfloat16")
+float16 = ivy.FloatDtype("float16")
+float32 = ivy.FloatDtype("float32")
+float64 = ivy.FloatDtype("float64")
+complex64 = ivy.ComplexDtype("complex64")
+complex128 = ivy.ComplexDtype("complex128")
+bool = ivy.Dtype("bool")
 
 # type aliases
 char = int8
@@ -222,26 +239,16 @@ def promote_types_of_torch_inputs(
     otherwise it might give unexpected results.
     """
     # Ignore type of 0-dim arrays to mimic torch
-    if (
-        hasattr(x1, "shape")
-        and x1.shape == ()
-        and not (hasattr(x2, "shape") and x2.shape == ())
-    ):
-        x1 = ivy.to_scalar(x1[()])
-    if (
-        hasattr(x2, "shape")
-        and x2.shape == ()
-        and not (hasattr(x1, "shape") and x1.shape == ())
-    ):
-        x2 = ivy.to_scalar(x2[()])
+    x1 = ivy.asarray(x1)
+    x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
+    if not x1.shape == () and x2.shape == () and type1 == type2:
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
-    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+    elif x1.shape == () and not x2.shape == () and type1 == type2:
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
@@ -285,5 +292,7 @@ from .tensor_functions import *
 from . import utilities
 from .utilities import *
 from . import linalg
+from . import func
+from .func import *
 
 _frontend_array = tensor

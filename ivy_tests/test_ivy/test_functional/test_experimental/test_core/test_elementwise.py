@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 
 # local
 import ivy
@@ -971,9 +971,8 @@ def test_gradient(
 @handle_test(
     fn_tree="functional.ivy.experimental.xlogy",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float16", "float32", "float64"],
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=2,
-        shared_dtype=False,
         min_value=-10,
         max_value=10,
         min_num_dims=1,
@@ -1113,7 +1112,6 @@ def test_conj(
     on_device,
     ground_truth_backend,
 ):
-
     input_dtype, x = dtype_and_x
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -1178,6 +1176,46 @@ def test_ldexp(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# lerp
+@handle_test(
+    fn_tree="functional.ivy.experimental.lerp",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=3,
+        shared_dtype=True,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+        allow_nan=False,
+        allow_inf=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_lerp(
+    *,
+    dtype_and_input,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, inputs = dtype_and_input
+    start, end, weight = inputs
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        atol_=1e-01,
+        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        input=start,
+        end=end,
+        weight=weight,
     )
 
 

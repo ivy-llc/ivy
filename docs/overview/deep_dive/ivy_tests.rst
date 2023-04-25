@@ -158,7 +158,7 @@ To briefly describe -:
   This is best used when a sequence of varying lengths is required to be generated, with elements that are described by other strategies.
 
 Writing your own strategy
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 We will not be covering all of the strategies that Hypothesis provide, but to give you a glance of what they're capable of, we will briefly
 explain some of the stratigies and write a new strategy to be used later for testing. Read more about strategies on Hypothesis docs. #TODO add link
 

@@ -904,7 +904,6 @@ def test_torch_tensorinv(
     frontend,
     test_flags,
 ):
-
     dtype, x, ind = dtype_input_ind
     helpers.test_frontend_function(
         input_dtypes=dtype,

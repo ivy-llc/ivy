@@ -8,7 +8,7 @@ from typing import Optional
 
 # local
 import ivy
-from .conversions import *
+from .conversions import args_to_native, to_ivy
 from .activations import _ArrayWithActivations
 from .creation import _ArrayWithCreation
 from .data_type import _ArrayWithDataTypes
@@ -148,10 +148,11 @@ class Array(
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
             )
-        self._shape = self._data.shape
         self._size = (
             functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         )
+        self._itemsize = ivy.itemsize(self._data)
+        self._strides = ivy.strides(self._data)
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.as_ivy_dev(self._device)
@@ -167,14 +168,12 @@ class Array(
             self._dynamic_backend = ivy.get_dynamic_backend()
 
     def _view_attributes(self, data):
-        if hasattr(data, "base"):
-            self._base = data.base
-        elif hasattr(data, "_base"):
-            self._base = data._base
-        else:
-            self._base = None
+        self._base = None
         self._view_refs = []
         self._manipulation_stack = []
+        self._torch_base = None
+        self._torch_view_refs = []
+        self._torch_manipulation = None
 
     # Properties #
     # ---------- #
@@ -245,17 +244,27 @@ class Array(
     @property
     def ndim(self) -> int:
         """Number of array dimensions (axes)."""
-        return len(tuple(self._shape))
+        return len(tuple(self._data.shape))
 
     @property
     def shape(self) -> ivy.Shape:
         """Array dimensions."""
-        return ivy.Shape(self._shape)
+        return ivy.Shape(self._data.shape)
 
     @property
     def size(self) -> Optional[int]:
         """Number of elements in the array."""
         return self._size
+
+    @property
+    def itemsize(self) -> Optional[int]:
+        """Size of array elements in bytes."""
+        return self._itemsize
+
+    @property
+    def strides(self) -> Optional[int]:
+        """Strides across each dimension."""
+        return self._strides
 
     @property
     def T(self) -> ivy.Array:
@@ -270,6 +279,11 @@ class Array(
         """
         ivy.utils.assertions.check_equal(len(self._data.shape), 2)
         return ivy.matrix_transpose(self._data)
+
+    @property
+    def base(self) -> ivy.Array:
+        """Original array referenced by view"""
+        return self._base
 
     # Setters #
     # --------#
@@ -332,7 +346,7 @@ class Array(
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
-        if self.backend == "":
+        if self.backend == "" or ivy.is_local():
             # If the array was constructed using implicit backend
             backend = ivy.current_backend()
         else:
@@ -352,6 +366,9 @@ class Array(
     def __dir__(self):
         return self._data.__dir__()
 
+    def __getattribute__(self, item):
+        return super().__getattribute__(item)
+
     def __getattr__(self, item):
         try:
             attr = self._data.__getattribute__(item)
@@ -368,7 +385,7 @@ class Array(
             if ivy.current_backend_str() == "torch":
                 self._data = self._data.detach()
             self._data.__setitem__(query, val)
-        except (AttributeError, TypeError):
+        except (AttributeError, TypeError, ValueError):
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
             self._dtype = ivy.dtype(self._data)
 

@@ -144,7 +144,6 @@ def inv(
     adjoint: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
         return x
     else:
@@ -173,13 +172,13 @@ def matmul(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if transpose_a:
-        x1 = jnp.transpose(x1)
+        x1 = jnp.swapaxes(x1, -1, -2)
     if transpose_b:
-        x2 = jnp.transpose(x2)
+        x2 = jnp.swapaxes(x2, -1, -2)
     if adjoint_a:
-        x1 = jnp.transpose(jnp.conjugate(x1))
+        x1 = jnp.swapaxes(jnp.conjugate(x1), -1, -2)
     if adjoint_b:
-        x2 = jnp.transpose(jnp.conjugate(x2))
+        x2 = jnp.swapaxes(jnp.conjugate(x2), -1, -2)
     return jnp.matmul(x1, x2)
 
 
@@ -400,7 +399,6 @@ def solve(
 def svd(
     x: JaxArray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[JaxArray, Tuple[JaxArray, ...]]:
-
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
         U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)

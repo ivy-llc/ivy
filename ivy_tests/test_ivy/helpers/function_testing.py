@@ -5,6 +5,7 @@ import numpy as np
 import types
 import importlib
 import inspect
+from collections import OrderedDict
 
 try:
     import jsonpickle
@@ -51,10 +52,6 @@ from ivy.functional.ivy.gradients import _variable
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
-from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
-from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
-from ivy.functional.frontends.jax.devicearray import DeviceArray
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 from .assertions import (
     value_test,
     check_unsupported_dtype,
@@ -905,7 +902,10 @@ def test_frontend_function(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret, frontend_ret
+        return (
+            ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True}),
+            frontend_ret,
+        )
 
     if isinstance(rtol, dict):
         rtol = _get_framework_rtol(rtol, ivy.backend)
@@ -1194,8 +1194,8 @@ def test_method(
         for v, d in zip(init_flags.as_variable, init_input_dtypes)
     ]
 
-    # Create Args
-    args_constructor, kwargs_constructor, *_ = create_args_kwargs(
+    # Save original constructor data for inplace operations
+    con_data = OrderedDict(
         args_np=args_np_constructor,
         arg_np_vals=con_arg_np_vals,
         args_idxs=con_args_idxs,
@@ -1206,6 +1206,10 @@ def test_method(
         test_flags=init_flags,
         on_device=on_device,
     )
+    org_con_data = copy.deepcopy(con_data)
+
+    # Create Args
+    args_constructor, kwargs_constructor = create_args_kwargs(**con_data)
     # end constructor #
 
     # method arguments #
@@ -1291,14 +1295,10 @@ def test_method(
         process = ground_truth_backend[1]
         try:
             process.stdin.write("3" + "\n")
-            process.stdin.write(jsonpickle.dumps(args_np_constructor) + "\n")
-            process.stdin.write(jsonpickle.dumps(con_arg_np_vals) + "\n")
-            process.stdin.write(jsonpickle.dumps(con_args_idxs) + "\n")
-            process.stdin.write(jsonpickle.dumps(kwargs_np_constructor) + "\n")
-            process.stdin.write(jsonpickle.dumps(con_kwarg_np_vals) + "\n")
-            process.stdin.write(jsonpickle.dumps(con_kwargs_idxs) + "\n")
-            process.stdin.write(jsonpickle.dumps(init_input_dtypes) + "\n")
-            process.stdin.write(jsonpickle.dumps(init_flags) + "\n")
+            # constructor
+            for arg in list(org_con_data.values())[:-1]:
+                process.stdin.write(jsonpickle.dumps(arg) + "\n")
+            # method
             process.stdin.write(jsonpickle.dumps(args_np_method) + "\n")
             process.stdin.write(jsonpickle.dumps(met_arg_np_vals) + "\n")
             process.stdin.write(jsonpickle.dumps(met_args_idxs) + "\n")
@@ -1333,17 +1333,7 @@ def test_method(
     else:
         ivy.set_backend(ground_truth_backend)
         ivy.set_default_device(on_device)
-        args_gt_constructor, kwargs_gt_constructor = create_args_kwargs(
-            args_np=args_np_constructor,
-            arg_np_vals=con_arg_np_vals,
-            args_idxs=con_args_idxs,
-            kwargs_np=kwargs_np_constructor,
-            kwarg_np_vals=con_kwarg_np_vals,
-            kwargs_idxs=con_kwargs_idxs,
-            input_dtypes=init_input_dtypes,
-            test_flags=init_flags,
-            on_device=on_device,
-        )
+        args_gt_constructor, kwargs_gt_constructor = create_args_kwargs(**org_con_data)
         args_gt_method, kwargs_gt_method = create_args_kwargs(
             args_np=args_np_method,
             arg_np_vals=met_arg_np_vals,
@@ -2051,12 +2041,7 @@ def gradient_unsupported_dtypes(*, fn):
 
 
 def _is_frontend_array(x):
-    return (
-        isinstance(x, ndarray)
-        or isinstance(x, torch_tensor)
-        or isinstance(x, tf_tensor)
-        or isinstance(x, DeviceArray)
-    )
+    return hasattr(x, "ivy_array")
 
 
 def _frontend_array_to_ivy(x):

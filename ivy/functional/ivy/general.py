@@ -30,8 +30,9 @@ from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
-    outputs_to_ivy_arrays,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
+    outputs_to_ivy_shapes,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -95,6 +96,33 @@ def _parse_ellipsis(so, ndims):
         + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
         + list(reversed(post))
     )
+
+
+def _parse_index(indices, shape):
+    ind = list()
+    for so in indices:
+        pre = list()
+        for s in so:
+            if s == -1:
+                pre.append(shape[len(pre) :][0] - 1)
+                break
+            pre.append(s.numpy())
+        post = list()
+        for s in reversed(so):
+            if s == -1:
+                break
+            post.append(s.numpy())
+        ind.append(
+            tuple(
+                pre
+                + [
+                    slice(None, None, None)
+                    for _ in range(len(shape) - len(pre) - len(post))
+                ]
+                + list(reversed(post))
+            )
+        )
+    return ind
 
 
 def get_referrers_recursive(
@@ -611,7 +639,7 @@ def array_equal(
 
 
 @handle_array_function
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def all_equal(
@@ -904,7 +932,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 
 
 @handle_array_function
-@outputs_to_ivy_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def clip_vector_norm(
@@ -993,6 +1021,7 @@ def clip_vector_norm(
     return ret
 
 
+@inputs_to_ivy_arrays
 @handle_array_function
 @handle_nestable
 @handle_exceptions
@@ -1075,7 +1104,7 @@ def clip_matrix_norm(
 
 
 @handle_array_function
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1237,7 +1266,7 @@ def value_is_nan(
     x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
     if not x_scalar == x:
         return True
-    if include_infs and x_scalar == INF or x_scalar == -INF:
+    if include_infs and (x_scalar == INF or x_scalar == -INF):
         return True
     return False
 
@@ -1511,7 +1540,9 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
 
 
 @handle_exceptions
-def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape:
+def to_native_shape(
+    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list]
+) -> ivy.NativeShape:
     """
     Returns the input shape in its native backend framework form
 
@@ -1528,13 +1559,23 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
     """
     if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
         return shape
-    ivy.utils.assertions.check_isinstance(shape, (int, list, tuple))
+    ivy.utils.assertions.check_isinstance(
+        shape, (int, list, tuple, ivy.Array, ivy.Shape)
+    )
     if isinstance(shape, int):
         shape = (shape,)
     elif isinstance(shape, list):
         shape = tuple(shape)
+    elif isinstance(shape, ivy.Array):
+        shape = ivy.to_native(shape)
+    elif isinstance(shape, ivy.Shape):
+        shape = shape.shape
     ivy.utils.assertions.check_all(
-        [isinstance(v, int) for v in shape], "shape must take integers only"
+        [isinstance(v, int) for v in shape if not is_array(v)],
+        "shape must take integers only",
+    )
+    ivy.utils.assertions.check_true(
+        not is_array(shape) or ivy.is_int_dtype(shape), "shape must take integers only"
     )
     return ivy.NativeShape(shape) if len(backend_stack) != 0 else ivy.Shape(shape)
 
@@ -1761,7 +1802,7 @@ def current_backend_str() -> Union[str, None]:
 
 
 @handle_array_function
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1878,7 +1919,7 @@ def einops_rearrange(
     >>> print(x.shape)
     (32, 15, 20, 12)
     """
-    ret = einops.rearrange(x, pattern, **axes_lengths)
+    ret = einops.rearrange(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -1886,7 +1927,7 @@ def einops_rearrange(
 
 
 @handle_array_function
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1960,7 +2001,7 @@ einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @handle_array_function
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -2020,7 +2061,7 @@ def einops_repeat(
     }
 
     """
-    ret = einops.repeat(x, pattern, **axes_lengths)
+    ret = einops.repeat(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -2499,7 +2540,7 @@ def inplace_variables_supported() -> bool:
 
 
 @handle_array_function
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
@@ -2635,6 +2676,8 @@ def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     query: Union[ivy.Array, ivy.NativeArray, Tuple],
+    *,
+    copy: Optional[bool] = None,
 ) -> ivy.Array:
     """
      Gather slices from x according to query array, identical to x[query].
@@ -2665,7 +2708,7 @@ def get_item(
     ivy.array([  4,  -2, -10])
 
     """
-    return current_backend(x).get_item(x, query)
+    return current_backend(x).get_item(x, query, copy=copy)
 
 
 @handle_array_function
@@ -2987,6 +3030,7 @@ def scatter_flat(
     )
 
 
+@inputs_to_native_shapes
 @handle_array_function
 @to_native_arrays_and_back
 @handle_nestable
@@ -3279,6 +3323,7 @@ def multiprocessing(context: Optional[str] = None):
 
 @handle_array_function
 @to_native_arrays_and_back
+@outputs_to_ivy_shapes
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -3787,3 +3832,63 @@ def isin(
     return ivy.current_backend().isin(
         elements, test_elements, assume_unique=assume_unique, invert=invert
     )
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def itemsize(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> int:
+    """Returns the size of the input array's elements.
+
+    Parameters
+    ----------
+    x
+       The input array.
+
+    Returns
+    -------
+    ret
+        An integer specifying the element size in bytes.
+
+    Examples
+    --------
+    >>> x = ivy.array([1,2,3], dtype=ivy.float64)
+    >>> ivy.itemsize(x)
+    8
+
+    >>> x = ivy.array([1,2,3], dtype=ivy.complex128)
+    >>> ivy.itemsize(x)
+    16
+    """
+    return ivy.current_backend().itemsize(x)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def strides(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> Tuple[int]:
+    """Returns the input array's strides across each dimension.
+
+    Parameters
+    ----------
+    x
+       The input array.
+
+    Returns
+    -------
+    ret
+        A tuple containing the strides.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1, 5, 9], [2, 6, 10]])
+    >>> ivy.strides(x)
+    (4, 8)
+    """
+    return ivy.current_backend().strides(x)

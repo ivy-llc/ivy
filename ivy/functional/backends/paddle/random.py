@@ -41,13 +41,12 @@ def random_uniform(
     high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
     shape = _check_bounds_and_get_shape(low, high, shape)
     # Set range and seed
-    range = high - low
+    rng = high - low
     if seed:
         _ = paddle.seed(seed)
-    return to_device(
-        paddle.cast(paddle.uniform(shape, min=0.0, max=1.0) * range + low, dtype),
-        device,
-    )
+    random_base = paddle.uniform(shape, min=0.0, max=1.0)
+    with ivy.ArrayMode(False):
+        return ivy.add(ivy.multiply(random_base, rng), low).cast(dtype)
 
 
 def random_normal(

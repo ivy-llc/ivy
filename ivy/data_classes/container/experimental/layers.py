@@ -426,6 +426,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -450,6 +452,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
             indicating the per-dimension paddings.
         data_format
             NWC" or "NCW". Defaults to "NWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
         out
             optional output array, for writing the result to.
 
@@ -478,6 +484,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -493,6 +501,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -517,6 +527,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
             indicating the per-dimension paddings.
         data_format
             NWC" or "NCW". Defaults to "NWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
         out
             optional output array, for writing the result to.
 
@@ -544,6 +558,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -560,6 +576,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -583,6 +602,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as divisor,
+            otherwise kernel_size will be used.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -610,6 +636,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -625,6 +654,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -648,6 +680,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as divisor,
+            otherwise kernel_size will be used.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -674,6 +713,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -690,6 +732,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -713,6 +758,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as the divisor, otherwise
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -743,6 +794,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -758,6 +812,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -781,6 +838,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as the divisor, otherwise
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -810,6 +873,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
