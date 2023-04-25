@@ -140,8 +140,7 @@ def ints(
     safety_factor=1.1,
     safety_factor_scale=None,
 ):
-    """Draws an arbitrarily sized list of integers with a safety factor
-    applied to values if a safety scale is specified.
+    """Draws an integer with a safety factor if specified.
 
     Parameters
     ----------
