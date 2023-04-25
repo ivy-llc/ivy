@@ -17,8 +17,10 @@ FN_DECORATORS = [
     "handle_array_function",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
+    "outputs_to_ivy_shapes",
     "outputs_to_native_arrays",
     "inputs_to_native_arrays",
+    "inputs_to_native_shapes",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
     "handle_view_indexing",
@@ -314,6 +316,38 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
     _inputs_to_ivy_arrays.inputs_to_ivy_arrays = True
     return _inputs_to_ivy_arrays
+
+
+def inputs_to_native_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        ivy_shape_idxs = ivy.nested_argwhere(
+            [args, kwargs], lambda x: isinstance(x, ivy.Shape)
+        )
+        ivy_shapes = ivy.multi_index_nest([args, kwargs], ivy_shape_idxs)
+        native_shapes = [ivy.to_native_shape(shape) for shape in ivy_shapes]
+        args, kwargs = ivy.set_nest_at_indices(
+            [args, kwargs], ivy_shape_idxs, native_shapes, shallow=False
+        )
+        return fn(*args, **kwargs)
+
+    new_fn.inputs_to_native_shapes = True
+    return new_fn
+
+
+def outputs_to_ivy_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        native_shape_idxs = ivy.nested_argwhere(
+            [args, kwargs], lambda x: isinstance(x, ivy.NativeShape)
+        )
+        native_shapes = ivy.multi_index_nest([args, kwargs], native_shape_idxs)
+        ivy_shapes = ivy.to_ivy(native_shapes)
+        ivy.set_nest_at_indices([args, kwargs], native_shape_idxs, ivy_shapes)
+        return fn(*args, **kwargs)
+
+    new_fn.outputs_to_ivy_shapes = True
+    return new_fn
 
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
