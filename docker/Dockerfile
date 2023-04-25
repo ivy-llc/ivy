@@ -2,7 +2,7 @@ FROM debian:buster
 WORKDIR /ivy
 ARG CLI
 # python version for conda
-ARG pycon=3.9
+ARG pycon=3.8.10
 ## Install Docker CE CLI
 #RUN if [ "$CLI" = "True" ]; then apt-get update \
 #    && apt-get install -y apt-transport-https ca-certificates curl gnupg2 lsb-release \
