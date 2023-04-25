@@ -121,7 +121,6 @@ def tril_indices(
     *,
     device: torch.device,
 ) -> Tuple[torch.Tensor, ...]:
-
     n_cols = n_rows if n_cols is None else n_cols
 
     if n_rows <= 0 or n_cols <= 0:

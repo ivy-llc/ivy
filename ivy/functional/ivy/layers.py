@@ -155,7 +155,6 @@ def linear(
     )
 
     if ivy.exists(bias):
-
         # OBS x [1]*len(IBS) x OF
         bias_broadcast = ivy.reshape(
             bias, outer_batch_shape + [1] * num_inner_batch_dims + [num_out_feats]
@@ -351,7 +350,6 @@ def dropout(
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_exceptions
-@inputs_to_ivy_arrays
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -539,7 +537,6 @@ def scaled_dot_product_attention(
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
 
     if ivy.exists(mask):
-
         # BS x Q x K
         sim = ivy.where(
             ivy.logical_not(mask),
@@ -552,6 +549,9 @@ def scaled_dot_product_attention(
 
     # BS x Q x F
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
+
+
+scaled_dot_product_attention.mixed_function = True
 
 
 @handle_array_function

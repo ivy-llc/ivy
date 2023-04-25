@@ -907,6 +907,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         ivy.Container static method variant of ivy.cov. This method simply wraps the
         function, and so the docstring for ivy.cov also applies to this method
         with minimal changes.
+
         Parameters
         ----------
         x1
@@ -951,6 +952,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -959,6 +961,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             floating-point data type determined by Type Promotion Rules and must be
             a square matrix of shape (N, N), where N is the number of rows in the
             input(s).
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -1020,6 +1023,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.cov. This method simply wraps
         the function, and so the docstring for ivy.cov also applies to this method
         with minimal changes.
+
         Parameters
         ----------
         self
@@ -1064,6 +1068,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -1072,6 +1077,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             floating-point data type determined by Type Promotion Rules and must be
             a square matrix of shape (N, N), where N is the number of variables in the
             input(s).
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
