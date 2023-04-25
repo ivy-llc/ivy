@@ -586,8 +586,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import tensorflow as tf
+    import torch
 
-    # ToDo: Write tf to torch function
+    def loss(predictions, targets):
+        return tf.sqrt(tf.reduce_mean(tf.square(predictions - targets)))
+
+    # transpile any function from tf to torch
+    torch_loss = ivy.transpile(loss, source="tensorflow", to="torch")
+
+    # get some arrays
+    p = torch.tensor([3.0, 2.0, 1.0])
+    t = torch.tensor([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = torch_loss(p, t)
 
 .. raw:: html
 
@@ -598,8 +611,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import jax.numpy as jnp
+    import torch
 
-    # ToDo: Write jax to torch function
+    def loss(predictions, targets):
+        return jnp.sqrt(jnp.mean((predictions - targets) ** 2))
+
+    # transpile any function from jax to torch
+    torch_loss = ivy.transpile(loss, source="jax", to="torch")
+
+    # get some arrays
+    p = torch.tensor([3.0, 2.0, 1.0])
+    t = torch.tensor([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = torch_loss(p, t)
 
 .. raw:: html
 
@@ -610,8 +636,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import numpy as np
+    import torch
 
-    # ToDo: Write numpy to torch function
+    def loss(predictions, targets):
+        return np.sqrt(np.mean((predictions - targets) ** 2))
+
+    # transpile any function from numpy to torch
+    torch_loss = ivy.transpile(loss, source="numpy", to="torch")
+
+    # get some arrays
+    p = torch.tensor([3.0, 2.0, 1.0])
+    t = torch.tensor([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = torch_loss(p, t)
 
 .. raw:: html
 
@@ -797,8 +836,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import torch
+    import tensorflow as tf
 
-    # ToDo: Write torch to tf function
+    def loss(predictions, targets):
+        return torch.sqrt(torch.mean((predictions - targets) ** 2))
+
+    # transpile any function from torch to tensorflow
+    tf_loss = ivy.transpile(loss, source="torch", to="tensorflow")
+
+    # get some arrays
+    p = tf.constant([3.0, 2.0, 1.0])
+    t = tf.constant([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = tf_loss(p, t)
 
 .. raw:: html
 
@@ -809,8 +861,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import jax.numpy as jnp
+    import tensorflow as tf
 
-    # ToDo: Write jax to tf function
+    def loss(predictions, targets):
+        return jnp.sqrt(jnp.mean((predictions - targets) ** 2))
+
+    # transpile any function from jax to tensorflow
+    tf_loss = ivy.transpile(loss, source="jax", to="tensorflow")
+
+    # get some arrays
+    p = tf.constant([3.0, 2.0, 1.0])
+    t = tf.constant([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = tf_loss(p, t)
 
 .. raw:: html
 
@@ -821,8 +886,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import numpy as np
+    import tensorflow as tf
 
-    # ToDo: Write numpy to tf function
+    def loss(predictions, targets):
+        return np.sqrt(np.mean((predictions - targets) ** 2))
+
+    # transpile any function from numpy to tensorflow
+    tf_loss = ivy.transpile(loss, source="numpy", to="tensorflow")
+
+    # get some arrays
+    p = tf.constant([3.0, 2.0, 1.0])
+    t = tf.constant([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = tf_loss(p, t)
 
 .. raw:: html
 
@@ -1023,8 +1101,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import torch
+    import jax.numpy as jnp
 
-    # ToDo: Write torch to jax function
+    def loss(predictions, targets):
+        return torch.sqrt(torch.mean((predictions - targets) ** 2))
+
+    # transpile any function from torch to jax
+    jax_loss = ivy.transpile(loss, source="torch", to="jax")
+
+    # get some arrays
+    p = jnp.array([3.0, 2.0, 1.0])
+    t = jnp.array([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = jax_loss(p, t)
 
 .. raw:: html
 
@@ -1035,8 +1126,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import tensorflow as tf
+    import jax.numpy as jnp
 
-    # ToDo: Write tf to jax function
+    def loss(predictions, targets):
+        return tf.sqrt(tf.reduce_mean(tf.square(predictions - targets)))
+
+    # transpile any function from tf to jax
+    jax_loss = ivy.transpile(loss, source="tensorflow", to="jax")
+
+    # get some arrays
+    p = jnp.array([3.0, 2.0, 1.0])
+    t = jnp.array([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = jax_loss(p, t)
 
 .. raw:: html
 
@@ -1047,8 +1151,23 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import numpy as np
+    import jax
+    import jax.numpy as jnp
+    jax.config.update('jax_enable_x64', True)
 
-    # ToDo: Write numpy to jax function
+    def loss(predictions, targets):
+        return np.sqrt(np.mean((predictions - targets) ** 2))
+
+    # transpile any function from numpy to jax
+    jax_loss = ivy.transpile(loss, source="numpy", to="jax")
+
+    # get some arrays
+    p = jnp.array([3.0, 2.0, 1.0])
+    t = jnp.array([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = jax_loss(p, t)
 
 .. raw:: html
 
@@ -1151,8 +1270,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import torch
+    import numpy as np
 
-    # ToDo: Write torch to np function
+    def loss(predictions, targets):
+        return torch.sqrt(torch.mean((predictions - targets) ** 2))
+
+    # transpile any function from torch to numpy
+    np_loss = ivy.transpile(loss, source="torch", to="numpy")
+
+    # get some arrays
+    p = np.array([3.0, 2.0, 1.0])
+    t = np.array([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = np_loss(p, t)
 
 .. raw:: html
 
@@ -1163,8 +1295,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import tensorflow as tf
+    import numpy as np
 
-    # ToDo: Write tf to np function
+    def loss(predictions, targets):
+        return tf.sqrt(tf.reduce_mean(tf.square(predictions - targets)))
+
+    # transpile any function from tf to numpy
+    np_loss = ivy.transpile(loss, source="tensorflow", to="numpy")
+
+    # get some arrays
+    p = np.array([3.0, 2.0, 1.0])
+    t = np.array([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = np_loss(p, t)
 
 .. raw:: html
 
@@ -1175,8 +1320,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import jax.numpy as jnp
+    import numpy as np
 
-    # ToDo: Write jax to np function
+    def loss(predictions, targets):
+        return jnp.sqrt(jnp.mean((predictions - targets) ** 2))
+
+    # transpile any function from jax to numpy
+    np_loss = ivy.transpile(loss, source="jax", to="numpy")
+
+    # get some arrays
+    p = np.array([3.0, 2.0, 1.0])
+    t = np.array([0.0, 0.0, 0.0])
+
+    # and use the transpiled version!
+    out = np_loss(p, t)
 
 .. raw:: html
 
