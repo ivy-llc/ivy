@@ -83,20 +83,6 @@ def test_batch_norm_2d_layer(
     method_flags,
 ):
     input_dtype, x = dtype_and_x
-    prints = (
-        {
-            "inputs": x,
-            "num_features": x[0].shape[1],
-            "eps": ivy._MIN_BASE,
-            "affine": True,
-            "momentum": momentum,
-            "track_running_stats": True,
-            "device": on_device,
-            "dtype": input_dtype[0],
-        },
-    )
-    print()
-    print(prints)
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
