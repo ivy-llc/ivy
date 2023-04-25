@@ -408,12 +408,17 @@ class ndarray:
     def __int__(
         self,
     ):
-        return ivy.array(ivy.reshape(self.ivy_array, -1), dtype=ivy.int64)[0]
+        return ivy.array(ivy.reshape(self.ivy_array, (-1,)), dtype=ivy.int64)[0]
 
     def __float__(
         self,
     ):
-        return ivy.array(ivy.reshape(self.ivy_array, -1), dtype=ivy.float64)[0]
+        return ivy.array(ivy.reshape(self.ivy_array, (-1,)), dtype=ivy.float64)[0]
+
+    def __complex__(
+        self,
+    ):
+        return ivy.array(ivy.reshape(self.ivy_array, (-1,)), dtype=ivy.complex128)[0]
 
     def __contains__(self, key, /):
         return key in ivy.reshape(self.ivy_array, -1)
