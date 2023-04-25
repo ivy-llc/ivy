@@ -202,7 +202,117 @@ def gather_nd(
     batch_dims: Optional[int] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    """gather_nd implementation with batch support."""
+    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    if not isinstance(batch_dims, int):
+        raise TypeError(f"Argument `batch_dims` must be an int; got {batch_dims}")
+    if batch_dims < 0:
+        raise ValueError("tf.gather_nd does not allow negative batch_dims.")
+    params_ndims = params.ndim
+    indices_ndims = indices.ndim
+    if indices_ndims is not None and batch_dims >= indices_ndims:
+        raise ValueError(
+            f"Argument `batch_dims` = {batch_dims} must be "
+            f"less than rank(`indices`) = {indices_ndims}"
+        )
+    if params_ndims is not None and batch_dims >= params_ndims:
+        raise ValueError(
+            f"Argument `batch_dims` = {batch_dims} must be "
+            f"less than rank(`params`) = {params_ndims}"
+        )
+    with ivy.ArrayMode(False):
+        expand = batch_dims == 0
+        if expand:
+            # Normally gather_nd will be called when batch_dims == 0.
+            # But if this function is called with batch_dims = 0, e.g. for testing
+            # purposes, this adds a dummy batch dimension to make batch_dims = 1.
+            params = ivy.expand_dims(params, axis=0)
+            indices = ivy.expand_dims(indices, axis=0)
+            batch_dims = 1
+
+        params_shape = paddle.to_tensor(params.shape)
+        indices_shape = indices.shape
+        batch_shape = params_shape[:batch_dims]
+        batch_size = paddle.prod(batch_shape, [0])
+        index_internal_ndims = indices.ndim - batch_dims - 1
+        indices_internal_shape = indices_shape[batch_dims:-1]
+
+        # Assuming a 'params' with shape [b1, ..., bM, g1, ..., gN] and an 'indices'
+        # with shape [b1, ..., bM, i1, ..., iK, C], where C <= N, we need to modify
+        # 'indices' s.t. it has shape [i1, ..., iK, D], where D <= M + N and slices
+        # to the entire 'params' tensor.
+        # Assuming we have a batch of shape [B1, B2], we use meshgrid to create a
+        # grid of size B1 x B2.
+        batch_dim_list = ivy.unstack(batch_shape, axis=0)
+        dim_ranges = [
+            ivy.arange(0, x.item(), 1, dtype=indices.dtype) for x in batch_dim_list
+        ]
+        if dim_ranges:
+            if len(dim_ranges) > 1:
+                mesh_list = ivy.meshgrid(*dim_ranges, indexing="ij")
+            else:
+                mesh_list = dim_ranges
+        else:
+            mesh_list = []
+        # Then we flatten and stack the tensors to form a (B1.B2) by 2 matrix.
+        flat_list = [ivy.reshape(x, shape=(-1,)) for x in mesh_list]
+        stacked_list = ivy.stack(flat_list, axis=0)
+        index_grid = ivy.permute_dims(
+            stacked_list, axes=[axis for axis in range(stacked_list.ndim)][::-1]
+        )
+        # We need to concatenate these batch coordinates with the internal indices.
+        # concat -> index_grid [B1.B2, 2] with indices [i1, ..., iK, C]
+        # So we reshape them both to [(B1.B2), i1, ..., iK, *]
+        index_grid_shape = index_grid.shape
+        index_grid = ivy.reshape(
+            index_grid,
+            index_grid_shape[:1]
+            + [
+                1,
+            ]
+            * index_internal_ndims
+            + index_grid_shape[1:],
+        )
+        tile_shape = (
+            [
+                1,
+            ]
+            + indices_internal_shape
+            + [
+                1,
+            ]
+        )
+        index_grid = ivy.tile(index_grid, repeats=paddle.to_tensor(tile_shape))
+        # index_grid now has shape [(B1.B2), i1, ..., iK, 2]
+        flat_shape = [batch_size] + indices_shape[batch_dims:]
+        flat_indices = ivy.reshape(indices, shape=flat_shape)
+        # flat_indices now has shape [(B1.B2), i1, ..., iK, C]
+        indices = ivy.concat((index_grid, flat_indices), axis=-1)
+        # indices has shape [(B1.B2), i1, ..., iK, 2+C]
+        if params.dtype in [
+            paddle.int8,
+            paddle.float16,
+            paddle.complex64,
+            paddle.complex128,
+        ]:
+            if paddle.is_complex(params):
+                out = paddle.complex(
+                    paddle.gather_nd(params.real(), indices),
+                    paddle.gather_nd(params.imag(), indices),
+                )
+            else:
+                out = paddle.gather_nd(params.cast("float32"), indices).cast(
+                    params.dtype
+                )
+        else:
+            out = paddle.gather_nd(params, indices)
+        # out has shape [(B1.B2), i1, ..., iK, N-C]. Now we reshape batch to
+        # its original form.
+        out_shape = out.shape
+        out = ivy.reshape(out, shape=batch_shape.tolist() + out_shape[1:])
+        if expand:
+            out = ivy.squeeze(out, axis=0)
+        return out
 
 
 @with_unsupported_device_and_dtypes(
@@ -228,12 +338,12 @@ def inplace_decrement(
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native -= val_native
     if ivy.is_ivy_array(x):
-        x.data = x_native
+        target = x.data
     else:
-        x = ivy.Array(x_native)
-    return x
+        target = x
+    with ivy.ArrayMode(False):
+        return paddle.assign(ivy.subtract(x_native, val_native), target)
 
 
 @with_unsupported_device_and_dtypes(
@@ -244,12 +354,12 @@ def inplace_increment(
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native += val_native
     if ivy.is_ivy_array(x):
-        x.data = x_native
+        target = x.data
     else:
-        x = ivy.Array(x_native)
-    return x
+        target = x
+    with ivy.ArrayMode(False):
+        return paddle.assign(ivy.add(x_native, val_native), target)
 
 
 @with_unsupported_device_and_dtypes(
@@ -311,7 +421,7 @@ def scatter_flat(
 
 def _scatter_nd_replace(data, indices, updates, reduce):
     """
-    This is an implementation for scatter_nd using put_along_axis
+    An implementation for scatter_nd using put_along_axis
     since paddle.scatter_nd only supports "sum" reduction mode
     """
     if data.dtype != updates.dtype:
@@ -327,8 +437,6 @@ def _scatter_nd_replace(data, indices, updates, reduce):
             [target_idx, ivy.get_item(idx_range, tuple(i)).flatten()], -1
         )
 
-    target_idx = target_idx.reshape([1] * (data.ndim - 1) + target_idx.shape[-1:])
-
     if data.dtype in [
         paddle.int8,
         paddle.int16,
@@ -340,41 +448,38 @@ def _scatter_nd_replace(data, indices, updates, reduce):
     ]:
         if paddle.is_complex(data):
             result_real = paddle.put_along_axis(
-                data.real(), target_idx, updates.real().flatten(), -1, reduce=reduce
+                data.reshape([-1]).real(),
+                target_idx,
+                updates.real().flatten(),
+                -1,
+                reduce=reduce,
             )
             result_imag = paddle.put_along_axis(
-                data.imag(), target_idx, updates.imag().flatten(), -1, reduce=reduce
+                data.reshape([-1]).imag(),
+                target_idx,
+                updates.imag().flatten(),
+                -1,
+                reduce=reduce,
             )
-            return paddle.complex(result_real, result_imag)
-        return paddle.put_along_axis(
-            data.cast("float32"),
-            target_idx,
-            updates.cast("float32").flatten(),
-            -1,
-            reduce=reduce,
-        ).cast(data.dtype)
-    return paddle.put_along_axis(data, target_idx, updates.flatten(), -1, reduce=reduce)
+            return paddle.complex(result_real, result_imag).reshape(data.shape)
+        return (
+            paddle.put_along_axis(
+                data.reshape([-1]).cast("float32"),
+                target_idx,
+                updates.cast("float32").flatten(),
+                -1,
+                reduce=reduce,
+            )
+            .cast(data.dtype)
+            .reshape(data.shape)
+        )
+    return paddle.put_along_axis(
+        data.reshape([-1]), target_idx, updates.flatten(), -1, reduce=reduce
+    ).reshape(data.shape)
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "uint16",
-                "bfloat16",
-                "complex64",
-                "complex128",
-                "bool",
-            )
-        }
-    },
-    backend_version,
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def scatter_nd(
     indices: paddle.Tensor,
@@ -406,7 +511,7 @@ def scatter_nd(
         )
 
         # hanle non-tensor indices
-        if len(indices) == 0:
+        if isinstance(indices, (Sequence, paddle.Tensor)) and len(indices) == 0:
             return updates
 
         elif (
@@ -561,36 +666,40 @@ def scatter_nd(
         shape = list(shape) if ivy.exists(shape) else out.shape
         if not target_given:
             target = ivy.zeros(shape=shape, dtype=updates.dtype)
-            return _scatter_nd_replace(target, indices, updates, reduce="assign")
-
-        if reduction == "sum":
-            return _scatter_nd_replace(target, indices, updates, reduce="add")
-
-        elif reduction == "min":
-            new_updates = paddle.to_tensor([], dtype=target.dtype)
-            for i in indices:
-                new_updates = ivy.concat(
-                    [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])], axis=-1
-                )
-            new_updates = ivy.minimum(new_updates, updates.reshape([-1]))
-            return _scatter_nd_replace(target, indices, new_updates, reduce="assign")
-
-        elif reduction == "max":
-            new_updates = paddle.to_tensor([], dtype=target.dtype)
-            for i in indices:
-                new_updates = ivy.concat(
-                    [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])], axis=-1
-                )
-            new_updates = ivy.maximum(new_updates, updates.reshape([-1]))
-            return _scatter_nd_replace(target, indices, new_updates, reduce="assign")
-        elif reduction == "replace":
-            return _scatter_nd_replace(target, indices, updates, reduce="assign")
+            ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
         else:
-            raise ivy.utils.exceptions.IvyException(
-                'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                    reduction
+            if reduction == "sum":
+                ret = _scatter_nd_replace(target, indices, updates, reduce="add")
+
+            elif reduction == "min":
+                new_updates = paddle.to_tensor([], dtype=target.dtype)
+                for i in indices:
+                    new_updates = ivy.concat(
+                        [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])],
+                        axis=-1,
+                    )
+                new_updates = ivy.minimum(new_updates, updates.reshape([-1]))
+                ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
+
+            elif reduction == "max":
+                new_updates = paddle.to_tensor([], dtype=target.dtype)
+                for i in indices:
+                    new_updates = ivy.concat(
+                        [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])],
+                        axis=-1,
+                    )
+                new_updates = ivy.maximum(new_updates, updates.reshape([-1]))
+                ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
+            elif reduction == "replace":
+                ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
+            else:
+                raise ivy.utils.exceptions.IvyException(
+                    "reduction is {}, but it must be one of "
+                    '"sum", "min" or "max"'.format(reduction)
                 )
-            )
+    if ivy.exists(out):
+        return inplace_update(out, ret)
+    return ret
 
 
 @with_unsupported_device_and_dtypes(
@@ -646,3 +755,7 @@ def isin(
 
 def itemsize(x: paddle.Tensor) -> int:
     return x.element_size()
+
+
+def strides(x: paddle.Tensor) -> Tuple[int]:
+    return x.numpy().strides

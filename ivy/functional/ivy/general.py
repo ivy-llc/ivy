@@ -31,6 +31,8 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
+    outputs_to_ivy_shapes,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -1538,7 +1540,9 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
 
 
 @handle_exceptions
-def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape:
+def to_native_shape(
+    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list]
+) -> ivy.NativeShape:
     """
     Returns the input shape in its native backend framework form
 
@@ -1555,13 +1559,23 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
     """
     if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
         return shape
-    ivy.utils.assertions.check_isinstance(shape, (int, list, tuple))
+    ivy.utils.assertions.check_isinstance(
+        shape, (int, list, tuple, ivy.Array, ivy.Shape)
+    )
     if isinstance(shape, int):
         shape = (shape,)
     elif isinstance(shape, list):
         shape = tuple(shape)
+    elif isinstance(shape, ivy.Array):
+        shape = ivy.to_native(shape)
+    elif isinstance(shape, ivy.Shape):
+        shape = shape.shape
     ivy.utils.assertions.check_all(
-        [isinstance(v, int) for v in shape], "shape must take integers only"
+        [isinstance(v, int) for v in shape if not is_array(v)],
+        "shape must take integers only",
+    )
+    ivy.utils.assertions.check_true(
+        not is_array(shape) or ivy.is_int_dtype(shape), "shape must take integers only"
     )
     return ivy.NativeShape(shape) if len(backend_stack) != 0 else ivy.Shape(shape)
 
@@ -3016,6 +3030,7 @@ def scatter_flat(
     )
 
 
+@inputs_to_native_shapes
 @handle_array_function
 @to_native_arrays_and_back
 @handle_nestable
@@ -3308,6 +3323,7 @@ def multiprocessing(context: Optional[str] = None):
 
 @handle_array_function
 @to_native_arrays_and_back
+@outputs_to_ivy_shapes
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -3848,3 +3864,31 @@ def itemsize(
     16
     """
     return ivy.current_backend().itemsize(x)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def strides(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> Tuple[int]:
+    """Returns the input array's strides across each dimension.
+
+    Parameters
+    ----------
+    x
+       The input array.
+
+    Returns
+    -------
+    ret
+        A tuple containing the strides.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1, 5, 9], [2, 6, 10]])
+    >>> ivy.strides(x)
+    (4, 8)
+    """
+    return ivy.current_backend().strides(x)

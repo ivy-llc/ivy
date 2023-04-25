@@ -503,8 +503,9 @@ def eye_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a array filled with ones on the k diagonal and zeros elsewhere. having
-    the same ``shape`` as an input array ``x``.
+    """Returns a 2D array filled with ones on the k diagonal and zeros elsewhere. having
+    the same ``shape`` as the first and last dim of input array ``x``. input array ``x``
+    should to be 2D.
 
 
     Parameters
@@ -528,15 +529,6 @@ def eye_like(
     ret
         an array having the same shape as ``x`` and filled with ``ones`` in
         diagonal ``k`` and ``zeros`` elsewhere.
-
-    Notes
-    -----
-    Generate a 2D tensor (matrix) with ones on the diagonal and zeros everywhere else.
-    Only 2D tensors are supported, i.e. input T1 must be of rank 2. The shape of the
-    output tensor is the same as the input tensor. The data type can be specified by
-    the 'dtype' argument. If 'dtype' is not specified, then the type of input tensor
-    is used. By default, the main diagonal is populated with ones, but attribute 'k'
-    can be used to populate upper or lower diagonals.
 
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -574,8 +566,10 @@ def eye_like(
     }
 
     """
-    cols = 1 if len(x.shape) == 1 else x.shape[-1]
-    rows = x.shape[0]
+    shape = Tuple(ivy.Shape(x))
+    dim = len(shape)
+    cols = dim if dim <= 1 else shape[-1]
+    rows = dim if dim < 1 else shape[0]
     return ivy.eye(
         rows,
         cols,
@@ -586,6 +580,9 @@ def eye_like(
     )
 
 
+eye_like.mixed_function = True
+
+
 @outputs_to_ivy_arrays
 @handle_nestable
 def frombuffer(
@@ -594,7 +591,7 @@ def frombuffer(
     count: Optional[int] = -1,
     offset: Optional[int] = 0,
 ) -> ivy.Array:
-    """
+    r"""
     Interpret a buffer as a 1-dimensional array.
 
     .. note::

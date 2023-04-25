@@ -176,7 +176,6 @@ def test_jax_numpy_repeat(
     frontend,
     test_flags,
 ):
-
     value_dtype, value = dtype_value
 
     if not isinstance(repeat, int):
@@ -749,7 +748,7 @@ def test_jax_numpy_broadcast_to(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        arr=x[0],
+        array=x[0],
         shape=shape,
     )
 

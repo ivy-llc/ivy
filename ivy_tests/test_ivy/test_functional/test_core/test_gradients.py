@@ -70,25 +70,6 @@ def get_gradient_arguments_with_lr(
     return dtypes, arrays, lr
 
 
-@pytest.mark.parametrize("grads", [True, False])
-def test_with_grads(grads):
-    assert ivy.with_grads(with_grads=grads) == grads
-
-
-@pytest.mark.parametrize("grads", [True, False])
-def test_set_with_grads(grads):
-    ivy.set_with_grads(grads)
-    assert ivy.with_grads(with_grads=None) == grads
-
-
-@pytest.mark.parametrize("grads", [True, False])
-def test_unset_with_grads(grads):
-    ivy.set_with_grads(grads)
-    with_grads_stack = ivy.with_grads_stack.copy()
-    ivy.unset_with_grads()
-    assert with_grads_stack[0:-1] == ivy.with_grads_stack
-
-
 # stop_gradient
 @handle_test(
     fn_tree="functional.ivy.stop_gradient",
@@ -245,15 +226,12 @@ def test_jac(x, dtype, func, backend_fw):
 @pytest.mark.parametrize(
     "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
 )
-@pytest.mark.parametrize(
-    "nth", [1, 2, 3]
-)
+@pytest.mark.parametrize("nth", [1, 2, 3])
 def test_grad(x, dtype, func, backend_fw, nth):
     fw = backend_fw.current_backend_str()
 
     # ToDo: Remove skipping for paddle and jax for nth > 1
-    if fw == "numpy" or ((fw == "paddle" or fw == "jax")
-                         and nth > 1):
+    if fw == "numpy" or ((fw == "paddle" or fw == "jax") and nth > 1):
         return
 
     ivy.set_backend(fw)

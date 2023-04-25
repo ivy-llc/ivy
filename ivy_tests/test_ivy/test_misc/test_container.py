@@ -85,7 +85,6 @@ def test_container_list_stack(on_device):
 
 
 def test_container_unify(on_device):
-
     # on_devices and containers
     on_devices = list()
     dev0 = on_device
@@ -588,7 +587,6 @@ def test_container_depth(on_device):
 
 @pytest.mark.parametrize("inplace", [True, False])
 def test_container_cutoff_at_depth(inplace, on_device):
-
     # values
     a_val = ivy.array([1], device=on_device)
     bcde_val = ivy.array([2], device=on_device)
@@ -628,7 +626,6 @@ def test_container_cutoff_at_depth(inplace, on_device):
 
 @pytest.mark.parametrize("inplace", [True, False])
 def test_container_cutoff_at_height(inplace, on_device):
-
     # values
     d_val = ivy.array([2], device=on_device)
     e_val = ivy.array([3], device=on_device)
@@ -675,7 +672,6 @@ def test_container_cutoff_at_height(inplace, on_device):
 
 @pytest.mark.parametrize("str_slice", [True, False])
 def test_container_slice_keys(str_slice, on_device):
-
     # values
     a_val = ivy.array([1], device=on_device)
     b_val = ivy.array([2], device=on_device)
@@ -1608,7 +1604,6 @@ def test_container_prune_keys_from_key_chains(on_device):
 
 
 def test_container_restructure_key_chains(on_device):
-
     # single
     container = Container(
         {
@@ -2739,7 +2734,6 @@ def test_container_if_exists(on_device):
 
 
 def test_jax_pytree_compatibility(on_device):
-
     if ivy.current_backend_str() != "jax":
         pytest.skip()
 
@@ -2770,7 +2764,6 @@ def test_jax_pytree_compatibility(on_device):
 
 
 def test_container_from_queues(on_device):
-
     if "gpu" in on_device:
         # Cannot re-initialize CUDA in forked subprocess. 'spawn'
         # start method must be used.

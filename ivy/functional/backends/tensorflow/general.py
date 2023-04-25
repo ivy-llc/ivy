@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence, Callable
+from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -298,7 +298,7 @@ def scatter_flat(
 scatter_flat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -468,9 +468,11 @@ def scatter_nd(
     if sum(updates.shape) < sum(expected_shape):
         updates = ivy.broadcast_to(updates, expected_shape)._data
     elif sum(updates.shape) > sum(expected_shape):
-        indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])._data
-    elif updates.shape != expected_shape:
-        updates = ivy.broadcast_to(updates, expected_shape)._data
+        indices_shape = updates.shape[:1] + indices.shape[-1]
+        if sum(indices.shape) < sum(indices_shape):
+            indices = ivy.broadcast_to(indices, indices_shape)._data
+        else:
+            updates = ivy.broadcast_to(updates, expected_shape)._data
     # implementation
     target = out
     target_given = ivy.exists(target)
@@ -673,3 +675,7 @@ def isin(
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
     return x.dtype.size
+
+
+def strides(x: Union[tf.Tensor, tf.Variable]) -> Tuple[int]:
+    return x.numpy().strides
