@@ -5,7 +5,6 @@ import torch
 
 
 # local
-from .. import backend_version
 import ivy
 import copy
 from ivy.func_wrapper import (
