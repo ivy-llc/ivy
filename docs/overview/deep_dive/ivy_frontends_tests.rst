@@ -118,7 +118,6 @@ ivy.tan()
                     available_dtypes=helpers.get_dtypes("float"),
                 )
             ],
-            get_dtypes_kind="float",
         ),
         where=np_frontend_helpers.where(),
         number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(

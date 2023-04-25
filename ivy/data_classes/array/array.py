@@ -148,7 +148,6 @@ class Array(
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
             )
-        self._shape = self._data.shape
         self._size = (
             functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         )
@@ -245,12 +244,12 @@ class Array(
     @property
     def ndim(self) -> int:
         """Number of array dimensions (axes)."""
-        return len(tuple(self._shape))
+        return len(tuple(self._data.shape))
 
     @property
     def shape(self) -> ivy.Shape:
         """Array dimensions."""
-        return ivy.Shape(self._shape)
+        return ivy.Shape(self._data.shape)
 
     @property
     def size(self) -> Optional[int]:

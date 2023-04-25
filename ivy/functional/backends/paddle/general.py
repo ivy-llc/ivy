@@ -437,8 +437,6 @@ def _scatter_nd_replace(data, indices, updates, reduce):
             [target_idx, ivy.get_item(idx_range, tuple(i)).flatten()], -1
         )
 
-    target_idx = target_idx.reshape([1] * (data.ndim - 1) + target_idx.shape[-1:])
-
     if data.dtype in [
         paddle.int8,
         paddle.int16,
@@ -450,20 +448,34 @@ def _scatter_nd_replace(data, indices, updates, reduce):
     ]:
         if paddle.is_complex(data):
             result_real = paddle.put_along_axis(
-                data.real(), target_idx, updates.real().flatten(), -1, reduce=reduce
+                data.reshape([-1]).real(),
+                target_idx,
+                updates.real().flatten(),
+                -1,
+                reduce=reduce,
             )
             result_imag = paddle.put_along_axis(
-                data.imag(), target_idx, updates.imag().flatten(), -1, reduce=reduce
+                data.reshape([-1]).imag(),
+                target_idx,
+                updates.imag().flatten(),
+                -1,
+                reduce=reduce,
             )
-            return paddle.complex(result_real, result_imag)
-        return paddle.put_along_axis(
-            data.cast("float32"),
-            target_idx,
-            updates.cast("float32").flatten(),
-            -1,
-            reduce=reduce,
-        ).cast(data.dtype)
-    return paddle.put_along_axis(data, target_idx, updates.flatten(), -1, reduce=reduce)
+            return paddle.complex(result_real, result_imag).reshape(data.shape)
+        return (
+            paddle.put_along_axis(
+                data.reshape([-1]).cast("float32"),
+                target_idx,
+                updates.cast("float32").flatten(),
+                -1,
+                reduce=reduce,
+            )
+            .cast(data.dtype)
+            .reshape(data.shape)
+        )
+    return paddle.put_along_axis(
+        data.reshape([-1]), target_idx, updates.flatten(), -1, reduce=reduce
+    ).reshape(data.shape)
 
 
 @with_unsupported_device_and_dtypes(
@@ -655,39 +667,39 @@ def scatter_nd(
         if not target_given:
             target = ivy.zeros(shape=shape, dtype=updates.dtype)
             ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
-
-        if reduction == "sum":
-            ret = _scatter_nd_replace(target, indices, updates, reduce="add")
-
-        elif reduction == "min":
-            new_updates = paddle.to_tensor([], dtype=target.dtype)
-            for i in indices:
-                new_updates = ivy.concat(
-                    [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])], axis=-1
-                )
-            new_updates = ivy.minimum(new_updates, updates.reshape([-1]))
-            ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
-
-        elif reduction == "max":
-            new_updates = paddle.to_tensor([], dtype=target.dtype)
-            for i in indices:
-                new_updates = ivy.concat(
-                    [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])], axis=-1
-                )
-            new_updates = ivy.maximum(new_updates, updates.reshape([-1]))
-            ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
-        elif reduction == "replace":
-            ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
         else:
-            raise ivy.utils.exceptions.IvyException(
-                'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                    reduction
+            if reduction == "sum":
+                ret = _scatter_nd_replace(target, indices, updates, reduce="add")
+
+            elif reduction == "min":
+                new_updates = paddle.to_tensor([], dtype=target.dtype)
+                for i in indices:
+                    new_updates = ivy.concat(
+                        [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])],
+                        axis=-1,
+                    )
+                new_updates = ivy.minimum(new_updates, updates.reshape([-1]))
+                ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
+
+            elif reduction == "max":
+                new_updates = paddle.to_tensor([], dtype=target.dtype)
+                for i in indices:
+                    new_updates = ivy.concat(
+                        [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])],
+                        axis=-1,
+                    )
+                new_updates = ivy.maximum(new_updates, updates.reshape([-1]))
+                ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
+            elif reduction == "replace":
+                ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
+            else:
+                raise ivy.utils.exceptions.IvyException(
+                    "reduction is {}, but it must be one of "
+                    '"sum", "min" or "max"'.format(reduction)
                 )
-            )
-        if ivy.exists(out):
-            return paddle.assign(ret, out.data)
-        else:
-            return ret
+    if ivy.exists(out):
+        return inplace_update(out, ret)
+    return ret
 
 
 @with_unsupported_device_and_dtypes(
