@@ -9,27 +9,6 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 @st.composite
-def where(draw, *, shape=None):
-    if shape is None:
-        _, values = draw(helpers.dtype_and_values(dtype=["bool"]))
-    else:
-        _, values = draw(helpers.dtype_and_values(dtype=["bool"], shape=shape))
-    return draw(st.just(values) | st.just(True))
-
-
-@st.composite
-def get_casting(draw):
-    return draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
-
-
-@st.composite
-def dtype_x_bounded_axis(draw, **kwargs):
-    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)))
-    return dtype, x, axis
-
-
-@st.composite
 def _array_and_axes_permute_helper(
     draw,
     *,
@@ -54,7 +33,6 @@ def _array_and_axes_permute_helper(
         minimum size of the dimension
     max_dim_size
         maximum size of the dimension
-
     Returns
     -------
     A strategy that draws an array, its dtype and axes (or None).
@@ -87,6 +65,15 @@ def _array_and_axes_permute_helper(
         ).filter(lambda x: x != tuple(range(len(shape))))
     )
     return (array, dtype, axes)
+
+
+@st.composite
+def where(draw, *, shape=None):
+    if shape is None:
+        _, values = draw(helpers.dtype_and_values(dtype=["bool"]))
+    else:
+        _, values = draw(helpers.dtype_and_values(dtype=["bool"], shape=shape))
+    return draw(st.just(values) | st.just(True))
 
 
 # noinspection PyShadowingNames
@@ -161,9 +148,7 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
 
 
 def _flatten_frontend_return(*, ret):
-    """
-    Flattening the returned frontend value to a list of numpy arrays.
-    """
+    """Flattening the returned frontend value to a list of numpy arrays."""
     current_backend = ivy.current_backend_str()
     if not isinstance(ret, tuple):
         if not ivy.is_ivy_array(ret):
@@ -202,43 +187,12 @@ def handle_where_and_array_bools(where, input_dtype, test_flags):
     return where, input_dtype, test_flags
 
 
-def handle_dtype_and_casting(
-    *,
-    dtypes,
-    get_dtypes_kind="valid",
-    get_dtypes_index=0,
-    get_dtypes_none=True,
-    get_dtypes_key=None,
-):
-    casting = get_casting()
-    if casting in ["no", "equiv"]:
-        dtype = dtypes[0]
-        dtypes = [dtype for x in dtypes]
-        return dtype, dtypes, casting
-    dtype = helpers.get_dtypes(
-        get_dtypes_kind,
-        index=get_dtypes_index,
-        full=False,
-        none=get_dtypes_none,
-        key=get_dtypes_key,
-    )
-    if casting in ["safe", "same_kind"]:
-        while not ivy.all([ivy.can_cast(x, dtype) for x in dtypes]):
-            dtype = helpers.get_dtypes(
-                get_dtypes_kind,
-                index=get_dtypes_index,
-                full=False,
-                none=get_dtypes_none,
-                key=get_dtypes_key,
-            )
-    return dtype, dtypes, casting
-
-
+# Casting helper
 @st.composite
 def _get_safe_casting_dtype(draw, *, dtypes):
     target_dtype = dtypes[0]
     for dtype in dtypes[1:]:
-        if ivy.can_cast(target_dtype, dtype):
+        if np_frontend.can_cast(target_dtype, dtype, casting="safe"):
             target_dtype = dtype
     if ivy.is_float_dtype(target_dtype):
         dtype = draw(st.sampled_from(["float64", None]))
@@ -246,6 +200,8 @@ def _get_safe_casting_dtype(draw, *, dtypes):
         dtype = draw(st.sampled_from(["uint64", None]))
     elif ivy.is_int_dtype(target_dtype):
         dtype = draw(st.sampled_from(["int64", None]))
+    elif ivy.is_complex_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["complex128", None]))
     else:
         dtype = draw(st.sampled_from(["bool", None]))
     # filter uint64 as not supported by torch backend
@@ -259,10 +215,7 @@ def dtypes_values_casting_dtype(
     draw,
     *,
     arr_func,
-    get_dtypes_kind="valid",
-    get_dtypes_index=0,
     get_dtypes_none=True,
-    get_dtypes_key=None,
     special=False,
 ):
     dtypes, values = [], []
@@ -277,65 +230,15 @@ def dtypes_values_casting_dtype(
 
     if special:
         dtype = draw(st.sampled_from(["bool", None]))
+    elif get_dtypes_none:
+        dtype = draw(st.sampled_from([None]))
     elif casting in ["no", "equiv"]:
         dtype = draw(st.just(None))
     elif casting in ["safe", "same_kind"]:
         dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
-
     else:
-        dtype = draw(
-            helpers.get_dtypes(
-                kind=get_dtypes_kind,
-                index=get_dtypes_index,
-                full=False,
-                none=get_dtypes_none,
-                key=get_dtypes_key,
-            )
-        )[0]
-        # filter uint64 as not supported by torch backend
-        if dtype == "uint64":
-            dtype = None
+        dtype = draw(st.sampled_from([None]))
     return dtypes, values, casting, dtype
-
-
-@st.composite
-def get_dtype_and_values_and_casting(
-    draw,
-    *,
-    get_dtypes_kind="valid",
-    get_dtypes_index=0,
-    get_dtypes_none=True,
-    get_dtypes_key=None,
-    **kwargs,
-):
-    input_dtype, x = draw(helpers.dtype_and_values(**kwargs))
-    casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
-    if casting in ["no", "equiv"]:
-        dtype = input_dtype[0]
-        input_dtype = [dtype for x in input_dtype]
-        return dtype, input_dtype, x, casting
-    dtype = draw(
-        helpers.get_dtypes(
-            get_dtypes_kind,
-            index=get_dtypes_index,
-            full=False,
-            none=get_dtypes_none,
-            key=get_dtypes_key,
-        )
-    )
-    if casting in ["safe", "same_kind"]:
-        while not ivy.all([ivy.can_cast(x, dtype[0]) for x in input_dtype]):
-            dtype = draw(
-                helpers.get_dtypes(
-                    get_dtypes_kind,
-                    index=get_dtypes_index,
-                    full=False,
-                    none=get_dtypes_none,
-                    key=get_dtypes_key,
-                )
-            )
-
-    return dtype[0], input_dtype, x, casting
 
 
 # ufunc num_positional_args helper

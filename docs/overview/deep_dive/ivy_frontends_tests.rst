@@ -118,7 +118,6 @@ ivy.tan()
                     available_dtypes=helpers.get_dtypes("float"),
                 )
             ],
-            get_dtypes_kind="float",
         ),
         where=np_frontend_helpers.where(),
         number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -234,7 +233,7 @@ ivy.full()
 ^^^^^^^^^^
 
 Here we are going to look at an example of a function that does not consume an :code:`array`.
-This is the creation function :func:`full`, which takes an array shape as an argument to create an array and filled with elements of a given value.
+This is the creation function :func:`full`, which takes an array shape as an argument to create an array filled with elements of a given value.
 This function requires us to create extra functions for generating :code:`shape` and :code:`fill value`, these use the :code:`shared` hypothesis strategy.
 
 
@@ -398,7 +397,7 @@ This function requires us to create extra functions for generating :code:`shape`
 
 * We use :func:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for this function.
 * Tensorflow's version of :func:`full` is named :func:`Fill` therefore we specify the :code:`fn_tree` argument to be :code:`"Fill"`
-* When running the test there where some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitely.
+* When running the test there were some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitely.
 
 
 **PyTorch**
@@ -456,7 +455,7 @@ Testing Without Using Tests Values
 
 While even using hypothesis, there are some cases in which we set :code:`test_values=False` for example, we have a
 function add_noise() and we call it on x and we try to assert (we interally use assert np.all_close) that the result
-from torch backend matches tensorflow the test will always fail, because the function add_noise() depends on a random
+from torch backend matches tensorflow and the test will always fail, because the function add_noise() depends on a random
 seed internally that we have no control over, what we change is only how we test for equality, in which in that case
 we can not and we have to reconstruct the output as shown in the example below.
 
@@ -583,7 +582,7 @@ Frontend Instance Method Tests
 
 The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
 major difference is that we have more flags to pass now, most initialization functions take an array as an input. also some methods may take an array as input,
-for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test is **complete** we need to generate seperate flags for each.
+for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate seperate flags for each.
 
 **Important Helper Functions**
 

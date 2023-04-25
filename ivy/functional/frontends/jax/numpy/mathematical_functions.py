@@ -9,6 +9,12 @@ from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 from math import factorial
 
 
+# sign
+@to_ivy_arrays_and_back
+def sign(x, /):
+    return ivy.sign(x, out=None)
+
+
 @to_ivy_arrays_and_back
 def absolute(x):
     return ivy.abs(x)

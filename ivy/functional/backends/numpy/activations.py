@@ -62,7 +62,6 @@ def softplus(
     threshold: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if beta is not None and beta != 1:
         x_beta = x * beta
         res = (

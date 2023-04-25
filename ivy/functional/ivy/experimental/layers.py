@@ -241,6 +241,8 @@ def avg_pool1d(
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    division_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D avg pool given 3-D input x.
@@ -261,6 +263,11 @@ def avg_pool1d(
         NWC" or "NCW". Defaults to "NWC".
     count_include_pad
         Whether to include padding in the averaging calculation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
+    division_override
+        If specified, it will be used as the divisor,
+        otherwise kernel_size will be used.
     out
         optional output array, for writing the result to.
 
@@ -296,6 +303,8 @@ def avg_pool1d(
         padding,
         data_format=data_format,
         count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
+        division_override=division_override,
         out=out,
     )
 
@@ -312,6 +321,7 @@ def avg_pool2d(
     *,
     data_format: str = "NHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D average pool given 4-D input x.
@@ -332,6 +342,8 @@ def avg_pool2d(
         NHWC" or "NCHW". Defaults to "NHWC".
     count_include_pad
         Whether to include padding in the averaging calculation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
     out
         optional output array, for writing the result to.
 
@@ -376,6 +388,7 @@ def avg_pool2d(
         padding,
         data_format=data_format,
         count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
         out=out,
     )
 
@@ -392,6 +405,8 @@ def avg_pool3d(
     *,
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D avg pool given 5-D input x.
@@ -411,6 +426,10 @@ def avg_pool3d(
         NDHWC" or "NCDHW". Defaults to "NDHWC".
     count_include_pad
         Whether to include padding in the averaging calculation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
+    divisor_override
+        If specified, it will be used as divisor, otherwise kernel_size will be used.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -455,6 +474,8 @@ def avg_pool3d(
         padding,
         data_format=data_format,
         count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
         out=out,
     )
 
@@ -810,7 +831,6 @@ def ifft(
     return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -860,12 +880,14 @@ def embedding(
         indices = ivy.array(indices, dtype=ivy.int32)
 
     for i, x in ivy.ndenumerate(indices):
-
         if ivy.exists(max_norm):
             ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
         else:
             ret[i] = weights[x, :]
     return ret
+
+
+embedding.mixed_function = True
 
 
 @to_native_arrays_and_back
@@ -1288,7 +1310,6 @@ def _upsample_bicubic2d_default(
     return result
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 def interpolate(
@@ -1304,7 +1325,8 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow" "bicubic",
+        "bicubic_tensorflow",
+        "bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -1568,6 +1590,9 @@ def interpolate(
     return ivy.astype(ret, ivy.dtype(x), out=out)
 
 
+interpolate.mixed_function = True
+
+
 def _get_size(scale_factor, size, dims, x_shape):
     if scale_factor is not None:
         if isinstance(scale_factor, (float, int)):
@@ -1590,8 +1615,9 @@ def _output_ceil_shape(w, f, p, s):
     return math.ceil((w - f + p) / s) + 1
 
 
-def _padding_ceil_mode(w, f, p, s):
+def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
     remaining_pixels = (w - f + sum(p)) % s
+    added_padding = 0
     if s > 1 and remaining_pixels != 0 and f > 1:
         input_size = w + sum(p)
         # making sure that the remaining pixels are supposed
@@ -1608,10 +1634,13 @@ def _padding_ceil_mode(w, f, p, s):
         # calculating new padding with ceil_output_shape
         new_pad = (output_shape - 1) * s + f - w
         # updating pad_list with new padding by adding it to the end
+        added_padding = new_pad - sum(p)
         p = (
             p[0],
-            p[1] + new_pad - sum(p),
+            p[1] + added_padding,
         )
+    if return_added_padding:
+        return p, added_padding
     return p
 
 
@@ -1659,7 +1688,7 @@ def _mask(vals, length, range_max, dim):
         return vals, length
 
 
-@inputs_to_ivy_arrays
+@handle_nestable
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -1727,7 +1756,10 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
-@inputs_to_ivy_arrays
+adaptive_avg_pool1d.mixed_function = True
+
+
+@handle_nestable
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -1803,3 +1835,6 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
+
+
+adaptive_avg_pool2d.mixed_function = True

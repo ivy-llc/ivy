@@ -1,5 +1,6 @@
 # global
 import copy
+import re
 import warnings
 import builtins
 import numpy as np
@@ -191,9 +192,9 @@ class Dtype(str):
         return can_cast(self, to)
 
 
-class Shape(tuple):
-    def __new__(cls, shape_tup):
-        valid_types = (int, list, tuple, ivy.Array)
+class Shape:
+    def __init__(self, shape_tup):
+        valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
         if len(backend_stack) != 0:
             valid_types += (ivy.NativeShape, ivy.NativeArray)
         else:
@@ -202,17 +203,55 @@ class Shape(tuple):
                 current_backend(shape_tup).NativeArray,
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
-        if isinstance(shape_tup, int):
-            shape_tup = (shape_tup,)
-        elif isinstance(shape_tup, list):
-            shape_tup = tuple(shape_tup)
-        ivy.utils.assertions.check_all(
-            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup],
-            "shape must take integers only",
+        if isinstance(shape_tup, valid_types):
+            self._shape = ivy.to_native_shape(shape_tup)
+        else:
+            self._shape = None
+
+    def __repr__(self):
+        pattern = r"\d+(?:,\s*\d+)*"
+        shape_repr = re.findall(pattern, self._shape.__str__())
+        shape_repr = ", ".join([str(i) for i in shape_repr])
+        shape_repr = shape_repr + "," if len(shape_repr) == 1 else shape_repr
+        return (
+            f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
-        if ivy.shape_array_mode():
-            return ivy.array(shape_tup)
-        return tuple.__new__(cls, shape_tup)
+
+    def __add__(self, other):
+        self._shape = self._shape + other
+        return self
+
+    def __mul__(self, other):
+        self._shape = self._shape * other
+        return self
+
+    def __eq__(self, other):
+        return self._shape == other
+
+    def __ge__(self, other):
+        return self._shape >= other
+
+    def __gt__(self, other):
+        return self._shape > other
+
+    def __le__(self, other):
+        return self._shape <= other
+
+    def __lt__(self, other):
+        return self._shape < other
+
+    def __getattribute__(self, item):
+        return super().__getattribute__(item)
+
+    def __getitem__(self, key):
+        return self._shape[key] if self._shape is not None else None
+
+    def __len__(self):
+        return len(self._shape) if self._shape is not None else 0
+
+    @property
+    def shape(self):
+        return self._shape
 
 
 class IntDtype(Dtype):

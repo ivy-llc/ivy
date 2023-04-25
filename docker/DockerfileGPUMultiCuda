@@ -7,5 +7,10 @@ COPY /docker/multicuda_framework_directory.py .
 COPY /docker/multicuda_requirements.txt .
 
 RUN pip3 install --upgrade pip && \
+    pip3 install --upgrade pip-autoremove && \
     pip3 install --no-cache-dir   -r multicuda_requirements.txt &&\
+    pip-autoremove torch -y &&\
+    pip-autoremove tensorflow -y &&\
+    pip-autoremove jax -y &&\
+    pip-autoremove jaxlib -y &&\
     python3 multicuda_framework_directory.py $fw

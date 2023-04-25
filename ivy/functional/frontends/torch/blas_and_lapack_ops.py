@@ -91,7 +91,7 @@ def cholesky(input, upper=False, *, out=None):
 
 @to_ivy_arrays_and_back
 def det(input):
-    return torch_frontend.det(input)
+    return torch_frontend.linalg.det(input)
 
 
 @to_ivy_arrays_and_back

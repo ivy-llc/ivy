@@ -9,6 +9,15 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def imag(input, name=None):
+    return ivy.imag(input)
+
+
 @to_ivy_arrays_and_back
 def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
     return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
@@ -157,6 +166,11 @@ def erfcinv(x, name="erfcinv"):
 
 
 @to_ivy_arrays_and_back
+def is_inf(x, name=None):
+    return ivy.isinf(x)
+
+
+@to_ivy_arrays_and_back
 def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
@@ -177,6 +191,16 @@ def is_strictly_increasing(x, name="is_strictly_increasing"):
 @to_ivy_arrays_and_back
 def log_sigmoid(x, name=None):
     return -ivy.softplus(-x)
+
+
+@to_ivy_arrays_and_back
+def logical_not(x, name="logical_not"):
+    return ivy.logical_not(x)
+
+
+@to_ivy_arrays_and_back
+def log1p(x, name=None):
+    return ivy.log1p(x)
 
 
 @to_ivy_arrays_and_back
@@ -227,6 +251,11 @@ def polyval(coeffs, x, name=None):
 def pow(x, y, name="pow"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.pow(x, y)
+
+
+@to_ivy_arrays_and_back
+def reciprocal(x, name="reciprocal"):
+    return ivy.reciprocal(x)
 
 
 @to_ivy_arrays_and_back
@@ -332,6 +361,24 @@ def squared_difference(x, y, name=None):
     return ivy.square(ivy.subtract(x, y))
 
 
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def sin(x, name=None):
+    return ivy.sin(x)
+
+
 @to_ivy_arrays_and_back
 def tan(x, name=None):
     return ivy.tan(x)
@@ -421,8 +468,18 @@ def floor(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def floordiv(x, y, name=None):
+    return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
+
+
+@to_ivy_arrays_and_back
+def round(x, name=None):
+    return ivy.round(x)
 
 
 @to_ivy_arrays_and_back
@@ -566,6 +623,11 @@ def softmax(logits, axis=-1):
 
 
 @to_ivy_arrays_and_back
+def softplus(features, name=None):
+    return ivy.softplus(features)
+
+
+@to_ivy_arrays_and_back
 def xlogy(x, y, name=None):
     return ivy.xlogy(x, y)
 
@@ -573,3 +635,20 @@ def xlogy(x, y, name=None):
 @to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": ("float32", "float64"),
+    },
+    "tensorflow",
+)
+def zeta(x, q, name=None):
+    return ivy.zeta(x, q)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater_equal(x, y)
