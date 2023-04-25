@@ -194,7 +194,7 @@ class Dtype(str):
 
 class Shape:
     def __init__(self, shape_tup):
-        valid_types = (int, list, tuple, ivy.Array)
+        valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
         if len(backend_stack) != 0:
             valid_types += (ivy.NativeShape, ivy.NativeArray)
         else:
