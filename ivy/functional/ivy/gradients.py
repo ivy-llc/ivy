@@ -304,6 +304,9 @@ def _variable_data(
     return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
+with_grads_stack = list()
+
+
 # noinspection PyShadowingNames
 @handle_array_function
 @handle_exceptions
@@ -648,7 +651,7 @@ jac.computes_gradients = True
 
 
 @handle_exceptions
-def grad(func: Callable, argnums: Union[int, Sequence[int]]=0) -> Callable:
+def grad(func: Callable, argnums: Union[int, Sequence[int]] = 0) -> Callable:
     """Call function func, and return func's gradients.
 
     Parameters
