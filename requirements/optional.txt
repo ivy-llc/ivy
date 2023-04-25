@@ -24,6 +24,6 @@ coverage
 scikit-learn # mod_name=sklearn
 pandas
 pyspark
-mxnet
+#mxnet
 autoflake # for backend generation
 snakeviz # for profiling
