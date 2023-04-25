@@ -252,14 +252,14 @@ def test_asarray(
 # empty
 @handle_test(
     fn_tree="functional.ivy.empty",
-    size=helpers.ints(min_value=1, max_value=3),
     shape=helpers.get_shape(
-        allow_none=False,
+        allow_none=True,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
+    size=helpers.lists(x=st.integers(min_value=1, max_value=3), min_size=1, max_size=3),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
@@ -276,12 +276,12 @@ def test_empty(
     ground_truth_backend,
 ):
     dims = {}
-    size = (size,)
     if shape is None:
         i = 0
         for x_ in size:
             dims[f"x{i}"] = x_
             i += 1
+    test_flags.num_positional_args = len(size)
     ret = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -583,8 +583,8 @@ def test_meshgrid(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    size=helpers.lists(x=st.integers(min_value=1, max_value=3), min_size=1, max_size=3),
     dtype=helpers.get_dtypes("numeric", full=False),
-    size=helpers.ints(min_value=1, max_value=3),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -600,7 +600,6 @@ def test_ones(
     ground_truth_backend,
 ):
     dims = {}
-    size = (size,)
     if shape is None:
         i = 0
         for x_ in size:
@@ -737,6 +736,7 @@ def test_triu(
 # zeros
 @handle_test(
     fn_tree="functional.ivy.zeros",
+    size=helpers.lists(x=st.integers(min_value=1, max_value=3), min_size=1, max_size=3),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -745,7 +745,6 @@ def test_triu(
         max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
-    size=helpers.ints(min_value=1, max_value=3),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -761,7 +760,6 @@ def test_zeros(
     ground_truth_backend,
 ):
     dims = {}
-    size = (size,)
     if shape is None:
         i = 0
         for x_ in size:
