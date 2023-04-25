@@ -3,6 +3,7 @@ from typing import Any
 import itertools
 import string
 import builtins
+import math
 
 # local
 import ivy
@@ -613,9 +614,12 @@ def top_k(operand, k):
 
 def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
     def _pad(arr, pads, pad_value):
-        out = ivy.astype(
-            ivy.pad(arr, ivy.maximum(0, pads).to_list(), mode='constant',
-                    constant_values=pad_value), arr.dtype)
+        out = ivy.astype(ivy.pad(
+            arr,
+            ivy.maximum(0, pads).to_list(),
+            mode='constant',
+            constant_values=pad_value
+        ), arr.dtype)
         slices = tuple(_slice(abs(lo) if lo < 0 else 0, hi % dim if hi < 0 else None)
                        for (lo, hi), dim in zip(pads, arr.shape))
         return out[slices]
@@ -636,11 +640,11 @@ def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
     out_strides = ivy.multiply(window_strides, lhs.strides[2:]).to_list()
     view_strides = lhs.strides[:1] + tuple(out_strides) + lhs.strides[1:]
 
-    out_shape = ivy.add(
-        ivy.floor_divide(ivy.subtract(in_shape, filter_shape), window_strides),
-        1,
-    ).to_list()
-    view_shape = lhs.shape[:1] + tuple(out_shape) + rhs_shape[1:]
+    out_shape = [
+        (in_shape[i] - filter_shape[i]) // s + 1
+        for i, s in enumerate(window_strides)
+    ]
+    view_shape = list(lhs.shape[:1]) + out_shape + rhs_shape[1:]
 
     view = ivy.as_strided(lhs, view_shape, view_strides)
 
@@ -653,15 +657,12 @@ def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
 
 
 def _dilate(operand, factors, fill_value=0):
-    outspace = ivy.add(
-        operand.shape[2:],
-        ivy.multiply(
-           ivy.subtract(factors, 1),
-           ivy.subtract(operand.shape[2:], 1)
-        )
-    ).to_list()
+    outspace = list(operand.shape[:2]) + [
+        shape + (factors[i] - 1) * (shape - 1)
+        for i, shape in enumerate(operand.shape[2:])
+    ]
     out = ivy.full(
-        (operand.shape[:2] + tuple(outspace)),
+        outspace,
         ivy.to_scalar(ivy.array(fill_value, dtype=operand.dtype)),
         dtype=operand.dtype,
     )
@@ -672,10 +673,16 @@ def _dilate(operand, factors, fill_value=0):
 
 def _padtype_to_pads(in_shape, filter_shape, window_strides, padding):
     if padding.upper() == 'SAME':
-        out_shape = ivy.ceil(ivy.divide(in_shape, window_strides)).astype(int)
-        pad_sizes = [_max((out_size - 1) * stride + filter_size - in_size, 0)
-                     for out_size, stride, filter_size, in_size
-                     in zip(out_shape, window_strides, filter_shape, in_shape)]
+        out_shape = [
+            math.ceil(in_size / stride)
+            for in_size, stride
+            in zip(in_shape, window_strides)
+        ]
+        pad_sizes = [
+            _max((out_size - 1) * stride + filter_size - in_size, 0)
+            for out_size, stride, filter_size, in_size
+            in zip(out_shape, window_strides, filter_shape, in_shape)
+        ]
         return [(pad_size // 2, pad_size - pad_size // 2) for pad_size in pad_sizes]
     else:
         return [(0, 0)] * len(in_shape)
@@ -727,11 +734,11 @@ def reduce_window(
         pads = _padtype_to_pads(op.shape, dims, strides, padding)
     else:
         pads = padding
-    op = op.reshape((1, 1) + op.shape)
+    op = op.reshape((1, 1) + tuple(op.shape[:]))
     if base_dilation:
         op = _dilate(op, base_dilation)
-    view = _conv_view(op, (1, 1) + tuple(dims), strides, pads)[0]
-    view = view.reshape(view.shape[1:1 + len(dims)] + (-1,))
+    view = _conv_view(op, [1, 1] + dims, strides, pads)[0]
+    view = view.reshape((*view.shape[1:1 + len(dims)], -1))
     reducer = _make_reducer(computation, init_value)
     return ivy.array(reducer(view, axis=-1))
 
