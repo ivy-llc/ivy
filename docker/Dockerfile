@@ -13,15 +13,7 @@ ARG pycon=3.8.10
 #    fi
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && \
-    apt-get install pip3 &&\
-    apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
-    apt-get install -y python-opengl && \
-    apt-get install -y git && \
-    apt-get install -y rsync && \
-    apt-get install -y libusb-1.0-0 && \
-    apt-get install -y libglib2.0-0 && \
-    pip3 install setuptools==58.5.3
+
 # Install miniconda
 ENV CONDA_DIR /opt/miniconda/
 
