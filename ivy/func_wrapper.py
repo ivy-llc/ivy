@@ -319,15 +319,17 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     return _inputs_to_ivy_arrays
 
 
-def inputs_to_native_shape(fn: Callable) -> Callable:
+def inputs_to_native_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         ivy_shape_idxs = ivy.nested_argwhere(
             [args, kwargs], lambda x: isinstance(x, ivy.Shape)
         )
         ivy_shapes = ivy.multi_index_nest([args, kwargs], ivy_shape_idxs)
-        native_shapes = ivy.to_native(ivy_shapes)
-        ivy.set_nest_at_indices([args, kwargs], ivy_shape_idxs, native_shapes)
+        native_shapes = [ivy.to_native_shape(shape) for shape in ivy_shapes]
+        args, kwargs = ivy.set_nest_at_indices(
+            [args, kwargs], ivy_shape_idxs, native_shapes, shallow=False
+        )
         return fn(*args, **kwargs)
 
     new_fn.inputs_to_native_shapes = True

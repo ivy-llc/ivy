@@ -31,7 +31,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
     to_native_arrays_and_back,
-    inputs_to_native_shape,
+    inputs_to_native_shapes,
     outputs_to_ivy_shapes,
     handle_out_argument,
     handle_nestable,
@@ -1559,13 +1559,17 @@ def to_native_shape(
     """
     if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
         return shape
-    ivy.utils.assertions.check_isinstance(shape, (int, list, tuple, ivy.Array))
+    ivy.utils.assertions.check_isinstance(
+        shape, (int, list, tuple, ivy.Array, ivy.Shape)
+    )
     if isinstance(shape, int):
         shape = (shape,)
     elif isinstance(shape, list):
         shape = tuple(shape)
     elif isinstance(shape, ivy.Array):
         shape = ivy.to_native(shape)
+    elif isinstance(shape, ivy.Shape):
+        shape = shape.shape
     ivy.utils.assertions.check_all(
         [isinstance(v, int) for v in shape if not is_array(v)],
         "shape must take integers only",
@@ -3026,7 +3030,7 @@ def scatter_flat(
     )
 
 
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_array_function
 @to_native_arrays_and_back
 @handle_nestable

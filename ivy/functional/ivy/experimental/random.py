@@ -4,7 +4,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
-    inputs_to_native_shape,
+    inputs_to_native_shapes,
     handle_nestable,
     infer_dtype,
     infer_device,
@@ -79,7 +79,7 @@ def dirichlet(
 
 
 @to_native_arrays_and_back
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -131,7 +131,7 @@ def beta(
 
 
 @to_native_arrays_and_back
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -181,7 +181,7 @@ def gamma(
 @infer_device
 @infer_dtype
 @to_native_arrays_and_back
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -247,7 +247,7 @@ def poisson(
 @infer_device
 @infer_dtype
 @to_native_arrays_and_back
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions

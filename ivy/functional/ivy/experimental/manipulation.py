@@ -17,7 +17,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
-    inputs_to_native_shape,
+    inputs_to_native_shapes,
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
@@ -1582,7 +1582,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 
 
 @to_native_arrays_and_back
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
@@ -1618,7 +1618,7 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable

@@ -204,7 +204,7 @@ class Shape:
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, valid_types):
-            self._shape = ivy.to_native(shape_tup)
+            self._shape = ivy.to_native_shape(shape_tup)
         else:
             self._shape = None
 
@@ -238,9 +238,6 @@ class Shape:
 
     def __lt__(self, other):
         return self._shape < other
-
-    def __dir__(self):
-        self._shape.__dir__()
 
     def __getattribute__(self, item):
         return super().__getattribute__(item)

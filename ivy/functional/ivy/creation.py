@@ -25,7 +25,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     outputs_to_ivy_arrays,
     inputs_to_native_arrays,
-    inputs_to_native_shape,
+    inputs_to_native_shapes,
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -359,7 +359,7 @@ def asarray(
 @infer_dtype
 @handle_array_function
 @outputs_to_ivy_arrays
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -424,7 +424,7 @@ def zeros(
 @infer_dtype
 @handle_array_function
 @outputs_to_ivy_arrays
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -946,7 +946,7 @@ def triu(
 @infer_dtype
 @handle_array_function
 @outputs_to_ivy_arrays
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1418,7 +1418,7 @@ def meshgrid(
 @handle_array_function
 @inputs_to_native_arrays
 @outputs_to_ivy_arrays
-@inputs_to_native_shape
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
