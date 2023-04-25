@@ -2226,7 +2226,6 @@ def test_itemsize(
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
-    ground_truth_backend="numpy",
 )
 def test_strides(
     x_and_dtype,
