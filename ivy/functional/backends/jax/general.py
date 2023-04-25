@@ -7,7 +7,7 @@ import jax.numpy as jnp
 from numbers import Number
 from operator import mul
 from functools import reduce
-from typing import Iterable, Optional, Union, Sequence, Callable
+from typing import Iterable, Optional, Union, Sequence, Callable, Tuple
 import multiprocessing as _multiprocessing
 
 
@@ -446,3 +446,8 @@ def isin(
 
 def itemsize(x: JaxArray) -> int:
     return x.itemsize
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+def strides(x: JaxArray) -> Tuple[int]:
+    return jax.device_get(jax.device_put(x)).strides

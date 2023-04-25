@@ -4125,7 +4125,7 @@ class _ContainerWithGeneral(ContainerBase):
         /,
     ) -> ivy.Container:
         """Container instance method variant of ivy.itemsize. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
+        wraps the function, and so the docstring for ivy.itemsize also applies to
         this method with minimal changes.
 
         Parameters
@@ -4152,7 +4152,7 @@ class _ContainerWithGeneral(ContainerBase):
         /,
     ) -> ivy.Container:
         """Container instance method variant of ivy.itemsize. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
+        wraps the function, and so the docstring for ivy.itemsize also applies to
         this method with minimal changes.
 
         Parameters
@@ -4166,3 +4166,51 @@ class _ContainerWithGeneral(ContainerBase):
             Integers specifying the element size in bytes.
         """
         return self.static_itemsize(self)
+
+    @staticmethod
+    def static_strides(
+        x: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """Container instance method variant of ivy.strides. This method simply
+        wraps the function, and so the docstring for ivy.strides also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+           The input container.
+
+        Returns
+        -------
+        ret
+            A tuple containing the strides.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1, 5, 9], [2, 6, 10]]),\
+                                b=ivy.array([[1, 2, 3, 4], [5, 6, 7, 8]]))
+        >>> ivy.strides(x)
+        ivy.Container(a=(4, 12), b=(16, 4))
+        """
+        return ContainerBase.cont_multi_map_in_function("strides", x)
+
+    def strides(
+        self: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """Container instance method variant of ivy.strides. This method simply
+        wraps the function, and so the docstring for ivy.strides also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+           The input container.
+
+        Returns
+        -------
+        ret
+            A tuple containing the strides.
+        """
+        return self.static_strides(self)

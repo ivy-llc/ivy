@@ -17,6 +17,8 @@ import ivy
 def _to_native(x: Any, inplace: bool = False) -> Any:
     if isinstance(x, ivy.Array):
         return x.data
+    elif isinstance(x, ivy.Shape):
+        return x.shape
     elif isinstance(x, ivy.Container):
         return x.cont_map(
             lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace
@@ -27,6 +29,8 @@ def _to_native(x: Any, inplace: bool = False) -> Any:
 def _to_ivy(x: Any) -> Any:
     if isinstance(x, ivy.Array):
         return x
+    elif isinstance(x, ivy.NativeShape):
+        return ivy.Shape(x)
     elif isinstance(x, ivy.Container):
         return x.to_ivy()
     if ivy.is_native_array(x) or isinstance(x, np.ndarray):
