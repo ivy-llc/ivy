@@ -868,9 +868,9 @@ def _pad_simple(array, pad_width, fill_value=None):
 def _to_pairs(x, n):
     if ivy.isscalar(x):
         return ((x, x),) * n
-    elif ivy.asarray(list(x)).shape == (2,):
+    elif len(x) == 2 and ivy.isscalar(x[0]):
         return ((x[0], x[1]),) * n
-    else:
+    elif len(x) != n:
         ivy.utils.assertions.check_equal(
             ivy.asarray(list(x)).shape,
             (n, 2),
