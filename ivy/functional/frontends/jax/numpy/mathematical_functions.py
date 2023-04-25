@@ -607,3 +607,9 @@ def polymul(a1, a2, *, trim_leading_zeros=False):
     if len(a2) == 0:
         a2 = ivy.asarray([0], dtype=a2.dtype)
     return convolve(a1, a2, mode="full")
+
+
+@to_ivy_arrays_and_back
+def signbit(x, /):
+    x = ivy.array(x)
+    return ivy.signbit(x)
