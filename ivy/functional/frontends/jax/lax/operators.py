@@ -633,11 +633,13 @@ def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
     filter_shape = rhs_shape[2:]
     dim = len(filter_shape)
 
-    out_strides = ivy.multiply(window_strides, lhs.strides[2:])
+    out_strides = ivy.multiply(window_strides, lhs.strides[2:]).to_list()
     view_strides = lhs.strides[:1] + tuple(out_strides) + lhs.strides[1:]
 
-    out_shape = ivy.floor_divide(
-        ivy.subtract(in_shape, filter_shape), window_strides) + 1
+    out_shape = ivy.add(
+        ivy.floor_divide(ivy.subtract(in_shape, filter_shape), window_strides),
+        1,
+    ).to_list()
     view_shape = lhs.shape[:1] + tuple(out_shape) + rhs_shape[1:]
 
     view = ivy.as_strided(lhs, view_shape, view_strides)
