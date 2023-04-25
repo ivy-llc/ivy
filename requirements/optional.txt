@@ -21,7 +21,7 @@ flax
 pydriller
 tqdm
 coverage
-scikit-learn
+scikit-learn # mod_name=sklearn
 pandas
 pyspark
 mxnet
