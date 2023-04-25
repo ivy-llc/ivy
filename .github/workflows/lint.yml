@@ -4,21 +4,5 @@ on: [push, pull_request]
 
 jobs:
   check-formatting:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: "3.8"
-      - name: Install dependencies
-        run: |
-          python -m pip install flake8 black pydocstyle
-      - name: Check formatting with black
-        run: |
-          black --check $(git ls-files '*.py')
-      - name: Analyzing the code with Flake8
-        run: |
-          flake8 $(git ls-files '*.py')
-      - name: Analyzing the code with Pydocstyle
-        run: |
-          pydocstyle $(git ls-files '*.py')
+    name: Check formatting
+    uses: unifyai/workflows/.github/workflows/lint.yml@master
