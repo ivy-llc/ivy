@@ -88,6 +88,11 @@ def slogdet(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def cond(input, *, p=None, out=None):
+    return ivy.cond(input, p=p, out=out)
+
+
+@to_ivy_arrays_and_back
 def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
 
