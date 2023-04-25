@@ -1,6 +1,5 @@
 # global
 import math
-from torch.nn import functional
 
 # local
 import ivy
@@ -317,11 +316,3 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     return interpolate(
         input, size=size, scale_factor=scale_factor, mode="bilinear", align_corners=True
     )
-
-
-
-@to_ivy_arrays_and_back
-def affine_grid(identity_theta, input_data, align_corners=None):
-    identity_grid = functional.affine_grid(identity_theta, input_data.shape, align_corners=align_corners)
-
-    return functional.grid_sample(input_data, identity_grid, align_corners=align_corners)
