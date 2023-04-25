@@ -194,6 +194,11 @@ def log_sigmoid(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def logical_not(x, name="logical_not"):
+    return ivy.logical_not(x)
+
+
+@to_ivy_arrays_and_back
 def log1p(x, name=None):
     return ivy.log1p(x)
 
@@ -641,3 +646,9 @@ def cosh(x, name=None):
 )
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater_equal(x, y)

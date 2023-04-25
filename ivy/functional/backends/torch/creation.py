@@ -116,7 +116,6 @@ def asarray(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     if isinstance(obj, torch.Tensor) and dtype is None:
         if copy is True:
             return obj.clone().detach().to(device)

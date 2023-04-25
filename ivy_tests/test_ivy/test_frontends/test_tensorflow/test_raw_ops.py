@@ -1593,7 +1593,6 @@ def test_tensorflow_Reverse(
     test_flags,
     on_device,
 ):
-
     dtype, x, axis_dtype, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=dtype + axis_dtype,

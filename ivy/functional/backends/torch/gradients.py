@@ -188,33 +188,57 @@ def jac(func: Callable):
     return callback_fn
 
 
-def grad(f):
+def grad(f, argnums=0):
     if grad.nth == 0:
         grad.f_original = f
 
     def _nth_derivative(n):
         @outputs_to_ivy_arrays
         @inputs_to_native_arrays
-        def _inner(x):
-            x.requires_grad_()
+        def _inner(*args, **kwargs):
+            max_argnum = argnums if isinstance(argnums, int) else max(argnums)
+            if max_argnum >= len(args):
+                raise TypeError(
+                    f"differentiating with respect to {argnums=} requires at least "
+                    f"{max_argnum + 1} positional arguments to be passed by the "
+                    f"caller, but got only {len(args)} positional arguments."
+                )
+            if isinstance(argnums, int):
+                x = args[argnums]
+                x.requires_grad_()
+            elif isinstance(argnums, (tuple, list)):
+                x = []
+                for i in argnums:
+                    x.append(args[i])
+                    [arr.requires_grad_() for arr in x]
+            else:
+                raise TypeError(
+                    f"argnums should be passed as int or a list/tuple of ints."
+                    f" Found {type(argnums)}"
+                )
             if n == 0:
-                ret = grad.f_original(x) if grad.f_original is not None else f(x)
+                ret = (
+                    grad.f_original(*args, **kwargs)
+                    if grad.f_original is not None
+                    else f(*args, **kwargs)
+                )
                 grad.nth = 0
                 return ret
             else:
-                y = _nth_derivative(n - 1)(x)
+                y = _nth_derivative(n - 1)(*args, **kwargs)
 
                 # Avoid zero gradients setting requires_grads as False
-                if y.requires_grad is False:
+                if isinstance(y, tuple):
+                    y_ones = tuple([torch.ones_like(y_) for y_ in y])
+                    [y_.requires_grad_() for y_ in y if y_.requires_grad is False]
+                elif y.requires_grad is False:
                     y.requires_grad_()
+                else:
+                    y_ones = torch.ones_like(y)
 
                 dy_dx = torch.autograd.grad(
-                    y,
-                    x,
-                    create_graph=True,
-                    grad_outputs=torch.ones_like(y),
-                    allow_unused=True,
-                )[0]
+                    y, x, create_graph=True, grad_outputs=y_ones, allow_unused=True
+                )
                 if dy_dx is None:
                     return torch.zeros_like(y)
                 return dy_dx

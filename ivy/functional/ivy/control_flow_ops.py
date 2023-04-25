@@ -33,7 +33,8 @@ def if_else(
     Returns
     -------
     ret
-        The result of executing either body_fn or orelse_fn depending on the value of cond.
+        The result of executing either body_fn or orelse_fn depending on the value of
+        cond.
 
     Examples
     --------
@@ -81,7 +82,8 @@ def while_loop(
         A callable function that returns a boolean value representing whether the
         loop should continue.
     body_fn
-        A callable function to be executed repeatedly while the test function returns True.
+        A callable function to be executed repeatedly while the test function returns
+        True.
     vars
         Additional variables to be passed to the functions.
 

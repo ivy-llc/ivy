@@ -206,5 +206,10 @@ def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
 
 
 @to_ivy_arrays_and_back
+def csingle(x):
+    return ivy.astype(x, ivy.complex64)
+
+
+@to_ivy_arrays_and_back
 def cdouble(x):
     return ivy.astype(x, ivy.complex128)

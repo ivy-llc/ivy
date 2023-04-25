@@ -830,7 +830,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        """
+        r"""
         ivy.Container static method variant of ivy.frombuffer. This method simply
         wraps the function, and so the docstring for ivy.frombuffer also applies
         to this method with minimal changes.
@@ -910,7 +910,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        """
+        r"""
         ivy.Container instance method variant of ivy.frombuffer. This method
         simply wraps the function, and so the docstring for ivy.frombuffer
         also applies to this method with minimal changes.

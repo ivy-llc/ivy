@@ -25,7 +25,6 @@ class LocalIvyImporter:
     def __exit__(self, *exc):
         path_hooks.remove(self.finder)
         sys.meta_path.remove(self.finder)
-        _clear_cache()
 
 
 def _clear_cache():

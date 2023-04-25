@@ -17,19 +17,23 @@ def ifftshift(x, axes=None):
     """
     The inverse of `fftshift`. Although identical for even-length `x`, the
     functions differ by one sample for odd-length `x`.
+
     Parameters
     ----------
     x : array_like
         Input array.
     axes : int or shape tuple, optional
         Axes over which to calculate.  Defaults to None, which shifts all axes.
+
     Returns
     -------
     y : ndarray
         The shifted array.
+
     See Also
     --------
     fftshift : Shift zero-frequency component to the center of the spectrum.
+
     Examples
     --------
     >>> arr = ivy.functional.frontends.numpy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
@@ -42,17 +46,15 @@ def ifftshift(x, axes=None):
            [ 9,  7,  8],
            [ 3,  1,  2]])
     """
-
     x = ivy.asarray(x)
 
     if axes is None:
         axes = tuple(range(x.ndim))
         shift = [-(dim // 2) for dim in x.shape]
-    elif isinstance(axes, (int,
-                           type(ivy.uint8),
-                           type(ivy.uint16),
-                           type(ivy.uint32),
-                           type(ivy.uint64))):
+    elif isinstance(
+        axes,
+        (int, type(ivy.uint8), type(ivy.uint16), type(ivy.uint32), type(ivy.uint64)),
+    ):
         shift = -(x.shape[axes] // 2)
     else:
         shift = [-(x.shape[ax] // 2) for ax in axes]
