@@ -848,7 +848,7 @@ def test_torch_unique(
 )
 def test_torch_mode(
     *,
-    dtype_input_axis,
+    dtype_x_axis,
     keepdim,
     on_device,
     fn_tree,
