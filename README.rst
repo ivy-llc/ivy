@@ -255,7 +255,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     def loss_fn(pred, target):
         return ivy.mean((pred - target)**2)
 
-    for step in range(100):
+    for epoch in range(51):
         # forward pass
         pred = model(x)
 
@@ -266,10 +266,17 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         model.v = optimizer.step(model.v, grads)
 
         # print current loss
-        print(f'Step: {step:2d} --- Loss: {ivy.to_numpy(loss).item():.5f}')
+        print(f'Epoch: {epoch:2d} --- Loss: {ivy.to_numpy(loss).item():.5f}')
 
     print('Finished training!')
 
+The model's output can be visualized as follows:
+
+.. raw:: html
+
+   <div align="center">
+      <img width="50%" src="https://i.imgur.com/DUc97i2.gif">
+   </div>
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
 covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more!
