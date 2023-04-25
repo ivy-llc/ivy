@@ -176,7 +176,6 @@ def test_jax_numpy_repeat(
     frontend,
     test_flags,
 ):
-
     value_dtype, value = dtype_value
 
     if not isinstance(repeat, int):

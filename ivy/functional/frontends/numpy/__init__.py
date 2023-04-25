@@ -1,4 +1,3 @@
-# flake8: noqa
 import ivy
 from ivy.utils.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
@@ -500,6 +499,7 @@ from .linalg.matrix_and_vector_products import (
     # einsum,
     # einsum_path,
     kron,
+    cross,
 )
 
 from .linalg.decompositions import cholesky, qr, svd
@@ -522,7 +522,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _square,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (
+from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
     _add,
     _divide,
     _float_power,
@@ -540,7 +540,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _divmod,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
+from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
     _arccos,
     _arcsin,
     _arctan,
@@ -552,7 +552,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _degrees,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
+from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
     _imag,
     _real,
     _conj,
@@ -582,7 +582,7 @@ from ivy.functional.frontends.numpy.logic.comparison import (
     _not_equal,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (
+from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (  # noqa
     _exp,
     _exp2,
     _expm1,

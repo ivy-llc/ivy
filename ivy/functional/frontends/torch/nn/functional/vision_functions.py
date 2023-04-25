@@ -10,7 +10,6 @@ from ivy.utils.exceptions import IvyNotImplementedException
 
 @to_ivy_arrays_and_back
 def pixel_shuffle(input, upscale_factor):
-
     input_shape = ivy.shape(input)
 
     ivy.utils.assertions.check_equal(
@@ -49,7 +48,6 @@ def pixel_shuffle(input, upscale_factor):
 
 @to_ivy_arrays_and_back
 def pixel_unshuffle(input, downscale_factor):
-
     input_shape = ivy.shape(input)
 
     ivy.utils.assertions.check_equal(
@@ -292,7 +290,6 @@ def upsample(
     mode="nearest",
     align_corners=None,
 ):
-
     return interpolate(
         input,
         size=size,
@@ -305,14 +302,12 @@ def upsample(
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_nearest(input, size=None, scale_factor=None):
-
     return interpolate(input, size=size, scale_factor=scale_factor, mode="nearest")
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_bilinear(input, size=None, scale_factor=None):
-
     return interpolate(
         input, size=size, scale_factor=scale_factor, mode="bilinear", align_corners=True
     )

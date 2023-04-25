@@ -17,8 +17,10 @@ FN_DECORATORS = [
     "handle_array_function",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
+    "outputs_to_ivy_shapes",
     "outputs_to_native_arrays",
     "inputs_to_native_arrays",
+    "inputs_to_native_shapes",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
     "handle_view_indexing",
@@ -221,7 +223,6 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
                     for sq in ["Sequence", "List", "Tuple", "float", "int", "bool"]
                 )
             ):
-
                 if i < num_args:
                     # Fix for ellipsis, slices for numpy's __getitem__
                     # No need to try and convert them into arrays
@@ -315,6 +316,38 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
     _inputs_to_ivy_arrays.inputs_to_ivy_arrays = True
     return _inputs_to_ivy_arrays
+
+
+def inputs_to_native_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        ivy_shape_idxs = ivy.nested_argwhere(
+            [args, kwargs], lambda x: isinstance(x, ivy.Shape)
+        )
+        ivy_shapes = ivy.multi_index_nest([args, kwargs], ivy_shape_idxs)
+        native_shapes = [ivy.to_native_shape(shape) for shape in ivy_shapes]
+        args, kwargs = ivy.set_nest_at_indices(
+            [args, kwargs], ivy_shape_idxs, native_shapes, shallow=False
+        )
+        return fn(*args, **kwargs)
+
+    new_fn.inputs_to_native_shapes = True
+    return new_fn
+
+
+def outputs_to_ivy_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        native_shape_idxs = ivy.nested_argwhere(
+            [args, kwargs], lambda x: isinstance(x, ivy.NativeShape)
+        )
+        native_shapes = ivy.multi_index_nest([args, kwargs], native_shape_idxs)
+        ivy_shapes = ivy.to_ivy(native_shapes)
+        ivy.set_nest_at_indices([args, kwargs], native_shape_idxs, ivy_shapes)
+        return fn(*args, **kwargs)
+
+    new_fn.outputs_to_ivy_shapes = True
+    return new_fn
 
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -788,7 +821,6 @@ def _wrap_function(
 
 # Gets dtype from a version dictionary
 def _dtype_from_version(dic, version):
-
     # if version is a string, it's a frontend function
     if isinstance(version, str):
         version = ivy.functional.frontends.__dict__["versions"][version]
@@ -869,7 +901,6 @@ def _dtype_device_wrapper_creator(attrib, t):
     """
 
     def _wrapper_outer(version_dict, version, exclusive=True):
-
         typesets = {
             "valid": ivy.valid_dtypes,
             "numeric": ivy.valid_numeric_dtypes,
@@ -1222,7 +1253,6 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-
         self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):

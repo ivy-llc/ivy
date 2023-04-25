@@ -1,4 +1,3 @@
-# flake8: noqa
 # global
 from numbers import Number
 from typing import Union, Tuple, Iterable

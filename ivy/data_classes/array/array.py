@@ -8,7 +8,7 @@ from typing import Optional
 
 # local
 import ivy
-from .conversions import *
+from .conversions import args_to_native, to_ivy
 from .activations import _ArrayWithActivations
 from .creation import _ArrayWithCreation
 from .data_type import _ArrayWithDataTypes
@@ -148,11 +148,11 @@ class Array(
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
             )
-        self._shape = self._data.shape
         self._size = (
             functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         )
         self._itemsize = ivy.itemsize(self._data)
+        self._strides = ivy.strides(self._data)
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.as_ivy_dev(self._device)
@@ -244,12 +244,12 @@ class Array(
     @property
     def ndim(self) -> int:
         """Number of array dimensions (axes)."""
-        return len(tuple(self._shape))
+        return len(tuple(self._data.shape))
 
     @property
     def shape(self) -> ivy.Shape:
         """Array dimensions."""
-        return ivy.Shape(self._shape)
+        return ivy.Shape(self._data.shape)
 
     @property
     def size(self) -> Optional[int]:
@@ -260,6 +260,11 @@ class Array(
     def itemsize(self) -> Optional[int]:
         """Size of array elements in bytes."""
         return self._itemsize
+
+    @property
+    def strides(self) -> Optional[int]:
+        """Strides across each dimension."""
+        return self._strides
 
     @property
     def T(self) -> ivy.Array:
@@ -380,7 +385,7 @@ class Array(
             if ivy.current_backend_str() == "torch":
                 self._data = self._data.detach()
             self._data.__setitem__(query, val)
-        except (AttributeError, TypeError):
+        except (AttributeError, TypeError, ValueError):
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
             self._dtype = ivy.dtype(self._data)
 

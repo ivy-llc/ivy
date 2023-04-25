@@ -16,7 +16,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -62,7 +61,6 @@ def test_numpy_ceil(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -134,7 +132,6 @@ def test_numpy_fix(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -180,7 +177,6 @@ def test_numpy_trunc(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
 )

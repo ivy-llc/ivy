@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -155,7 +156,6 @@ def linear(
     )
 
     if ivy.exists(bias):
-
         # OBS x [1]*len(IBS) x OF
         bias_broadcast = ivy.reshape(
             bias, outer_batch_shape + [1] * num_inner_batch_dims + [num_out_feats]
@@ -538,7 +538,6 @@ def scaled_dot_product_attention(
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
 
     if ivy.exists(mask):
-
         # BS x Q x K
         sim = ivy.where(
             ivy.logical_not(mask),
@@ -886,6 +885,7 @@ def conv1d(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1146,6 +1146,7 @@ def conv2d(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1518,6 +1519,7 @@ def conv3d(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1701,6 +1703,7 @@ def conv_general_dilated(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1772,6 +1775,7 @@ def conv_general_transpose(
     )
 
 
+@inputs_to_native_shapes
 @handle_array_function
 @handle_out_argument
 @handle_array_like_without_promotion

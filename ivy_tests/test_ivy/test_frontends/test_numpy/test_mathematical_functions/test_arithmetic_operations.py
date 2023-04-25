@@ -1,7 +1,6 @@
 # global
 from hypothesis import assume, strategies as st
 import numpy as np
-import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -23,7 +22,6 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_element
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -70,7 +68,6 @@ def test_numpy_add(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -148,7 +145,6 @@ def test_numpy_vdot(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -198,7 +194,6 @@ def test_numpy_divide(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -249,7 +244,6 @@ def test_numpy_multiply(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="integer",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -292,8 +286,6 @@ def test_numpy_power(
     fn_tree="numpy.float_power",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[lambda: _float_power_helper()],
-        get_dtypes_kind="float_and_complex",
-        special=False,
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -343,7 +335,6 @@ def test_numpy_float_power(
                 available_dtypes=helpers.get_dtypes("numeric"),
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -389,7 +380,6 @@ def test_numpy_positive(
                 available_dtypes=helpers.get_dtypes("numeric"),
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -439,7 +429,6 @@ def test_numpy_negative(
                 safety_factor_scale="linear",
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -496,7 +485,6 @@ def test_numpy_floor_divide(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -548,7 +536,6 @@ def test_numpy_mod(
                 exclude_min=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     test_with_out=st.just(False),
@@ -564,10 +551,7 @@ def test_numpy_modf(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
-    assume(not np.iscomplex(x))
-    if dtype:
-        assume(np.dtype(dtype) >= np.dtype(input_dtype[0]))
+    input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -580,6 +564,12 @@ def test_numpy_modf(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )
 
 
@@ -595,7 +585,6 @@ def test_numpy_modf(
                 safety_factor_scale="log",
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -646,7 +635,6 @@ def test_numpy_reciprocal(
                 safety_factor_scale="log",
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -704,7 +692,6 @@ def test_numpy_fmod(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     test_with_out=st.just(False),

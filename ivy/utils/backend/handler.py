@@ -222,8 +222,6 @@ def current_backend(*args, **kwargs):
     >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
     """
-    if ivy.is_local():
-        return ivy
     global implicit_backend
     # if a global backend has been set with
     # set_backend then this will be returned
@@ -275,11 +273,11 @@ def _set_backend_as_ivy(
             )
 
 
-def _handle_backend_specific_vars(backend):
+def _handle_backend_specific_vars(target, backend):
     if backend.current_backend_str() == "numpy":
-        backend.set_default_device("cpu")
+        target.set_default_device("cpu")
     elif backend.current_backend_str() == "jax":
-        backend.set_global_attr("RNG", backend.functional.backends.jax.random.RNG)
+        target.set_global_attr("RNG", target.functional.backends.jax.random.RNG)
 
 
 def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
@@ -487,6 +485,11 @@ def set_torch_backend():
     set_backend("torch")
 
 
+def set_paddle_backend():
+    """Sets paddle to be the global backend. equivalent to `ivy.set_backend("paddle")`."""  # noqa
+    set_backend("paddle")
+
+
 @prevent_access_locally
 def previous_backend():
     """Unsets the current global backend, and adjusts the ivy dict such that either
@@ -592,7 +595,7 @@ def with_backend(backend: str, cached: bool = False):
         backend_module = _importlib._import_module(
             ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
         )
-        _handle_backend_specific_vars(ivy_pack)
+        _handle_backend_specific_vars(ivy_pack, backend_module)
         # We know for sure that the backend stack is empty
         # no need to do backend unsetting
         ivy_pack.utils.backend.handler._set_backend_as_ivy(
@@ -603,6 +606,7 @@ def with_backend(backend: str, cached: bool = False):
             _importlib.import_cache
         )
         _compiled_backends_ids[ivy_pack._compiled_id] = ivy_pack
+        _importlib._clear_cache()
     try:
         compiled_backends[backend].append(ivy_pack)
     except KeyError:
