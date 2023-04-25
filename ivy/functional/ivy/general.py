@@ -3848,3 +3848,31 @@ def itemsize(
     16
     """
     return ivy.current_backend().itemsize(x)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def strides(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> Tuple[int]:
+    """Returns the input array's strides across each dimension.
+
+    Parameters
+    ----------
+    x
+       The input array.
+
+    Returns
+    -------
+    ret
+        A tuple containing the strides.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1, 5, 9], [2, 6, 10]])
+    >>> ivy.strides(x)
+    (4, 8)
+    """
+    return ivy.current_backend().strides(x)

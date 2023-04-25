@@ -1409,8 +1409,6 @@ def atleast_2d(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_view
 @handle_nestable
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],

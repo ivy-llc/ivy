@@ -134,13 +134,10 @@ class Module(ModuleConverters, ModuleHelpers):
         as inputs to the call function fn of the module.
         """
 
-        def _fn_with_var_arg_wrapper(*a, with_grads=None, **kw):
-            with_grads = ivy.with_grads(with_grads=with_grads)
+        def _fn_with_var_arg_wrapper(*a, **kw):
             if "v" in kw.keys():
                 del kw["v"]
             v = v_fn(self.v)
-            if not with_grads:
-                v = v.stop_gradient()
             return fn(*a, **kw, v=v)
 
         _fn_with_var_arg_wrapper.wrapped = True
@@ -407,7 +404,7 @@ class Module(ModuleConverters, ModuleHelpers):
             self._check_submod_ret()
         return ret
 
-    def _call(self, *args, v=None, with_grads=None, **kwargs):
+    def _call(self, *args, v=None, **kwargs):
         """
         The forward pass of the layer,
         treating layer instance as callable function.
@@ -417,15 +414,12 @@ class Module(ModuleConverters, ModuleHelpers):
         v
             Replace `v` of current layer when forwarding. Restore
             after the forward finished.
-        with_grads
-            Whether to forward with gradients.
 
         Returns
         -------
         ret
             Result of the forward pass of the layer.
         """
-        with_grads = ivy.with_grads(with_grads=with_grads)
         if not self._built:
             self.build(
                 *args,
@@ -435,8 +429,6 @@ class Module(ModuleConverters, ModuleHelpers):
             )
         if v is not None:
             v_orig = self.v
-            if not with_grads:
-                v = v.stop_gradient()
             self.v = (
                 Container(v, **v.cont_config)
                 if isinstance(v, Container)
@@ -446,13 +438,7 @@ class Module(ModuleConverters, ModuleHelpers):
             self.v = v_orig
             return ret
         elif hasattr(self.__call__, "wrapped"):
-            return self.__call__(*args, with_grads=with_grads, **kwargs)
-        elif not with_grads:
-            v_orig = self.v
-            self.v = v_orig.stop_gradient()
-            ret = self._forward_with_tracking(*args, **kwargs)
-            self.v = v_orig
-            return ret
+            return self.__call__(*args, **kwargs)
         return self._forward_with_tracking(*args, **kwargs)
 
     # Public #
@@ -461,7 +447,6 @@ class Module(ModuleConverters, ModuleHelpers):
         self,
         *args,
         v=None,
-        with_grads=None,
         stateful=None,
         arg_stateful_idxs=None,
         kwarg_stateful_idxs=None,
@@ -480,8 +465,6 @@ class Module(ModuleConverters, ModuleHelpers):
         v
             If given, use this container as internal varibles temporarily.
             Default is ``None``.
-        with_grads
-            If True, forward this pass with gradients.
         track_submod_rets
             If True, will track the returns of submodules.
         submod_depth
@@ -512,7 +495,6 @@ class Module(ModuleConverters, ModuleHelpers):
             v = v if v else self.v
             return self._module_graph(*args, v=v, **kwargs)
 
-        with_grads = ivy.with_grads(with_grads=with_grads)
         with ivy.utils.backend.ContextManager("numpy") as backend:
             self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
             self.submod_call_order = ivy.Container(
@@ -528,7 +510,7 @@ class Module(ModuleConverters, ModuleHelpers):
 
         # convert variables to native arrays so that they can be tracked
         v = ivy.to_native(v)
-        ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
+        ret = self._call(*args, v=v, **kwargs)
         self._unset_submod_flags()
         return ret
 
@@ -681,7 +663,6 @@ class Module(ModuleConverters, ModuleHelpers):
         self,
         *args,
         v=None,
-        with_grads=True,
         stateful: Optional[List] = None,
         arg_stateful_idxs: Optional[List] = None,
         kwarg_stateful_idxs: Optional[List] = None,
@@ -698,11 +679,10 @@ class Module(ModuleConverters, ModuleHelpers):
         return_graph: bool = False,
         **kwargs,
     ):
-        self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
+        self(*args, v=v, **kwargs)  # for on call build modes
         if not self._built:
             self.build(*args, from_call=False, **kwargs)  # for explicit build modes
         kwargs["v"] = ivy.default(v, self.v)
-        kwargs["with_grads"] = with_grads
         graph = ivy.show_graph(
             self._call,
             *args,

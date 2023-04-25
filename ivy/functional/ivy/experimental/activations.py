@@ -28,7 +28,9 @@ def logit(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the logit of x, i.e. logit(x) = log(x / (1 - x)).
+    Computes the logit of x.
+
+    logit(x) = log(x / (1 - x)).
 
     Parameters
     ----------
@@ -242,7 +244,9 @@ def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array],
 ) -> ivy.Array:
     """
-    Applies element-wise Log-sigmoid of x i.e. logsigmoid(x) = log(1 / (1 + exp(-x)).
+    Applies element-wise Log-sigmoid of x.
+
+    logsigmoid(x) = log(1 / (1 + exp(-x)).
 
     Parameters
     ----------

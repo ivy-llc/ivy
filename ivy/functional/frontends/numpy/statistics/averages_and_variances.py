@@ -25,7 +25,6 @@ def var(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ):
-
     if dtype is not None:
         a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
 
@@ -343,7 +342,6 @@ def nanpercentile(
         resultarray = []
         nanlessarray = []
         for x in a:
-
             for i in x:
                 if not ivy.isnan(i):
                     nanlessarray.append(i)
@@ -375,7 +373,6 @@ def nanpercentile(
             ivy.logging.warning("axis is 0 but couldn't swap")
 
         finally:
-
             nanlessarrayofarrays = []
             for i in a:
                 nanlessarray = []
