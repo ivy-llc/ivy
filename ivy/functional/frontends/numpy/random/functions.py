@@ -117,3 +117,18 @@ def chisquare(df, size=None):
 def lognormal(mean=0.0, sigma=1.0, size=None):
     ret = ivy.exp(ivy.random_normal(mean=mean, std=sigma, shape=size, dtype="float64"))
     return ret
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def logistic(loc=0.0, scale=1.0, size=None):
+
+    if not ivy.all(ivy.isfinite(scale)):
+        raise ValueError("Array must not contain NaN, infinity or negative values.")
+
+    if ivy.any(scale <= 0):
+        raise ValueError("Array must be positive definite.")
+
+    u = ivy.random_uniform(low=loc, high=scale, shape=size, dtype="float")
+    ret = loc + scale * ivy.log(u / (1.0 - u))
+    return ret
