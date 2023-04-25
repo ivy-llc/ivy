@@ -1587,6 +1587,7 @@ def arrays_for_pooling(
     if data_format == "channel_first":
         dim = len(in_shape)
         x[0] = np.transpose(x[0], (0, dim - 1, *range(1, dim - 1)))
+
     ret = dtype, x, kernel, strides, padding
     if return_dilation:
         return *ret, dilations
