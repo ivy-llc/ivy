@@ -18,9 +18,7 @@ def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
     else:
         output_dim = x2_dim
 
-    return ivy.vector_norm(
-        x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim
-    )
+    return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
 
 
 def cosine_similarity(x1, x2):
@@ -334,7 +332,6 @@ def nll_loss(
 
 @to_ivy_arrays_and_back
 def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
-
     if var.shape != input.shape:
         if input.shape[:-1] == var.shape:
             var = torch_frontend.unsqueeze(var, dim=2)
@@ -574,7 +571,6 @@ def triplet_margin_with_distance_loss(
     swap=False,
     reduction="mean",
 ):
-
     reduction = _get_reduction(reduction)
 
     a_dim = anchor.ndim
@@ -599,8 +595,6 @@ def triplet_margin_with_distance_loss(
         dist_swap = distance_function(positive, negative)
         dist_neg = ivy.minimum(dist_neg, dist_swap)
 
-    loss = ivy.maximum(
-        dist_pos - dist_neg + ivy.array(margin), ivy.array(0.0)
-    )
-    
+    loss = ivy.maximum(dist_pos - dist_neg + ivy.array(margin), ivy.array(0.0))
+
     return reduction(loss).astype(anchor.dtype)

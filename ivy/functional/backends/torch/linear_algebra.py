@@ -54,7 +54,6 @@ def cross(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     if axis is None:
         axis = -1
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -174,9 +173,9 @@ def matmul(
     if out in (x1, x2):
         out = None
     if transpose_a:
-        x1 = torch.t(x1)
+        x1 = torch.swapaxes(x1, -1, -2)
     if transpose_b:
-        x2 = torch.t(x2)
+        x2 = torch.swapaxes(x2, -1, -2)
     if adjoint_a:
         x1 = torch.adjoint(x1)
     if adjoint_b:
@@ -374,7 +373,6 @@ def solve(
 def svd(
     x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
-
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
 

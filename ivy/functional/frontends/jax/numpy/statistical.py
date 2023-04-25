@@ -153,7 +153,6 @@ amax = max
 
 @to_ivy_arrays_and_back
 def average(a, axis=None, weights=None, returned=False, keepdims=False):
-
     # canonicalize_axis to ensure axis or the values in axis > 0
     if isinstance(axis, tuple) or isinstance(axis, list):
         a_ndim = len(ivy.shape(a))
@@ -420,3 +419,15 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
 @to_ivy_arrays_and_back
 def corrcoef(x, y=None, rowvar=True):
     return ivy.corrcoef(x, y=y, rowvar=rowvar)
+
+
+@to_ivy_arrays_and_back
+def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
+    return ivy.median(a, axis=axis, out=out, keepdims=keepdims)
+
+
+@to_ivy_arrays_and_back
+def ptp(a, axis=None, out=None, keepdims=False):
+    x = ivy.max(a, axis=axis, keepdims=keepdims)
+    y = ivy.min(a, axis=axis, keepdims=keepdims)
+    return ivy.subtract(x, y)

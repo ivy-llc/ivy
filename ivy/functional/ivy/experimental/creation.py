@@ -15,6 +15,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     infer_dtype,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 
 
@@ -210,7 +211,7 @@ def kaiser_window(
     periodic: bool = True,
     beta: float = 12.0,
     *,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Kaiser window with window length window_length and shape beta
@@ -249,7 +250,6 @@ def kaiser_window(
 
 
 @infer_dtype
-@outputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -288,10 +288,10 @@ def kaiser_bessel_derived_window(
     >>> ivy.kaiser_bessel_derived_window(5)
     ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])
 
-    >>> ivy.kaiser_derived_window(5, False)
+    >>> ivy.kaiser_bessel_derived_window(5, False)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
-    >>> ivy.kaiser_derived_window(5, False, 5)
+    >>> ivy.kaiser_bessel_derived_window(5, False, 5)
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
     window_length = window_length // 2
@@ -314,8 +314,10 @@ def kaiser_bessel_derived_window(
     return ivy.array(dn_low + dn_mid, dtype=dtype, out=out)
 
 
+kaiser_bessel_derived_window.mixed_function = True
+
+
 @infer_dtype
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -326,7 +328,7 @@ def hamming_window(
     periodic: bool = True,
     alpha: float = 0.54,
     beta: float = 0.46,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Hamming window with window length window_length
@@ -385,6 +387,9 @@ def hamming_window(
                 dtype=dtype,
                 out=out,
             )
+
+
+hamming_window.mixed_function = True
 
 
 @infer_device
@@ -484,7 +489,7 @@ def tril_indices(
 
 @infer_device
 @infer_dtype
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -498,8 +503,9 @@ def eye_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a array filled with ones on the k diagonal and zeros elsewhere. having
-    the same ``shape`` as an input array ``x``.
+    """Returns a 2D array filled with ones on the k diagonal and zeros elsewhere. having
+    the same ``shape`` as the first and last dim of input array ``x``. input array ``x``
+    should to be 2D.
 
 
     Parameters
@@ -523,15 +529,6 @@ def eye_like(
     ret
         an array having the same shape as ``x`` and filled with ``ones`` in
         diagonal ``k`` and ``zeros`` elsewhere.
-
-    Notes
-    -----
-    Generate a 2D tensor (matrix) with ones on the diagonal and zeros everywhere else.
-    Only 2D tensors are supported, i.e. input T1 must be of rank 2. The shape of the
-    output tensor is the same as the input tensor. The data type can be specified by
-    the 'dtype' argument. If 'dtype' is not specified, then the type of input tensor
-    is used. By default, the main diagonal is populated with ones, but attribute 'k'
-    can be used to populate upper or lower diagonals.
 
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -569,8 +566,10 @@ def eye_like(
     }
 
     """
-    cols = 1 if len(x.shape) == 1 else x.shape[-1]
-    rows = x.shape[0]
+    shape = Tuple(ivy.Shape(x))
+    dim = len(shape)
+    cols = dim if dim <= 1 else shape[-1]
+    rows = dim if dim < 1 else shape[0]
     return ivy.eye(
         rows,
         cols,
@@ -578,4 +577,69 @@ def eye_like(
         dtype=dtype,
         device=device,
         out=out,
+    )
+
+
+eye_like.mixed_function = True
+
+
+@outputs_to_ivy_arrays
+@handle_nestable
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> ivy.Array:
+    r"""
+    Interpret a buffer as a 1-dimensional array.
+
+    .. note::
+        Note that either of the following must be true:
+        1. count is a positive non-zero number, and the total number of bytes
+        in the buffer is equal or greater than offset plus count times the size
+        (in bytes) of dtype.
+        2. count is negative, and the length (number of bytes) of the buffer
+        subtracted by the offset is a multiple of the size (in bytes) of dtype.
+
+    Parameters
+    ----------
+    buffer
+        An object that exposes the buffer interface.
+    dtype
+        Data-type of the returned array; default: float.
+    count
+        Number of items to read. -1 means all data in the buffer.
+    offset
+        Start reading the buffer from this offset (in bytes); default: 0.
+
+    Returns
+    -------
+    out
+        1-dimensional array.
+
+    Examples
+    --------
+    With :class:`bytes` inputs:
+
+    >>> x = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
+    >>> y = ivy.frombuffer(x)
+    >>> print(y)
+    (ivy.array([1., 2.]))
+
+    >>> x = b'\x01\x02\x03\x04'
+    >>> y = ivy.frombuffer(x, dtype='int8', count=-2, offset=1)
+    >>> print(y)
+    (ivy.array([2, 3, 4]))
+
+    >>> x = b'\x00<\x00@\x00B\x00D\x00E'
+    >>> y = ivy.frombuffer(x, dtype='float16', count=4, offset=2)
+    >>> print(y)
+    (ivy.array([2., 3., 4., 5.]))
+    """
+    return current_backend().frombuffer(
+        buffer,
+        dtype=dtype,
+        count=count,
+        offset=offset,
     )

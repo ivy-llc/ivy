@@ -1,4 +1,3 @@
-# flake8: noqa
 import ivy
 from ivy.utils.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
@@ -439,34 +438,24 @@ def promote_types_of_numpy_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
-    # Ignore type of 0-dim arrays to mimic numpy
-    if (
-        hasattr(x1, "shape")
-        and x1.shape == ()
-        and not (hasattr(x2, "shape") and x2.shape == ())
-    ):
-        x1 = ivy.to_scalar(x1)
-    if (
-        hasattr(x2, "shape")
-        and x2.shape == ()
-        and not (hasattr(x1, "shape") and x1.shape == ())
-    ):
-        x2 = ivy.to_scalar(x2)
+    # ToDo: Overflows not working properly for numpy, if a scalar or 0-dim
+    #   is passed with an array, it should go to the next largest dtype that
+    #   can hold the value without overflow. E.g a np.array([5], 'int8') + 300 operation
+    #   results in np.array([305]) with int16 dtype
+    x1 = ivy.asarray(x1)
+    x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
-        x1 = ivy.asarray(x1)
+    # Ignore type of 0-dim arrays or scalars to mimic numpy
+    if not x1.shape == () and x2.shape == () and type1 == type2:
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
-    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+    elif x1.shape == () and not x2.shape == () and type1 == type2:
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
-        x2 = ivy.asarray(x2)
     else:
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2)
         promoted = promote_numpy_dtypes(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
@@ -510,6 +499,7 @@ from .linalg.matrix_and_vector_products import (
     # einsum,
     # einsum_path,
     kron,
+    cross,
 )
 
 from .linalg.decompositions import cholesky, qr, svd
@@ -532,13 +522,14 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _square,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (
+from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
     _add,
     _divide,
     _float_power,
     _floor_divide,
     _fmod,
     _mod,
+    _modf,
     _multiply,
     _negative,
     _positive,
@@ -549,7 +540,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _divmod,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
+from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
     _arccos,
     _arcsin,
     _arctan,
@@ -558,11 +549,13 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _rad2deg,
     _sin,
     _tan,
+    _degrees,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
+from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
     _imag,
     _real,
+    _conj,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -589,7 +582,7 @@ from ivy.functional.frontends.numpy.logic.comparison import (
     _not_equal,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (
+from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (  # noqa
     _exp,
     _exp2,
     _expm1,
@@ -600,6 +593,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarit
     _logaddexp,
     _logaddexp2,
     _ldexp,
+    _frexp,
 )
 
 from ivy.functional.frontends.numpy.logic.array_type_testing import (
@@ -621,6 +615,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _maximum,
     _minimum,
     _fmax,
+    _fmin,
 )
 
 _frontend_array = array
@@ -642,6 +637,7 @@ float_power = ufunc("_float_power")
 floor_divide = ufunc("_floor_divide")
 fmod = ufunc("_fmod")
 mod = ufunc("_mod")
+modf = ufunc("_modf")
 multiply = ufunc("_multiply")
 negative = ufunc("_negative")
 positive = ufunc("_positive")
@@ -657,6 +653,7 @@ deg2rad = ufunc("_deg2rad")
 rad2deg = ufunc("_rad2deg")
 sin = ufunc("_sin")
 tan = ufunc("_tan")
+degrees = ufunc("_degrees")
 arccosh = ufunc("_arccosh")
 arcsinh = ufunc("_arcsinh")
 arctanh = ufunc("_arctanh")
@@ -694,5 +691,8 @@ minimum = ufunc("_minimum")
 real = ufunc("_real")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
+fmin = ufunc("_fmin")
 ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
+frexp = ufunc("_frexp")
+conj = ufunc("_conj")

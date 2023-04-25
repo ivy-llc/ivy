@@ -5,8 +5,9 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy
-from ivy.functional.frontends.torch.nn.functional.loss_functions \
-    import cosine_similarity
+from ivy.functional.frontends.torch.nn.functional.loss_functions import (
+    cosine_similarity,
+)
 
 
 # cross_entropy
@@ -992,10 +993,7 @@ def test_torch_multilabel_soft_margin_loss(
         min_dim_size=1,
     ),
     distance_function=st.sampled_from([cosine_similarity, None]),
-    margin=st.floats(
-        min_value=-10,
-        max_value=10
-    ),
+    margin=st.floats(min_value=-10, max_value=10),
     swap=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
