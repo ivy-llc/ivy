@@ -104,7 +104,6 @@ def test_tensorflow_clip_by_value(
 
 @st.composite
 def _get_global_norm_clip_inputs(draw):
-
     t_list_dtype, t_list = draw(
         helpers.dtype_and_values(
             num_arrays=2,
@@ -644,6 +643,32 @@ def test_tensorflow_expand_dims(
         on_device=on_device,
         input=value[0],
         axis=axis,
+    )
+
+
+# identity_n
+@handle_frontend_test(
+    fn_tree="tensorflow.identity_n",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_identity_n(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
     )
 
 
@@ -1450,7 +1475,6 @@ def test_tensorflow_one_hot(
     test_flags,
     on_device,
 ):
-
     input_dtype, x = dtype_and_x
     depth = 10
     helpers.test_frontend_function(
@@ -1795,7 +1819,6 @@ def test_tensorflow_reverse(
     test_flags,
     on_device,
 ):
-
     dtype, x, axis_dtype, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=dtype + axis_dtype,

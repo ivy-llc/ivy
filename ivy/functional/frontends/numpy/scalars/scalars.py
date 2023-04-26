@@ -40,7 +40,6 @@ bool8 = bool_
 
 class number(generic):
     _name = "number"
-    pass
 
 
 class integer(number):
@@ -52,7 +51,6 @@ class integer(number):
 
 class signedinteger(integer):
     _name = "signedinteger"
-    pass
 
 
 class byte(signedinteger):
@@ -154,7 +152,6 @@ class longlong(signedinteger):
 
 class unsignedinteger(integer):
     _name = "unsignedinteger"
-    pass
 
 
 class ubyte(unsignedinteger):
@@ -256,7 +253,6 @@ class ulonglong(signedinteger):
 
 class inexact(number):
     _name = "inexact"
-    pass
 
 
 class floating(inexact):
