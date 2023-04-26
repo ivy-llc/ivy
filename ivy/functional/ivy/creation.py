@@ -485,7 +485,6 @@ def ones(
 
     Examples
     --------
-
     With `Sequence[int]` input:
 
     >>> x = ivy.ones(1,1)
@@ -1339,6 +1338,7 @@ def linspace(
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
+@handle_out_argument
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,

@@ -440,6 +440,7 @@ def meshgrid(
     *arrays: paddle.Tensor,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[paddle.Tensor] = None,
 ) -> List[paddle.Tensor]:
     if not sparse:
         if indexing == "ij":
