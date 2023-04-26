@@ -237,17 +237,18 @@ def number(
     ret
         A strategy that draws integers or floats.
     """
-    common_kwargs = {
-        "min_value": min_value,
-        "max_value": max_value,
-        "safety_factor": large_abs_safety_factor,
-        "safety_factor_scale": safety_factor_scale,
-    }
     return draw(
         ints(
-            **common_kwargs
-        ) | floats(
-            **common_kwargs,
-            small_abs_safety_factor=small_abs_safety_factor
+            min_value=min_value,
+            max_value=max_value,
+            safety_factor=large_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
+        )
+        | floats(
+            min_value=min_value,
+            max_value=max_value,
+            small_abs_safety_factor=small_abs_safety_factor,
+            large_abs_safety_factor=large_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
         )
     )
