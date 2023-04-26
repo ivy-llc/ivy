@@ -31,6 +31,8 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
+    outputs_to_ivy_shapes,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -94,6 +96,33 @@ def _parse_ellipsis(so, ndims):
         + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
         + list(reversed(post))
     )
+
+
+def _parse_index(indices, shape):
+    ind = list()
+    for so in indices:
+        pre = list()
+        for s in so:
+            if s == -1:
+                pre.append(shape[len(pre) :][0] - 1)
+                break
+            pre.append(s.numpy())
+        post = list()
+        for s in reversed(so):
+            if s == -1:
+                break
+            post.append(s.numpy())
+        ind.append(
+            tuple(
+                pre
+                + [
+                    slice(None, None, None)
+                    for _ in range(len(shape) - len(pre) - len(post))
+                ]
+                + list(reversed(post))
+            )
+        )
+    return ind
 
 
 def get_referrers_recursive(
@@ -1511,7 +1540,9 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
 
 
 @handle_exceptions
-def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape:
+def to_native_shape(
+    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list]
+) -> ivy.NativeShape:
     """
     Returns the input shape in its native backend framework form
 
@@ -1528,13 +1559,23 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
     """
     if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
         return shape
-    ivy.utils.assertions.check_isinstance(shape, (int, list, tuple))
+    ivy.utils.assertions.check_isinstance(
+        shape, (int, list, tuple, ivy.Array, ivy.NativeArray, ivy.Shape)
+    )
     if isinstance(shape, int):
         shape = (shape,)
     elif isinstance(shape, list):
         shape = tuple(shape)
+    elif is_array(shape):
+        shape = ivy.to_numpy(shape).tolist()
+    elif isinstance(shape, ivy.Shape):
+        shape = shape.shape
     ivy.utils.assertions.check_all(
-        [isinstance(v, int) for v in shape], "shape must take integers only"
+        [isinstance(v, int) for v in shape if not is_array(v)],
+        "shape must take integers only",
+    )
+    ivy.utils.assertions.check_true(
+        not is_array(shape) or ivy.is_int_dtype(shape), "shape must take integers only"
     )
     return ivy.NativeShape(shape) if len(backend_stack) != 0 else ivy.Shape(shape)
 
@@ -1878,7 +1919,7 @@ def einops_rearrange(
     >>> print(x.shape)
     (32, 15, 20, 12)
     """
-    ret = einops.rearrange(x, pattern, **axes_lengths)
+    ret = einops.rearrange(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -2020,7 +2061,7 @@ def einops_repeat(
     }
 
     """
-    ret = einops.repeat(x, pattern, **axes_lengths)
+    ret = einops.repeat(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -2989,6 +3030,7 @@ def scatter_flat(
     )
 
 
+@inputs_to_native_shapes
 @handle_array_function
 @to_native_arrays_and_back
 @handle_nestable
@@ -3281,6 +3323,7 @@ def multiprocessing(context: Optional[str] = None):
 
 @handle_array_function
 @to_native_arrays_and_back
+@outputs_to_ivy_shapes
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -3821,3 +3864,31 @@ def itemsize(
     16
     """
     return ivy.current_backend().itemsize(x)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def strides(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> Tuple[int]:
+    """Returns the input array's strides across each dimension.
+
+    Parameters
+    ----------
+    x
+       The input array.
+
+    Returns
+    -------
+    ret
+        A tuple containing the strides.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1, 5, 9], [2, 6, 10]])
+    >>> ivy.strides(x)
+    (4, 8)
+    """
+    return ivy.current_backend().strides(x)

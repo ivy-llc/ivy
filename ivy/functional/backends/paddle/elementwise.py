@@ -775,19 +775,18 @@ def round(
         # this is a logic to mimic np.round behaviour
         # which rounds odd numbers up and even numbers down at limits like 0.5
         eps = 1e-6 * paddle.sign(x)
-        x = ivy.where(
-            remainder(trunc(x), 2.0).astype(
-                bool
-            ),  # check if the integer is even or odd
-            x,
-            x - eps,
-        )
-        ret_dtype = x.dtype
-        factor = paddle.pow(paddle.to_tensor(10), paddle.to_tensor(decimals)).astype(
-            ret_dtype
-        )
-        factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
-        return paddle.round(x * factor) / ivy.to_native(factor_denom)
+        with ivy.ArrayMode(False):
+            x = ivy.where(
+                remainder(trunc(x), 2.0).astype(
+                    bool
+                ),  # check if the integer is even or odd
+                x,
+                x - eps,
+            )
+            ret_dtype = x.dtype
+            factor = pow(10, decimals).astype(ret_dtype)
+            factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
+            return divide(paddle.round(multiply(x, factor)), factor_denom)
 
     x, _ = ivy.promote_types_of_inputs(x, x)
     if x.dtype not in [paddle.float32, paddle.float64]:

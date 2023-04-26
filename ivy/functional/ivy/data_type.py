@@ -45,7 +45,7 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
 
 
 def _handle_nestable_dtype_info(fn):
-    def new_fn(type):
+    def _handle_nestable_dtype_info_wrapper(type):
         if isinstance(type, ivy.Container):
             type = type.cont_map(lambda x, kc: fn(x))
             type.__dict__["max"] = type.cont_map(lambda x, kc: x.max)
@@ -53,7 +53,7 @@ def _handle_nestable_dtype_info(fn):
             return type
         return fn(type)
 
-    return new_fn
+    return _handle_nestable_dtype_info_wrapper
 
 
 # Unindent every line in the source such that
@@ -163,7 +163,6 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         # skip if it's not a function
 
         if not (inspect.isfunction(fn) or inspect.ismethod(fn)):
-
             continue
 
         fl = _get_function_list(fn)
@@ -196,7 +195,7 @@ def _get_dtypes(fn, complement=True):
         ("supported_dtypes", set.intersection, ivy.valid_dtypes),
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
-    for (key, merge_fn, base) in basic:
+    for key, merge_fn, base in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
             # only einops allowed to be a dictionary
@@ -1952,7 +1951,6 @@ def is_complex_dtype(
     return "complex" in as_ivy_dtype(dtype_in)
 
 
-@inputs_to_ivy_arrays
 @handle_exceptions
 def promote_types(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
@@ -2139,7 +2137,6 @@ def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
     default_complex_dtype_stack.append(complex_dtype)
 
 
-@inputs_to_ivy_arrays
 @handle_exceptions
 def type_promote_arrays(
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -2307,7 +2304,6 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
     return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
 
 
-@inputs_to_ivy_arrays
 @handle_exceptions
 def promote_types_of_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],

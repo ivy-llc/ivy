@@ -275,6 +275,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.cov. This method simply wraps the
         function, and so the docstring for ivy.cov also applies to this method
         with minimal changes.
+
         Parameters
         ----------
         self
@@ -308,6 +309,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -316,6 +318,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             floating-point data type determined by Type Promotion Rules and must be
             a square matrix of shape (N, N), where N is the number of variables in the
             input(s).
+
         Examples
         --------
         >>> x = ivy.array([[1,2,3],

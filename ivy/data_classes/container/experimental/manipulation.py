@@ -2657,3 +2657,35 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    def associative_scan(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        fn: Callable,
+        /,
+        *,
+        reverse: bool = False,
+        axis: int = 0,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.associative_scan.
+        This method simply wraps the function, and so the docstring for
+        ivy.associative_scan also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            The Container to scan over.
+        fn
+            The associative function to apply.
+        reverse
+            Whether to scan in reverse with respect to the given axis.
+        axis
+            The axis to scan over.
+
+        Returns
+        -------
+        ret
+            The result of the scan.
+        """
+        return ivy.associative_scan(self, fn, reverse=reverse, axis=axis)

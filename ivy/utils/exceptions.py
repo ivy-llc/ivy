@@ -133,7 +133,7 @@ class IvyDtypePromotionError(IvyException):
 
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_exceptions(*args, **kwargs):
         """
         Catch all exceptions and raise them in IvyException
 
@@ -188,5 +188,5 @@ def handle_exceptions(fn: Callable) -> Callable:
             _print_traceback_history()
             raise ivy.utils.exceptions.IvyBackendException(fn.__name__, str(e))
 
-    new_fn.handle_exceptions = True
-    return new_fn
+    _handle_exceptions.handle_exceptions = True
+    return _handle_exceptions

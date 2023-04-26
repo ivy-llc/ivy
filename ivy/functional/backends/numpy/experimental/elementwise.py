@@ -223,7 +223,6 @@ def angle(
     deg: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     return np.angle(z, deg=deg)
 
 
@@ -236,7 +235,6 @@ def imag(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     return np.imag(val)
 
 
