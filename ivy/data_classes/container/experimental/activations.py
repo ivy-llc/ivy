@@ -707,8 +707,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> z = ivy.Container.static_sigmoid(x)
         >>> print(z)
         {
-            a: ivy.array([-0.31326169, -0.69314718, -0.34115386]),
-            b: ivy.array([-0.64439666, -0.126928, -1.24115384])
+            a: ivy.array([0.36787942, 1., 0.40656969]),
+            b: ivy.array([0.90483743, 0.13533528, 2.45960307])
         }
         >>> a = ivy.array([0.3, 2.5, 4.9])
         >>> b = ivy.array([0.1, 1.2, -9.])
@@ -716,8 +716,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> z = ivy.Container.static_sigmoid(x)
         >>> print(z)
         {
-            a: ivy.array([-0.55435526, -0.07888974, -0.00741899]),
-            b: ivy.array([-0.64439666, -0.26328245, -9.00012302])
+            a: ivy.array([0.7408182, 0.08208501, 0.00744658]),
+            b: ivy.array([9.04837430e-01, 3.01194191e-01, 8.10308398e+03])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
