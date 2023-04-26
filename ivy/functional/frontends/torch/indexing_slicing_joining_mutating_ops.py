@@ -335,3 +335,16 @@ def index_copy(input, dim, index, source, *, out=None):
 @to_ivy_arrays_and_back
 def masked_select(input, mask, out=None):
     return ivy.flatten(input[mask], out=out)
+
+
+@to_ivy_arrays_and_back
+def narrow(input, dim, start, length):
+    if ivy.is_array(start):
+        if start.shape != (1,):
+            raise ivy.utils.exceptions.IvyError(
+                "start argument should be an integer or 0-dim integral Tensor"
+            )
+    num_dims = input.ndim
+    slices = [slice(None)] * num_dims
+    slices[dim] = slice(start, start + length)
+    return input[tuple(slices)]
