@@ -196,11 +196,11 @@ class Shape:
     def __init__(self, shape_tup):
         valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
         if len(backend_stack) != 0:
-            valid_types += (ivy.NativeShape, ivy.NativeArray)
+            valid_types += (ivy.NativeShape, ivy.get_native_array_type())
         else:
             valid_types += (
                 current_backend(shape_tup).NativeShape,
-                current_backend(shape_tup).NativeArray,
+                current_backend(shape_tup).get_native_array_type(),
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
         if len(backend_stack) == 0:
