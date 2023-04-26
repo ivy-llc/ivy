@@ -120,7 +120,7 @@ For example, the function :func:`prod`  is shown below:
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Calculates the product of input array x elements.
+        """Calculate the product of input array x elements.
 
         x
             input array. Should have a numeric data type.

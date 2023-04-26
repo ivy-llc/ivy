@@ -76,10 +76,12 @@ def empty(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if size and shape:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
         raise TypeError("empty() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return _to_device(np.empty(shape, dtype), device=device)
 
 
@@ -174,6 +176,7 @@ def meshgrid(
     *arrays: np.ndarray,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[np.ndarray] = None,
 ) -> List[np.ndarray]:
     return np.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
@@ -185,10 +188,12 @@ def ones(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if size and shape:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return _to_device(np.ones(shape, dtype), device=device)
 
 
@@ -217,10 +222,12 @@ def zeros(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if size and shape:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return _to_device(np.zeros(shape, dtype), device=device)
 
 

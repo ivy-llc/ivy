@@ -250,10 +250,8 @@ def test_asarray(
 
 
 # empty
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.empty",
-    size=helpers.ints(min_value=1, max_value=3),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -261,15 +259,15 @@ def test_asarray(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    unpack=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_empty(
     *,
-    size,
     shape,
+    unpack,
     dtype,
     test_flags,
     backend_fw,
@@ -278,12 +276,13 @@ def test_empty(
     ground_truth_backend,
 ):
     dims = {}
-    size = (size,)
-    if shape is None:
+    if unpack:
         i = 0
-        for x_ in size:
+        for x_ in shape:
             dims[f"x{i}"] = x_
             i += 1
+        shape = None
+        test_flags.num_positional_args = len(dims)
     ret = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -576,26 +575,24 @@ def test_meshgrid(
 
 
 # ones
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.ones",
     shape=helpers.get_shape(
-        allow_none=True,
+        allow_none=False,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
+    unpack=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False),
-    size=helpers.ints(min_value=1, max_value=3),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_ones(
     *,
-    size,
     shape,
+    unpack,
     dtype,
     test_flags,
     backend_fw,
@@ -604,13 +601,13 @@ def test_ones(
     ground_truth_backend,
 ):
     dims = {}
-    size = (size,)
-    if shape is None:
+    if unpack:
         i = 0
-        for x_ in size:
+        for x_ in shape:
             dims[f"x{i}"] = x_
             i += 1
-    test_flags.num_positional_args = len(size)
+        shape = None
+        test_flags.num_positional_args = len(dims)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -739,7 +736,6 @@ def test_triu(
 
 
 # zeros
-# TODO: fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.zeros",
     shape=helpers.get_shape(
@@ -749,16 +745,15 @@ def test_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    unpack=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False),
-    size=helpers.ints(min_value=1, max_value=3),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_zeros(
     *,
-    size,
     shape,
+    unpack,
     dtype,
     test_flags,
     backend_fw,
@@ -767,12 +762,13 @@ def test_zeros(
     ground_truth_backend,
 ):
     dims = {}
-    size = (size,)
-    if shape is None:
+    if unpack:
         i = 0
-        for x_ in size:
+        for x_ in shape:
             dims[f"x{i}"] = x_
             i += 1
+        shape = None
+        test_flags.num_positional_args = len(dims)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
