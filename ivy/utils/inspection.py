@@ -90,7 +90,8 @@ def _get_array_idxs(typ, idx_so_far=None):
 
 
 def fn_array_spec(fn):
-    """Return a specification of the function, indicating all arguments which include
+    """
+    Return a specification of the function, indicating all arguments which include
     arrays, and the indexes of these.
 
     Parameters
@@ -102,7 +103,6 @@ def fn_array_spec(fn):
     -------
     ret
         specification
-
     """
     try:  # this is because it raises error if python version 3.8.0, in certain cases
         type_hints = get_type_hints(fn)

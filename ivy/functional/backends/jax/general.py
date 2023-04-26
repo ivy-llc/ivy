@@ -7,7 +7,7 @@ import jax.numpy as jnp
 from numbers import Number
 from operator import mul
 from functools import reduce
-from typing import Iterable, Optional, Union, Sequence, Callable
+from typing import Iterable, Optional, Union, Sequence, Callable, Tuple
 import multiprocessing as _multiprocessing
 
 
@@ -325,9 +325,10 @@ def scatter_nd(
 ) -> JaxArray:
     # parse numeric inputs
     if (
-        len(indices) != 0
-        and indices != Ellipsis
-        and not (isinstance(indices, Iterable) and Ellipsis in indices)
+        indices != Ellipsis
+        and not (
+            isinstance(indices, Iterable) and (Ellipsis in indices or len(indices) != 0)
+        )
         and not isinstance(indices, slice)
         and not (
             isinstance(indices, Iterable) and any(isinstance(k, slice) for k in indices)
@@ -446,3 +447,8 @@ def isin(
 
 def itemsize(x: JaxArray) -> int:
     return x.itemsize
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+def strides(x: JaxArray) -> Tuple[int]:
+    return jax.device_get(jax.device_put(_to_array(x))).strides

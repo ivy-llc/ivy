@@ -140,7 +140,8 @@ def num_positional_args(draw, *, fn_name: str = None):
 
 def _import_fn(fn_tree: str):
     """
-    Imports a function from function tree string
+    Import a function from function tree string.
+
     Parameters
     ----------
     fn_tree
@@ -163,7 +164,8 @@ def _get_method_supported_devices_dtypes(
     method_name: str, class_module: str, class_name: str
 ):
     """
-    Get supported devices and data types for a method in Ivy API
+    Get supported devices and data types for a method in Ivy API.
+
     Parameters
     ----------
     method_name
@@ -197,7 +199,8 @@ def _get_method_supported_devices_dtypes(
 
 def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     """
-    Get supported devices and data types for a function in Ivy API
+    Get supported devices and data types for a function in Ivy API.
+
     Parameters
     ----------
     fn_name
@@ -270,8 +273,9 @@ def handle_test(
     **_given_kwargs,
 ):
     """
-    A test wrapper for Ivy functions.
-    Sets the required test globals and creates test flags strategies.
+    Test wrapper for Ivy functions.
+
+    The wrapper sets the required test globals and creates test flags strategies.
 
     Parameters
     ----------
@@ -390,8 +394,9 @@ def handle_frontend_test(
     **_given_kwargs,
 ):
     """
-    A test wrapper for Ivy frontend functions.
-    Sets the required test globals and creates test flags strategies.
+    Test wrapper for Ivy frontend functions.
+
+    The wrapper sets the required test globals and creates test flags strategies.
 
     Parameters
     ----------
@@ -512,8 +517,9 @@ def handle_method(
     **_given_kwargs,
 ):
     """
-    A test wrapper for Ivy methods.
-    Sets the required test globals and creates test flags strategies.
+    Test wrapper for Ivy methods.
+
+    The wrapper sets the required test globals and creates test flags strategies.
 
     Parameters
     ----------
@@ -619,8 +625,10 @@ def handle_frontend_method(
     **_given_kwargs,
 ):
     """
-    A test wrapper for Ivy frontends methods.
-    Sets the required test globals and creates test flags strategies.
+    Test wrapper for Ivy frontends methods.
+
+    The wrapper sets the required test globals and creates
+    test flags strategies.
 
     Parameters
     ----------

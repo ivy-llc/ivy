@@ -18,7 +18,8 @@ from . import dtype_helpers, number_helpers
 def array_bools(
     draw, *, size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
 ):
-    """Draws a list of booleans with a given size.
+    """
+    Draws a list of booleans with a given size.
 
     Parameters
     ----------
@@ -49,7 +50,6 @@ def array_bools(
     [False, False, False, False]
     [True, True, True, False]
     [True]
-
     """
     if not isinstance(size, int):
         size = draw(size)
@@ -57,7 +57,8 @@ def array_bools(
 
 
 def list_of_size(*, x, size):
-    """Returns a list of the given length with elements drawn randomly from x.
+    """
+    Return a list of the given length with elements drawn randomly from x.
 
     Parameters
     ----------
@@ -96,7 +97,6 @@ def list_of_size(*, x, size):
     [False, False, False]
     [True, True, False]
     [False, True, False]
-
     """
     return lists(x=x, min_size=size, max_size=size)
 
@@ -110,7 +110,8 @@ def lists(
     max_size=None,
     size_bounds=None,
 ):
-    """Draws a list with a random bounded size from the data-set x.
+    """
+    Draws a list with a random bounded size from the data-set x.
 
     Parameters
     ----------
@@ -171,7 +172,6 @@ def lists(
     [1.1, 1.0, 1.0, 1.0, 1.0]
     [2.00001, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
     [1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
-
     """
     if not isinstance(min_size, int) or not isinstance(max_size, int):
         integers = (
@@ -213,7 +213,8 @@ def dtype_and_values(
     dtype=None,
     array_api_dtypes=False,
 ):
-    """Draws a list of arrays with elements from the given corresponding data types.
+    """
+    Draws a list of arrays with elements from the given corresponding data types.
 
     Parameters
     ----------
@@ -338,7 +339,6 @@ def dtype_and_values(
     (['uint8'], [array([0], dtype=uint8)], (1,))
     (['float32'], [array(-1., dtype=float32)], ())
     (['int64'], [array(72057594037927936)], ())
-
     """
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
@@ -429,8 +429,9 @@ def dtype_values_axis(
     force_tuple_axis=False,
     ret_shape=False,
 ):
-    """Draws a list of arrays with elements from the given data type,
-    and a random axis of the arrays.
+    """
+    Draws a list of arrays with elements from the given data type, and a random axis of
+    the arrays.
 
     Parameters
     ----------
@@ -557,7 +558,6 @@ def dtype_values_axis(
     (['float64'], [array([inf, -5.14361019e+16, 5.96046448e-08, 1.50000000e+00])], -51)
     (['int16'], [array(12445, dtype=int16)], 171)
     (['uint32'], [array([0], dtype=uint32)], 0)
-
     """
     results = draw(
         dtype_and_values(
@@ -621,8 +621,9 @@ def array_indices_axis(
     indices_same_dims=False,
     valid_bounds=True,
 ):
-    """Generates two arrays x & indices, the values in the indices array are indices
-    of the array x. Draws an integers randomly from the minimum and maximum number of
+    """
+    Generate two arrays x & indices, the values in the indices array are indices of the
+    array x. Draws an integers randomly from the minimum and maximum number of
     positional arguments a given function can take.
 
     Parameters
@@ -713,7 +714,6 @@ def array_indices_axis(
         array([0]), -1, 0)
     (['uint64', 'int64'], array([0], dtype=uint64),
         array([0]), 0, 0)
-
     """
     x_dtype, x, x_shape = draw(
         dtype_and_values(
@@ -866,7 +866,8 @@ def array_values(
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
 ):
-    """Draws a list (of lists) of a given shape containing values of a given data type.
+    """
+    Draws a list (of lists) of a given shape containing values of a given data type.
 
     Parameters
     ----------
@@ -1145,7 +1146,7 @@ def mutually_broadcastable_shapes(
 
 @st.composite
 def array_and_broadcastable_shape(draw, dtype):
-    """Returns an array and a shape that the array can be broadcast to"""
+    """Return an array and a shape that the array can be broadcast to."""
     if isinstance(dtype, st._internal.SearchStrategy):
         dtype = draw(dtype)
         dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
