@@ -555,8 +555,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
-    _imag,
-    _real,
     _conj,
 )
 
@@ -573,6 +571,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
     _ceil,
     _trunc,
     _floor,
+    _rint,
 )
 
 from ivy.functional.frontends.numpy.logic.comparison import (
@@ -618,6 +617,10 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _minimum,
     _fmax,
     _fmin,
+)
+
+from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
+    _nextafter,
 )
 
 _frontend_array = array
@@ -667,7 +670,6 @@ trunc = ufunc("_trunc")
 equal = ufunc("_equal")
 greater = ufunc("_greater")
 greater_equal = ufunc("_greater_equal")
-imag = ufunc("_imag")
 less = ufunc("_less")
 less_equal = ufunc("_less_equal")
 not_equal = ufunc("_not_equal")
@@ -690,7 +692,6 @@ logical_xor = ufunc("_logical_xor")
 matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
-real = ufunc("_real")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
 fmin = ufunc("_fmin")
@@ -698,3 +699,5 @@ ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
 frexp = ufunc("_frexp")
 conj = ufunc("_conj")
+rint = ufunc("_rint")
+nextafter = ufunc("_nextafter")
