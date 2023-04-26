@@ -410,7 +410,7 @@ def test_torch_eigvalsh(
 @handle_frontend_test(
     fn_tree="torch.linalg.cond",
     dtype_and_x=_get_dtype_and_matrix(),
-    p=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+    p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
 )
 def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
     dtype, x = dtype_and_x
