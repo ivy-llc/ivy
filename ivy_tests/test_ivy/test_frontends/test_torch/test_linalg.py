@@ -410,6 +410,16 @@ def test_torch_eigvalsh(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.linalg.cond",
+    aliases=["torch.cond"],
+    dtype_and_x=_get_dtype_and_matrix(),
+    # p=helpers.,
+)
+def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
+    pass
+
+
 # matrix_power
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_power",
