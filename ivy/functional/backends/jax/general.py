@@ -23,7 +23,7 @@ from haiku._src.data_structures import FlatMapping
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax.device import _to_device, _to_array
-from ivy.functional.backends.jax import JaxArray, NativeArray
+from ivy.functional.backends.jax import JaxArray, _NativeArrays
 from . import backend_version
 
 
@@ -37,11 +37,11 @@ def current_backend_str() -> str:
 
 def is_native_array(x, /, *, exclusive=False):
     if exclusive:
-        return isinstance(x, NativeArray)
+        return isinstance(x, _NativeArrays)
     return isinstance(
         x,
         (
-            NativeArray,
+            _NativeArrays,
             jax.interpreters.ad.JVPTracer,
             jax.core.ShapedArray,
             jax.interpreters.partial_eval.DynamicJaxprTracer,
