@@ -446,7 +446,7 @@ def sigmoid(
     >>> print(y)
     ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
     """
-    return current_backend(x).sigmoid(x, out=out)
+    return current_backend(x).sigmoid(x)
 
 
 @handle_array_function
