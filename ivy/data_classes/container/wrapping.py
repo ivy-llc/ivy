@@ -9,7 +9,8 @@ TO_IGNORE = ["is_ivy_array", "is_native_array", "is_array", "shape"]
 
 
 def _wrap_function(function_name: str, static: bool) -> Callable:
-    """Wraps the function called `function_name`.
+    """
+    Wrap the function called `function_name`.
 
     Parameters
     ----------
@@ -22,7 +23,6 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
     -------
     new_function
         the wrapped function.
-
     """
 
     def new_function(
@@ -81,8 +81,9 @@ def add_ivy_container_instance_methods(
     static: bool = False,
     to_ignore: Iterable = (),
 ):
-    """Loop over all ivy modules such as activations, general, etc. and add
-    the module functions to ivy container as instance methods using _wrap_function.
+    """
+    Loop over all ivy modules such as activations, general, etc. and add the module
+    functions to ivy container as instance methods using _wrap_function.
 
     Parameters
     ----------
@@ -106,7 +107,6 @@ def add_ivy_container_instance_methods(
     >>> ivy.add_ivy_container_instance_methods(ContainerExample, [statistical])
     >>> print(hasattr(ContainerExample, "mean"), hasattr(ContainerExample, "var"))
     True True
-
     """
     to_ignore = TO_IGNORE + list(to_ignore)
     for module in modules:

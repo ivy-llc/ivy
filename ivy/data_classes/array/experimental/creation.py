@@ -17,9 +17,9 @@ class _ArrayWithCreationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.eye_like. This method simply wraps
-        the function, and so the docstring for ivy.eye_like also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.eye_like. This method simply wraps the
+        function, and so the docstring for ivy.eye_like also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
