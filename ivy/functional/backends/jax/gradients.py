@@ -3,7 +3,7 @@
 # global
 import jax
 import jax.lax as jlax
-from ivy.functional.backends.jax import JaxArray, NativeArray
+from ivy.functional.backends.jax import JaxArray
 from typing import Optional, Callable, Sequence, Union, Tuple
 
 
@@ -26,7 +26,7 @@ def variable(x, /):
 def is_variable(x, /, *, exclusive=False):
     if exclusive:
         return False
-    return isinstance(x, NativeArray)
+    return ivy.is_native_array(x)
 
 
 def variable_data(x: JaxArray, /) -> JaxArray:
@@ -90,7 +90,7 @@ def execute_with_gradients(
     # Getting the relevant outputs from the function return for gradient calculation
     y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs)
 
-    if isinstance(y, ivy.NativeArray):
+    if ivy.is_native_array(y):
         # Gradient calculation for a single output
         grad_fn = jax.grad(
             lambda x: _forward_fn(
