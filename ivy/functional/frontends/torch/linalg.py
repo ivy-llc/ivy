@@ -88,7 +88,7 @@ def slogdet(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def cond(input, *, p=None, out=None):
+def cond(input, p=None, *, out=None):
     return ivy.cond(input, p=p, out=out)
 
 

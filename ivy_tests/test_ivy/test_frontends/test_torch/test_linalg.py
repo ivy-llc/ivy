@@ -409,7 +409,6 @@ def test_torch_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cond",
-    aliases=["torch.cond"],
     dtype_and_x=_get_dtype_and_matrix(),
     p=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
 )
