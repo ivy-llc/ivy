@@ -95,10 +95,12 @@ def empty(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if size and shape:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
         raise TypeError("empty() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return _to_device(jnp.empty(shape, dtype), device=device)
 
 
@@ -259,10 +261,12 @@ def ones(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if size and shape:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return _to_device(jnp.ones(shape, dtype), device=device)
 
 
@@ -292,10 +296,12 @@ def zeros(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if size and shape:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return _to_device(
         jnp.zeros(shape, dtype),
         device=device,

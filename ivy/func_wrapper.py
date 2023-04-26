@@ -321,13 +321,8 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def inputs_to_native_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
-        ivy_shape_idxs = ivy.nested_argwhere(
-            [args, kwargs], lambda x: isinstance(x, ivy.Shape)
-        )
-        ivy_shapes = ivy.multi_index_nest([args, kwargs], ivy_shape_idxs)
-        native_shapes = [ivy.to_native_shape(shape) for shape in ivy_shapes]
-        args, kwargs = ivy.set_nest_at_indices(
-            [args, kwargs], ivy_shape_idxs, native_shapes, shallow=False
+        args, kwargs = ivy.nested_map(
+            [args, kwargs], lambda x: x.shape if isinstance(x, ivy.Shape) else x
         )
         return fn(*args, **kwargs)
 
@@ -338,12 +333,9 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
 def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
-        native_shape_idxs = ivy.nested_argwhere(
-            [args, kwargs], lambda x: isinstance(x, ivy.NativeShape)
+        args, kwargs = ivy.nested_map(
+            [args, kwargs], lambda x: x.shape if isinstance(x, ivy.Shape) else x
         )
-        native_shapes = ivy.multi_index_nest([args, kwargs], native_shape_idxs)
-        ivy_shapes = ivy.to_ivy(native_shapes)
-        ivy.set_nest_at_indices([args, kwargs], native_shape_idxs, ivy_shapes)
         return fn(*args, **kwargs)
 
     new_fn.outputs_to_ivy_shapes = True
