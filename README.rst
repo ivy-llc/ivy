@@ -255,7 +255,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     def loss_fn(pred, target):
         return ivy.mean((pred - target)**2)
 
-    for epoch in range(51):
+    for epoch in range(50):
         # forward pass
         pred = model(x)
 
@@ -266,7 +266,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         model.v = optimizer.step(model.v, grads)
 
         # print current loss
-        print(f'Epoch: {epoch:2d} --- Loss: {ivy.to_numpy(loss).item():.5f}')
+        print(f'Epoch: {epoch + 1:2d} --- Loss: {ivy.to_numpy(loss).item():.5f}')
 
     print('Finished training!')
 
