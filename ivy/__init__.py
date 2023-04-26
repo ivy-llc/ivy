@@ -196,7 +196,12 @@ class Shape:
     def __init__(self, shape_tup):
         valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
         if len(backend_stack) != 0:
-            valid_types += (ivy.NativeShape, ivy.NativeArray)
+            valid_types += (
+                ivy.NativeShape,
+                ivy._NativeArrays
+                if ivy.current_backend_str() == "jax"
+                else ivy.NativeArray,
+            )
         else:
             backend = current_backend(shape_tup)
             valid_types += (
