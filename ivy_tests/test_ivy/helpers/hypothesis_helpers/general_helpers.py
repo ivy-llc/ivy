@@ -11,8 +11,7 @@ from ivy.functional.ivy.layers import _deconv_length
 
 def matrix_is_stable(x, cond_limit=30):
     """
-    Used to avoid numerical instabilities in further computationally heavy
-    calculations.
+    Used to avoid numerical instabilities in further computationally heavy calculations.
 
     Parameters
     ----------
@@ -123,7 +122,8 @@ def apply_safety_factor(
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, *, shape):
-    """Draws a random shape with the same number of elements as the given shape.
+    """
+    Draws a random shape with the same number of elements as the given shape.
 
     Parameters
     ----------
@@ -151,7 +151,8 @@ def reshape_shapes(draw, *, shape):
 # taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
 @st.composite
 def subsets(draw, *, elements):
-    """Draws a subset of elements from the given elements.
+    """
+    Draws a subset of elements from the given elements.
 
     Parameters
     ----------
@@ -178,9 +179,10 @@ def get_shape(
     min_dim_size=1,
     max_dim_size=10,
 ):
-    """Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size]
-     of size drawn from min_num_dims to max_num_dims. Useful for randomly
-     drawing the shape of an array.
+    """
+    Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size] of size
+    drawn from min_num_dims to max_num_dims. Useful for randomly drawing the shape of an
+    array.
 
     Parameters
     ----------
@@ -226,7 +228,8 @@ def get_shape(
 
 @st.composite
 def get_mean_std(draw, *, dtype):
-    """Draws two integers representing the mean and standard deviation for a given data
+    """
+    Draws two integers representing the mean and standard deviation for a given data
     type.
 
     Parameters
@@ -249,7 +252,8 @@ def get_mean_std(draw, *, dtype):
 
 @st.composite
 def get_bounds(draw, *, dtype):
-    """Draws two integers low, high for a given data type such that low < high.
+    """
+    Draws two integers low, high for a given data type such that low < high.
 
     Parameters
     ----------
@@ -295,7 +299,8 @@ def get_axis(
     force_tuple=False,
     force_int=False,
 ):
-    """Draws one or more axis for the given shape.
+    """
+    Draws one or more axis for the given shape.
 
     Parameters
     ----------

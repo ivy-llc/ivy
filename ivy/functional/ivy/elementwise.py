@@ -117,9 +117,10 @@ def acos(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates an implementation-dependent approximation of the principal value of
-    the inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element
-    x_i of the input array x. Each element-wise result is expressed in radians.
+    """
+    Calculates an implementation-dependent approximation of the principal value of the
+    inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element x_i
+    of the input array x. Each element-wise result is expressed in radians.
 
     **Special cases**
 
@@ -1665,7 +1666,8 @@ def divide(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the division for each element x1_i of the input array x1 with the
+    """
+    Calculates the division for each element x1_i of the input array x1 with the
     respective element x2_i of the input array x2.
 
     Parameters
@@ -1750,8 +1752,9 @@ def equal(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the truth value of x1_i == x2_i for each element x1_i of the input array
-    x1 with the respective element x2_i of the input array x2.
+    """
+    Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1
+    with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -2107,7 +2110,8 @@ def floor_divide(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rounds the result of dividing each element x1_i of the input array x1 by the
+    """
+    Rounds the result of dividing each element x1_i of the input array x1 by the
     respective element x2_i of the input array x2 to the greatest (i.e., closest to
     +infinity) integer-value number that is not greater than the division result.
 
@@ -2194,8 +2198,9 @@ def greater(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the truth value of x1_i < x2_i for each element x1_i of the input array
-    x1 with the respective element x2_i of the input array x2.
+    """
+    Computes the truth value of x1_i < x2_i for each element x1_i of the input array x1
+    with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -2273,7 +2278,6 @@ def greater(
         a: ivy.array([True, True, True]),
         b: ivy.array([False, False, False])
     }
-
     """
     return ivy.current_backend(x1, x2).greater(x1, x2, out=out)
 
@@ -2290,8 +2294,9 @@ def greater_equal(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the truth value of x1_i >= x2_i for each element x1_i of the input array
-    x1 with the respective element x2_i of the input array x2.
+    """
+    Computes the truth value of x1_i >= x2_i for each element x1_i of the input array x1
+    with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -2389,8 +2394,9 @@ def less_equal(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array
-    x1 with the respective element x2_i of the input array x2.
+    """
+    Computes the truth value of x1_i <= x2_i for each element x1_i of the input array x1
+    with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -2454,7 +2460,6 @@ def less_equal(
         a: ivy.array([False, False, False]),
         b: ivy.array([True, True, True])
     }
-
     """
     return ivy.current_backend(x1, x2).less_equal(x1, x2, out=out)
 
@@ -2471,8 +2476,9 @@ def multiply(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the product for each element x1_i of the input array x1
-    with the respective element x2_i of the input array x2.
+    """
+    Calculates the product for each element x1_i of the input array x1 with the
+    respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -2646,7 +2652,8 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests each element x_i of the input array x to determine if equal to positive or
+    """
+    Tests each element x_i of the input array x to determine if equal to positive or
     negative infinity.
 
     Parameters
@@ -3338,7 +3345,8 @@ def logical_and(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the logical AND for each element x1_i of the input array x1 with the
+    """
+    Computes the logical AND for each element x1_i of the input array x1 with the
     respective element x2_i of the input array x2.
 
     Parameters
@@ -3419,7 +3427,6 @@ def logical_and(
         a: ivy.array([False, False, True]),
         b: ivy.array([True, False, False])
     }
-
     """
     return ivy.current_backend(x1, x2).logical_and(x1, x2, out=out)
 
@@ -5011,7 +5018,8 @@ def trunc(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rounds each element x_i of the input array x to the integer-valued number that is
+    """
+    Rounds each element x_i of the input array x to the integer-valued number that is
     closest to but no greater than x_i.
 
     **Special cases**
@@ -5350,7 +5358,8 @@ def deg2rad(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Converts the input from degrees to radians.
+    """
+    Converts the input from degrees to radians.
 
     Parameters
     ----------
@@ -5428,7 +5437,8 @@ def rad2deg(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Converts the input from radians to degrees.
+    """
+    Converts the input from radians to degrees.
 
     Parameters
     ----------
@@ -5504,8 +5514,9 @@ def trunc_divide(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Performs elementwise integer division of the inputs rounding the
-    results towards zero.
+    """
+    Performs elementwise integer division of the inputs rounding the results towards
+    zero.
 
     Parameters
     ----------
@@ -5614,7 +5625,8 @@ def fmod(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Computes the element-wise remainder of divisions of two arrays.
+    """
+    Computes the element-wise remainder of divisions of two arrays.
 
     Parameters
     ----------

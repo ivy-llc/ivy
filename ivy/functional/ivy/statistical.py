@@ -366,7 +366,8 @@ def prod(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the product of input array x elements.
+    """
+    Calculates the product of input array x elements.
 
     Parameters
     ----------
@@ -843,7 +844,6 @@ def var(
         a: ivy.array(0.12666667),
         b: ivy.array(0.11555555)
     }
-
     """
     return current_backend(x).var(
         x, axis=axis, correction=correction, keepdims=keepdims, out=out
@@ -869,7 +869,8 @@ def cumsum(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the cumulative sum of the elements along a given axis.
+    """
+    Returns the cumulative sum of the elements along a given axis.
 
     Parameters
     ----------
@@ -1012,7 +1013,8 @@ def cumprod(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the cumulative product of the elements along a given axis.
+    """
+    Returns the cumulative product of the elements along a given axis.
 
     Parameters
     ----------
@@ -1157,7 +1159,8 @@ def einsum(
     *operands: Union[ivy.Array, ivy.NativeArray],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Sums the product of the elements of the input operands along dimensions specified
+    """
+    Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
     Parameters
@@ -1269,7 +1272,5 @@ def einsum(
         a: ivy.array(2),
         b: ivy.array(15)
     }
-
-
     """
     return current_backend(operands[0]).einsum(equation, *operands, out=out)

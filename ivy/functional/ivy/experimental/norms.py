@@ -23,7 +23,8 @@ def l2_normalize(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Normalizes the input array along the given axis to have L2 norm equal to 1.
+    """Normalizes the input array along the given axis to have L2 norm equal to
+    1.
 
     Parameters
     ----------
@@ -269,7 +270,8 @@ def lp_normalize(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Normalizes the input array along the given axis to have Lp norm equal to 1.
+    """Normalizes the input array along the given axis to have Lp norm equal to
+    1.
 
     Parameters
     ----------

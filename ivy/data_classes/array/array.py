@@ -217,7 +217,7 @@ class Array(
 
     @property
     def dtype(self) -> ivy.Dtype:
-        """Data type of the array elements"""
+        """Data type of the array elements."""
         return self._dtype
 
     @property
@@ -282,7 +282,7 @@ class Array(
 
     @property
     def base(self) -> ivy.Array:
-        """Original array referenced by view"""
+        """Original array referenced by view."""
         return self._base
 
     # Setters #
@@ -430,8 +430,8 @@ class Array(
     def __pow__(self, power):
         """
         ivy.Array special method variant of ivy.pow. This method simply wraps the
-        function, and so the docstring for ivy.pow also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.pow also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -460,7 +460,6 @@ class Array(
         >>> y = x ** 2.9
         >>> print(y)
         ivy.array([ 1.69678056,  8.59876156, 37.82660675])
-
         """
         return ivy.pow(self._data, power)
 
@@ -473,8 +472,8 @@ class Array(
     def __add__(self, other):
         """
         ivy.Array special method variant of ivy.add. This method simply wraps the
-        function, and so the docstring for ivy.add also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.add also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -503,8 +502,8 @@ class Array(
     def __radd__(self, other):
         """
         ivy.Array reverse special method variant of ivy.add. This method simply wraps
-        the function, and so the docstring for ivy.add also applies to this method
-        with minimal changes.
+        the function, and so the docstring for ivy.add also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -536,8 +535,8 @@ class Array(
     def __sub__(self, other):
         """
         ivy.Array special method variant of ivy.subtract. This method simply wraps the
-        function, and so the docstring for ivy.subtract also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.subtract also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -567,9 +566,9 @@ class Array(
 
     def __rsub__(self, other):
         """
-        ivy.Array reverse special method variant of ivy.subtract. This method simply wraps
-        the function, and so the docstring for ivy.subtract also applies to this method
-        with minimal changes.
+        ivy.Array reverse special method variant of ivy.subtract. This method simply
+        wraps the function, and so the docstring for ivy.subtract also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -678,9 +677,9 @@ class Array(
 
     def __abs__(self):
         """
-        ivy.Array special method variant of ivy.abs. This method
-        simply wraps the function, and so the docstring for ivy.abs
-        also applies to this method with minimal changes.
+        ivy.Array special method variant of ivy.abs. This method simply wraps the
+        function, and so the docstring for ivy.abs also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -705,7 +704,6 @@ class Array(
         >>> x = ivy.array([-1.2, 1.2])
         >>> print(abs(x))
         ivy.array([1.2, 1.2])
-
         """
         return ivy.abs(self._data)
 
@@ -735,9 +733,9 @@ class Array(
 
     def __lt__(self, other):
         """
-        ivy.Array special method variant of ivy.less. This method
-        simply wraps the function, and so the docstring for ivy.less
-        also applies to this method with minimal changes.
+        ivy.Array special method variant of ivy.less. This method simply wraps the
+        function, and so the docstring for ivy.less also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -765,9 +763,9 @@ class Array(
 
     def __le__(self, other):
         """
-        ivy.Array special method variant of ivy.less_equal. This method
-        simply wraps the function, and so the docstring for ivy.less_equal
-        also applies to this method with minimal changes.
+        ivy.Array special method variant of ivy.less_equal. This method simply wraps the
+        function, and so the docstring for ivy.less_equal also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -795,9 +793,9 @@ class Array(
 
     def __eq__(self, other):
         """
-        ivy.Array special method variant of ivy.equal. This method
-        simply wraps the function, and so the docstring for ivy.equal
-        also applies to this method with minimal changes.
+        ivy.Array special method variant of ivy.equal. This method simply wraps the
+        function, and so the docstring for ivy.equal also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -833,9 +831,9 @@ class Array(
 
     def __ne__(self, other):
         """
-        ivy.Array special method variant of ivy.not_equal. This method
-        simply wraps the function, and so the docstring for ivy.not_equal
-        also applies to this method with minimal changes.
+        ivy.Array special method variant of ivy.not_equal. This method simply wraps the
+        function, and so the docstring for ivy.not_equal also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -871,9 +869,9 @@ class Array(
 
     def __gt__(self, other):
         """
-        ivy.Array special method variant of ivy.greater. This method
-        simply wraps the function, and so the docstring for ivy.greater
-        also applies to this method with minimal changes.
+        ivy.Array special method variant of ivy.greater. This method simply wraps the
+        function, and so the docstring for ivy.greater also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -918,9 +916,9 @@ class Array(
 
     def __ge__(self, other):
         """
-        ivy.Array special method variant of ivy.greater_equal. This method
-        simply wraps the function, and so the docstring for ivy.bitwise_xor
-        also applies to this method with minimal changes.
+        ivy.Array special method variant of ivy.greater_equal. This method simply wraps
+        the function, and so the docstring for ivy.bitwise_xor also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -986,9 +984,9 @@ class Array(
 
     def __xor__(self, other):
         """
-        ivy.Array special method variant of ivy.bitwise_xor. This method
-        simply wraps the function, and so the docstring for ivy.bitwise_xor
-        also applies to this method with minimal changes.
+        ivy.Array special method variant of ivy.bitwise_xor. This method simply wraps
+        the function, and so the docstring for ivy.bitwise_xor also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1044,9 +1042,9 @@ class Array(
 
     def __rshift__(self, other):
         """
-        ivy.Array special method variant of ivy.bitwise_right_shift. This method
-        simply wraps the function, and so the docstring for ivy.bitwise_right_shift
-        also applies to this method with minimal changes.
+        ivy.Array special method variant of ivy.bitwise_right_shift. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_right_shift also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1077,9 +1075,9 @@ class Array(
 
     def __rrshift__(self, other):
         """
-        ivy.Array reverse special method variant of ivy.bitwise_right_shift.
-        This method simply wraps the function, and so the docstring for
-        ivy.bitwise_right_shift also applies to this method with minimal changes.
+        ivy.Array reverse special method variant of ivy.bitwise_right_shift. This method
+        simply wraps the function, and so the docstring for ivy.bitwise_right_shift also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

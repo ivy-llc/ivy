@@ -51,8 +51,8 @@ half = float16
 def check_tensorflow_casting(x1, x2):
     """
     Checks whether the two arguments provided in the function have the same dtype,
-    unless one of them is an array_like or scalar,
-    where it gets casted to the other input's dtype
+    unless one of them is an array_like or scalar, where it gets casted to the other
+    input's dtype.
 
     Parameters
     ----------
@@ -67,7 +67,6 @@ def check_tensorflow_casting(x1, x2):
         First tensor promoted accordingly.
     x2
         Second tensor promoted accordingly.
-
     """
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
         x1 = ivy.asarray(x1)

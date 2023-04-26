@@ -1,4 +1,4 @@
-"""Converters from Native Modules to Ivy Modules"""
+"""Converters from Native Modules to Ivy Modules."""
 # global
 from typing import Optional, Dict, List
 import re  # noqa
@@ -22,8 +22,8 @@ def to_ivy_module(
     inplace_update=False,
 ):
     """
-    Convert an instance of a trainable module from a native framework into a
-    trainable ivy.Module instance.
+    Convert an instance of a trainable module from a native framework into a trainable
+    ivy.Module instance.
 
     Parameters
     ----------
@@ -50,7 +50,6 @@ def to_ivy_module(
     -------
     ret
         The new trainable ivy.Module instance.
-
     """
     return current_backend().to_ivy_module(
         native_module,
@@ -111,7 +110,6 @@ class ModuleConverters:
         -------
         ret
             The new trainable torch module instance.
-
         """
         hk_spec = importlib.util.find_spec("hk")
         flat_mapping_spec = importlib.util.find_spec(
@@ -262,7 +260,6 @@ class ModuleConverters:
         -------
         ret
             The new trainable ivy.Module instance.
-
         """
         flax_spec = importlib.util.find_spec("flax")
         if not flax_spec:

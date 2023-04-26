@@ -233,7 +233,7 @@ def astype(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Copies an array to a specified data type irrespective of :ref:`type-promotion`
+    Copies an array to a specified data type irrespective of :ref:`type- promotion`
     rules.
 
     .. note::
@@ -321,7 +321,6 @@ def astype(
         a: ivy.array([0, 1, 1]),
         b: ivy.array([3, 2, 1])
     }
-
     """
     return current_backend(x).astype(x, dtype, copy=copy, out=out)
 
@@ -331,7 +330,8 @@ def astype(
 @handle_nestable
 @handle_exceptions
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
-    """Broadcasts one or more arrays against one another.
+    """
+    Broadcasts one or more arrays against one another.
 
     Parameters
     ----------
@@ -554,7 +554,8 @@ def finfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
 ) -> Finfo:
-    """Machine limits for floating-point data types.
+    """
+    Machine limits for floating-point data types.
 
     Parameters
     ----------
@@ -638,7 +639,8 @@ def iinfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
 ) -> Iinfo:
-    """Machine limits for integer data types.
+    """
+    Machine limits for integer data types.
 
     Parameters
     ----------
@@ -870,7 +872,8 @@ class DefaultComplexDtype:
 
 @handle_exceptions
 def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
-    """Get the number of bits used for representing the input data type.
+    """
+    Get the number of bits used for representing the input data type.
 
     Parameters
     ----------
@@ -905,7 +908,8 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
 
 @handle_exceptions
 def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str], /) -> ivy.Dtype:
-    """Convert native data type to string representation.
+    """
+    Convert native data type to string representation.
 
     Parameters
     ----------
@@ -922,7 +926,8 @@ def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str], /) -> ivy.Dtype:
 
 @handle_exceptions
 def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.NativeDtype:
-    """Convert data type string representation to native data type.
+    """
+    Convert data type string representation to native data type.
 
     Parameters
     ----------
@@ -958,7 +963,8 @@ def _check_complex128(input) -> bool:
 
 @handle_exceptions
 def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype, str]:
-    """Determines the closest valid datatype to the datatype passed as input.
+    """
+    Determines the closest valid datatype to the datatype passed as input.
 
     Parameters
     ----------
@@ -1095,7 +1101,8 @@ def default_float_dtype(
 def infer_default_dtype(
     dtype: Union[ivy.Dtype, ivy.NativeDtype, str], as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -1506,7 +1513,8 @@ def default_complex_dtype(
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], *, as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
-    """Get the data type for input array x.
+    """
+    Get the data type for input array x.
 
     Parameters
     ----------
@@ -1550,7 +1558,8 @@ def dtype(
 @handle_nestable
 @handle_exceptions
 def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
-    """Returns the supported data types of the current backend's function.
+    """
+    Returns the supported data types of the current backend's function.
 
     Parameters
     ----------
@@ -1587,7 +1596,8 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
 @handle_nestable
 @handle_exceptions
 def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
-    """Returns the unsupported data types of the current backend's function.
+    """
+    Returns the unsupported data types of the current backend's function.
 
     Parameters
     ----------
@@ -1624,8 +1634,7 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
 @handle_exceptions
 def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
     """
-    Determines whether the provided data type is not support by
-    the current framework.
+    Determines whether the provided data type is not support by the current framework.
 
     Parameters
     ----------
@@ -1868,7 +1877,8 @@ def is_uint_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
 ) -> bool:
-    """Determine whether the input data type is a uint dtype.
+    """
+    Determine whether the input data type is a uint dtype.
 
     Parameters
     ----------
@@ -1913,7 +1923,8 @@ def is_complex_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
 ) -> complex:
-    """Determine whether the input data type is a complex dtype.
+    """
+    Determine whether the input data type is a complex dtype.
 
     Parameters
     ----------
@@ -1960,7 +1971,7 @@ def promote_types(
     array_api_promotion: bool = False,
 ) -> ivy.Dtype:
     """
-    Promotes the datatypes type1 and type2, returning the data type they promote to
+    Promotes the datatypes type1 and type2, returning the data type they promote to.
 
     Parameters
     ----------
@@ -2084,7 +2095,8 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
 
 @handle_exceptions
 def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str], /):
-    """Set the uint dtype to be default.
+    """
+    Set the uint dtype to be default.
 
     Parameters
     ----------
@@ -2142,8 +2154,8 @@ def type_promote_arrays(
     /,
 ) -> Tuple:
     """
-    Type promote the input arrays, returning new arrays with the shared correct
-    data type
+    Type promote the input arrays, returning new arrays with the shared correct data
+    type.
 
     Parameters
     ----------
@@ -2188,7 +2200,8 @@ def unset_default_dtype():
 
 @handle_exceptions
 def unset_default_float_dtype():
-    """Reset the current default float dtype to the previous state.
+    """
+    Reset the current default float dtype to the previous state.
 
     Examples
     --------
@@ -2208,7 +2221,8 @@ def unset_default_float_dtype():
 
 @handle_exceptions
 def unset_default_int_dtype():
-    """Resets the current default int dtype to the previous state.
+    """
+    Resets the current default int dtype to the previous state.
 
     Parameters
     ----------
@@ -2231,7 +2245,8 @@ def unset_default_int_dtype():
 
 @handle_exceptions
 def unset_default_uint_dtype():
-    """Reset the current default uint dtype to the previous state.
+    """
+    Reset the current default uint dtype to the previous state.
 
     Examples
     --------
@@ -2250,7 +2265,8 @@ def unset_default_uint_dtype():
 
 @handle_exceptions
 def unset_default_complex_dtype():
-    """Reset the current default complex dtype to the previous state.
+    """
+    Reset the current default complex dtype to the previous state.
 
     Examples
     --------
@@ -2270,8 +2286,8 @@ def unset_default_complex_dtype():
 
 @handle_exceptions
 def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
-    """Determines whether the provided data type is supported by the
-    current framework.
+    """
+    Determines whether the provided data type is supported by the current framework.
 
     Parameters
     ----------
@@ -2311,12 +2327,14 @@ def promote_types_of_inputs(
     array_api_promotion: bool = False,
 ) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
     """
-    Promotes the dtype of the given native array inputs to a common dtype
-    based on type promotion rules. While passing float or integer values or any
-    other non-array input to this function, it should be noted that the return will
-    be an array-like object. Therefore, outputs from this function should be used
-    as inputs only for those functions that expect an array-like or tensor-like objects,
-    otherwise it might give unexpected results.
+    Promotes the dtype of the given native array inputs to a common dtype based on type
+    promotion rules.
+
+    While passing float or integer values or any other non-array input
+    to this function, it should be noted that the return will be an
+    array-like object. Therefore, outputs from this function should be
+    used as inputs only for those functions that expect an array-like or
+    tensor-like objects, otherwise it might give unexpected results.
     """
 
     def _special_case(a1, a2):

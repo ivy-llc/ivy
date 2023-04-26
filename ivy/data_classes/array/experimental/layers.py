@@ -18,9 +18,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.max_pool1d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool1d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.max_pool1d`. This method simply wraps
+        the function, and so the docstring for `ivy.max_pool1d` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -79,9 +79,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.max_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.max_pool2d`. This method simply wraps
+        the function, and so the docstring for `ivy.max_pool2d` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -203,9 +203,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.avg_pool1d`. This method simply
-        wraps the function, and so the docstring for `ivy.avg_pool1d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.avg_pool1d`. This method simply wraps
+        the function, and so the docstring for `ivy.avg_pool1d` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -272,9 +272,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.avg_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.avg_pool2d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.avg_pool2d`. This method simply wraps
+        the function, and so the docstring for `ivy.avg_pool2d` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -414,9 +414,10 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: Optional[Literal["ortho"]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.dct. This method simply
-        wraps the function, and so the docstring for ivy.dct also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.dct. This method simply wraps the
+        function, and so the docstring for ivy.dct also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -461,9 +462,10 @@ class _ArrayWithLayersExperimental(abc.ABC):
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.ifft. This method simply
-        wraps the function, and so the docstring for ivy.ifft also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.ifft. This method simply wraps the
+        function, and so the docstring for ivy.ifft also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -516,9 +518,10 @@ class _ArrayWithLayersExperimental(abc.ABC):
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.ifft. This method simply
-        wraps the function, and so the docstring for ivy.ifft also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.ifft. This method simply wraps the
+        function, and so the docstring for ivy.ifft also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -670,8 +673,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Down/up samples the input to the given size.
-        The algorithm used for interpolation is determined by mode.
+        Down/up samples the input to the given size. The algorithm used for
+        interpolation is determined by mode.
 
         Parameters
         ----------
@@ -746,7 +749,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         -------
             The result of the pooling operation. Will have shape (N, C, L_out) or
             (C, L_out), where L_out = `output_size`
-
         """
         return ivy.adaptive_avg_pool1d(
             self._data,
@@ -774,7 +776,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         -------
             The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
             (C, S_0, S_1), where S = `output_size`
-
         """
         return ivy.adaptive_avg_pool2d(
             self._data,

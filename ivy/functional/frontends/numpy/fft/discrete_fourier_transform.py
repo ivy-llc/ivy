@@ -15,8 +15,8 @@ def ifft(a, n=None, axis=-1, norm=None):
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 def ifftshift(x, axes=None):
     """
-    The inverse of `fftshift`. Although identical for even-length `x`, the
-    functions differ by one sample for odd-length `x`.
+    The inverse of `fftshift`. Although identical for even-length `x`, the functions
+    differ by one sample for odd-length `x`.
 
     Parameters
     ----------

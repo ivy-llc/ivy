@@ -33,7 +33,7 @@ def _clear_cache():
 
 
 def _from_import(name: str, package=None, mod_globals=None, from_list=(), level=0):
-    """Handles absolute and relative from_import statement"""
+    """Handles absolute and relative from_import statement."""
     module_exist = name != ""
     name = "." * level + name
     module = _import_module(name, package)

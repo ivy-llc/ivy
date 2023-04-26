@@ -41,9 +41,9 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_handle_nestable(*args, **kwargs):
         """
-        Calls `fn` with the *nestable* property of the function correctly handled.
-        This means mapping the function to the container leaves if any containers are
-        passed in the input.
+        Calls `fn` with the *nestable* property of the function correctly handled. This
+        means mapping the function to the container leaves if any containers are passed
+        in the input.
 
         Parameters
         ----------
@@ -91,8 +91,10 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
         """
         Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
-        and return arrays are all converted to `ivy.Array` instances. This wrapper is
-        specifically for the backend implementations of asarray.
+        and return arrays are all converted to `ivy.Array` instances.
+
+        This wrapper is specifically for the backend implementations of
+        asarray.
         """
         # When possible we want to not nest this
         # because nested calls introduce massive overhead
@@ -180,7 +182,8 @@ def arange(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns evenly spaced values within a given interval, with the spacing being
+    """
+    Returns evenly spaced values within a given interval, with the spacing being
     specified.
 
     Values are generated within the half-open interval [start, stop) (in other words,
@@ -258,7 +261,6 @@ def arange(
     >>> x = ivy.arange(start, stop, step, dtype=dtype, device=device)
     >>> print(x, x.dtype, x.device)
     ivy.array([1., 3., 5., 7., 9.]) float64 cpu
-
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out
@@ -286,7 +288,8 @@ def asarray(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Converts the input to an array.
+    """
+    Converts the input to an array.
 
     Parameters
     ----------
@@ -986,7 +989,8 @@ def empty(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array of given shape and type, filled with zeros.
+    """
+    Return a new array of given shape and type, filled with zeros.
 
     Parameters
     ----------
@@ -1017,7 +1021,6 @@ def empty(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     if len(size) != 0:
         size = size[0] if isinstance(size[0], (tuple, list)) else size
@@ -1041,7 +1044,8 @@ def empty_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an uninitialized array with the same shape as an input array x.
+    """
+    Returns an uninitialized array with the same shape as an input array x.
 
     Parameters
     ----------
@@ -1071,7 +1075,6 @@ def empty_like(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
@@ -1094,7 +1097,8 @@ def eye(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.
+    """
+    Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.
 
     Parameters
     ----------
@@ -1209,7 +1213,6 @@ def eye(
                [0., 0., 1.]])
 
     # Array ``x1`` is now stored on the CPU.
-
     """
     return current_backend().eye(
         n_rows,
@@ -1241,7 +1244,8 @@ def linspace(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Generates a certain number of evenly-spaced values in an interval along a given
+    """
+    Generates a certain number of evenly-spaced values in an interval along a given
     axis.
 
     See :math:`arange` that allows to specify the step size of evenly spaced values in
@@ -1341,7 +1345,8 @@ def meshgrid(
     indexing: str = "xy",
     out: Optional(ivy.Array) = None,
 ) -> List[ivy.Array]:
-    """Returns coordinate matrices from coordinate vectors.
+    """
+    Returns coordinate matrices from coordinate vectors.
 
     Parameters
     ----------
@@ -1440,7 +1445,6 @@ def meshgrid(
     >>> print(yv)
     ivy.array([[3, 3],
             [4, 4]])
-
     """
     return current_backend().meshgrid(
         *arrays, sparse=sparse, indexing=indexing, out=out
@@ -1618,7 +1622,8 @@ def copy_array(
     to_ivy_array: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Copy an array.
+    """
+    Copy an array.
 
     Parameters
     ----------
@@ -1710,7 +1715,6 @@ def copy_array(
         a: ivy.array([1, 0, 1]),
         b: ivy.array([-1, 0, 1, 1])
     }
-
     """
     return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
@@ -1723,7 +1727,8 @@ def native_array(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.NativeArray:
-    """Converts the input to a native array.
+    """
+    Converts the input to a native array.
 
     Parameters
     ----------
@@ -1786,7 +1791,8 @@ def one_hot(
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a one-hot array. The locations represented by indices in the parameter
+    """
+    Returns a one-hot array. The locations represented by indices in the parameter
     indices take value on_value, while all other locations take value off_value.
 
     Parameters
@@ -1900,7 +1906,8 @@ def logspace(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Generates a certain number of evenly-spaced values in log space, in an interval
+    """
+    Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
 
     Parameters
@@ -1979,7 +1986,6 @@ def logspace(
                [100., 464.15888336]
                [1000., 2154.43469003]
                [10000., 10000.]])
-
     """
     return base ** linspace(
         start,

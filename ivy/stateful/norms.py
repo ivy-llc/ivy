@@ -20,7 +20,7 @@ class LayerNorm(Module):
         dtype=None,
     ):
         """
-        Class for applying Layer Normalization over a mini-batch of inputs
+        Class for applying Layer Normalization over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -51,7 +51,7 @@ class LayerNorm(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """Create internal variables for the layer"""
+        """Create internal variables for the layer."""
         if self._elementwise_affine:
             return {
                 "weight": self._weight_init.create_variables(

@@ -35,7 +35,8 @@ def cholesky(
     upper: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the cholesky decomposition of the x matrix.
+    """
+    Computes the cholesky decomposition of the x matrix.
 
     Parameters
     ----------
@@ -155,7 +156,6 @@ def cholesky(
     >>> print(y)
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
-
     """
     return current_backend(x).cholesky(x, upper=upper, out=out)
 
@@ -176,9 +176,10 @@ def cross(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """The cross product of 3-element vectors. If x1 and x2 are multi-dimensional
-    arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
-    of corresponding 3-element vectors is independently computed.
+    """
+    The cross product of 3-element vectors. If x1 and x2 are multi- dimensional arrays
+    (i.e., both have a rank greater than 1), then the cross- product of each pair of
+    corresponding 3-element vectors is independently computed.
 
     Parameters
     ----------
@@ -637,7 +638,8 @@ def eigvalsh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+    """
+    Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
 
     .. note::
        The function ``eig`` will be added in a future version of the specification, as
@@ -722,7 +724,6 @@ def eigvalsh(
         b: ivy.array([[-1., 1., 4.]]),
         c: ivy.array([[-8.88178420e-16, 5.35898387e-01, 7.46410179e+00]])
     }
-
     """
     return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
 
@@ -872,7 +873,8 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the matrix product.
+    """
+    Computes the matrix product.
 
     Parameters
     ----------
@@ -1002,7 +1004,6 @@ def matmul(
     >>> print(z)
     ivy.array([[ 1.],
        [11.]])
-
     """
     return current_backend(x1).matmul(
         x1,
@@ -1030,7 +1031,8 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the matrix p-norm.
+    """
+    Compute the matrix p-norm.
 
     Parameters
     ----------
@@ -1159,7 +1161,6 @@ def matrix_norm(
         b: ivy.array([[[4.]], 
                       [[12.]]])
     }
-
     """
     return current_backend(x).matrix_norm(
         x, ord=ord, axis=axis, keepdims=keepdims, out=out
@@ -1175,7 +1176,8 @@ def matrix_norm(
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Raises a square matrix (or a stack of square matrices) x to an integer power n.
+    """
+    Raises a square matrix (or a stack of square matrices) x to an integer power n.
 
     Parameters
     ----------
@@ -1254,7 +1256,6 @@ def matrix_power(
         b: ivy.array([[1., 0.],
                       [0., 0.]])
     }
-
     """
     return current_backend(x).matrix_power(x, n, out=out)
 
@@ -1273,8 +1274,9 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the rank (i.e., number of non-zero singular values) of a matrix (or a
-    stack of matrices).
+    """
+    Returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack
+    of matrices).
 
     Parameters
     ----------
@@ -1357,8 +1359,6 @@ def matrix_rank(
         a:ivy.array(2.),
         b:ivy.array(1.)
     }
-
-
     """
     return current_backend(x).matrix_rank(x, atol=atol, rtol=rtol, out=out)
 
@@ -2068,7 +2068,8 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a tensor contraction of x1 and x2 over specific axes.
+    """
+    Returns a tensor contraction of x1 and x2 over specific axes.
 
     Parameters
     ----------
@@ -2131,8 +2132,6 @@ def tensordot(
         a: ivy.array(89.),
         b: ivy.array(76.)
     }
-
-
     """
     return current_backend(x1, x2).tensordot(x1, x2, axes=axes, out=out)
 
@@ -2309,7 +2308,8 @@ def vecdot(
     axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the (vector) dot product of two arrays.
+    """
+    Computes the (vector) dot product of two arrays.
 
     Parameters
     ----------
@@ -2357,7 +2357,6 @@ def vecdot(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x1).vecdot(x1, x2, axis=axis, out=out)
 
@@ -2521,8 +2520,9 @@ def diag(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the specified diagonals of the input array,
-    or an array with the input array's elements as diagonals.
+    """
+    Returns the specified diagonals of the input array, or an array with the input
+    array's elements as diagonals.
 
     Parameters
     ----------
@@ -2603,12 +2603,11 @@ def vander(
     increasing: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Generates a Vandermonde matrix.
-    The columns of the output matrix are elementwise powers
-    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x.
-    If increasing is True, the order of the columns is reversed
-    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression
-    in each row is named for Alexandre-Theophile Vandermonde.
+    """
+    Generates a Vandermonde matrix. The columns of the output matrix are elementwise
+    powers of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. If increasing is True,
+    the order of the columns is reversed x^0, x^1, ..., x^{(N-1)}. Such a matrix with a
+    geometric progression in each row is named for Alexandre-Theophile Vandermonde.
 
     Parameters
     ----------
@@ -2671,9 +2670,9 @@ def vander(
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Given vector, return the associated `Skew-symmetric matrix
-        <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product/>`_.
-
+    """
+    Given vector, return the associated `Skew-symmetric matrix
+    <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product/>`_.
 
     Parameters
     ----------
@@ -2692,7 +2691,6 @@ def vector_to_skew_symmetric_matrix(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
 

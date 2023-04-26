@@ -126,8 +126,9 @@ def vorbis_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an array that contains a vorbis power complementary window
-    of size window_length.
+    """
+    Returns an array that contains a vorbis power complementary window of size
+    window_length.
 
     Parameters
     ----------
@@ -167,8 +168,9 @@ def hann_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Generate a Hann window. The Hanning window
-    is a taper formed by using a weighted cosine.
+    """
+    Generate a Hann window. The Hanning window is a taper formed by using a weighted
+    cosine.
 
     Parameters
     ----------
@@ -194,7 +196,6 @@ def hann_window(
 
     >>> ivy.hann_window(7, False)
     ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
-
     """
     return ivy.current_backend().hann_window(
         size, periodic=periodic, dtype=dtype, out=out
@@ -214,7 +215,8 @@ def kaiser_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Kaiser window with window length window_length and shape beta
+    """
+    Computes the Kaiser window with window length window_length and shape beta.
 
     Parameters
     ----------
@@ -261,8 +263,9 @@ def kaiser_bessel_derived_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Kaiser bessel derived window with
-    window length window_length and shape beta
+    """
+    Computes the Kaiser bessel derived window with window length window_length and shape
+    beta.
 
     Parameters
     ----------
@@ -331,7 +334,8 @@ def hamming_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Hamming window with window length window_length
+    """
+    Computes the Hamming window with window length window_length.
 
     Parameters
     ----------

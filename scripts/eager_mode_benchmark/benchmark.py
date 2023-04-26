@@ -200,7 +200,6 @@ def eager_benchmark(
     ...     args=args,
     ...     output_path="./ivy/report.csv"
     ... )
-
     """
     backends = ivy.default(backends, [])
     devices = ivy.default(devices, [])
@@ -314,7 +313,6 @@ def visualize_speed_up(
     ...     devices=["gpu:0"],
     ...     labels=["GELU"],
     ... )
-
     """
     file_path = ivy.default(file_path, "./report.csv")
     output_path = ivy.default(output_path, "./saved_fig.png")
