@@ -414,10 +414,19 @@ def test_torch_eigvalsh(
     fn_tree="torch.linalg.cond",
     aliases=["torch.cond"],
     dtype_and_x=_get_dtype_and_matrix(),
-    # p=helpers.,
+    p=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
 )
 def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
-    pass
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        p=p,
+    )
 
 
 # matrix_power
