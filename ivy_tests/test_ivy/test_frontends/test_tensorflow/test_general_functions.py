@@ -2,14 +2,18 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.frontends.tensorflow.general_functions import _num_to_bit_list
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
     _input_fill_and_dtype,
 )
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_tensor import (
+    _array_and_shape,
+)  # noqa : E501
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
+from tensorflow import errors as tf_errors
 
 
 @st.composite
@@ -31,6 +35,7 @@ def _get_clip_inputs(draw):
     max = draw(
         helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=6, max_value=50)
     )
+
     return x_dtype, x, min, max
 
 
@@ -94,6 +99,87 @@ def test_tensorflow_clip_by_value(
         t=x[0],
         clip_value_min=min,
         clip_value_max=max,
+    )
+
+
+@st.composite
+def _get_global_norm_clip_inputs(draw):
+    t_list_dtype, t_list = draw(
+        helpers.dtype_and_values(
+            num_arrays=2,
+            min_num_dims=1,
+            shared_dtype=True,
+            min_value=-100,
+            max_value=100,
+            dtype=["float32"] * 2,
+        )
+    )
+
+    norm_dtype, norm = draw(
+        helpers.dtype_and_values(
+            shape=(1,),
+            shared_dtype=True,
+            min_value=0,
+            exclude_min=True,
+            max_value=100,
+            dtype=["float32"],
+        )
+    )
+
+    global_norm_dtype, global_norm = draw(
+        helpers.dtype_and_values(
+            shape=(1,),
+            shared_dtype=True,
+            min_value=0,
+            exclude_min=True,
+            max_value=100,
+            dtype=["float32"],
+        )
+    )
+    include_global = draw(st.booleans())
+    if not include_global:
+        global_norm_dtype, global_norm = None, None
+    return t_list_dtype, t_list, norm_dtype, norm, global_norm_dtype, global_norm
+
+
+# clip_by_global_norm
+@handle_frontend_test(
+    fn_tree="tensorflow.clip_by_global_norm",
+    input_and_norm=_get_global_norm_clip_inputs(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_clip_by_global_norm(
+    *,
+    input_and_norm,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (
+        t_list_dtype,
+        t_list,
+        norm_dtype,
+        norm,
+        global_norm_dtype,
+        global_norm,
+    ) = input_and_norm
+
+    input_dtypes = [t_list_dtype[0], norm_dtype[0]]
+    use_norm = None
+    if global_norm_dtype:
+        input_dtypes.append(global_norm_dtype[0])
+        use_norm = global_norm[0]
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        t_list=t_list,
+        clip_norm=norm[0],
+        use_norm=use_norm,
     )
 
 
@@ -333,6 +419,36 @@ def _x_cast_dtype_shape(draw):
     return x_dtype, x, cast_dtype, to_shape
 
 
+# size
+# output_dtype not generated as tf only accepts tf dtypes
+@handle_frontend_test(
+    fn_tree="tensorflow.size",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=4
+    ),
+    # output_dtype=st.sampled_from(["int32", "int64"]),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_size(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,  # output_dtype
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        # out_type=output_dtype,
+    )
+
+
 # constant
 @handle_frontend_test(
     fn_tree="tensorflow.constant",
@@ -530,6 +646,32 @@ def test_tensorflow_expand_dims(
     )
 
 
+# identity_n
+@handle_frontend_test(
+    fn_tree="tensorflow.identity_n",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_identity_n(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+    )
+
+
 # Squeeze
 @st.composite
 def _squeeze_helper(draw):
@@ -690,6 +832,28 @@ def test_tensorflow_shape_n(
         on_device=on_device,
         input=input,
         out_type=output_dtype,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.ensure_shape",
+    dtype_and_x=_array_and_shape(min_num_dims=0, max_num_dims=5),
+)
+def test_tensorflow_ensure_shape(
+    *,
+    dtype_and_x,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        shape=x[1],
     )
 
 
@@ -1041,26 +1205,25 @@ def _strided_slice_helper(draw):
     masks = draw(
         st.lists(
             st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
-        ).filter(
-            lambda x: bin(x[2])[2:].count("1") <= 1
-        )  # maximum one ellipse
+        ).filter(lambda x: bin(x[2])[2:].count("1") <= min(len(shape) - 1, 1))
     )
     begin, end, strides = [], [], []
-    n_omit = draw(st.integers(min_value=0, max_value=ndims - 1))
-    sub_shape = shape[: len(shape) - n_omit]
-    for i in sub_shape:
+    for i in shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
-        end += [
-            draw(
-                st.integers(min_value=0, max_value=i - 1).filter(
-                    lambda x: x != begin[-1]
-                )
-            )
-        ]
+        end += [draw(st.integers(min_value=0, max_value=i - 1))]
         if begin[-1] < end[-1]:
             strides += [draw(st.integers(min_value=1, max_value=i))]
         else:
             strides += [draw(st.integers(max_value=-1, min_value=-i))]
+    ellipsis_mask = _num_to_bit_list(masks[2], ndims)
+    for i, v in enumerate(ellipsis_mask):
+        if v == 1:
+            skip = draw(st.integers(min_value=0, max_value=ndims))
+            begin, end, strides = map(
+                lambda x: x[:i] + x[i + skip :] if i + skip < ndims else x[:i],
+                [begin, end, strides],
+            )
+            break
     return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
 
 
@@ -1096,6 +1259,8 @@ def test_tensorflow_strided_slice(
             new_axis_mask=masks[3],
             shrink_axis_mask=masks[4],
         )
+    except tf_errors.InvalidArgumentError:
+        assume(False)
     except Exception as e:
         if (
             hasattr(e, "message")
@@ -1105,10 +1270,26 @@ def test_tensorflow_strided_slice(
         raise e
 
 
+@st.composite
+def _slice_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            ret_shape=True,
+        ),
+    )
+    begin, size = [], []
+    for i in shape:
+        begin += [draw(st.integers(min_value=0, max_value=i - 1))]
+        size += [draw(st.integers(min_value=0, max_value=i - begin[-1]))]
+    return dtype, x, np.array(begin), np.array(size)
+
+
 # slice
 @handle_frontend_test(
     fn_tree="tensorflow.slice",
-    dtype_x_params=_strided_slice_helper(),
+    dtype_x_params=_slice_helper(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_slice(
@@ -1119,25 +1300,17 @@ def test_tensorflow_slice(
     fn_tree,
     on_device,
 ):
-    dtype, x, begin, end, strides, masks = dtype_x_params
-    try:
-        helpers.test_frontend_function(
-            input_dtypes=dtype + 3 * ["int64"],
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            input_=x[0],
-            begin=begin,
-            size=end - begin,
-        )
-    except Exception as e:
-        if (
-            hasattr(e, "message")
-            and "only stride 1 allowed on non-range indexing" in e.message
-        ):
-            assume(False)
-        raise e
+    dtype, x, begin, size = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype + 3 * ["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input_=x[0],
+        begin=begin,
+        size=size,
+    )
 
 
 @st.composite
@@ -1302,7 +1475,6 @@ def test_tensorflow_one_hot(
     test_flags,
     on_device,
 ):
-
     input_dtype, x = dtype_and_x
     depth = 10
     helpers.test_frontend_function(
@@ -1608,4 +1780,91 @@ def test_tensorflow_unstack(
         on_device=on_device,
         value=x[0],
         axis=axis,
+    )
+
+
+# reverse
+@st.composite
+def reverse_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            max_num_dims=8,
+            ret_shape=True,
+        )
+    )
+    axis_dtype, axis = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_num_dims=1,
+            max_num_dims=1,
+            min_value=-(len(shape) - 1),
+            max_value=len(shape) - 1,
+            shape=(1,),
+        )
+    )
+    return dtype, x, axis_dtype, axis
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.reverse",
+    dtype_x_axis=reverse_helper(),
+)
+def test_tensorflow_reverse(
+    *,
+    dtype_x_axis,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    dtype, x, axis_dtype, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype + axis_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        axis=axis[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.norm",
+    aliases=["tensorflow.norm"],
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+    ),
+    ord=st.sampled_from([1, 2, np.inf]),
+    keepdims=st.booleans(),
+)
+def test_tensorflow_norm(
+    *,
+    dtype_values_axis,
+    ord,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        ord=ord,
+        axis=axis,
+        keepdims=keepdims,
     )

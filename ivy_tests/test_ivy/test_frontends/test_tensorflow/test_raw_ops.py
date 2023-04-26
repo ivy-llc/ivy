@@ -69,7 +69,7 @@ def test_tensorflow_Acosh(  # NOQA
 # Angle
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Angle",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_and_xs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("complex"),
     ),
     Tout=helpers.get_dtypes("float", full=False),
@@ -312,6 +312,41 @@ def test_tensorflow_Cos(  # NOQA
     )
 
 
+# Cross
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Cross",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        safety_factor_scale="log",
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Cross(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
+    )
+
+
 # Rsqrt
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Rsqrt",
@@ -347,7 +382,7 @@ def test_tensorflow_Rsqrt(
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_Cosh(  # NOQA
+def test_tensorflow_Cosh(
     *,
     dtype_and_x,
     frontend,
@@ -818,10 +853,8 @@ def test_tensorflow_Sign(  # NOQA
 
 @st.composite
 def _get_splits(draw, as_list=False):
-    """
-    Generate valid splits, either by generating an integer that evenly divides the axis
-    or a list of splits that sum to the length of the axis being split.
-    """
+    """Generate valid splits, either by generating an integer that evenly divides the
+    axis or a list of splits that sum to the length of the axis being split."""
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
     axis = draw(
         st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
@@ -987,6 +1020,34 @@ def test_tensorflow_Tanh(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# TanhGrad
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.TanhGrad",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_TanhGrad(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y=xs[0],
+        dy=xs[1],
     )
 
 
@@ -1264,6 +1325,37 @@ def test_tensorflow_FloorMod(  # NOQA
     )
 
 
+# FFT
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FFT",
+    dtype_and_x=helpers.dtype_and_values(
+        min_num_dims=1,
+        min_dim_size=2,
+        small_abs_safety_factor=3,
+        safety_factor_scale="log",
+        available_dtypes=helpers.get_dtypes("complex"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_FFT(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 # Exp
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Exp",
@@ -1350,6 +1442,7 @@ def test_tensorflow_Log(  # NOQA
     fn_tree="tensorflow.raw_ops.Log1p",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1460,6 +1553,53 @@ def test_tensorflow_Reshape(  # NOQA
         on_device=on_device,
         tensor=x,
         shape=shape,
+    )
+
+
+# Reverse
+@st.composite
+def reverse_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            max_num_dims=8,
+            ret_shape=True,
+        )
+    )
+    axis_dtype, axis = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["bool"],
+            min_num_dims=1,
+            max_num_dims=1,
+            num_arrays=1,
+            shape=(len(shape),),
+        )
+    )
+    return dtype, x, axis_dtype, axis
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Reverse",
+    dtype_x_axis=reverse_helper(),
+)
+def test_tensorflow_Reverse(
+    *,
+    dtype_x_axis,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    dtype, x, axis_dtype, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype + axis_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        dims=axis[0],
     )
 
 
@@ -2874,13 +3014,13 @@ def test_tensorflow_Xlog1py(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Xlogy",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float16", "float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_Xlogy(  # NOQA
+def test_tensorflow_Xlogy(
     *,
     dtype_and_x,
     frontend,
@@ -3040,6 +3180,51 @@ def test_tensorflow_ConcatV2(
         fn_tree=fn_tree,
         values=xs,
         axis=unique_idx,
+    )
+
+
+# Conv2D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Conv2D",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC", "NCHW"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        type="2d",
+        dilation_min=1,
+        dilation_max=1,
+    ),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
+)
+def test_tensorflow_Conv2D(
+    *,
+    x_f_d_df,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    stride = _convolution_broadcast_helper(
+        stride, num_spatial_dims=2, channel_index=3, name="strides"
+    )
+    dilation = _convolution_broadcast_helper(
+        dilation, num_spatial_dims=2, channel_index=3, name="dilations"
+    )
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        output=None,
+        filter=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
     )
 
 
@@ -3425,4 +3610,252 @@ def test_tensorflow_Real(
         on_device=on_device,
         input=x[0],
         Tout=Tout,
+    )
+
+
+# BandedTriangularSolve
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.BandedTriangularSolve",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_BandedTriangularSolve(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    matrix,
+    rhs,
+    lower,
+    adjoint,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        matrix=x[0],
+        rhs=x[1],
+        lower=lower,
+        adjoint=adjoint,
+    )
+
+
+# BatchMatMul
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.BatchMatMul",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_BatchMatMul(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    adj_x,
+    adj_y,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        adj_x=adj_x,
+        adj_y=adj_y,
+    )
+
+
+# BatchMatMulV2
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.BatchMatMulV2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_BatchMatMulV2(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    adj_x,
+    adj_y,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        adj_x=adj_x,
+        adj_y=adj_y,
+    )
+
+
+# BatchMatMulV3
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.BatchMatMulV3",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_BatchMatMulV3(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    Tout,
+    adj_x,
+    adj_y,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        Tout=Tout,
+        adj_x=adj_x,
+        adj_y=adj_y,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Size",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=4
+    ),
+    output_dtype=st.sampled_from(["int32", "int64"]),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Size(  # NOQA
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, output_dtype
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        out_type=output_dtype,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Prod",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    keep_dims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Prod(  # NOQA
+    *,
+    dtype_x_axis,
+    keep_dims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        axis=axis,
+        keep_dims=keep_dims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.LeakyRelu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+    alpha=helpers.floats(min_value=0, max_value=1),
+)
+def test_tensorflow_LeakyReLU(
+    *,
+    dtype_and_x,
+    alpha,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    return helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        alpha=alpha,
+    )
+
+
+# Zeta
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Zeta",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Zeta(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        q=x[1],
     )

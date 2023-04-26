@@ -11,14 +11,15 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_array_like_without_promotion,
     handle_out_argument,
+    inputs_to_ivy_arrays,
 )
 
 
-@handle_out_argument
-@handle_nestable
 @to_native_arrays_and_back
-@handle_exceptions
+@handle_out_argument
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def logit(
     x: Union[float, int, ivy.Array],
     /,
@@ -27,7 +28,9 @@ def logit(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the logit of x, i.e. logit(x) = log(x / (1 - x)).
+    Compute the logit of x.
+
+    logit(x) = log(x / (1 - x)).
 
     Parameters
     ----------
@@ -56,16 +59,15 @@ def logit(
     >>> z = ivy.logit(x, eps=0.2)
     >>> print(z)
     ivy.array([ 1.38629448,  1.38629448, -1.38629436])
-
     """
     return current_backend(x).logit(x, eps=eps, out=out)
 
 
+@inputs_to_ivy_arrays
 @handle_out_argument
-@handle_nestable
-@to_native_arrays_and_back
-@handle_exceptions
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def prelu(
     x: Union[ivy.NativeArray, ivy.Array],
     slope: Union[float, ivy.NativeArray, ivy.Array],
@@ -75,6 +77,7 @@ def prelu(
 ) -> ivy.Array:
     """
     Prelu takes input data (Array) and slope array as input,
+
     and produces one output data (array) where the function
     f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
     to the data array elementwise. This operator supports unidirectional
@@ -120,9 +123,9 @@ def prelu(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -130,7 +133,8 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the rectified linear unit function with custom threshold.
+    """
+    Apply the rectified linear unit function with custom threshold.
 
     Parameters
     ----------
@@ -176,16 +180,17 @@ def thresholded_relu(
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the rectified linear unit 6 function element-wise.
+    """
+    Apply the rectified linear unit 6 function element-wise.
 
     Parameters
     ----------
@@ -237,50 +242,103 @@ def relu6(
 @to_native_arrays_and_back
 @handle_exceptions
 @handle_array_like_without_promotion
-def batch_norm(
-    x: Union[ivy.NativeArray, ivy.Array],
-    mean: Union[ivy.NativeArray, ivy.Array],
-    variance: Union[ivy.NativeArray, ivy.Array],
-    /,
-    *,
-    offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-    scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-    training: bool = False,
-    eps: float = 1e-5,
+def logsigmoid(
+    input: Union[ivy.NativeArray, ivy.Array],
 ) -> ivy.Array:
     """
-    Applies batch normalization to the input array.
+    Apply element-wise Log-sigmoid of x.
+
+    logsigmoid(x) = log(1 / (1 + exp(-x)).
+
+    Parameters
+    ----------
+    input
+        Input array.
+
+    Returns
+    -------
+        Array with same shape as input with Log-sigmoid applied to every element.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> z = x.logsigmoid()
+    >>> print(z)
+    ivy.array([-1.31326175, -0.69314718, -0.31326169])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> z = x.logsigmoid()
+    >>> print(z)
+    ivy.array([-0.20141329, -0.40318608, -2.48683619])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
+    >>> x = ivy.logsigmoid(x)
+    >>> print(x)
+    {
+        a: ivy.array([-0.31326169, -1.46328247]),
+        b: ivy.array([-0.59813893, -0.43748799])
+    }
+    """
+    return ivy.current_backend(input).logsigmoid(input)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def selu(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Apply the scaled exponential linear unit function element-wise.
 
     Parameters
     ----------
     x
-        Input array of shape (N,C,S), where N is the batch dimension, C is the feature
-        dimension and S corresponds to the following spatial dimensions.
-    mean
-        A mean array for the input's normalization.
-    variance
-        A variance array for the input's normalization.
-    offset
-        An offset array. If present, will be added to the normalized input.
-    scale
-        A scale array. If present, the scale is applied to the normalized input.
-    training
-        If true, calculate and use the mean and variance of `x`. Otherwise, use the
-        provided `mean` and `variance`.
-    eps
-        A small float number to avoid dividing by 0.
+        input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
-         Array containing the normalized, scaled, offset values.
+        an array containing the scaled exponential linear unit activation of each
+        element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+    >>> y = ivy.selu(x)
+    >>> print(y)
+    ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
+                4.20280409,  5.25350523,  6.30420589,  7.35490704])
+    >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+    >>> y = ivy.zeros(9)
+    >>> ivy.selu(x, out = y)
+    >>> print(y)
+    ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
+                4.20280409,  5.25350523,  6.30420589,  7.35490704])
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(
+            a=ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+            b=ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        )
+    >>> x = ivy.selu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([-1.6705687, -1.52016652, -1.11133075, 0.,1.05070102,
+                        2.10140204, 3.15210295, 4.20280409, 5.25350523]),
+        b: ivy.array([1.05070102, 2.10140204, 3.15210295, 4.20280409, 5.25350523,
+                        6.30420589, 7.35490704, 8.40560818, 9.45630932])
+    }
     """
-    return current_backend(x).batch_norm(
-        x,
-        mean,
-        variance,
-        scale=scale,
-        offset=offset,
-        training=training,
-        eps=eps,
-    )
+    return current_backend(x).selu(x, out=out)

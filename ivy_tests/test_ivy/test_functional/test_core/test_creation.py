@@ -250,7 +250,6 @@ def test_asarray(
 
 
 # empty
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.empty",
     shape=helpers.get_shape(
@@ -260,14 +259,15 @@ def test_asarray(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    unpack=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_empty(
     *,
     shape,
+    unpack,
     dtype,
     test_flags,
     backend_fw,
@@ -275,12 +275,21 @@ def test_empty(
     on_device,
     ground_truth_backend,
 ):
+    dims = {}
+    if unpack:
+        i = 0
+        for x_ in shape:
+            dims[f"x{i}"] = x_
+            i += 1
+        shape = None
+        test_flags.num_positional_args = len(dims)
     ret = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
+        **dims,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
@@ -293,7 +302,7 @@ def test_empty(
     ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 # empty_like
@@ -338,7 +347,7 @@ def test_empty_like(
     ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 # eye
@@ -397,7 +406,6 @@ def test_eye(
         max_dim_size=5,
     ),
     container_flags=st.just([False]),
-    as_variable_flags=st.just([False]),  # can't convert variables
     test_gradients=st.just(False),
 )
 def test_from_dlpack(
@@ -567,7 +575,6 @@ def test_meshgrid(
 
 
 # ones
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.ones",
     shape=helpers.get_shape(
@@ -577,14 +584,15 @@ def test_meshgrid(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    unpack=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_ones(
     *,
     shape,
+    unpack,
     dtype,
     test_flags,
     backend_fw,
@@ -592,12 +600,21 @@ def test_ones(
     on_device,
     ground_truth_backend,
 ):
+    dims = {}
+    if unpack:
+        i = 0
+        for x_ in shape:
+            dims[f"x{i}"] = x_
+            i += 1
+        shape = None
+        test_flags.num_positional_args = len(dims)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
+        **dims,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
@@ -719,7 +736,6 @@ def test_triu(
 
 
 # zeros
-# TODO: fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.zeros",
     shape=helpers.get_shape(
@@ -729,14 +745,15 @@ def test_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    unpack=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_zeros(
     *,
     shape,
+    unpack,
     dtype,
     test_flags,
     backend_fw,
@@ -744,12 +761,21 @@ def test_zeros(
     on_device,
     ground_truth_backend,
 ):
+    dims = {}
+    if unpack:
+        i = 0
+        for x_ in shape:
+            dims[f"x{i}"] = x_
+            i += 1
+        shape = None
+        test_flags.num_positional_args = len(dims)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
+        **dims,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
@@ -819,7 +845,7 @@ def test_copy_array(
     else:
         assert ivy.is_native_array(ret)
     # cardinality test
-    assert ret.shape == x.shape
+    assert list(ret.shape) == list(x.shape)
     # value test
     helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
     assert id(x) != id(ret)

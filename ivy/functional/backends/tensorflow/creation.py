@@ -1,5 +1,5 @@
 # global
-
+import numpy as np
 from numbers import Number
 from typing import Union, List, Optional, Sequence
 
@@ -75,7 +75,14 @@ def arange(
 @asarray_handle_nestable
 def asarray(
     obj: Union[
-        tf.Tensor, tf.Variable, bool, int, float, NestedSequence, SupportsBufferProtocol
+        tf.Tensor,
+        tf.Variable,
+        bool,
+        int,
+        float,
+        NestedSequence,
+        SupportsBufferProtocol,
+        np.ndarray,
     ],
     /,
     *,
@@ -113,17 +120,17 @@ def asarray(
             if dtype is None and isinstance(obj, tf.Tensor):
                 return obj
             if dtype is None and not isinstance(obj, tf.Tensor):
-                try:
-                    dtype = ivy.default_dtype(item=obj, as_native=True)
+                if isinstance(obj, np.ndarray):
+                    dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
                     return tf.convert_to_tensor(obj, dtype=dtype)
-                except (TypeError, ValueError):
-                    dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
-                    return tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
-                        dtype=dtype,
-                    )
-            else:
+
                 dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
+                return tf.convert_to_tensor(
+                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype), shallow=False),
+                    dtype=dtype,
+                )
+            else:
+                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 try:
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
@@ -135,12 +142,18 @@ def asarray(
 
 
 def empty(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
+        raise TypeError("empty() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = size
     with tf.device(device):
         return tf.experimental.numpy.empty(shape, dtype)
 
@@ -215,6 +228,8 @@ def from_dlpack(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x, tf.Variable):
+        x = x.read_value()
     dlcapsule = tf.experimental.dlpack.to_dlpack(x)
     return tf.experimental.dlpack.from_dlpack(dlcapsule)
 
@@ -290,6 +305,7 @@ def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if not sparse:
         return tf.meshgrid(*arrays, indexing=indexing)
@@ -308,12 +324,18 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
+        raise TypeError("ones() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = size
     with tf.device(device):
         return tf.ones(shape, dtype)
 
@@ -352,12 +374,18 @@ def triu(
 
 
 def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
+        raise TypeError("zeros() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = size
     with tf.device(device):
         return tf.zeros(shape, dtype)
 

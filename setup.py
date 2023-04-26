@@ -25,7 +25,6 @@ def _strip(line):
 
 
 def _replace_logos_html(txt):
-
     # html-containing chunks
     chunks = txt.split(".. raw:: html")
 
@@ -100,7 +99,7 @@ setup(
     long_description_content_type="text/x-rst",
     url="https://lets-unify.ai/ivy",
     project_urls={
-        "Docs": "https://lets-unify.ai/ivy/",
+        "Docs": "https://lets-unify.ai/docs/ivy/",
         "Source": "https://github.com/unifyai/ivy",
     },
     packages=setuptools.find_packages(),

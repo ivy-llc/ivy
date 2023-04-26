@@ -3,8 +3,6 @@ import ivy
 
 # local
 from ivy.functional.frontends.numpy import (
-    from_zero_dim_arrays_to_scalar,
-    handle_numpy_out,
     argmax,
     any,
     ndarray,

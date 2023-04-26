@@ -1,11 +1,25 @@
 # global
 import copy
+import re
 import warnings
-from ivy._version import __version__ as __version__
 import builtins
 import numpy as np
 import sys
 
+
+import ivy.utils.backend.handler
+from ivy._version import __version__ as __version__
+
+_not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
+try:
+    # Skip numpy from frameworks installed
+    _not_imported_backends.remove("numpy")
+except KeyError:
+    pass
+for backend_framework in _not_imported_backends.copy():
+    # If a framework was already imported before our init execution
+    if backend_framework in sys.modules:
+        _not_imported_backends.remove(backend_framework)
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -25,7 +39,7 @@ def is_local():
 class FrameworkStr(str):
     def __new__(cls, fw_str):
         ivy.utils.assertions.check_elem_in_list(
-            fw_str, ["jax", "tensorflow", "torch", "numpy"]
+            fw_str, ivy.utils.backend.handler._backend_dict.keys()
         )
         return str.__new__(cls, fw_str)
 
@@ -35,10 +49,6 @@ class Framework:
 
 
 class NativeArray:
-    pass
-
-
-class NativeVariable:
     pass
 
 
@@ -182,9 +192,9 @@ class Dtype(str):
         return can_cast(self, to)
 
 
-class Shape(tuple):
-    def __new__(cls, shape_tup):
-        valid_types = (int, list, tuple, ivy.Array)
+class Shape:
+    def __init__(self, shape_tup):
+        valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
         if len(backend_stack) != 0:
             valid_types += (ivy.NativeShape, ivy.NativeArray)
         else:
@@ -193,17 +203,62 @@ class Shape(tuple):
                 current_backend(shape_tup).NativeArray,
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
-        if isinstance(shape_tup, int):
-            shape_tup = (shape_tup,)
-        elif isinstance(shape_tup, list):
-            shape_tup = tuple(shape_tup)
-        ivy.utils.assertions.check_all(
-            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup],
-            "shape must take integers only",
+        if len(backend_stack) == 0:
+            if isinstance(shape_tup, np.ndarray):
+                shape_tup = tuple(shape_tup.tolist())
+            self._shape = shape_tup
+        elif isinstance(shape_tup, valid_types):
+            self._shape = ivy.to_native_shape(shape_tup)
+        else:
+            self._shape = None
+
+    def __repr__(self):
+        pattern = r"\d+(?:,\s*\d+)*"
+        shape_repr = re.findall(pattern, self._shape.__str__())
+        shape_repr = ", ".join([str(i) for i in shape_repr])
+        shape_repr = shape_repr + "," if len(shape_repr) == 1 else shape_repr
+        return (
+            f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
-        if ivy.shape_array_mode():
-            return ivy.array(shape_tup)
-        return tuple.__new__(cls, shape_tup)
+
+    def __add__(self, other):
+        try:
+            self._shape = self._shape + other
+        except TypeError:
+            self._shape = self._shape + list(other)
+        return self
+
+    def __mul__(self, other):
+        self._shape = self._shape * other
+        return self
+
+    def __eq__(self, other):
+        return self._shape == other
+
+    def __ge__(self, other):
+        return self._shape >= other
+
+    def __gt__(self, other):
+        return self._shape > other
+
+    def __le__(self, other):
+        return self._shape <= other
+
+    def __lt__(self, other):
+        return self._shape < other
+
+    def __getattribute__(self, item):
+        return super().__getattribute__(item)
+
+    def __getitem__(self, key):
+        return self._shape[key] if self._shape is not None else None
+
+    def __len__(self):
+        return len(self._shape) if self._shape is not None else 0
+
+    @property
+    def shape(self):
+        return self._shape
 
 
 class IntDtype(Dtype):
@@ -686,11 +741,11 @@ promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
 from .func_wrapper import *
-from .array import Array, add_ivy_array_instance_methods
-from .array.conversions import *
-from .array import conversions as arr_conversions
-from .container import conversions as cont_conversions
-from .container import (
+from .data_classes.array import Array, add_ivy_array_instance_methods
+from .data_classes.array.conversions import *
+from .data_classes.array import conversions as arr_conversions
+from .data_classes.container import conversions as cont_conversions
+from .data_classes.container import (
     ContainerBase,
     Container,
     add_ivy_container_instance_methods,
@@ -700,16 +755,15 @@ from ivy.utils.backend import (
     current_backend,
     compiled_backends,
     with_backend,
-    get_backend,
     set_backend,
     set_numpy_backend,
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
-    unset_backend,
+    previous_backend,
     backend_stack,
     choose_random_backend,
-    clear_backend_stack,
+    unset_backend,
 )
 from . import func_wrapper
 from .utils import assertions, exceptions, verbosity
@@ -722,10 +776,17 @@ from ivy.utils.inspection import fn_array_spec, add_array_specs
 
 add_array_specs()
 
+_imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
     from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722
     compile, transpile, unify = None, None, None
+finally:
+    # Skip framework imports done by Ivy compiler for now
+    for backend_framework in _not_imported_backends.copy():
+        if backend_framework in sys.modules:
+            if backend_framework not in _imported_frameworks_before_compiler:
+                _not_imported_backends.remove(backend_framework)
 
 
 # add instance methods to Ivy Array and Container
@@ -930,7 +991,8 @@ vec_sig_fig.__name__ = "vec_sig_fig"
 
 
 def array_significant_figures(sig_figs=None):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -940,7 +1002,6 @@ def array_significant_figures(sig_figs=None):
     Returns
     -------
     ret
-
     """
     if ivy.exists(sig_figs):
         _assert_array_significant_figures_formatting(sig_figs)
@@ -954,13 +1015,13 @@ def array_significant_figures(sig_figs=None):
 
 
 def set_array_significant_figures(sig_figs):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     sig_figs
         optional int, number of significant figures to be shown when printing
-
     """
     _assert_array_significant_figures_formatting(sig_figs)
     global array_significant_figures_stack
@@ -983,7 +1044,8 @@ def _assert_array_decimal_values_formatting(dec_vals):
 
 
 def array_decimal_values(dec_vals=None):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -993,7 +1055,6 @@ def array_decimal_values(dec_vals=None):
     Returns
     -------
     ret
-
     """
     if ivy.exists(dec_vals):
         _assert_array_decimal_values_formatting(dec_vals)
@@ -1007,13 +1068,13 @@ def array_decimal_values(dec_vals=None):
 
 
 def set_array_decimal_values(dec_vals):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     dec_vals
         optional int, number of significant figures to be shown when printing
-
     """
     _assert_array_decimal_values_formatting(dec_vals)
     global array_decimal_values_stack
@@ -1028,7 +1089,8 @@ def unset_array_decimal_values():
 
 
 def warning_level():
-    """Summary.
+    """
+    Summary.
 
     Returns
     -------
@@ -1044,13 +1106,13 @@ def warning_level():
 
 
 def set_warning_level(warn_level):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     warn_level
         string for the warning level to be set, one of "none", "ivy_only", "all"
-
     """
     global warning_level_stack
     warning_level_stack.append(warn_level)
@@ -1073,13 +1135,13 @@ def warn(warning_message, stacklevel=0):
 
 
 def get_nan_policy():
-    """Summary.
+    """
+    Summary.
 
     Returns
     -------
     ret
         current nan policy, default is "nothing"
-
     """
     global nan_policy_stack
     if not nan_policy_stack:
@@ -1090,14 +1152,14 @@ def get_nan_policy():
 
 
 def set_nan_policy(warn_level):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     nan_policy
         string for the nan policy to be set, one of
         "nothing", "warns", "raise_exception"
-
     """
     global nan_policy_stack
     if warn_level not in ["nothing", "warns", "raise_exception"]:
@@ -1118,7 +1180,7 @@ def unset_nan_policy():
 
 
 def get_dynamic_backend():
-    """Returns the current dynamic backend setting, with the default being True"""
+    """Return the current dynamic backend setting, with the default being True."""
     global dynamic_backend_stack
     if not dynamic_backend_stack:
         return True
@@ -1127,7 +1189,7 @@ def get_dynamic_backend():
 
 
 def set_dynamic_backend(flag):
-    """Sets the global dynamic backend setting to the provided flag (True or False)"""
+    """Set the global dynamic backend setting to the provided flag (True or False)"""
     global dynamic_backend_stack
     if flag not in [True, False]:
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
@@ -1136,8 +1198,9 @@ def set_dynamic_backend(flag):
 
 def unset_dynamic_backend():
     """
-    Removes the current dynamic backend setting,
-    restoring the previous setting (if any)
+    Remove the current dynamic backend setting.
+
+    Also restore the previous setting (if any)
     """
     global dynamic_backend_stack
     if dynamic_backend_stack:
@@ -1166,10 +1229,22 @@ def dynamic_backend_as(value):
     return DynamicBackendContext(value)
 
 
-modules = ivy.utils.backend.handler._backend_dict.keys()
-for module in modules:
-    if module != "numpy" and module in sys.modules:
+for backend_framework in _not_imported_backends:
+    if backend_framework in sys.modules:
         warnings.warn(
-            f"{module} module has been imported while ivy doesn't import it without "
-            "setting a backend, ignore if that's intended"
+            f"{backend_framework} module has been imported while ivy doesn't "
+            "import it without setting a backend, ignore if that's intended"
         )
+
+
+# sub_backends
+from ivy.utils.backend.sub_backend_handler import (
+    set_sub_backend,
+    unset_sub_backend,
+    clear_sub_backends,
+    available_sub_backends,
+)
+
+
+def current_sub_backends():
+    return []

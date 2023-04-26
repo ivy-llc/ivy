@@ -34,11 +34,11 @@ def _get_promoted_type_of_operands(operands):
 # -------------------#
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
-@handle_array_function
+@handle_nestable
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -47,7 +47,7 @@ def min(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the minimum value of the input array ``x``.
+    """Calculate the minimum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
@@ -135,12 +135,12 @@ def min(
     return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -149,7 +149,7 @@ def max(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the maximum value of the input array ``x``.
+    """Calculate the maximum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the maximum value is zero, the
@@ -242,13 +242,13 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_array_function
 @integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -257,7 +257,7 @@ def mean(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the arithmetic mean of the input array ``x``.
+    """Calculate the arithmetic mean of the input array ``x``.
 
     **Special Cases**
 
@@ -351,12 +351,12 @@ def mean(
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -366,7 +366,8 @@ def prod(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the product of input array x elements.
+    """
+    Calculate the product of input array x elements.
 
     Parameters
     ----------
@@ -473,12 +474,12 @@ def prod(
     )
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -488,7 +489,7 @@ def std(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the standard deviation of the input array ``x``.
+    """Calculate the standard deviation of the input array ``x``.
 
     **Special Cases**
 
@@ -606,12 +607,12 @@ def std(
     )
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -621,7 +622,7 @@ def sum(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the sum of the input array ``x``.
+    """Calculate the sum of the input array ``x``.
 
     **Special Cases**
 
@@ -739,12 +740,12 @@ def sum(
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -755,7 +756,7 @@ def var(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates the variance of the input array x.
+    Calculate the variance of the input array x.
 
     **Special Cases**
 
@@ -843,7 +844,6 @@ def var(
         a: ivy.array(0.12666667),
         b: ivy.array(0.11555555)
     }
-
     """
     return current_backend(x).var(
         x, axis=axis, correction=correction, keepdims=keepdims, out=out
@@ -854,12 +854,12 @@ def var(
 # ------#
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -869,7 +869,8 @@ def cumsum(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the cumulative sum of the elements along a given axis.
+    """
+    Return the cumulative sum of the elements along a given axis.
 
     Parameters
     ----------
@@ -996,12 +997,12 @@ def cumsum(
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1012,7 +1013,8 @@ def cumprod(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the cumulative product of the elements along a given axis.
+    """
+    Return the cumulative product of the elements along a given axis.
 
     Parameters
     ----------
@@ -1146,18 +1148,19 @@ def cumprod(
     )
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Sums the product of the elements of the input operands along dimensions specified
+    """
+    Sum the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
     Parameters
@@ -1269,7 +1272,5 @@ def einsum(
         a: ivy.array(2),
         b: ivy.array(15)
     }
-
-
     """
     return current_backend(operands[0]).einsum(equation, *operands, out=out)

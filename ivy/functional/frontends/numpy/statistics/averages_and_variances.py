@@ -25,7 +25,6 @@ def var(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ):
-
     if dtype is not None:
         a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
 
@@ -343,7 +342,6 @@ def nanpercentile(
         resultarray = []
         nanlessarray = []
         for x in a:
-
             for i in x:
                 if not ivy.isnan(i):
                     nanlessarray.append(i)
@@ -375,7 +373,6 @@ def nanpercentile(
             ivy.logging.warning("axis is 0 but couldn't swap")
 
         finally:
-
             nanlessarrayofarrays = []
             for i in a:
                 nanlessarray = []
@@ -389,3 +386,22 @@ def nanpercentile(
                     arrayofpercentiles.append(cpercentile(ii, i))
                 resultarray.append(arrayofpercentiles)
         return resultarray
+
+
+# nanmedian
+@handle_numpy_out
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def nanmedian(
+    a,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    overwrite_input=False,
+):
+    ret = ivy.nanmedian(
+        a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+    )
+    return ret
