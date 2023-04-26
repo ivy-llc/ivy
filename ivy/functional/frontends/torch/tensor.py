@@ -488,6 +488,9 @@ class Tensor:
         return torch_frontend.tensor(
             ivy.stop_gradient(self.ivy_array, preserve_type=False)
         )
+    
+    def det(self):
+        return torch_frontend.det(self.ivy_array)
 
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
