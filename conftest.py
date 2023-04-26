@@ -36,7 +36,6 @@ def run_around_tests(device, f, wrapped_mode, compile_graph, fw):
 
 
 def pytest_generate_tests(metafunc):
-
     # dev_str
     raw_value = metafunc.config.getoption("--device")
     if raw_value == "all":
@@ -76,7 +75,13 @@ def pytest_generate_tests(metafunc):
             for wrapped_mode in wrapped_modes:
                 for compile_graph in compile_modes:
                     configs.append(
-                        (device, TEST_FRAMEWORKS[f_str](), wrapped_mode, compile_graph, f_str)
+                        (
+                            device,
+                            TEST_FRAMEWORKS[f_str](),
+                            wrapped_mode,
+                            compile_graph,
+                            f_str,
+                        )
                     )
     metafunc.parametrize("device,f,wrapped_mode,compile_graph,fw", configs)
 
