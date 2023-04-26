@@ -837,7 +837,7 @@ def test_torch_unique(
     
  
 @handle_frontend_test(
-    fn_tree="torch.mode",
+    fn_tree="ivy.functional.frontends.torch.mode",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
