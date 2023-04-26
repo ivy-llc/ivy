@@ -10,8 +10,8 @@ from ivy.functional.frontends.numpy import dtype as np_dtype
 
 @to_ivy_arrays_and_back
 def can_cast(from_, to, casting="safe"):
-    """Return True if casting betweer two dtypes is possible according to casting
-    rules, False otherwise."""
+    """Return True if casting betweer two dtypes is possible according to casting rules,
+    False otherwise."""
     ivy.utils.assertions.check_elem_in_list(
         casting,
         ["no", "equiv", "safe", "same_kind", "unsafe"],

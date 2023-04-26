@@ -233,8 +233,7 @@ def astype(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Copy an array to a specified data type irrespective of :ref:`type- promotion`
-    rules.
+    Copy an array to a specified data type irrespective of :ref:`type- promotion` rules.
 
     .. note::
     Casting floating-point ``NaN`` and ``infinity`` values to integral data types

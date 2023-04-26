@@ -624,8 +624,8 @@ def nested_argwhere(
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
     """
-    Check the leaf nodes of nested x via function fn, and returns all nest indices
-    where the method evaluates as True.
+    Check the leaf nodes of nested x via function fn, and returns all nest indices where
+    the method evaluates as True.
 
     Parameters
     ----------

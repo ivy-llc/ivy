@@ -16,8 +16,6 @@ repos:
     rev: v1.6.3
     hooks:
       - id: docformatter
-        # Exclude everything in frontends except __init__.py, and func_wrapper.py
-        exclude: 'ivy/functional/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
   - repo: https://github.com/pycqa/pydocstyle
     rev: 6.3.0
     hooks:
