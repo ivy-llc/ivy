@@ -3,7 +3,6 @@ from pydriller import Repository
 import os  # noqa
 import bz2
 import _pickle as cPickle
-import sys
 
 BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 

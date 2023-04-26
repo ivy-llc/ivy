@@ -577,7 +577,6 @@ def test_numpy_nanmin(
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        all_aliases=["numpy.nanmin"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
