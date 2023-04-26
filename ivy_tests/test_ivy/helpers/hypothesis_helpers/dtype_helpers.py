@@ -32,9 +32,15 @@ _dtype_kind_keys = {
 
 
 def _get_fn_dtypes(framework, kind="valid"):
-    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
-        test_globals.CURRENT_DEVICE_STRIPPED
-    ][kind]
+    all_devices_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
+        framework.backend
+    ]
+    dtypes = []
+    if not isinstance(all_devices_dtypes, tuple):
+        all_devices_dtypes = (all_devices_dtypes,)
+    for devices_dtypes in all_devices_dtypes:
+        dtypes.append(devices_dtypes[test_globals.CURRENT_DEVICE_STRIPPED][kind])
+    return tuple(dtypes)
 
 
 def _get_type_dict(framework, kind):
