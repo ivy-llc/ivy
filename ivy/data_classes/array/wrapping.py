@@ -10,7 +10,7 @@ TO_IGNORE = ["shape"]
 
 def _wrap_function(function_name: str) -> Callable:
     """
-    Wraps the function called `function_name`.
+    Wrap the function called `function_name`.
 
     Parameters
     ----------

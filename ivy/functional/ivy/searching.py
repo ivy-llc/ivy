@@ -36,7 +36,7 @@ def argmax(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the indices of the maximum values along a specified axis. When the maximum
+    Return the indices of the maximum values along a specified axis. When the maximum
     value occurs multiple times, only the indices corresponding to the first occurrence
     are returned.
 
@@ -140,7 +140,7 @@ def argmin(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the indices of the minimum values along a specified axis. When the minimum
+    Return the indices of the minimum values along a specified axis. When the minimum
     value occurs multiple times, only the indices corresponding to the first occurrence
     are returned.
 
@@ -242,7 +242,7 @@ def nonzero(
     fill_value: Number = 0,
 ) -> Union[Tuple[ivy.Array], ivy.Array]:
     """
-    Returns the indices of the array elements which are non-zero.
+    Return the indices of the array elements which are non-zero.
 
     Parameters
     ----------
@@ -381,7 +381,7 @@ def where(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns elements chosen from x or y depending on condition.
+    Return elements chosen from x or y depending on condition.
 
     Parameters
     ----------
@@ -470,7 +470,7 @@ def argwhere(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the indices of all non-zero elements of the input array.
+    Return the indices of all non-zero elements of the input array.
 
     Parameters
     ----------

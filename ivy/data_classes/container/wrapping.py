@@ -10,7 +10,7 @@ TO_IGNORE = ["is_ivy_array", "is_native_array", "is_array", "shape"]
 
 def _wrap_function(function_name: str, static: bool) -> Callable:
     """
-    Wraps the function called `function_name`.
+    Wrap the function called `function_name`.
 
     Parameters
     ----------

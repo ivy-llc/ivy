@@ -312,7 +312,7 @@ def heaviside(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the Heaviside step function for each element in x1.
+    Compute the Heaviside step function for each element in x1.
 
     Parameters
     ----------
@@ -564,7 +564,7 @@ def top_k(
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """
-    Returns the `k` largest elements of the given input array along a given axis.
+    Return the `k` largest elements of the given input array along a given axis.
 
     Parameters
     ----------
@@ -678,7 +678,7 @@ def i0(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the Bessel i0 function of x element-wise.
+    Compute the Bessel i0 function of x element-wise.
 
     Parameters
     ----------

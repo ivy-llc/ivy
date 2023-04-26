@@ -18,7 +18,7 @@ class _ArrayWithStatistical(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Calculates the minimum value of the input array ``x``.
+        Calculate the minimum value of the input array ``x``.
 
         Parameters
         ----------

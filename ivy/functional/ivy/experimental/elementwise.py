@@ -26,7 +26,7 @@ def sinc(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates an implementation-dependent approximation of the principal value of
+    Calculate an implementation-dependent approximation of the principal value of
     the normalized sinc function, having domain ``(-infinity, +infinity)`` and
     codomain ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``.
     Each element ``x_i`` is assumed to be expressed in radians.
@@ -101,7 +101,7 @@ def lcm(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the element-wise least common multiple (LCM) of x1 and x2.
+    Compute the element-wise least common multiple (LCM) of x1 and x2.
 
     Parameters
     ----------
@@ -140,7 +140,7 @@ def fmax(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Computes the element-wise maximums of two arrays. Differs from ivy.maximum in the
+    Compute the element-wise maximums of two arrays. Differs from ivy.maximum in the
     case where one of the elements is NaN. ivy.maximum returns the NaN element while
     ivy.fmax returns the non-NaN element.
 
@@ -184,7 +184,7 @@ def fmin(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Computes the element-wise minimums of two arrays. Differs from ivy.minimum in the
+    Compute the element-wise minimums of two arrays. Differs from ivy.minimum in the
     case where one of the elements is NaN. ivy.minimum returns the NaN element while
     ivy.fmin returns the non-NaN element.
 
@@ -525,7 +525,7 @@ def gcd(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the greatest common divisor of |x1| and |x2|.
+    Return the greatest common divisor of |x1| and |x2|.
 
     Parameters
     ----------
@@ -570,7 +570,7 @@ def isclose(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns a boolean array where two arrays are element-wise equal within a tolerance.
+    Return a boolean array where two arrays are element-wise equal within a tolerance.
 
     The tolerance values are positive, typically very small numbers.
     The relative difference (rtol * abs(b)) and the absolute difference
@@ -630,7 +630,7 @@ def angle(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates Element-wise the angle for an array of complex numbers(x+yj).
+    Calculate Element-wise the angle for an array of complex numbers(x+yj).
 
     Parameters
     ----------
@@ -674,7 +674,7 @@ def imag(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the Imaginary part of a complex numbers(x+yj).
+    Return the Imaginary part of a complex numbers(x+yj).
 
     Parameters
     ----------
@@ -769,7 +769,7 @@ def logaddexp2(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates log2(2**x1 + 2**x2).
+    Calculate log2(2**x1 + 2**x2).
 
     Parameters
     ----------
@@ -806,7 +806,7 @@ def signbit(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns element-wise True where signbit is set (less than zero).
+    Return element-wise True where signbit is set (less than zero).
 
     Parameters
     ----------
@@ -841,7 +841,7 @@ def hypot(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Returns the hypotenuse given the two sides of a right angle triangle.
+    Return the hypotenuse given the two sides of a right angle triangle.
 
     Parameters
     ----------
@@ -880,7 +880,7 @@ def diff(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the n-th discrete difference along the given axis.
+    Return the n-th discrete difference along the given axis.
 
     Parameters
     ----------
@@ -934,7 +934,7 @@ def allclose(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Returns a True if the two arrays are element-wise equal within given tolerance;
+    Return a True if the two arrays are element-wise equal within given tolerance;
     otherwise False.
 
     The tolerance values are positive, typically very small numbers.
@@ -1123,7 +1123,7 @@ def gradient(
     axis: Optional[Union[int, list, tuple]] = None,
 ) -> Union[ivy.Array, List[ivy.Array]]:
     """
-    Calculates gradient of x with respect to (w.r.t.) spacing.
+    Calculate gradient of x with respect to (w.r.t.) spacing.
 
     Parameters
     ----------
@@ -1310,7 +1310,7 @@ def binarizer(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Maps the values of the input tensor to either 0 or 1, element-wise, based on the
+    Map the values of the input tensor to either 0 or 1, element-wise, based on the
     outcome of a comparison against a threshold value.
 
     Parameters
@@ -1350,7 +1350,7 @@ def conj(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the complex conjugate of complex values in x.
+    Compute the complex conjugate of complex values in x.
 
     Parameters
     ----------
@@ -1408,7 +1408,7 @@ def ldexp(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns x1 * (2**x2), element-wise.
+    Return x1 * (2**x2), element-wise.
 
     Parameters
     ----------
@@ -1449,7 +1449,7 @@ def lerp(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns a linear interpolation of two arrays start (given by input) and end.
+    Return a linear interpolation of two arrays start (given by input) and end.
 
     based on a scalar or array weight.
         input + weight * (end - input),  element-wise.

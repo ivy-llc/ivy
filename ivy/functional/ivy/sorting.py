@@ -32,7 +32,7 @@ def argsort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the indices that sort an array ``x`` along a specified axis.
+    """Return the indices that sort an array ``x`` along a specified axis.
 
     Parameters
     ----------
@@ -149,7 +149,7 @@ def sort(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns a sorted copy of an array.
+    Return a sorted copy of an array.
 
     Parameters
     ----------
@@ -258,7 +258,7 @@ def searchsorted(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the indices of the inserted elements in a sorted array.
+    Return the indices of the inserted elements in a sorted array.
 
     Parameters
     ----------

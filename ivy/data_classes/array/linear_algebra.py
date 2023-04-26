@@ -571,7 +571,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Computes the outer product between two arrays.
+        Compute the outer product between two arrays.
 
         Parameters
         ----------

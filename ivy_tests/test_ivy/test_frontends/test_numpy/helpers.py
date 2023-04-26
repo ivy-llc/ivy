@@ -19,7 +19,7 @@ def _array_and_axes_permute_helper(
     allow_none=False,
 ):
     """
-    Returns array, its dtype and either the random permutation of its axes or None.
+    Return array, its dtype and either the random permutation of its axes or None.
 
     Parameters
     ----------

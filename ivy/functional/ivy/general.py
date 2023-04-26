@@ -190,7 +190,7 @@ def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
     """
-    Determines whether the input x is an :class:`ivy.NativeArray` instance.
+    Determine whether the input x is an :class:`ivy.NativeArray` instance.
 
     Parameters
     ----------
@@ -226,7 +226,7 @@ def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
     """
-    Determines whether the input x is a valid Ivy Array.
+    Determine whether the input x is a valid Ivy Array.
 
     Parameters
     ----------
@@ -257,7 +257,7 @@ def is_ivy_array(
 @handle_exceptions
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """
-    Determines whether the input x is either an Ivy Array or a Native Array.
+    Determine whether the input x is either an Ivy Array or a Native Array.
 
     Parameters
     ----------
@@ -294,7 +294,7 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
 @handle_exceptions
 def is_ivy_container(x: Any, /) -> bool:
     """
-    Determines whether the input x is an Ivy Container.
+    Determine whether the input x is an Ivy Container.
 
     Parameters
     ----------
@@ -597,7 +597,7 @@ def array_equal(
     /,
 ) -> bool:
     """
-    Determines whether two input arrays are equal across all elements.
+    Determine whether two input arrays are equal across all elements.
 
     Parameters
     ----------
@@ -642,7 +642,7 @@ def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, ivy.Array, ivy.NativeArray]:
     """
-    Determines whether the inputs are all equal.
+    Determine whether the inputs are all equal.
 
     Parameters
     ----------
@@ -734,7 +734,7 @@ def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
     """
-    Converts an array into a numpy array.
+    Convert an array into a numpy array.
 
     Parameters
     ----------
@@ -803,7 +803,7 @@ def isscalar(x: Any, /) -> bool:
 @handle_exceptions
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """
-    Converts an array with a single element into a scalar.
+    Convert an array with a single element into a scalar.
 
     Parameters
     ----------
@@ -1213,7 +1213,7 @@ def value_is_nan(
     include_infs: bool = True,
 ) -> bool:
     """
-    Determines whether the single valued array or scalar is of nan type.
+    Determine whether the single valued array or scalar is of nan type.
 
     Parameters
     ----------
@@ -1415,7 +1415,7 @@ def default(
     with_callable: bool = False,
 ) -> Any:
     """
-    Returns x provided it exists (is not None), else returns default value.
+    Return x provided it exists (is not None), else returns default value.
 
     Parameters
     ----------
@@ -1509,7 +1509,7 @@ def default(
 @handle_exceptions
 def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
     """
-    Returns the input shape in ivy.Shape form.
+    Return the input shape in ivy.Shape form.
 
     Parameters
     ----------
@@ -1531,7 +1531,7 @@ def to_native_shape(
     shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list]
 ) -> ivy.NativeShape:
     """
-    Returns the input shape in its native backend framework form.
+    Return the input shape in its native backend framework form.
 
     Parameters
     ----------
@@ -2318,7 +2318,7 @@ def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
 @handle_exceptions
 def num_arrays_in_memory() -> int:
     """
-    Returns the number of arrays which are currently alive.
+    Return the number of arrays which are currently alive.
 
     Returns
     -------
@@ -3301,7 +3301,7 @@ def shape(
     as_array: bool = False,
 ) -> Union[ivy.Shape, ivy.NativeShape]:
     """
-    Returns the shape of the array ``x``.
+    Return the shape of the array ``x``.
 
     Parameters
     ----------
@@ -3404,7 +3404,7 @@ def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:
     """
-    Returns the number of dimensions of the array x.
+    Return the number of dimensions of the array x.
 
     Parameters
     ----------
@@ -3620,7 +3620,7 @@ def _get_devices_and_dtypes(fn, complement=True):
 @handle_exceptions
 def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
-    Returns the supported combination of devices and dtypes of the current backend's
+    Return the supported combination of devices and dtypes of the current backend's
     function.
 
     Parameters
@@ -3659,7 +3659,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
 @handle_exceptions
 def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
-    Returns the unsupported combination of devices and dtypes of the current backend's
+    Return the unsupported combination of devices and dtypes of the current backend's
     function.
 
     Parameters
@@ -3810,7 +3810,7 @@ def itemsize(
     /,
 ) -> int:
     """
-    Returns the size of the input array's elements.
+    Return the size of the input array's elements.
 
     Parameters
     ----------
@@ -3843,7 +3843,7 @@ def strides(
     /,
 ) -> Tuple[int]:
     """
-    Returns the input array's strides across each dimension.
+    Return the input array's strides across each dimension.
 
     Parameters
     ----------

@@ -2749,7 +2749,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         axis: Optional[Union[int, list, tuple]] = None,
     ) -> ivy.Container:
         """
-        Calculates gradient of x with respect to (w.r.t.) spacing.
+        Calculate gradient of x with respect to (w.r.t.) spacing.
 
         Parameters
         ----------
@@ -3147,7 +3147,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Maps the values of the input tensor to either 0 or 1, element-wise, based on the
+        Map the values of the input tensor to either 0 or 1, element-wise, based on the
         outcome of a comparison against a threshold value.
 
         Parameters
@@ -3199,7 +3199,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Maps the values of the input tensor to either 0 or 1, element-wise, based on the
+        Map the values of the input tensor to either 0 or 1, element-wise, based on the
         outcome of a comparison against a threshold value.
 
         Parameters

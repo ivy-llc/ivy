@@ -17,8 +17,8 @@ class Sequential(Module):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ):
         """
-        A sequential container. Modules will be added to it in the order they are passed
-        in the constructor.
+        Initialize a sequential container. Modules will be added to it in the order they
+        are passed in the constructor.
 
         Parameters
         ----------

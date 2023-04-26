@@ -26,7 +26,7 @@ def deserialize(
     name: Union[str, None], /, *, custom_objects: Optional[ivy.Dict] = None
 ) -> Union[Callable, None]:
     """
-    Returns activation function given a string identifier.
+    Return activation function given a string identifier.
 
     Parameters
     ----------
@@ -111,7 +111,7 @@ def gelu(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Applies the Gaussian error linear unit (GELU) activation function.
+    Apply the Gaussian error linear unit (GELU) activation function.
 
     Parameters
     ----------
@@ -162,7 +162,7 @@ def get(
     name: Union[str, None], /, *, custom_objects: Optional[ivy.Dict] = None
 ) -> Union[Callable, None]:
     """
-    Returns activation function given a string identifier.
+    Return activation function given a string identifier.
 
     Parameters
     ----------
@@ -221,7 +221,7 @@ def leaky_relu(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Applies the leaky rectified linear unit function element-wise.
+    Apply the leaky rectified linear unit function element-wise.
 
     Parameters
     ----------
@@ -287,7 +287,7 @@ def log_softmax(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Applies the log_softmax function element-wise.
+    Apply the log_softmax function element-wise.
 
     Parameters
     ----------
@@ -355,7 +355,7 @@ def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
-    Applies the rectified linear unit function element-wise.
+    Apply the rectified linear unit function element-wise.
 
     Parameters
     ----------
@@ -410,7 +410,7 @@ def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
-    Applies the sigmoid function element-wise.
+    Apply the sigmoid function element-wise.
 
     Parameters
     ----------
@@ -463,7 +463,7 @@ def softmax(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Applies the softmax function element-wise.
+    Apply the softmax function element-wise.
 
     Parameters
     ----------
@@ -514,7 +514,7 @@ def softplus(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Applies the softplus function element-wise.
+    Apply the softplus function element-wise.
 
     Parameters
     ----------
@@ -566,7 +566,7 @@ def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
-    Applies the mish activation function element-wise.
+    Apply the mish activation function element-wise.
 
     Parameters
     ----------

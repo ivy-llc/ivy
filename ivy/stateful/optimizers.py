@@ -94,7 +94,7 @@ class Optimizer(abc.ABC):
         self, v: ivy.Container, grads: ivy.Container, ignore_missing: bool = False
     ):
         """
-        Calls the custom child step function implementation.
+        Call the custom child step function implementation.
 
         Parameters
         ----------

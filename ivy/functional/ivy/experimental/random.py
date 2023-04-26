@@ -96,7 +96,7 @@ def beta(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns an array filled with random values sampled from a beta distribution.
+    Return an array filled with random values sampled from a beta distribution.
 
     Parameters
     ----------
@@ -149,7 +149,7 @@ def gamma(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns an array filled with random values sampled from a gamma distribution.
+    Return an array filled with random values sampled from a gamma distribution.
 
     Parameters
     ----------

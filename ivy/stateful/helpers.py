@@ -14,7 +14,7 @@ class ModuleHelpers(abc.ABC):
     # --------#
     def _top_v_fn(self, /, *, depth=None, flatten_key_chains=False):
         """
-        Returns the variables at a specific depth, with depth 1 returning the variables
+        Return the variables at a specific depth, with depth 1 returning the variables
         of the current layer.
 
         Parameters
@@ -68,7 +68,7 @@ class ModuleHelpers(abc.ABC):
     # noinspection PyProtectedMember
     def track_submod_rets(self):
         """
-        Returns True if the current module should have its returns tracked as set by the
+        Return True if the current module should have its returns tracked as set by the
         user during the call.
 
         Returns
@@ -95,7 +95,7 @@ class ModuleHelpers(abc.ABC):
 
     def check_submod_rets(self):
         """
-        Returns True if there is an expected submodule return value set by the user
+        Return True if there is an expected submodule return value set by the user
         during the call.
 
         Returns
@@ -477,7 +477,7 @@ class ModuleHelpers(abc.ABC):
     # noinspection PyProtectedMember
     def _is_submod_leaf(self):
         """
-        Checks if the submodule is the leaf node of the network.
+        Check if the submodule is the leaf node of the network.
 
         Returns
         -------
@@ -544,7 +544,7 @@ class ModuleHelpers(abc.ABC):
 
     def show_structure(self):
         """
-        Prints the structure of the layer network.
+        Print the structure of the layer network.
 
         Returns
         -------

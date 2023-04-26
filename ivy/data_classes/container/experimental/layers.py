@@ -1665,7 +1665,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Applies a 1D adaptive average pooling over an input signal composed of several
+        Apply a 1D adaptive average pooling over an input signal composed of several
         input planes.
 
         Parameters
@@ -1739,7 +1739,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Applies a 2D adaptive average pooling over an input signal composed of several
+        Apply a 2D adaptive average pooling over an input signal composed of several
         input planes.
 
         Parameters

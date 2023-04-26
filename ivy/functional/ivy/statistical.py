@@ -47,7 +47,7 @@ def min(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the minimum value of the input array ``x``.
+    """Calculate the minimum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
@@ -149,7 +149,7 @@ def max(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the maximum value of the input array ``x``.
+    """Calculate the maximum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the maximum value is zero, the
@@ -257,7 +257,7 @@ def mean(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the arithmetic mean of the input array ``x``.
+    """Calculate the arithmetic mean of the input array ``x``.
 
     **Special Cases**
 
@@ -367,7 +367,7 @@ def prod(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates the product of input array x elements.
+    Calculate the product of input array x elements.
 
     Parameters
     ----------
@@ -489,7 +489,7 @@ def std(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the standard deviation of the input array ``x``.
+    """Calculate the standard deviation of the input array ``x``.
 
     **Special Cases**
 
@@ -622,7 +622,7 @@ def sum(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the sum of the input array ``x``.
+    """Calculate the sum of the input array ``x``.
 
     **Special Cases**
 
@@ -756,7 +756,7 @@ def var(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates the variance of the input array x.
+    Calculate the variance of the input array x.
 
     **Special Cases**
 
@@ -870,7 +870,7 @@ def cumsum(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the cumulative sum of the elements along a given axis.
+    Return the cumulative sum of the elements along a given axis.
 
     Parameters
     ----------
@@ -1014,7 +1014,7 @@ def cumprod(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the cumulative product of the elements along a given axis.
+    Return the cumulative product of the elements along a given axis.
 
     Parameters
     ----------

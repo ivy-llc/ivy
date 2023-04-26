@@ -38,7 +38,7 @@ def eigh_tridiagonal(
     tol: Optional[float] = None,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
     """
-    Computes the eigenvalues and eigenvectors of a Hermitian tridiagonal matrix.
+    Compute the eigenvalues and eigenvectors of a Hermitian tridiagonal matrix.
 
     Parameters
     ----------
@@ -179,7 +179,7 @@ def diagflat(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
-    Returns a two-dimensional array with the flattened input as a diagonal.
+    Return a two-dimensional array with the flattened input as a diagonal.
 
     Parameters
     ----------
@@ -241,7 +241,7 @@ def kron(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the Kronecker product, a composite array made of blocks of the second array
+    Compute the Kronecker product, a composite array made of blocks of the second array
     scaled by the first.
 
     Parameters
@@ -281,7 +281,7 @@ def matrix_exp(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the matrix exponential of a square matrix.
+    Compute the matrix exponential of a square matrix.
 
     Parameters
     ----------
@@ -319,7 +319,7 @@ def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[ivy.Array]:
-    """Computes eigenvalies and eigenvectors of x. Returns a tuple with two
+    """Compute eigenvalies and eigenvectors of x. Returns a tuple with two
     elements: first is the set of eigenvalues, second is the set of
     eigenvectors.
 
@@ -382,7 +382,7 @@ def eigvals(
     /,
 ) -> ivy.Array:
     """
-    Computes eigenvalues of x. Returns a set of eigenvalues.
+    Compute eigenvalues of x. Returns a set of eigenvalues.
 
     Parameters
     ----------
@@ -427,7 +427,7 @@ def adjoint(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the complex conjugate transpose of x.
+    Compute the complex conjugate transpose of x.
 
     Parameters
     ----------
@@ -518,7 +518,7 @@ def cond(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the condition number of x.
+    Compute the condition number of x.
 
     Parameters
     ----------
@@ -568,7 +568,7 @@ def cov(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
 ) -> ivy.Array:
     """
-    Computes the covariance of matrix x1, or variables x1 and x2.
+    Compute the covariance of matrix x1, or variables x1 and x2.
 
     Parameters
     ----------

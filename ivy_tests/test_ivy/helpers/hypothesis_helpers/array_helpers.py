@@ -58,7 +58,7 @@ def array_bools(
 
 def list_of_size(*, x, size):
     """
-    Returns a list of the given length with elements drawn randomly from x.
+    Return a list of the given length with elements drawn randomly from x.
 
     Parameters
     ----------
@@ -622,7 +622,7 @@ def array_indices_axis(
     valid_bounds=True,
 ):
     """
-    Generates two arrays x & indices, the values in the indices array are indices of the
+    Generate two arrays x & indices, the values in the indices array are indices of the
     array x. Draws an integers randomly from the minimum and maximum number of
     positional arguments a given function can take.
 
@@ -1146,7 +1146,7 @@ def mutually_broadcastable_shapes(
 
 @st.composite
 def array_and_broadcastable_shape(draw, dtype):
-    """Returns an array and a shape that the array can be broadcast to."""
+    """Return an array and a shape that the array can be broadcast to."""
     if isinstance(dtype, st._internal.SearchStrategy):
         dtype = draw(dtype)
         dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)

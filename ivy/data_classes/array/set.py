@@ -44,7 +44,7 @@ class _ArrayWithSet(abc.ABC):
     def unique_values(
         self: ivy.Array, /, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
-        """Returns the unique elements of an input array `x`.
+        """Return the unique elements of an input array `x`.
         .. admonition:: Data-dependent output shape
             :class: important
             The shapes of two of the output arrays for this function depend on the

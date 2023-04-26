@@ -18,7 +18,7 @@ class _ArrayWithDataTypes(abc.ABC):
         copy: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Copies an array to a specified data type irrespective of
+        """Copy an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::

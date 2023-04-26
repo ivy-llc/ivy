@@ -624,7 +624,7 @@ def nested_argwhere(
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
     """
-    Checks the leaf nodes of nested x via function fn, and returns all nest indices
+    Check the leaf nodes of nested x via function fn, and returns all nest indices
     where the method evaluates as True.
 
     Parameters
@@ -804,7 +804,7 @@ def all_nested_indices(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns indices of all the elements in nest.
+    Return indices of all the elements in nest.
 
     Parameters
     ----------
@@ -900,7 +900,7 @@ def map(
     mean: bool = False,
 ) -> List:
     """
-    Applies a function on each item of an iterable x.
+    Apply a function on each item of an iterable x.
 
     Parameters
     ----------
@@ -1014,7 +1014,7 @@ def nested_map(
     shallow: bool = True,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """
-    Applies a function on x in a nested manner, whereby all dicts, lists and tuples are
+    Apply a function on x in a nested manner, whereby all dicts, lists and tuples are
     traversed to their lowest leaves before applying the method and returning x. If x is
     not nested, the method is applied to x directly.
 
@@ -1181,7 +1181,7 @@ def nested_any(
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> bool:
     """
-    Checks the leaf nodes of nest x via function fn, and returns True if any evaluate to
+    Check the leaf nodes of nest x via function fn, and returns True if any evaluate to
     True, else False.
 
     Parameters
@@ -1235,7 +1235,7 @@ def copy_nest(
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """
-    Copies a nest deeply, but without copying leaves of the nest, only the nest lists,
+    Copy a nest deeply, but without copying leaves of the nest, only the nest lists,
     tuples and dicts are copied.
 
     Parameters

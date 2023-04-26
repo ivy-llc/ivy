@@ -233,7 +233,7 @@ def astype(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Copies an array to a specified data type irrespective of :ref:`type- promotion`
+    Copy an array to a specified data type irrespective of :ref:`type- promotion`
     rules.
 
     .. note::
@@ -484,7 +484,7 @@ def can_cast(
     /,
 ) -> bool:
     """
-    Determines if one data type can be cast to another data type according to
+    Determine if one data type can be cast to another data type according to
     :ref:`type-promotion` rules.
 
     Parameters
@@ -714,7 +714,7 @@ def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
     """
-    Returns the dtype that results from applying the type promotion rules (see
+    Return the dtype that results from applying the type promotion rules (see
     :ref:`type-promotion`) to the arguments.
 
     .. note::
@@ -964,7 +964,7 @@ def _check_complex128(input) -> bool:
 @handle_exceptions
 def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype, str]:
     """
-    Determines the closest valid datatype to the datatype passed as input.
+    Determine the closest valid datatype to the datatype passed as input.
 
     Parameters
     ----------
@@ -1559,7 +1559,7 @@ def dtype(
 @handle_exceptions
 def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """
-    Returns the supported data types of the current backend's function.
+    Return the supported data types of the current backend's function.
 
     Parameters
     ----------
@@ -1597,7 +1597,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
 @handle_exceptions
 def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """
-    Returns the unsupported data types of the current backend's function.
+    Return the unsupported data types of the current backend's function.
 
     Parameters
     ----------
@@ -1634,7 +1634,7 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
 @handle_exceptions
 def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
     """
-    Determines whether the provided data type is not support by the current framework.
+    Determine whether the provided data type is not support by the current framework.
 
     Parameters
     ----------
@@ -2004,7 +2004,7 @@ def promote_types(
 @handle_exceptions
 def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     """
-    Sets the datatype `dtype` as default data type.
+    Set the datatype `dtype` as default data type.
 
     Parameters
     ----------
@@ -2040,7 +2040,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
 @handle_exceptions
 def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
     """
-    Sets the 'float_dtype' as the default data type.
+    Set the 'float_dtype' as the default data type.
 
     Parameters
     ----------
@@ -2068,7 +2068,7 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
 @handle_exceptions
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
     """
-    Sets the 'int_dtype' as the default data type.
+    Set the 'int_dtype' as the default data type.
 
     Parameters
     ----------
@@ -2122,7 +2122,7 @@ def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str], /):
 @handle_exceptions
 def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
     """
-    Sets the 'complex_dtype' as the default data type.
+    Set the 'complex_dtype' as the default data type.
 
     Parameters
     ----------
@@ -2287,7 +2287,7 @@ def unset_default_complex_dtype():
 @handle_exceptions
 def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
     """
-    Determines whether the provided data type is supported by the current framework.
+    Determine whether the provided data type is supported by the current framework.
 
     Parameters
     ----------
@@ -2387,7 +2387,7 @@ def promote_types_of_inputs(
 @handle_exceptions
 def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     """
-    Determines whether the input dtype is a Native dtype.
+    Determine whether the input dtype is a Native dtype.
 
     Parameters
     ----------

@@ -145,7 +145,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Computes a 3-D max pool given 5-D input x.
+        Compute a 3-D max pool given 5-D input x.
 
         Parameters
         ----------
@@ -349,7 +349,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Computes a 3-D max pool given 5-D input x.
+        Compute a 3-D max pool given 5-D input x.
 
         Parameters
         ----------
@@ -588,7 +588,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Computes the discrete Fourier transform of input.
+        Compute the discrete Fourier transform of input.
 
         Parameters
         ----------
@@ -733,7 +733,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         output_size: int,
     ) -> ivy.Array:
         """
-        Applies a 1D adaptive average pooling over an input signal composed of several
+        Apply a 1D adaptive average pooling over an input signal composed of several
         input planes.
 
         Parameters
@@ -760,7 +760,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         output_size: Union[Sequence[int], int],
     ) -> ivy.Array:
         """
-        Applies a 2D adaptive average pooling over an input signal composed of several
+        Apply a 2D adaptive average pooling over an input signal composed of several
         input planes.
 
         Parameters

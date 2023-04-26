@@ -268,7 +268,7 @@ class ContainerBase(dict, abc.ABC):
     @staticmethod
     def cont_handle_inplace(ret, out):
         """
-        Returns an inplace update of out, provided it is not None, by updating with the
+        Return an inplace update of out, provided it is not None, by updating with the
         values in ret.
 
         Parameters
@@ -811,7 +811,7 @@ class ContainerBase(dict, abc.ABC):
         key_chain="",
     ):
         """
-        Returns a single boolean as to whether the input containers have identical key-
+        Return a single boolean as to whether the input containers have identical key-
         chains and data types.
 
         Parameters
@@ -960,7 +960,7 @@ class ContainerBase(dict, abc.ABC):
         key_chain="",
     ):
         """
-        Returns a single boolean as to whether the input containers have identical
+        Return a single boolean as to whether the input containers have identical
         structure.
 
         Parameters
@@ -1044,7 +1044,7 @@ class ContainerBase(dict, abc.ABC):
     @staticmethod
     def cont_identical_configs(containers):
         """
-        Returns a single boolean as to whether the input containers all have identical
+        Return a single boolean as to whether the input containers all have identical
         configs.
 
         Parameters
@@ -1838,8 +1838,9 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=False,
     ):
         """
-        Splits a container into multiple sub-containers, by splitting their constituent
-        arrays.
+        Split a container into multiple sub-containers.
+
+        The function does that by splitting their constituent arrays.
 
         Parameters
         ----------
@@ -2040,7 +2041,7 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_to_raw(self):
         """
-        Constructor to their original form.
+        Convert container to its original form.
 
         Returns
         -------
@@ -2307,7 +2308,7 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_assert_contains_sub_container(self, sub_cont, partial=False):
         """
-        Asserts that the current container contains the sub-container, otherwise
+        Assert that the current container contains the sub-container, otherwise
         exception raised with the diff printed to screen.
 
         Parameters
@@ -2408,7 +2409,7 @@ class ContainerBase(dict, abc.ABC):
         self, sub_cont, check_shapes=True, partial=False
     ):
         """
-        Asserts that the current container contains the sub-container structure,
+        Assert that the current container contains the sub-container structure,
         otherwise exception raised with the diff printed to screen.
 
         Parameters
@@ -3314,7 +3315,7 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_if_exists(self, key):
         """
-        Returns the sub-container at the following key if it exists, otherwise None.
+        Return the sub-container at the following key if it exists, otherwise None.
 
         Parameters
         ----------
@@ -3327,7 +3328,7 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_try_kc(self, key):
         """
-        Tries the following key or key chain, returning self if not present.
+        Try the following key or key chain, returning self if not present.
 
         Parameters
         ----------

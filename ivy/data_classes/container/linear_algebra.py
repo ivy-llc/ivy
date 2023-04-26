@@ -1835,6 +1835,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
+        Return the outer product of two arrays or containers.
+
         The instance method implementation of the static method static_outer of the
         ivy.Container class. It calculates the outer product of two input arrays or
         containers along the last dimension and returns the resulting container. The

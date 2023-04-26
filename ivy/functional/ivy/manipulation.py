@@ -1282,7 +1282,7 @@ def tile(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Constructs an array by repeating x the number of times given by reps.
+    Construct an array by repeating x the number of times given by reps.
 
     Parameters
     ----------

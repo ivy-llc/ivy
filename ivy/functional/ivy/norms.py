@@ -36,7 +36,7 @@ def layer_norm(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Applies Layer Normalization over a mini-batch of inputs.
+    Apply Layer Normalization over a mini-batch of inputs.
 
     Parameters
     ----------

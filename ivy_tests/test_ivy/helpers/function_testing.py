@@ -1802,7 +1802,7 @@ def _get_framework_atol(atols: dict, current_fw: str):
 
 def _get_nested_np_arrays(nest):
     """
-    A helper function to search for a NumPy arrays in a nest.
+    Search for a NumPy arrays in a nest.
 
     Parameters
     ----------
@@ -1832,7 +1832,7 @@ def create_args_kwargs(
     on_device,
 ):
     """
-    Creates arguments and keyword-arguments for the function to test.
+    Create arguments and keyword-arguments for the function to test.
 
     Parameters
     ----------
@@ -1874,7 +1874,7 @@ def convtrue(argument):
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
     """
-    Splits the kwargs into args and kwargs.
+    Split the kwargs into args and kwargs.
 
     The first num_positional_args ported to args.
     """
@@ -1884,7 +1884,7 @@ def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
 
 
 def flatten_fw_and_to_np(*, ret, fw):
-    """Returns a flattened numpy version of the arrays in ret for a given framework."""
+    """Return a flattened numpy version of the arrays in ret for a given framework."""
     if not isinstance(ret, tuple):
         ret = (ret,)
     if fw == "jax":
@@ -1917,7 +1917,7 @@ def flatten_fw_and_to_np(*, ret, fw):
 
 
 def flatten(*, ret):
-    """Returns a flattened numpy version of the arrays in ret."""
+    """Return a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
     ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
@@ -1935,7 +1935,7 @@ def flatten(*, ret):
 
 
 def flatten_frontend(*, ret, frontend_array_fn=None):
-    """Returns a flattened numpy version of the frontend arrays in ret."""
+    """Return a flattened numpy version of the frontend arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
 
@@ -2007,12 +2007,12 @@ def args_to_container(array_args):
 
 
 def as_lists(*args):
-    """Changes the elements in args to be of type list."""
+    """Change the elements in args to be of type list."""
     return (a if isinstance(a, list) else [a] for a in args)
 
 
 def var_fn(x, *, dtype=None, device=None):
-    """Returns x as a variable wrapping an Ivy Array with given dtype and device."""
+    """Return x as a variable wrapping an Ivy Array with given dtype and device."""
     return _variable(ivy.array(x, dtype=dtype, device=device))
 
 

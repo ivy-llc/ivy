@@ -462,7 +462,7 @@ def handle_view(fn: Callable) -> Callable:
 
 def handle_view_indexing(fn: Callable) -> Callable:
     """
-    Wraps `fn` and performs view handling specifically for indexing.
+    Wrap `fn` and performs view handling specifically for indexing.
 
     As with NumPy it returns a copy if advanced indexing is performed.
     Used for functional backends (Jax and TensorFlow). Checks if the
@@ -503,7 +503,7 @@ def infer_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _infer_dtype(*args, dtype=None, **kwargs):
         """
-        Determines the correct `dtype`, and then calls the function with the `dtype`
+        Determine the correct `dtype`, and then calls the function with the `dtype`
         passed explicitly.
 
         Parameters
@@ -577,7 +577,7 @@ def infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _infer_device(*args, device=None, **kwargs):
         """
-        Determines the correct `device`, and then calls the function with the `device`
+        Determine the correct `device`, and then calls the function with the `device`
         passed explicitly.
 
         Parameters
@@ -617,7 +617,7 @@ def handle_out_argument(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_out_argument(*args, out=None, **kwargs):
         """
-        Calls `fn` with the `out` argument handled correctly for performing an inplace
+        Call `fn` with the `out` argument handled correctly for performing an inplace
         update.
 
         Parameters
@@ -710,7 +710,7 @@ def handle_nestable(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_nestable(*args, **kwargs):
         """
-        Calls `fn` with the *nestable* property of the function correctly handled. This
+        Call `fn` with the *nestable* property of the function correctly handled. This
         means mapping the function to the container leaves if any containers are passed
         in the input.
 

@@ -15,7 +15,7 @@ def if_else(
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
-    Takes a boolean condition and two functions as input. If the condition is True, the
+    Take a boolean condition and two functions as input. If the condition is True, the
     first function is executed and its result is returned. Otherwise, the second
     function is executed and its result is returned.
 
@@ -72,7 +72,7 @@ def while_loop(
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
-    Takes a test function, a body function and a set of variables as input. The body
+    Take a test function, a body function and a set of variables as input. The body
     function is executed repeatedly while the test function returns True.
 
     Parameters

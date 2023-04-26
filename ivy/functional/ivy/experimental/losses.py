@@ -25,7 +25,7 @@ def binary_cross_entropy_with_logits(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the binary cross entropy with logits loss.
+    Compute the binary cross entropy with logits loss.
 
     Parameters
     ----------

@@ -234,7 +234,7 @@ class Module(ModuleConverters, ModuleHelpers):
         self, keychain_mappings, /, *, key="", obj=None, _visited=None
     ):
         """
-        Wraps the call methods of the Module object by looping over all the items within
+        Wrap the call methods of the Module object by looping over all the items within
         the module, wrapping the __call__ methods of all submodules using
         _fn_with_var_arg.
 
@@ -405,7 +405,7 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def _call(self, *args, v=None, **kwargs):
         """
-        The forward pass of the layer, treating layer instance as callable function.
+        Compute forward pass of the layer, treating layer instance as callable function.
 
         Parameters
         ----------

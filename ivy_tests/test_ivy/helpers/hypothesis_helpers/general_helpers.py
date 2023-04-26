@@ -11,6 +11,8 @@ from ivy.functional.ivy.layers import _deconv_length
 
 def matrix_is_stable(x, cond_limit=30):
     """
+    Check if a matrix is numerically stable or not.
+
     Used to avoid numerical instabilities in further computationally heavy calculations.
 
     Parameters
@@ -55,7 +57,7 @@ def apply_safety_factor(
     safety_factor_scale="linear",
 ):
     """
-    Applies safety factor scaling to numeric data type.
+    Apply safety factor scaling to numeric data type.
 
     Parameters
     ----------

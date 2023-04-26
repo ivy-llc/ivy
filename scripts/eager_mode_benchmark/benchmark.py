@@ -101,8 +101,8 @@ def eager_benchmark(
     output_path="./report.csv",
 ):
     """
-    Function to benchmark the function or module passed in input on the required
-    backends and devices.
+    Benchmark the function or module passed in input on the required backends and
+    devices.
 
     Parameters
     ----------
@@ -276,7 +276,7 @@ def visualize_speed_up(
     labels: Union[List[str], str] = None,
 ):
     """
-    Function to visualize the speed up results stored in the csv.
+    Visualize the speed up results stored in the csv.
 
     Parameters
     ----------

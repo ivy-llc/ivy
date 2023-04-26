@@ -1180,7 +1180,7 @@ def unset_nan_policy():
 
 
 def get_dynamic_backend():
-    """Returns the current dynamic backend setting, with the default being True."""
+    """Return the current dynamic backend setting, with the default being True."""
     global dynamic_backend_stack
     if not dynamic_backend_stack:
         return True

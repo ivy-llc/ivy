@@ -77,7 +77,7 @@ class ModuleConverters:
         devices=None,
     ):
         """
-        Converts a Haiku module instance to an Ivy module instance.
+        Convert a Haiku module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -227,7 +227,7 @@ class ModuleConverters:
         devices=None,
     ):
         """
-        Converts a Flax module instance to an Ivy module instance.
+        Convert a Flax module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -351,7 +351,7 @@ class ModuleConverters:
         devices=None,
     ):
         """
-        Converts a Keras module instance to an Ivy module instance.
+        Convert a Keras module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -447,7 +447,7 @@ class ModuleConverters:
         devices=None,
     ):
         """
-        Converts a Paddle layer instance to an Ivy module instance.
+        Convert a Paddle layer instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -539,7 +539,7 @@ class ModuleConverters:
         inplace_update=False,
     ):
         """
-        Converts a Torch module instance to an Ivy module instance.
+        Convert a Torch module instance to an Ivy module instance.
 
         Parameters
         ----------

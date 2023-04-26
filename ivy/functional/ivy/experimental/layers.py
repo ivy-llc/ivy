@@ -31,7 +31,7 @@ def max_pool1d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 1-D max pool given 3-D input x.
+    Compute a 1-D max pool given 3-D input x.
 
     Parameters
     ----------
@@ -96,7 +96,7 @@ def max_pool2d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 2-D max pool given 4-D input x.
+    Compute a 2-D max pool given 4-D input x.
 
     Parameters
     ----------
@@ -175,7 +175,7 @@ def max_pool3d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 3-D max pool given 5-D input x.
+    Compute a 3-D max pool given 5-D input x.
 
     Parameters
     ----------
@@ -248,7 +248,7 @@ def avg_pool1d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 1-D avg pool given 3-D input x.
+    Compute a 1-D avg pool given 3-D input x.
 
     Parameters
     ----------
@@ -328,7 +328,7 @@ def avg_pool2d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 2-D average pool given 4-D input x.
+    Compute a 2-D average pool given 4-D input x.
 
     Parameters
     ----------
@@ -413,7 +413,7 @@ def avg_pool3d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 3-D avg pool given 5-D input x.
+    Compute a 3-D avg pool given 5-D input x.
 
     Parameters
     ----------
@@ -499,7 +499,7 @@ def dct(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Computes the 1D Discrete Cosine Tranformation of a given signal.
+    Compute the 1D Discrete Cosine Tranformation of a given signal.
 
     Parameters
     ----------
@@ -596,7 +596,7 @@ def fft(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""
-    Computes the one dimensional discrete Fourier transform given input at least 1-D
+    Compute the one dimensional discrete Fourier transform given input at least 1-D
     input x.
 
     Parameters
@@ -785,7 +785,7 @@ def ifft(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""
-    Computes the one dimensional discrete Fourier transform given input at least 1-D
+    Compute the one dimensional discrete Fourier transform given input at least 1-D
     input x.
 
     Parameters
@@ -914,7 +914,7 @@ def dft(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the discrete Fourier transform of input.
+    Compute the discrete Fourier transform of input.
 
     Parameters
     ----------
@@ -1700,7 +1700,7 @@ def adaptive_avg_pool1d(
     output_size: int,
 ) -> ivy.Array:
     """
-    Applies a 1D adaptive average pooling over an input signal composed of several input
+    Apply a 1D adaptive average pooling over an input signal composed of several input
     planes.
 
     Parameters
@@ -1770,7 +1770,7 @@ def adaptive_avg_pool2d(
     output_size: Union[Sequence[int], int],
 ) -> ivy.Array:
     """
-    Applies a 2D adaptive average pooling over an input signal composed of several input
+    Apply a 2D adaptive average pooling over an input signal composed of several input
     planes.
 
     Parameters

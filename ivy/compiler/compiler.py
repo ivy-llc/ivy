@@ -30,7 +30,7 @@ def compile(
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
     """
-    Takes `fn` and compiles it into a more efficient composition of backend operations.
+    Take `fn` and compiles it into a more efficient composition of backend operations.
 
     Parameters
     ----------

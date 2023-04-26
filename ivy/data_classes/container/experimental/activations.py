@@ -513,7 +513,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Applies element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
+        Apply element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
 
         Parameters
         ----------

@@ -439,7 +439,7 @@ def randint(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns an array filled with random integers generated uniformly between low
+    Return an array filled with random integers generated uniformly between low
     (inclusive) and high (exclusive).
 
     Parameters
@@ -503,7 +503,7 @@ def randint(
 @handle_exceptions
 def seed(*, seed_value: int = 0) -> None:
     """
-    Sets the seed for random number generation.
+    Set the seed for random number generation.
 
     Parameters
     ----------

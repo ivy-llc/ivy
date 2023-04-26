@@ -84,13 +84,13 @@ class Constant(Initializer):
 
 class Zeros(Constant):
     def __init__(self):
-        """A constant initalizer that fills with the constant value `0.0`."""
+        """Constant initalizer that fills with the constant value `0.0`."""
         super().__init__(0.0)
 
 
 class Ones(Constant):
     def __init__(self):
-        """A constant initalizer that fills with the constant value `1.0`."""
+        """Constant initalizer that fills with the constant value `1.0`."""
         super().__init__(1.0)
 
 
@@ -101,8 +101,8 @@ class Ones(Constant):
 class Uniform(Initializer):
     def __init__(self, numerator, fan_mode, power, gain):
         """
-        A initializer based on a uniform distribution, will fill in all values with
-        values drawn from a uniform (all values have an equal probability) distribution.
+        Initialize based on a uniform distribution, will fill in all values with values
+        drawn from a uniform (all values have an equal probability) distribution.
 
         with range `[-wlim, wlim]` (endpoints included) with `wlim` being calculated as
         `gain * (numerator / fan)**power`. This distribution helps with issues when
@@ -209,7 +209,7 @@ class Uniform(Initializer):
 class GlorotUniform(Uniform):
     def __init__(self):
         """
-        The Glorot uniform initializer, also known as the Xavier uniform initializer.
+        Initialize Glorot uniform, also known as the Xavier uniform initializer.
 
         It draws values from a uniform distribtion `[-limit, limit]` where
         `limit = sqrt(6 / (fan_in + fan_out))` where `fan_in` and `fan_out` are the
@@ -221,7 +221,7 @@ class GlorotUniform(Uniform):
 class FirstLayerSiren(Uniform):
     def __init__(self):
         """
-        The Siren uniform initializer for the first layer.
+        Initialize Siren uniform for the first layer.
 
         It draws values from a uniform distribtion `[-limit, limit]`
         where `limit=fan_in` where `fan_in` is the number of input
@@ -233,7 +233,7 @@ class FirstLayerSiren(Uniform):
 class Siren(Uniform):
     def __init__(self, w0=30):
         """
-        The Siren uniform initializer for the first layer.
+        Initialize Siren uniform initializer for the first layer.
 
         It draws values from a uniform distribtion `[-limit, limit]`
         where `limit=sqrt(6 / fan_in) / w0` where `fan_in` is the number
@@ -249,11 +249,11 @@ class Siren(Uniform):
 class KaimingNormal(Initializer):
     def __init__(self, mean=0, fan_mode="fan_in"):
         """
-        A Kaiming normal initializer, also known as He Initialization, is an method for
-        initializing layers that takes into account the non- linearity.
+        Initialize Kaiming normal, also known as He Initialization.
 
-        of activation functions. It uses a normal distibution centered at `mean` with
-        standard distribution `sqrt(2 / ((1 + negative_slope^2) * fan))`.
+        It is an method for initializing layers that takes into account the
+        non-linearity of activation functions. It uses a normal distribution centered
+        at `mean` with standard distribution `sqrt(2 / ((1 + negative_slope^2) * fan))`.
 
         Parameters
         ----------

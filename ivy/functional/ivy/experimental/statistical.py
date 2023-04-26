@@ -203,7 +203,7 @@ def nanmean(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the mean of all non-NaN elements along the specified dimensions.
+    Compute the mean of all non-NaN elements along the specified dimensions.
 
     Parameters
     ----------

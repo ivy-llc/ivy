@@ -13,7 +13,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Normalizes the array to have unit L2 norm.
+        Normalize the array to have unit L2 norm.
 
         Parameters
         ----------
@@ -195,7 +195,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Normalizes the array to have Lp norm.
+        Normalize the array to have Lp norm.
 
         Parameters
         ----------

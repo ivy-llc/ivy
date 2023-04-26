@@ -117,7 +117,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
     def relu6(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        Applies the rectified linear unit 6 function element-wise.
+        Apply the rectified linear unit 6 function element-wise.
 
         Parameters
         ----------
@@ -196,7 +196,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
     def selu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        Applies the scaled exponential linear unit function element-wise.
+        Apply the scaled exponential linear unit function element-wise.
 
         Parameters
         ----------

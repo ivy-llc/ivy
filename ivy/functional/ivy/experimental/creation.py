@@ -31,7 +31,7 @@ def triu_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array]:
-    """Returns the indices of the upper triangular part of a row by col matrix in a
+    """Return the indices of the upper triangular part of a row by col matrix in a
     2-by-N shape (tuple of two N dimensional arrays), where the first row contains
     row coordinates of all indices and the second row contains column coordinates.
     Indices are ordered based on rows and then columns.  The upper triangular part
@@ -127,7 +127,7 @@ def vorbis_window(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns an array that contains a vorbis power complementary window of size
+    Return an array that contains a vorbis power complementary window of size
     window_length.
 
     Parameters
@@ -216,7 +216,7 @@ def kaiser_window(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the Kaiser window with window length window_length and shape beta.
+    Compute the Kaiser window with window length window_length and shape beta.
 
     Parameters
     ----------
@@ -264,7 +264,7 @@ def kaiser_bessel_derived_window(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the Kaiser bessel derived window with window length window_length and shape
+    Compute the Kaiser bessel derived window with window length window_length and shape
     beta.
 
     Parameters
@@ -335,7 +335,7 @@ def hamming_window(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the Hamming window with window length window_length.
+    Compute the Hamming window with window length window_length.
 
     Parameters
     ----------
@@ -408,7 +408,7 @@ def tril_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
-    """Returns the indices of the lower triangular part of a row by col matrix in a
+    """Return the indices of the lower triangular part of a row by col matrix in a
     2-by-N shape (tuple of two N dimensional arrays), where the first row contains
     row coordinates of all indices and the second row contains column coordinates.
     Indices are ordered based on rows and then columns.  The lower triangular part
@@ -507,7 +507,7 @@ def eye_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a 2D array filled with ones on the k diagonal and zeros elsewhere. having
+    """Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having
     the same ``shape`` as the first and last dim of input array ``x``. input array ``x``
     should to be 2D.
 

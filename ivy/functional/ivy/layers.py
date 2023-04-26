@@ -39,7 +39,7 @@ def linear(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
+    """Apply a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
     batch of different network parameters are to be represented.
 
@@ -363,7 +363,7 @@ def scaled_dot_product_attention(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Applies scaled dot product attention to inputs x using optional mask.
+    Apply scaled dot product attention to inputs x using optional mask.
 
     Parameters
     ----------
@@ -578,7 +578,7 @@ def multi_head_attention(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Applies multi-head attention to inputs x.
+    Apply multi-head attention to inputs x.
 
     Parameters
     ----------
@@ -808,7 +808,7 @@ def conv1d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 1-D convolution given 3-D input x and filters arrays.
+    Compute a 1-D convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -905,7 +905,7 @@ def conv1d_transpose(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 1-D transpose convolution given 3-D input x and filters arrays.
+    Compute a 1-D transpose convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1037,7 +1037,7 @@ def conv2d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 2-D convolution given 4-D input x and filters arrays.
+    Compute a 2-D convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1167,7 +1167,7 @@ def conv2d_transpose(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 2-D transpose convolution given 4-D input x and filters arrays.
+    Compute a 2-D transpose convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1285,7 +1285,7 @@ def depthwise_conv2d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
+    Compute a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
 
     Parameters
     ----------
@@ -1423,7 +1423,7 @@ def conv3d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 3-D convolution given 5-D input x and filters arrays.
+    Compute a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1541,7 +1541,7 @@ def conv3d_transpose(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 3-D transpose convolution given 5-D input x and filters arrays.
+    Compute a 3-D transpose convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1653,7 +1653,7 @@ def conv_general_dilated(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x respectively
+    Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x respectively
     and filters arrays.
 
     Parameters
@@ -1730,7 +1730,7 @@ def conv_general_transpose(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D input x
+    Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D input x
     respectively and filters arrays.
 
     Parameters
@@ -1805,7 +1805,7 @@ def conv(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and 5-D
+    Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and 5-D
     input x respectively and filters arrays.
 
     Parameters

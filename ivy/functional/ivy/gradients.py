@@ -99,7 +99,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
 
 def _get_required_float_variables(xs, xs_grad_idxs):
     """
-    Converts all required arrays to float variables for gradient calculation.
+    Convert all required arrays to float variables for gradient calculation.
 
     Also, returns a list of duplicate index chains for the nested
     structure.

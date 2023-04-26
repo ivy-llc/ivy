@@ -191,7 +191,7 @@ def get_all_ivy_arrays_on_dev(
 @handle_exceptions
 def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     """
-    Returns the number of arrays which are currently alive on the specified device.
+    Return the number of arrays which are currently alive on the specified device.
 
     Parameters
     ----------
@@ -700,7 +700,7 @@ def default_device(
     as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """
-    Returns the input device or the default device. If the as_native flag is set, the
+    Return the input device or the default device. If the as_native flag is set, the
     device will be converted to a native device. If the item is provided, the item's
     device is returned. If the device is not provided, the last default device is
     returned. If a default device has not been set, the first gpu is returned if
@@ -1141,7 +1141,7 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
 @handle_exceptions
 def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
-    Returns the supported devices of the current backend's function.
+    Return the supported devices of the current backend's function.
 
     Parameters
     ----------
@@ -1180,7 +1180,7 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
 @handle_exceptions
 def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
-    Returns the unsupported devices of the current backend's function.
+    Return the unsupported devices of the current backend's function.
 
     Parameters
     ----------

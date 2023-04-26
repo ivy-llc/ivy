@@ -41,7 +41,7 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_handle_nestable(*args, **kwargs):
         """
-        Calls `fn` with the *nestable* property of the function correctly handled. This
+        Call `fn` with the *nestable* property of the function correctly handled. This
         means mapping the function to the container leaves if any containers are passed
         in the input.
 
@@ -90,7 +90,7 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
         """
-        Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
+        Wrap `fn` so that input arrays are all converted to `ivy.NativeArray` instances
         and return arrays are all converted to `ivy.Array` instances.
 
         This wrapper is specifically for the backend implementations of
@@ -112,7 +112,7 @@ def asarray_infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_infer_device(*args, device=None, **kwargs):
         """
-        Determines the correct `device`, and then calls the function with the `device`
+        Determine the correct `device`, and then calls the function with the `device`
         passed explicitly. This wrapper is specifically for the backend implementations
         of asarray.
 
@@ -183,7 +183,7 @@ def arange(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns evenly spaced values within a given interval, with the spacing being
+    Return evenly spaced values within a given interval, with the spacing being
     specified.
 
     Values are generated within the half-open interval [start, stop) (in other words,
@@ -289,7 +289,7 @@ def asarray(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Converts the input to an array.
+    Convert the input to an array.
 
     Parameters
     ----------
@@ -373,7 +373,7 @@ def zeros(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array having a specified ``shape`` and filled with zeros.
+    """Return a new array having a specified ``shape`` and filled with zeros.
 
     Parameters
     ----------
@@ -451,7 +451,7 @@ def ones(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array having a specified ``shape`` and filled with ones.
+    """Return a new array having a specified ``shape`` and filled with ones.
 
     Parameters
     ----------
@@ -555,7 +555,7 @@ def full_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with ``fill_value`` and having the same ``shape`` as
+    """Return a new array filled with ``fill_value`` and having the same ``shape`` as
     an input array ``x`` .
 
     Parameters
@@ -659,7 +659,7 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with ones and having the same shape as an input
+    """Return a new array filled with ones and having the same shape as an input
     array ``x``.
 
     Parameters
@@ -776,7 +776,7 @@ def zeros_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with zeros and having the same ``shape`` as an input
+    """Return a new array filled with zeros and having the same ``shape`` as an input
     array ``x``.
 
     Parameters
@@ -890,7 +890,7 @@ def tril(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
+    """Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -938,7 +938,7 @@ def triu(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
+    """Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -1045,7 +1045,7 @@ def empty_like(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns an uninitialized array with the same shape as an input array x.
+    Return an uninitialized array with the same shape as an input array x.
 
     Parameters
     ----------
@@ -1098,7 +1098,7 @@ def eye(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.
+    Return a two-dimensional array with ones on the k diagonal and zeros elsewhere.
 
     Parameters
     ----------
@@ -1346,7 +1346,7 @@ def meshgrid(
     out: Optional(ivy.Array) = None,
 ) -> List[ivy.Array]:
     """
-    Returns coordinate matrices from coordinate vectors.
+    Return coordinate matrices from coordinate vectors.
 
     Parameters
     ----------
@@ -1467,7 +1467,7 @@ def full(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array having a specified ``shape`` and filled with ``fill_value``.
+    """Return a new array having a specified ``shape`` and filled with ``fill_value``.
 
     Parameters
     ----------
@@ -1568,7 +1568,7 @@ def full(
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Returns a new array containing the data from another (array) object with a
+    """Return a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
 
     Parameters
@@ -1728,7 +1728,7 @@ def native_array(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.NativeArray:
     """
-    Converts the input to a native array.
+    Convert the input to a native array.
 
     Parameters
     ----------
@@ -1792,7 +1792,7 @@ def one_hot(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns a one-hot array. The locations represented by indices in the parameter
+    Return a one-hot array. The locations represented by indices in the parameter
     indices take value on_value, while all other locations take value off_value.
 
     Parameters
