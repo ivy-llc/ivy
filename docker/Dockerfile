@@ -40,10 +40,10 @@ RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
 # Install Ivy Upstream
 RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
-    sed -i '/nvidia/d' requirements/requirements.txt && \
-    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    python3 -m pip install --user -e . && \
+#    sed -i '/nvidia/d' requirements/requirements.txt && \
+#    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+#    cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+#    python3 -m pip install --user -e . && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
 
