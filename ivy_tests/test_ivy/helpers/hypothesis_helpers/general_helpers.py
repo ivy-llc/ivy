@@ -484,18 +484,18 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             **common_kwargs
         )
     )
-    ret = (
-        dtype,
-        vals,
-        filters,
-        dilations,
-        data_format,
-        strides,
-        padding
-    )
     if transpose:
-        return *ret, output_shape
-    return ret
+        return (
+            dtype,
+            vals,
+            filters,
+            dilations,
+            data_format,
+            strides,
+            padding,
+            output_shape,
+        )
+    return dtype, vals, filters, dilations, data_format, strides, padding
 
 
 @st.composite
