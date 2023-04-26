@@ -2393,7 +2393,7 @@ def test_tensorflow_less(
 @handle_frontend_test(
     fn_tree="tensorflow.math.angle",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float64", "complex64" ,"complex128"],
     ),
 )
 def test_tensorflow_angle(
@@ -2475,3 +2475,4 @@ def test_tensorflow_greater_equal(
         x=x[0],
         y=x[1],
     )
+
