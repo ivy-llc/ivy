@@ -364,6 +364,7 @@ def fix(
 fix.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.13.1 and below": ("float16",)}, backend_version)
 def nextafter(
     x1: torch.Tensor,
     x2: torch.Tensor,

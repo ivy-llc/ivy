@@ -211,15 +211,17 @@ The `Ivy Stateful API <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_f
 
     import ivy
 
-    class MyModel(ivy.Module):
-        def __init__(self):
-            self.linear0 = ivy.Linear(3, 64)
-            self.linear1 = ivy.Linear(64, 1)
+    class Regressor(ivy.Module):
+        def __init__(self, input_dim, output_dim):
+            self.linear = ivy.Linear(input_dim, output_dim)
+            self.sigmoid = ivy.Sigmoid()
+            self.dropout = ivy.Dropout(0.5)
             ivy.Module.__init__(self)
 
-        def _forward(self, x):
-            x = ivy.relu(self.linear0(x))
-            return ivy.sigmoid(self.linear1(x))
+        def _forward(self, x, is_training=True):
+            x = self.sigmoid(self.linear(x))
+            x = self.dropout(x, is_training=is_training)
+            return x
 
 
 If we put it all together, we'll have something like this. This example uses PyTorch as the backend,
@@ -229,33 +231,52 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
 
     import ivy
 
-    class MyModel(ivy.Module):
-        def __init__(self):
-            self.linear0 = ivy.Linear(3, 64)
-            self.linear1 = ivy.Linear(64, 1)
+    class Regressor(ivy.Module):
+        def __init__(self, input_dim, output_dim):
+            self.linear = ivy.Linear(input_dim, output_dim)
+            self.sigmoid = ivy.Sigmoid()
+            self.dropout = ivy.Dropout(0.5)
             ivy.Module.__init__(self)
 
-        def _forward(self, x):
-            x = ivy.relu(self.linear0(x))
-            return ivy.sigmoid(self.linear1(x))
+        def _forward(self, x, is_training=True):
+            x = self.sigmoid(self.linear(x))
+            x = self.dropout(x, is_training=is_training)
+            return x
 
-    ivy.set_backend('torch')  # change to any backend!
-    model = MyModel()
+    ivy.set_backend('torch')  # set backend to PyTorch
+
+    model = Regressor(input_dim=3, output_dim=1)
     optimizer = ivy.Adam(1e-4)
-    x_in = ivy.array([1., 2., 3.])
-    target = ivy.array([0.])
 
-    def loss_fn(v):
-        out = model(x_in, v=v)
-        return ivy.mean((out - target)**2)
+    # generate some random data
+    x = ivy.random.random_normal(shape=(100, 3))
+    y = ivy.random.random_normal(shape=(100, 1))
 
-    for step in range(100):
-        loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
+    def loss_fn(pred, target):
+        return ivy.mean((pred - target)**2)
+
+    for epoch in range(50):
+        # forward pass
+        pred = model(x)
+
+        # compute loss and gradients
+        loss, grads = ivy.execute_with_gradients(lambda v: loss_fn(pred, y), model.v)
+
+        # update parameters
         model.v = optimizer.step(model.v, grads)
-        print('Step: {} --- Loss: {}'.format(step, ivy.to_numpy(loss).item()))
+
+        # print current loss
+        print(f'Epoch: {epoch + 1:2d} --- Loss: {ivy.to_numpy(loss).item():.5f}')
 
     print('Finished training!')
 
+The model's output can be visualized as follows:
+
+.. raw:: html
+
+   <div align="center">
+      <img width="50%" src="https://i.imgur.com/DUc97i2.gif">
+   </div>
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
 covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more!
