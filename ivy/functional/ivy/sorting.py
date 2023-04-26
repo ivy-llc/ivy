@@ -32,7 +32,7 @@ def argsort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the indices that sort an array ``x`` along a specified axis.
+    """Return the indices that sort an array ``x`` along a specified axis.
 
     Parameters
     ----------
@@ -148,7 +148,8 @@ def sort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a sorted copy of an array.
+    """
+    Return a sorted copy of an array.
 
     Parameters
     ----------
@@ -230,7 +231,6 @@ def sort(
         a: ivy.array([0.7, 1., 3.]),
         b: ivy.array([[0.9, 4.], [0.2, 0.6]])
     }
-
     """
     return ivy.current_backend(x).sort(
         x, axis=axis, descending=descending, stable=stable, out=out
@@ -257,7 +257,8 @@ def searchsorted(
     ret_dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the indices of the inserted elements in a sorted array.
+    """
+    Return the indices of the inserted elements in a sorted array.
 
     Parameters
     ----------
@@ -308,7 +309,6 @@ def searchsorted(
     ivy.array([[3, 1],
        [6, 3],
        [0, 0]])
-
     """
     return ivy.current_backend(x, v).searchsorted(
         x,

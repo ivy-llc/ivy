@@ -26,10 +26,11 @@ def dirichlet(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Draw size samples of dimension k from a Dirichlet distribution.
-    A Dirichlet-distributed random variable can be seen as a multivariate
-    generalization of a Beta distribution. The Dirichlet distribution is
-    a conjugate prior of a multinomial distribution in Bayesian inference.
+    """
+    Draw size samples of dimension k from a Dirichlet distribution. A Dirichlet-
+    distributed random variable can be seen as a multivariate generalization of a Beta
+    distribution. The Dirichlet distribution is a conjugate prior of a multinomial
+    distribution in Bayesian inference.
 
     Parameters
     ----------
@@ -94,7 +95,8 @@ def beta(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an array filled with random values sampled from a beta distribution.
+    """
+    Return an array filled with random values sampled from a beta distribution.
 
     Parameters
     ----------
@@ -146,7 +148,8 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an array filled with random values sampled from a gamma distribution.
+    """
+    Return an array filled with random values sampled from a gamma distribution.
 
     Parameters
     ----------
@@ -262,8 +265,8 @@ def bernoulli(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Draws samples from Bernoulli distrubution paramterized by
-    probs or logits (but not both)
+    Draws samples from Bernoulli distrubution paramterized by probs or logits (but not
+    both)
 
     Parameters
     ----------

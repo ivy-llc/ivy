@@ -9,7 +9,8 @@ is_snakeviz = find_spec("snakeviz")
 
 
 class Profiler(cProfile.Profile):
-    """A Profiler class that allows code profiling.
+    """
+    A Profiler class that allows code profiling.
 
     Attributes
     ----------
@@ -22,7 +23,6 @@ class Profiler(cProfile.Profile):
     -------
         with Profiler(print_stats=False, viz=True):
             fn(x, y)
-
     """
 
     def __init__(self, *args, **kwargs):

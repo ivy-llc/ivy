@@ -179,10 +179,12 @@ def empty(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if size and shape:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
         raise TypeError("empty() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return torch.empty(
         shape,
         dtype=dtype,
@@ -447,6 +449,7 @@ def meshgrid(
     *arrays: torch.Tensor,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[torch.Tensor] = None,
 ) -> List[torch.Tensor]:
     if not sparse:
         return list(torch.meshgrid(*arrays, indexing=indexing))
@@ -471,10 +474,12 @@ def ones(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if size and shape:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return torch.ones(shape, dtype=dtype, device=device, out=out)
 
 
@@ -545,10 +550,12 @@ def zeros(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
-    if size and shape:
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size) != 0 and shape:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
 
 

@@ -18,7 +18,8 @@ from . import dtype_helpers, number_helpers
 def array_bools(
     draw, *, size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
 ):
-    """Draws a list of booleans with a given size.
+    """
+    Draws a list of booleans with a given size.
 
     Parameters
     ----------
@@ -61,7 +62,6 @@ def array_bools(
 
     >>> array_bools()
     [True]
-
     """
     if not isinstance(size, int):
         size = draw(size)
@@ -69,7 +69,8 @@ def array_bools(
 
 
 def list_of_size(*, x, size):
-    """Returns a list of the given length with elements drawn randomly from x.
+    """
+    Return a list of the given length with elements drawn randomly from x.
 
     Parameters
     ----------
@@ -151,7 +152,8 @@ def lists(
     max_size=None,
     size_bounds=None,
 ):
-    """Draws a list with a random bounded size from the data-set x.
+    """
+    Draws a list with a random bounded size from the data-set x.
 
     Parameters
     ----------
@@ -264,7 +266,6 @@ def lists(
     ...     max_size=5,
     ... )
     [1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
-
     """
     if not isinstance(min_size, int) or not isinstance(max_size, int):
         integers = (
@@ -306,7 +307,8 @@ def dtype_and_values(
     dtype=None,
     array_api_dtypes=False,
 ):
-    """Draws a list of arrays with elements from the given corresponding data types.
+    """
+    Draws a list of arrays with elements from the given corresponding data types.
 
     Parameters
     ----------
@@ -479,7 +481,6 @@ def dtype_and_values(
     ...     ret_shape=True,
     ... )
     (['int64'], [array(72057594037927936)], ())
-
     """
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
@@ -570,8 +571,9 @@ def dtype_values_axis(
     force_tuple_axis=False,
     ret_shape=False,
 ):
-    """Draws a list of arrays with elements from the given data type,
-    and a random axis of the arrays.
+    """
+    Draws a list of arrays with elements from the given data type, and a random axis of
+    the arrays.
 
     Parameters
     ----------
@@ -746,7 +748,6 @@ def dtype_values_axis(
     ...     allow_nan=True,
     ... )
     (['uint32'], [array([0], dtype=uint32)], 0)
-
     """
     results = draw(
         dtype_and_values(
@@ -810,8 +811,9 @@ def array_indices_axis(
     indices_same_dims=False,
     valid_bounds=True,
 ):
-    """Generates two arrays x & indices, the values in the indices array are indices
-    of the array x. Draws an integers randomly from the minimum and maximum number of
+    """
+    Generate two arrays x & indices, the values in the indices array are indices of the
+    array x. Draws an integers randomly from the minimum and maximum number of
     positional arguments a given function can take.
 
     Parameters
@@ -1199,7 +1201,8 @@ def array_values(
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
 ):
-    """Draws a list (of lists) of a given shape containing values of a given data type.
+    """
+    Draws a list (of lists) of a given shape containing values of a given data type.
 
     Parameters
     ----------
@@ -1492,7 +1495,7 @@ def mutually_broadcastable_shapes(
 
 @st.composite
 def array_and_broadcastable_shape(draw, dtype):
-    """Returns an array and a shape that the array can be broadcast to"""
+    """Return an array and a shape that the array can be broadcast to."""
     if isinstance(dtype, st._internal.SearchStrategy):
         dtype = draw(dtype)
         dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
