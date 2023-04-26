@@ -119,9 +119,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container]]:
         """
-        ivy.Container instance method variant of ivy.eigh_tridiagonal.
-        This method simply wraps the function, and so the docstring for
-        ivy.eigh_tridiagonal also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.eigh_tridiagonal. This method
+        simply wraps the function, and so the docstring for ivy.eigh_tridiagonal also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -237,9 +237,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.diagflat.
-        This method simply wraps the function, and so the docstring for
-        ivy.diagflat also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.diagflat. This method simply wraps
+        the function, and so the docstring for ivy.diagflat also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -278,9 +278,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.kron. This method simply wraps
-        the function, and so the docstring for ivy.kron also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.kron also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -330,9 +330,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.kron.
-        This method simply wraps the function, and so the docstring for
-        ivy.kron also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.kron also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -380,9 +380,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.diagflat.
-        This method simply wraps the function, and so the docstring for
-        ivy.diagflat also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.diagflat. This method simply wraps
+        the function, and so the docstring for ivy.diagflat also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -414,9 +414,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.eig.
-        This method simply wraps the function, and so the docstring for
-        ivy.eig also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.eig. This method simply wraps the
+        function, and so the docstring for ivy.eig also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -467,9 +467,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.eig.
-        This method simply wraps the function, and so the docstring for
-        ivy.eig also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.eig. This method simply wraps the
+        function, and so the docstring for ivy.eig also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -520,9 +520,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.eigvals.
-        This method simply wraps the function, and so the docstring for
-        ivy.eigvals also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.eigvals. This method simply wraps the
+        function, and so the docstring for ivy.eigvals also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -567,9 +567,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.eigvals.
-        This method simply wraps the function, and so the docstring for
-        ivy.eigvals also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.eigvals. This method simply wraps
+        the function, and so the docstring for ivy.eigvals also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -613,9 +613,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container static method variant of ivy.adjoint. This method simply wraps
-        the function, and so the docstring for ivy.adjoint also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.adjoint. This method simply wraps the
+        function, and so the docstring for ivy.adjoint also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -662,9 +662,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container instance method variant of ivy.adjoint.
-        This method simply wraps the function, and so the docstring for
-        ivy.adjoint also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.adjoint. This method simply wraps
+        the function, and so the docstring for ivy.adjoint also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -751,9 +751,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.multi_dot.
-        This method simply wraps the function, and so the docstring for
-        ivy.multi_dot also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.multi_dot. This method simply wraps
+        the function, and so the docstring for ivy.multi_dot also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -793,9 +793,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container static method variant of ivy.cond.
-        This method simply wraps the function, and so the docstring for
-        ivy.cond also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.cond. This method simply wraps the
+        function, and so the docstring for ivy.cond also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -838,9 +838,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         p: Optional[Union[int, float, None]] = None,
     ):
         """
-        ivy.Container instance method variant of ivy.cond.
-        This method simply wraps the function, and so the docstring for
-        ivy.cond also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.cond. This method simply wraps the
+        function, and so the docstring for ivy.cond also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -905,8 +905,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.cov. This method simply wraps the
-        function, and so the docstring for ivy.cov also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.cov also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1020,9 +1020,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cov. This method simply wraps
-        the function, and so the docstring for ivy.cov also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.cov. This method simply wraps the
+        function, and so the docstring for ivy.cov also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

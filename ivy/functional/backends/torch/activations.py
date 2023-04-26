@@ -1,5 +1,8 @@
-"""Collection of PyTorch activation functions, wrapped to fit Ivy syntax and
-signature.
+"""
+PyTorch activation functions.
+
+Collection of PyTorch activation functions, wrapped to fit Ivy syntax
+and signature.
 """
 from typing import Optional, Union
 

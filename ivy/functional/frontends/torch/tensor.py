@@ -955,7 +955,7 @@ class Tensor:
 
     def mul(self, other):
         return torch_frontend.mul(self, other)
-    
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def ceil_(self):
         self.ivy_array = torch_frontend.ceil(self).ivy_array

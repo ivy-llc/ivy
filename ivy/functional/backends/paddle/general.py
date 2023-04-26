@@ -421,8 +421,10 @@ def scatter_flat(
 
 def _scatter_nd_replace(data, indices, updates, reduce):
     """
-    An implementation for scatter_nd using put_along_axis
-    since paddle.scatter_nd only supports "sum" reduction mode
+    `scatter_nd` with `reduce`.
+
+    An implementation for scatter_nd using put_along_axis since
+    paddle.scatter_nd only supports "sum" reduction mode.
     """
     if data.dtype != updates.dtype:
         data = data.cast(updates.dtype)

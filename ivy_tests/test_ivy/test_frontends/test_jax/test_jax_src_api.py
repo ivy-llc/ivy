@@ -64,4 +64,4 @@ def test_jax_device_get(
     dev_from_new_x = ivy.dev(x_on_dev)
 
     # value test
-    assert dev_from_new_x == 'cpu'
+    assert dev_from_new_x == "cpu"
