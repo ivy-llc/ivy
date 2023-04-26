@@ -121,7 +121,7 @@ def transpile(
     v=None,  # Make this cleaner
 ) -> Union[Graph, LazyGraph]:
     """
-    Transpiles Callable objects passed as arguments. If args and kwargs are specified,
+    Transpile Callable objects passed as arguments. If args and kwargs are specified,
     transpilation is performed eagerly, otherwise, transpilation will happen lazily.
 
     Parameters

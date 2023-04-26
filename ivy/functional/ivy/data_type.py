@@ -1805,7 +1805,7 @@ def is_int_dtype(
 @handle_exceptions
 def check_float(x: Any) -> bool:
     """
-    Helper function to check if the input is a float or a float-like object.
+    Check if the input is a float or a float-like object.
 
     Parameters
     ----------
@@ -1970,7 +1970,7 @@ def promote_types(
     array_api_promotion: bool = False,
 ) -> ivy.Dtype:
     """
-    Promotes the datatypes type1 and type2, returning the data type they promote to.
+    Promote the datatypes type1 and type2, returning the data type they promote to.
 
     Parameters
     ----------
@@ -2221,7 +2221,7 @@ def unset_default_float_dtype():
 @handle_exceptions
 def unset_default_int_dtype():
     """
-    Resets the current default int dtype to the previous state.
+    Reset the current default int dtype to the previous state.
 
     Parameters
     ----------
@@ -2326,7 +2326,7 @@ def promote_types_of_inputs(
     array_api_promotion: bool = False,
 ) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
     """
-    Promotes the dtype of the given native array inputs to a common dtype based on type
+    Promote the dtype of the given native array inputs to a common dtype based on type
     promotion rules.
 
     While passing float or integer values or any other non-array input

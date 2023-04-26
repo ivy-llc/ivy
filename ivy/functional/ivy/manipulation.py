@@ -51,7 +51,7 @@ def concat(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Joins a sequence of arrays along an existing axis.
+    Join a sequence of arrays along an existing axis.
 
     Parameters
     ----------
@@ -108,7 +108,7 @@ def expand_dims(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Expands the shape of an array by inserting a new axis (dimension) of size one at the
+    Expand the shape of an array by inserting a new axis (dimension) of size one at the
     position specified by axis.
 
     Parameters
@@ -418,7 +418,7 @@ def reshape(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Gives a new shape to an array without changing its data.
+    Give a new shape to an array without changing its data.
 
     Parameters
     ----------
@@ -535,9 +535,9 @@ def roll(
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """
-    Rolls array elements along a specified axis. Array elements that roll beyond the
-    last position are re-introduced at the first position. Array elements that roll
-    beyond the first position are re-introduced at the last position.
+    Roll array elements along a specified axis. Array elements that roll beyond the last
+    position are re-introduced at the first position. Array elements that roll beyond
+    the first position are re-introduced at the last position.
 
     Parameters
     ----------
@@ -646,7 +646,7 @@ def squeeze(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Removes singleton dimensions (axes) from x.
+    Remove singleton dimensions (axes) from x.
 
     Parameters
     ----------
@@ -732,7 +732,7 @@ def stack(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Joins a sequence of arrays along a new axis.
+    Join a sequence of arrays along a new axis.
 
     Parameters
     ----------
@@ -943,7 +943,7 @@ def constant_pad(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Pads an array with a constant value.
+    Pad an array with a constant value.
 
     Parameters
     ----------
@@ -1102,7 +1102,7 @@ def split(
     with_remainder: bool = False,
 ) -> List[ivy.Array]:
     """
-    Splits an array into multiple sub-arrays.
+    Split an array into multiple sub-arrays.
 
     Parameters
     ----------
@@ -1451,7 +1451,7 @@ def zero_pad(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Pads an array with zeros.
+    Pad an array with zeros.
 
     Parameters
     ----------

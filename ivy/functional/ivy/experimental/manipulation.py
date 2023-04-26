@@ -992,7 +992,7 @@ def pad(
     **kwargs: Optional[Any],
 ) -> ivy.Array:
     """
-    Pads an array.
+    Pad an array.
 
     Parameters
     ----------

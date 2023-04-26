@@ -1647,7 +1647,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Transposes a matrix (or a stack of matrices) ``x``.
+        Transpose a matrix (or a stack of matrices) ``x``.
 
         Parameters
         ----------
@@ -1704,7 +1704,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Transposes a matrix (or a stack of matrices) ``x``.
+        Transpose a matrix (or a stack of matrices) ``x``.
 
         Parameters
         ----------

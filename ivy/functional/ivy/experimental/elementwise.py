@@ -416,7 +416,7 @@ def count_nonzero(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
-    Counts the number of non-zero values in the array a.
+    Count the number of non-zero values in the array a.
 
     Parameters
     ----------
@@ -1243,7 +1243,7 @@ def real(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests each element ``x_i`` of the input array ``x`` to
+    """Test each element ``x_i`` of the input array ``x`` to
     take only real part from it.
     Returns a float array, where it only contains .
     If element has complex type with zero complex part, the return value

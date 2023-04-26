@@ -25,8 +25,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 def _get_duplicate_index_chains(xs):
-    """Used to generate a list of duplicate index chains for a given nested
-    structure."""
+    """Generate a list of duplicate index chains for a given nested structure."""
     duplicate_index_chains = ()
     if isinstance(xs, ivy.Container):
         duplicate_index_chains = xs.cont_duplicate_array_keychains()
@@ -36,8 +35,7 @@ def _get_duplicate_index_chains(xs):
 
 
 def _arrays_to_float_variables(xs, xs_grad_idxs=None):
-    """Used to convert all required arrays to float variables for gradient
-    calculation."""
+    """Convert all required arrays to float variables for gradient calculation."""
 
     def inner_fn(x):
         if ivy.is_array(x, exclusive=True):
@@ -59,7 +57,7 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
 
 
 def _get_required_native_variables(xs, xs_grad_idxs):
-    """Used to extract all required native variables from a nested structure."""
+    """Extract all required native variables from a nested structure."""
     # To make sure that only the required arrays are converted to native arrays
     xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True, shallow=False)
     if xs_grad_idxs is not None:
@@ -114,8 +112,7 @@ def _get_required_float_variables(xs, xs_grad_idxs):
 
 
 def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=False):
-    """Used to extract all relevant results from the output nested structure of a
-    function."""
+    """Extract all relevant results from the output nested structure of a function."""
 
     def map_fn(x_):
         if ivy.is_array(x_):
@@ -155,7 +152,7 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
 
 
 def _set_duplicates(xs, duplicate_index_chains):
-    """Setting the duplicates in the nested structure to have the same reference."""
+    """Set the duplicates in the nested structure to have the same reference."""
     originals = list(
         map(
             lambda key_chains: [key_chains[0]] * (len(key_chains) - 1),
@@ -181,7 +178,7 @@ def _set_duplicates(xs, duplicate_index_chains):
 
 
 def _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=False, reshape=True):
-    """Getting the relevant outputs from the function return value."""
+    """Get the relevant outputs from the function return value."""
     ret_idxs, ret_values = _get_native_variables_and_indices(
         func_ret, idxs=ret_grad_idxs, create_var=create_var, reshape=reshape
     )
@@ -195,7 +192,7 @@ def _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=False, reshape=True)
 
 
 def _get_native_y(y):
-    """Converting all outputs to native arrays."""
+    """Convert all outputs to native arrays."""
     array_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
     y_final = []
     if isinstance(array_idxs, list) and np.asarray(array_idxs, "object").size > 0:
@@ -217,8 +214,12 @@ def _stop_grad_and_index(func_ret, retain_grads, grads):
 
 
 def _process_func_ret_and_grads(func_ret, grads, retain_grads):
-    """Setting the gradients of non-finite values to zero, and stopping gradient
-    propagation of the function results."""
+    """
+    Stop gradients propagation.
+
+    Set the gradients of non-finite values to zero, and stopping
+    gradient propagation of the function results.
+    """
     grads = _non_finite_to_zero(grads)
     func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads)
     grads = _to_ivy(grads)
@@ -279,7 +280,7 @@ def _variable_data(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Gets the contents of the input.
+    Get the contents of the input.
 
     Parameters
     ----------
@@ -312,7 +313,7 @@ def stop_gradient(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Stops gradient computation.
+    Stop gradient computation.
 
     Parameters
     ----------

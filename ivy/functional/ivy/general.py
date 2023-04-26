@@ -859,7 +859,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 @handle_exceptions
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """
-    Creates a (possibly nested) list from input array.
+    Create a (possibly nested) list from input array.
 
     Parameters
     ----------
@@ -1111,7 +1111,7 @@ def fourier_encode(
     flatten: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Tuple]:
     """
-    Pads an array with fourier encodings.
+    Pad an array with fourier encodings.
 
     Parameters
     ----------
@@ -1333,7 +1333,7 @@ def has_nans(
 @handle_exceptions
 def exists(x: Any) -> bool:
     """
-    Simple check as to whether the input is None or not.
+    Check as to whether the input is None or not.
 
     Parameters
     ----------
@@ -1615,7 +1615,7 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
 @handle_exceptions
 def arg_names(receiver):
     """
-    Gets the expected keyword arguments for a function or class constructor.
+    Get the expected keyword arguments for a function or class constructor.
 
     Parameters
     ----------
@@ -1693,7 +1693,9 @@ def match_kwargs(
 @handle_exceptions
 def cache_fn(func: Callable) -> Callable:
     """
-    Decorator to wrap a function, such that computed outputs are cached to avoid
+    Cache function outputs.
+
+    A decorator to wrap a function, such that computed outputs are cached to avoid
     recalculating them later.
 
     Parameters
@@ -2051,7 +2053,7 @@ def einops_repeat(
 @handle_exceptions
 def get_min_denominator() -> float:
     """
-    Gets the global minimum denominator used by ivy for numerically stable division.
+    Get the global minimum denominator used by ivy for numerically stable division.
 
     Returns
     -------
@@ -2095,7 +2097,7 @@ def set_min_denominator(val: float) -> None:
 @handle_exceptions
 def get_min_base() -> float:
     """
-    Gets the global minimum base used by ivy for numerically stable power raising.
+    Get the global minimum base used by ivy for numerically stable power raising.
 
     Returns
     -------
@@ -2282,7 +2284,7 @@ stable_pow.unsupported_dtypes = ("bfloat16",)
 @handle_exceptions
 def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
     """
-    Gets all arrays which are currently alive.
+    Get all arrays which are currently alive.
 
     Returns
     -------
@@ -3764,7 +3766,7 @@ def isin(
     invert: bool = False,
 ) -> ivy.Array:
     """
-    Tests if each element of elements is in test_elements.
+    Test if each element of elements is in test_elements.
 
     Parameters
     ----------

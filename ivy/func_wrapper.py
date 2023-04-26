@@ -537,7 +537,7 @@ def integer_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _integer_arrays_to_float(*args, **kwargs):
         """
-        Promotes all the integer array inputs passed to the function both as positional
+        Promote all the integer array inputs passed to the function both as positional
         or keyword arguments to the default float dtype.
 
         Parameters

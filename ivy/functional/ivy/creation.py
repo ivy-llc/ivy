@@ -1244,8 +1244,7 @@ def linspace(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Generates a certain number of evenly-spaced values in an interval along a given
-    axis.
+    Generate a certain number of evenly-spaced values in an interval along a given axis.
 
     See :math:`arange` that allows to specify the step size of evenly spaced values in
     an interval.
@@ -1907,8 +1906,8 @@ def logspace(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Generates a certain number of evenly-spaced values in log space, in an interval
-    along a given axis.
+    Generate a certain number of evenly-spaced values in log space, in an interval along
+    a given axis.
 
     Parameters
     ----------

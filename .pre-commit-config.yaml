@@ -21,4 +21,4 @@ repos:
     hooks:
       - id: pydocstyle
         # Exclude everything in frontends except __init__.py, and func_wrapper.py
-        exclude: 'ivy/functional/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
+        exclude: 'ivy/functional/frontends/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'

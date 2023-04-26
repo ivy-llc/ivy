@@ -533,7 +533,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array, /, *, conjugate: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        Transposes a matrix (or a stack of matrices) ``x``.
+        Transpose a matrix (or a stack of matrices) ``x``.
 
         Parameters
         ----------

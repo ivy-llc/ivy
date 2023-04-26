@@ -162,7 +162,7 @@ def test_function(
     **all_as_kwargs_np,
 ):
     """
-    Tests a function that consumes (or returns) arrays for the current backend by
+    Test a function that consumes (or returns) arrays for the current backend by
     comparing the result with numpy.
 
     Parameters
@@ -534,7 +534,7 @@ def test_frontend_function(
     **all_as_kwargs_np,
 ):
     """
-    Tests a frontend function for the current backend by comparing the result with the
+    Test a frontend function for the current backend by comparing the result with the
     function in the associated framework.
 
     Parameters
@@ -1078,7 +1078,7 @@ def test_method(
     return_flat_np_arrays: bool = False,
 ):
     """
-    Tests a class-method that consumes (or returns) arrays for the current backend by
+    Test a class-method that consumes (or returns) arrays for the current backend by
     comparing the result with numpy.
 
     Parameters
@@ -1486,7 +1486,7 @@ def test_frontend_method(
     test_values: Union[bool, str] = True,
 ):
     """
-    Tests a class-method that consumes (or returns) arrays for the current backend by
+    Test a class-method that consumes (or returns) arrays for the current backend by
     comparing the result with numpy.
 
     Parameters

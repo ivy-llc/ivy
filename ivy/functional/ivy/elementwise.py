@@ -1412,7 +1412,7 @@ def ceil(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rounds each element ``x_i`` of the input array ``x`` to the smallest (i.e.,
+    """Round each element ``x_i`` of the input array ``x`` to the smallest (i.e.,
     closest to ``-infinity``) integer-valued number that is not less than ``x_i``.
 
     **Special cases**
@@ -2021,7 +2021,7 @@ def floor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e.,
+    """Round each element ``x_i`` of the input array ``x`` to the greatest (i.e.,
     closest to ``+infinity``) integer-valued number that is not greater than ``x_i``.
 
     **Special cases**
@@ -2111,7 +2111,7 @@ def floor_divide(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Rounds the result of dividing each element x1_i of the input array x1 by the
+    Round the result of dividing each element x1_i of the input array x1 by the
     respective element x2_i of the input array x2 to the greatest (i.e., closest to
     +infinity) integer-value number that is not greater than the division result.
 
@@ -2572,7 +2572,7 @@ def isfinite(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests each element ``x_i`` of the input array ``x`` to determine if finite (i.e.,
+    """Test each element ``x_i`` of the input array ``x`` to determine if finite (i.e.,
     not ``NaN`` and not equal to positive or negative infinity).
 
     Parameters
@@ -2653,7 +2653,7 @@ def isinf(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Tests each element x_i of the input array x to determine if equal to positive or
+    Test each element x_i of the input array x to determine if equal to positive or
     negative infinity.
 
     Parameters
@@ -2757,7 +2757,7 @@ def isnan(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests each element ``x_i`` of the input array ``x`` to determine whether the
+    """Test each element ``x_i`` of the input array ``x`` to determine whether the
     element is ``NaN``.
 
     Parameters
@@ -4289,7 +4289,7 @@ def round(
     decimals: Optional[int] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rounds each element ``x_i`` of the input array ``x`` to the nearest
+    """Round each element ``x_i`` of the input array ``x`` to the nearest
     integer-valued number.
 
     **Special cases**
@@ -5019,7 +5019,7 @@ def trunc(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Rounds each element x_i of the input array x to the integer-valued number that is
+    Round each element x_i of the input array x to the integer-valued number that is
     closest to but no greater than x_i.
 
     **Special cases**
@@ -5515,7 +5515,7 @@ def trunc_divide(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Performs elementwise integer division of the inputs rounding the results towards
+    Perform element-wise integer division of the inputs rounding the results towards
     zero.
 
     Parameters
@@ -5563,7 +5563,7 @@ def isreal(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests each element ``x_i`` of the input array ``x`` to determine whether the
+    """Test each element ``x_i`` of the input array ``x`` to determine whether the
     element is real number.
     Returns a bool array, where True if input element is real.
     If element has complex type with zero complex part, the return value

@@ -391,7 +391,7 @@ def promote_types_jax(
     /,
 ) -> ivy.Dtype:
     """
-    Promotes the datatypes type1 and type2, returning the data type they promote to.
+    Promote the datatypes type1 and type2, returning the data type they promote to.
 
     Parameters
     ----------
@@ -424,7 +424,7 @@ def promote_types_of_jax_inputs(
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
-    Promotes the dtype of the given native array inputs to a common dtype based on type
+    Promote the dtype of the given native array inputs to a common dtype based on type
     promotion rules.
 
     While passing float or integer values or any other non-array input

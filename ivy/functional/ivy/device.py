@@ -57,7 +57,7 @@ class DefaultDevice:
         /,
     ) -> None:
         """
-        Initialises the DefaultDevice class.
+        Initialize the DefaultDevice class.
 
         Parameters
         ----------
@@ -156,7 +156,7 @@ def get_all_ivy_arrays_on_dev(
     /,
 ) -> ivy.Container:
     """
-    Gets all ivy arrays which are currently alive on the specified device.
+    Get all ivy arrays which are currently alive on the specified device.
 
     Parameters
     ----------
@@ -233,7 +233,7 @@ def print_all_ivy_arrays_on_dev(
     attr_only: bool = True,
 ) -> None:
     """
-    Prints the shape and dtype for all ivy arrays which are currently alive on the
+    Print the shape and dtype for all ivy arrays which are currently alive on the
     specified device.
 
     Parameters
@@ -799,7 +799,7 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
 @handle_exceptions
 def unset_default_device() -> None:
     """
-    Resets the default device to "cpu".
+    Reset the default device to "cpu".
 
     Examples
     --------

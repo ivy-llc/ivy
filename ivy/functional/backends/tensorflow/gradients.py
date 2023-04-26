@@ -1,5 +1,9 @@
-"""Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax and
-signature."""
+"""
+Tensorflow gradient functions.
+
+Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax
+and signature.
+"""
 
 # global
 import tensorflow as tf

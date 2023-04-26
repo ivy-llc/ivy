@@ -1,5 +1,9 @@
-"""Collection of TensorFlow general functions, wrapped to fit Ivy syntax and
-signature."""
+"""
+Tensorflow general functions.
+
+Collection of TensorFlow general functions, wrapped to fit Ivy syntax
+and signature.
+"""
 
 # global
 from typing import Optional, Union, Sequence, Callable, Tuple

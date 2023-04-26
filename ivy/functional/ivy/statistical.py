@@ -1160,7 +1160,7 @@ def einsum(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Sums the product of the elements of the input operands along dimensions specified
+    Sum the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
     Parameters

@@ -177,9 +177,11 @@ def cross(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    The cross product of 3-element vectors. If x1 and x2 are multi- dimensional arrays
-    (i.e., both have a rank greater than 1), then the cross- product of each pair of
-    corresponding 3-element vectors is independently computed.
+    Return cross product of 3-element vectors.
+
+    If x1 and x2 are multi- dimensional arrays (i.e., both have a rank greater than 1),
+    then the cross- product of each pair of corresponding 3-element vectors is
+    independently computed.
 
     Parameters
     ----------
@@ -1177,7 +1179,7 @@ def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
-    Raises a square matrix (or a stack of square matrices) x to an integer power n.
+    Raise a square matrix (or a stack of square matrices) x to an integer power n.
 
     Parameters
     ----------
@@ -2604,7 +2606,7 @@ def vander(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Generates a Vandermonde matrix. The columns of the output matrix are elementwise
+    Generate a Vandermonde matrix. The columns of the output matrix are elementwise
     powers of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. If increasing is True,
     the order of the columns is reversed x^0, x^1, ..., x^{(N-1)}. Such a matrix with a
     geometric progression in each row is named for Alexandre-Theophile Vandermonde.

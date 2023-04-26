@@ -260,7 +260,7 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
 
 def test_unsupported_function(*, fn, args, kwargs):
     """
-    Tests a function with an unsupported datatype to raise an exception.
+    Test a function with an unsupported datatype to raise an exception.
 
     Parameters
     ----------

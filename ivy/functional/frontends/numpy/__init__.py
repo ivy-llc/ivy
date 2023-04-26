@@ -431,7 +431,7 @@ def promote_types_of_numpy_inputs(
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
-    Promotes the dtype of the given ivy array inputs to a common dtype based on numpy
+    Promote the dtype of the given ivy array inputs to a common dtype based on numpy
     type promotion rules.
 
     While passing float or integer values or any other non-array input

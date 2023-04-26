@@ -263,7 +263,7 @@ class Array(
 
     @property
     def strides(self) -> Optional[int]:
-        """Strides across each dimension."""
+        """Get strides across each dimension."""
         return self._strides
 
     @property

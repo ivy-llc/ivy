@@ -1,5 +1,9 @@
-"""Collection of TensorFlow general functions, wrapped to fit Ivy syntax and
-signature."""
+"""
+Tensorflow device functions.
+
+Collection of TensorFlow general functions, wrapped to fit Ivy syntax
+and signature.
+"""
 
 # global
 _round = round

@@ -1,5 +1,9 @@
-"""Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
-signature."""
+"""
+TensorFlow random functions.
+
+Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
+signature.
+"""
 
 from typing import Optional, Union, Sequence
 
