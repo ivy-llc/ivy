@@ -26,3 +26,4 @@ pandas
 pyspark
 autoflake # for backend generation
 snakeviz # for profiling
+protobuf==3.20.0
