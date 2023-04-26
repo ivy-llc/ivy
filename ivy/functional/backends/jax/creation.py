@@ -61,7 +61,7 @@ def asarray(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if isinstance(obj, ivy.NativeArray) and not dtype:
+    if ivy.is_native_array(obj) and not dtype:
         if copy is True:
             dtype = obj.dtype
             ivy.utils.assertions._check_jax_x64_flag(dtype)

@@ -90,7 +90,7 @@ def execute_with_gradients(
     # Getting the relevant outputs from the function return for gradient calculation
     y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs)
 
-    if isinstance(y, ivy.NativeArray):
+    if ivy.is_native_array(y):
         # Gradient calculation for a single output
         grad_fn = jax.grad(
             lambda x: _forward_fn(
