@@ -1292,7 +1292,6 @@ def dsplit(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
 @handle_nestable
