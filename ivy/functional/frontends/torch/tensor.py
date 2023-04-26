@@ -982,3 +982,12 @@ class Tensor:
 
     def reciprocal(self):
         return torch_frontend.reciprocal(self)
+
+    def fill_(self, value):
+        self.ivy_array = torch_frontend.full_like(
+            self, value, dtype=self.dtype, device=self.device
+        ).ivy_array
+        return self
+
+    def nonzero(self):
+        return torch_frontend.nonzero(self)
