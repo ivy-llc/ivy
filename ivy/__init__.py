@@ -198,9 +198,14 @@ class Shape:
         if len(backend_stack) != 0:
             valid_types += (ivy.NativeShape, ivy.NativeArray)
         else:
+            backend = current_backend(shape_tup)
             valid_types += (
-                current_backend(shape_tup).NativeShape,
-                current_backend(shape_tup).NativeArray,
+                backend.NativeShape,
+                # TODO should be updated once Python version is
+                # upgraded to be backend.NativeArray
+                backend._NativeArrays
+                if backend.current_backend_str() == "jax"
+                else backend.NativeArray,
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
         if len(backend_stack) == 0:
