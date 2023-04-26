@@ -1248,3 +1248,7 @@ from ivy.utils.backend.sub_backend_handler import (
 
 def current_sub_backends():
     return []
+
+
+def get_native_array_type():
+    return NativeArray

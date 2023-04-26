@@ -36,6 +36,10 @@ NativeShape = TensorShape
 NativeSparseArray = tf.SparseTensor
 
 
+def get_native_array_type():
+    return NativeArray
+
+
 # devices
 valid_devices = ("cpu", "gpu")
 

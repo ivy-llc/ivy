@@ -4,7 +4,7 @@ from packaging import version
 import jaxlib
 import jax
 import jax.numpy as jnp
-from typing import Union
+from typing import Union, get_args
 
 # noinspection PyPackageRequirements
 from jaxlib.xla_extension import Buffer
@@ -59,6 +59,10 @@ NativeDtype = jnp.dtype
 NativeShape = tuple
 
 NativeSparseArray = None
+
+
+def get_native_array_type():
+    return get_args(NativeArray)
 
 
 # devices
