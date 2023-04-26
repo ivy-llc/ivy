@@ -43,15 +43,15 @@ JaxArray = Union[
     Buffer,
 ]
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeArray = (
+NativeArray = Union[
     jax.interpreters.xla._DeviceArray,
     jaxlib.xla_extension.DeviceArray,
     Buffer,
-)
+]
 
 if version.parse(jax.__version__) >= version.parse("0.4.1"):
     JaxArray = Union[JaxArray, jax.Array]
-    NativeArray += (jax.Array,)
+    NativeArray = Union[NativeArray, jax.Array]
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeDevice = jaxlib.xla_extension.Device
