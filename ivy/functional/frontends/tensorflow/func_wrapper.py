@@ -56,7 +56,7 @@ def _ivy_array_to_tensorflow(x):
 
 
 def _native_to_ivy_array(x):
-    if isinstance(x, ivy.NativeArray):
+    if isinstance(x, ivy.get_native_array_type()):
         return ivy.array(x)
     return x
 
