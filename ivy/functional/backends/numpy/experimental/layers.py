@@ -769,3 +769,37 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
+
+def irfft(
+    x: np.ndarray,
+    dim: int,
+    *,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if not isinstance(dim, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
+    if norm is None:
+        norm= "backward" 
+    if n is None:
+        n = (x.shape[dim] - 1) * 2 
+    if n < -len(x.shape):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not isinstance(n, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
+    if n <= 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    
+    return np.asarray(np.fft.irfft(x, n, dim, norm), dtype=x.dtype)

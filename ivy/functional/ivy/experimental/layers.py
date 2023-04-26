@@ -830,6 +830,59 @@ def ifft(
     """
     return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def irfft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    dim: int,
+    *,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """"
+    
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs IRFFT.
+    dim
+        The dimension along which to take the one dimensional IRFFT.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\frac{1}{n}$.
+    n
+        Optional argument indicating the sequence length, if given, the input would be
+        padded with zero or truncated to length n before performing IFFT.
+        Should be a integer greater than 1.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the IRFFT operation.
+
+    Examples
+    --------
+    >>> ivy.ifft([1, -1j, -1, 1j])
+    array([0.+0.j,  1.+0.j,  0.+0.j,  0.+0.j]) # may vary
+    >>> ivy.irfft([1, -1j, -1])
+    array([0.,  1.,  0.,  0.])
+    Notice how the last term in the input to the ordinary `ifft` is the
+    complex conjugate of the second term, and the output has zero imaginary
+    part everywhere.  When calling `irfft`, the negative frequencies are not
+    specified, and the output array is purely real.
+    """
+    return ivy.current_backend(x).irfft(x, dim, norm=norm, n=n, out=out)
+
 
 @handle_out_argument
 @handle_nestable
