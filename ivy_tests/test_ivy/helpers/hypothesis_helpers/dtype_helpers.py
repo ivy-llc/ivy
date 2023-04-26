@@ -85,10 +85,9 @@ def get_dtypes(
     draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
 ):
     """
-    Draws a valid dtypes for the test function. For frontend tests,
-    it draws the data types from the intersection between backend
-    framework data types and frontend framework dtypes, otherwise,
-    draws it from backend framework data types.
+    Draws a valid dtypes for the test function. For frontend tests, it draws the data
+    types from the intersection between backend framework data types and frontend
+    framework dtypes, otherwise, draws it from backend framework data types.
 
     Parameters
     ----------
@@ -244,7 +243,8 @@ def array_dtypes(
     shared_dtype=False,
     array_api_dtypes=False,
 ):
-    """Draws a list of data types.
+    """
+    Draws a list of data types.
 
     Parameters
     ----------
