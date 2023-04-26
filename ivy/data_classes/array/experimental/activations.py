@@ -253,10 +253,10 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-1., 2., 4., -10.])
         >>> z = x.sigmoid()
         >>> print(z)
-        ivy.array([ -1.31326175,  -0.126928  ,  -0.01814993, -10.00004578])
+        ivy.array([2.71828198e+00, 1.35335281e-01, 1.83156393e-02, 2.20264668e+04])
         >>> x = ivy.array([-2.5, 1., 0, 4.5])
-        >>> z = x.sigmoid())
+        >>> z = x.sigmoid()
         >>> print(z)
-        ivy.array([-2.57888985, -0.31326169, -0.69314718, -0.01104775])
+        ivy.array([1.21824932e+01, 3.67879420e-01, 1.00000000e+00, 1.11089964e-02])
         """
         return ivy.sigmoid(self._data)

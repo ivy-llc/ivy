@@ -370,18 +370,19 @@ def sigmoid(
     >>> x = ivy.array([-1., 0., 1.])
     >>> z = x.sigmoid()
     >>> print(z)
-    ivy.array([-1.31326175, -0.69314718, -0.31326169])
+    ivy.array([2.71828198, 1.        , 0.36787942])
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> z = x.sigmoid()
     >>> print(z)
-    ivy.array([-0.20141329, -0.40318608, -2.48683619])
+    ivy.array([ 0.22313015,  0.49658528, 11.02317715])
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
     >>> x = ivy.sigmoid(x)
     >>> print(x)
+    >>> print(x)
     {
-        a: ivy.array([-0.31326169, -1.46328247]),
-        b: ivy.array([-0.59813893, -0.43748799])
+        a: ivy.array([0.36787942, 3.32011724]),
+        b: ivy.array([0.81873071, 0.54881161])
     }
     """
     return ivy.current_backend(input).sigmoid(input)
