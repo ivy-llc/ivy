@@ -76,10 +76,10 @@ def cumprod(a, axis=None, dtype=None, out=None):
 
 # reverse is not implemented here, whereas it is implemented in the actual framework
 # my implementation of cummin
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-def cummin(a, axis=None, out=None):
-    return ivy.cummin(a, axis=axis, out=out)
+# @handle_jax_dtype
+# @to_ivy_arrays_and_back
+# def cummin(a, axis=None, out=None):
+#     return ivy.cummin(a, axis=axis, out=out)
 
 
 @handle_jax_dtype

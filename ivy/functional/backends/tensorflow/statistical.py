@@ -199,8 +199,9 @@ def cummin(
             dtype = _infer_dtype(x.dtype)
         dtype = ivy.as_native_dtype(dtype)
     x = tf.cast(x, dtype)
-    return tf.math.cumprod(tf.math.reduce_min(x, axis=1), exclusive=True)(
-        x, axis, exclusive, reverse
+    return tf.math.minimum(
+        tf.cumsum(x, axis, exclusive, reverse),
+        tf.reduce_min(x, axis=axis, keepdims=True),
     )
 
 
