@@ -26,7 +26,7 @@ def sinc(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates an implementation-dependent approximation of the principal value of
+    Calculate an implementation-dependent approximation of the principal value of
     the normalized sinc function, having domain ``(-infinity, +infinity)`` and
     codomain ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``.
     Each element ``x_i`` is assumed to be expressed in radians.
@@ -100,7 +100,8 @@ def lcm(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the element-wise least common multiple (LCM) of x1 and x2.
+    """
+    Compute the element-wise least common multiple (LCM) of x1 and x2.
 
     Parameters
     ----------
@@ -138,9 +139,10 @@ def fmax(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Computes the element-wise maximums of two arrays. Differs from ivy.maximum
-    in the case where one of the elements is NaN. ivy.maximum returns the NaN element
-    while ivy.fmax returns the non-NaN element.
+    """
+    Compute the element-wise maximums of two arrays. Differs from ivy.maximum in the
+    case where one of the elements is NaN. ivy.maximum returns the NaN element while
+    ivy.fmax returns the non-NaN element.
 
     Parameters
     ----------
@@ -181,9 +183,10 @@ def fmin(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Computes the element-wise minimums of two arrays. Differs from ivy.minimum
-    in the case where one of the elements is NaN. ivy.minimum returns the NaN element
-    while ivy.fmin returns the non-NaN element.
+    """
+    Compute the element-wise minimums of two arrays. Differs from ivy.minimum in the
+    case where one of the elements is NaN. ivy.minimum returns the NaN element while
+    ivy.fmin returns the non-NaN element.
 
     Parameters
     ----------
@@ -227,7 +230,9 @@ def trapz(
     axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Integrate along the given axis using the composite trapezoidal rule.
+    """
+    Integrate along the given axis using the composite trapezoidal rule.
+
     If x is provided, the integration happens in sequence along its elements
     - they are not sorted..
 
@@ -279,11 +284,11 @@ def float_power(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Raise each base in x1 to the positionally-corresponding power in x2.
-    x1 and x2 must be broadcastable to the same shape.
-    This differs from the power function in that integers, float16, and float32
-    are promoted to floats with a minimum precision of float64 so that the result
-    is always inexact.
+    """
+    Raise each base in x1 to the positionally-corresponding power in x2. x1 and x2 must
+    be broadcastable to the same shape. This differs from the power function in that
+    integers, float16, and float32 are promoted to floats with a minimum precision of
+    float64 so that the result is always inexact.
 
     Parameters
     ----------
@@ -325,7 +330,8 @@ def exp2(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate 2**p for all p in the input array.
+    """
+    Calculate 2**p for all p in the input array.
 
     Parameters
     ----------
@@ -362,8 +368,9 @@ def copysign(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Change the signs of x1 to match x2
-    x1 and x2 must be broadcastable to a common shape
+    """
+    Change the signs of x1 to match x2 x1 and x2 must be broadcastable to a common
+    shape.
 
     Parameters
     ----------
@@ -408,7 +415,8 @@ def count_nonzero(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Counts the number of non-zero values in the array a.
+    """
+    Count the number of non-zero values in the array a.
 
     Parameters
     ----------
@@ -465,8 +473,8 @@ def nansum(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the sum of array elements over a given axis treating
-    Not a Numbers (NaNs) as zero.
+    Return the sum of array elements over a given axis treating Not a Numbers (NaNs) as
+    zero.
 
     Parameters
     ----------
@@ -516,7 +524,8 @@ def gcd(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the greatest common divisor of |x1| and |x2|.
+    """
+    Return the greatest common divisor of |x1| and |x2|.
 
     Parameters
     ----------
@@ -561,8 +570,8 @@ def isclose(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns a boolean array where two arrays are element-wise equal
-    within a tolerance.
+    Return a boolean array where two arrays are element-wise equal within a tolerance.
+
     The tolerance values are positive, typically very small numbers.
     The relative difference (rtol * abs(b)) and the absolute difference
     atol are added together to compare against the absolute difference
@@ -621,7 +630,7 @@ def angle(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates Element-wise the angle for an array of complex numbers(x+yj).
+    Calculate Element-wise the angle for an array of complex numbers(x+yj).
 
     Parameters
     ----------
@@ -665,7 +674,7 @@ def imag(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the Imaginary part of a complex numbers(x+yj).
+    Return the Imaginary part of a complex numbers(x+yj).
 
     Parameters
     ----------
@@ -704,9 +713,9 @@ def nan_to_num(
     neginf: Optional[Union[float, int]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Replace NaN with zero and infinity with large finite numbers
-    (default behaviour) or with the numbers defined by the user using
-    the nan, posinf and/or neginf keywords.
+    """
+    Replace NaN with zero and infinity with large finite numbers (default behaviour) or
+    with the numbers defined by the user using the nan, posinf and/or neginf keywords.
 
     Parameters
     ----------
@@ -759,7 +768,8 @@ def logaddexp2(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates log2(2**x1 + 2**x2).
+    """
+    Calculate log2(2**x1 + 2**x2).
 
     Parameters
     ----------
@@ -795,7 +805,8 @@ def signbit(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns element-wise True where signbit is set (less than zero).
+    """
+    Return element-wise True where signbit is set (less than zero).
 
     Parameters
     ----------
@@ -830,7 +841,7 @@ def hypot(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Returns the hypotenuse given the two sides of a right angle triangle
+    Return the hypotenuse given the two sides of a right angle triangle.
 
     Parameters
     ----------
@@ -868,7 +879,8 @@ def diff(
     append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the n-th discrete difference along the given axis.
+    """
+    Return the n-th discrete difference along the given axis.
 
     Parameters
     ----------
@@ -922,8 +934,9 @@ def allclose(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Returns a True if the two arrays are element-wise equal
-    within given tolerance; otherwise False.
+    Return a True if the two arrays are element-wise equal within given tolerance;
+    otherwise False.
+
     The tolerance values are positive, typically very small numbers.
     The relative difference (rtol * abs(x2)) and the absolute difference
     atol are added together to compare against the absolute difference
@@ -973,7 +986,6 @@ def allclose(
     >>> y = ivy.allclose(x1, x2, rtol=0.005, atol=0.0)
     >>> print(y)
     ivy.array(True)
-
     """
     return ivy.current_backend().allclose(
         a, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
@@ -990,8 +1002,9 @@ def fix(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Round an array of floats element-wise to nearest integer towards zero.
-    The rounded values are returned as floats.
+    """
+    Round an array of floats element-wise to nearest integer towards zero. The rounded
+    values are returned as floats.
 
     Parameters
     ----------
@@ -1068,8 +1081,8 @@ def zeta(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Compute the Hurwitz zeta function elementwisely with each pair
-    of floats in two arrays.
+    Compute the Hurwitz zeta function elementwisely with each pair of floats in two
+    arrays.
 
     Parameters
     ----------
@@ -1109,7 +1122,8 @@ def gradient(
     edge_order: int = 1,
     axis: Optional[Union[int, list, tuple]] = None,
 ) -> Union[ivy.Array, List[ivy.Array]]:
-    """Calculates gradient of x with respect to (w.r.t.) spacing
+    """
+    Calculate gradient of x with respect to (w.r.t.) spacing.
 
     Parameters
     ----------
@@ -1168,7 +1182,6 @@ def gradient(
     [ivy.array([[ 4.5,  9. , 18. , 36. ],
        [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.33333333, 0.5,  1., 1.33333333],
        [ 3.33333333,  5.        , 10.        , 13.33333333]])]
-
     """
     return ivy.current_backend(x).gradient(
         x, spacing=spacing, edge_order=edge_order, axis=axis
@@ -1230,7 +1243,7 @@ def real(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests each element ``x_i`` of the input array ``x`` to
+    """Test each element ``x_i`` of the input array ``x`` to
     take only real part from it.
     Returns a float array, where it only contains .
     If element has complex type with zero complex part, the return value
@@ -1297,9 +1310,8 @@ def binarizer(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Maps the values of the input tensor to either 0 or 1,
-    element-wise, based on the outcome of a comparison
-    against a threshold value.
+    Map the values of the input tensor to either 0 or 1, element-wise, based on the
+    outcome of a comparison against a threshold value.
 
     Parameters
     ----------
@@ -1337,7 +1349,8 @@ def conj(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the complex conjugate of complex values in x
+    """
+    Compute the complex conjugate of complex values in x.
 
     Parameters
     ----------
@@ -1395,7 +1408,7 @@ def ldexp(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns x1 * (2**x2), element-wise.
+    Return x1 * (2**x2), element-wise.
 
     Parameters
     ----------
@@ -1436,7 +1449,8 @@ def lerp(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns a linear interpolation of two arrays start (given by input) and end
+    Return a linear interpolation of two arrays start (given by input) and end.
+
     based on a scalar or array weight.
         input + weight * (end - input),  element-wise.
 

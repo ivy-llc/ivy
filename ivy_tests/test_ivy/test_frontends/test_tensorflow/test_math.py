@@ -11,6 +11,37 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# imag
+@handle_frontend_test(
+    fn_tree="tensorflow.math.imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_value=-20,
+        max_value=20,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_imag(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        input=x[0],
+    )
+
+
 # accumulate_n
 @handle_frontend_test(
     fn_tree="tensorflow.math.accumulate_n",
@@ -287,6 +318,35 @@ def test_tensorflow_squared_difference(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# logical_not
+@handle_frontend_test(
+    fn_tree="tensorflow.math.logical_not",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple([ivy.bool]),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_logical_not(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
 
 
@@ -1832,7 +1892,9 @@ def test_tensorflow_acos(
 @handle_frontend_test(
     fn_tree="tensorflow.math.acosh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        small_abs_safety_factor=3,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -2356,4 +2418,34 @@ def test_tensorflow_zeta(
         on_device=on_device,
         x=x[0],
         q=x[1],
+    )
+
+
+# greater_equal
+@handle_frontend_test(
+    fn_tree="tensorflow.math.greater_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_greater_equal(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
     )
