@@ -327,7 +327,10 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         args, kwargs = ivy.nested_map(
-            [args, kwargs], lambda x: x.shape if isinstance(x, ivy.Shape) else x
+            [args, kwargs],
+            lambda x: x.shape
+            if isinstance(x, ivy.Shape) and ivy.get_array_mode()
+            else x,
         )
         return fn(*args, **kwargs)
 
@@ -339,7 +342,10 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         args, kwargs = ivy.nested_map(
-            [args, kwargs], lambda x: x.shape if isinstance(x, ivy.Shape) else x
+            [args, kwargs],
+            lambda x: x.shape
+            if isinstance(x, ivy.Shape) and ivy.get_array_mode()
+            else x,
         )
         return fn(*args, **kwargs)
 
