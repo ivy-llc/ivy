@@ -1133,6 +1133,23 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
     return tuple(supported)
 
 
+def _mixed_functions_devices(fn, merge_fn, get_fn, recurse=True, complement=False):
+    primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
+    devices = set(_get_devices(primary_fn, complement=complement))
+    if hasattr(primary_fn, "handle_mixed_function"):
+        compos_fn = primary_fn.compos
+        devices_compos = set(_get_devices(compos_fn, complement=complement))
+        if recurse:
+            devices_compos = ivy.functional.data_type._nested_get(
+                compos_fn,
+                devices_compos,
+                merge_fn,
+                get_fn,
+            )
+            devices = (devices_compos, devices)
+    return devices
+
+
 @handle_nestable
 @handle_exceptions
 def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
@@ -1164,21 +1181,13 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     if hasattr(fn, "mixed_function") and (
         ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
     ):
-        primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
-        supported_devices = set(_get_devices(primary_fn, complement=False))
-        if hasattr(primary_fn, "handle_mixed_function"):
-            compos_fn = primary_fn.compos
-            supported_devices_compos = set(_get_devices(compos_fn, complement=False))
-            if recurse:
-                supported_devices_compos = ivy.functional.data_type._nested_get(
-                    compos_fn,
-                    supported_devices_compos,
-                    set.intersection,
-                    function_supported_devices,
-                )
-            supported_devices = set.intersection(
-                supported_devices, supported_devices_compos
-            )
+        supported_devices = _mixed_functions_devices(
+            fn,
+            set.intersection,
+            function_supported_devices,
+            recurse=recurse,
+            complement=False,
+        )
     else:
         supported_devices = set(_get_devices(fn, complement=False))
         if recurse:
@@ -1220,21 +1229,13 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     if hasattr(fn, "mixed_function") and (
         ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
     ):
-        primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
-        unsupported_devices = set(_get_devices(primary_fn, complement=True))
-        if hasattr(primary_fn, "handle_mixed_function"):
-            compos_fn = primary_fn.compos
-            unsupported_devices_compos = set(_get_devices(compos_fn, complement=True))
-            if recurse:
-                unsupported_devices_compos = ivy.functional.data_type._nested_get(
-                    compos_fn,
-                    unsupported_devices_compos,
-                    set.union,
-                    function_unsupported_devices,
-                )
-            unsupported_devices = set.intersection(
-                unsupported_devices, unsupported_devices_compos
-            )
+        unsupported_devices = _mixed_functions_devices(
+            fn,
+            set.union,
+            function_unsupported_devices,
+            recurse=recurse,
+            complement=True,
+        )
     else:
         unsupported_devices = set(_get_devices(fn, complement=True))
         if recurse:
