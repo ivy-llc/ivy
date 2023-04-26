@@ -48,6 +48,10 @@ class Framework:
     pass
 
 
+class _NativeArray:
+    pass
+
+
 class NativeArray:
     pass
 

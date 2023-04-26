@@ -15,6 +15,9 @@ else:
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
+# NativeArray is used for ONLY type hinting
+# use _NativeArray to do type checking or similar operations
+_NativeArray = paddle.Tensor
 NativeArray = paddle.Tensor
 NativeVariable = paddle.Tensor  # paddle.fluid.framework.Variable
 NativeDevice = paddle.fluid.libpaddle.Place

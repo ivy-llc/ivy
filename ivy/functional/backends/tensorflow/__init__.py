@@ -28,6 +28,9 @@ else:
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
+# NativeArray is used for ONLY type hinting
+# use _NativeArray to do type checking or similar operations
+_NativeArray = Tensor
 NativeArray = Tensor
 NativeDevice = str
 NativeDtype = DType
