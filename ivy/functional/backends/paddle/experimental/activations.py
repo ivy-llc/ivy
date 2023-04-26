@@ -125,3 +125,15 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             )
             return ret
     return F.selu(x.cast("float32")).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
+def sigmoid(input: paddle.Tensor) -> paddle.Tensor:
+    if input.dtype in [paddle.float32, paddle.float64]:
+        return F.sigmoid(input)
+    if paddle.is_complex(input):
+        with ivy.ArrayMode(False):
+            return ivy.divide(1, (ivy.add(1, ivy.exp(input))))
+    return F.sigmoid(input.cast("float32")).cast(input.dtype)

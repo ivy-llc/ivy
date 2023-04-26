@@ -662,3 +662,97 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_sigmoid(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:  # noqa
+        """
+        ivy.Container static method variant of ivy.sigmoid. This method simply wraps the
+        function, and so the docstring for ivy.sigmoid also applies to this method with
+        minimal changes.
+
+        Parameters
+
+        ----------
+        input
+            Input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        Returns
+
+        -------
+            Container with sigmoid applied to the leaves.
+        Examples
+
+        --------
+        >>> a = ivy.array([1, 0, 0.9])
+        >>> b = ivy.array([0.1, 2, -0.9])
+        >>> x = ivy.Container(a=a, b=b)
+        >>> z = ivy.Container.static_sigmoid(x)
+        >>> print(z)
+        {
+            a: ivy.array([-0.31326169, -0.69314718, -0.34115386]),
+            b: ivy.array([-0.64439666, -0.126928, -1.24115384])
+        }
+        >>> a = ivy.array([0.3, 2.5, 4.9])
+        >>> b = ivy.array([0.1, 1.2, -9.])
+        >>> x = ivy.Container(a=a, b=b)
+        >>> z = ivy.Container.static_sigmoid(x)
+        >>> print(z)
+        {
+            a: ivy.array([-0.55435526, -0.07888974, -0.00741899]),
+            b: ivy.array([-0.64439666, -0.26328245, -9.00012302])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "sigmoid",
+            input,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def sigmoid(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:  # noqa
+        """
+        Apply element-wise sigmoid of x i.e. log(1 / (1 + exp(-x)).
+
+        Parameters
+        ----------
+        self
+            Input container.
+        Returns
+        -------
+            Container with sigmoid applied to the leaves.
+        """
+        return self.static_sigmoid(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

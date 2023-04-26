@@ -55,3 +55,8 @@ def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"1.13.0 and below": ("float16", "bfloat16")}, backend_version)
+def sigmoid(input: torch.Tensor) -> torch.Tensor:
+    return torch.nn.functional.sigmoid(input)

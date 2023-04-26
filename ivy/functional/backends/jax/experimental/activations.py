@@ -58,3 +58,7 @@ def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
+
+
+def sigmoid(input: JaxArray) -> JaxArray:
+    return jax.nn.log_sigmoid(input)

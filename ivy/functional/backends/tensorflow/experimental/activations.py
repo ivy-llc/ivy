@@ -53,3 +53,8 @@ def selu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes({"2.9.1 and below": ("float",)}, backend_version)
+def sigmoid(input: Tensor) -> Tensor:
+    return tf.math.sigmoid(input)

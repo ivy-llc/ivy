@@ -230,3 +230,33 @@ class _ArrayWithActivationsExperimental(abc.ABC):
                     4.20280409,  5.25350523,  6.30420589,  7.35490704])
         """
         return ivy.selu(self._data, out=out)
+
+    def sigmoid(
+        self: ivy.Array,
+    ) -> ivy.Array:  # noqa
+        """
+        ivy.Array instance method variant of ivy.sigmoid. This method simply wraps the
+        function, and so the docstring for ivy.sigmoid also applies to this method with
+        minimal changes.
+
+        Parameters
+
+        ----------
+        self
+            Input array.
+        Returns
+        -------
+            Array with same shape as input with sigmoid applied to every element.
+        Examples
+
+        --------
+        >>> x = ivy.array([-1., 2., 4., -10.])
+        >>> z = x.sigmoid()
+        >>> print(z)
+        ivy.array([ -1.31326175,  -0.126928  ,  -0.01814993, -10.00004578])
+        >>> x = ivy.array([-2.5, 1., 0, 4.5])
+        >>> z = x.sigmoid())
+        >>> print(z)
+        ivy.array([-2.57888985, -0.31326169, -0.69314718, -0.01104775])
+        """
+        return ivy.sigmoid(self._data)

@@ -342,3 +342,46 @@ def selu(
     }
     """
     return current_backend(x).selu(x, out=out)
+
+
+@handle_out_argument
+@handle_nestable
+@to_native_arrays_and_back
+@handle_exceptions
+@handle_array_like_without_promotion
+def sigmoid(
+    input: Union[ivy.NativeArray, ivy.Array],
+) -> ivy.Array:  # noqa
+    """
+    Applies element-wise sigmoid of x i.e. sigmoid(x) = log(1 / (1 + exp(-x)).
+    Parameters
+
+    ----------
+    input
+        Input array.
+    Returns
+
+    -------
+        Array with same shape as input with sigmoid applied to every element.
+    Examples
+
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> z = x.sigmoid()
+    >>> print(z)
+    ivy.array([-1.31326175, -0.69314718, -0.31326169])
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> z = x.sigmoid()
+    >>> print(z)
+    ivy.array([-0.20141329, -0.40318608, -2.48683619])
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
+    >>> x = ivy.sigmoid(x)
+    >>> print(x)
+    {
+        a: ivy.array([-0.31326169, -1.46328247]),
+        b: ivy.array([-0.59813893, -0.43748799])
+    }
+    """
+    return ivy.current_backend(input).sigmoid(input)
