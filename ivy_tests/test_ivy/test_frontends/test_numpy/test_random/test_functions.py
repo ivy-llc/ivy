@@ -444,3 +444,38 @@ def test_numpy_chisquare(
         df=df,
         size=size,
     )
+
+# lognormal
+# `mean` value typically range from -inf to inf
+# `sigma` should be greater than zero to ensure that the standard deviation is positive
+# reasonable minimum and maximum value for sigma could be 0.001 and maximum could be 20
+@handle_frontend_test(
+    fn_tree="numpy.random.lognormal",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    mean=st.floats(allow_nan=False, allow_infinity=False, width=32),
+    sigma=st.floats(allow_nan=False, allow_infinity=False, width=64, min_value=0.001, max_value=20.0),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_lognormal(
+        input_dtypes,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        mean,
+        sigma,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mean=mean,
+        sigma=sigma,
+        size=size,
+    )
