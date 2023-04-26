@@ -43,15 +43,24 @@ JaxArray = Union[
     Buffer,
 ]
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeArray = (
+_NativeArrays = (
     jax.interpreters.xla._DeviceArray,
     jaxlib.xla_extension.DeviceArray,
     Buffer,
 )
+# Used for type hinting, for actual instance checking use _NativeArrays
+NativeArray = Union[
+    jax.interpreters.xla._DeviceArray,
+    jaxlib.xla_extension.DeviceArray,
+    Buffer,
+]
 
 if version.parse(jax.__version__) >= version.parse("0.4.1"):
+    # Update type hints
     JaxArray = Union[JaxArray, jax.Array]
-    NativeArray += (jax.Array,)
+    NativeArray = Union[NativeArray, jax.Array]
+    # For internal instance checking
+    _NativeArrays += (jax.Array,)
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeDevice = jaxlib.xla_extension.Device
