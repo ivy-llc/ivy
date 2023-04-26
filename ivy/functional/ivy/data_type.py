@@ -1548,6 +1548,23 @@ def dtype(
     return current_backend(x).dtype(x, as_native=as_native)
 
 
+def _mixed_functions_dtypes(fn, merge_fn, get_fn, recurse=True, complement=False):
+    primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
+    dtypes = set(_get_dtypes(primary_fn, complement=complement))
+    if hasattr(primary_fn, "handle_mixed_function"):
+        compos_fn = primary_fn.compos
+        dtypes_compos = set(_get_dtypes(compos_fn, complement=complement))
+        if recurse:
+            dtypes_compos = _nested_get(
+                compos_fn,
+                dtypes_compos,
+                merge_fn,
+                get_fn,
+            )
+            dtypes = (dtypes_compos, dtypes)
+    return dtypes
+
+
 @handle_nestable
 @handle_exceptions
 def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
@@ -1579,21 +1596,13 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     if hasattr(fn, "mixed_function") and (
         ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
     ):
-        primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
-        supported_dtypes = set(_get_dtypes(primary_fn, complement=False))
-        if hasattr(primary_fn, "handle_mixed_function"):
-            compos_fn = primary_fn.compos
-            supported_dtypes_compos = set(_get_dtypes(compos_fn, complement=False))
-            if recurse:
-                supported_dtypes_compos = _nested_get(
-                    compos_fn,
-                    supported_dtypes_compos,
-                    set.intersection,
-                    function_supported_dtypes,
-                )
-            supported_dtypes = set.intersection(
-                supported_dtypes, supported_dtypes_compos
-            )
+        supported_dtypes = _mixed_functions_dtypes(
+            fn,
+            set.intersection,
+            function_supported_dtypes,
+            recurse=recurse,
+            complement=False,
+        )
     else:
         supported_dtypes = set(_get_dtypes(fn, complement=False))
         if recurse:
@@ -1635,21 +1644,9 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     if hasattr(fn, "mixed_function") and (
         ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
     ):
-        primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
-        unsupported_dtypes = set(_get_dtypes(primary_fn, complement=True))
-        if hasattr(primary_fn, "handle_mixed_function"):
-            compos_fn = primary_fn.compos
-            unsupported_dtypes_compos = set(_get_dtypes(compos_fn, complement=True))
-            if recurse:
-                unsupported_dtypes_compos = _nested_get(
-                    compos_fn,
-                    unsupported_dtypes_compos,
-                    set.intersection,
-                    function_supported_dtypes,
-                )
-            unsupported_dtypes = set.intersection(
-                unsupported_dtypes, unsupported_dtypes_compos
-            )
+        unsupported_dtypes = _mixed_functions_dtypes(
+            fn, set.union, function_unsupported_dtypes, recurse=recurse, complement=True
+        )
     else:
         unsupported_dtypes = set(_get_dtypes(fn, complement=True))
         if recurse:
