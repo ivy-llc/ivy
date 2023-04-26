@@ -96,7 +96,7 @@ def standard_normal(size=None):
 def standard_gamma(shape, size=None):
     return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
 
-
+#Binomial
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def binomial(n, p, size):
@@ -111,6 +111,3 @@ def binomial(n, p, size):
     else:
         num_samples = len(p)
     return ivy.multinomial(n, num_samples, batch_size=batch_size,probs=p)
-
-
-

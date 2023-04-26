@@ -385,7 +385,7 @@ def test_numpy_standard_gamma(
         size=size,
     )
 
-
+#Binomial
 @handle_frontend_test(
     fn_tree="numpy.random.binomial",
     n=helpers.ints(min_value=2, max_value=10),
@@ -419,7 +419,5 @@ def test_numpy_binomial(
         test_values=False,
         n=n,
         p=np.array([p,1-p], dtype=dtype[0]),
-        size=size
+        size=size,
         )
-
-
