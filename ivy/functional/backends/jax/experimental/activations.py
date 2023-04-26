@@ -61,4 +61,4 @@ def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def sigmoid(input: JaxArray) -> JaxArray:
-    return jax.nn.log_sigmoid(input)
+    return jax.nn.sigmoid(input)

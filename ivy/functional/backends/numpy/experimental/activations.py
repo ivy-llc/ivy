@@ -73,4 +73,4 @@ selu.support_native_out = True
 @with_unsupported_dtypes({"1.23.0 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def sigmoid(input: np.ndarray) -> np.ndarray:
-    return -np(np.exp(-(input)))
+    return np.exp(-(input))
