@@ -334,11 +334,8 @@ def test_torch_eigvals(
         input=x[0],
         test_values=False,
     )
-
-    """
-    In "ret" we have out eigenvalues calculated with our backend and
-    in "frontend_ret" are our eigenvalues calculated with the specified frontend
-    """
+    """In "ret" we have out eigenvalues calculated with our backend and in
+    "frontend_ret" are our eigenvalues calculated with the specified frontend."""
 
     """
     Depending on the chosen framework there may be small differences between our

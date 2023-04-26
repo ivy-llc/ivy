@@ -24,7 +24,8 @@ def binary_cross_entropy_with_logits(
     reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the binary cross entropy with logits loss.
+    """
+    Compute the binary cross entropy with logits loss.
 
     Parameters
     ----------
@@ -99,7 +100,6 @@ def binary_cross_entropy_with_logits(
     {
         a: ivy.array([0.024, 3.822, 0.263])
     }
-
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.sigmoid(pred)
