@@ -104,7 +104,6 @@ def test_tensorflow_clip_by_value(
 
 @st.composite
 def _get_global_norm_clip_inputs(draw):
-
     t_list_dtype, t_list = draw(
         helpers.dtype_and_values(
             num_arrays=2,
@@ -1476,7 +1475,6 @@ def test_tensorflow_one_hot(
     test_flags,
     on_device,
 ):
-
     input_dtype, x = dtype_and_x
     depth = 10
     helpers.test_frontend_function(
@@ -1821,7 +1819,6 @@ def test_tensorflow_reverse(
     test_flags,
     on_device,
 ):
-
     dtype, x, axis_dtype, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=dtype + axis_dtype,

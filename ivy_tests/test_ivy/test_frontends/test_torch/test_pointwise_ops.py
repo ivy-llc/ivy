@@ -3,6 +3,7 @@ import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -1172,7 +1173,6 @@ def test_torch_round(
         fn_tree=fn_tree,
         input=x[0],
         decimals=decimals,
-        out=None,
     )
 
 
@@ -1639,6 +1639,60 @@ def test_torch_pow(
     test_flags,
 ):
     input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=x[0],
+        exponent=x[1],
+    )
+
+
+# float_power_helper
+@st.composite
+def _float_power_helper(draw, *, available_dtypes=None):
+    if available_dtypes is None:
+        available_dtypes = helpers.get_dtypes("numeric")
+    dtype1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    dtype2 = draw(helpers.get_dtypes("numeric"))
+    if ivy.is_int_dtype(dtype2[0]):
+        min_value = 0
+    else:
+        min_value = -10
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            min_value=min_value,
+            max_value=10,
+            dtype=dtype2,
+        )
+    )
+    return (dtype1[0], dtype2[0]), (x1[0], x2[0])
+
+
+@handle_frontend_test(
+    fn_tree="torch.float_power",
+    dtype_and_x=_float_power_helper(),
+)
+def test_torch_float_power(
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    # Making sure zero to the power of negative doesn't occur
+    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

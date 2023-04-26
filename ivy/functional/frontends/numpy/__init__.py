@@ -1,4 +1,3 @@
-# flake8: noqa
 import ivy
 from ivy.utils.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
@@ -432,12 +431,14 @@ def promote_types_of_numpy_inputs(
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
-    Promotes the dtype of the given ivy array inputs to a common dtype
-    based on numpy type promotion rules. While passing float or integer values or any
-    other non-array input to this function, it should be noted that the return will
-    be an array-like object. Therefore, outputs from this function should be used
-    as inputs only for those functions that expect an array-like or tensor-like objects,
-    otherwise it might give unexpected results.
+    Promote the dtype of the given ivy array inputs to a common dtype based on numpy
+    type promotion rules.
+
+    While passing float or integer values or any other non-array input
+    to this function, it should be noted that the return will be an
+    array-like object. Therefore, outputs from this function should be
+    used as inputs only for those functions that expect an array-like or
+    tensor-like objects, otherwise it might give unexpected results.
     """
     # ToDo: Overflows not working properly for numpy, if a scalar or 0-dim
     #   is passed with an array, it should go to the next largest dtype that
@@ -500,6 +501,7 @@ from .linalg.matrix_and_vector_products import (
     # einsum,
     # einsum_path,
     kron,
+    cross,
 )
 
 from .linalg.decompositions import cholesky, qr, svd
@@ -522,13 +524,14 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _square,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (
+from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
     _add,
     _divide,
     _float_power,
     _floor_divide,
     _fmod,
     _mod,
+    _modf,
     _multiply,
     _negative,
     _positive,
@@ -539,7 +542,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _divmod,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
+from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
     _arccos,
     _arcsin,
     _arctan,
@@ -551,7 +554,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _degrees,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
+from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
     _imag,
     _real,
     _conj,
@@ -581,7 +584,7 @@ from ivy.functional.frontends.numpy.logic.comparison import (
     _not_equal,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (
+from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (  # noqa
     _exp,
     _exp2,
     _expm1,
@@ -636,6 +639,7 @@ float_power = ufunc("_float_power")
 floor_divide = ufunc("_floor_divide")
 fmod = ufunc("_fmod")
 mod = ufunc("_mod")
+modf = ufunc("_modf")
 multiply = ufunc("_multiply")
 negative = ufunc("_negative")
 positive = ufunc("_positive")

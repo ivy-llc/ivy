@@ -17,7 +17,7 @@ def allow_global_framework_imports(fw=["numpy/1.23.1"]):
 
 def try_except():
     try:
-        import numpy
+        import numpy  # noqa
     except ImportError:
         allow_global_framework_imports()
 

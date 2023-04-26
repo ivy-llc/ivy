@@ -1,6 +1,7 @@
 """
-A state holder for testing, this is only intended to hold and store
-testing data to be used by the test helpers to prune unsupported data.
+A state holder for testing, this is only intended to hold and store testing data to be
+used by the test helpers to prune unsupported data.
+
 Should not be used inside any of the test functions.
 """
 import importlib
@@ -79,17 +80,14 @@ def remove_all_current_framework(framework):
 
 
 class InterruptedTest(BaseException):
-    """
-    Used to indicate that a test tried to write global attributes
-    while a test is running.
-    """
+    """Indicate that a test tried to write global attributes while a test is running."""
 
     def __init__(self, test_interruped):
         super.__init__(f"{test_interruped} was interruped during execution.")
 
 
 def _get_ivy_numpy(version=None):
-    """Import Numpy module from ivy"""
+    """Import Numpy module from ivy."""
     if version:
         if version.split("/")[1] != importlib.import_module("numpy").__version__:
             config.reset_sys_modules_to_base()
@@ -103,7 +101,7 @@ def _get_ivy_numpy(version=None):
 
 
 def _get_ivy_jax(version=None):
-    """Import JAX module from ivy"""
+    """Import JAX module from ivy."""
     if version:
         las = [
             version.split("/")[0] + "/" + version.split("/")[1],
@@ -121,7 +119,7 @@ def _get_ivy_jax(version=None):
 
 
 def _get_ivy_tensorflow(version=None):
-    """Import Tensorflow module from ivy"""
+    """Import Tensorflow module from ivy."""
     if version:
         config.allow_global_framework_imports(fw=[version])
     try:
@@ -132,7 +130,7 @@ def _get_ivy_tensorflow(version=None):
 
 
 def _get_ivy_torch(version=None):
-    """Import Torch module from ivy"""
+    """Import Torch module from ivy."""
     if version:
         config.allow_global_framework_imports(fw=[version])
     try:
@@ -143,7 +141,7 @@ def _get_ivy_torch(version=None):
 
 
 def _get_ivy_paddle(version=None):
-    """Import Paddle module from ivy"""
+    """Import Paddle module from ivy."""
     if version:
         config.allow_global_framework_imports(fw=[version])
     try:

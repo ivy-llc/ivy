@@ -38,7 +38,9 @@ class EagerTensor:
 
     @property
     def dtype(self):
-        return tf_frontend.DType(tf_frontend.tensorflow_type_to_enum[self.ivy_array.dtype])
+        return tf_frontend.DType(
+            tf_frontend.tensorflow_type_to_enum[self.ivy_array.dtype]
+        )
 
     @property
     def shape(self):

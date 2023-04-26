@@ -33,7 +33,7 @@ def unique_all(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """Returns the unique elements of an input array ``x``, the first occurring indices
+    """Return the unique elements of an input array ``x``, the first occurring indices
     for each unique element in ``x``, the indices from the set of unique elements that
     reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
 
@@ -150,7 +150,7 @@ def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """Returns the unique elements of an input array ``x``, and the indices from the
+    """Return the unique elements of an input array ``x``, and the indices from the
      set of unique elements that reconstruct ``x``.
 
      .. admonition:: Data-dependent output shape
@@ -254,7 +254,7 @@ def unique_values(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the unique elements of an input array ``x``.
+    """Return the unique elements of an input array ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
@@ -338,7 +338,7 @@ def unique_counts(
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """
-    Returns the unique elements of an input array ``x`` and the corresponding counts for
+    Return the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
