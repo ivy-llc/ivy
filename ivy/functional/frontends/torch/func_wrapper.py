@@ -20,7 +20,7 @@ def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=No
 
 def _to_ivy_array(x):
     # if x is a native array return it as an ivy array
-    if isinstance(x, ivy.NativeArray):
+    if ivy.is_native_array(x):
         return ivy.array(x)
 
     # else if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
