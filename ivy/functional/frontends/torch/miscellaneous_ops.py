@@ -376,3 +376,10 @@ def atleast_3d(*tensors):
 @to_ivy_arrays_and_back
 def diag(input, diagonal=0, *, out=None):
     return ivy.diag(input, k=diagonal)
+
+
+def corrcoef(input):
+    input = ivy.asarray(input)
+    if input.shape[1] > 2:
+        raise ValueError("m has more than 2 dimensions")
+    return ivy.corrcoef(input)
