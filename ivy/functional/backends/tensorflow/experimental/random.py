@@ -92,6 +92,7 @@ def gamma(
     shape = _check_bounds_and_get_shape(alpha, beta, shape)
     alpha = tf.cast(alpha, dtype)
     beta = tf.cast(beta, dtype)
+    shape = tf.cast(shape, dtype)
     with tf.device(device):
         return tfp.distributions.Gamma(alpha, beta).sample(shape, seed=seed)
 
