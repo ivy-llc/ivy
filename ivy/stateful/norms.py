@@ -168,8 +168,6 @@ class BatchNorm2D(Module):
         ret
             The outputs following the batch normalization operation.
         """
-        ndims = len(inputs.shape)
-        inputs = ivy.permute_dims(inputs, axes=(0, *range(2, ndims), 1))
         normalized, running_mean, running_var = ivy.batch_norm(
             inputs,
             self._running_mean,
@@ -183,7 +181,5 @@ class BatchNorm2D(Module):
         if self._track_running_stats:
             self._running_mean = running_mean
             self._running_var = running_var
-        normalized = ivy.permute_dims(
-            normalized, axes=(0, ndims - 1, *range(1, ndims - 1))
-        )
+
         return normalized
