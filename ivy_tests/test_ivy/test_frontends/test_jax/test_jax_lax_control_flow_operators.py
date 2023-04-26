@@ -119,6 +119,8 @@ def test_jax_switch(
     fn_tree="jax.lax.fori_loop",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-1000,
+        max_value=1000,
         min_num_dims=1,
         min_dim_size=1,
     ),
@@ -137,7 +139,7 @@ def test_jax_lax_fori_loop(
     frontend,
 ):
     def _test_body_fn(x, y):
-        return y
+        return x + y
 
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
