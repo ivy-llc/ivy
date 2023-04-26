@@ -65,11 +65,11 @@ def _generate_batchnorm_data(draw):
     x_shape = [batch_size] + [*dims] + [num_features]
     dtype, inputs = draw(
         helpers.dtype_and_values(
-            available_dtypes=["float32"],  # helpers.get_dtypes("float", full=False),
+            available_dtypes=helpers.get_dtypes("float", full=True),
             shape=x_shape,
             min_value=0,
             max_value=1,
-        ).filter(lambda x: x[0] not in ["float16", "bfloat16"])
+        ).filter(lambda x: x[0][0] not in ["float64"])
     )
     return dtype, inputs, num_features
 
