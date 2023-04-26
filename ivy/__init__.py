@@ -235,8 +235,7 @@ class Shape:
         return self
 
     def __radd__(self, other):
-        out = self.__add__(other, reverse=True)
-        return out
+        return self.__add__(other, reverse=True)
 
     def __mul__(self, other):
         self._shape = self._shape * other
