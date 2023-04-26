@@ -566,7 +566,7 @@ def eye_like(
     }
 
     """
-    shape = Tuple(ivy.Shape(x))
+    shape = ivy.Shape(x)
     dim = len(shape)
     cols = dim if dim <= 1 else shape[-1]
     rows = dim if dim < 1 else shape[0]
