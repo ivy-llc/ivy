@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     infer_device,
     handle_out_argument,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
     handle_nestable,
 )
 from ivy.utils.backend import backend_stack
@@ -87,6 +88,7 @@ def _check_shapes_broadcastable(out, inp):
 @infer_dtype
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -201,6 +203,7 @@ def random_uniform(
 @infer_dtype
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -420,6 +423,7 @@ def multinomial(
 @infer_device
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions

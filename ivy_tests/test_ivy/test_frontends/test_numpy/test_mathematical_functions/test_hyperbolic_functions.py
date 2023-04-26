@@ -17,7 +17,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -65,7 +64,6 @@ def test_numpy_sinh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -113,7 +111,6 @@ def test_numpy_cosh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -161,7 +158,6 @@ def test_numpy_tanh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -211,7 +207,6 @@ def test_numpy_arcsinh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -261,7 +256,6 @@ def test_numpy_arccosh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(

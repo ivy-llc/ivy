@@ -17,6 +17,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
@@ -867,9 +868,9 @@ def _pad_simple(array, pad_width, fill_value=None):
 def _to_pairs(x, n):
     if ivy.isscalar(x):
         return ((x, x),) * n
-    elif ivy.asarray(list(x)).shape == (2,):
+    elif len(x) == 2 and ivy.isscalar(x[0]):
         return ((x[0], x[1]),) * n
-    else:
+    elif len(x) != n:
         ivy.utils.assertions.check_equal(
             ivy.asarray(list(x)).shape,
             (n, 2),
@@ -1203,7 +1204,6 @@ pad.mixed_function = True
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1409,8 +1409,6 @@ def atleast_2d(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_view
 @handle_nestable
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
@@ -1581,6 +1579,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 
 
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
@@ -1616,6 +1615,8 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
+@inputs_to_native_shapes
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions

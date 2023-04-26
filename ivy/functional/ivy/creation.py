@@ -25,6 +25,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     outputs_to_ivy_arrays,
     inputs_to_native_arrays,
+    inputs_to_native_shapes,
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -358,6 +359,7 @@ def asarray(
 @infer_dtype
 @handle_array_function
 @outputs_to_ivy_arrays
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -402,6 +404,17 @@ def zeros(
 
     Examples
     --------
+    With `Sequence[int]` input:
+    >>> x = ivy.zeros(1,1)
+    >>> print(x)
+    ivy.array([[0.]])
+
+    With :class:`tuple` input:
+    >>> x = ivy.zeros((1,1))
+    >>> print(x)
+    ivy.array([[0.]])
+
+    With :class:`ivy.NativeShape` input:
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
     >>> print(x)
@@ -413,6 +426,8 @@ def zeros(
     >>> print(x)
     ivy.array([0., 0., 0., 0., 0.])
     """
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
     return current_backend().zeros(
         size, shape=shape, dtype=dtype, device=device, out=out
     )
@@ -422,6 +437,7 @@ def zeros(
 @infer_dtype
 @handle_array_function
 @outputs_to_ivy_arrays
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -466,11 +482,23 @@ def ones(
 
     Examples
     --------
+
+    With `Sequence[int]` input:
+
+    >>> x = ivy.ones(1,1)
+    >>> print(x)
+    ivy.array([[1.]])
+
+    With :class:`tuple` input:
+    >>> x = ivy.ones((1,1))
+    >>> print(x)
+    ivy.array([[1.]])
+
     With :class:`ivy.Shape` input:
 
     >>> shape = (2,2)
-    >>> y = ivy.ones(shape)
-    >>> print(y)
+    >>> x = ivy.ones(shape)
+    >>> print(x)
     ivy.array([[1., 1.],
            [1., 1.]])
 
@@ -501,7 +529,11 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    return current_backend().ones(size, shape, dtype=dtype, device=device, out=out)
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    return current_backend().ones(
+        size, shape=shape, dtype=dtype, device=device, out=out
+    )
 
 
 @infer_device
@@ -943,6 +975,7 @@ def triu(
 @infer_dtype
 @handle_array_function
 @outputs_to_ivy_arrays
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -986,7 +1019,11 @@ def empty(
     instances in place of any of the arguments.
 
     """
-    return current_backend().empty(size, shape, dtype=dtype, device=device, out=out)
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    return current_backend().empty(
+        size, shape=shape, dtype=dtype, device=device, out=out
+    )
 
 
 @infer_device
@@ -1412,7 +1449,9 @@ def meshgrid(
 
 @infer_device
 @handle_array_function
+@inputs_to_native_arrays
 @outputs_to_ivy_arrays
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable

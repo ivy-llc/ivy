@@ -13,9 +13,13 @@ class DeviceArray:
         self.weak_type = weak_type
 
     def __repr__(self):
-        main = str(self.ivy_array.__repr__()).replace(
-                "ivy.array", "ivy.frontends.jax.DeviceArray"
-            ).replace(")", "") + ", dtype=" + str(self.ivy_array.dtype)
+        main = (
+            str(self.ivy_array.__repr__())
+            .replace("ivy.array", "ivy.frontends.jax.DeviceArray")
+            .replace(")", "")
+            + ", dtype="
+            + str(self.ivy_array.dtype)
+        )
         if self.weak_type:
             return main + ", weak_type=True)"
         return main + ")"
@@ -57,6 +61,9 @@ class DeviceArray:
             keepdims=keepdims,
         )
 
+    def conj(self, /):
+        return jax_frontend.numpy.conj(self._ivy_array)
+    
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 

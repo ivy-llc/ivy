@@ -28,7 +28,6 @@ def _arrays_idx_n_dtypes(draw):
                     shared_dtype=True,
                 )
             ],
-            get_dtypes_kind="numeric",
         ),
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))

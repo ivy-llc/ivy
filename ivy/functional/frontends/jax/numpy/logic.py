@@ -131,6 +131,7 @@ alltrue = all
 sometrue = any
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
+
 @to_ivy_arrays_and_back
 # known issue in jnp's documentation of arguments
 # https://github.com/google/jax/issues/9119
