@@ -264,6 +264,55 @@ def cumprod(
 cumprod.support_native_out = True
 
 
+# my implementation. remove comment before commiting
+# what do exclusive and reverse do?
+# what do with unsupposrted_dtypes do?
+# how are these unsupported datatypes figured out?
+@with_unsupported_dtypes(
+    {
+        "1.12.0 and below": ("uint8", "float16", "bfloat16"),
+        "1.12.1 and above": ("uint8", "float16"),
+    },
+    backend_version,
+)
+def cummin(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+
+    if not (exclusive or reverse):
+        return torch.cummin(x, axis, out=out)
+    elif exclusive and reverse:
+        x = torch.cummin(torch.flip(x, dims=(axis,)), axis, out=out)
+        x = torch.transpose(x, axis, -1)
+        x = torch.concat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.transpose(x, axis, -1)
+        ret = torch.flip(x, dims=(axis,))
+    elif exclusive:
+        x = torch.transpose(x, axis, -1)
+        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.cummin(x, -1, out=out)
+        ret = torch.transpose(x, axis, -1)
+    else:
+        x = torch.cummin(torch.flip(x, dims=(axis,)), axis, out=out)
+        ret = torch.flip(x, dims=(axis,))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+cummin.support_native_out = True
+
+
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
 # TODO: bfloat16 support is added in PyTorch 1.12.1

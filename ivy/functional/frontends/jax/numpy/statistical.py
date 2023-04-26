@@ -65,12 +65,21 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     return ret
 
 
+# reverse is not implemented here, whereas it is implemented in the actual framework
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def cumprod(a, axis=None, dtype=None, out=None):
     if dtype is None:
         dtype = ivy.as_ivy_dtype(a.dtype)
     return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
+
+
+# reverse is not implemented here, whereas it is implemented in the actual framework
+# my implementation of cummin
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def cummin(a, axis=None, out=None):
+    return ivy.cummin(a, axis=axis, out=out)
 
 
 @handle_jax_dtype
@@ -399,6 +408,9 @@ def nancumsum(a, axis=None, dtype=None, out=None):
 def nancumprod(a, axis=None, dtype=None, out=None):
     a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
     return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
+
+
+# TODO: confirm whether to add nancummin here or not
 
 
 @handle_jax_dtype

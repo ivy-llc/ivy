@@ -254,6 +254,13 @@ def cumprod(operand, axis=None, reverse=False):
     return ivy.cumprod(operand, axis=axis, reverse=reverse).astype(dtype)
 
 
+# my implementation of cummin
+@to_ivy_arrays_and_back
+def cummin(operand, axis=None, reverse=False):
+    dtype = ivy.dtype(operand)
+    return ivy.cummin(operand, axis=axis, reverse=reverse).astype(dtype)
+
+
 @to_ivy_arrays_and_back
 def cumsum(operand, axis=None, reverse=False):
     if reverse:

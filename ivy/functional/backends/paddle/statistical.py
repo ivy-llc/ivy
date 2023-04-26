@@ -239,6 +239,9 @@ def cumprod(
             return ivy.flip(x, axis=axis).cast(dtype)
 
 
+# paddle does not support cummin #TODO: implement cummin when paddle supports that
+
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
     backend_version,

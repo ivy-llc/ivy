@@ -1367,6 +1367,101 @@ class _ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
+    # my implementation of _static_cummin
+    @staticmethod
+    def _static_cummin(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = 0,
+        exclusive: bool = False,
+        reverse: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.cummin. This method
+        simply wraps the function, and so the docstring for ivy.cummin
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array or container to cummin.
+        axis
+            Axis to cummin along. Default is ``0``.
+        exclusive
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
+        reverse
+            Whether to perform the cummin from last to first element in the selected
+            axis. Default is ``False`` (from first to last element)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        dtype
+            Data type of the returned array. Default is ``None``.
+        out
+            Optional output container. Default is ``None``.
+
+        Returns
+        -------
+        ret
+            Containers with arrays cummin at leaves along specified axis.
+
+        Examples #TODO: fix examples and this doc
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> y = ivy.Container.static_cummin(x, axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 2, 6]),
+            b: ivy.array([4, 20, 120])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
+                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+        >>> ivy.Container.static_cummin(x, axis=1, exclusive=True, out=y)
+        >>> print(y)
+        {
+            a: ivy.array([[1, 2],
+                          [1, 5],
+                          [1, 11]]),
+            b: ivy.array([[1, 3],
+                          [1, 4],
+                          [1, 5]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "cummin",
+            x,
+            axis=axis,
+            exclusive=exclusive,
+            reverse=reverse,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
+    # original implementation of cumprod
     def cumprod(
         self: ivy.Container,
         /,
@@ -1442,6 +1537,94 @@ class _ContainerWithStatistical(ContainerBase):
         }
         """
         return self._static_cumprod(
+            self,
+            axis=axis,
+            exclusive=exclusive,
+            reverse=reverse,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
+    # my implementation of cummin
+    def cummin(
+        self: ivy.Container,
+        /,
+        *,
+        axis: int = 0,
+        exclusive: bool = False,
+        reverse: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.cummin. This method
+        simply wraps the function, and so the docstring for ivy.cummin
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container to cummin at leaves.
+        axis
+            Axis along which the cumulative product is computed. Default is ``0``.
+        exclusive
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        dtype
+            Data type of the returned array. Default is ``None``.
+        out
+            Optional output container. Default is ``None``.
+
+        Returns
+        -------
+        ret
+            Containers with arrays cummin at leaves along specified axis.
+
+        Examples #TODO: change examples and change doc string
+        --------
+        With one :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> y = x.cummin(axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 2, 6]),
+            b: ivy.array([4, 20, 120])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
+                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+        >>> x.cummin(axis=1, exclusive=True, out=y)
+        {
+            a: ivy.array([[1, 2],
+                          [1, 5],
+                          [1, 11]]),
+            b: ivy.array([[1, 3],
+                          [1, 4],
+                          [1, 5]])
+        }
+        """
+        return self._static_cummin(
             self,
             axis=axis,
             exclusive=exclusive,

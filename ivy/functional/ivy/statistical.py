@@ -1146,6 +1146,31 @@ def cumprod(
     )
 
 
+# my implementation of cummin
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def cummin(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    TODO: add docs
+    """
+    return current_backend(x).cummin(
+        x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
+    )
+
+
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
