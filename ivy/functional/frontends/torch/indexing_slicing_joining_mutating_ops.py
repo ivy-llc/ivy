@@ -345,3 +345,8 @@ def index_copy(input, dim, index, source, *, out=None):
         res = ivy.flatten(res)
 
     return ivy.swapaxes(res, 0, dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def masked_select(input, mask, out=None):
+    return ivy.flatten(input[mask], out=out)
