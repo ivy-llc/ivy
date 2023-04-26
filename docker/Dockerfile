@@ -40,10 +40,10 @@ RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
 # Install Ivy Upstream
 RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
-#    sed -i '/nvidia/d' requirements/requirements.txt && \
-#    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-#    cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-#    python3 -m pip install --user -e . && \
+    sed -i '/nvidia/d' requirements/requirements.txt && \
+    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --upgrade --no-cache-dir -r /dev/stdin && \
+    cat requirements/optional.txt | grep -v "ivy-" | pip3 install --upgrade --no-cache-dir -r /dev/stdin && \
+    python3 -m pip install --user -e . && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
 
@@ -51,8 +51,8 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 # Install local optional
 COPY requirements/optional.txt .
 COPY requirements/requirements.txt .
-RUN pip3 install --no-cache-dir -r optional.txt && \
-    pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
+    pip3 install --upgrade --no-cache-dir -r requirements.txt
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
