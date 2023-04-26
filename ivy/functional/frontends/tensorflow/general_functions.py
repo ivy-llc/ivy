@@ -68,6 +68,24 @@ def clip_by_norm(t, clip_norm, axes=None):
     return t_clip
 
 
+def cond(pred, true_fn=None, false_fn=None, name=None):
+    if true_fn is None:
+        raise TypeError("cond(): 'true_fn' argument required")
+    if false_fn is None:
+        raise TypeError("cond(): 'false_fn' argument required")
+
+    if not callable(true_fn):
+        raise TypeError("'true_fn' must be callable.")
+    if not callable(false_fn):
+        raise TypeError("'false_fn' must be callable.")
+
+    if pred:
+        return true_fn()
+
+    if not pred:
+        return false_fn()
+
+
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
