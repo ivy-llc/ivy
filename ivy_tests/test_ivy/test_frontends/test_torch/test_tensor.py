@@ -23,8 +23,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
-    _get_split_locations,
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
+    _get_splits,
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (  # noqa
     dtype_value1_value2_axis,
@@ -2491,7 +2491,7 @@ def test_torch_instance_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1),
+    indices_or_sections=_get_splits(min_num_dims=1),
     dim=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -2537,7 +2537,7 @@ def test_torch_instance_tensor_split(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
+    indices_or_sections=_get_splits(min_num_dims=2, axis=0),
 )
 def test_torch_instance_vsplit(
     dtype_value,
@@ -2573,7 +2573,7 @@ def test_torch_instance_vsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
+    indices_or_sections=_get_splits(min_num_dims=1, axis=1),
 )
 def test_torch_instance_hsplit(
     dtype_value,
@@ -2617,7 +2617,7 @@ def test_torch_instance_hsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
+    indices_or_sections=_get_splits(min_num_dims=3, axis=2),
 )
 def test_torch_instance_dsplit(
     dtype_value,
@@ -6812,7 +6812,7 @@ def test_torch_instance_ceil_(
         frontend=frontend,
         on_device=on_device,
     )
-  
+
 
 # mul_
 @handle_frontend_method(
