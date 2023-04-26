@@ -1383,3 +1383,53 @@ def test_torch_masked_select(
         input=x[0],
         mask=mask,
     )
+
+
+@st.composite
+def _dtype_input_dim_start_length(draw):
+    _shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    _dtype, _x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            shape=_shape,
+        )
+    )
+    _dim = draw(
+        helpers.get_axis(
+            shape=_shape,
+            force_int=True,
+        ),
+    )
+    _start = draw(helpers.ints(min_value=1, max_value=_shape[_dim]))
+
+    _length = draw(helpers.ints(min_value=0, max_value=_shape[_dim] - _start))
+
+    return _dtype, _x, _dim, _start, _length
+
+
+@handle_frontend_test(
+    fn_tree="torch.narrow",
+    dtype_input_dim_start_length=_dtype_input_dim_start_length(),
+)
+def test_torch_narrow(
+    *,
+    dtype_input_dim_start_length,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    (input_dtype, x, dim, start, length) = dtype_input_dim_start_length
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=dim,
+        start=start,
+        length=length,
+    )
