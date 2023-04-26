@@ -47,7 +47,7 @@ def _from_ivy_array_to_jax_frontend_array_weak_type(
 
 
 def _native_to_ivy_array(x):
-    if isinstance(x, ivy.NativeArray):
+    if ivy.is_native_array(x):
         return ivy.array(x)
     return x
 
