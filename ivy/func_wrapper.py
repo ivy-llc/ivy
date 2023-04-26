@@ -159,7 +159,7 @@ def handle_array_function(func):
                     if (
                         arg.__ivy_array_function__
                         is not ivy.Array.__ivy_array_function__
-                        and not isinstance(arg, (ivy.Array, ivy.NativeArray))
+                        and not (ivy.is_array(arg) or ivy.is_native_array(arg))
                     ):
                         index = len(overloaded_args)
                         for i, old_arg in enumerate(overloaded_args):

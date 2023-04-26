@@ -46,7 +46,7 @@ def test_outputs_to_ivy_arrays():
 
 def _fn5(x):
     # Test input was converted to native array
-    assert isinstance(x, ivy.NativeArray)
+    assert ivy.is_native_array(x)
 
 
 def test_inputs_to_native_arrays():
@@ -64,7 +64,7 @@ def test_inputs_to_ivy_arrays():
 
 def _fn7(x):
     # Assert input was converted to native array
-    assert isinstance(x, ivy.NativeArray)
+    assert ivy.is_native_array(x)
     return x
 
 
