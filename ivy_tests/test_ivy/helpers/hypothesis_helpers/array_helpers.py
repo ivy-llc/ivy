@@ -1591,10 +1591,9 @@ def arrays_for_pooling(
         dim = len(in_shape)
         x[0] = np.transpose(x[0], (0, dim - 1, *range(1, dim - 1)))
 
-    ret = dtype, x, kernel, strides, padding
     if return_dilation:
-        return *ret, dilations
-    return ret
+        return dtype, x, kernel, strides, padding, dilations
+    return dtype, x, kernel, strides, padding
 
 
 @st.composite
