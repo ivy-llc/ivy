@@ -7,6 +7,10 @@ import torch
 # local
 import ivy
 import copy
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+)
+from .. import backend_version
 
 # noinspection PyProtectedMember
 
@@ -95,6 +99,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,

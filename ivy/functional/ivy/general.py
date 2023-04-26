@@ -1560,14 +1560,14 @@ def to_native_shape(
     if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
         return shape
     ivy.utils.assertions.check_isinstance(
-        shape, (int, list, tuple, ivy.Array, ivy.Shape)
+        shape, (int, list, tuple, ivy.Array, ivy.NativeArray, ivy.Shape)
     )
     if isinstance(shape, int):
         shape = (shape,)
     elif isinstance(shape, list):
         shape = tuple(shape)
-    elif isinstance(shape, ivy.Array):
-        shape = ivy.to_native(shape)
+    elif is_array(shape):
+        shape = ivy.to_numpy(shape).tolist()
     elif isinstance(shape, ivy.Shape):
         shape = shape.shape
     ivy.utils.assertions.check_all(
