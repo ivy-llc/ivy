@@ -203,7 +203,11 @@ class Shape:
                 current_backend(shape_tup).NativeArray,
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
-        if isinstance(shape_tup, valid_types):
+        if len(backend_stack) == 0:
+            if isinstance(shape_tup, np.ndarray):
+                shape_tup = tuple(shape_tup.tolist())
+            self._shape = shape_tup
+        elif isinstance(shape_tup, valid_types):
             self._shape = ivy.to_native_shape(shape_tup)
         else:
             self._shape = None
@@ -218,7 +222,10 @@ class Shape:
         )
 
     def __add__(self, other):
-        self._shape = self._shape + other
+        try:
+            self._shape = self._shape + other
+        except TypeError:
+            self._shape = self._shape + list(other)
         return self
 
     def __mul__(self, other):
