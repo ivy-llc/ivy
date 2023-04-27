@@ -228,6 +228,13 @@ class Shape:
             self._shape = self._shape + list(other)
         return self
 
+    def __radd__(self, other):
+        try:
+            self._shape = other + self._shape
+        except TypeError:
+            self._shape = list(other) + self._shape
+        return self
+
     def __mul__(self, other):
         self._shape = self._shape * other
         return self
