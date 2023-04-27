@@ -2,19 +2,25 @@
 
 # global
 from hypothesis import strategies as st, assume
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy.functional.ivy.layers import _deconv_length
 
+
 # Linear #
 # -------#
 
 
 @st.composite
-def x_and_linear(draw, dtypes):
-    dtype = draw(dtypes)
+def x_and_linear(draw):
+    mixed_fn_index = draw(helpers.ints(min_value=0, max_value=1))
+    is_torch_backend = ivy.current_backend_str() == "torch"
+    dtype = draw(
+        helpers.get_dtypes("numeric", full=False, mixed_fn_index=mixed_fn_index)
+    )
     in_features = draw(helpers.ints(min_value=1, max_value=2))
     out_features = draw(helpers.ints(min_value=1, max_value=2))
 
@@ -23,7 +29,13 @@ def x_and_linear(draw, dtypes):
         1,
         in_features,
     )
+
     weight_shape = (1,) + (out_features,) + (in_features,)
+    # if backend is torch and we're testing the primary implementation
+    # weight.ndim should be equal to 2
+    if is_torch_backend and mixed_fn_index:
+        weight_shape = (out_features,) + (in_features,)
+
     bias_shape = (
         1,
         out_features,
@@ -48,9 +60,7 @@ def x_and_linear(draw, dtypes):
 # linear
 @handle_test(
     fn_tree="functional.ivy.linear",
-    dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("numeric", full=False),
-    ),
+    dtype_x_weight_bias=x_and_linear(),
 )
 def test_linear(
     *,
