@@ -256,5 +256,40 @@ def adjoint(matrix, name=None):
 
 
 @to_ivy_arrays_and_back
-def diag(v, k=0):
-    return ivy.diag(v, k=k)
+def diag(
+    diagonal,
+    /,
+    k=0,
+    *,
+    num_rows=None,
+    num_cols=None,
+    padding_value=0,
+    align="RIGHT_LEFT",
+    name="diag",
+):
+    # TODO: Implement ivy.matrix_diag in ivy API
+    diagonal = ivy.array(diagonal)
+    shape = list(diagonal.shape)
+    shape[-1] += abs(k)
+
+    output = ivy.full(shape + [shape[-1]], padding_value)
+    if k > 0:
+        for i in range(shape[-1]):
+            try:
+                output[..., i, i + k] = diagonal[..., i]
+            except IndexError:
+                break
+
+    else:
+        for i in range(shape[-1]):
+            try:
+                output[..., i + abs(k), i] = diagonal[..., i]
+            except IndexError:
+                break
+
+    size = 1
+    for dim in output.shape:
+        size *= dim
+    if (num_cols and num_rows) and (size == (num_cols * num_rows)):
+        output = ivy.reshape(output, (num_rows, num_cols))
+    return output

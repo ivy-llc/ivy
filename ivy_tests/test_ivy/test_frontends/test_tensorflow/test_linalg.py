@@ -9,7 +9,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test, assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_value1_value2_axis_for_tensordot,
-    _diag_helper,
 )
 
 
@@ -841,16 +840,24 @@ def test_tensorflow_adjoint(
 # diag
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.diag",
-    dtype_and_x_k=_diag_helper(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=10,
+    ),
+    k=helpers.ints(min_value=0, max_value=10),
 )
 def test_tensorflow_diag(
-    dtype_and_x_k,
+    dtype_and_x,
+    k,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x, k = dtype_and_x_k
+    dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
