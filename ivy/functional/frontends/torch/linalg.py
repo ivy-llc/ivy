@@ -87,7 +87,7 @@ def slogdet(input, *, out=None):
     return ivy.slogdet(input)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.0 and below": ("bfloat16", "float16")}, "torch")
 @to_ivy_arrays_and_back
 def cond(input, p=None, *, out=None):
     return ivy.cond(input, p=p, out=out)
