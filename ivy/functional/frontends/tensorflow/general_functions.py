@@ -478,6 +478,22 @@ def reverse(tensor, axis, name=None):
 
 
 @to_ivy_arrays_and_back
+def scan(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    infer_shape=True,
+    reverse=False,
+    name=None
+):
+    elems = ivy.asarray(elems)
+    return ivy.associative_scan(elems, fn, reverse=reverse)
+
+
+@to_ivy_arrays_and_back
 def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     return tf_frontend.linalg.norm(
         tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
