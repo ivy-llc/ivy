@@ -996,3 +996,6 @@ class Tensor:
 
     def nonzero(self):
         return torch_frontend.nonzero(self)
+
+    def mm(self, mat2):
+        return torch_frontend.mm(self, mat2)
