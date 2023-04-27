@@ -17,14 +17,18 @@ import ivy
 # --------#
 
 
-def _to_native(x: Any, inplace: bool = False) -> Any:
+def _to_native(x: Any, inplace: bool = False, to_ignore: tuple = ()) -> Any:
+    to_ignore = ivy.default(to_ignore, ())
+    if isinstance(x, to_ignore):
+        return x
     if isinstance(x, ivy.Array):
         return x.data
     elif isinstance(x, ivy.Shape):
         return x.shape
     elif isinstance(x, ivy.Container):
         return x.cont_map(
-            lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace
+            lambda x_, _: _to_native(x_, inplace=inplace, to_ignore=to_ignore),
+            inplace=inplace,
         )
     return x
 
@@ -51,7 +55,7 @@ def to_ivy(
     include_derived: Optional[Dict[type, bool]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """
-    Return the input array converted to an ivy.Array instance if it is a frontend array
+    Return the input array converted to an ivy.Array instance if it is a native array
     type, otherwise the input is returned unchanged. If nested is set, the check is
     applied to all nested leafs of tuples, lists and dicts contained within x.
 
@@ -112,6 +116,7 @@ def to_native(
     nested: bool = False,
     include_derived: Optional[Dict[type, bool]] = None,
     cont_inplace: bool = False,
+    to_ignore: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Return the input item in its native backend framework form if it is an
     ivy.Array instance, otherwise the input is returned unchanged. If nested is set,
@@ -131,6 +136,8 @@ def to_native(
         Default is ``False``.
     cont_inplace
         Whether to update containers in place. Default is ``False``
+    to_ignore
+        Types to ignore when deciding whether to go deeper into the nest or not
 
     Returns
     -------
@@ -140,17 +147,18 @@ def to_native(
     if nested:
         return ivy.nested_map(
             x,
-            lambda x: _to_native(x, inplace=cont_inplace),
+            lambda x: _to_native(x, inplace=cont_inplace, to_ignore=to_ignore),
             include_derived,
             shallow=False,
         )
-    return _to_native(x, inplace=cont_inplace)
+    return _to_native(x, inplace=cont_inplace, to_ignore=to_ignore)
 
 
 def args_to_native(
     *args: Iterable[Any],
     include_derived: Dict[type, bool] = None,
     cont_inplace: bool = False,
+    to_ignore: Optional[Union[type, Tuple[type]]] = None,
     **kwargs: Dict[str, Any],
 ) -> Tuple[Iterable[Any], Dict[str, Any]]:
     """
@@ -167,6 +175,8 @@ def args_to_native(
     cont_inplace
         Whether to update containers in place.
         Default is ``False``
+    to_ignore
+        Types to ignore when deciding whether to go deeper into the nest or not
     kwargs
         The key-word arguments to check
 
@@ -178,13 +188,13 @@ def args_to_native(
     """
     native_args = ivy.nested_map(
         args,
-        lambda x: _to_native(x, inplace=cont_inplace),
+        lambda x: _to_native(x, inplace=cont_inplace, to_ignore=to_ignore),
         include_derived,
         shallow=False,
     )
     native_kwargs = ivy.nested_map(
         kwargs,
-        lambda x: _to_native(x, inplace=cont_inplace),
+        lambda x: _to_native(x, inplace=cont_inplace, to_ignore=to_ignore),
         include_derived,
         shallow=False,
     )
