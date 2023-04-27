@@ -1,9 +1,5 @@
 ################################ Array-API repo skips ################################
 
-# waiting on NumPy to allow/revert distinct NaNs for np.unique
-# https://github.com/numpy/numpy/issues/20326#issuecomment-1012380448
-ivy_tests/array_api_testing/test_array_api/array_api_tests/test_set_functions.py
-
 # https://github.com/numpy/numpy/issues/21373
 ivy_tests/array_api_testing/test_array_api/array_api_tests/test_array_object.py::test_getitem
 
