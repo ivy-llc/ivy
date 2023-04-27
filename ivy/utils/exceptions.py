@@ -108,7 +108,19 @@ class IvyError(IvyException):
 
 class IvyIndexError(IndexError, IvyException):
     def __init__(self, *messages, include_backend=False):
-        super().__init__(_combine_messages(*messages, include_backend=include_backend))
+        self.native_error = (
+            messages[0]
+            if len(messages) == 1
+            and isinstance(messages[0], Exception)
+            and not include_backend
+            else None
+        )
+        if self.native_error is None:
+            super().__init__(
+                _combine_messages(*messages, include_backend=include_backend)
+            )
+        else:
+            super().__init__(str(messages[0]))
 
 
 class IvyAttributeError(AttributeError, IvyException):
@@ -169,7 +181,7 @@ def handle_exceptions(fn: Callable) -> Callable:
             raise ivy.utils.exceptions.IvyDtypePromotionError(
                 fn.__name__, str(e), include_backend=True
             )
-        except IndexError as e:
+        except (IndexError, IvyIndexError) as e:
             _print_traceback_history()
             raise ivy.utils.exceptions.IvyIndexError(
                 fn.__name__, str(e), include_backend=True
