@@ -344,7 +344,6 @@ def selu(
     return current_backend(x).selu(x, out=out)
 
 
-@handle_out_argument
 @handle_nestable
 @to_native_arrays_and_back
 @handle_exceptions
@@ -353,7 +352,7 @@ def sigmoid(
     input: Union[ivy.NativeArray, ivy.Array],
 ) -> ivy.Array:  # noqa
     """
-    Applies element-wise sigmoid of x i.e. sigmoid(x) = log(1 / (1 + exp(-x)).
+    Applies element-wise sigmoid of x i.e. sigmoid(x) = 1 / (1 + exp(-x).
     Parameters
 
     ----------

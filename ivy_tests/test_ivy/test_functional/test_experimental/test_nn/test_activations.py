@@ -213,7 +213,6 @@ def test_selu(
         safety_factor_scale="log",
         large_abs_safety_factor=120,
     ),
-    test_with_out=st.just(False),
 )
 def test_sigmoid(
     *,
