@@ -2487,11 +2487,13 @@ def test_tensorflow_greater_equal(
         num_arrays=2,
         shared_dtype=True,
     ),
+    k=st.integers(min_value=2, max_value=5),
     test_with_out=st.just(False),
 )
 def test_tensorflow_in_top_k(
     *,
     dtype_and_x,
+    k,
     frontend,
     test_flags,
     fn_tree,
@@ -2504,6 +2506,7 @@ def test_tensorflow_in_top_k(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        y=x[1],
+        targets=x[0],
+        pred=x[1],
+        k=k
     )
