@@ -56,9 +56,14 @@ jobs:
 
       - name: New Failures Introduced
         run: |
-          find . -name "new_failures_*.txt" -exec cat {} + > new_failures_introduced.txt
-          echo "New Failures Introduced:"
-          cat new_failures_introduced.txt
+          find . -name "new_failures_*.txt" -exec cat {} + > combined_failures.txt
+          if [ -s combined_failures.txt ]
+          then
+              echo "This PR introduces the following new failing tests:"
+              cat combined_failures.txt
+          else
+              echo "This PR does not introduce any new test failures! Yippee!"
+          fi
 
   run_tests_1:
     runs-on: ubuntu-latest
