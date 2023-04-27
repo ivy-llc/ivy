@@ -332,7 +332,6 @@ def nll_loss(
 
 @to_ivy_arrays_and_back
 def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
-
     if var.shape != input.shape:
         if input.shape[:-1] == var.shape:
             var = torch_frontend.unsqueeze(var, dim=2)
@@ -572,7 +571,6 @@ def triplet_margin_with_distance_loss(
     swap=False,
     reduction="mean",
 ):
-
     reduction = _get_reduction(reduction)
 
     a_dim = anchor.ndim

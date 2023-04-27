@@ -1112,7 +1112,6 @@ def test_conj(
     on_device,
     ground_truth_backend,
 ):
-
     input_dtype, x = dtype_and_x
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
