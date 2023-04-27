@@ -471,7 +471,6 @@ def test_torch_cumprod(
     )
 
 
-
 # trace
 @handle_frontend_test(
     fn_tree="torch.trace",
