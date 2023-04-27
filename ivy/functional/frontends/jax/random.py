@@ -5,6 +5,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
 )
+from math import pi
 
 
 @to_ivy_arrays_and_back
@@ -66,8 +67,10 @@ def dirichlet(key, alpha, shape=None, dtype="float32"):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-def cauchy(key, shape=(), dtype=None):
-    return ivy.random_cauchy(shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1]))
+def cauchy(key, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=shape, dtype=dtype, seed=seed)
+    return ivy.tan(pi * (u - 0.5))
 
 
 @handle_jax_dtype
