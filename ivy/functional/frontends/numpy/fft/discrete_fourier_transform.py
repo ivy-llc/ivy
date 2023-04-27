@@ -11,12 +11,6 @@ def ifft(a, n=None, axis=-1, norm=None):
     return ivy.ifft(a, axis, norm=norm, n=n)
 
 
-@to_ivy_arrays_and_back
-def rfft(a, n=None, axis=-1, norm="backward"):
-    return ivy.rfft(a, axis=axis, norm=norm, n=n)
-
-
-@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 def ifftshift(x, axes=None):
     x = ivy.asarray(x)
@@ -35,3 +29,9 @@ def ifftshift(x, axes=None):
     roll = ivy.roll(x, shift, axis=axes)
 
     return roll
+
+
+@to_ivy_arrays_and_back
+def rfft(a, n=None, axis=-1, norm="backward"):
+    return ivy.rfft(a, axis=axis, norm=norm, n=n)
+    
