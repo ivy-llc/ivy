@@ -48,7 +48,7 @@ jobs:
       - name: Download all test results
         uses: actions/download-artifact@v3
 
-      - name: Combine test results
+      - name: Combined Test Results
         run: |
           find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt
           echo "Test results summary:"
