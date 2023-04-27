@@ -7,7 +7,6 @@ import numpy as np
 
 # local
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 import multiprocessing as _multiprocessing
@@ -416,7 +415,15 @@ def scatter_flat(
     reduction: str = "sum",
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if indices.dtype not in [paddle.int32, paddle.int64]:
+        indices = indices.cast("int64")
+    if ivy.exists(size) and ivy.exists(out):
+        ivy.utils.assertions.check_equal(out.ndim, 1)
+        ivy.utils.assertions.check_equal(out.shape[0], size)
+    with ivy.ArrayMode(False):
+        return ivy.scatter_nd(
+            indices.unsqueeze(-1), updates, shape=[size], reduction=reduction, out=out
+        )
 
 
 def _scatter_nd_replace(data, indices, updates, reduce):
