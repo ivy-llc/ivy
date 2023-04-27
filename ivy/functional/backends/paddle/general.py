@@ -526,7 +526,7 @@ def scatter_nd(
             shape = out.shape if ivy.exists(out) else updates.shape
             indices = ivy.stack(
                 [
-                    ivy.reshape(value, (-1,))
+                    ivy.flatten(value)
                     for value in ivy.meshgrid(*[ivy.arange(shape[0])], indexing="ij")
                 ],
                 axis=-1,
@@ -542,7 +542,7 @@ def scatter_nd(
             indices = _parse_ellipsis(indices, len(shape))
             indices = ivy.stack(
                 [
-                    ivy.reshape(value, (-1,))
+                    ivy.flatten(value)
                     for value in ivy.meshgrid(
                         *[
                             ivy.arange(s)
@@ -576,14 +576,14 @@ def scatter_nd(
                 )
                 indices = ivy.stack(
                     [
-                        ivy.reshape(value, (-1,))
+                        ivy.flatten(value)
                         for value in ivy.meshgrid(
                             *[
                                 ivy.arange(s)
                                 if idx == slice(None, None, None)
                                 else ivy.arange(
                                     ivy.default(idx.start, 0),
-                                    ivy.default(idx.stop, shape[0]),
+                                    ivy.default(idx.stop, s),
                                     ivy.default(idx.step, 1),
                                 )
                                 if isinstance(idx, slice)
@@ -599,7 +599,7 @@ def scatter_nd(
             else:
                 indices = ivy.stack(
                     [
-                        ivy.reshape(value, (-1,))
+                        ivy.flatten(value)
                         for value in ivy.meshgrid(
                             *[
                                 ivy.arange(
@@ -624,14 +624,14 @@ def scatter_nd(
                 indices = [
                     ivy.stack(
                         [
-                            ivy.reshape(value, (-1,))
+                            ivy.flatten(value)
                             for value in ivy.meshgrid(
                                 *[
                                     ivy.arange(s)
                                     if idx == slice(None, None, None)
                                     else ivy.arange(
                                         ivy.default(idx.start, 0),
-                                        ivy.ivy.default(idx.stop, shape[0]),
+                                        ivy.ivy.default(idx.stop, s),
                                         ivy.default(idx.step, 1),
                                     )
                                     if isinstance(idx, slice)
