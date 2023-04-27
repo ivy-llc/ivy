@@ -23,6 +23,7 @@ def test_numpy_iftt(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         norm=None,
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.fft.rfft",
     dtype_and_x=helpers.dtype_and_values(
@@ -43,4 +44,3 @@ def test_numpy_rftt(*, dtype_and_x, frontend, test_flags, fn_tree, on_device):
         axis=-1,
         norm="backward",
     )
-    
