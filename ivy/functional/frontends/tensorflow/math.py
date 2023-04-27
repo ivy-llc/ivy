@@ -657,3 +657,12 @@ def zeta(x, q, name=None):
 def greater_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater_equal(x, y)
+
+
+@to_ivy_arrays_and_back
+def in_top_k(targets, pred, k):
+    top_k = ivy.top_k(targets, k)
+    Ayad = []
+    for val in targets:
+        Ayad.extend([val in top_k.values])
+    return ivy.array(Ayad)
