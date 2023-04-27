@@ -421,8 +421,10 @@ def scatter_flat(
 
 def _scatter_nd_replace(data, indices, updates, reduce):
     """
-    An implementation for scatter_nd using put_along_axis
-    since paddle.scatter_nd only supports "sum" reduction mode
+    `scatter_nd` with `reduce`.
+
+    An implementation for scatter_nd using put_along_axis since
+    paddle.scatter_nd only supports "sum" reduction mode.
     """
     if data.dtype != updates.dtype:
         data = data.cast(updates.dtype)
@@ -547,7 +549,7 @@ def scatter_nd(
                             if idx == slice(None, None, None)
                             else ivy.arange(
                                 ivy.default(idx.start, 0),
-                                ivy.default(idx.stop, shape[0]),
+                                ivy.default(idx.stop, s),
                                 ivy.default(idx.step, 1),
                             )
                             if isinstance(idx, slice)
@@ -615,7 +617,7 @@ def scatter_nd(
             indices = [[indices]] if isinstance(indices, Number) else indices
             indices = ivy.array(indices).data
             if len(indices.shape) < 2:
-                indices = ivy.expand_dims(indices, 0)
+                indices = ivy.expand_dims(indices, axis=0)
             if ivy.any(indices < 0):
                 shape = list(shape) if ivy.exists(shape) else list(out.shape)
                 indices = _parse_index(indices, shape)
@@ -655,7 +657,7 @@ def scatter_nd(
         if sum(updates.shape) < sum(expected_shape):
             updates = ivy.broadcast_to(updates, expected_shape)
         elif sum(updates.shape) > sum(expected_shape):
-            indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])
+            indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1:])
         elif updates.shape != expected_shape:
             updates = ivy.broadcast_to(updates, expected_shape)
         # implementation

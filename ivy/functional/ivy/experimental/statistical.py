@@ -156,7 +156,8 @@ def median(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the median along the specified axis.
+    """
+    Compute the median along the specified axis.
 
     Parameters
     ----------
@@ -201,7 +202,8 @@ def nanmean(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the mean of all non-NaN elements along the specified dimensions.
+    """
+    Compute the mean of all non-NaN elements along the specified dimensions.
 
     Parameters
     ----------
@@ -254,7 +256,8 @@ def quantile(
     interpolation: str = "linear",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the q-th quantile of the data along the specified axis.
+    """
+    Compute the q-th quantile of the data along the specified axis.
 
     Parameters
     ----------
@@ -350,9 +353,10 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """ivy.Array instance method variant of ivy.nanmedian. This method simply
-    wraps the function, and so the docstring for ivy.nanmedian also applies to
-    this method with minimal changes.
+    """
+    ivy.Array instance method variant of ivy.nanmedian. This method simply wraps the
+    function, and so the docstring for ivy.nanmedian also applies to this method with
+    minimal changes.
 
     Parameters
     ----------

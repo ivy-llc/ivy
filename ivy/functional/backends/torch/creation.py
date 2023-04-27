@@ -449,6 +449,7 @@ def meshgrid(
     *arrays: torch.Tensor,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[torch.Tensor] = None,
 ) -> List[torch.Tensor]:
     if not sparse:
         return list(torch.meshgrid(*arrays, indexing=indexing))

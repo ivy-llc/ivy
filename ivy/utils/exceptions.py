@@ -104,7 +104,7 @@ def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
         """
-        Catch all exceptions and raise them in IvyException
+        Catch all exceptions and raise them in IvyException.
 
         Parameters
         ----------
