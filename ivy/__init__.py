@@ -203,7 +203,11 @@ class Shape:
                 current_backend(shape_tup).NativeArray,
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
-        if isinstance(shape_tup, valid_types):
+        if len(backend_stack) == 0:
+            if isinstance(shape_tup, np.ndarray):
+                shape_tup = tuple(shape_tup.tolist())
+            self._shape = shape_tup
+        elif isinstance(shape_tup, valid_types):
             self._shape = ivy.to_native_shape(shape_tup)
         else:
             self._shape = None
@@ -218,7 +222,17 @@ class Shape:
         )
 
     def __add__(self, other):
-        self._shape = self._shape + other
+        try:
+            self._shape = self._shape + other
+        except TypeError:
+            self._shape = self._shape + list(other)
+        return self
+
+    def __radd__(self, other):
+        try:
+            self._shape = other + self._shape
+        except TypeError:
+            self._shape = list(other) + self._shape
         return self
 
     def __mul__(self, other):
@@ -984,7 +998,8 @@ vec_sig_fig.__name__ = "vec_sig_fig"
 
 
 def array_significant_figures(sig_figs=None):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -994,7 +1009,6 @@ def array_significant_figures(sig_figs=None):
     Returns
     -------
     ret
-
     """
     if ivy.exists(sig_figs):
         _assert_array_significant_figures_formatting(sig_figs)
@@ -1008,13 +1022,13 @@ def array_significant_figures(sig_figs=None):
 
 
 def set_array_significant_figures(sig_figs):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     sig_figs
         optional int, number of significant figures to be shown when printing
-
     """
     _assert_array_significant_figures_formatting(sig_figs)
     global array_significant_figures_stack
@@ -1037,7 +1051,8 @@ def _assert_array_decimal_values_formatting(dec_vals):
 
 
 def array_decimal_values(dec_vals=None):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -1047,7 +1062,6 @@ def array_decimal_values(dec_vals=None):
     Returns
     -------
     ret
-
     """
     if ivy.exists(dec_vals):
         _assert_array_decimal_values_formatting(dec_vals)
@@ -1061,13 +1075,13 @@ def array_decimal_values(dec_vals=None):
 
 
 def set_array_decimal_values(dec_vals):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     dec_vals
         optional int, number of significant figures to be shown when printing
-
     """
     _assert_array_decimal_values_formatting(dec_vals)
     global array_decimal_values_stack
@@ -1082,7 +1096,8 @@ def unset_array_decimal_values():
 
 
 def warning_level():
-    """Summary.
+    """
+    Summary.
 
     Returns
     -------
@@ -1098,13 +1113,13 @@ def warning_level():
 
 
 def set_warning_level(warn_level):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     warn_level
         string for the warning level to be set, one of "none", "ivy_only", "all"
-
     """
     global warning_level_stack
     warning_level_stack.append(warn_level)
@@ -1127,13 +1142,13 @@ def warn(warning_message, stacklevel=0):
 
 
 def get_nan_policy():
-    """Summary.
+    """
+    Summary.
 
     Returns
     -------
     ret
         current nan policy, default is "nothing"
-
     """
     global nan_policy_stack
     if not nan_policy_stack:
@@ -1144,14 +1159,14 @@ def get_nan_policy():
 
 
 def set_nan_policy(warn_level):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     nan_policy
         string for the nan policy to be set, one of
         "nothing", "warns", "raise_exception"
-
     """
     global nan_policy_stack
     if warn_level not in ["nothing", "warns", "raise_exception"]:
@@ -1172,7 +1187,7 @@ def unset_nan_policy():
 
 
 def get_dynamic_backend():
-    """Returns the current dynamic backend setting, with the default being True"""
+    """Return the current dynamic backend setting, with the default being True."""
     global dynamic_backend_stack
     if not dynamic_backend_stack:
         return True
@@ -1181,7 +1196,7 @@ def get_dynamic_backend():
 
 
 def set_dynamic_backend(flag):
-    """Sets the global dynamic backend setting to the provided flag (True or False)"""
+    """Set the global dynamic backend setting to the provided flag (True or False)"""
     global dynamic_backend_stack
     if flag not in [True, False]:
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
@@ -1190,8 +1205,9 @@ def set_dynamic_backend(flag):
 
 def unset_dynamic_backend():
     """
-    Removes the current dynamic backend setting,
-    restoring the previous setting (if any)
+    Remove the current dynamic backend setting.
+
+    Also restore the previous setting (if any)
     """
     global dynamic_backend_stack
     if dynamic_backend_stack:

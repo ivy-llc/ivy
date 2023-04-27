@@ -18,7 +18,7 @@ class _ArrayWithDataTypes(abc.ABC):
         copy: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Copies an array to a specified data type irrespective of
+        """Copy an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
@@ -69,10 +69,9 @@ class _ArrayWithDataTypes(abc.ABC):
         self: ivy.Array, *arrays: Union[ivy.Array, ivy.NativeArray]
     ) -> List[ivy.Array]:
         """
-        `ivy.Array` instance method variant of `ivy.broadcast_arrays`.
-        This method simply wraps the function,
-        and so the docstring for `ivy.broadcast_arrays`
-        also applies to this method with minimal changes.
+        `ivy.Array` instance method variant of `ivy.broadcast_arrays`. This method
+        simply wraps the function, and so the docstring for `ivy.broadcast_arrays` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -114,10 +113,9 @@ class _ArrayWithDataTypes(abc.ABC):
         self: ivy.Array, /, shape: Tuple[int, ...], *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        `ivy.Array` instance method variant of `ivy.broadcast_to`.
-        This method simply wraps the function, and so the docstring
-        for `ivy.broadcast_to` also applies to this
-        method with minimal changes.
+        `ivy.Array` instance method variant of `ivy.broadcast_to`. This method simply
+        wraps the function, and so the docstring for `ivy.broadcast_to` also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -209,15 +207,14 @@ class _ArrayWithDataTypes(abc.ABC):
         >>> x = ivy.array([0.7,8.4,3.14], dtype=ivy.float32)
         >>> print(x.finfo())
         finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)
-
         """
         return ivy.finfo(self._data)
 
     def iinfo(self: ivy.Array, /) -> Iinfo:
         """
         `ivy.Array` instance method variant of `ivy.iinfo`. This method simply wraps the
-        function, and so the docstring for `ivy.iinfo` also applies to this method
-        with minimal changes.
+        function, and so the docstring for `ivy.iinfo` also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -239,7 +236,6 @@ class _ArrayWithDataTypes(abc.ABC):
         >>> x = ivy.array([-12,54,1,9,-1220], dtype=ivy.int16))
         >>> x.iinfo()
         iinfo(min=-32768, max=32767, dtype=int16)
-
         """
         return ivy.iinfo(self._data)
 
