@@ -1,4 +1,3 @@
-protobuf==3.20.0
 jax[cpu] # unpinned, we test for latest version now, mod_name=jax
 jaxlib # unpinned, we test for latest version now
 tensorflow-cpu  # unpinned, we test for latest version now, mod_name=tensorflow
