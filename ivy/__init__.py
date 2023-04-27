@@ -221,21 +221,19 @@ class Shape:
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
 
-    def __add__(self, other, reverse=False):
+    def __add__(self, other):
         try:
-            if reverse:
-                self._shape = other + self._shape
-            else:
-                self._shape = self._shape + other
+            self._shape = self._shape + other
         except TypeError:
-            if reverse:
-                self._shape = list(other) + self._shape
-            else:
-                self._shape = self._shape + list(other)
+            self._shape = self._shape + list(other)
         return self
 
     def __radd__(self, other):
-        return self.__add__(other, reverse=True)
+        try:
+            self._shape = other + self._shape
+        except TypeError:
+            self._shape = list(other) + self._shape
+        return self
 
     def __mul__(self, other):
         self._shape = self._shape * other
