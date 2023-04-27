@@ -6,7 +6,6 @@ from typing import Union, Optional, Sequence, Tuple
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-from ivy.functional.backends.numpy import general
 from . import backend_version
 
 
@@ -257,7 +256,7 @@ def cummax(
 ) -> Tuple[np.ndarray, np.ndarray]:
     if exclusive or reverse:
         if exclusive and reverse:
-            indices = general.find_cummax_indices(np.flip(x, axis=axis), axis=axis)
+            indices = __find_cummax_indices(np.flip(x, axis=axis), axis=axis)
             x = np.maximum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=x.dtype)
             x, indices = np.swapaxes(x, axis, -1), np.swapaxes(indices, axis, -1)
             x, indices = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1), np.concatenate(
@@ -269,22 +268,50 @@ def cummax(
             x = np.swapaxes(x, axis, -1)
             x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
             x = np.swapaxes(x, axis, -1)
-            indices = general.find_cummax_indices(x, axis=axis)
+            indices = __find_cummax_indices(x, axis=axis)
             res = np.maximum.accumulate(x, axis=axis, dtype=x.dtype)
             # res,indices = np.swapaxes(y, axis, -1),np.swapaxes(indices, axis, -1)
         elif reverse:
             x = np.flip(x, axis=axis)
-            indices = general.find_cummax_indices(x, axis=axis)
+            indices = __find_cummax_indices(x, axis=axis)
             x = np.maximum.accumulate(x, axis=axis)
             res, indices = np.flip(x, axis=axis), np.flip(indices, axis=axis)
         return res, indices
     # X=x.tolist()
     # ret=pd.DataFrame(X).cummax() if axis==0 and len(x.shape)==1 else pd.DataFrame(X).T.cummax()
-    indices = general.find_cummax_indices(x, axis=axis)
+    indices = __find_cummax_indices(x, axis=axis)
     return np.maximum.accumulate(x, axis=axis, dtype=x.dtype), indices
 
 
 cummax.support_native_out = True
+
+
+def __find_cummax_indices(
+        x: np.ndarray,
+        axis: int = 0,
+) -> np.ndarray:
+    indice, indices = [], []
+
+    if type(x[0]) == np.ndarray:
+        if axis == 1:
+            for ret1 in x:
+                indices.append(
+                    [n := idx if idx == 0 else n if ret1[n] > y else (n := idx) for idx, y in enumerate(ret1)])
+        else:
+            n1 = {}
+            for index, ret1 in enumerate(x):
+                indice = []
+                for idx1, x1 in enumerate(ret1):
+                    if index == 0 or x[index][idx1] >= x[n1[idx1]][idx1]:
+                        n1[idx1] = index
+                        indice.append(index)
+                    else:
+                        indice.append(n1[idx1])
+                indices.append(indice)
+    else:
+        indices = [n := idx if idx == 0 else n if x[n] > y else (n := idx) for idx, y in enumerate(x)]
+
+    return np.array(indices)
 
 
 @_scalar_output_to_0d_array

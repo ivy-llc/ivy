@@ -1,14 +1,12 @@
 # global
 _round = round
 import tensorflow as tf
-from typing import Union, Optional, Sequence
-
+from typing import Union, Optional, Sequence, Tuple
 # local
 import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-from ivy.utils.exceptions import IvyNotImplementedException
 
 
 # Array API Standard #
@@ -208,8 +206,63 @@ def cummax(
     reverse: bool = False,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    raise IvyNotImplementedException()
+) -> Tuple[tf.Tensor, tf.Tensor]:
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x,indices = __find_cummax(tf.experimental.numpy.flip(x, axis=axis), axis=axis)
+            x, indices = tf.experimental.numpy.swapaxes(x, axis, -1), tf.experimental.numpy.swapaxes(indices, axis, -1)
+            x, indices = tf.experimental.numpy.concatenate((tf.experimental.numpy.zeros_like(x[..., -1:]), x[..., :-1]), -1), tf.experimental.numpy.concatenate(
+                (tf.experimental.numpy.zeros_like(indices[..., -1:]), indices[..., :-1]), -1)
+            x, indices = tf.experimental.numpy.swapaxes(x, axis, -1), tf.experimental.numpy.swapaxes(indices, axis, -1)
+            res, indices = tf.experimental.numpy.flip(x, axis=axis), tf.experimental.numpy.flip(indices, axis=axis)
+        elif exclusive:
+            x = tf.experimental.numpy.swapaxes(x, axis, -1)
+            x = tf.experimental.numpy.concatenate((tf.experimental.numpy.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = tf.experimental.numpy.swapaxes(x, axis, -1)
+            res,indices = __find_cummax(x, axis=axis)
+        elif reverse:
+            x = tf.experimental.numpy.flip(x, axis=axis)
+            x, indices = __find_cummax(x, axis=axis)
+            res, indices = tf.experimental.numpy.flip(x, axis=axis), tf.experimental.numpy.flip(indices, axis=axis)
+        return res,indices
+
+    return __find_cummax(x,axis=axis)
+
+def __find_cummax(
+        x: tf.Tensor,
+        axis: int = 0
+) -> Tuple[tf.Tensor,tf.Tensor]:
+    indices = []
+    values = []
+    if isinstance(x[0],tf.Tensor) and isinstance(x[0].numpy().tolist(),list) and len(x[0].numpy().tolist())>=1 :
+        if axis == 1:
+            for ret1 in x:
+                ret1_indices = tf.convert_to_tensor(list(range(0, ret1.shape[0])),dtype=ret1.dtype)
+                value, indice = tf.scan(lambda a, b: a if a>b or tf.experimental.numpy.where(ret1[0].numpy()==b[0].numpy())==0 else b, (ret1, ret1_indices))
+                indices.append(indice)
+                values.append(value)
+        else:
+            n1={}
+            indices,values=[],[]
+            x_list=x.numpy().tolist()
+            for index, ret1 in enumerate(x_list):
+                indice = []
+                value = []
+                for idx1, x1 in enumerate(ret1):
+                    if index == 0 or x_list[index][idx1] >= x_list[n1[idx1]][idx1]:
+                        n1[idx1] = index
+                        indice.append(index)
+                        value.append(x_list[index][idx1])
+                    else:
+                        indice.append(n1[idx1])
+                        value.append(x_list[n1[idx1]][idx1])
+                indices.append(indice)
+                values.append(value)
+    else:
+        x_indices = tf.convert_to_tensor(list(range(0, x.shape[0])),dtype=x.dtype)
+        values, indices = tf.scan(lambda a, b: a if a>b or tf.experimental.numpy.where(x[0].numpy()==b[0].numpy())==0 else b, (x, x_indices))
+
+    return tf.convert_to_tensor(values,dtype=x.dtype),tf.cast(tf.convert_to_tensor(indices),dtype=tf.int64)
 
 
 def einsum(

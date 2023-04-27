@@ -364,6 +364,7 @@ def test_cumsum(
     ),
     exclusive=st.booleans(),
     reverse=st.booleans(),
+    ground_truth_backend="torch",
 )
 def test_cummax(
     *,

@@ -7,8 +7,7 @@ from typing import Union, Optional, Sequence, Tuple
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax import general
-
+from jaxlib.xla_extension import ArrayImpl
 from . import backend_version
 
 
@@ -224,7 +223,7 @@ def cummax(
 ) -> Tuple[JaxArray, JaxArray]:
     if exclusive or (reverse and exclusive):
         if exclusive and reverse:
-            indices = general.find_cummax_indices(jnp.flip(x, axis=axis), axis=axis)
+            indices = __find_cummax_indices(jnp.flip(x, axis=axis), axis=axis)
             x = jlax.cummax(jnp.flip(x, axis=axis), axis=axis)
             x, indices = jnp.swapaxes(x, axis, -1), jnp.swapaxes(indices, axis, -1)
             x, indices = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1), jnp.concatenate(
@@ -235,17 +234,47 @@ def cummax(
             x = jnp.swapaxes(x, axis, -1)
             x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
             x = jnp.swapaxes(x, axis, -1)
-            indices = general.find_cummax_indices(x, axis=axis)
+            indices = __find_cummax_indices(x, axis=axis)
             res = jlax.cummax(x, axis=axis)
         return res, indices
 
     if reverse:
         y = jnp.flip(x, axis=axis)
-        indices = general.find_cummax_indices(y, axis=axis)
+        indices = __find_cummax_indices(y, axis=axis)
         indices = jnp.flip(indices, axis=axis)
     else:
-        indices = general.find_cummax_indices(x, axis=axis)
+        indices = __find_cummax_indices(x, axis=axis)
     return jlax.cummax(x, axis, reverse=reverse), indices
+
+
+def __find_cummax_indices(
+        x: JaxArray,
+        axis: int = 0,
+) -> JaxArray:
+    indice, indices = [], []
+
+    if type(x[0]) == ArrayImpl and len(x[0].shape)>=1:
+        if axis == 1:
+            for ret1 in x:
+                indices.append(
+                    [n := idx if idx == 0 else n if ret1[n] > y else (n := idx) for idx, y in enumerate(ret1)])
+        else:
+            n1 = {}
+            for index, ret1 in enumerate(x):
+                indice = []
+                if type(ret1) == ArrayImpl and len(x[0].shape)>=1:
+                    for idx1, x1 in enumerate(ret1):
+                        if index == 0 or x[index][idx1] >= x[n1[idx1]][idx1]:
+                            n1[idx1] = index
+                            indice.append(index)
+                        else:
+                            indice.append(n1[idx1])
+                else:
+                    indice.append(index)
+                indices.append(indice)
+    else:
+        indices = [n := idx if idx == 0 else n if x[n] > y else (n := idx) for idx, y in enumerate(x)]
+    return jnp.asarray(indices)
 
 
 def einsum(

@@ -1,6 +1,4 @@
 # global
-from torch import Tensor
-
 torch_scatter = None
 from typing import Union, Optional, Sequence, Tuple
 

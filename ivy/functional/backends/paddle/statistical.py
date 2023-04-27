@@ -1,7 +1,7 @@
 # global
 
 torch_scatter = None
-from typing import Union, Optional, Sequence
+from typing import Union, Optional, Sequence,Tuple
 
 
 import paddle
@@ -292,8 +292,71 @@ def cummax(
     reverse: bool = False,
     *,
     out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+) -> Tuple[paddle.Tensor,paddle.Tensor]:
+
+    if not (exclusive or reverse):
+        #return paddle.cummax(x, axis=axis).cast(x.dtype)
+        return __find_cummax(x,axis=axis)
+
+    elif exclusive and reverse:
+        x,indices = __find_cummax(ivy.flip(x, axis=(axis,)),axis=axis)
+        x,indices = ivy.swapaxes(x, axis, -1),ivy.swapaxes(indices, axis,-1)
+        x,indices = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1),ivy.concat((ivy.zeros_like(indices[..., -1:]), indices[..., :-1]), axis=-1)
+        x,indices = ivy.swapaxes(x, axis, -1),ivy.swapaxes(indices, axis, -1)
+        return ivy.flip(x, axis=(axis,)), ivy.flip(indices, axis=(axis,))
+
+    elif exclusive:
+        x = ivy.swapaxes(x, axis, -1)
+        x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
+        x = ivy.swapaxes(x, axis, -1)
+        x,indices = __find_cummax(x,axis=axis)
+
+        return x,indices
+    else:
+        x,indices = __find_cummax(ivy.flip(x, axis=(axis,)),axis=axis)
+        return ivy.flip(x, axis=axis),ivy.flip(indices, axis=axis)
+
+
+def __find_cummax(
+        x: paddle.Tensor,
+        axis: int = 0,
+) -> Tuple[paddle.Tensor,paddle.Tensor]:
+    indices = []
+    values = []
+    if ((type(x[0]) == paddle.Tensor) or (type(x[0]) == ivy.data_classes.array.array.Array)) and len(x[0].shape)>=1 and isinstance(x.tolist()[0],list):
+        if axis == 1:
+            x_list = x.tolist()
+            for ret1 in x_list:
+                tupled_list=[(y, n := idx) if idx == 0 else (ret1[n],n) if ret1[n] > y else (y, n := idx) for idx, y in
+                 enumerate(ret1)]
+                value, indice = zip(*tupled_list)
+                values.append(value)
+                indices.append(indice)
+        else:
+            n1 = {}
+            x_list=x.tolist()
+            for index, ret1 in enumerate(x_list):
+                indice = []
+                value = []
+                for idx1, x1 in enumerate(ret1):
+                    if index == 0 or x_list[index][idx1] >= x_list[n1[idx1]][idx1]:
+                        n1[idx1] = index
+                        indice.append(index)
+                        value.append(x_list[index][idx1])
+                    else:
+                        indice.append(n1[idx1])
+                        value.append(x_list[n1[idx1]][idx1])
+                indices.append(indice)
+                values.append(value)
+    else:
+        x_list=x.tolist()
+        tupled_list = [(y1,p := idx1) if idx1 == 0 else (x_list[p],p) if x_list[p] > y1 else (y1,p := idx1) for idx1, y1 in enumerate(x_list)]
+        values,indices=zip(*tupled_list)
+
+    if type(x)==paddle.Tensor:
+       return paddle.to_tensor(values,dtype=x.dtype),paddle.to_tensor(indices)
+    else:
+       return ivy.array(values,dtype=x.dtype),ivy.array(indices,dtype='int64')
 
 
 def einsum(
