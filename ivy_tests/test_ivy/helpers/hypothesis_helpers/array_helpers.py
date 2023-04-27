@@ -956,7 +956,7 @@ def array_values(
     else:
         raise TypeError(
             f"{dtype} is not a valid data type that can be generated,"
-            f" only integers, floats and booleans are allowed."
+            " only integers, floats and booleans are allowed."
         )
 
     if kind_dtype != "bool":

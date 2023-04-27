@@ -178,6 +178,5 @@ class DeviceArray:
 
     def __setitem__(self, idx, val):
         raise ivy.utils.exceptions.IvyException(
-            "ivy.functional.frontends.jax.DeviceArray object "
-            "doesn't support assignment"
+            "ivy.functional.frontends.jax.DeviceArray object doesn't support assignment"
         )

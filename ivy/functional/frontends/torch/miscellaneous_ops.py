@@ -357,8 +357,8 @@ def searchsorted(
 ):
     if right and side == "left":
         raise ivy.exceptions.IvyError(
-            "side and right can't be set to opposites,\
-            got side of left while right was True"
+            "side and right can't be set to opposites, got side of left"
+            " while right was True"
         )
     if right:
         side = "right"

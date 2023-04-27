@@ -514,7 +514,7 @@ def nextafter(x1, x2, name=None):
 @with_unsupported_dtypes(
     {
         "1.2.0": ("float16", "complex64", "complex128"),
-        "1.8.0 and below": ("float16"),
+        "1.8.0 and below": "float16",
         "2.9.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
     },
     "tensorflow",

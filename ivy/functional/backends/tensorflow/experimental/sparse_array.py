@@ -92,8 +92,8 @@ def native_sparse_array(
         )
 
     logging.warning(
-        f"Tensorflow does not support {format.upper()} \
-sparse array natively. None is returned."
+        f"Tensorflow does not support {format.upper()} sparse array natively. None is"
+        " returned."
     )
     return None
 

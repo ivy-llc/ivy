@@ -1043,14 +1043,13 @@ def test_invalid_dtype(
     fw = backend_fw.current_backend_str()
     invalid_dtypes = backend_fw.invalid_dtypes
     if dtype_in in invalid_dtypes:
-        assert res is True, (
-            f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
-        )
+        assert (
+            res is True
+        ), f"fDtype = {dtype_in!r} is a valid dtype for {fw}, butresult = {res}"
     else:
-        assert res is False, (
-            f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, but"
-            f"result = {res}"
-        )
+        assert (
+            res is False
+        ), f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, butresult = {res}"
 
 
 # unset_default_dtype
@@ -1144,14 +1143,13 @@ def test_valid_dtype(
     fw = backend_fw.current_backend_str()
     valid_dtypes = backend_fw.valid_dtypes
     if dtype_in in valid_dtypes:
-        assert res is True, (
-            f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, but"
-            f"result = {res}"
-        )
+        assert (
+            res is True
+        ), f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, butresult = {res}"
     else:
-        assert res is False, (
-            f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
-        )
+        assert (
+            res is False
+        ), f"fDtype = {dtype_in!r} is a valid dtype for {fw}, butresult = {res}"
 
 
 # is_native_dtype

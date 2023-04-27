@@ -260,8 +260,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
             k + axis,
             n,
             allow_equal=True,
-            message="Value of axis must be \
-                                           such that axis + dim(mask) <= dim(tensor)",
+            message="Value of axis must be such that axis + dim(mask) <= dim(tensor)",
         )
         tensor_shape = ivy.shape(tensor)
         for i in range(axis - 1, -1, -1):

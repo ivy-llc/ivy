@@ -84,9 +84,11 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     xs = (
         xs
         if ivy.is_array(xs)
-        else xs.cont_prune_empty()
-        if isinstance(xs, ivy.Container)
-        else ivy.prune_empty(xs)
+        else (
+            xs.cont_prune_empty()
+            if isinstance(xs, ivy.Container)
+            else ivy.prune_empty(xs)
+        )
     )
 
     # return a single array instead of a list if possible, otherwise return the nest

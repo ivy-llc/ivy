@@ -40,7 +40,7 @@ def triu_indices(
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
 
-@with_supported_dtypes({"1.11.0 and below": ("int32")}, backend_version)
+@with_supported_dtypes({"1.11.0 and below": "int32"}, backend_version)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
