@@ -1171,6 +1171,7 @@ def arrays_for_pooling(
     explicit_or_str_padding=False,
     only_explicit_padding=False,
     return_dilation=False,
+    mixed_fn_index=0,
     data_format="channel_last",
 ):
     in_shape = draw(
@@ -1180,7 +1181,7 @@ def arrays_for_pooling(
     )
     dtype, x = draw(
         dtype_and_values(
-            available_dtypes=get_dtypes("float"),
+            available_dtypes=get_dtypes("float", mixed_fn_index=mixed_fn_index),
             shape=in_shape,
             num_arrays=1,
             max_value=100,
