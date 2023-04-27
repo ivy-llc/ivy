@@ -102,7 +102,8 @@ def abs(
     }
 
     """
-    return ivy.current_backend(x).abs(x, out=out)
+    backend = ivy.current_backend(x)
+    return ivy.where(x != 0, backend, ivy.abs(x, out=out))
 
 
 @handle_array_function
@@ -2095,6 +2096,7 @@ def floor(
     }
 
     """
+    ivy.where()
     return ivy.current_backend(x).floor(x, out=out)
 
 

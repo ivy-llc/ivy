@@ -35,7 +35,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([ 2.6, 6.6, 1.6, 0.])
         """
-        return ivy.abs(self, out=out)
+        return ivy.where(0, ivy.abs(self, out=out), 0)
 
     def acosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

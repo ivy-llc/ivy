@@ -17,7 +17,7 @@ class _ContainerWithElementwise(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> ivy.Container:  # noqa
         """
         ivy.Container static method variant of ivy.abs. This method simply wraps the
         function, and so the docstring for ivy.abs also applies to this method with
@@ -59,14 +59,19 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([4.5, 5.3, 0, 2.3])
         }
         """
-        return ContainerBase.cont_multi_map_in_function(
-            "abs",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
+
+        return ivy.where(
+            x != 0,
+            ContainerBase.cont_multi_map_in_function(
+                "abs",
+                x,
+                key_chains=key_chains,
+                to_apply=to_apply,
+                prune_unapplied=prune_unapplied,
+                map_sequences=map_sequences,
+                out=out,
+            ),
+            0,
         )
 
     def abs(
@@ -119,13 +124,17 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([4.5, 5.3, 2.3])
         }
         """
-        return self._static_abs(
-            self,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
+        return ivy.where(
+            0,
+            self._static_abs(
+                self,
+                key_chains=key_chains,
+                to_apply=to_apply,
+                prune_unapplied=prune_unapplied,
+                map_sequences=map_sequences,
+                out=out,
+            ),
+            0,
         )
 
     @staticmethod

@@ -14,7 +14,7 @@ from . import backend_version
 def abs(
     x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.absolute(x, out=out)
+    return np.where(x != 0, np.absolute(x), 0)
 
 
 abs.support_native_out = True

@@ -20,7 +20,7 @@ def abs(
     x_dtype = ivy.dtype(x)
     if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
-    return tf.abs(x)
+    return tf.where(x != 0, tf.abs(x), 0)
 
 
 def acos(

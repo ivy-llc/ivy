@@ -526,7 +526,7 @@ def abs(
     x = _cast_for_unary_op(x)
     if x.dtype is torch.bool:
         return x
-    return torch.abs(x, out=out)
+    return torch.where(x != 0, torch.abs(x, out=out), 0)
 
 
 abs.support_native_out = True
