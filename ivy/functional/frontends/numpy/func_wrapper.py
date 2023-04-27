@@ -325,9 +325,11 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_np(*args, **kwargs):
         """
-        Converts all `ndarray` instances in both the positional and keyword
-        arguments into `ivy.Array` instances, and then calls the function with the
-        updated arguments.
+        Convert `ndarray` into `ivy.Array` instances.
+
+        Convert all `ndarray` instances in both the positional and keyword arguments
+        into `ivy.Array` instances, and then calls the function with the updated
+        arguments.
 
         Parameters
         ----------
@@ -355,9 +357,12 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_numpy_arrays(*args, order="K", **kwargs):
         """
-        Calls the function, and then converts all `ivy.Array` instances returned
-        by the function into `ndarray` instances.
-           The return of the function, with ivy arrays as numpy arrays.
+        Convert `ivy.Array` into `ndarray` instances.
+
+        Call the function, and then converts all `ivy.Array` instances
+        returned by the function into `ndarray` instances.
+
+        The return of the function, with ivy arrays as numpy arrays.
         """
         # handle order and call unmodified function
         # ToDo: Remove this default dtype setting
@@ -410,8 +415,11 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     """
-    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
-    and return arrays are all converted to `ndarray` instances.
+    Wrap `fn` so it receives and returns `ivy.Array` instances.
+
+    Wrap `fn` so that input arrays are all converted to `ivy.Array`
+    instances and return arrays are all converted to `ndarray`
+    instances.
     """
     return outputs_to_numpy_arrays(inputs_to_ivy_arrays(fn))
 
@@ -420,8 +428,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _from_zero_dim_arrays_to_scalar(*args, **kwargs):
         """
-        Calls the function, and then converts all 0 dimensional array instances in
-        the function to float numbers if out argument is not provided.
+        Convert 0 dimensional arrays to float numbers.
+
+        Call the function, and then converts all 0 dimensional array instances in the
+        function to float numbers if out argument is not provided.
 
         Parameters
         ----------

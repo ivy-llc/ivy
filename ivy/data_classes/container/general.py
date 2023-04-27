@@ -23,9 +23,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.is_native_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_native_array also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.is_native_array also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -60,7 +60,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: false,
             b: true
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "is_native_array",
@@ -83,9 +82,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.is_native_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_native_array also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.ivy.is_native_array also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -142,9 +141,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.is_ivy_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_ivy_array also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.is_ivy_array. This method simply
+        wraps the function, and so the docstring for ivy.is_ivy_array also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -199,9 +198,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.is_native_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_native_array also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.ivy.is_native_array also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -256,9 +255,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.is_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_array also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.is_array. This method simply wraps
+        the function, and so the docstring for ivy.ivy.is_array also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -318,9 +317,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.is_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_array also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.is_array. This method simply wraps
+        the function, and so the docstring for ivy.is_array also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -380,8 +379,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.clip_vector_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_vector_norm
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -425,7 +424,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 0.894, 1.79]),
             b: ivy.array([0.849, 1.13, 1.41])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "clip_vector_norm",
@@ -453,8 +451,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.clip_vector_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_vector_norm
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -499,7 +497,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 0.667, 1.33]),
             b: ivy.array([0.5, 0.667, 0.833])
         }
-
         """
         return self._static_clip_vector_norm(
             self,
@@ -527,9 +524,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_update. This method
-        simply wraps the function, and so the docstring for ivy.inplace_update
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.inplace_update. This method simply
+        wraps the function, and so the docstring for ivy.inplace_update also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -563,7 +560,6 @@ class _ContainerWithGeneral(ContainerBase):
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-
         """
         # inplace update the leaves
         cont = x
@@ -597,9 +593,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_update. This method
-        simply wraps the function, and so the docstring for ivy.inplace_update
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.inplace_update. This method simply
+        wraps the function, and so the docstring for ivy.inplace_update also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -646,7 +642,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([1]),
             b: ivy.array([2])
         }
-
         """
         return self._static_inplace_update(
             self,
@@ -672,9 +667,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.inplace_decrement. This method
-        simply wraps the function, and so the docstring for ivy.inplace_decrement
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.inplace_decrement. This method simply
+        wraps the function, and so the docstring for ivy.inplace_decrement also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -728,7 +723,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([1., 1.5, 3.]),
             b: ivy.array([0., 50., 3.5])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "inplace_decrement",
@@ -752,8 +746,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.inplace_decrement. This method
-        simply wraps the function, and so the docstring for ivy.inplace_decrement
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.inplace_decrement also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -791,7 +785,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([-0.5, -2.3, -2]),
             c: ivy.array([-6.7, -7.4, 5.5])
         }
-
         """
         return self._static_inplace_decrement(
             self,
@@ -814,9 +807,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.inplace_increment. This method
-        simply wraps the function, and so the docstring for ivy.inplace_increment
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.inplace_increment. This method simply
+        wraps the function, and so the docstring for ivy.inplace_increment also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -870,7 +863,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([5., 12.5, 17.]),
             b: ivy.array([0., 100., 7.5])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "inplace_increment",
@@ -893,9 +885,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_increment.
-        This method wraps the function, and so the docstring for
-        ivy.inplace_increment also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.inplace_increment. This method
+        wraps the function, and so the docstring for ivy.inplace_increment also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -933,7 +925,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([3.5, 1.7, 2.]),
             c: ivy.array([-2.7, -3.4, 9.5])
         }
-
         """
         return self._static_inplace_increment(
             self,
@@ -955,9 +946,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.assert_supports_inplace. This
-        method simply wraps the function, and so the docstring for
-        ivy.assert_supports_inplace also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.assert_supports_inplace. This method
+        simply wraps the function, and so the docstring for ivy.assert_supports_inplace
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1043,7 +1034,6 @@ class _ContainerWithGeneral(ContainerBase):
         IvyBackendException: jax: assert_supports_inplace: Inplace operations \
         are not supported <class 'jaxlib.xla_extension.DeviceArray'> types
         with jax backend
-        
         """
         return self._static_assert_supports_inplace(
             self,
@@ -1120,7 +1110,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([True, True, True, True]),
             b: ivy.array([True, True, False, False])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "all_equal",
@@ -1143,9 +1132,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.all_equal.
-        This method simply wraps the function, and so the docstring for
-        ivy.all_equal also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.all_equal. This method simply wraps
+        the function, and so the docstring for ivy.all_equal also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1219,7 +1208,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: False,
             b: True
         }
-
         """
         return self._static_all_equal(
             self,
@@ -1246,9 +1234,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.fourier_encode. This method
-        simply wraps the function, and so the docstring for ivy.fourier_encode
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.fourier_encode. This method simply
+        wraps the function, and so the docstring for ivy.fourier_encode also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1338,9 +1326,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.fourier_encode. This method
-        simply wraps the function, and so the docstring for ivy.fourier_encode
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.fourier_encode. This method simply
+        wraps the function, and so the docstring for ivy.fourier_encode also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1433,9 +1421,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.gather. This method simply
-        wraps the function, and so the docstring for ivy.gather also applies to
-        this method with minimal changes.
+        ivy.Container static method variant of ivy.gather. This method simply wraps the
+        function, and so the docstring for ivy.gather also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1495,7 +1483,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 1.]),
             b: ivy.array([4., 5.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "gather",
@@ -1524,9 +1511,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gather. This method simply
-        wraps the function, and so the docstring for ivy.gather also applies to
-        this method with minimal changes.
+        ivy.Container instance method variant of ivy.gather. This method simply wraps
+        the function, and so the docstring for ivy.gather also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1572,7 +1559,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 1.]),
             b: ivy.array([5., 6.])
         }
-
         """
         return self._static_gather(
             self,
@@ -1598,8 +1584,8 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Determine whether arrays in the container contain any nans, as well as infs
-        or -infs if specified.
+        Determine whether arrays in the container contain any nans, as well as infs or
+        -infs if specified.
 
         Parameters
         ----------
@@ -1655,8 +1641,8 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Determine whether arrays in the container contain any nans, as well as infs
-        or -infs if specified.
+        Determine whether arrays in the container contain any nans, as well as infs or
+        -infs if specified.
 
         Parameters
         ----------
@@ -1687,7 +1673,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: false,
             b: true
         }
-
         """
         return self._static_has_nans(
             self,
@@ -1781,7 +1766,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "scatter_nd",
@@ -1810,10 +1794,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.scatter_nd.
-        This method simply wraps the function, and so the docstring
-        for ivy.scatter_nd also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.scatter_nd. This method simply
+        wraps the function, and so the docstring for ivy.scatter_nd also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1969,10 +1952,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.scatter_flat.
-        This method simply wraps the function, and so the docstring
-        for ivy.scatter_flat also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.scatter_flat. This method simply
+        wraps the function, and so the docstring for ivy.scatter_flat also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2045,7 +2027,8 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Gather slices from all container params into a arrays with shape specified by
+        """
+        Gather slices from all container params into a arrays with shape specified by
         indices.
 
         Parameters
@@ -2086,7 +2069,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array(30.),
             b: ivy.array([0., 100., 200.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "gather_nd",
@@ -2113,9 +2095,8 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gather_nd.
-        This method simply wraps the function, and so the docstring
-        for ivy.gather_nd also applies to this method
+        ivy.Container instance method variant of ivy.gather_nd. This method simply wraps
+        the function, and so the docstring for ivy.gather_nd also applies to this method
         with minimal changes.
 
         Parameters
@@ -2187,7 +2168,8 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
-        """Perform einops reduce operation on each sub array in the container.
+        """
+        Perform einops reduce operation on each sub array in the container.
 
         Parameters
         ----------
@@ -2231,7 +2213,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([-2.29333329, 10.53000069]),
             b: ivy.array([-1.39666676, 6.20666695])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_reduce",
@@ -2261,8 +2242,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.einops_reduce. This method simply
-        wraps the function, and so the docstring for ivy.einops_reduce also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.einops_reduce also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2316,7 +2297,6 @@ class _ContainerWithGeneral(ContainerBase):
                         [7, 11],
                         [16, 3]])
         }
-
         """
         return self._static_einops_reduce(
             self,
@@ -2343,7 +2323,8 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
-        """Perform einops repeat operation on each sub array in the container.
+        """
+        Perform einops repeat operation on each sub array in the container.
 
         Parameters
         ----------
@@ -2387,7 +2368,6 @@ class _ContainerWithGeneral(ContainerBase):
                         [1, 2],
                         [4, 5]])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_repeat",
@@ -2415,8 +2395,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.einops_repeat. This method simply
-        wraps the function, and so the docstring for ivy.einops_repeat also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.einops_repeat also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2458,7 +2438,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([[1, 1, 2, 2],
                           [4, 4, 5, 5]])
         }
-
         """
         return self._static_einops_repeat(
             self,
@@ -2688,7 +2667,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: array([1., 0., 0., 1.], dtype=float32),
             b: array([1, 1, -1, 0], dtype=int32)
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "to_numpy",
@@ -2763,7 +2741,6 @@ class _ContainerWithGeneral(ContainerBase):
                     [1, 0, 1],
                     [1, 1, 1]], dtype=int32)
         }
-
         """
         return self._static_to_numpy(
             self,
@@ -2902,9 +2879,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.to_list. This method simply wraps
-        the function, and so the docstring for ivy.to_list also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.to_list. This method simply wraps the
+        function, and so the docstring for ivy.to_list also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2935,7 +2912,6 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_to_list(x)
         >>> print(y)
         {a:[0,1,2]}
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "to_list",
@@ -2990,7 +2966,6 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.to_list()
         >>> print(y)
         {a:[0,1,2]}
-
         """
         return self._static_to_list(
             self,
@@ -3016,8 +2991,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.stable_divide. This method simply
-        wraps the function, and so the docstring for ivy.stable_divide also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.stable_divide also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3119,9 +3094,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.stable_divide. This method
-        simply wraps the function, and so the docstring for ivy.stable_divide
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.stable_divide. This method simply
+        wraps the function, and so the docstring for ivy.stable_divide also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3181,7 +3156,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0.5, 0.667]),
             b: ivy.array([0.75, 0.8])
         }
-
         """
         return self._static_stable_divide(
             self,
@@ -3206,9 +3180,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.stable_pow. This method
-        simply wraps the function, and so the docstring for ivy.stable_pow also
-        applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.stable_pow. This method simply wraps
+        the function, and so the docstring for ivy.stable_pow also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -3235,7 +3209,6 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             A container of elements containing the new items following the
             numerically stable power.
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "stable_pow",
@@ -3260,9 +3233,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.stable_pow. This method
-        simply wraps the function, and so the docstring for ivy.stable_pow
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.stable_pow. This method simply
+        wraps the function, and so the docstring for ivy.stable_pow also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -3289,7 +3262,6 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             A container of elements containing the new items following the
             numerically stable power.
-
         """
         return self._static_stable_pow(
             self,
@@ -3315,9 +3287,9 @@ class _ContainerWithGeneral(ContainerBase):
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.einops_rearrange. This method
-        simply wraps the function, and so the docstring for ivy.einops_rearrange
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.einops_rearrange. This method simply
+        wraps the function, and so the docstring for ivy.einops_rearrange also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -3377,7 +3349,6 @@ class _ContainerWithGeneral(ContainerBase):
         {
             a: (<class ivy.array.array.Array> shape=[4, 3])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_rearrange",
@@ -3405,8 +3376,8 @@ class _ContainerWithGeneral(ContainerBase):
     ):
         """
         ivy.Container instance method variant of ivy.einops_rearrange. This method
-        simply wraps the function, and so the docstring for ivy.einops_rearrange
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.einops_rearrange also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3465,7 +3436,6 @@ class _ContainerWithGeneral(ContainerBase):
         {
             a: (<class ivy.array.array.Array> shape=[4, 3])
         }
-
         """
         return self._static_einops_rearrange(
             self,
@@ -3492,9 +3462,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.clip_matrix_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_matrix_norm
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.clip_matrix_norm. This method simply
+        wraps the function, and so the docstring for ivy.clip_matrix_norm also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -3536,7 +3506,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([[0., 0.894, 1.79]]),
             b: ivy.array([[0.849, 1.13, 1.41]])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "clip_matrix_norm",
@@ -3564,8 +3533,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.clip_matrix_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_matrix_norm
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.clip_matrix_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3607,7 +3576,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([[0., 1., 2.]]),
             b: ivy.array([[1.2, 1.6, 2.]])
         }
-
         """
         return self._static_clip_matrix_norm(
             self,
@@ -3658,7 +3626,6 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             An ivy.Container instance of bool values.
             True if nodes of x support in-place operations. False otherwise.
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "supports_inplace_updates",
@@ -3679,9 +3646,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.supports_inplace_updates.
-        This method simply wraps the static function, and so the docstring for
-        the static variant also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.supports_inplace_updates. This
+        method simply wraps the static function, and so the docstring for the static
+        variant also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3728,7 +3695,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: False,
             b: False
         }
-
         """
         return _ContainerWithGeneral._static_supports_inplace_updates(
             self,
@@ -3750,9 +3716,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.get_num_dims. This method
-        simply wraps the function, and so the docstring for ivy.get_num_dims
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.get_num_dims. This method simply
+        wraps the function, and so the docstring for ivy.get_num_dims also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3827,9 +3793,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.get_num_dims. This method
-        simply wraps the function, and so the docstring for ivy.get_num_dims
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.get_num_dims. This method simply
+        wraps the function, and so the docstring for ivy.get_num_dims also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3904,9 +3870,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.array_equal. This method
-        simply wraps the function, and so the docstring for ivy.array_equal
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.array_equal. This method simply
+        wraps the function, and so the docstring for ivy.array_equal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3947,7 +3913,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: true,
             b: false
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "array_equal",
@@ -3970,9 +3935,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.array_equal. This method
-        simply wraps the function, and so the docstring for ivy.array_equal
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.array_equal. This method simply
+        wraps the function, and so the docstring for ivy.array_equal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -4013,7 +3978,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: true,
             b: false
         }
-
         """
         return _ContainerWithGeneral._static_array_equal(
             self,
@@ -4033,9 +3997,10 @@ class _ContainerWithGeneral(ContainerBase):
         assume_unique: bool = False,
         invert: bool = False,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.isin. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
-        this method with minimal changes.
+        """
+        Container instance method variant of ivy.isin. This method simply wraps the
+        function, and so the docstring for ivy.isin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -4082,9 +4047,10 @@ class _ContainerWithGeneral(ContainerBase):
         assume_unique: bool = False,
         invert: bool = False,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.isin. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
-        this method with minimal changes.
+        """
+        Container instance method variant of ivy.isin. This method simply wraps the
+        function, and so the docstring for ivy.isin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -4124,9 +4090,10 @@ class _ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         /,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.itemsize. This method simply
-        wraps the function, and so the docstring for ivy.itemsize also applies to
-        this method with minimal changes.
+        """
+        Container instance method variant of ivy.itemsize. This method simply wraps the
+        function, and so the docstring for ivy.itemsize also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -4151,9 +4118,10 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.itemsize. This method simply
-        wraps the function, and so the docstring for ivy.itemsize also applies to
-        this method with minimal changes.
+        """
+        Container instance method variant of ivy.itemsize. This method simply wraps the
+        function, and so the docstring for ivy.itemsize also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -4172,9 +4140,10 @@ class _ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         /,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.strides. This method simply
-        wraps the function, and so the docstring for ivy.strides also applies to
-        this method with minimal changes.
+        """
+        Container instance method variant of ivy.strides. This method simply wraps the
+        function, and so the docstring for ivy.strides also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -4199,9 +4168,10 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.strides. This method simply
-        wraps the function, and so the docstring for ivy.strides also applies to
-        this method with minimal changes.
+        """
+        Container instance method variant of ivy.strides. This method simply wraps the
+        function, and so the docstring for ivy.strides also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

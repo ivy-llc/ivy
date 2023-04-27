@@ -757,6 +757,12 @@ class Tensor:
         ).ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def index_add(self, dim, index, source, *, alpha=1):
+        return torch_frontend.index_add(
+            self._ivy_array, dim, index, source, alpha=alpha
+        )
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh_(self):
         self.ivy_array = self.acosh().ivy_array
@@ -950,6 +956,11 @@ class Tensor:
     def mul(self, other):
         return torch_frontend.mul(self, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def ceil_(self):
+        self.ivy_array = torch_frontend.ceil(self).ivy_array
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def mul_(self, other):
         self.ivy_array = self.mul(other).ivy_array
@@ -971,3 +982,15 @@ class Tensor:
 
     def reciprocal(self):
         return torch_frontend.reciprocal(self)
+
+    def fill_(self, value):
+        self.ivy_array = torch_frontend.full_like(
+            self, value, dtype=self.dtype, device=self.device
+        ).ivy_array
+        return self
+
+    def nonzero(self):
+        return torch_frontend.nonzero(self)
+
+    def mm(self, mat2):
+        return torch_frontend.mm(self, mat2)
