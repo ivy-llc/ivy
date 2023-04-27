@@ -2096,7 +2096,6 @@ def floor(
     }
 
     """
-    ivy.where()
     return ivy.current_backend(x).floor(x, out=out)
 
 
