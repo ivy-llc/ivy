@@ -239,7 +239,50 @@ def cumprod(
             return ivy.flip(x, axis=axis).cast(dtype)
 
 
-# paddle does not support cummin #TODO: implement cummin when paddle supports that
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int16")}},
+    backend_version,
+)
+def cummin(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if axis is None:
+        return paddle.cumprod(x, axis=axis)
+    else:
+        if not (exclusive or reverse):
+            return paddle.minimum(
+                paddle.cumsum(x, axis=axis), paddle.min(x, axis=axis, keepdim=True)
+            )
+        elif exclusive and reverse:
+            x_flipped = paddle.flip(x, dims=[axis])
+            cumsum_flipped = paddle.cumsum(x_flipped, axis=axis)
+            cumsum_flipped = paddle.flip(cumsum_flipped, dims=[axis])
+            min_val = paddle.min(x, axis=axis, keepdim=True)
+            return paddle.minimum(cumsum_flipped, min_val)
+        elif exclusive:
+            x_pad = paddle.concat(
+                [
+                    paddle.ones_like(x.index_select(axis, paddle.to_tensor([-1]))),
+                    x[:, :-1],
+                ],
+                axis=axis,
+            )
+            cumsum = paddle.cumsum(x_pad, axis=axis)
+            return paddle.minimum(cumsum[:, 1:], paddle.min(x, axis=axis, keepdim=True))
+        else:
+            x_flipped = paddle.flip(x, dims=[axis])
+            cumsum_flipped = paddle.cumsum(x_flipped, axis=axis)
+            cumsum_flipped = paddle.flip(cumsum_flipped, dims=[axis])
+            return paddle.minimum(
+                cumsum_flipped, paddle.min(x, axis=axis, keepdim=True)
+            )
 
 
 @with_unsupported_device_and_dtypes(

@@ -941,11 +941,6 @@ class Tensor:
     def cumprod(self, dim, dtype):
         return torch_frontend.cumprod(self, dim, dtype=dtype)
 
-    # my implementation of cummin
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-    def cummin(self, dim, dtype):
-        return torch_frontend.cummin(self, dim, dtype=dtype)
-
     def count_nonzero(self, dim):
         return torch_frontend.count_nonzero(self, dim=dim)
 

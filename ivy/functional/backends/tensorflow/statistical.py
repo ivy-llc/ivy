@@ -178,8 +178,6 @@ def cumprod(
     return tf.math.cumprod(x, axis, exclusive, reverse)
 
 
-# tensorflow doesn't implement cummin yet.
-# TODO: implement cummin when tensorflow implements that
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def cummin(
     x: Union[tf.Tensor, tf.Variable],
