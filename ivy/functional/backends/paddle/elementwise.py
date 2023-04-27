@@ -115,14 +115,14 @@ def equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     with ivy.ArrayMode(False):
         diff = ivy.subtract(x1, x2)
         ret = ivy.logical_and(ivy.less_equal(diff, 0), ivy.greater_equal(diff, 0))
-
-    # ret result is sufficient for all cases except where the value is +/-INF of NaN
-    return ivy.to_native(
-        ivy.where(ivy.isnan(diff), ~ivy.logical_or(ivy.isnan(x1), ivy.isnan(x2)), ret)
-    )
+        # ret result is sufficient for all cases except where the value is +/-INF of NaN
+        return ivy.where(
+            ivy.isnan(diff), ~ivy.logical_or(ivy.isnan(x1), ivy.isnan(x2)), ret
+        )
 
 
 @with_unsupported_device_and_dtypes(
@@ -358,8 +358,7 @@ def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            with ivy.ArrayMode(False):
-                return ivy.logical_or(paddle.isnan(x.real()), paddle.isnan(x.imag()))
+            return paddle.logical_or(paddle.isnan(x.real()), paddle.isnan(x.imag()))
         return paddle.isnan(x.cast("float32"))
     return paddle.isnan(x)
 

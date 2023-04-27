@@ -185,9 +185,7 @@ def test_numpy_moveaxis(
 # asarray_chkfinite
 @handle_frontend_test(
     fn_tree="numpy.asarray_chkfinite",
-    dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")
-    ),
+    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
 def test_numpy_asarray_chkfinite(
