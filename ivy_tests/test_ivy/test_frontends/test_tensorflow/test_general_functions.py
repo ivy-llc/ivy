@@ -228,8 +228,6 @@ def test_tensorflow_clip_by_norm(
     )
 
 
-
-
 # eye
 @handle_frontend_test(
     fn_tree="tensorflow.eye",
