@@ -1833,7 +1833,7 @@ def test_tensorflow_reverse(
     )
 
 
-# unstack
+# scan
 @handle_frontend_test(
     fn_tree="tensorflow.scan",
     dtypes_values=helpers.dtype_and_values(
