@@ -400,7 +400,9 @@ def get_axis(
 
 
 @st.composite
-def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+def x_and_filters(
+    draw, dim: int = 2, transpose: bool = False, depthwise=False, mixed_fn_index=0
+):
     strides = draw(st.integers(min_value=1, max_value=2))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
     batch_size = draw(st.integers(1, 5))
@@ -410,7 +412,9 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
     input_channels = draw(st.integers(1, 5))
     output_channels = draw(st.integers(1, 5))
     dilations = draw(st.integers(1, 2))
-    dtype = draw(dtype_helpers.get_dtypes("float", full=False))
+    dtype = draw(
+        dtype_helpers.get_dtypes("float", mixed_fn_index=mixed_fn_index, full=False)
+    )
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
@@ -476,12 +480,14 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
 
 
 @st.composite
-def embedding_helper(draw):
+def embedding_helper(draw, mixed_fn_index=0):
     dtype_weight, weight = draw(
         array_helpers.dtype_and_values(
             available_dtypes=[
                 x
-                for x in draw(dtype_helpers.get_dtypes("numeric"))
+                for x in draw(
+                    dtype_helpers.get_dtypes("numeric", mixed_fn_index=mixed_fn_index)
+                )
                 if "float" in x or "complex" in x
             ],
             min_num_dims=2,
