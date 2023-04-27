@@ -205,3 +205,7 @@ def randperm(
     ret = ivy.shuffle(arr)
 
     return ret
+
+def initial_seed() -> int:
+    """Return the initial seed value used by the PyTorch RNG."""
+    return torch.randint(-(2**63), 2**63 - 1, (1,)).item()
