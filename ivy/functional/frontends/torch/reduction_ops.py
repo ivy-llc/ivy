@@ -256,6 +256,6 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
 @to_ivy_arrays_and_back
 def mode(input, dim=-1, keepdim=False, *, out=None):
     unique_data, counts = ivy.unique_counts(input)
-    max_count = ivy.max(counts, dim=dim, keepdims=True)
+    max_count = ivy.max(counts, axis=dim, keepdims=True)
     modes = ivy.where(ivy.isclose(counts, max_count))
     return modes
