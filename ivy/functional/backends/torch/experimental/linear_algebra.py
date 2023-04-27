@@ -166,6 +166,7 @@ def multi_dot(
 multi_dot.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.0.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
     x: torch.Tensor,
     /,
