@@ -21,6 +21,8 @@ RUN apt clean && \
 ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda create --name multienv python==$pycon
 
+# to fix protobuf conflicts
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
 RUN apt-get update && \
     apt-get install -y python3-pip python3-tk && \
