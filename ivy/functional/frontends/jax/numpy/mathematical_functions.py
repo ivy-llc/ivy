@@ -17,7 +17,7 @@ def sign(x, /):
 
 @to_ivy_arrays_and_back
 def absolute(x, /):
-    return ivy.abs(x)
+    return ivy.where(x != 0, ivy.abs(x), 0)
 
 
 abs = absolute

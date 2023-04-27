@@ -520,7 +520,7 @@ def nextafter(x1, x2, name=None):
     "tensorflow",
 )
 def abs(x, name=None):
-    return ivy.abs(x)
+    return ivy.where(x != 0, ivy.abs(x), 0)
 
 
 @to_ivy_arrays_and_back
@@ -640,8 +640,8 @@ def cosh(x, name=None):
 @to_ivy_arrays_and_back
 def angle(input, name=None):
     return ivy.angle(input)
-    
-    
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
