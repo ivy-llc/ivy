@@ -640,8 +640,8 @@ def cosh(x, name=None):
 @to_ivy_arrays_and_back
 def angle(input, name=None):
     return ivy.angle(input)
-    
-    
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
