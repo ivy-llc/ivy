@@ -2487,7 +2487,7 @@ def test_tensorflow_greater_equal(
         num_arrays=2,
         shared_dtype=True,
     ),
-    k=st.integers(min_value=2, max_value=5),
+    k=st.integers(min_value=0, max_value=5),
     test_with_out=st.just(False),
 )
 def test_tensorflow_in_top_k(
