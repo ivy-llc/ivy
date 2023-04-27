@@ -133,7 +133,6 @@ def _sparse_csc_indices_values_shape(draw):
 
 @st.composite
 def _sparse_bsc_indices_values_shape(draw):
-
     nblockrows = draw(helpers.ints(min_value=2, max_value=5))
     nblockcols = draw(helpers.ints(min_value=2, max_value=5))
 

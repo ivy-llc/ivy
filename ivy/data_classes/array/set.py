@@ -9,9 +9,9 @@ import ivy
 class _ArrayWithSet(abc.ABC):
     def unique_counts(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.unique_counts. This method simply
-        wraps the function, and so the docstring for ivy.unique_counts also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.unique_counts. This method simply wraps
+        the function, and so the docstring for ivy.unique_counts also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -44,7 +44,7 @@ class _ArrayWithSet(abc.ABC):
     def unique_values(
         self: ivy.Array, /, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
-        """Returns the unique elements of an input array `x`.
+        """Return the unique elements of an input array `x`.
         .. admonition:: Data-dependent output shape
             :class: important
             The shapes of two of the output arrays for this function depend on the
@@ -107,9 +107,9 @@ class _ArrayWithSet(abc.ABC):
         axis: Optional[int] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.unique_all. This method simply
-        wraps the function, and so the docstring for ivy.unique_all also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.unique_all. This method simply wraps
+        the function, and so the docstring for ivy.unique_all also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -138,15 +138,14 @@ class _ArrayWithSet(abc.ABC):
                 indices=ivy.array([3, 2, 1, 0]),
                 inverse_indices=ivy.array([[3, 2], [1, 0]]),
                counts=ivy.array([1, 1, 1, 1]))
-
         """
         return ivy.unique_all(self._data, axis=axis)
 
     def unique_inverse(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.unique_inverse. This method simply
-        wraps the function, and so the docstring for ivy.unique_inverse also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.unique_inverse also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -175,6 +174,5 @@ class _ArrayWithSet(abc.ABC):
         >>> print(y)
         Results(values=ivy.array([0.2, 0.3, 0.4, 0.5, 0.7, 0.8]),
                 inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))
-
         """
         return ivy.unique_inverse(self._data)

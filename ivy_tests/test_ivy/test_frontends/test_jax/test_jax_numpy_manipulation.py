@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
     _get_dtype_values_k_axes_for_rot90,
-    _get_split_locations,
+    _get_splits,
     _st_tuples_or_int,
 )
 
@@ -176,7 +176,6 @@ def test_jax_numpy_repeat(
     frontend,
     test_flags,
 ):
-
     value_dtype, value = dtype_value
 
     if not isinstance(repeat, int):
@@ -301,7 +300,7 @@ def _get_input_and_new_shape(draw):
     )
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("all"),
+            available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
             max_num_dims=5,
             min_dim_size=2,
@@ -317,7 +316,7 @@ def _get_input_and_new_shape(draw):
     input_x_shape=_get_input_and_new_shape(),
     test_with_out=st.just(True),
 )
-def test_resize(
+def test_jax_numpy_resize(
     *,
     input_x_shape,
     on_device,
@@ -749,7 +748,7 @@ def test_jax_numpy_broadcast_to(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        arr=x[0],
+        array=x[0],
         shape=shape,
     )
 
@@ -1108,7 +1107,7 @@ def test_jax_numpy_rot90(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1),
+    indices_or_sections=_get_splits(min_num_dims=1),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1148,7 +1147,7 @@ def test_jax_numpy_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1),
+    indices_or_sections=_get_splits(min_num_dims=1),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1188,7 +1187,7 @@ def test_jax_numpy_array_split(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
+    indices_or_sections=_get_splits(min_num_dims=3, axis=2),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_dsplit(
@@ -1290,7 +1289,7 @@ def test_jax_numpy_dstack(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
+    indices_or_sections=_get_splits(min_num_dims=2, axis=0),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_vsplit(
@@ -1321,7 +1320,7 @@ def test_jax_numpy_vsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
+    indices_or_sections=_get_splits(min_num_dims=1, axis=1),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_hsplit(
