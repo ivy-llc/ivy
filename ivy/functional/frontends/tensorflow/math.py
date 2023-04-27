@@ -662,7 +662,4 @@ def greater_equal(x, y, name=None):
 @to_ivy_arrays_and_back
 def in_top_k(targets, pred, k):
     top_k = ivy.top_k(targets, k)
-    Ayad = []
-    for val in targets:
-        Ayad.extend([val in top_k.values])
-    return ivy.array(Ayad)
+    return ivy.any(top_k.T == targets, axis=0)
