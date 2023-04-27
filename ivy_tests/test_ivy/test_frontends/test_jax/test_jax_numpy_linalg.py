@@ -839,39 +839,23 @@ def test_jax_numpy_cond(
 # lstsq
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.lstsq",
-    dtype_and_data=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
-    ).filter(
-        lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(x[1][0][:, :-1]) != 0
-        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
-    ),
+    params=_get_dtype_and_matrix(),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_lstsq(
-    *,
-    dtype_and_data,
-    on_device,
-    fn_tree,
+    params,
     frontend,
     test_flags,
+    fn_tree,
+    on_device,
 ):
-    input_dtype, data = dtype_and_data
-    a = data[0][:, :-1]
-    b = data[0][:, -1].reshape(-1, 1)
+    input_dtype, fir, sec = params
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype[0], input_dtype[0]],
+        input_dtypes=[input_dtype, input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=np.asarray(a, dtype=input_dtype[0]),
-        b=np.asarray(b, dtype=input_dtype[0]),
-        rtol=1e-01,
-        atol=1e-01,
+        a=fir,
+        b=sec,
     )
