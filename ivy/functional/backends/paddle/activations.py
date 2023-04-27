@@ -1,4 +1,7 @@
-"""Collection of Paddle activation functions, wrapped to fit Ivy syntax and
+"""
+Paddle activation functions.
+
+Collection of Paddle activation functions, wrapped to fit Ivy syntax and
 signature.
 """
 from typing import Optional, Union

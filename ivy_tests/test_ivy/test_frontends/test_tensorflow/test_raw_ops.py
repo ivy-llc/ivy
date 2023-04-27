@@ -853,10 +853,8 @@ def test_tensorflow_Sign(  # NOQA
 
 @st.composite
 def _get_splits(draw, as_list=False):
-    """
-    Generate valid splits, either by generating an integer that evenly divides the axis
-    or a list of splits that sum to the length of the axis being split.
-    """
+    """Generate valid splits, either by generating an integer that evenly divides the
+    axis or a list of splits that sum to the length of the axis being split."""
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
     axis = draw(
         st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
