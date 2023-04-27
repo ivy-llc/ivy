@@ -152,10 +152,7 @@ def log_softmax(
         axis = -1
     with ivy.ArrayMode(False):
         x_max = ivy.max(x, axis=axis, keepdims=True)
-        if x_max.ndim > 0:
-            x_max[~ivy.isfinite(x_max)] = 0
-        elif not ivy.isfinite(x_max):
-            x_max = 0
+        x_max = ivy.where(ivy.isfinite(x_max), x_max, ivy.zeros_like(x_max))
         exp_tmp = ivy.exp(ivy.subtract(x, x_max))
 
         s = ivy.sum(exp_tmp, axis=axis, keepdims=True)
