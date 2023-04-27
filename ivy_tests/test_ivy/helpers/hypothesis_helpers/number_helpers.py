@@ -30,8 +30,9 @@ def floats(
     safety_factor_scale="linear",
     mixed_fn_index=0,
 ):
-    """Draws an arbitrarily sized list of floats with a safety factor applied
-        to avoid values being generated at the edge of a dtype limit.
+    """
+    Draws an arbitrarily sized list of floats with a safety factor applied to avoid
+    values being generated at the edge of a dtype limit.
 
     Parameters
     ----------
@@ -150,8 +151,8 @@ def ints(
     safety_factor_scale=None,
     mixed_fn_index=0,
 ):
-    """Draws an arbitrarily sized list of integers with a safety factor
-    applied to values if a safety scale is specified.
+    """
+    Draws an integer with a safety factor if specified.
 
     Parameters
     ----------
@@ -213,8 +214,8 @@ def number(
     safety_factor_scale="linear",
     mixed_fn_index=0,
 ):
-    """Draws integers or floats with a safety factor
-    applied to values.
+    """
+    Draws integers or floats with a safety factor applied to values.
 
     Parameters
     ----------
