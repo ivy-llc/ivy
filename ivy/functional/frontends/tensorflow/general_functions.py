@@ -467,12 +467,6 @@ def unstack(value: ivy.Array, axis=0, num=None, name=None):
 
 
 @to_ivy_arrays_and_back
-def where(condition, x=None, y=None, name=None):
-    return ivy.where(condition, x1=x, y1=y, out=None)
-
-
-
-@to_ivy_arrays_and_back
 def reverse(tensor, axis, name=None):
     return ivy.flip(tensor, axis=axis)
 
