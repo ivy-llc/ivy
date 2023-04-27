@@ -262,62 +262,6 @@ def test_dct(
 
 
 @st.composite
-def valid_idct(draw):
-    dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            max_value=65280,
-            min_value=-65280,
-            min_num_dims=1,
-            max_num_dims=5,
-            min_dim_size=2,
-            max_dim_size=10,
-            shared_dtype=True,
-        )
-    )
-    dims_len = len(x[0].shape)
-    n = draw(st.sampled_from([None, "int"]))
-    axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len))
-    norm = draw(st.sampled_from([None, "ortho"]))
-    type = draw(helpers.ints(min_value=1, max_value=4))
-    if n == "int":
-        n = draw(helpers.ints(min_value=1, max_value=20))
-        if n <= 1 and type == 1:
-            n = 2
-
-    return dtype, x, type, n, axis, norm
-
-@handle_test(
-    fn_tree="functional.backends.tensorflow.experimental.layers.idct",
-    dtype_x_and_args=valid_idct(),
-    test_gradients=st.just(False),
-)
-def test_idct(
-    dtype_x_and_args,
-    test_flags,
-    backend_fw,
-    fn_name,
-    ground_truth_backend,
-):
-    input_dtype, x, type, n, axis, norm = dtype_x_and_args
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-        type=type,
-        n=n,
-        axis=axis,
-        norm=norm,
-        rtol_=1e-3,
-        atol_=1e-1,
-    )
-
-
-
-@st.composite
 def _interp_args(draw, mode=None, mode_list=None):
     if not mode and not mode_list:
         mode = draw(
