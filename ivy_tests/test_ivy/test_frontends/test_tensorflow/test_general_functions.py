@@ -1833,6 +1833,43 @@ def test_tensorflow_reverse(
     )
 
 
+# unstack
+@handle_frontend_test(
+    fn_tree="tensorflow.scan",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    reverse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_scan(
+    *,
+    dtypes_values,
+    reverse,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    def _test_fn(a, x):
+        return a + x
+
+    x_dtype, [elems] = dtypes_values
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        fn=_test_fn,
+        elems=elems,
+        reverse=reverse,
+    )
+
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.norm",
     aliases=["tensorflow.norm"],
