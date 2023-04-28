@@ -97,9 +97,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.median. This method simply
-        wraps the function, and so the docstring for ivy.median also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.median. This method simply wraps the
+        function, and so the docstring for ivy.median also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -138,9 +139,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.nanmean. This method simply
-        wraps the function, and so the docstring for ivy.nanmean also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.nanmean. This method simply wraps the
+        function, and so the docstring for ivy.nanmean also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -188,10 +190,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         interpolation: str = "linear",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.quantile.
-        This method simply wraps the function, and so the docstring
-        for ivy.quantile also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.quantile. This method simply wraps the
+        function, and so the docstring for ivy.quantile also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -272,9 +274,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         rowvar: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.corrcoef. This method simply
-        wraps the function, and so the docstring for ivy.corrcoef also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.corrcoef. This method simply wraps the
+        function, and so the docstring for ivy.corrcoef also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -315,9 +318,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         overwrite_input: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.nanmedian. This method simply
-        wraps the function, and so the docstring for ivy.nanmedian also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.nanmedian. This method simply wraps the
+        function, and so the docstring for ivy.nanmedian also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -375,9 +379,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         minlength: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.bincount. This method simply
-        wraps the function, and so the docstring for ivy.bincount also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.bincount. This method simply wraps the
+        function, and so the docstring for ivy.bincount also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

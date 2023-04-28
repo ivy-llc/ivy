@@ -485,7 +485,6 @@ def fomaml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
@@ -538,7 +537,8 @@ def reptile_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform step of Reptile.
+    """
+    Perform step of Reptile.
 
     Parameters
     ----------
@@ -573,7 +573,6 @@ def reptile_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
@@ -638,7 +637,8 @@ def maml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform step of vanilla second order MAML.
+    """
+    Perform step of vanilla second order MAML.
 
     Parameters
     ----------
@@ -698,7 +698,6 @@ def maml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
