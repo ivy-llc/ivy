@@ -48,6 +48,3 @@ RUN pip3 install --upgrade pip && \
     pip-autoremove jaxlib -y &&\
     python3 multicuda_framework_directory.py $fw
 
-COPY run_tests_CLI/test_dependencies.py .
-RUN python3 test_dependencies.py -fp multicuda_requirements.txt && \
-    rm -rf multicuda_requirements.txt
