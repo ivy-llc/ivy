@@ -86,6 +86,7 @@ def test_numpy_real(
 # conj
 @handle_frontend_test(
     fn_tree="numpy.conj",
+    aliases=["numpy.conjugate"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
     ),
@@ -111,32 +112,3 @@ def test_numpy_conj(
         x=x[0],
     )
 
-
-# conjugate
-@handle_frontend_test(
-    fn_tree="numpy.conjugate",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
-    ),
-    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="conjugate"
-    ),
-)
-def test_numpy_conjugate(
-    on_device,
-    frontend,
-    *,
-    dtype_and_x,
-    fn_tree,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-    
