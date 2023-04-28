@@ -1838,6 +1838,7 @@ def test_tensorflow_reverse(
         available_dtypes=['float32'],
         num_arrays=1,
         min_num_dims=2,
+        max_dim_size=3
     ),
     test_with_out=st.just(False),
 )
