@@ -42,6 +42,10 @@ def thresholded_relu(
 
 thresholded_relu.support_native_out = True
 
+def elu(x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.where(x > 0, x, alpha * (np.exp(x) - 1))
+
 
 @_scalar_output_to_0d_array
 def relu6(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:

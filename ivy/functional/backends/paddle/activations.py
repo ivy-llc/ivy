@@ -38,19 +38,6 @@ def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
-def elu(
-    x: paddle.Tensor,
-    /,
-    *,
-    alpha: float = 0.2,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.where(x > 0, x, alpha * (paddle.exp(x) - 1))
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def leaky_relu(
     x: paddle.Tensor,
     /,

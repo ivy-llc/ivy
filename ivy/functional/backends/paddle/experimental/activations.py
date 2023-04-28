@@ -42,6 +42,17 @@ def thresholded_relu(
         return ivy.where(ivy.greater_equal(x, threshold), x, 0)
 
 
+@paddle.jit.to_static
+def elu(
+    x: paddle.Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    inplace: bool = False,
+) -> paddle.Tensor:
+    return paddle.nn.functional.elu(x, alpha=alpha, inplace=inplace)
+
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )

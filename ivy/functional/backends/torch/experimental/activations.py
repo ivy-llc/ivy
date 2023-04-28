@@ -32,6 +32,15 @@ def thresholded_relu(
     x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return torch.threshold(x, threshold=threshold, value=0)
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
+def elu(x: torch.Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.functional.elu(x, alpha=alpha, inplace=False)
+
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def relu6(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:

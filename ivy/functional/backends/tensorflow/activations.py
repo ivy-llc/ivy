@@ -13,11 +13,6 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
-def elu(
-    x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None
-) -> Tensor:
-    return tf.where(x > 0, x, alpha * (tf.exp(x) - 1))
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)

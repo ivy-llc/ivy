@@ -36,6 +36,13 @@ def thresholded_relu(
     x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+def elu(
+    x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None
+) -> Tensor:
+    return tf.keras.activations.elu(x, alpha=alpha)
+
+
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def relu6(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:

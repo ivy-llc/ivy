@@ -30,15 +30,6 @@ def leaky_relu(
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
-def elu(x: torch.Tensor,
-    /,
-    *,
-    alpha: float = 1.0,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.where(x > 0, x, alpha * (torch.exp(x) - 1))
-
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)

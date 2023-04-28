@@ -62,6 +62,80 @@ def logit(
     return current_backend(x).logit(x, eps=eps, out=out)
 
 
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def elu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 1.0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the exponential linear unit function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    alpha
+        Scaling factor for the negative region. Default is 1.0.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The input array with elu applied element-wise.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    For x >= 0:
+    ELU(x) = x
+
+    For x < 0:
+    ELU(x) = alpha * (exp(x) - 1)
+
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.elu(x)
+    >>> print(y)
+    ivy.array([0.39, -0.574])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.elu(x, out=y)
+    >>> print(y)
+    ivy.array([1.5, 0.7, -0.864664])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
+    >>> ivy.elu(x, out=x)
+    >>> print(x)
+    ivy.array([[1.1, 2.2, 3.3],
+    [-0.994805, -0.995805, -0.996805]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.elu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0.0, -0.864664]),
+        b: ivy.array([0.4, -0.574])
+    }
+
+    """
+    return current_backend(x).elu(x, alpha=alpha, out=out)
+
+
+
+
 @inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion

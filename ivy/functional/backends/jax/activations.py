@@ -13,11 +13,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.backends.jax import JaxArray
 
-@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
-def elu(
-    x: JaxArray, /, *, alpha: float = 0.2, out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.where(x > 0, x, alpha * (jnp.exp(x) - 1))
+
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def gelu(
