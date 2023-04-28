@@ -2477,8 +2477,6 @@ def test_tensorflow_greater_equal(
     )
     
     
-    
-    
 # in_top_k
 @handle_frontend_test(
     fn_tree="tensorflow.math.in_top_k",
