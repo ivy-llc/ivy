@@ -1446,7 +1446,7 @@ class MaxPool2D(Module):
         dtype=None,
     ):
         """
-        Class for applying Max Pooling over a mini-batch of inputs
+        Class for applying Max Pooling over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -1493,7 +1493,7 @@ class AvgPool2D(Module):
         dtype=None,
     ):
         """
-        Class for applying Average Pooling over a mini-batch of inputs
+        Class for applying Average Pooling over a mini-batch of inputs.
 
         Parameters
         ----------

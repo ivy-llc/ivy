@@ -367,7 +367,7 @@ def scatter_nd(
                         if idx == slice(None, None, None)
                         else tf.range(
                             ivy.default(idx.start, 0),
-                            ivy.default(idx.stop, shape[0]),
+                            ivy.default(idx.stop, s),
                             ivy.default(idx.step, 1),
                         )
                         if isinstance(idx, slice) and (idx != slice(None, None, None))
@@ -446,7 +446,7 @@ def scatter_nd(
                                 if idx == slice(None, None, None)
                                 else tf.range(
                                     ivy.default(idx.start, 0),
-                                    ivy.ivy.default(idx.stop, shape[0]),
+                                    ivy.ivy.default(idx.stop, s),
                                     ivy.default(idx.step, 1),
                                 )
                                 if isinstance(idx, slice)
