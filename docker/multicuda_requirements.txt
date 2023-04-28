@@ -21,3 +21,4 @@ colorama
 packaging
 nvidia-ml-py
 paddle-bfloat
+paddlepaddle
