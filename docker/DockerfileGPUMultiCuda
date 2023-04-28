@@ -40,11 +40,6 @@ RUN apt-get update && \
     pip3 install setuptools==58.5.3
 
 
-# Install local optional
-COPY requirements/optional.txt .
-COPY requirements/requirements.txt .
-
-
 RUN pip3 install --upgrade pip && \
     pip3 install --upgrade pip-autoremove && \
     pip uninstall torch -y &&\
