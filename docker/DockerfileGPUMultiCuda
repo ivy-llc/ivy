@@ -6,6 +6,40 @@ ARG fw
 COPY /docker/multicuda_framework_directory.py .
 COPY /docker/multicuda_requirements.txt .
 
+
+ARG pycon=3.8.10
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install miniconda
+ENV CONDA_DIR /opt/miniconda/
+
+RUN apt clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y wget && \
+    apt-get install git -y && \
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/miniconda
+
+
+ENV PATH=$CONDA_DIR/bin:$PATH
+RUN conda create --name multienv python==$pycon
+
+# to fix protobuf conflicts
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
+ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
+RUN apt-get update && \
+    apt-get install -y python3-pip python3-tk && \
+    apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
+    apt-get install -y python-opengl && \
+    apt-get install -y git && \
+    apt-get install -y rsync && \
+    apt-get install -y libusb-1.0-0 && \
+    apt-get install -y libglib2.0-0 && \
+    pip3 install --upgrade pip && \
+    pip3 install setuptools==58.5.3
+
 RUN pip3 install --upgrade pip && \
     pip3 install --upgrade pip-autoremove && \
     pip3 install --no-cache-dir   -r multicuda_requirements.txt &&\
@@ -14,3 +48,7 @@ RUN pip3 install --upgrade pip && \
     pip-autoremove jax -y &&\
     pip-autoremove jaxlib -y &&\
     python3 multicuda_framework_directory.py $fw
+
+COPY run_tests_CLI/test_dependencies.py .
+RUN python3 test_dependencies.py -fp multicuda_requirements.txt && \
+    rm -rf multicuda_requirements.txt 
