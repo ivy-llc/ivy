@@ -781,3 +781,37 @@ def test_adaptive_avg_pool2d(
         input=x[0],
         output_size=output_size,
     )
+
+
+@handle_test(
+    fn_tree="stft",
+    d_xfft_axis_n_length=x_and_fft(helpers.get_dtypes("complex")),
+    d_xifft_axis_n_length=x_and_ifft(),
+    onesided=st.booleans(),
+)
+def test_stft(
+    *,
+    signal,
+    frame_length,
+    window,
+    onesided,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        signal=signal,
+        frame_length=frame_length,
+        window=window,
+        onesided=onesided,
+        dft_length=dft_length,
+        norm=norm,
+        rtol_=1e-2,
+        atol_=1e-2,
+    )
