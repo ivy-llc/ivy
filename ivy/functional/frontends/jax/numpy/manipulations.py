@@ -305,7 +305,6 @@ def blackman(M):
     return ret
 
 
-@handle_jax_dtype
 @to_ivy_arrays_and_back
 def tri(N, M=None, k=0, dtype="float64"):
     if M is None:
