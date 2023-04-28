@@ -998,3 +998,7 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
     def square(self):
         return torch_frontend.square(self._ivy_array)
+    
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def det(self):
+        return torch_frontend.log(torch_frontend.det(self))
