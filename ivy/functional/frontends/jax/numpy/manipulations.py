@@ -286,15 +286,6 @@ def kaiser(M, beta):
     return ret
 
 
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-def tri(N, M=None, k=0, dtype="float64"):
-    if M is None:
-        M = N
-    ones = ivy.ones((N, M), dtype=dtype)
-    return ivy.tril(ones, k=k)
-
-
 @to_ivy_arrays_and_back
 def blackman(M):
     if M < 1:
@@ -312,3 +303,12 @@ def blackman(M):
         + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
     )
     return ret
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def tri(N, M=None, k=0, dtype="float64"):
+    if M is None:
+        M = N
+    ones = ivy.ones((N, M), dtype=dtype)
+    return ivy.tril(ones, k=k)

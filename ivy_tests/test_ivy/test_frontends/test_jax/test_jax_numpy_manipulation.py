@@ -1612,6 +1612,28 @@ def test_jax_numpy_kaiser(
     )
 
 
+# blackman
+@handle_frontend_test(
+    fn_tree="jax.numpy.blackman",
+    m=helpers.ints(min_value=0, max_value=20),
+)
+def test_jax_numpy_blackman(
+    m,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m,
+    )
+
+
 # tri
 @handle_frontend_test(
     fn_tree="jax.numpy.tri",
@@ -1641,26 +1663,4 @@ def test_jax_numpy_tri(
         M=cols,
         k=k,
         dtype=dtype[0],
-    )
-
-
-# blackman
-@handle_frontend_test(
-    fn_tree="jax.numpy.blackman",
-    m=helpers.ints(min_value=0, max_value=20),
-)
-def test_jax_numpy_blackman(
-    m,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    helpers.test_frontend_function(
-        input_dtypes=["int64"],
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        M=m,
     )
