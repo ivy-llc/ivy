@@ -229,6 +229,7 @@ def row_stack(tup):
         return ivy.concat(xs, axis=0)
     return ivy.concat(tup, axis=0)
 
+
 @to_ivy_arrays_and_back
 def blackman(M):
     if M < 1:
@@ -240,5 +241,9 @@ def blackman(M):
     a0 = (1 - alpha) / 2
     a1 = 1 / 2
     a2 = alpha / 2
-    z = a0 - a1 * ivy.cos(2 * ivy.pi * n / (M - 1)) + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
-    return z
+    ret = (
+        a0
+        - a1 * ivy.cos(2 * ivy.pi * n / (M - 1))
+        + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
+    )
+    return ret
