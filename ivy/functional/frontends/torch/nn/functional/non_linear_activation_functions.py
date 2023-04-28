@@ -110,12 +110,6 @@ def gelu(input, *, approximate="none"):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-def tanh(input):
-    return ivy.tanh(input)
-
-
-@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
         "1.11.0 and below": (
@@ -305,6 +299,12 @@ def hardsigmoid(input, inplace=False):
         ivy.inplace_update(input, ret)
         return input
     return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def tanh(input):
+    return ivy.tanh(input)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
