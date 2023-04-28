@@ -32,7 +32,8 @@ def unravel_index(indices, shape, order="C"):
 
 @to_ivy_arrays_and_back
 def diag_indices(n, ndim=2):
-    idx = ivy.arange(n, dtype="int64")
+    idx = ivy.arange(n)
+    idx = idx.astype("int64")
     return (idx,) * ndim
 
 
