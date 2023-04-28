@@ -2387,7 +2387,7 @@ def test_torch_sgn(
         allow_nan=True,
         allow_inf=True,
     ),
-    nan=st.floats(min_value=-100, max_value=100),
+    nan=st.floats(min_value=-100.0, max_value=100.0),
     posinf=st.just(None) | st.floats(min_value=5e100, max_value=5e100),
     neginf=st.just(None) | st.floats(min_value=-5e100, max_value=-5e100),
     test_with_out=st.just(False),
