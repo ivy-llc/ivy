@@ -111,4 +111,3 @@ def test_numpy_conj(
         on_device=on_device,
         x=x[0],
     )
-
