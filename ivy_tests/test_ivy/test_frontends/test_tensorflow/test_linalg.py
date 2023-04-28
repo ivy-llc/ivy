@@ -837,7 +837,7 @@ def test_tensorflow_adjoint(
     )
 
 
-# qr
+# QR
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.qr",
     dtype_and_input=_get_dtype_and_matrix(),

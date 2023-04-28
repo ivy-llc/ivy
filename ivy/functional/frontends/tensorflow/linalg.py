@@ -255,7 +255,7 @@ def adjoint(matrix, name=None):
     return ivy.adjoint(matrix)
 
 
-# qr
+# QR
 @to_ivy_arrays_and_back
 def qr(input, full_matrices=False, name=None):
     if full_matrices:
