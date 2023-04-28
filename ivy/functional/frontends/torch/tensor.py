@@ -994,3 +994,7 @@ class Tensor:
 
     def mm(self, mat2):
         return torch_frontend.mm(self, mat2)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+    def square(self):
+        return torch_frontend.square(self._ivy_array)

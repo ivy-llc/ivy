@@ -964,6 +964,7 @@ def _check_arguments(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@to_native_arrays_and_back
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
