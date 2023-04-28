@@ -42,10 +42,10 @@ RUN apt-get update && \
 
 RUN pip3 install --upgrade pip && \
     pip3 install --upgrade pip-autoremove && \
+    pip3 install --upgrade --no-cache-dir -r multicuda_requirements.txt && \
     pip uninstall torch -y &&\
     pip uninstall tensorflow -y &&\
     pip uninstall jax -y &&\
     pip uninstall jaxlib -y &&\
-    pip3 install --upgrade --no-cache-dir -r multicuda_requirements.txt && \
     python3 multicuda_framework_directory.py $fw
 
