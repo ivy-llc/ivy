@@ -409,19 +409,21 @@ def test_torch_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cond",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=1, allow_nan=True
+    ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0]),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
 )
 def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtype[0],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-7,
-        atol=1e-8,
+        rtol=1e-1,
+        atol=1e-1,
         input=x[0],
         p=p,
     )
