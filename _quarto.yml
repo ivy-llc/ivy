@@ -16,7 +16,6 @@ website:
     logo: "assets/img/ivy_logo.png"
     collapse-level: 1
     contents:
-      - quickstart.ipynb
       - section: "Learn the Basics"
         contents:
           - "learn_the_basics/01_write_ivy_code.ipynb"
@@ -27,13 +26,9 @@ website:
           - "learn_the_basics/06_how_to_use_decorators.ipynb"
           - "learn_the_basics/07_transpile_any_library.ipynb"
           - "learn_the_basics/08_transpile_any_model.ipynb"
-          - "learn_the_basics/09_write_a_model_using_ivy.ipynb"
       - section: "Guides"
         contents:
           - "guides/01_transpiling_a_torch_model.ipynb"
-          - "guides/02_transpiling_a_haiku_model.ipynb"
-          - "guides/03_transpiling_a_tf_model.ipynb"
-          - "guides/04_developing_a_convnet_with_ivy.ipynb"
       - section: "Examples and Demos"
 
 format:
