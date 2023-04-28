@@ -1,18 +1,11 @@
 import sys
 import logging
 
-for device in tf.config.experimental.list_physical_devices("GPU"):
-    try:
-        tf.config.experimental.set_memory_growth(device, True)
-    except RuntimeError as e:
-        logging.warn(f"can not set {device} to dynamically allocate memory. {e}")
-from tensorflow.python.framework.dtypes import DType
-from tensorflow.python.framework.tensor_shape import TensorShape
-from tensorflow.python.types.core import Tensor
+import mxnet as mx
 import ivy
 from ivy.func_wrapper import _dtype_from_version
 
-backend_version = {"version": tf.__version__}
+backend_version = {"version": mx.__version__}
 if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
 else:
