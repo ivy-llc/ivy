@@ -314,6 +314,9 @@ class ndarray:
     def view(self):
         return np_frontend.reshape(self, tuple(self.shape))
 
+    def put(a, ind, v, mode="raise"):
+        return np_frontend.put(a, ind, v, mode="raise")
+
     def __add__(self, value, /):
         return np_frontend.add(self, value)
 
