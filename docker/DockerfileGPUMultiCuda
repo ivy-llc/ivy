@@ -32,7 +32,6 @@ ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
 RUN apt-get update && \
     apt-get install -y python3-pip python3-tk && \
     apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
-    apt-get install -y python-opengl && \
     apt-get install -y git && \
     apt-get install -y rsync && \
     apt-get install -y libusb-1.0-0 && \
@@ -51,4 +50,4 @@ RUN pip3 install --upgrade pip && \
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp multicuda_requirements.txt && \
-    rm -rf multicuda_requirements.txt 
+    rm -rf multicuda_requirements.txt
