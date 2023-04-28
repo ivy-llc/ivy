@@ -39,5 +39,5 @@ def vander(x, N=None, increasing=False):
 
 
 # diagflat
-def diagflat(v, k=0, offset=0,  padding_value=0, align="RIGHT_LEFT", num_rows=-1, num_cols=-1):
-    return ivy.diagflat(v, k=k)
+def diagflat(v, offset=0):
+    return ivy.diagflat(v, offset=offset)
