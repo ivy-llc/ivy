@@ -3,6 +3,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy import dtype
 
 
 # random_sample
@@ -22,15 +23,15 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     test_with_out=st.just(False),
 )
 def test_tensorflow_uniform(
-    shape,
-    minval,
-    maxval,
-    dtype,
-    seed,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        shape,
+        minval,
+        maxval,
+        dtype,
+        seed,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtypes, shape = shape
     helpers.test_frontend_function(
@@ -65,15 +66,15 @@ def test_tensorflow_uniform(
     test_with_out=st.just(False),
 )
 def test_tensorflow_normal(
-    frontend,
-    fn_tree,
-    on_device,
-    shape,
-    mean,
-    stddev,
-    dtype,
-    seed,
-    test_flags,
+        frontend,
+        fn_tree,
+        on_device,
+        shape,
+        mean,
+        stddev,
+        dtype,
+        seed,
+        test_flags,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -98,12 +99,12 @@ def test_tensorflow_normal(
     test_with_out=st.just(False),
 )
 def test_tensorflow_shuffle(
-    frontend,
-    fn_tree,
-    on_device,
-    dtype_value,
-    seed,
-    test_flags,
+        frontend,
+        fn_tree,
+        on_device,
+        dtype_value,
+        seed,
+        test_flags,
 ):
     input_dtypes, values = dtype_value
     helpers.test_frontend_function(
@@ -139,14 +140,14 @@ def test_tensorflow_shuffle(
     test_with_out=st.just(False),
 )
 def test_tensorflow_stateless_uniform(
-    shape,
-    seed,
-    minmaxval,
-    dtype,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        shape,
+        seed,
+        minmaxval,
+        dtype,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     shape_input_dtypes, shape = shape
     seed_input_dtypes, seed = seed
@@ -188,14 +189,14 @@ def test_tensorflow_stateless_uniform(
     test_with_out=st.just(False),
 )
 def test_tensorflow_poisson(
-    frontend,
-    fn_tree,
-    on_device,
-    shape,
-    lam,
-    dtype,
-    seed,
-    test_flags,
+        frontend,
+        fn_tree,
+        on_device,
+        shape,
+        lam,
+        dtype,
+        seed,
+        test_flags,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -208,4 +209,56 @@ def test_tensorflow_poisson(
         dtype=dtype[0],
         seed=seed,
         test_values=False,
+    )
+
+
+# stateless_binomial
+@handle_frontend_test(
+    fn_tree="tensorflow.random.stateless_binomial",
+    shape=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32"),
+        min_value=1,
+        max_value=5,
+        min_num_dims=1,
+        max_num_dims=1,
+        max_dim_size=9,
+    ),
+    seed=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
+    ),
+    counts=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32")),
+    probs=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32")),
+    dtype=helpers.array_dtypes(
+        available_dtypes=("int32", "int64", "float16", "float32", "float64"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_stateless_binomial(
+        shape,
+        seed,
+        counts,
+        probs,
+        dtype,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+):
+    shape_input_dtypes, shape = shape
+    seed_input_dtypes, seed = seed
+
+    helpers.test_frontend_function(
+        input_dtypes=shape_input_dtypes + seed_input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape[0],
+        seed=seed[0],
+        counts=counts[0],
+        probs=probs[0],
+        dtype=dtype[0],
     )

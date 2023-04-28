@@ -32,7 +32,7 @@ def shuffle(value, seed=None, name=None):
 
 @to_ivy_arrays_and_back
 def stateless_uniform(
-    shape, seed, minval=0, maxval=None, dtype=ivy.float32, name=None, alg="auto_select"
+        shape, seed, minval=0, maxval=None, dtype=ivy.float32, name=None, alg="auto_select"
 ):
     return ivy.random_uniform(
         shape=shape, seed=seed[0] + seed[1], low=minval, high=maxval, dtype=dtype
@@ -45,3 +45,13 @@ def stateless_uniform(
 @to_ivy_arrays_and_back
 def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
     return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed)
+
+
+# stateless_binomial
+@to_ivy_arrays_and_back
+def stateless_binomial(
+        shape, seed, counts, probs, output_dtype=ivy.int32, name=None
+):
+    return ivy.stateless_binomial(shape=shape, seed=seed[0] + seed[1], counts=counts, probs=probs,
+                                  output_dtype=output_dtype
+                                  )
