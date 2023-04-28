@@ -218,9 +218,22 @@ def get_shape(
         max_size=max_num_dims,
     )
     if allow_none:
-        shape = draw(st.none() | lists_strategy)
+        shape = draw(
+            st.none()
+            | st.lists(
+                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+                min_size=min_num_dims,
+                max_size=max_num_dims,
+            )
+        )
     else:
-        shape = draw(lists_strategy)
+        shape = draw(
+            st.lists(
+                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+                min_size=min_num_dims,
+                max_size=max_num_dims,
+            )
+        )
     if shape is None:
         return shape
     return tuple(shape)
@@ -465,23 +478,22 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         x_shape = (batch_size,) + x_dim + (input_channels,)
     else:
         x_shape = (batch_size, input_channels) + x_dim
-
-    common_kwargs = {
-        "dtype": dtype[0],
-        "large_abs_safety_factor": 3,
-        "small_abs_safety_factor": 4,
-        "safety_factor_scale": "log",
-    }
     vals = draw(
         array_helpers.array_values(
             shape=x_shape,
-            **common_kwargs,
+            dtype=dtype[0],
+            large_abs_safety_factor=3,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     filters = draw(
         array_helpers.array_values(
             shape=filter_shape,
-            **common_kwargs
+            dtype=dtype[0],
+            large_abs_safety_factor=3,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     if transpose:
