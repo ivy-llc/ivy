@@ -265,7 +265,7 @@ class IvyLoader(Loader):
         if self.filename in _compiled_modules_cache:
             compiled_obj = _compiled_modules_cache[self.filename]
         else:
-            with open(self.filename) as f:
+            with open(self.filename, mode="r", encoding="utf-8") as f:
                 data = f.read()
 
             ast_tree = parse(data)
