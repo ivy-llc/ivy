@@ -266,7 +266,7 @@ def _variable(x):
 
 
 def _is_variable(x, exclusive=False, to_ignore=None) -> bool:
-    x = ivy.to_native(x, nested=True)
+    x = ivy.to_native(x, nested=True, to_ignore=to_ignore)
     return ivy.nested_map(
         x,
         lambda x: current_backend(x).is_variable(x, exclusive=exclusive),
