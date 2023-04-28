@@ -1990,12 +1990,12 @@ def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwar
 
 
 def get_frontend_ret(
-    fn,
+    _fn,
     *args,
     as_ivy_arrays=True,
     **kwargs,
 ):
-    ret = fn(*args, **kwargs)
+    ret = _fn(*args, **kwargs)
     if as_ivy_arrays:
         ret = ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True})
     return ret
