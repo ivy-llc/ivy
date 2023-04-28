@@ -11,6 +11,7 @@ mod_frontend = {
     "numpy": None,
     "jax": None,
     "torch": None,
+    "mindspore": None
 }  # multiversion
 mod_backend = {
     "tensorflow": None,
