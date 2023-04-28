@@ -2129,7 +2129,6 @@ def test_tensorflow_floormod(
         on_device=on_device,
         x=x[0],
         y=x[1],
-
     )
 
 

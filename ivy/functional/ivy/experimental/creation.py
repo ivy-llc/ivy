@@ -570,7 +570,7 @@ def eye_like(
     }
 
     """
-    shape = ivy.shape(x, as_array = True)
+    shape = ivy.shape(x, as_array=True)
     dim = len(shape)
     if dim <= 1:
         cols = dim
