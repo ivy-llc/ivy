@@ -188,38 +188,6 @@ def handle_where_and_array_bools(where, input_dtype, test_flags):
     return where, input_dtype, test_flags
 
 
-def handle_dtype_and_casting(
-    *,
-    dtypes,
-    get_dtypes_kind="valid",
-    get_dtypes_index=0,
-    get_dtypes_none=True,
-    get_dtypes_key=None,
-):
-    casting = get_casting()
-    if casting in ["no", "equiv"]:
-        dtype = dtypes[0]
-        dtypes = [dtype for _ in dtypes]
-        return dtype, dtypes, casting
-    dtype = helpers.get_dtypes(
-        get_dtypes_kind,
-        index=get_dtypes_index,
-        full=False,
-        none=get_dtypes_none,
-        key=get_dtypes_key,
-    )
-    if casting in ["safe", "same_kind"]:
-        while not ivy.all([ivy.can_cast(x, dtype) for x in dtypes]):
-            dtype = helpers.get_dtypes(
-                get_dtypes_kind,
-                index=get_dtypes_index,
-                full=False,
-                none=get_dtypes_none,
-                key=get_dtypes_key,
-            )
-    return dtype, dtypes, casting
-
-
 @st.composite
 def _get_safe_casting_dtype(draw, *, dtypes):
     target_dtype = dtypes[0]
