@@ -38,28 +38,28 @@ def eigvalsh(tensor, name=None):
 @with_supported_dtypes(
     {
         "2.9.0 and below": (
-            "float16",
-            "float32",
-            "float64",
-            "int32",
-            "complex64",
-            "complex128",
+                "float16",
+                "float32",
+                "float64",
+                "int32",
+                "complex64",
+                "complex128",
         )
     },
     "tensorflow",
 )
 @to_ivy_arrays_and_back
 def matmul(
-    a,
-    b,
-    transpose_a=False,
-    transpose_b=False,
-    adjoint_a=False,
-    adjoint_b=False,
-    a_is_sparse=False,
-    b_is_sparse=False,
-    output_type=None,
-    name=None,
+        a,
+        b,
+        transpose_a=False,
+        transpose_b=False,
+        adjoint_a=False,
+        adjoint_b=False,
+        a_is_sparse=False,
+        b_is_sparse=False,
+        output_type=None,
+        name=None,
 ):
     if transpose_a and adjoint_a:
         raise ivy.utils.exceptions.IvyException(
@@ -130,16 +130,16 @@ def tensordot(a, b, axes, name=None):
 @with_unsupported_dtypes(
     {
         "2.9.1 and below": (
-            "float16",
-            "bfloat16",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
+                "float16",
+                "bfloat16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
         )
     },
     "tensorflow",
@@ -253,3 +253,15 @@ def einsum(equation, *inputs, **kwargs):
 @to_ivy_arrays_and_back
 def adjoint(matrix, name=None):
     return ivy.adjoint(matrix)
+
+
+# qr
+@to_ivy_arrays_and_back
+def qr(input, full_matrices=False, name=None):
+    if full_matrices:
+        Q, R = ivy.qr(input)
+        Q = []
+        ret = Q, R
+    else:
+        ret = ivy.qr(input)
+    return ret
