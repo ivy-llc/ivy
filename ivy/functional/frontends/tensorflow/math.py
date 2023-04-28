@@ -35,6 +35,11 @@ def exp(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def expm1(x, name=None):
+    return ivy.expm1(x)
+
+
+@to_ivy_arrays_and_back
 def sqrt(x, name=None):
     return ivy.sqrt(x)
 
