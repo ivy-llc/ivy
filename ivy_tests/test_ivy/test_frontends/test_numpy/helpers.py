@@ -188,6 +188,7 @@ def handle_where_and_array_bools(where, input_dtype, test_flags):
     return where, input_dtype, test_flags
 
 
+# Casting helper
 @st.composite
 def _get_safe_casting_dtype(draw, *, dtypes):
     target_dtype = dtypes[0]
