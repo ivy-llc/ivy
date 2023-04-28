@@ -108,25 +108,26 @@ def floats(
             exclude_max=exclude_max,
         )
     else:
-        width = floats_info[dtype]["width"]
-        float_strategy_kwargs = {
-            "allow_nan": allow_nan,
-            "allow_subnormal": allow_subnormal,
-            "allow_infinity": allow_inf,
-            "width": width,
-            "exclude_min": exclude_min,
-            "exclude_max": exclude_max,
-        }
         float_strategy = st.one_of(
             st.floats(
-                min_value=float_of(min_value, width),
-                max_value=float_of(-abs_smallest_val, width),
-                **float_strategy_kwargs
+                min_value=float_of(min_value, floats_info[dtype]["width"]),
+                max_value=float_of(-abs_smallest_val, floats_info[dtype]["width"]),
+                allow_nan=allow_nan,
+                allow_subnormal=allow_subnormal,
+                allow_infinity=allow_inf,
+                width=floats_info[dtype]["width"],
+                exclude_min=exclude_min,
+                exclude_max=exclude_max,
             ),
             st.floats(
-                min_value=float_of(abs_smallest_val, width),
-                max_value=float_of(max_value, width),
-                **float_strategy_kwargs
+                min_value=float_of(abs_smallest_val, floats_info[dtype]["width"]),
+                max_value=float_of(max_value, floats_info[dtype]["width"]),
+                allow_nan=allow_nan,
+                allow_subnormal=allow_subnormal,
+                allow_infinity=allow_inf,
+                width=floats_info[dtype]["width"],
+                exclude_min=exclude_min,
+                exclude_max=exclude_max,
             ),
         )
     values = draw(float_strategy)
