@@ -15,7 +15,7 @@ def _instance_and_batch_norm_helper(draw, *, min_num_dims=1, min_dim_size=1):
             small_abs_safety_factor=24,
             safety_factor_scale="log",
             min_num_dims=min_num_dims,
-            max_num_dims=4,
+            max_num_dims=5,
             min_dim_size=min_dim_size,
             ret_shape=True,
             max_value=999,
@@ -86,7 +86,7 @@ def test_instance_norm(
 # batch_norm
 @handle_test(
     fn_tree="functional.ivy.experimental.batch_norm",
-    data=_instance_and_batch_norm_helper(min_num_dims=1, min_dim_size=2),
+    data=_instance_and_batch_norm_helper(min_num_dims=2, min_dim_size=2),
     eps=helpers.floats(min_value=1e-5, max_value=0.1),
     momentum=helpers.floats(min_value=0.0, max_value=1.0),
     training=st.booleans(),

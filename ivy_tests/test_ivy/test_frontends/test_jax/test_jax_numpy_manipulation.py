@@ -613,7 +613,7 @@ def test_jax_numpy_stack(
     fn_tree="jax.numpy.take",
     dtype_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=helpers.get_dtypes("integer"),
+        indices_dtypes=['int32', 'int64'],
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -1641,4 +1641,26 @@ def test_jax_numpy_tri(
         M=cols,
         k=k,
         dtype=dtype[0],
+    )
+
+
+# blackman
+@handle_frontend_test(
+    fn_tree="jax.numpy.blackman",
+    m=helpers.ints(min_value=0, max_value=20),
+)
+def test_jax_numpy_blackman(
+    m,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m,
     )
