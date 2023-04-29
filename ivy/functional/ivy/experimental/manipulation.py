@@ -43,10 +43,10 @@ def flatten(
     order: str = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Flattens input by reshaping it into a one-dimensional tensor.
-    If start_dim or end_dim are passed, only dimensions starting
-    with start_dim and ending with end_dim are flattened.
-    The order of elements in input is unchanged.
+    """
+    Flattens input by reshaping it into a one-dimensional tensor. If start_dim or
+    end_dim are passed, only dimensions starting with start_dim and ending with end_dim
+    are flattened. The order of elements in input is unchanged.
 
     Parameters
     ----------
@@ -186,7 +186,8 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Move axes of an array to new positions..
+    """
+    Move axes of an array to new positions..
 
     Parameters
     ----------
@@ -232,7 +233,8 @@ def _iter_product(*args, repeat=1):
 def ndenumerate(
     input: Iterable,
 ) -> Generator:
-    """Multidimensional index iterator.
+    """
+    Multidimensional index iterator.
 
     Parameters
     ----------
@@ -271,7 +273,8 @@ def ndenumerate(
 def ndindex(
     shape: Tuple,
 ) -> Generator:
-    """Multidimensional index iterator.
+    """
+    Multidimensional index iterator.
 
     Parameters
     ----------
@@ -308,7 +311,8 @@ def heaviside(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Heaviside step function for each element in x1.
+    """
+    Compute the Heaviside step function for each element in x1.
 
     Parameters
     ----------
@@ -354,9 +358,9 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Flip array in the up/down direction.
-    Flip the entries in each column in the up/down direction.
-    Rows are preserved, but appear in a different order than before.
+    """
+    Flip array in the up/down direction. Flip the entries in each column in the up/down
+    direction. Rows are preserved, but appear in a different order than before.
 
     Parameters
     ----------
@@ -391,7 +395,8 @@ def vstack(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Stack arrays in sequence vertically (row wise).
+    """
+    Stack arrays in sequence vertically (row wise).
 
     Parameters
     ----------
@@ -420,7 +425,6 @@ def vstack(
     >>> print(ivy.vstack(y))
     ivy.array([[5, 6],
                [7, 8]])
-
     """
     return ivy.current_backend().vstack(arrays, out=out)
 
@@ -434,7 +438,8 @@ def hstack(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Stack arrays in sequence horizotally (column wise).
+    """
+    Stack arrays in sequence horizotally (column wise).
 
     Parameters
     ----------
@@ -459,7 +464,6 @@ def hstack(
     >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
     >>> print(ivy.hstack(y))
     ivy.array([[5, 6, 7, 8]])
-
     """
     return ivy.current_backend().hstack(arrays, out=out)
 
@@ -479,8 +483,9 @@ def rot90(
     axes: Tuple[int, int] = (0, 1),
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rotate an array by 90 degrees in the plane specified by axes.
-    Rotation direction is from the first towards the second axis.
+    """
+    Rotate an array by 90 degrees in the plane specified by axes. Rotation direction is
+    from the first towards the second axis.
 
     Parameters
     ----------
@@ -540,7 +545,6 @@ def rot90(
 
            [[7, 6],
             [5, 4]]])
-
     """
     return ivy.current_backend(m).rot90(m, copy=copy, k=k, axes=axes, out=out)
 
@@ -559,7 +563,8 @@ def top_k(
     largest: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
-    """Returns the `k` largest elements of the given input array along a given axis.
+    """
+    Return the `k` largest elements of the given input array along a given axis.
 
     Parameters
     ----------
@@ -633,9 +638,10 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Flip array in the left/right direction.
-    Flip the entries in each column in the left/right direction.
-    Columns are preserved, but appear in a different order than before.
+    """
+    Flip array in the left/right direction. Flip the entries in each column in the
+    left/right direction. Columns are preserved, but appear in a different order than
+    before.
 
     Parameters
     ----------
@@ -671,7 +677,8 @@ def i0(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Bessel i0 function of x element-wise.
+    """
+    Compute the Bessel i0 function of x element-wise.
 
     Parameters
     ----------
@@ -957,6 +964,7 @@ def _check_arguments(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@to_native_arrays_and_back
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
@@ -984,7 +992,8 @@ def pad(
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> ivy.Array:
-    """Pads an array.
+    """
+    Pad an array.
 
     Parameters
     ----------
@@ -1214,7 +1223,8 @@ def vsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Split an array vertically into multiple sub-arrays.
+    """
+    Split an array vertically into multiple sub-arrays.
 
     Parameters
     ----------
@@ -1256,7 +1266,8 @@ def dsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Split an array into multiple sub-arrays along the 3rd axis.
+    """
+    Split an array into multiple sub-arrays along the 3rd axis.
 
     Parameters
     ----------
@@ -1292,7 +1303,6 @@ def dsplit(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1300,9 +1310,9 @@ def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Convert inputs to arrays with at least one dimension.
-    Scalar inputs are converted to 1-dimensional arrays, whilst
-    higher-dimensional inputs are preserved.
+    """
+    Convert inputs to arrays with at least one dimension. Scalar inputs are converted to
+    1-dimensional arrays, whilst higher-dimensional inputs are preserved.
 
     Parameters
     ----------
@@ -1338,7 +1348,8 @@ def dstack(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Stack arrays in sequence depth wise (along third axis).
+    """
+    Stack arrays in sequence depth wise (along third axis).
 
     Parameters
     ----------
@@ -1369,7 +1380,6 @@ def dstack(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1377,9 +1387,9 @@ def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Convert inputs to arrays with at least two dimension.
-    Scalar inputs are converted to 2-dimensional arrays, whilst
-    higher-dimensional inputs are preserved.
+    """
+    Convert inputs to arrays with at least two dimension. Scalar inputs are converted to
+    2-dimensional arrays, whilst higher-dimensional inputs are preserved.
 
     Parameters
     ----------
@@ -1414,9 +1424,9 @@ def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Convert inputs to arrays with at least three dimension.
-    Scalar inputs are converted to 3-dimensional arrays, whilst
-    higher-dimensional inputs are preserved.
+    """
+    Convert inputs to arrays with at least three dimension. Scalar inputs are converted
+    to 3-dimensional arrays, whilst higher-dimensional inputs are preserved.
 
     Parameters
     ----------
@@ -1468,7 +1478,8 @@ def take_along_axis(
     mode: str = "fill",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Take values from the input array by matching 1d index and data slices.
+    """
+    Take values from the input array by matching 1d index and data slices.
 
     Parameters
     ----------
@@ -1514,7 +1525,8 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Split an array into multiple sub-arrays horizontally.
+    """
+    Split an array into multiple sub-arrays horizontally.
 
     Parameters
     ----------
@@ -1554,7 +1566,8 @@ def hsplit(
 
 @handle_exceptions
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    """Broadcasts shapes.
+    """
+    Broadcasts shapes.
 
     Parameters
     ----------
@@ -1594,8 +1607,7 @@ def expand(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Broadcast the input Array following the given shape
-    and the broadcast rule.
+    Broadcast the input Array following the given shape and the broadcast rule.
 
     Parameters
     ----------
@@ -1792,7 +1804,6 @@ def associative_scan(
     -------
     ret
         The result of the scan.
-
     """
     elems = [x]
 

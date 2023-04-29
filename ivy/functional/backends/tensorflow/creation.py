@@ -305,6 +305,7 @@ def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if not sparse:
         return tf.meshgrid(*arrays, indexing=indexing)

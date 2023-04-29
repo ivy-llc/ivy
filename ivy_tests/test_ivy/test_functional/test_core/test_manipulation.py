@@ -576,10 +576,8 @@ def test_repeat(
 
 @st.composite
 def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
-    """
-    Generate valid splits, either by generating an integer that evenly divides the axis
-    or a list of splits that sum to the length of the axis being split.
-    """
+    """Generate valid splits, either by generating an integer that evenly divides the
+    axis or a list of splits that sum to the length of the axis being split."""
     shape = draw(
         st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
     )

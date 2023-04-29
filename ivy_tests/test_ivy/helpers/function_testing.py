@@ -114,8 +114,9 @@ except ImportError:
 
 
 def _find_instance_in_args(args, array_indices, mask):
-    """Find the first element in the arguments that is considered to be an
-    instance of Array or Container class.
+    """
+    Find the first element in the arguments that is considered to be an instance of
+    Array or Container class.
 
     Parameters
     ----------
@@ -160,8 +161,9 @@ def test_function(
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
 ):
-    """Tests a function that consumes (or returns) arrays for the current backend
-    by comparing the result with numpy.
+    """
+    Test a function that consumes (or returns) arrays for the current backend by
+    comparing the result with numpy.
 
     Parameters
     ----------
@@ -531,8 +533,9 @@ def test_frontend_function(
     test_values: bool = True,
     **all_as_kwargs_np,
 ):
-    """Tests a frontend function for the current backend by comparing the result with
-    the function in the associated framework.
+    """
+    Test a frontend function for the current backend by comparing the result with the
+    function in the associated framework.
 
     Parameters
     ----------
@@ -1074,8 +1077,9 @@ def test_method(
     on_device: str,
     return_flat_np_arrays: bool = False,
 ):
-    """Tests a class-method that consumes (or returns) arrays for the current backend
-    by comparing the result with numpy.
+    """
+    Test a class-method that consumes (or returns) arrays for the current backend by
+    comparing the result with numpy.
 
     Parameters
     ----------
@@ -1481,8 +1485,9 @@ def test_frontend_method(
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
 ):
-    """Tests a class-method that consumes (or returns) arrays for the current backend
-    by comparing the result with numpy.
+    """
+    Test a class-method that consumes (or returns) arrays for the current backend by
+    comparing the result with numpy.
 
     Parameters
     ----------
@@ -1797,7 +1802,7 @@ def _get_framework_atol(atols: dict, current_fw: str):
 
 def _get_nested_np_arrays(nest):
     """
-    A helper function to search for a NumPy arrays in a nest
+    Search for a NumPy arrays in a nest.
 
     Parameters
     ----------
@@ -1826,7 +1831,8 @@ def create_args_kwargs(
     test_flags: Union[pf.FunctionTestFlags, pf.MethodTestFlags],
     on_device,
 ):
-    """Creates arguments and keyword-arguments for the function to test.
+    """
+    Create arguments and keyword-arguments for the function to test.
 
     Parameters
     ----------
@@ -1860,15 +1866,17 @@ def create_args_kwargs(
 
 
 def convtrue(argument):
-    """Convert NativeClass in argument to true framework counter part"""
+    """Convert NativeClass in argument to true framework counter part."""
     if isinstance(argument, NativeClass):
         return argument._native_class
     return argument
 
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
-    """Splits the kwargs into args and kwargs, with the first num_positional_args ported
-    to args.
+    """
+    Split the kwargs into args and kwargs.
+
+    The first num_positional_args ported to args.
     """
     args = [v for v in list(kwargs.values())[:num_positional_args]]
     kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_positional_args:]}
@@ -1876,7 +1884,7 @@ def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
 
 
 def flatten_fw_and_to_np(*, ret, fw):
-    """Returns a flattened numpy version of the arrays in ret for a given framework."""
+    """Return a flattened numpy version of the arrays in ret for a given framework."""
     if not isinstance(ret, tuple):
         ret = (ret,)
     if fw == "jax":
@@ -1909,7 +1917,7 @@ def flatten_fw_and_to_np(*, ret, fw):
 
 
 def flatten(*, ret):
-    """Returns a flattened numpy version of the arrays in ret."""
+    """Return a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
     ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
@@ -1927,7 +1935,7 @@ def flatten(*, ret):
 
 
 def flatten_frontend(*, ret, frontend_array_fn=None):
-    """Returns a flattened numpy version of the frontend arrays in ret."""
+    """Return a flattened numpy version of the frontend arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
 
@@ -1963,8 +1971,9 @@ def flatten_frontend_to_np(*, ret, frontend_array_fn=None):
 
 def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwargs):
     """
-    Runs func with args and kwargs, and returns the result along with its flattened
-    version.
+    Run func with args and kwargs.
+
+    Return the result along with its flattened version.
     """
     fn = compiled_if_required(fn, test_compile=test_compile, args=args, kwargs=kwargs)
     ret = fn(*args, **kwargs)
@@ -1998,12 +2007,12 @@ def args_to_container(array_args):
 
 
 def as_lists(*args):
-    """Changes the elements in args to be of type list."""
+    """Change the elements in args to be of type list."""
     return (a if isinstance(a, list) else [a] for a in args)
 
 
 def var_fn(x, *, dtype=None, device=None):
-    """Returns x as a variable wrapping an Ivy Array with given dtype and device"""
+    """Return x as a variable wrapping an Ivy Array with given dtype and device."""
     return _variable(ivy.array(x, dtype=dtype, device=device))
 
 

@@ -1,4 +1,4 @@
-"""Base class for deriving trainable modules"""
+"""Base class for deriving trainable modules."""
 
 # global
 import os
@@ -130,8 +130,10 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def _fn_with_var_arg(self, fn, v_fn, /):
         """
-        Use v_fn to extract the variables and use the extracted variables
-        as inputs to the call function fn of the module.
+        Extract variables from `v_fn` and use it as inputs for `fn`.
+
+        Use `v_fn` to extract the variables and use the extracted
+        variables as inputs to the call function fn of the module.
         """
 
         def _fn_with_var_arg_wrapper(*a, **kw):
@@ -200,8 +202,7 @@ class Module(ModuleConverters, ModuleHelpers):
         """
         Extract the variables from the variables container v using the key
         orig_key_chain and reinstantiate the duplicate variables that were removed by
-        _remove_duplicate_variables in their correct locations using
-        keychain_mappings.
+        _remove_duplicate_variables in their correct locations using keychain_mappings.
 
         Parameters
         ----------
@@ -233,8 +234,8 @@ class Module(ModuleConverters, ModuleHelpers):
         self, keychain_mappings, /, *, key="", obj=None, _visited=None
     ):
         """
-        Wraps the call methods of the Module object by looping over all the items
-        within the module, wrapping the __call__ methods of all submodules using
+        Wrap the call methods of the Module object by looping over all the items within
+        the module, wrapping the __call__ methods of all submodules using
         _fn_with_var_arg.
 
         Parameters
@@ -374,8 +375,7 @@ class Module(ModuleConverters, ModuleHelpers):
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
         """
-        Forward pass of the layer,
-        called after handling the optional input variables.
+        Forward pass of the layer, called after handling the optional input variables.
 
         Raises
         ------
@@ -385,8 +385,7 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def _forward_with_tracking(self, *args, **kwargs):
         """
-        Forward pass while optionally tracking submodule returns
-        and call order.
+        Forward pass while optionally tracking submodule returns and call order.
 
         Returns
         -------
@@ -406,8 +405,7 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def _call(self, *args, v=None, **kwargs):
         """
-        The forward pass of the layer,
-        treating layer instance as callable function.
+        Compute forward pass of the layer, treating layer instance as callable function.
 
         Parameters
         ----------
@@ -713,8 +711,8 @@ class Module(ModuleConverters, ModuleHelpers):
         **compile_kwargs,
     ):
         """
-        Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the
-        target backend.
+        Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target
+        backend.
 
         Parameters
         ----------

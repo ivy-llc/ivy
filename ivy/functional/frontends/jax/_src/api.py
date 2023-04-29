@@ -17,8 +17,8 @@ def vmap(
 
 @to_ivy_arrays_and_back
 def device_get(x):
-    if ivy.dev(x) != 'cpu':
-        x = ivy.to_device(x, 'cpu')
+    if ivy.dev(x) != "cpu":
+        x = ivy.to_device(x, "cpu")
     return x
 
 
