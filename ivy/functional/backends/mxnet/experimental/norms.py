@@ -1,8 +1,8 @@
 from typing import Union, Optional, Tuple
-
+import mxnet as mx
 
 def l2_normalize(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     axis: Optional[int] = None,
@@ -12,43 +12,43 @@ def l2_normalize(
 
 
 def batch_norm(
-    x: Union[(None, tf.Variable)],
-    mean: Union[(None, tf.Variable)],
-    variance: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    mean: Union[(None, mx.ndarray.NDArray)],
+    variance: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    scale: Optional[Union[(None, tf.Variable)]] = None,
-    offset: Optional[Union[(None, tf.Variable)]] = None,
+    scale: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    offset: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
     training: bool = False,
     eps: float = 1e-05,
     momentum: float = 0.1,
     out: Optional[None] = None,
 ) -> Tuple[
-    (Union[(None, tf.Variable)], Union[(None, tf.Variable)], Union[(None, tf.Variable)])
+    (Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])
 ]:
     raise NotImplementedError("mxnet.batch_norm Not Implemented")
 
 
 def instance_norm(
-    x: Union[(None, tf.Variable)],
-    mean: Union[(None, tf.Variable)],
-    variance: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    mean: Union[(None, mx.ndarray.NDArray)],
+    variance: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    scale: Optional[Union[(None, tf.Variable)]] = None,
-    offset: Optional[Union[(None, tf.Variable)]] = None,
+    scale: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    offset: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
     training: bool = False,
     eps: float = 1e-05,
     momentum: float = 0.1,
     out: Optional[None] = None,
 ) -> Tuple[
-    (Union[(None, tf.Variable)], Union[(None, tf.Variable)], Union[(None, tf.Variable)])
+    (Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])
 ]:
     raise NotImplementedError("mxnet.instance_norm Not Implemented")
 
 
 def lp_normalize(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     p: float = 2,

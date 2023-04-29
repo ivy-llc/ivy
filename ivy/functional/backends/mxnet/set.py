@@ -1,35 +1,35 @@
 from typing import Tuple, Union, Optional
-
+import mxnet as mx
 
 def unique_all(
-    x: Union[(None, tf.Variable)], /, *, axis: Optional[int] = None
+    x: Union[(None, mx.ndarray.NDArray)], /, *, axis: Optional[int] = None
 ) -> Tuple[
     (
-        Union[(None, tf.Variable)],
-        Union[(None, tf.Variable)],
-        Union[(None, tf.Variable)],
-        Union[(None, tf.Variable)],
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
     )
 ]:
     raise NotImplementedError("mxnet.unique_all Not Implemented")
 
 
 def unique_counts(
-    x: Union[(None, tf.Variable)], /
-) -> Tuple[(Union[(None, tf.Variable)], Union[(None, tf.Variable)])]:
+    x: Union[(None, mx.ndarray.NDArray)], /
+) -> Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]:
     raise NotImplementedError("mxnet.unique_counts Not Implemented")
 
 
 def unique_inverse(
-    x: Union[(None, tf.Variable)], /
-) -> Tuple[(Union[(None, tf.Variable)], Union[(None, tf.Variable)])]:
+    x: Union[(None, mx.ndarray.NDArray)], /
+) -> Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]:
     raise NotImplementedError("mxnet.unique_inverse Not Implemented")
 
 
 def unique_values(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.unique_values Not Implemented")

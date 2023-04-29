@@ -1,4 +1,5 @@
-backend_version = {"version": tf.__version__}
+import mxnet as mx
+backend_version = {"version": mx.__version__}
 from .activations import *
 from .creation import *
 from .data_type import *

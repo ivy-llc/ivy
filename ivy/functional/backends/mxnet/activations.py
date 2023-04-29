@@ -1,4 +1,5 @@
-"\nTensorFlow activation functions.\n\nCollection of TensorFlow activation functions, wrapped to fit Ivy syntax\nand signature.\n"
+"\nMXNet activation functions.\n\nCollection of MXNet activation functions, wrapped to fit Ivy syntax\nand signature.\n"
+import mxnet as mx
 from typing import Optional, Union
 import ivy
 

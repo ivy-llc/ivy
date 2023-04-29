@@ -1,25 +1,26 @@
-"Collection of TensorFlow network layers, wrapped to fit Ivy syntax and signature."
+"Collection of MXNet network layers, wrapped to fit Ivy syntax and signature."
+import mxnet as mx
 from typing import Optional, Tuple, Union, Sequence
 import ivy
 
 
 def conv1d(
-    x: Union[(None, tf.Variable)],
-    filters: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    filters: Union[(None, mx.ndarray.NDArray)],
     strides: Union[(int, Tuple[int])],
     padding: Union[(str, int, Sequence[Tuple[(int, int)]])],
     /,
     *,
     data_format: str = "NWC",
     dilations: Union[(int, Tuple[int])] = 1,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.conv1d Not Implemented")
 
 
 def conv1d_transpose(
-    x: Union[(None, tf.Variable)],
-    filters: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    filters: Union[(None, mx.ndarray.NDArray)],
     strides: Union[(int, Tuple[int])],
     padding: str,
     /,
@@ -27,28 +28,28 @@ def conv1d_transpose(
     output_shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
     data_format: str = "NWC",
     dilations: Union[(int, Tuple[int])] = 1,
-    out: Optional[Union[(None, tf.Variable)]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
     raise NotImplementedError("mxnet.conv1d_transpose Not Implemented")
 
 
 def conv2d(
-    x: Union[(None, tf.Variable)],
-    filters: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    filters: Union[(None, mx.ndarray.NDArray)],
     strides: Union[(int, Tuple[(int, int)])],
     padding: Union[(str, int, Sequence[Tuple[(int, int)]])],
     /,
     *,
     data_format: str = "NHWC",
     dilations: Union[(int, Tuple[(int, int)])] = 1,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.conv2d Not Implemented")
 
 
 def conv2d_transpose(
-    x: Union[(None, tf.Variable)],
-    filters: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    filters: Union[(None, mx.ndarray.NDArray)],
     strides: Union[(int, Tuple[(int, int)])],
     padding: str,
     /,
@@ -56,35 +57,35 @@ def conv2d_transpose(
     output_shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
     data_format: str = "NHWC",
     dilations: Union[(int, Tuple[(int, int)])] = 1,
-    out: Optional[Union[(None, tf.Variable)]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
     raise NotImplementedError("mxnet.conv2d_transpose Not Implemented")
 
 
 def depthwise_conv2d(
-    x: Union[(None, tf.Variable)],
-    filters: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    filters: Union[(None, mx.ndarray.NDArray)],
     strides: Union[(int, Tuple[(int, int)])],
     padding: Union[(str, int, Sequence[Tuple[(int, int)]])],
     /,
     *,
     data_format: str = "NHWC",
     dilations: Union[(int, Tuple[(int, int)])] = 1,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.depthwise_conv2d Not Implemented")
 
 
 def conv3d(
-    x: Union[(None, tf.Variable)],
-    filters: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    filters: Union[(None, mx.ndarray.NDArray)],
     strides: Union[(int, Tuple[(int, int, int)])],
     padding: Union[(str, int, Sequence[Tuple[(int, int)]])],
     /,
     *,
     data_format: str = "NDHWC",
     dilations: Union[(int, Tuple[(int, int, int)])] = 1,
-    out: Optional[Union[(None, tf.Variable)]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
     raise NotImplementedError("mxnet.conv3d Not Implemented")
 
@@ -99,14 +100,14 @@ def conv3d_transpose(
     output_shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
     data_format: str = "NDHWC",
     dilations: Union[(int, Tuple[(int, int, int)])] = 1,
-    out: Optional[Union[(None, tf.Variable)]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> None:
     raise NotImplementedError("mxnet.conv3d_transpose Not Implemented")
 
 
 def conv_general_dilated(
-    x: Union[(None, tf.Variable)],
-    filters: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    filters: Union[(None, mx.ndarray.NDArray)],
     strides: Union[(int, Tuple[int], Tuple[(int, int)], Tuple[(int, int, int)])],
     padding: Union[(str, int, Sequence[Tuple[(int, int)]])],
     /,
@@ -118,15 +119,15 @@ def conv_general_dilated(
         (int, Tuple[int], Tuple[(int, int)], Tuple[(int, int, int)])
     ] = 1,
     dilations: Union[(int, Tuple[int], Tuple[(int, int)], Tuple[(int, int, int)])] = 1,
-    bias: Optional[Union[(None, tf.Variable)]] = None,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    bias: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.conv_general_dilated Not Implemented")
 
 
 def conv_general_transpose(
-    x: Union[(None, tf.Variable)],
-    filters: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
+    filters: Union[(None, mx.ndarray.NDArray)],
     strides: Union[(int, Tuple[(int, int)])],
     padding: str,
     /,
@@ -136,7 +137,7 @@ def conv_general_transpose(
     output_shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
     dilations: Union[(int, Tuple[int], Tuple[(int, int)], Tuple[(int, int, int)])] = 1,
     feature_group_count: int = 1,
-    bias: Optional[Union[(None, tf.Variable)]] = None,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    bias: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.conv_general_transpose Not Implemented")

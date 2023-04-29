@@ -1,3 +1,4 @@
+import mxnet as mx
 from typing import Optional, Union, Sequence, List
 import numpy as np
 import ivy
@@ -26,7 +27,7 @@ native_dtype_dict = {
 
 
 class Finfo:
-    def __init__(self, tf_finfo: tf.experimental.numpy.finfo):
+    def __init__(self, mx_finfo: np.finfo):
         raise NotImplementedError("mxnet.__init__ Not Implemented")
 
     def __repr__(self):
@@ -62,43 +63,43 @@ class Bfloat16Finfo:
 
 
 def astype(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     dtype: Union[(None, str)],
     /,
     *,
     copy: bool = True,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.astype Not Implemented")
 
 
 def broadcast_arrays(
-    *arrays: Union[(None, tf.Variable)]
-) -> List[Union[(None, tf.Variable)]]:
+    *arrays: Union[(None, mx.ndarray.NDArray)]
+) -> List[Union[(None, mx.ndarray.NDArray)]]:
     raise NotImplementedError("mxnet.broadcast_arrays Not Implemented")
 
 
 def broadcast_to(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     shape: Union[(ivy.NativeShape, Sequence[int])],
     *,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.broadcast_to Not Implemented")
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[(None, str, None, tf.Variable, np.ndarray)], /) -> Finfo:
+def finfo(type: Union[(None, str, None, mx.ndarray.NDArray, np.ndarray)], /) -> Finfo:
     raise NotImplementedError("mxnet.finfo Not Implemented")
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[(None, str, None, tf.Variable, np.ndarray)], /) -> np.iinfo:
+def iinfo(type: Union[(None, str, None, mx.ndarray.NDArray, np.ndarray)], /) -> np.iinfo:
     raise NotImplementedError("mxnet.iinfo Not Implemented")
 
 
-def result_type(*arrays_and_dtypes: Union[(None, tf.Variable, None)]) -> ivy.Dtype:
+def result_type(*arrays_and_dtypes: Union[(None, mx.ndarray.NDArray, None)]) -> ivy.Dtype:
     raise NotImplementedError("mxnet.result_type Not Implemented")
 
 
@@ -113,7 +114,7 @@ def as_native_dtype(dtype_in: Union[(None, str, bool, int, float, np.dtype)]) ->
 
 
 def dtype(
-    x: Union[(None, tf.Variable, np.ndarray)], *, as_native: bool = False
+    x: Union[(None, mx.ndarray.NDArray, np.ndarray)], *, as_native: bool = False
 ) -> ivy.Dtype:
     raise NotImplementedError("mxnet.dtype Not Implemented")
 

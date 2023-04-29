@@ -1,5 +1,3 @@
-
-
 def is_native_sparse_array(x):
     raise NotImplementedError("mxnet.is_native_sparse_array Not Implemented")
 

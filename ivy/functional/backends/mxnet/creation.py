@@ -1,3 +1,4 @@
+import mxnet as mx
 import numpy as np
 from numbers import Number
 from typing import Union, List, Optional, Sequence
@@ -19,8 +20,8 @@ def arange(
     *,
     dtype: Optional[None] = None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.arange Not Implemented")
 
 
@@ -31,7 +32,7 @@ def asarray(
     obj: Union[
         (
             None,
-            tf.Variable,
+            mx.ndarray.NDArray,
             bool,
             int,
             float,
@@ -45,8 +46,8 @@ def asarray(
     copy: Optional[bool] = None,
     dtype: Optional[None] = None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.asarray Not Implemented")
 
 
@@ -55,19 +56,19 @@ def empty(
     shape: Optional[ivy.NativeShape] = None,
     dtype: None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.empty Not Implemented")
 
 
 def empty_like(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     dtype: None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.empty_like Not Implemented")
 
 
@@ -80,17 +81,17 @@ def eye(
     batch_shape: Optional[Union[(int, Sequence[int])]] = None,
     dtype: None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.eye Not Implemented")
 
 
 def from_dlpack(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.from_dlpack Not Implemented")
 
 
@@ -100,26 +101,26 @@ def full(
     *,
     dtype: Optional[Union[(ivy.Dtype, None)]] = None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.full Not Implemented")
 
 
 def full_like(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     fill_value: Number,
     *,
     dtype: None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.full_like Not Implemented")
 
 
 def linspace(
-    start: Union[(None, tf.Variable, float)],
-    stop: Union[(None, tf.Variable, float)],
+    start: Union[(None, mx.ndarray.NDArray, float)],
+    stop: Union[(None, mx.ndarray.NDArray, float)],
     /,
     num: int,
     *,
@@ -127,17 +128,17 @@ def linspace(
     endpoint: bool = True,
     dtype: None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
     raise NotImplementedError("mxnet.linspace Not Implemented")
 
 
 def meshgrid(
-    *arrays: Union[(None, tf.Variable)],
+    *arrays: Union[(None, mx.ndarray.NDArray)],
     sparse: bool = False,
     indexing: str = "xy",
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> List[Union[(None, tf.Variable)]]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> List[Union[(None, mx.ndarray.NDArray)]]:
     raise NotImplementedError("mxnet.meshgrid Not Implemented")
 
 
@@ -146,39 +147,39 @@ def ones(
     shape: Optional[ivy.NativeShape] = None,
     dtype: None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.ones Not Implemented")
 
 
 def ones_like(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     dtype: None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.ones_like Not Implemented")
 
 
 def tril(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     k: int = 0,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.tril Not Implemented")
 
 
 def triu(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     k: int = 0,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.triu Not Implemented")
 
 
@@ -187,19 +188,19 @@ def zeros(
     shape: Optional[ivy.NativeShape] = None,
     dtype: None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.zeros Not Implemented")
 
 
 def zeros_like(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     dtype: None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.zeros_like Not Implemented")
 
 
@@ -207,16 +208,16 @@ array = asarray
 
 
 def copy_array(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     *,
     to_ivy_array: bool = True,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.copy_array Not Implemented")
 
 
 def one_hot(
-    indices: Union[(None, tf.Variable)],
+    indices: Union[(None, mx.ndarray.NDArray)],
     depth: int,
     /,
     *,
@@ -225,6 +226,6 @@ def one_hot(
     axis: Optional[int] = None,
     dtype: Optional[None] = None,
     device: str,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.one_hot Not Implemented")

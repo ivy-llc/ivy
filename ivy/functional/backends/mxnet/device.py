@@ -1,23 +1,24 @@
-"\nTensorflow device functions.\n\nCollection of TensorFlow general functions, wrapped to fit Ivy syntax\nand signature.\n"
+"\nMXNet device functions.\n\nCollection of MXNet general functions, wrapped to fit Ivy syntax\nand signature.\n"
+import mxnet as mx
 from typing import Union, Optional
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 def dev(
-    x: Union[(None, tf.Variable)], /, *, as_native: bool = False
+    x: Union[(None, mx.ndarray.NDArray)], /, *, as_native: bool = False
 ) -> Union[(ivy.Device, str)]:
     raise NotImplementedError("mxnet.dev Not Implemented")
 
 
 def to_device(
-    x: Union[(None, tf.Variable)],
+    x: Union[(None, mx.ndarray.NDArray)],
     device: str,
     /,
     *,
     stream: Optional[int] = None,
-    out: Optional[Union[(None, tf.Variable)]] = None,
-) -> Union[(None, tf.Variable)]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.to_device Not Implemented")
 
 

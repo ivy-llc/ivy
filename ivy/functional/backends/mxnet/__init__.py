@@ -35,7 +35,7 @@ native_complex128 = None
 native_double = native_float64
 native_bool = None
 valid_dtypes_dict = {
-    "None": (
+    "1.9.1 and below": (
         "ivy.int8",
         "ivy.int16",
         "ivy.int32",
@@ -52,7 +52,7 @@ valid_dtypes_dict = {
 }
 valid_dtypes = _dtype_from_version(valid_dtypes_dict, backend_version)
 valid_numeric_dtypes_dict = {
-    "None": (
+    "1.9.1 and below": (
         "ivy.int8",
         "ivy.int16",
         "ivy.int32",
@@ -68,30 +68,30 @@ valid_numeric_dtypes_dict = {
 }
 valid_numeric_dtypes = _dtype_from_version(valid_numeric_dtypes_dict, backend_version)
 valid_int_dtypes_dict = {
-    "None": ("ivy.int8", "ivy.int16", "ivy.int32", "ivy.int64", "ivy.uint8")
+    "1.9.1 and below": ("ivy.int8", "ivy.int16", "ivy.int32", "ivy.int64", "ivy.uint8")
 }
 valid_int_dtypes = _dtype_from_version(valid_int_dtypes_dict, backend_version)
 valid_float_dtypes_dict = {
-    "None": ("ivy.bfloat16", "ivy.float16", "ivy.float32", "ivy.float64")
+    "1.9.1 and below": ("ivy.bfloat16", "ivy.float16", "ivy.float32", "ivy.float64")
 }
 valid_float_dtypes = _dtype_from_version(valid_float_dtypes_dict, backend_version)
-valid_uint_dtypes_dict = {"None": ("ivy.uint8",)}
+valid_uint_dtypes_dict = {"1.9.1 and below": ("ivy.uint8",)}
 valid_uint_dtypes = _dtype_from_version(valid_uint_dtypes_dict, backend_version)
-valid_complex_dtypes_dict = {"None": ("ivy.complex64", "ivy.complex128")}
+valid_complex_dtypes_dict = {"1.9.1 and below": ("ivy.complex64", "ivy.complex128")}
 valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes_dict, backend_version)
-invalid_dtypes_dict = {"None": ("ivy.uint32", "ivy.uint64", "ivy.uint16")}
+invalid_dtypes_dict = {"1.9.1 and below": ("ivy.uint32", "ivy.uint64", "ivy.uint16")}
 invalid_dtypes = _dtype_from_version(invalid_dtypes_dict, backend_version)
-invalid_numeric_dtypes_dict = {"None": ("ivy.uint32", "ivy.uint64", "ivy.uint16")}
+invalid_numeric_dtypes_dict = {"1.9.1 and below": ("ivy.uint32", "ivy.uint64", "ivy.uint16")}
 invalid_numeric_dtypes = _dtype_from_version(
     invalid_numeric_dtypes_dict, backend_version
 )
-invalid_int_dtypes_dict = {"None": ("ivy.uint16", "ivy.uint32", "ivy.uint64")}
+invalid_int_dtypes_dict = {"1.9.1 and below": ("ivy.uint16", "ivy.uint32", "ivy.uint64")}
 invalid_int_dtypes = _dtype_from_version(invalid_int_dtypes_dict, backend_version)
-invalid_float_dtypes_dict = {"None": ()}
+invalid_float_dtypes_dict = {"1.9.1 and below": ()}
 invalid_float_dtypes = _dtype_from_version(invalid_float_dtypes_dict, backend_version)
-invalid_uint_dtypes_dict = {"None": ("ivy.uint16", "ivy.uint32", "ivy.uint64")}
+invalid_uint_dtypes_dict = {"1.9.1 and below": ("ivy.uint16", "ivy.uint32", "ivy.uint64")}
 invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes_dict, backend_version)
-invalid_complex_dtypes_dict = {"None": ()}
+invalid_complex_dtypes_dict = {"1.9.1 and below": ()}
 invalid_complex_dtypes = _dtype_from_version(
     invalid_complex_dtypes_dict, backend_version
 )
