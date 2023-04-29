@@ -316,3 +316,10 @@ def is_native_array(
         return isinstance(x, mx.ndarray.NDArray)
     else:
         return isinstance(x, mx.ndarray.NDArray) or isinstance(x, np.ndarray)
+
+
+def to_numpy(x: mx.ndarray.NDArray, /, *, copy: bool = True) -> np.ndarray:
+    if copy:
+        return x.copy().asnumpy()
+    else:
+        return x.asnumpy()
