@@ -48,7 +48,21 @@ def asarray(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.asarray Not Implemented")
+    if device is None or device.find("cpu") != -1:
+        mx_dev = "cpu"
+    elif device.find("gpu") != -1:
+        mx_dev = "gpu"
+    else:
+        raise Exception("dev input {} not supported.".format(device))
+    if device.find(":") != -1:
+        mx_dev_id = int(device[device.find(":")+1:])
+    else:
+        mx_dev_id = 0
+    dev = mx.Context(mx_dev, mx_dev_id)
+    ret = mx.nd.array(obj, dev, dtype=dtype)
+    if copy:
+        return mx.numpy.copy(ret)
+    return ret
 
 
 def empty(

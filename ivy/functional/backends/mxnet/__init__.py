@@ -51,7 +51,7 @@ valid_dtypes_dict = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        "ivy.bool",
+        ivy.bool,
     )
 }
 valid_dtypes = _dtype_from_version(valid_dtypes_dict, backend_version)
@@ -99,7 +99,7 @@ invalid_complex_dtypes_dict = {"1.9.1 and below": ()}
 invalid_complex_dtypes = _dtype_from_version(
     invalid_complex_dtypes_dict, backend_version
 )
-native_inplace_support = False
+native_inplace_support = True
 supports_gradients = True
 
 
