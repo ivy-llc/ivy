@@ -8,7 +8,9 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 def dev(
     x: Union[(None, mx.ndarray.NDArray)], /, *, as_native: bool = False
 ) -> Union[(ivy.Device, str)]:
-    raise NotImplementedError("mxnet.dev Not Implemented")
+    if as_native:
+        return x.context
+    return as_ivy_dev(x.context)
 
 
 def to_device(
