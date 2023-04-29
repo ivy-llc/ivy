@@ -1,5 +1,8 @@
 import mxnet as mx
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
+import numpy as np
+
+
 from ivy import inf
 
 
@@ -301,3 +304,15 @@ def vector_to_skew_symmetric_matrix(
 
 def current_backend_str() -> str:
     return "mxnet"
+
+
+def is_native_array(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    exclusive: bool = False,
+) -> bool:
+    if exclusive:
+        return isinstance(x, mx.ndarray.NDArray)
+    else:
+        return isinstance(x, mx.ndarray.NDArray) or isinstance(x, np.ndarray)
