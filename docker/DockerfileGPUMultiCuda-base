@@ -1,5 +1,5 @@
 # is used to create a base image where we then manually install cuda and cudnn
-FROM debian:11
+FROM debian:buster
 WORKDIR /ivy
 ARG cuda=["11.2"]
 
