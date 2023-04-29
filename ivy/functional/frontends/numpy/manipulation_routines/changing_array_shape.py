@@ -1,4 +1,5 @@
 # local
+
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -32,7 +33,12 @@ def moveaxis(a, source, destination):
 
 @to_ivy_arrays_and_back
 def asarray_chkfinite(a, dtype=None, order=None):
-    a = ivy.asarray(a, dtype=dtype)
+    if isinstance(a, tuple):
+        a = tuple(ivy.asarray(elem, dtype=dtype, order=order) for elem in a)
+    else:
+        a = ivy.asarray(a, dtype=dtype, order=order)
     if not ivy.all(ivy.isfinite(a)):
         raise ValueError("array must not contain infs or NaNs")
     return a
+
+

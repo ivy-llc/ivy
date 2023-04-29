@@ -20,7 +20,7 @@ def _logical_and(
     /,
     out=None,
     *,
-    where=True,
+    where=None,
     casting="same_kind",
     order="k",
     dtype=None,
@@ -28,7 +28,7 @@ def _logical_and(
 ):
     ret = ivy.logical_and(x1, x2, out=out)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        ret = ivy.where(where,   ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
@@ -43,7 +43,7 @@ def _logical_or(
     /,
     out=None,
     *,
-    where=True,
+    where=None,
     casting="same_kind",
     order="k",
     dtype=None,
@@ -65,7 +65,7 @@ def _logical_not(
     /,
     out=None,
     *,
-    where=True,
+    where=None,
     casting="same_kind",
     order="k",
     dtype=None,
@@ -88,7 +88,7 @@ def _logical_xor(
     /,
     out=None,
     *,
-    where=True,
+    where=None,
     casting="same_kind",
     order="k",
     dtype=None,

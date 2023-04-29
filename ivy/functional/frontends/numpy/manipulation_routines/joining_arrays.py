@@ -24,7 +24,8 @@ def concatenate(arrays, /, *, axis=0, out=None, dtype=None, casting="same_kind")
             out_dtype = ivy.as_ivy_dtype(
                 np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
             )
-    return ivy.concat(arrays, axis=axis, out=out).astype(out_dtype, copy=False)
+    result = ivy.concat(arrays, axis=axis, out=out)
+    return ivy.cast(result, dtype=out_dtype, copy=False)
 
 
 @handle_numpy_out

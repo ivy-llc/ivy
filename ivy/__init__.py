@@ -1,11 +1,7 @@
 # global
-import copy
-import re
-import warnings
 import builtins
-import numpy as np
 import sys
-
+import warnings
 
 import ivy.utils.backend.handler
 from ivy._version import __version__ as __version__
@@ -206,7 +202,10 @@ class Shape:
         if len(backend_stack) == 0:
             if isinstance(shape_tup, np.ndarray):
                 shape_tup = tuple(shape_tup.tolist())
-            self._shape = shape_tup
+            if isinstance(shape_tup, Iterable):
+                self._shape = shape_tup
+            else:
+                raise TypeError("shape_tup must be an iterable")
         elif isinstance(shape_tup, valid_types):
             self._shape = ivy.to_native_shape(shape_tup)
         else:
@@ -1255,3 +1254,16 @@ from ivy.utils.backend.sub_backend_handler import (
 
 def current_sub_backends():
     return []
+
+
+def resize(x, newshape, refcheck):
+    return None
+
+
+def cast(result, dtype, copy):
+    if copy:
+        result = result.copy()
+    result.dtype = ivy.as_ivy_dtype(dtype)
+    return result
+
+
