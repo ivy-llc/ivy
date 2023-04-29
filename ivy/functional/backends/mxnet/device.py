@@ -39,7 +39,9 @@ def num_gpus() -> int:
 
 
 def gpu_is_available() -> bool:
-    raise NotImplementedError("mxnet.gpu_is_available Not Implemented")
+    if mx.context.num_gpus() > 0:
+        return True
+    return False
 
 
 def tpu_is_available() -> bool:
