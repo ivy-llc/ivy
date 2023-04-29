@@ -17,7 +17,7 @@ from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 def _from_int_to_tuple(arg, dim):
     if isinstance(arg, int):
         return (arg,) * dim
-    if isinstance(arg, tuple) and len(arg) == 1:
+    if isinstance(arg, (tuple, list)) and len(arg) == 1:
         return (arg[0],) * dim
     return arg
 
@@ -221,7 +221,6 @@ def avg_pool1d(
     ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if data_format == "NCW":
         x = jnp.transpose(x, (0, 2, 1))
 
@@ -270,7 +269,6 @@ def avg_pool2d(
     divisor_override: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if isinstance(kernel, int):
         kernel = (kernel,) * 2
     elif len(kernel) == 1:
@@ -323,7 +321,6 @@ def avg_pool3d(
     divisor_override: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if isinstance(kernel, int):
         kernel = (kernel,) * 3
     elif len(kernel) == 1:

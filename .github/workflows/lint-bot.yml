@@ -1,0 +1,15 @@
+name: lint-bot
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-linting:
+    name: Fix Linting
+    uses: unifyai/workflows/.github/workflows/lint-bot.yml@master
+    secrets: inherit
