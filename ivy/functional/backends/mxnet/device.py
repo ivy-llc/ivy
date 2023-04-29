@@ -22,8 +22,16 @@ def to_device(
     raise NotImplementedError("mxnet.to_device Not Implemented")
 
 
-def as_ivy_dev(device: str, /):
-    raise NotImplementedError("mxnet.as_ivy_dev Not Implemented")
+def as_ivy_dev(device):
+    if isinstance(device, str):
+        return ivy.Device(device)
+    if device is None:
+        return None
+    # if mx device context is passed
+    p, dev_id = (device.device_type, device.device_id)
+    if p == "cpu":
+        return ivy.Device(p)
+    return ivy.Device(p + ":" + str(dev_id))
 
 
 def as_native_dev(device: str, /):
