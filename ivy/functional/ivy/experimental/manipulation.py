@@ -1627,6 +1627,14 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
+def _check_bounds(shape0, strides0, shape1, strides1, itemsize):
+    ndim0 = len(shape0)
+    ndim1 = len(shape1)
+    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + \
+        sum(strides1[i] - strides0[i] for i in range(min(ndim0, ndim1))) <= \
+        sum((shape0[i] - 1) * itemsize for i in range(ndim0))
+
+
 @inputs_to_native_shapes
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
@@ -1664,23 +1672,26 @@ def as_strided(
        [3, 4, 5],
        [4, 5, 6]])
     """
-    size = math.prod(shape)
     itemsize = x.itemsize
-    buffer_size = size * itemsize
+    if not _check_bounds(x.shape, x.strides, shape, strides, itemsize):
+        raise ivy.exceptions.IvyException("attempted unsafe memory access")
+    if any(strides[i] % itemsize != 0 for i in range(len(strides))):
+        raise ivy.exceptions.IvyException("strides must be multiple of itemsize")
 
+    numel = math.prod(shape)
+    buffer_size = numel * itemsize
     src = memoryview(ivy.to_numpy(x)).cast("b")
     buffer = bytearray(buffer_size)
     dst = memoryview(buffer).cast("b")
 
+    dst_index = 0
     for index in ivy.ndindex(shape):
-        src_index = sum(index[i] * min(strides[i], itemsize) for i in range(len(shape)))
-        dst_index = sum(
-            index[i] * math.prod(shape[i + 1 :]) * itemsize for i in range(len(shape))
-        )
-        dst[dst_index : dst_index + itemsize] = src[src_index : src_index + itemsize]
+        src_index = sum(index[i] * strides[i] for i in range(len(shape)))
+        dst[dst_index: dst_index + itemsize] = src[src_index: src_index + itemsize]
+        dst_index += itemsize
 
     return ivy.reshape(
-        ivy.frombuffer(buffer, dtype=x.dtype, count=size),
+        ivy.frombuffer(buffer, dtype=x.dtype, count=numel),
         shape,
     )
 

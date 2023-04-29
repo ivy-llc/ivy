@@ -1,7 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
-    outputs_to_numpy_arrays,
 )
 
 
