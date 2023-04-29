@@ -8,7 +8,9 @@ COPY ../docker/multicuda_requirements.txt .
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Moscow
-RUN \
+RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list && \
+    apt-get update && \
+    apt-get upgrade -o Dir::Etc::SourceList=/etc/apt/security.sources.list -y &&\
     apt-get -y update && \
     apt-get install -y gnupg  \
     curl  \
