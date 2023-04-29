@@ -2,7 +2,7 @@
 
 
 def available_frameworks():
-    available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch", "paddle"]
+    available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
     try:
         import jax
 
@@ -32,6 +32,13 @@ def available_frameworks():
         available_frameworks_lis.remove("paddle")
     return available_frameworks_lis
 
+    try:
+        import mxnet
+
+        assert mxnet, "mxnet is imported to see if the user has it installed"
+    except ImportError:
+        available_frameworks_lis.remove("mxnet")
+
 
 def ground_truth():
     available_framework_lis = available_frameworks()
@@ -44,6 +51,8 @@ def ground_truth():
         g_truth = "jax"
     elif "paddle" in available_framework_lis:
         g_truth = "paddle"
+    elif "mxnet" in available_framework_lis:
+        g_truth = "mxnet"
     else:
         g_truth = "numpy"
     return g_truth

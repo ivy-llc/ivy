@@ -19,6 +19,7 @@ mod_backend = {
     "jax": None,
     "torch": None,
     "paddle": None,
+    "mxnet": None,
 }  # multiversion
 
 ground_backend = None  # multiversion
