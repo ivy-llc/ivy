@@ -1,4 +1,3 @@
-# flake8: noqa
 from . import control_flow_operators
 from .control_flow_operators import *
 from . import custom_gradient_operators

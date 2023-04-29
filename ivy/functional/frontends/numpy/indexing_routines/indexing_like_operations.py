@@ -7,22 +7,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 
 @to_ivy_arrays_and_back
-def diagonal(a, offset, axis1, axis2):
-    return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
-
-
-@outputs_to_numpy_arrays
-def diag_indices(n, ndim=2):
-    idx = ivy.arange(n, dtype=int)
-    return (idx,) * ndim
-
-
-@to_ivy_arrays_and_back
-def diag(v, k=0):
-    return ivy.diag(v, k=k)
-
-
-@to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
@@ -86,3 +70,13 @@ def fill_diagonal(a, val, wrap=False):
 @inputs_to_ivy_arrays
 def put_along_axis(arr, indices, values, axis):
     ivy.put_along_axis(arr, indices, values, axis)
+
+
+def diag(v, k=0):
+    return ivy.diag(v, k=k)
+
+
+@to_ivy_arrays_and_back
+def diagonal(a, offset, axis1, axis2):
+    return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
+

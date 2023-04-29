@@ -7,7 +7,7 @@ from ivy.stateful.module import Module
 
 class GELU(Module):
     def __init__(self, *, approximate: bool = False):
-        """Applies the GELU activation function."""
+        """Apply the GELU activation function."""
         self._approximate = approximate
         Module.__init__(self)
 
@@ -30,7 +30,7 @@ class GELU(Module):
 
 class GEGLU(Module):
     def __init__(self):
-        """Applies the GEGLU activation function."""
+        """Apply the GEGLU activation function."""
         Module.__init__(self)
 
     def _forward(self, inputs):
@@ -46,7 +46,6 @@ class GEGLU(Module):
         -------
         ret
             The outputs following the GEGLU activation *[batch_shape, d]*
-
         """
         x, gates = ivy.split(inputs, num_or_size_splits=2, axis=-1)
         return ivy.gelu(gates) * x
@@ -54,7 +53,7 @@ class GEGLU(Module):
 
 class ReLU(Module):
     def __init__(self):
-        """Applies the RELU activation function"""
+        """Apply the RELU activation function."""
         Module.__init__(self)
 
     def _forward(self, x):
@@ -76,7 +75,8 @@ class ReLU(Module):
 class LeakyReLU(Module):
     def __init__(self, alpha: float = 0.2):
         """
-        Applies the LEAKY RELU activation function
+        Apply the LEAKY RELU activation function.
+
         Parameters
         ----------
         alpha
@@ -105,7 +105,7 @@ class LeakyReLU(Module):
 
 class LogSoftmax(Module):
     def __init__(self):
-        """Applies the LOG SOFTMAX activation function"""
+        """Apply the LOG SOFTMAX activation function."""
         Module.__init__(self)
 
     def _forward(self, x, *, axis=None):
@@ -127,7 +127,7 @@ class LogSoftmax(Module):
 
 class Softmax(Module):
     def __init__(self):
-        """Applies the SOFTMAX activation function"""
+        """Apply the SOFTMAX activation function."""
         Module.__init__(self)
 
     def _forward(self, x, *, axis=None):
@@ -151,7 +151,7 @@ class Softmax(Module):
 
 class Softplus(Module):
     def __init__(self):
-        """Applies the SOFTPLUS activation function"""
+        """Apply the SOFTPLUS activation function."""
         Module.__init__(self)
 
     def _forward(self, x, *, beta=None, threshold=None):
@@ -178,7 +178,7 @@ class Softplus(Module):
 
 class Mish(Module):
     def __init__(self):
-        """Applies the MISH activation function"""
+        """Apply the MISH activation function."""
         Module.__init__(self)
 
     def _forward(self, x):

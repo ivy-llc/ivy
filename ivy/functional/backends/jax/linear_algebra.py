@@ -144,7 +144,6 @@ def inv(
     adjoint: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
         return x
     else:
@@ -400,7 +399,6 @@ def solve(
 def svd(
     x: JaxArray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[JaxArray, Tuple[JaxArray, ...]]:
-
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
         U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)

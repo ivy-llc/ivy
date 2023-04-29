@@ -28,7 +28,7 @@ def sum(
     if ivy.is_array(where):
         x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
     if initial is not None:
-        s = ivy.shape(x, as_array=True)
+        s = ivy.to_list(ivy.shape(x, as_array=True))
         s[axis] = 1
         header = ivy.full(ivy.Shape(tuple(s)), initial)
         if ivy.is_array(where):
@@ -79,9 +79,9 @@ def nansum(
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, fill_values), out=out)
     if initial is not None:
-        s = ivy.shape(a, as_array=True)
-        s[axis] = 1
-        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a[axis] = 1
+        s = ivy.shape(a, as_array=False)
+        header = ivy.full(s, initial)
         a = ivy.concat([header, a], axis=axis)
     return ivy.sum(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
@@ -98,9 +98,9 @@ def nanprod(
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, fill_values), out=out)
     if initial is not None:
-        s = ivy.shape(a, as_array=True)
-        s[axis] = 1
-        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a[axis] = 1
+        s = ivy.shape(a, as_array=False)
+        header = ivy.full(s, initial)
         a = ivy.concat([header, a], axis=axis)
     return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
