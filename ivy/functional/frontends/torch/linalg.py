@@ -90,15 +90,7 @@ def slogdet(input, *, out=None):
 @with_unsupported_dtypes({"2.0.0 and below": ("bfloat16", "float16")}, "torch")
 @to_ivy_arrays_and_back
 def cond(input, p=None, *, out=None):
-    for a in input:
-        if a.size == 0 and ivy.prod(a.shape[-2:]) == 0:
-            raise ValueError("Arrays cannot be empty")
-    r = ivy.cond(input, p=p, out=out)
-    # Convert nans to infs unless the original array had nan entries
-    orig_nan_check = ivy.full_like(r, ~ivy.isnan(r).any())
-    nan_mask = ivy.logical_and(ivy.isnan(r), ~ivy.isnan(input).any(axis=(-2, -1)))
-    r = ivy.where(orig_nan_check, ivy.where(nan_mask, ivy.inf, r), r)
-    return r
+    return ivy.cond(input, p=p, out=out)
 
 
 @to_ivy_arrays_and_back

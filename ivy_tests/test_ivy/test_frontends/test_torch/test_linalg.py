@@ -13,6 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
     dtype_value1_value2_axis,
 )
+import hypothesis
 
 
 # helpers
@@ -407,25 +408,61 @@ def test_torch_eigvalsh(
     )
 
 
+@hypothesis.reproduce_failure("6.72.1", b"AXicY2AAAcYjDBDACCYBCuIAxw==")
 @handle_frontend_test(
     fn_tree="torch.linalg.cond",
+    # dtype_and_x=helpers.dtype_and_values(
+    #         available_dtypes=helpers.get_dtypes("float"),
+    #         min_value=-10,
+    #         max_value=10,
+    #         allow_inf=False,
+    #         allow_nan=False,
+    #         min_num_dims=2,
+    #         max_num_dims=2,
+    #         min_dim_size=2,
+    #         max_dim_size=5,
+    #         # shape = (2,2)
+    #     ),
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=1, allow_nan=True
-    ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0]),
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        # shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=(3, 3),
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    # dtype_and_x=_get_dtype_and_matrix(),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+    # rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
+    # atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
+    # rtol = 1e-5,
+    # atol = 1e-8,
 )
 def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
     dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype[0],
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-1,
-        atol=1e-1,
+        test_values=False,
         input=x[0],
         p=p,
+    )
+    ret_np = ivy.to_numpy(ret)
+    frontend_ret_np = np.asarray(frontend_ret, dtype=ret_np.dtype)
+    if ret_np > 1e10:
+        ret_np = ivy.to_numpy(ivy.array(ivy.inf))
+    if frontend_ret_np > 1e10:
+        frontend_ret_np = [np.asarray(ivy.inf, dtype=ret_np.dtype)]
+    assert_all_close(
+        ret_np=ret_np,
+        ret_from_gt_np=frontend_ret_np[0],
+        rtol=1e-5,
+        atol=1e-5,
+        ground_truth_backend=frontend,
     )
 
 
