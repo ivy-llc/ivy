@@ -17,8 +17,7 @@ RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list && 
     wget  \
     software-properties-common  \
     gcc  \
-    nano \
-    pip
+    nano
 
 
 
