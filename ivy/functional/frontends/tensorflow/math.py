@@ -35,6 +35,11 @@ def exp(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def expm1(x, name=None):
+    return ivy.expm1(x)
+
+
+@to_ivy_arrays_and_back
 def sqrt(x, name=None):
     return ivy.sqrt(x)
 
@@ -635,6 +640,11 @@ def xlogy(x, y, name=None):
 @to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
+
+
+@to_ivy_arrays_and_back
+def angle(input, name=None):
+    return ivy.angle(input)
 
 
 @to_ivy_arrays_and_back
