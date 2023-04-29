@@ -176,6 +176,7 @@ def meshgrid(
     *arrays: np.ndarray,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[np.ndarray] = None,
 ) -> List[np.ndarray]:
     return np.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 

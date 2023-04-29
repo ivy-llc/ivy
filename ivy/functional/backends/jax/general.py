@@ -9,15 +9,8 @@ from operator import mul
 from functools import reduce
 from typing import Iterable, Optional, Union, Sequence, Callable, Tuple
 import multiprocessing as _multiprocessing
+import importlib
 
-
-# necessary import, because stateful imports jax as soon as you import ivy, however,
-# during multiversion # jax is not there, and therefore a later import results in some
-# sort of circular import, so haiku is needed
-import haiku  # NOQA
-
-
-from haiku._src.data_structures import FlatMapping
 
 # local
 import ivy
@@ -28,6 +21,13 @@ from . import backend_version
 
 
 def container_types():
+    flat_mapping_spec = importlib.util.find_spec(
+        "FlatMapping", "haiku._src.data_structures"
+    )
+    if not flat_mapping_spec:
+        from haiku._src.data_structures import FlatMapping
+    else:
+        FlatMapping = importlib.util.module_from_spec(flat_mapping_spec)
     return [FlatMapping]
 
 
@@ -325,9 +325,10 @@ def scatter_nd(
 ) -> JaxArray:
     # parse numeric inputs
     if (
-        len(indices) != 0
-        and indices != Ellipsis
-        and not (isinstance(indices, Iterable) and Ellipsis in indices)
+        indices != Ellipsis
+        and not (
+            isinstance(indices, Iterable) and (Ellipsis in indices or len(indices) != 0)
+        )
         and not isinstance(indices, slice)
         and not (
             isinstance(indices, Iterable) and any(isinstance(k, slice) for k in indices)

@@ -7,7 +7,6 @@ import numpy as np
 
 # local
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 import multiprocessing as _multiprocessing
@@ -416,13 +415,23 @@ def scatter_flat(
     reduction: str = "sum",
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if indices.dtype not in [paddle.int32, paddle.int64]:
+        indices = indices.cast("int64")
+    if ivy.exists(size) and ivy.exists(out):
+        ivy.utils.assertions.check_equal(out.ndim, 1)
+        ivy.utils.assertions.check_equal(out.shape[0], size)
+    with ivy.ArrayMode(False):
+        return ivy.scatter_nd(
+            indices.unsqueeze(-1), updates, shape=[size], reduction=reduction, out=out
+        )
 
 
 def _scatter_nd_replace(data, indices, updates, reduce):
     """
-    An implementation for scatter_nd using put_along_axis
-    since paddle.scatter_nd only supports "sum" reduction mode
+    `scatter_nd` with `reduce`.
+
+    An implementation for scatter_nd using put_along_axis since
+    paddle.scatter_nd only supports "sum" reduction mode.
     """
     if data.dtype != updates.dtype:
         data = data.cast(updates.dtype)
@@ -524,7 +533,7 @@ def scatter_nd(
             shape = out.shape if ivy.exists(out) else updates.shape
             indices = ivy.stack(
                 [
-                    ivy.reshape(value, (-1,))
+                    ivy.flatten(value)
                     for value in ivy.meshgrid(*[ivy.arange(shape[0])], indexing="ij")
                 ],
                 axis=-1,
@@ -540,14 +549,14 @@ def scatter_nd(
             indices = _parse_ellipsis(indices, len(shape))
             indices = ivy.stack(
                 [
-                    ivy.reshape(value, (-1,))
+                    ivy.flatten(value)
                     for value in ivy.meshgrid(
                         *[
                             ivy.arange(s)
                             if idx == slice(None, None, None)
                             else ivy.arange(
                                 ivy.default(idx.start, 0),
-                                ivy.default(idx.stop, shape[0]),
+                                ivy.default(idx.stop, s),
                                 ivy.default(idx.step, 1),
                             )
                             if isinstance(idx, slice)
@@ -574,14 +583,14 @@ def scatter_nd(
                 )
                 indices = ivy.stack(
                     [
-                        ivy.reshape(value, (-1,))
+                        ivy.flatten(value)
                         for value in ivy.meshgrid(
                             *[
                                 ivy.arange(s)
                                 if idx == slice(None, None, None)
                                 else ivy.arange(
                                     ivy.default(idx.start, 0),
-                                    ivy.default(idx.stop, shape[0]),
+                                    ivy.default(idx.stop, s),
                                     ivy.default(idx.step, 1),
                                 )
                                 if isinstance(idx, slice)
@@ -597,7 +606,7 @@ def scatter_nd(
             else:
                 indices = ivy.stack(
                     [
-                        ivy.reshape(value, (-1,))
+                        ivy.flatten(value)
                         for value in ivy.meshgrid(
                             *[
                                 ivy.arange(
@@ -615,21 +624,21 @@ def scatter_nd(
             indices = [[indices]] if isinstance(indices, Number) else indices
             indices = ivy.array(indices).data
             if len(indices.shape) < 2:
-                indices = ivy.expand_dims(indices, 0)
+                indices = ivy.expand_dims(indices, axis=0)
             if ivy.any(indices < 0):
                 shape = list(shape) if ivy.exists(shape) else list(out.shape)
                 indices = _parse_index(indices, shape)
                 indices = [
                     ivy.stack(
                         [
-                            ivy.reshape(value, (-1,))
+                            ivy.flatten(value)
                             for value in ivy.meshgrid(
                                 *[
                                     ivy.arange(s)
                                     if idx == slice(None, None, None)
                                     else ivy.arange(
                                         ivy.default(idx.start, 0),
-                                        ivy.ivy.default(idx.stop, shape[0]),
+                                        ivy.ivy.default(idx.stop, s),
                                         ivy.default(idx.step, 1),
                                     )
                                     if isinstance(idx, slice)
@@ -655,7 +664,7 @@ def scatter_nd(
         if sum(updates.shape) < sum(expected_shape):
             updates = ivy.broadcast_to(updates, expected_shape)
         elif sum(updates.shape) > sum(expected_shape):
-            indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])
+            indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1:])
         elif updates.shape != expected_shape:
             updates = ivy.broadcast_to(updates, expected_shape)
         # implementation
@@ -720,9 +729,82 @@ def shape(
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-    out_axes: Optional[int] = 0,
+    out_axes: int = 0,
 ) -> Callable:
-    raise IvyNotImplementedException()
+    @ivy.output_to_native_arrays
+    @ivy.inputs_to_native_arrays
+    def _vmap(*args, **kwargs):
+        # convert args tuple to list to allow mutability using moveaxis ahead.
+        args = list(args)
+
+        # if in_axis is a non-integer, its length should be equal to pos args.
+        if isinstance(in_axes, (list, tuple)):
+            ivy.utils.assertions.check_equal(
+                len(args),
+                len(in_axes),
+                message="""in_axes should have a length equivalent to the number
+                of positional arguments to the function being vectorized or it
+                should be an integer""",
+            )
+
+        # checking axis_size consistency
+        axis_size = set()
+
+        if isinstance(in_axes, int):
+            for arg in args:
+                axis_size.add(arg.shape[in_axes])
+        elif isinstance(in_axes, (list, tuple)):
+            for arg, axis in zip(args, in_axes):
+                if axis is not None:
+                    axis_size.add(arg.shape[axis])
+
+        if len(axis_size) > 1:
+            raise ivy.utils.exceptions.IvyException(
+                """Inconsistent sizes. All mapped axes should have the same size"""
+            )
+
+        # Making sure not all in_axes are None
+        if isinstance(in_axes, (list, tuple)):
+            ivy.utils.assertions.check_any(
+                [ivy.exists(ax) for ax in in_axes],
+                message="At least one of the axes should be specified (not None)",
+            )
+        else:
+            ivy.utils.assertions.check_exists(
+                in_axes, message="single value in_axes should not be None"
+            )
+
+        # Handling None in in_axes by broadcasting the axis_size
+        if isinstance(in_axes, (tuple, list)) and None in in_axes:
+            none_axis_index = list()
+            for index, axis in enumerate(in_axes):
+                if axis is None:
+                    none_axis_index.append(index)
+
+            for none_mapped_axis in none_axis_index:
+                args[none_mapped_axis] = ivy.broadcast_to(
+                    args[none_mapped_axis],
+                    (tuple(axis_size) + args[none_mapped_axis].shape),
+                )
+
+        # set up the axis to be mapped
+        if isinstance(in_axes, (tuple, list)):
+            for i in range(len(in_axes)):
+                args[i] = ivy.moveaxis(args[i], in_axes[i], 0)
+        elif isinstance(in_axes, int):
+            args[0] = ivy.moveaxis(args[0], in_axes, 0)
+
+        # vectorisation - applying map_fn if only one arg provided as reduce requires
+        # two elements to begin with.
+        arr_results = [func(*arrays) for arrays in zip(*args)]
+        res = ivy.stack(arr_results)
+
+        if out_axes:
+            res = ivy.moveaxis(res, 0, out_axes)
+
+        return res
+
+    return _vmap
 
 
 @with_unsupported_device_and_dtypes(

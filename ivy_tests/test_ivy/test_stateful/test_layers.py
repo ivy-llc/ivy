@@ -976,7 +976,7 @@ def test_lstm_layer(
     ),
     with_v=st.booleans(),
     seq_v=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False) | st.none(),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
 )
 def test_sequential_layer(
     bs_c_target,
@@ -989,9 +989,16 @@ def test_sequential_layer(
     method_name,
     class_name,
 ):
+    dtype = dtype[0]
     # smoke test
     batch_shape, channels, target = bs_c_target
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+    tolerance_dict = {
+        "bfloat16": 1e-2,
+        "float16": 1e-2,
+        "float32": 1e-5,
+        "float64": 1e-5,
+        None: 1e-5,
+    }
     if method_flags.as_variable[0]:
         x = _variable(
             ivy.asarray(
@@ -1071,12 +1078,89 @@ def test_sequential_layer(
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
-    assert ret.shape == tuple(batch_shape + [channels])
+    assert ret.shape == ivy.Shape(batch_shape + [channels])
     # value test
     if not with_v:
         return
     assert np.allclose(
         ivy.to_numpy(seq(x)), np.array(target), rtol=tolerance_dict[dtype]
+    )
+
+
+# # Pooling #
+
+
+# MaxPool2D
+@handle_method(
+    method_tree="MaxPool2D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+)
+def test_maxpool2d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# AvgPool2D
+@handle_method(
+    method_tree="AvgPool2D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+)
+def test_avgpool2d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
     )
 
 

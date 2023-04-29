@@ -247,6 +247,8 @@ def full(
 ) -> paddle.Tensor:
     if dtype is None:
         dtype = ivy.default_dtype(item=fill_value)
+    if not isinstance(shape, Sequence):
+        shape = [shape]
     return to_device(
         paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
     )
@@ -440,6 +442,7 @@ def meshgrid(
     *arrays: paddle.Tensor,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[paddle.Tensor] = None,
 ) -> List[paddle.Tensor]:
     if not sparse:
         if indexing == "ij":

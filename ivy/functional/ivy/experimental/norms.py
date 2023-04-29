@@ -23,7 +23,8 @@ def l2_normalize(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Normalizes the input array along the given axis to have L2 norm equal to 1.
+    """Normalize the input array along the given axis to have L2 norm equal to
+    1.
 
     Parameters
     ----------
@@ -69,7 +70,7 @@ def batch_norm(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Applies batch normalization to the input array and returns the normalized input,
+    Apply batch normalization to the input array and returns the normalized input,
     running mean and running variance arrays as output. If ``training == False``,
     the mean and variance arrays passed as input are used for normalization
     and the same arrays are returned as running mean and running variance
@@ -168,7 +169,7 @@ def instance_norm(
     out: Optional[ivy.Array] = None,
 ):
     """
-    Applies instance normalization to the input array and returns the normalized input,
+    Apply instance normalization to the input array and returns the normalized input,
     running mean and running variance arrays as output. If ``training == False``,
     the mean and variance arrays passed as input are used for normalization
     and the same arrays are returned as running mean and running variance
@@ -269,7 +270,8 @@ def lp_normalize(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Normalizes the input array along the given axis to have Lp norm equal to 1.
+    """Normalize the input array along the given axis to have Lp norm equal to
+    1.
 
     Parameters
     ----------
