@@ -609,7 +609,6 @@ def array_indices_axis(
     *,
     array_dtypes,
     indices_dtypes=get_dtypes("valid"),
-    values_dtypes=get_dtypes("valid"),
     disable_random_axis=False,
     axis_zero=False,
     allow_inf=False,
@@ -621,6 +620,7 @@ def array_indices_axis(
     indices_same_dims=False,
     valid_bounds=True,
     values=None,
+    values_dtypes=None,
 ):
     """Generates two arrays x & indices, the values in the indices array are indices
     of the array x. Draws an integers randomly from the minimum and maximum number of
@@ -656,6 +656,9 @@ def array_indices_axis(
         If False, the strategy may produce out-of-bounds indices.
     values (optional)
         Custom values array to use instead of randomly generated values. Defaults to None.
+    values_dtypes : Union[None, List[str]], optional
+        A list of dtypes for the values parameter. If None, the function will use the dtypes returned by
+        `get_dtypes("valid")`. Defaults to None.
 
     Returns
     -------

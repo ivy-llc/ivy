@@ -278,7 +278,6 @@ def test_numpy_fill_diagonal(
     dtype_x_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
-        values_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -286,7 +285,7 @@ def test_numpy_fill_diagonal(
     ),
     test_with_out=st.just(False),
 )
-def test_ivy_put_along_axis(
+def test_numpy_put_along_axis(
     *,
     dtype_x_indices_axis,
     test_flags,
