@@ -660,7 +660,7 @@ def array_indices_axis(
         Custom values array to use instead of randomly generated values. Defaults to None.
     values_dtypes : Union[None, List[str]], optional
         A list of dtypes for the values parameter. If None, the function will use the dtypes returned by
-        `get_dtypes("valid")`. Defaults to None.
+        'get_dtypes("valid")'. Defaults to None.
 
     Returns
     -------
