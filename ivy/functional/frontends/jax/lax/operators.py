@@ -734,7 +734,7 @@ def reduce_window(
         pads = _padtype_to_pads(op.shape, dims, strides, padding)
     else:
         pads = padding
-    op = op.reshape((1, 1) + tuple(op.shape[:]))
+    op = op.reshape((1, 1) + op.shape)
     if base_dilation:
         op = _dilate(op, base_dilation)
     view = _conv_view(op, [1, 1] + dims, strides, pads)[0]
