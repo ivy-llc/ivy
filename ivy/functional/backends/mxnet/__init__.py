@@ -1,6 +1,6 @@
 import sys
 import logging
-
+import numpy as np
 import mxnet as mx
 import ivy
 from ivy.func_wrapper import _dtype_from_version
@@ -11,13 +11,19 @@ if not ivy.is_local():
 else:
     _module_in_memory = sys.modules[ivy.import_module_path].import_cache[__name__]
 use = ivy.utils.backend.ContextManager(_module_in_memory)
-NativeArray = None
+
+
+NativeArray = mx.ndarray.NDArray
 NativeDevice = str
-NativeDtype = None
-NativeShape = None
-NativeSparseArray = None
+NativeDtype = np.dtype
+NativeShape = tuple
+NativeSparseArray = mx.ndarray.sparse.BaseSparseNDArray
+
+
 valid_devices = (["cpu", "gpu"],)
 invalid_devices = (["tpu"],)
+
+
 native_int8 = None
 native_int16 = None
 native_int32 = None
