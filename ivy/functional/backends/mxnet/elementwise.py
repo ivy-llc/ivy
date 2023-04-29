@@ -8,7 +8,7 @@ def abs(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.abs Not Implemented")
+    return mx.nd.abs(x)
 
 
 def acos(
@@ -37,7 +37,9 @@ def add(
     alpha: Optional[Union[(int, float)]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.add Not Implemented")
+    if alpha is None or alpha == 1.0:
+        return mx.nd.add(x1, x2)
+    return mx.nd.add(mx.nd.multiply(x1, alpha), x2)
 
 
 def asin(
