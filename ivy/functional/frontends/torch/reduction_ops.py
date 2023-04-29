@@ -251,3 +251,22 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
         values.append(results.counts)
 
     return Results(*values)
+
+
+@to_ivy_arrays_and_back
+def mode(input, dim=-1, keepdim=False, *, out=None):
+    freq = {}
+    for item in input:
+        if item in freq:
+            freq[item] += 1
+        else:
+            freq[item] = 1
+    max_freq = 0
+    modes = []
+    for k, v in freq.items():
+        if v > max_freq:
+            max_freq = v
+            modes = [k]
+        elif v == max_freq:
+            modes.append(k)
+    return modes
