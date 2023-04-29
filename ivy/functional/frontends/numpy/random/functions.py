@@ -111,6 +111,7 @@ def chisquare(df, size=None):
 
     return ivy.gamma(df / 2, 2, dtype="float64")
 
+
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def lognormal(mean=0.0, sigma=1.0, size=None):

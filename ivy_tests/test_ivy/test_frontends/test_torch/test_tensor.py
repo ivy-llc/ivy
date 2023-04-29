@@ -6812,7 +6812,7 @@ def test_torch_instance_ceil_(
         frontend=frontend,
         on_device=on_device,
     )
-  
+
 
 # mul_
 @handle_frontend_method(
