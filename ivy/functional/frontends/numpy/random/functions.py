@@ -1,5 +1,6 @@
 # local
 import ivy
+import math
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
@@ -100,18 +101,18 @@ def standard_gamma(shape, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def binomial(n, p, size):
-    assert not ivy.exists(size) or (len(size) > 0 and len(size) < 3)
-    batch_size = 1
-    if ivy.exists(size):
-        if len(size) == 2:
-            batch_size = size[0]
-            num_samples = size[1]
+    def comb(k,n):
+        x = 1
+        if k>=n:
+            KMinusn=k-n
+            return math.factorial(n)/ (math.factorial(k)*math.factorial(KMinusn))
         else:
-            num_samples = size[0]
-    else:
-        num_samples = len(p)
-    return ivy.multinomial(n, num_samples, batch_size=batch_size,probs=p)
-
+            raise("Size is less than n")
+    
+    oneMinusP = ivy.subtract(1, p)
+    nMinusSize = ivy.subtract(n,size)
+    return ivy.pow(oneMinusP, nMinusSize)*ivy.pow(p, size)*comb(size[0],n)
+    
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def chisquare(df, size=None):
