@@ -1,6 +1,7 @@
 from typing import Union, Optional, Tuple
 import mxnet as mx
 
+
 def unravel_index(
     indices: Union[(None, mx.ndarray.NDArray)],
     shape: Tuple[int],

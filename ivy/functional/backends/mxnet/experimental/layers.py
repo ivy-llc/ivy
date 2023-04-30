@@ -2,6 +2,7 @@ from typing import Union, Optional, Tuple
 import mxnet as mx
 import numpy as np
 
+
 def triu_indices(
     n_rows: int, n_cols: Optional[int] = None, k: int = 0, /, *, device: str
 ) -> Tuple[Union[(None, mx.ndarray.NDArray)]]:

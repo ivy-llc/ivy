@@ -44,7 +44,7 @@ def as_native_dev(device: str, /):
     else:
         raise Exception("dev input {} not supported.".format(device))
     if device.find(":") != -1:
-        mx_dev_id = int(device[device.find(":") + 1:])
+        mx_dev_id = int(device[device.find(":") + 1 :])
     else:
         mx_dev_id = 0
     return mx.Context(mx_dev, mx_dev_id)

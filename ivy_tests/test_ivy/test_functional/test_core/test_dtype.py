@@ -894,11 +894,7 @@ _composition_1.test_unsupported_dtypes = {
         "complex64",
         "complex128",
     ),
-    "mxnet": ("uint16",
-             "uint32",
-             "uint64",
-             "complex64",
-             "complex128"),
+    "mxnet": ("uint16", "uint32", "uint64", "complex64", "complex128"),
 }
 
 

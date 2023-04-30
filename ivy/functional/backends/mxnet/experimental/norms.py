@@ -1,6 +1,7 @@
 from typing import Union, Optional, Tuple
 import mxnet as mx
 
+
 def l2_normalize(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
@@ -24,7 +25,11 @@ def batch_norm(
     momentum: float = 0.1,
     out: Optional[None] = None,
 ) -> Tuple[
-    (Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])
+    (
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+    )
 ]:
     raise NotImplementedError("mxnet.batch_norm Not Implemented")
 
@@ -42,7 +47,11 @@ def instance_norm(
     momentum: float = 0.1,
     out: Optional[None] = None,
 ) -> Tuple[
-    (Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])
+    (
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+    )
 ]:
     raise NotImplementedError("mxnet.instance_norm Not Implemented")
 

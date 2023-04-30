@@ -19,8 +19,6 @@ def histogram(
     raise NotImplementedError("mxnet.histogram Not Implemented")
 
 
-
-
 def median(
     input: Union[(None, mx.ndarray.NDArray)],
     /,

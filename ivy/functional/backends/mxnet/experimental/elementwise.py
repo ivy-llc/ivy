@@ -210,7 +210,9 @@ def diff(
     *,
     n: int = 1,
     axis: int = (-1),
-    prepend: Optional[Union[(None, mx.ndarray.NDArray, int, float, list, tuple)]] = None,
+    prepend: Optional[
+        Union[(None, mx.ndarray.NDArray, int, float, list, tuple)]
+    ] = None,
     append: Optional[Union[(None, mx.ndarray.NDArray, int, float, list, tuple)]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:

@@ -1,6 +1,7 @@
 from typing import Union, Optional, Sequence
 import mxnet as mx
 
+
 def all(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
