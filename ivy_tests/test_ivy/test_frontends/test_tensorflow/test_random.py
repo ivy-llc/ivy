@@ -32,7 +32,6 @@ def test_tensorflow_uniform(
     fn_tree,
     on_device,
 ):
-
     input_dtypes, shape = shape
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -76,7 +75,6 @@ def test_tensorflow_normal(
     seed,
     test_flags,
 ):
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

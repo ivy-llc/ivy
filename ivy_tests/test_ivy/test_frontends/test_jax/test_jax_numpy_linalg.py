@@ -136,10 +136,8 @@ def test_jax_numpy_eig(
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
-    """
-    make symmetric positive-definite since ivy does not support complex
-    data dtypes currently.
-    """
+    """make symmetric positive-definite since ivy does not support complex data dtypes
+    currently."""
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
     ret, frontend_ret = helpers.test_frontend_function(
@@ -736,7 +734,6 @@ def test_jax_numpy_pinv(
 # tensorinv
 @st.composite
 def _get_inv_square_matrices(draw):
-
     dim_size = draw(helpers.ints(min_value=1, max_value=10))
 
     batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))

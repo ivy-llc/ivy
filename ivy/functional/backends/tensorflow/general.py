@@ -1,9 +1,12 @@
-"""Collection of TensorFlow general functions, wrapped to fit Ivy syntax and
-signature.
+"""
+Tensorflow general functions.
+
+Collection of TensorFlow general functions, wrapped to fit Ivy syntax
+and signature.
 """
 
 # global
-from typing import Optional, Union, Sequence, Callable
+from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -364,7 +367,7 @@ def scatter_nd(
                         if idx == slice(None, None, None)
                         else tf.range(
                             ivy.default(idx.start, 0),
-                            ivy.default(idx.stop, shape[0]),
+                            ivy.default(idx.stop, s),
                             ivy.default(idx.step, 1),
                         )
                         if isinstance(idx, slice) and (idx != slice(None, None, None))
@@ -395,7 +398,7 @@ def scatter_nd(
                             if idx == slice(None, None, None)
                             else tf.range(
                                 ivy.default(idx.start, 0),
-                                ivy.default(idx.stop, shape[0]),
+                                ivy.default(idx.stop, s),
                                 ivy.default(idx.step, 1),
                             )
                             if isinstance(idx, slice)
@@ -443,7 +446,7 @@ def scatter_nd(
                                 if idx == slice(None, None, None)
                                 else tf.range(
                                     ivy.default(idx.start, 0),
-                                    ivy.ivy.default(idx.stop, shape[0]),
+                                    ivy.ivy.default(idx.stop, s),
                                     ivy.default(idx.step, 1),
                                 )
                                 if isinstance(idx, slice)
@@ -675,3 +678,7 @@ def isin(
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
     return x.dtype.size
+
+
+def strides(x: Union[tf.Tensor, tf.Variable]) -> Tuple[int]:
+    return x.numpy().strides

@@ -6,7 +6,7 @@ import tensorflow as tf
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 # Array API Standard #
@@ -40,7 +40,6 @@ def triu_indices(
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
 
-@with_supported_dtypes({"1.11.0 and below": ("int32")}, backend_version)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -124,7 +123,7 @@ def tril_indices(
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("uint32", "uint64")}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("uint32", "uint64")}, backend_version)
 def frombuffer(
     buffer: bytes,
     dtype: Optional[tf.DType] = float,

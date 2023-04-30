@@ -4,15 +4,5 @@ on: [push, pull_request]
 
 jobs:
   check-formatting:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v3
-        with:
-          python-version: "3.8"
-      - name: Install dependencies
-        run: |
-          python -m pip install flake8
-      - name: Analysing the code with Flake8
-        run: |
-          flake8 $(git ls-files '*.py')
+    name: Check formatting
+    uses: unifyai/workflows/.github/workflows/lint.yml@master
