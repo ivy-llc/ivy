@@ -23,10 +23,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.is_native_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_native_array also applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.is_native_array also applies to
+        this method with minimal changes.
         Parameters
         ----------
         x
@@ -45,12 +44,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             Boolean, whether or not x is a native array.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
@@ -60,7 +57,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: false,
             b: true
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "is_native_array",
@@ -83,10 +79,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.is_native_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_native_array also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.ivy.is_native_array also
+        applies to this method with minimal changes.
         Parameters
         ----------
         self
@@ -105,12 +100,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             Boolean, whether or not x is a native array.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
@@ -142,10 +135,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.is_ivy_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_ivy_array also applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.is_ivy_array. This method simply
+        wraps the function, and so the docstring for ivy.is_ivy_array also applies to
+        this method with minimal changes.
         Parameters
         ----------
         x
@@ -164,12 +156,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             Boolean, whether or not x is an array.
-
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
         >>> y = ivy.Container.static_is_ivy_array(x)
         >>> print(y)
@@ -199,10 +189,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.is_native_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_native_array also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.ivy.is_native_array also
+        applies to this method with minimal changes.
         Parameters
         ----------
         self
@@ -221,12 +210,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             Boolean, whether or not x is an array.
-
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
         >>> y = x.is_ivy_array()
         >>> print(y)
@@ -256,10 +243,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.is_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_array also applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.is_array. This method simply wraps
+        the function, and so the docstring for ivy.ivy.is_array also applies to this
+        method with minimal changes.
         Parameters
         ----------
         x
@@ -281,12 +267,10 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
-
         Returns
         -------
         ret
             Boolean, whether or not x is an array.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
@@ -318,10 +302,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.is_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_array also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.is_array. This method simply wraps
+        the function, and so the docstring for ivy.is_array also applies to this method
+        with minimal changes.
         Parameters
         ----------
         self
@@ -340,12 +323,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             Boolean, whether or not x is an array.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
@@ -380,9 +361,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.clip_vector_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_vector_norm
-        also applies to this method with minimal changes.
-
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm also
+        applies to this method with minimal changes.
         Parameters
         ----------
         x
@@ -408,16 +388,13 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
-
         Returns
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-
         Examples
         --------
         With :class:`ivy.Container` instance method:
-
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_clip_vector_norm(x, 2.0)
         >>> print(y)
@@ -425,7 +402,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 0.894, 1.79]),
             b: ivy.array([0.849, 1.13, 1.41])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "clip_vector_norm",
@@ -453,9 +429,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.clip_vector_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_vector_norm
-        also applies to this method with minimal changes.
-
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm also
+        applies to this method with minimal changes.
         Parameters
         ----------
         self
@@ -481,16 +456,13 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
-
         Returns
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-
         Examples
         --------
         With :class:`ivy.Container` instance method:
-
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
         ...                   b=ivy.array([3., 4., 5.]))
         >>> y = x.clip_vector_norm(2.0, p=1.0)
@@ -499,7 +471,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 0.667, 1.33]),
             b: ivy.array([0.5, 0.667, 0.833])
         }
-
         """
         return self._static_clip_vector_norm(
             self,
@@ -527,10 +498,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_update. This method
-        simply wraps the function, and so the docstring for ivy.inplace_update
-        also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.inplace_update. This method simply
+        wraps the function, and so the docstring for ivy.inplace_update also applies to
+        this method with minimal changes.
         Parameters
         ----------
         x
@@ -558,12 +528,10 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
-
         Returns
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-
         """
         # inplace update the leaves
         cont = x
@@ -597,10 +565,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_update. This method
-        simply wraps the function, and so the docstring for ivy.inplace_update
-        also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.inplace_update. This method simply
+        wraps the function, and so the docstring for ivy.inplace_update also applies to
+        this method with minimal changes.
         Parameters
         ----------
         self
@@ -628,16 +595,13 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
-
         Returns
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-
         Examples
         --------
         With :class:`ivy.Container` input and default backend set as `numpy`:
-
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> y = ivy.Container(a=ivy.array([1]), b=ivy.array([2]))
         >>> x.inplace_update(y)
@@ -646,7 +610,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([1]),
             b: ivy.array([2])
         }
-
         """
         return self._static_inplace_update(
             self,
@@ -672,10 +635,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.inplace_decrement. This method
-        simply wraps the function, and so the docstring for ivy.inplace_decrement
-        also applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.inplace_decrement. This method simply
+        wraps the function, and so the docstring for ivy.inplace_decrement also applies
+        to this method with minimal changes.
         Parameters
         ----------
         x
@@ -693,12 +655,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             The array following an in-place decrement.
-
         Examples
         --------
         Decrement by a value
@@ -709,7 +669,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([-1., -6.5, 28.5]),
             b: ivy.array([-1.5, -26.5, 48.5])
         }
-
         Decrement by a Container
         >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
@@ -719,7 +678,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 0., 0.]),
             b: ivy.array([0., 0., 0.])
         }
-
         >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
         >>> y = ivy.Container(a=ivy.array([2., 5.5, 7.]), b=ivy.array([0., 25., 2.]))
         >>> z = ivy.inplace_decrement(x, y)
@@ -728,7 +686,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([1., 1.5, 3.]),
             b: ivy.array([0., 50., 3.5])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "inplace_decrement",
@@ -752,9 +709,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.inplace_decrement. This method
-        simply wraps the function, and so the docstring for ivy.inplace_decrement
-        also applies to this method with minimal changes.
-
+        simply wraps the function, and so the docstring for ivy.inplace_decrement also
+        applies to this method with minimal changes.
         Parameters
         ----------
         self
@@ -772,12 +728,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             A container with the array following the in-place decrement.
-
         Examples
         --------
         Using :class:`ivy.Container` instance method:
@@ -791,7 +745,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([-0.5, -2.3, -2]),
             c: ivy.array([-6.7, -7.4, 5.5])
         }
-
         """
         return self._static_inplace_decrement(
             self,
@@ -814,10 +767,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.inplace_increment. This method
-        simply wraps the function, and so the docstring for ivy.inplace_increment
-        also applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.inplace_increment. This method simply
+        wraps the function, and so the docstring for ivy.inplace_increment also applies
+        to this method with minimal changes.
         Parameters
         ----------
         x
@@ -835,12 +787,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             The array following an in-place increment.
-
         Examples
         --------
         Increment by a value
@@ -851,7 +801,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([2., -3.5, 31.5]),
             b: ivy.array([1.5, -23.5, 51.5])
         }
-
         Increment by a Container
         >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
@@ -861,7 +810,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 30., 60.]),
             b: ivy.array([0., 50., 100.])
         }
-
         >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
         >>> y = ivy.Container(a=ivy.array([2., 5.5, 7.]), b=ivy.array([0., 25., 2.]))
         >>> z = ivy.inplace_increment(x, y)
@@ -870,7 +818,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([5., 12.5, 17.]),
             b: ivy.array([0., 100., 7.5])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "inplace_increment",
@@ -893,10 +840,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_increment.
-        This method wraps the function, and so the docstring for
-        ivy.inplace_increment also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.inplace_increment. This method
+        wraps the function, and so the docstring for ivy.inplace_increment also applies
+        to this method with minimal changes.
         Parameters
         ----------
         self
@@ -914,12 +860,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             A container with the array following the in-place increment.
-
         Examples
         --------
         Using :class:`ivy.Container` instance method:
@@ -933,7 +877,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([3.5, 1.7, 2.]),
             c: ivy.array([-2.7, -3.4, 9.5])
         }
-
         """
         return self._static_inplace_increment(
             self,
@@ -955,10 +898,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.assert_supports_inplace. This
-        method simply wraps the function, and so the docstring for
-        ivy.assert_supports_inplace also applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.assert_supports_inplace. This method
+        simply wraps the function, and so the docstring for ivy.assert_supports_inplace
+        also applies to this method with minimal changes.
         Parameters
         ----------
         x
@@ -974,7 +916,6 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
@@ -1002,7 +943,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container instance method variant of ivy.assert_supports_inplace. This
         method simply wraps the function, and so the docstring for
         ivy.assert_supports_inplace also applies to this method with minimal changes.
-
         Parameters
         ----------
         x
@@ -1018,32 +958,26 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             An ivy.Container instance of True bool values if nodes of the Container \
             support in-place operations, raises IvyBackendException otherwise
-
         Examples
         --------
         With :class:`ivy.Container` input and default backend set as `numpy`:
-
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> print(x.assert_supports_inplace())
         {
             a: True,
             b: True
         }
-
         With :class:`ivy.Container` input and default backend set as `jax`:
-
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> print(x.assert_supports_inplace())
         IvyBackendException: jax: assert_supports_inplace: Inplace operations \
         are not supported <class 'jaxlib.xla_extension.DeviceArray'> types
         with jax backend
-
         """
         return self._static_assert_supports_inplace(
             self,
@@ -1067,7 +1001,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container static method variant of ivy.all_equal. This method simply wraps
         the function, and so the docstring for ivy.all_equal also applies to this method
         with minimal changes.
-
         Parameters
         ----------
         x1
@@ -1088,17 +1021,14 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             Boolean, whether or not the inputs are equal, or matrix container of
             booleans if equality_matrix=True is set.
-
         Examples
         --------
         With one :class:`ivy.Container` input:
-
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
         >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
@@ -1107,9 +1037,7 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([True, True, True, True]),
             b: ivy.array([True, False, False, False])
         }
-
         With multiple :class:`ivy.Container` input:
-
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]),
         ...                    b=ivy.native_array([1, 0, 0, 1]))
         >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]),
@@ -1120,7 +1048,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([True, True, True, True]),
             b: ivy.array([True, True, False, False])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "all_equal",
@@ -1143,10 +1070,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.all_equal.
-        This method simply wraps the function, and so the docstring for
-        ivy.all_equal also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.all_equal. This method simply wraps
+        the function, and so the docstring for ivy.all_equal also applies to this method
+        with minimal changes.
         Parameters
         ----------
         self
@@ -1167,17 +1093,14 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             Boolean, whether or not the inputs are equal, or matrix container of
             booleans if equality_matrix=True is set.
-
         Examples
         --------
         With one :class:`ivy.Container` instances:
-
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
         >>> y = x1.all_equal(x2, equality_matrix= False)
@@ -1186,7 +1109,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: True,
             b: False
         }
-
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
         >>> y = x1.all_equal(x2, equality_matrix= False)
@@ -1195,9 +1117,7 @@ class _ContainerWithGeneral(ContainerBase):
             a: True,
             b: False
         }
-
         With multiple :class:`ivy.Container` instances:
-
         >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),
         ...                    b=ivy.array([1, 2, 3]))
         >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),
@@ -1208,7 +1128,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: False,
             b: True
         }
-
         >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),
         ...                    b=ivy.array([1, 2, 3]))
         >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),
@@ -1219,7 +1138,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: False,
             b: True
         }
-
         """
         return self._static_all_equal(
             self,
@@ -1246,10 +1164,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.fourier_encode. This method
-        simply wraps the function, and so the docstring for ivy.fourier_encode
-        also applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.fourier_encode. This method simply
+        wraps the function, and so the docstring for ivy.fourier_encode also applies to
+        this method with minimal changes.
         Parameters
         ----------
         x
@@ -1275,13 +1192,11 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
-
         Examples
         --------
         >>> x = ivy.Container(a = ivy.array([1,2]),
@@ -1293,7 +1208,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: (<classivy.array.array.Array>shape=[2,9]),
             b: (<classivy.array.array.Array>shape=[2,9])
         }
-
         >>> x = ivy.Container(a = ivy.array([3,10]),
         ...                   b = ivy.array([4,8]))
         >>> y = 2.5
@@ -1338,10 +1252,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.fourier_encode. This method
-        simply wraps the function, and so the docstring for ivy.fourier_encode
-        also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.fourier_encode. This method simply
+        wraps the function, and so the docstring for ivy.fourier_encode also applies to
+        this method with minimal changes.
         Parameters
         ----------
         self
@@ -1371,13 +1284,11 @@ class _ContainerWithGeneral(ContainerBase):
             Data type of the returned array. Default is ``None``.
         out
             Optional output container. Default is ``None``.
-
         Returns
         -------
         ret
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
-
         Examples
         --------
         >>> x = ivy.Container(a = ivy.array([1,2]),
@@ -1389,7 +1300,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: (<classivy.array.array.Array>shape=[2,9]),
             b: (<classivy.array.array.Array>shape=[2,9])
         }
-
         >>> x = ivy.Container(a = ivy.array([3,10]),
         ...                   b = ivy.array([4,8]))
         >>> y = 2.5
@@ -1433,10 +1343,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.gather. This method simply
-        wraps the function, and so the docstring for ivy.gather also applies to
-        this method with minimal changes.
-
+        ivy.Container static method variant of ivy.gather. This method simply wraps the
+        function, and so the docstring for ivy.gather also applies to this method with
+        minimal changes.
         Parameters
         ----------
         params
@@ -1462,18 +1371,14 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
-
         Returns
         -------
         ret
             New container with the values gathered at the specified indices
             along the specified axis.
-
         Examples
         --------
         With :class:`ivy.Container` input:
-
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
         ...                   b = ivy.array([4., 5., 6.]))
         >>> y = ivy.Container(a = ivy.array([0, 1]),
@@ -1483,9 +1388,7 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 1.]),
             b: ivy.array([5., 6.])
         }
-
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
-
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
         ...                   b = ivy.array([4., 5., 6.]))
         >>> y = ivy.array([0, 1])
@@ -1495,7 +1398,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 1.]),
             b: ivy.array([4., 5.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "gather",
@@ -1524,10 +1426,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gather. This method simply
-        wraps the function, and so the docstring for ivy.gather also applies to
-        this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.gather. This method simply wraps
+        the function, and so the docstring for ivy.gather also applies to this method
+        with minimal changes.
         Parameters
         ----------
         self
@@ -1553,13 +1454,11 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
         ret
             New container with the values gathered at the specified indices
             along the specified axis.
-
         Examples
         --------
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
@@ -1572,7 +1471,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 1.]),
             b: ivy.array([5., 6.])
         }
-
         """
         return self._static_gather(
             self,
@@ -1598,9 +1496,8 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Determine whether arrays in the container contain any nans, as well as infs
-        or -infs if specified.
-
+        Determine whether arrays in the container contain any nans, as well as infs or
+        -infs if specified.
         Parameters
         ----------
         self
@@ -1618,12 +1515,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
             Whether the container has any nans, applied either leafwise or across the
             entire container.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
@@ -1655,9 +1550,8 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Determine whether arrays in the container contain any nans, as well as infs
-        or -infs if specified.
-
+        Determine whether arrays in the container contain any nans, as well as infs or
+        -infs if specified.
         Parameters
         ----------
         include_infs
@@ -1673,11 +1567,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
             Whether the container has any nans, applied across the entire container.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
@@ -1687,7 +1579,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: false,
             b: true
         }
-
         """
         return self._static_has_nans(
             self,
@@ -1716,7 +1607,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container static method variant of ivy.scatter_nd. This method simply wraps
         the function, and so the docstring for ivy.scatter_nd also applies to this
         method with minimal changes.
-
         Parameters
         ----------
         indices
@@ -1743,16 +1633,13 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
         ref
             New container of given shape, with the values updated at the indices.
-
         Examples
         --------
         scatter into an empty array
-
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
         ...                         b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),
@@ -1765,9 +1652,7 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
             b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
         }
-
         scatter into a container
-
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
         ...          b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),
@@ -1781,7 +1666,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "scatter_nd",
@@ -1810,11 +1694,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.scatter_nd.
-        This method simply wraps the function, and so the docstring
-        for ivy.scatter_nd also applies to this method
-        with minimal changes.
-
+        ivy.Container instance method variant of ivy.scatter_nd. This method simply
+        wraps the function, and so the docstring for ivy.scatter_nd also applies to this
+        method with minimal changes.
         Parameters
         ----------
         self
@@ -1841,16 +1723,13 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
         ret
             New container of given shape, with the values updated at the indices.
-
         Examples
         --------
         scatter into an empty container
-
         >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
         ...                         b=ivy.array([[5],[1],[2]]))
         >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),
@@ -1863,9 +1742,7 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
             b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
         }
-
         With scatter into a container.
-
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
         ...                         b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),
@@ -1909,7 +1786,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container static method variant of ivy.scatter_flat. This method simply
         wraps the function, and so the docstring for ivy.scatter_flat also applies to
         this method with minimal changes.
-
         Parameters
         ----------
         indices
@@ -1936,7 +1812,6 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
         ref
@@ -1969,11 +1844,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.scatter_flat.
-        This method simply wraps the function, and so the docstring
-        for ivy.scatter_flat also applies to this method
-        with minimal changes.
-
+        ivy.Container instance method variant of ivy.scatter_flat. This method simply
+        wraps the function, and so the docstring for ivy.scatter_flat also applies to
+        this method with minimal changes.
         Parameters
         ----------
         self
@@ -2000,12 +1873,10 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
         ret
             New container of given shape, with the values updated at the indices.
-
         Examples
         --------
         With :class:`ivy.Container` input:
@@ -2045,9 +1916,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Gather slices from all container params into a arrays with shape specified by
+        """
+        Gather slices from all container params into a arrays with shape specified by
         indices.
-
         Parameters
         ----------
         params
@@ -2070,11 +1941,9 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
             Container object with all sub-array dimensions gathered.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[0., 10., 20.],[30.,40.,50.]]),
@@ -2086,7 +1955,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array(30.),
             b: ivy.array([0., 100., 200.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "gather_nd",
@@ -2113,11 +1981,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gather_nd.
-        This method simply wraps the function, and so the docstring
-        for ivy.gather_nd also applies to this method
+        ivy.Container instance method variant of ivy.gather_nd. This method simply wraps
+        the function, and so the docstring for ivy.gather_nd also applies to this method
         with minimal changes.
-
         Parameters
         ----------
         self
@@ -2140,12 +2006,10 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
         ret
             New container of given shape, with the values gathered at the indices.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[[0., 10.], [20.,30.]],
@@ -2187,8 +2051,8 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
-        """Perform einops reduce operation on each sub array in the container.
-
+        """
+        Perform einops reduce operation on each sub array in the container.
         Parameters
         ----------
         x
@@ -2214,11 +2078,9 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
             ivy.Container with each array having einops.reduce applied.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
@@ -2231,7 +2093,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([-2.29333329, 10.53000069]),
             b: ivy.array([-1.39666676, 6.20666695])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_reduce",
@@ -2261,9 +2122,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.einops_reduce. This method simply
-        wraps the function, and so the docstring for ivy.einops_reduce also applies
-        to this method with minimal changes.
-
+        wraps the function, and so the docstring for ivy.einops_reduce also applies to
+        this method with minimal changes.
         Parameters
         ----------
         self
@@ -2289,12 +2149,10 @@ class _ContainerWithGeneral(ContainerBase):
             shape that the inputs broadcast to.
         axes_lengths
             Any additional specifications for dimensions.
-
         Returns
         -------
         ret
             New container with einops.reduce having been applied.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[[5, 4, 3],
@@ -2316,7 +2174,6 @@ class _ContainerWithGeneral(ContainerBase):
                         [7, 11],
                         [16, 3]])
         }
-
         """
         return self._static_einops_reduce(
             self,
@@ -2343,8 +2200,8 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
-        """Perform einops repeat operation on each sub array in the container.
-
+        """
+        Perform einops repeat operation on each sub array in the container.
         Parameters
         ----------
         x
@@ -2365,11 +2222,9 @@ class _ContainerWithGeneral(ContainerBase):
         axes_lengths
             Any additional specifications for dimensions.
         **axes_lengths
-
         Returns
         -------
             ivy.Container with each array having einops.repeat applied.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
@@ -2387,7 +2242,6 @@ class _ContainerWithGeneral(ContainerBase):
                         [1, 2],
                         [4, 5]])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_repeat",
@@ -2415,9 +2269,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.einops_repeat. This method simply
-        wraps the function, and so the docstring for ivy.einops_repeat also applies
-        to this method with minimal changes.
-
+        wraps the function, and so the docstring for ivy.einops_repeat also applies to
+        this method with minimal changes.
         Parameters
         ----------
         self
@@ -2440,12 +2293,10 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output container, for writing the result to. It must have a
             shape that the inputs broadcast to.
-
         Returns
         -------
         ret
             New container with einops.repeat having been applied.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
@@ -2458,7 +2309,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([[1, 1, 2, 2],
                           [4, 4, 5, 5]])
         }
-
         """
         return self._static_einops_repeat(
             self,
@@ -2486,7 +2336,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container static method variant of ivy.value_is_nan. This method simply
         wraps the function, and so the docstring for ivy.value_is_nan also applies to
         this method with minimal changes.
-
         Parameters
         ----------
         x
@@ -2505,16 +2354,13 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             Boolean as to whether the input value is a nan or not.
-
         Examples
         --------
         With :class:`ivy.Container` input:
-
         >>> x = ivy.Container(a=ivy.array([452]), b=ivy.array([float('inf')]))
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
@@ -2522,9 +2368,7 @@ class _ContainerWithGeneral(ContainerBase):
             a: False,
             b: True
         }
-
         With :class:`ivy.Container` input:
-
         >>> x = ivy.Container(a=ivy.array([float('nan')]), b=ivy.array([0]))
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
@@ -2532,9 +2376,7 @@ class _ContainerWithGeneral(ContainerBase):
             a: True,
             b: False
         }
-
         With :class:`ivy.Container` input:
-
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
         >>> y = ivy.Container.static_value_is_nan(x, include_infs=False)
         >>> print(y)
@@ -2567,7 +2409,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container instance method variant of ivy.value_is_nan. This method simply
         wraps the function, and so the docstring for ivy.value_is_nan also applies to
         this method with minimal changes.
-
         Parameters
         ----------
         self
@@ -2586,12 +2427,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             Boolean as to whether the input value is a nan or not.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([425]), b=ivy.array([float('nan')]))
@@ -2601,7 +2440,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: False,
             b: True
         }
-
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([0]))
         >>> y = x.value_is_nan()
         >>> print(y)
@@ -2609,7 +2447,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: True,
             b: False
         }
-
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
         >>> y = x.value_is_nan(include_infs=False)
         >>> print(y)
@@ -2642,7 +2479,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container static method variant of ivy.to_numpy. This method simply wraps
         the function, and so the docstring for ivy.to_numpy also applies to this method
         with minimal changes.
-
         Parameters
         ----------
         x
@@ -2660,17 +2496,14 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             a container of numpy arrays copying all the element of the container
             ``self``.
-
         Examples
         --------
         With one :class:`ivy.Container` input:
-
         >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),
         ...                   b=ivy.array([1, -1, 0, 0]))
         >>> y = ivy.Container.static_to_numpy(x)
@@ -2679,7 +2512,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: array([1, 0, 1, 1], dtype=int32),
             b: array([1, -1, 0, 0], dtype=int32)
         }
-
         >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),
         ...                   b=ivy.native_array([1, 1, -1, 0]))
         >>> y = ivy.Container.static_to_numpy(x)
@@ -2688,7 +2520,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: array([1., 0., 0., 1.], dtype=float32),
             b: array([1, 1, -1, 0], dtype=int32)
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "to_numpy",
@@ -2714,7 +2545,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container instance method variant of ivy.to_numpy. This method simply wraps
         the function, and so the docstring for ivy.to_numpy also applies to this method
         with minimal changes.
-
         Parameters
         ----------
         self
@@ -2732,17 +2562,14 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             a container of numpy arrays copying all the element of the container
             ``self``.
-
         Examples
         --------
         With one :class:`ivy.Container` instances:
-
         >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1, 0, 1, 1]))
         >>> y = x.to_numpy()
         >>> print(y)
@@ -2750,7 +2577,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: array([-1, 0, 1], dtype=int32),
             b: array([1, 0, 1, 1], dtype=int32)
         }
-
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),
         ...                   b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
         >>> y = x.to_numpy()
@@ -2763,7 +2589,6 @@ class _ContainerWithGeneral(ContainerBase):
                     [1, 0, 1],
                     [1, 1, 1]], dtype=int32)
         }
-
         """
         return self._static_to_numpy(
             self,
@@ -2788,7 +2613,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container static method variant of ivy.to_scalar. This method simply wraps
         the function, and so the docstring for ivy.to_scalar also applies to this method
         with minimal changes.
-
         Parameters
         ----------
         x
@@ -2804,17 +2628,14 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             a container of scalar values copying all the element of the container
             ``x``.
-
         Examples
         --------
         With one :class:`ivy.Container` input:
-
         >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
         >>> y = ivy.Container.static_to_scalar(x)
         >>> print(y)
@@ -2845,7 +2666,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container instance method variant of ivy.to_scalar. This method simply wraps
         the function, and so the docstring for ivy.to_scalar also applies to this method
         with minimal changes.
-
         Parameters
         ----------
         self
@@ -2861,18 +2681,14 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             a container of scalar values copying all the element of the container
             ``self``.
-
         Examples
         --------
         With one :class:`ivy.Container` instance:
-
-
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),
         ...                   c=ivy.array([-1]))
         >>> y = x.to_scalar()
@@ -2902,10 +2718,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.to_list. This method simply wraps
-        the function, and so the docstring for ivy.to_list also applies to this method
-        with minimal changes.
-
+        ivy.Container static method variant of ivy.to_list. This method simply wraps the
+        function, and so the docstring for ivy.to_list also applies to this method with
+        minimal changes.
         Parameters
         ----------
         x
@@ -2921,21 +2736,17 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             A container with list representation of the leave arrays.
-
         Examples
         --------
         With one :class:`ivy.Container` inputs:
-
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = ivy.Container.static_to_list(x)
         >>> print(y)
         {a:[0,1,2]}
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "to_list",
@@ -2959,7 +2770,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container instance method variant of ivy.to_list. This method simply wraps
         the function, and so the docstring for ivy.to_list also applies to this method
         with minimal changes.
-
         Parameters
         ----------
         self
@@ -2975,22 +2785,17 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             A container with list representation of the leave arrays.
-
         Examples
         --------
         With one :class:`ivy.Container` instances:
-
-
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = x.to_list()
         >>> print(y)
         {a:[0,1,2]}
-
         """
         return self._static_to_list(
             self,
@@ -3016,9 +2821,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.stable_divide. This method simply
-        wraps the function, and so the docstring for ivy.stable_divide also applies
-        to this method with minimal changes.
-
+        wraps the function, and so the docstring for ivy.stable_divide also applies to
+        this method with minimal changes.
         Parameters
         ----------
         numerator
@@ -3039,13 +2843,11 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             A container of elements containing the new items following the numerically
             stable division.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
@@ -3055,7 +2857,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([20., 30.]),
             b: ivy.array([40., 50.])
         }
-
         >>> x = ivy.Container(a=1, b=10)
         >>> y = ivy.asarray([4, 5])
         >>> z = ivy.Container.stable_divide(x, y)
@@ -3064,7 +2865,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0.25, 0.2]),
             b: ivy.array([2.5, 2.])
         }
-
         >>> x = ivy.Container(a=1, b=10)
         >>> y = np.array((4.5, 9))
         >>> z = ivy.Container.stable_divide(x, y)
@@ -3073,8 +2873,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: array([0.22222222, 0.11111111]),
             b: array([2.22222222, 1.11111111])
         }
-
-
         >>> x = ivy.Container(a=ivy.asarray([1., 2.]), b=ivy.asarray([3., 4.]))
         >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
         >>> z = ivy.Container.stable_divide(x, y)
@@ -3083,7 +2881,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([2., 0.8]),
             b: ivy.array([0.857, 10.])
         }
-
         >>> x = ivy.Container(a=ivy.asarray([1., 2.], [3., 4.]),
         ...                   b=ivy.asarray([5., 6.], [7., 8.]))
         >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
@@ -3119,10 +2916,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.stable_divide. This method
-        simply wraps the function, and so the docstring for ivy.stable_divide
-        also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.stable_divide. This method simply
+        wraps the function, and so the docstring for ivy.stable_divide also applies to
+        this method with minimal changes.
         Parameters
         ----------
         self
@@ -3143,7 +2939,6 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
@@ -3151,7 +2946,6 @@ class _ContainerWithGeneral(ContainerBase):
             ``self``.
             A container of elements containing the new items following the numerically
             stable division, using ``self`` as the numerator.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
@@ -3161,7 +2955,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0.6, 1.2]),
             b: ivy.array([1.8, 2.4])
         }
-
         >>> x = ivy.Container(a=ivy.asarray([[2., 4.], [6., 8.]]),
         ...                   b=ivy.asarray([[10., 12.], [14., 16.]]))
         >>> z = x.stable_divide(2, min_denominator=2)
@@ -3172,7 +2965,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([[2.5, 3.],
                   [3.5, 4.]])
         }
-
         >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
         >>> y = ivy.Container(a=ivy.asarray([6., 9.]), b=ivy.asarray([12., 15.]))
         >>> z = x.stable_divide(y)
@@ -3181,7 +2973,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0.5, 0.667]),
             b: ivy.array([0.75, 0.8])
         }
-
         """
         return self._static_stable_divide(
             self,
@@ -3206,10 +2997,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.stable_pow. This method
-        simply wraps the function, and so the docstring for ivy.stable_pow also
-        applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.stable_pow. This method simply wraps
+        the function, and so the docstring for ivy.stable_pow also applies to this
+        method with minimal changes.
         Parameters
         ----------
         base
@@ -3229,13 +3019,11 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is
             False.
-
         Returns
         -------
         ret
             A container of elements containing the new items following the
             numerically stable power.
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "stable_pow",
@@ -3260,10 +3048,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.stable_pow. This method
-        simply wraps the function, and so the docstring for ivy.stable_pow
-        also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.stable_pow. This method simply
+        wraps the function, and so the docstring for ivy.stable_pow also applies to this
+        method with minimal changes.
         Parameters
         ----------
         self
@@ -3283,13 +3070,11 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is
             False.
-
         Returns
         -------
         ret
             A container of elements containing the new items following the
             numerically stable power.
-
         """
         return self._static_stable_pow(
             self,
@@ -3315,10 +3100,9 @@ class _ContainerWithGeneral(ContainerBase):
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.einops_rearrange. This method
-        simply wraps the function, and so the docstring for ivy.einops_rearrange
-        also applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.einops_rearrange. This method simply
+        wraps the function, and so the docstring for ivy.einops_rearrange also applies
+        to this method with minimal changes.
         Parameters
         ----------
         pattern
@@ -3336,16 +3120,12 @@ class _ContainerWithGeneral(ContainerBase):
             Default is ``False``.
         axes_lengths
             Any additional specifications for dimensions.
-
-
         Returns
         -------
             ivy.Container with each array having einops.rearrange applied.
-
         Examples
         --------
         With :class:`ivy.Container` input:
-
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
         ...                                [-4, -5, -6]]),
         ...                 b=ivy.array([[7, 8, 9],
@@ -3360,7 +3140,6 @@ class _ContainerWithGeneral(ContainerBase):
                         [8, 11],
                         [9, 12]])
         }
-
         >>> x = ivy.Container(a=ivy.array([[[ 1,  2,  3],
         ...                  [ 4,  5,  6]],
         ...               [[ 7,  8,  9],
@@ -3370,14 +3149,12 @@ class _ContainerWithGeneral(ContainerBase):
         {
             a: (<class ivy.array.array.Array> shape=[2, 6])
         }
-
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3, 4, 5, 6],
         ...               [7, 8, 9, 10, 11, 12]]))
         >>> y = ivy.static_einops_rearrange(x, "c (h w) -> (c h) w", h=2, w=3)
         {
             a: (<class ivy.array.array.Array> shape=[4, 3])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_rearrange",
@@ -3405,9 +3182,8 @@ class _ContainerWithGeneral(ContainerBase):
     ):
         """
         ivy.Container instance method variant of ivy.einops_rearrange. This method
-        simply wraps the function, and so the docstring for ivy.einops_rearrange
-        also applies to this method with minimal changes.
-
+        simply wraps the function, and so the docstring for ivy.einops_rearrange also
+        applies to this method with minimal changes.
         Parameters
         ----------
         pattern
@@ -3426,12 +3202,9 @@ class _ContainerWithGeneral(ContainerBase):
         axes_lengths
             Any additional specifications for dimensions.
         **axes_lengths
-
-
         Returns
         -------
             ivy.Container with each array having einops.rearrange applied.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
@@ -3448,7 +3221,6 @@ class _ContainerWithGeneral(ContainerBase):
                         [8, 11],
                         [9, 12]])
         }
-
         >>> x = ivy.Container(a=ivy.array([[[ 1,  2,  3],
         ...                  [ 4,  5,  6]],
         ...               [[ 7,  8,  9],
@@ -3458,14 +3230,12 @@ class _ContainerWithGeneral(ContainerBase):
         {
             a: (<class ivy.array.array.Array> shape=[2, 6])
         }
-
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3, 4, 5, 6],
         ...               [7, 8, 9, 10, 11, 12]]))
         >>> y = x.einops_rearrange("c (h w) -> (c h) w", h=2, w=3)
         {
             a: (<class ivy.array.array.Array> shape=[4, 3])
         }
-
         """
         return self._static_einops_rearrange(
             self,
@@ -3492,10 +3262,9 @@ class _ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.clip_matrix_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_matrix_norm
-        also applies to this method with minimal changes.
-
+        ivy.Container static method variant of ivy.clip_matrix_norm. This method simply
+        wraps the function, and so the docstring for ivy.clip_matrix_norm also applies
+        to this method with minimal changes.
         Parameters
         ----------
         x
@@ -3518,16 +3287,13 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
-
         Returns
         -------
         ret
             An array with the matrix norm downscaled to the max norm if needed.
-
         Examples
         --------
         With :class:`ivy.Container` input:
-
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]),
         ...                   b=ivy.array([[3., 4., 5.]]))
         >>> y = ivy.Container.static_clip_matrix_norm(x, 2.0)
@@ -3536,7 +3302,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([[0., 0.894, 1.79]]),
             b: ivy.array([[0.849, 1.13, 1.41]])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "clip_matrix_norm",
@@ -3564,9 +3329,8 @@ class _ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.clip_matrix_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_matrix_norm
-        also applies to this method with minimal changes.
-
+        simply wraps the function, and so the docstring for ivy.clip_matrix_norm also
+        applies to this method with minimal changes.
         Parameters
         ----------
         self
@@ -3589,16 +3353,13 @@ class _ContainerWithGeneral(ContainerBase):
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
-
         Returns
         -------
         ret
             An array with the matrix norm downscaled to the max norm if needed.
-
         Examples
         --------
         With :class:`ivy.Container` instance method:
-
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]),
         ...                   b=ivy.array([[3., 4., 5.]]))
         >>> y = x.clip_matrix_norm(2.0, p=1.0)
@@ -3607,7 +3368,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([[0., 1., 2.]]),
             b: ivy.array([[1.2, 1.6, 2.]])
         }
-
         """
         return self._static_clip_matrix_norm(
             self,
@@ -3634,7 +3394,6 @@ class _ContainerWithGeneral(ContainerBase):
         ivy.Container static method variant of ivy.supports_inplace_updates. This method
         simply wraps the function, and so the docstring for ivy.supports_inplace_updates
         also applies to this method with minimal changes.
-
         Parameters
         ----------
         x
@@ -3652,13 +3411,11 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             An ivy.Container instance of bool values.
             True if nodes of x support in-place operations. False otherwise.
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "supports_inplace_updates",
@@ -3679,10 +3436,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.supports_inplace_updates.
-        This method simply wraps the static function, and so the docstring for
-        the static variant also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.supports_inplace_updates. This
+        method simply wraps the static function, and so the docstring for the static
+        variant also applies to this method with minimal changes.
         Parameters
         ----------
         self
@@ -3700,17 +3456,14 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
         Returns
         -------
         ret
             An ivy.Container instance of bool values.
             True if nodes of the Container support in-place operations. False otherwise.
-
         Examples
         --------
         With :class:`ivy.Container` input and backend set as `torch`:
-
         >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
@@ -3718,9 +3471,7 @@ class _ContainerWithGeneral(ContainerBase):
             a: True,
             b: True
         }
-
         With :class:`ivy.Container` input and backend set as `jax`:
-
         >>> x = ivy.Container(a=ivy.array([5.]), b=ivy.array([7.]))
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
@@ -3728,7 +3479,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: False,
             b: False
         }
-
         """
         return _ContainerWithGeneral._static_supports_inplace_updates(
             self,
@@ -3750,10 +3500,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.get_num_dims. This method
-        simply wraps the function, and so the docstring for ivy.get_num_dims
-        also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.get_num_dims. This method simply
+        wraps the function, and so the docstring for ivy.get_num_dims also applies to
+        this method with minimal changes.
         Parameters
         ----------
         x
@@ -3771,13 +3520,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
-
         Returns
         -------
         ret
             Shape of the array
-
         Examples
         --------
         >>> x = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
@@ -3827,10 +3573,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.get_num_dims. This method
-        simply wraps the function, and so the docstring for ivy.get_num_dims
-        also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.get_num_dims. This method simply
+        wraps the function, and so the docstring for ivy.get_num_dims also applies to
+        this method with minimal changes.
         Parameters
         ----------
         self
@@ -3848,13 +3593,10 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
-
         Returns
         -------
         ret
             Shape of the array
-
         Examples
         --------
         >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
@@ -3904,10 +3646,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.array_equal. This method
-        simply wraps the function, and so the docstring for ivy.array_equal
-        also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.array_equal. This method simply
+        wraps the function, and so the docstring for ivy.array_equal also applies to
+        this method with minimal changes.
         Parameters
         ----------
         x0
@@ -3925,14 +3666,11 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
-
         Returns
         -------
         ret
             A boolean container indicating whether the two containers are
             equal at each level.
-
         Examples
         --------
         >>> a = ivy.array([[0., 1.], [1. ,0.]])
@@ -3947,7 +3685,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: true,
             b: false
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "array_equal",
@@ -3970,10 +3707,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.array_equal. This method
-        simply wraps the function, and so the docstring for ivy.array_equal
-        also applies to this method with minimal changes.
-
+        ivy.Container instance method variant of ivy.array_equal. This method simply
+        wraps the function, and so the docstring for ivy.array_equal also applies to
+        this method with minimal changes.
         Parameters
         ----------
         self
@@ -3991,14 +3727,11 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-
-
         Returns
         -------
         ret
             A boolean container indicating whether the two containers are
             equal at each level.
-
         Examples
         --------
         >>> a = ivy.array([[0., 1.], [1. ,0.]])
@@ -4013,7 +3746,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: true,
             b: false
         }
-
         """
         return _ContainerWithGeneral._static_array_equal(
             self,
@@ -4033,10 +3765,10 @@ class _ContainerWithGeneral(ContainerBase):
         assume_unique: bool = False,
         invert: bool = False,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.isin. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
-        this method with minimal changes.
-
+        """
+        Container instance method variant of ivy.isin. This method simply wraps the
+        function, and so the docstring for ivy.isin also applies to this method with
+        minimal changes.
         Parameters
         ----------
         element
@@ -4049,13 +3781,11 @@ class _ContainerWithGeneral(ContainerBase):
         invert
             If True, inverts the boolean return array, resulting in True values for
             elements not in test_elements. Default value is False.
-
         Returns
         -------
         ret
             output a boolean container of the same shape as elements that is True for
             elements in test_elements and False otherwise.
-
         Examples
         --------
         >>> x = ivy.Container(a=[[10, 7, 4], [3, 2, 1]],\
@@ -4065,7 +3795,6 @@ class _ContainerWithGeneral(ContainerBase):
         >>> ivy.Container.static_isin(x, y)
         ivy.Container(a=[[False, False, False], [ True,  True,  True]],\
                       b=[ True, False,  True])
-
         >>> ivy.Container.static_isin(x, y, invert=True)
         ivy.Container(a=[[ True,  True,  True], [False, False, False]],\
                       b=[False,  True, False])
@@ -4082,10 +3811,10 @@ class _ContainerWithGeneral(ContainerBase):
         assume_unique: bool = False,
         invert: bool = False,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.isin. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
-        this method with minimal changes.
-
+        """
+        Container instance method variant of ivy.isin. This method simply wraps the
+        function, and so the docstring for ivy.isin also applies to this method with
+        minimal changes.
         Parameters
         ----------
         self
@@ -4098,13 +3827,11 @@ class _ContainerWithGeneral(ContainerBase):
         invert
             If True, inverts the boolean return array, resulting in True values for
             elements not in test_elements. Default value is False.
-
         Returns
         -------
         ret
             output a boolean array of the same shape as elements that is True for
             elements in test_elements and False otherwise.
-
         Examples
         --------
         >>> x = ivy.Container(a=[[10, 7, 4], [3, 2, 1]],\
@@ -4124,20 +3851,18 @@ class _ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         /,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.itemsize. This method simply
-        wraps the function, and so the docstring for ivy.itemsize also applies to
-        this method with minimal changes.
-
+        """
+        Container instance method variant of ivy.itemsize. This method simply wraps the
+        function, and so the docstring for ivy.itemsize also applies to this method with
+        minimal changes.
         Parameters
         ----------
         x
            The input container.
-
         Returns
         -------
         ret
             Integers specifying the element size in bytes.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1,2,3], dtype=ivy.float64),\
@@ -4151,15 +3876,14 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.itemsize. This method simply
-        wraps the function, and so the docstring for ivy.itemsize also applies to
-        this method with minimal changes.
-
+        """
+        Container instance method variant of ivy.itemsize. This method simply wraps the
+        function, and so the docstring for ivy.itemsize also applies to this method with
+        minimal changes.
         Parameters
         ----------
         self
            The input container.
-
         Returns
         -------
         ret
@@ -4172,20 +3896,18 @@ class _ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         /,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.strides. This method simply
-        wraps the function, and so the docstring for ivy.strides also applies to
-        this method with minimal changes.
-
+        """
+        Container instance method variant of ivy.strides. This method simply wraps the
+        function, and so the docstring for ivy.strides also applies to this method with
+        minimal changes.
         Parameters
         ----------
         x
            The input container.
-
         Returns
         -------
         ret
             A tuple containing the strides.
-
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[1, 5, 9], [2, 6, 10]]),\
@@ -4199,15 +3921,14 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.strides. This method simply
-        wraps the function, and so the docstring for ivy.strides also applies to
-        this method with minimal changes.
-
+        """
+        Container instance method variant of ivy.strides. This method simply wraps the
+        function, and so the docstring for ivy.strides also applies to this method with
+        minimal changes.
         Parameters
         ----------
         self
            The input container.
-
         Returns
         -------
         ret

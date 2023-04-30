@@ -77,7 +77,7 @@ def build_flag(key: str, value: bool):
 
 
 def as_cont(*, x):
-    """Returns x as an Ivy Container, containing x at all its leaves."""
+    """Return x as an Ivy Container, containing x at all its leaves."""
     return ivy.Container({"a": x, "b": {"c": x, "d": x}})
 
 

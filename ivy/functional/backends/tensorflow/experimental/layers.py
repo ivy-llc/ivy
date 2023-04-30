@@ -14,7 +14,7 @@ from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 def _from_int_to_tuple(arg, dim):
     if isinstance(arg, int):
         return (arg,) * dim
-    if isinstance(arg, tuple) and len(arg) == 1:
+    if isinstance(arg, (tuple, list)) and len(arg) == 1:
         return (arg[0],) * dim
     return arg
 
@@ -643,8 +643,7 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[
-        Literal[
+    mode: Literal[
             "linear",
             "bilinear",
             "trilinear",
@@ -658,8 +657,7 @@ def interpolate(
             "lanczos3",
             "lanczos5",
             "gaussian",
-        ]
-    ] = "linear",
+        ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
