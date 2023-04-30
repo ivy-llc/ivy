@@ -33,6 +33,7 @@ RUN apt-get update && \
     apt-get install -y libusb-1.0-0 && \
     apt-get install -y libglib2.0-0 && \
     pip3 install --upgrade pip && \
+    pip3 install pip-autoremove &&\
     pip3 install setuptools==58.5.3
 
 RUN pip3 install --no-cache-dir torch --extra-index-url https://download.pytorch.org/whl/cpu
@@ -54,7 +55,16 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 COPY requirements/optional.txt .
 COPY requirements/requirements.txt .
 RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
-    pip3 install --upgrade --no-cache-dir -r requirements.txt
+    pip3 install --upgrade --no-cache-dir -r requirements.txt &&\
+    # uninstall the frameworks that were installed, unreliable versions
+    pip-autoremove tensorflow , torch, paddlepaddle, numpy, jax , jaxlib ,mxnet -y &&\
+    pip3 install --upgrade numpy && \
+    pip3 install torch --target='/opt/fw/torch' &&\
+    pip3 install tensorflow --target='/opt/fw/tensorflow' &&\
+    pip3 install jax[cpu] --target='/opt/fw/jax' &&\
+    pip3 install jaxlib --target='/opt/fw/jax' \
+   
+
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
