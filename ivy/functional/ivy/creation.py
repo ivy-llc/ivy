@@ -482,7 +482,6 @@ def ones(
 
     Examples
     --------
-
     With `Sequence[int]` input:
 
     >>> x = ivy.ones(1,1)
