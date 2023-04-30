@@ -6,7 +6,6 @@ import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
@@ -2748,7 +2747,7 @@ def test_jax_numpy_polymul(
     dtype_x_axis_dtype_where=_get_castable_dtypes_values(use_where=True),
     keepdims=st.booleans(),
     initial=st.one_of(st.floats(min_value=-100, max_value=100)),
-    promote_integers=st.booleans()
+    promote_integers=st.booleans(),
 )
 def test_jax_numpy_product(
         dtype_x_axis_dtype_where,
@@ -2758,7 +2757,7 @@ def test_jax_numpy_product(
         frontend,
         test_flags,
         fn_tree,
-        on_device
+        on_device,
 ):
     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype_where
     if ivy.current_backend_str() == "torch":
@@ -2780,5 +2779,5 @@ def test_jax_numpy_product(
         keepdims=keepdims,
         initial=initial,
         where=where,
-        promote_integers=promote_integers
+        promote_integers=promote_integers,
     )

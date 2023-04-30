@@ -610,15 +610,17 @@ def polymul(a1, a2, *, trim_leading_zeros=False):
 
 
 @to_ivy_arrays_and_back
-def product(a,
-            *,
-            axis=None,
-            dtype=None,
-            keepdims=False,
-            initial=None,
-            where=None,
-            promote_integers=True,
-            out=None):
+def product(
+        a,
+        *,
+        axis=None,
+        dtype=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+        out=None,
+):
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
     if promote_integers:
