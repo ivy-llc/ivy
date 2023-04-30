@@ -158,7 +158,8 @@ def _create_attrs_from_node(node, attrs=()):
 
 
 def _create_node(stmnt: str):
-    """Create an AST node from a given statement.
+    """
+    Create an AST node from a given statement.
 
     Parameters
     ----------

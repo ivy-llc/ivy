@@ -11,7 +11,7 @@ except ImportError:
 
 
 def seed() -> int:
-    """Returns a 64 bit number used to seed the RNG"""
+    """Return a 64 bit number used to seed the RNG."""
     return int(ivy.randint(-(2**63), 2**63 - 1))
 
 

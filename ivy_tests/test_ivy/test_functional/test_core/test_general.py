@@ -2218,3 +2218,30 @@ def test_itemsize(
         fn_name=fn_name,
         x=x[0],
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.strides",
+    x_and_dtype=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_strides(
+    x_and_dtype,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x = x_and_dtype
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )

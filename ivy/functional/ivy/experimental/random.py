@@ -4,6 +4,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
     handle_nestable,
     infer_dtype,
     infer_device,
@@ -25,10 +26,11 @@ def dirichlet(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Draw size samples of dimension k from a Dirichlet distribution.
-    A Dirichlet-distributed random variable can be seen as a multivariate
-    generalization of a Beta distribution. The Dirichlet distribution is
-    a conjugate prior of a multinomial distribution in Bayesian inference.
+    """
+    Draw size samples of dimension k from a Dirichlet distribution. A Dirichlet-
+    distributed random variable can be seen as a multivariate generalization of a Beta
+    distribution. The Dirichlet distribution is a conjugate prior of a multinomial
+    distribution in Bayesian inference.
 
     Parameters
     ----------
@@ -78,6 +80,7 @@ def dirichlet(
 
 
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -92,7 +95,8 @@ def beta(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an array filled with random values sampled from a beta distribution.
+    """
+    Return an array filled with random values sampled from a beta distribution.
 
     Parameters
     ----------
@@ -129,6 +133,7 @@ def beta(
 
 
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -143,7 +148,8 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an array filled with random values sampled from a gamma distribution.
+    """
+    Return an array filled with random values sampled from a gamma distribution.
 
     Parameters
     ----------
@@ -178,6 +184,7 @@ def gamma(
 @infer_device
 @infer_dtype
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -243,6 +250,7 @@ def poisson(
 @infer_device
 @infer_dtype
 @to_native_arrays_and_back
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -257,8 +265,8 @@ def bernoulli(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Draws samples from Bernoulli distrubution paramterized by
-    probs or logits (but not both)
+    Draws samples from Bernoulli distrubution paramterized by probs or logits (but not
+    both)
 
     Parameters
     ----------
