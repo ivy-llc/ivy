@@ -207,6 +207,12 @@ def cummax(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
+    if x.dtype == tf.bool:
+        x = tf.cast(x,tf.float64)
+    elif x.dtype == tf.int16 or x.dtype == tf.int8:
+        x = tf.cast(x,tf.int64)
+    elif x.dtype == tf.complex128 or x.dtype == tf.complex64:
+        x = tf.math.real(x)
     if exclusive or reverse:
         if exclusive and reverse:
             x,indices = __find_cummax(tf.experimental.numpy.flip(x, axis=axis), axis=axis)

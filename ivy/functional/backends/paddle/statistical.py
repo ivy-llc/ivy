@@ -1,8 +1,7 @@
 # global
 
 torch_scatter = None
-from typing import Union, Optional, Sequence,Tuple
-
+from typing import Union, Optional, Sequence, Tuple
 
 import paddle
 
@@ -294,8 +293,14 @@ def cummax(
     out: Optional[paddle.Tensor] = None,
 ) -> Tuple[paddle.Tensor,paddle.Tensor]:
 
+    if x.dtype == paddle.bool:
+        x = paddle.cast(x, "float64")
+    elif x.dtype == paddle.int16 or x.dtype == paddle.int8:
+        x = paddle.cast(x, "int64")
+    elif x.dtype == paddle.complex128 or x.dtype == paddle.complex64:
+        x = paddle.real(x)
+
     if not (exclusive or reverse):
-        #return paddle.cummax(x, axis=axis).cast(x.dtype)
         return __find_cummax(x,axis=axis)
 
     elif exclusive and reverse:

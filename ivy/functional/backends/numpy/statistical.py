@@ -254,6 +254,12 @@ def cummax(
         input_dtypes: Optional[np.dtype] = None,
         out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
+    if x.dtype == np.bool_:
+        x = x.astype(np.float64)
+    elif x.dtype == np.int16 or x.dtype == np.int8:
+        x = x.astype(np.int64)
+    elif x.dtype == np.complex128 or x.dtype == np.complex64:
+        x = np.real(x)
     if exclusive or reverse:
         if exclusive and reverse:
             indices = __find_cummax_indices(np.flip(x, axis=axis), axis=axis)

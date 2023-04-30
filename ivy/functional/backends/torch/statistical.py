@@ -325,6 +325,13 @@ def cummax(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
+    if x.dtype == torch.bool:
+        x = x.to(dtype=torch.float64)
+    elif x.dtype == torch.int16 or x.dtype == torch.int8:
+        x = x.to(dtype=torch.int64)
+    elif x.dtype == torch.complex64 or x.dtype == torch.complex128:
+        x = x.real
+
     if exclusive or reverse:
         if exclusive and reverse:
             x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)

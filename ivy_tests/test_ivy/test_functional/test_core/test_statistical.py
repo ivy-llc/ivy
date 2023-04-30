@@ -352,7 +352,7 @@ def test_cumsum(
 @handle_test(
     fn_tree="functional.ivy.cummax",
     dtype_x_axis_castable=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=2,
         min_value=-100,

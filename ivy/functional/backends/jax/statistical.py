@@ -221,6 +221,12 @@ def cummax(
         *,
         out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray, JaxArray]:
+    if x.dtype == jnp.bool_:
+        x = x.astype(jnp.float64)
+    elif x.dtype == jnp.int16 or x.dtype == jnp.int8:
+        x = x.astype(jnp.int64)
+    elif x.dtype == jnp.complex128 or x.dtype == jnp.complex64:
+        x = jnp.real(x)
     if exclusive or (reverse and exclusive):
         if exclusive and reverse:
             indices = __find_cummax_indices(jnp.flip(x, axis=axis), axis=axis)
