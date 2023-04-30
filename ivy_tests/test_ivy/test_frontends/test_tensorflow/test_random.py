@@ -363,15 +363,7 @@ def test_tensorflow_gamma(
 @st.composite
 def _stateless_gamma_helper(draw):
     dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
-    # shape = draw(
-    # helpers.get_shape(
-    #  allow_none=False,
-    #   min_num_dims=1,
-    #   max_num_dims=3,
-    #     min_dim_size=1,
-    #      max_dim_size=5,
-    #   )
-    # )
+
     shape_a, shape_b = draw(helpers.mutually_broadcastable_shapes(2))
     shape = helpers.broadcast_shapes(shape_a, shape_b)
 
@@ -402,7 +394,6 @@ def _stateless_gamma_helper(draw):
     seed=helpers.dtype_and_values(
         available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
     ),
-    # dtype=helpers.array_dtypes(available_dtypes=("float32", "float64")),
     test_with_out=st.just(False),
 )
 def test_tensorflow_stateless_gamma(
