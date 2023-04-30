@@ -402,7 +402,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def arccosh_(self):
-        self._ivy_array = self.arccosh().ivy_array
+        self.ivy_array = self.arccosh().ivy_array
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
