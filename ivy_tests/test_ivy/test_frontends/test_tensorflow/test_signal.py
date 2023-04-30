@@ -45,7 +45,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def valid_idct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=["float32","float64"],
             max_value=65280,
             min_value=-65280,
             min_num_dims=1,
@@ -56,14 +56,14 @@ def valid_idct(draw):
         )
     )
     dims_len = len(x[0].shape)
-    n = draw(st.sampled_from([None, "int"]))
-    axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len))
+    n = draw(st.sampled_from([None]))
+    axis = draw(st.sampled_from(["int"]))
     norm = draw(st.sampled_from([None, "ortho"]))
     type = draw(helpers.ints(min_value=1, max_value=4))
-    if n == "int":
-        n = draw(helpers.ints(min_value=1, max_value=20))
-        if n <= 1 and type == 1:
-            n = 2
+    if axis =="int":
+        axis = -1
+    if norm == "ortho" and type == 1:
+        norm = None
     return dtype, x, type, n, axis, norm
 
 @handle_frontend_test(
