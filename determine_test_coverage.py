@@ -12,7 +12,7 @@ tests = {}
 BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 
 os.system("git config --global --add safe.directory /ivy")
-N = 32
+N = 40
 run_iter = int(sys.argv[1])
 
 os.system(
@@ -61,7 +61,8 @@ if __name__ == "__main__":
     num_tests = len(test_names)
     tests_per_run = num_tests // N
     start = run_iter * tests_per_run
-    end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
+    # end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
+    end = start + 1 # Just for testing
     for test_backend in tqdm(test_names[start:end]):
         test_name, backend = test_backend.split(",")
         # print("Test:", test_backend)
