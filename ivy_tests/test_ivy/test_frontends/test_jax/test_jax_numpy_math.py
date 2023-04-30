@@ -2805,12 +2805,14 @@ def test_jax_numpy_polymul(
     fn_tree="jax.numpy.product",
     dtype_x_axis_dtype_where=_get_castable_dtypes_values(use_where=True),
     keepdims=st.booleans(),
-    initial=st.one_of(st.floats(min_value=-100, max_value=100))
+    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
+    promote_integers=st.booleans()
 )
 def test_jax_numpy_product(
         dtype_x_axis_dtype_where,
         keepdims,
         initial,
+        promote_integers,
         frontend,
         test_flags,
         fn_tree,
@@ -2835,5 +2837,6 @@ def test_jax_numpy_product(
         dtype=dtype,
         keepdims=keepdims,
         initial=initial,
-        where=where
+        where=where,
+        promote_integers=promote_integers
     )

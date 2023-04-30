@@ -607,6 +607,7 @@ def polymul(a1, a2, *, trim_leading_zeros=False):
         a2 = ivy.asarray([0], dtype=a2.dtype)
     return convolve(a1, a2, mode="full")
 
+
 @to_ivy_arrays_and_back
 def product(a,
             *,
@@ -615,11 +616,11 @@ def product(a,
             keepdims=False,
             initial=None,
             where=None,
-            promote_integer=True,
+            promote_integers=True,
             out=None):
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
-    if promote_integer:
+    if promote_integers:
         if dtype is None:
             dtype = a.dtype
     if initial is not None:
