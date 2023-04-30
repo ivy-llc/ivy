@@ -18,7 +18,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -95,7 +94,6 @@ def test_numpy_array_equal(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -143,7 +141,6 @@ def test_numpy_greater(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -191,7 +188,6 @@ def test_numpy_greater_equal(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -239,7 +235,6 @@ def test_numpy_less(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -288,7 +283,6 @@ def test_numpy_less_equal(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
