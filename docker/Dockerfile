@@ -36,9 +36,9 @@ RUN apt-get update && \
     pip3 install pip-autoremove &&\
     pip3 install setuptools==58.5.3
 
-RUN pip3 install --no-cache-dir torch --extra-index-url https://download.pytorch.org/whl/cpu
+RUN pip3 install --no-cache-dir torch --target='/opt/fw/torch' --extra-index-url https://download.pytorch.org/whl/cpu
 RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
-    pip3 install --no-cache-dir --upgrade torch-scatter -f https://data.pyg.org/whl/torch-$ver.html
+    pip3 install --no-cache-dir --target='/opt/fw/torch' --upgrade torch-scatter -f https://data.pyg.org/whl/torch-$ver.html
 
 # Install Ivy Upstream
 RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
@@ -57,13 +57,13 @@ COPY requirements/requirements.txt .
 RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
     pip3 install --upgrade --no-cache-dir -r requirements.txt &&\
     # uninstall the frameworks that were installed, unreliable versions
-    pip-autoremove tensorflow , torch, paddlepaddle, numpy, jax , jaxlib ,mxnet -y &&\
+    pip-autoremove tensorflow ,  paddlepaddle, numpy, jax , jaxlib ,mxnet -y &&\
     pip3 install --upgrade numpy && \
-    pip3 install torch --target='/opt/fw/torch' &&\
     pip3 install tensorflow --target='/opt/fw/tensorflow' &&\
     pip3 install jax[cpu] --target='/opt/fw/jax' &&\
-    pip3 install jaxlib --target='/opt/fw/jax' \
-   
+    pip3 install jaxlib --target='/opt/fw/jax' &&\
+    pip3 insall paddlepaddle --target='/opt/fw/paddle'
+
 
 
 COPY run_tests_CLI/test_dependencies.py .
