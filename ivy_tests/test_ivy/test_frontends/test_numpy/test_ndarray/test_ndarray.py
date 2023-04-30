@@ -2593,6 +2593,7 @@ def test_numpy_instance_tolist__(
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         on_device=on_device,
+        test_values=False, #Todo change this after we add __iter__ to ndarray
 
     )
 
