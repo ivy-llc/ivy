@@ -3,7 +3,6 @@ from numbers import Number
 from .. import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
 import ivy
 
 # Code from cephes for i0
@@ -300,8 +299,28 @@ def vsplit(
     ary: paddle.Tensor,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        if isinstance(indices_or_sections, Sequence):
+            indices_or_sections = (
+                [
+                    None,
+                ]
+                + indices_or_sections
+                + [
+                    None,
+                ]
+            )
+            slices = []
+            for i, idx in enumerate(indices_or_sections[:-1]):
+                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
+            results = []
+            for i in slices:
+                results.append(ivy.get_item(ary, i))
+            return results
+        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
@@ -311,7 +330,29 @@ def dsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        if isinstance(indices_or_sections, Sequence):
+            indices_or_sections = (
+                [
+                    None,
+                ]
+                + indices_or_sections
+                + [
+                    None,
+                ]
+            )
+            slices = []
+            for i, idx in enumerate(indices_or_sections[:-1]):
+                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
+            results = []
+            for i in slices:
+                results.append(
+                    ivy.get_item(
+                        ary, (slice(None, None, None), slice(None, None, None), i)
+                    )
+                )
+            return results
+        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
@@ -448,7 +489,25 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        if isinstance(indices_or_sections, Sequence):
+            indices_or_sections = (
+                [
+                    None,
+                ]
+                + indices_or_sections
+                + [
+                    None,
+                ]
+            )
+            slices = []
+            for i, idx in enumerate(indices_or_sections[:-1]):
+                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
+            results = []
+            for i in slices:
+                results.append(ivy.get_item(ary, (slice(None, None, None), i)))
+            return results
+        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=1)
 
 
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:

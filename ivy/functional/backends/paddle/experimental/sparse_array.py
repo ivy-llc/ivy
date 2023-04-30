@@ -1,8 +1,9 @@
 from ivy.utils.exceptions import IvyNotImplementedException
+import paddle
 
 
-def is_native_sparse_array(x):
-    raise IvyNotImplementedException()
+def is_native_sparse_array(x: paddle.Tensor) -> bool:
+    return x.is_sparse_coo() or x.is_sparse_csr()
 
 
 def native_sparse_array(

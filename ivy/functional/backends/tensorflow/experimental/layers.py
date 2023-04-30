@@ -14,7 +14,7 @@ from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 def _from_int_to_tuple(arg, dim):
     if isinstance(arg, int):
         return (arg,) * dim
-    if isinstance(arg, tuple) and len(arg) == 1:
+    if isinstance(arg, (tuple, list)) and len(arg) == 1:
         return (arg[0],) * dim
     return arg
 
@@ -29,7 +29,6 @@ def max_pool1d(
     data_format: str = "NWC",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
     res = tf.nn.max_pool1d(x, kernel, strides, padding)
