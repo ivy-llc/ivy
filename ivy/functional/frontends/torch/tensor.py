@@ -991,3 +991,14 @@ class Tensor:
 
     def nonzero(self):
         return torch_frontend.nonzero(self)
+
+    def mm(self, mat2):
+        return torch_frontend.mm(self, mat2)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+    def square(self):
+        return torch_frontend.square(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def log10(self):
+        return torch_frontend.log10(self._ivy_array)
