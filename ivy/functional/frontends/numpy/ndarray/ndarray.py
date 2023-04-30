@@ -357,10 +357,9 @@ class ndarray:
         self,
     ):
         return np_frontend.copy(self)
-    
+
     def __deepcopy__(self, memo):
         return self.__class__(np_frontend.copy(self))
-
 
     def __neg__(
         self,
@@ -459,6 +458,9 @@ class ndarray:
 
     def __abs__(self):
         return np_frontend.absolute(self)
+
+    def __invert__(self):
+        return np_frontend.invert(self)
 
     def __array__(self, dtype=None, /):
         if not dtype:
