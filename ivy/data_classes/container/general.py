@@ -1043,7 +1043,7 @@ class _ContainerWithGeneral(ContainerBase):
         IvyBackendException: jax: assert_supports_inplace: Inplace operations \
         are not supported <class 'jaxlib.xla_extension.DeviceArray'> types
         with jax backend
-        
+
         """
         return self._static_assert_supports_inplace(
             self,

@@ -2623,7 +2623,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     -------
     ret
         True if supports, raises IvyBackendException otherwise
-    
+
     This function is *nestable*, and therefore also accepts :code:'ivy.Container'
     instance in place of the argument.
 

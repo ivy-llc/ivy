@@ -523,7 +523,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             Container with a rotated view of m.
-            
+
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\

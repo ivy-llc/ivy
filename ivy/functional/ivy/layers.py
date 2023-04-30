@@ -61,7 +61,7 @@ def linear(
     ret
         Result array of the linear transformation.
         *[outer_batch_shape,inner_batch_shape,out_features]*
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
@@ -75,7 +75,7 @@ def linear(
     >>> y = ivy.linear(x, w)
     >>> print(y)
     ivy.array([1])  
-    
+
     >>> x = ivy.array([[0.666, -0.4269, 1.911]])
     >>> w = ivy.array([[1., 0., 0.], [0., 0., 1.]])
     >>> y = ivy.zeros(2)
@@ -94,7 +94,7 @@ def linear(
     ivy.array([[ 35. , 101. ],
                [ 28. ,  83.7],
                [ 37.2, 108. ]])
-        
+
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], \
@@ -132,7 +132,7 @@ def linear(
         b: ivy.array([[15.1, 32., 47.9],
                       [85., 196., 306.]])
     }
-    
+
     """
     outer_batch_shape = list(weight.shape[:-2])
     num_outer_batch_dims = len(outer_batch_shape)

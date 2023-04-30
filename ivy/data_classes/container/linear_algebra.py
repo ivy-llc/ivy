@@ -1298,7 +1298,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             Matrix norm of the array at specified axes.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \

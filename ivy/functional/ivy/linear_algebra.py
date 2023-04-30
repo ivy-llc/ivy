@@ -1104,7 +1104,7 @@ def matrix_norm(
     Examples
     --------
     With :class:`ivy.Array` inputs:
-    
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.matrix_norm(x)
     >>> print(y)
@@ -1146,7 +1146,7 @@ def matrix_norm(
     }
 
     With multiple :class:`ivy:Container` inputs:
-    
+
     >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
                           b=ivy.arange(8, dtype=float).reshape((2, 2, 2))) 
     >>> ord = ivy.Container(a=1, b=float('inf'))
@@ -1686,12 +1686,12 @@ def slogdet(
     Returns the sign and the natural logarithm of the absolute value of the determinant of a square matrix (or a stack of square matrices) ``x``.
     .. note::
        The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.
-    
+
     Parameters
     ----------
     x:
         input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Should have a real-valued floating-point data type.
-    
+
     Returns
     -------
     ret:
