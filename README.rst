@@ -250,7 +250,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     model = Regressor(input_dim=1, output_dim=1)
     optimizer = ivy.Adam(0.1)
 
-    x = ivy.random.random_normal(shape=(3000, 1), std=10, mean=-1)
+    x = ivy.random.random_normal(shape=(500, 1), std=10, mean=-1)
     y = 0.2 * x ** 2 + 0.5 * x + 0.1 + ivy.random.random_normal(shape=(3000, 1), mean=0, std=2)
 
 
