@@ -2750,14 +2750,14 @@ def test_jax_numpy_polymul(
     promote_integers=st.booleans(),
 )
 def test_jax_numpy_product(
-        dtype_x_axis_dtype_where,
-        keepdims,
-        initial,
-        promote_integers,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_x_axis_dtype_where,
+    keepdims,
+    initial,
+    promote_integers,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype_where
     if ivy.current_backend_str() == "torch":
