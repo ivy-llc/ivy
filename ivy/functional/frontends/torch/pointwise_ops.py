@@ -519,3 +519,9 @@ def sgn(input, *, out=None):
         )
     else:
         return ivy.sign(input, out=out)
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
+    return ivy.nan_to_num(input, nan=nan, posinf=posinf, neginf=neginf, out=out)
