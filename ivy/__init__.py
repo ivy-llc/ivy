@@ -239,8 +239,59 @@ class Shape:
         self._shape = self._shape * other
         return self
 
+    def __rmul__(self, other):
+        self._shape = other * self._shape
+        return self
+
+    def __bool__(self):
+        return self._shape.__bool__()
+
+    def __div__(self, other):
+        return self._shape // other
+
+    def __mod__(self, other):
+        return self._shape % other
+
+    def __rdiv__(self, other):
+        return other // self._shape
+
+    def __rmod__(self, other):
+        return other % self._shape
+
+    def __reduce__(self):
+        return (self._shape,)
+
+    def as_dimension(self, other):
+        if isinstance(other, self._shape):
+            return other
+        else:
+            return self._shape
+
+    def __sub__(self, other):
+        try:
+            self._shape = self._shape - other
+        except TypeError:
+            self._shape = self._shape - list(other)
+        return self
+
+    def __rsub__(self, other):
+        try:
+            self._shape = other - self._shape
+        except TypeError:
+            self._shape = list(other) - self._shape
+        return self
+
     def __eq__(self, other):
         return self._shape == other
+
+    def __int__(self):
+        if hasattr(self._shape, "__int__"):
+            res = self._shape.__int__()
+        else:
+            res = int(self._shape)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
 
     def __ge__(self, other):
         return self._shape >= other
