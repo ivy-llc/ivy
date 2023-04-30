@@ -2516,11 +2516,11 @@ def test_tensorflow_greater_equal(
 def test_tensorflow_in_top_k(
     *,
     dtype_and_x,
-    k,
     frontend,
     test_flags,
     fn_tree,
     on_device,
+    k
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
