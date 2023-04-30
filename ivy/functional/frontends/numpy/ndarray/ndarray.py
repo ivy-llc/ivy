@@ -311,6 +311,9 @@ class ndarray:
             out=out,
         )
 
+    def tolist(self) -> list:
+        return self._ivy_array.to_list()
+
     def view(self):
         return np_frontend.reshape(self, tuple(self.shape))
 
