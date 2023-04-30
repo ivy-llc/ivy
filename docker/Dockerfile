@@ -57,7 +57,7 @@ COPY requirements/requirements.txt .
 RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
     pip3 install --upgrade --no-cache-dir -r requirements.txt &&\
     # uninstall the frameworks that were installed, unreliable versions
-    pip-autoremove tensorflow ,  paddlepaddle, numpy, jax , jaxlib ,mxnet -y &&\
+    pip-autoremove tensorflow , torch, paddlepaddle, numpy, jax , jaxlib ,mxnet -y &&\
     pip3 install --upgrade numpy && \
     pip3 install --upgrade torch &&\
     pip3 install tensorflow --target='/opt/fw/tensorflow' &&\
