@@ -35,6 +35,11 @@ def exp(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def expm1(x, name=None):
+    return ivy.expm1(x)
+
+
+@to_ivy_arrays_and_back
 def sqrt(x, name=None):
     return ivy.sqrt(x)
 
@@ -191,6 +196,11 @@ def is_strictly_increasing(x, name="is_strictly_increasing"):
 @to_ivy_arrays_and_back
 def log_sigmoid(x, name=None):
     return -ivy.softplus(-x)
+
+
+@to_ivy_arrays_and_back
+def logical_not(x, name="logical_not"):
+    return ivy.logical_not(x)
 
 
 @to_ivy_arrays_and_back
@@ -463,6 +473,11 @@ def floor(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def floordiv(x, y, name=None):
+    return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
 
@@ -628,6 +643,11 @@ def cosh(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def angle(input, name=None):
+    return ivy.angle(input)
+
+
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
         "2.11.0 and below": ("float32", "float64"),
@@ -636,3 +656,15 @@ def cosh(x, name=None):
 )
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater_equal(x, y)
+
+
+@to_ivy_arrays_and_back
+def in_top_k(target, pred, k, name=None):
+    top_k = ivy.top_k(target, k)
+    return ivy.array([val in top_k.values for val in target])

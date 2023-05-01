@@ -62,7 +62,6 @@ def softplus(
     threshold: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if beta is not None and beta != 1:
         x_beta = x * beta
         res = (
@@ -91,6 +90,8 @@ softplus.support_native_out = True
 def log_softmax(
     x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    if axis is None:
+        axis = -1
     x_max = np.max(x, axis=axis, keepdims=True)
     if x_max.ndim > 0:
         x_max[~np.isfinite(x_max)] = 0

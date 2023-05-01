@@ -46,7 +46,7 @@ In this particular case both are fine, and in fact are `aliases`_.
 
 However, sometimes an extra namespace path is necessary.
 Taking JAX as an example, the functions :func:`jax.numpy.abs` and :func:`jax.lax.abs` both exist, while :func:`jax.abs` does not exist.
-In our JAX frontend, if we add both of these to the root namespace, it would be possible to call :func:`jax.abs` in our frontend.
+In our JAX frontend, if we add both of these to the root namespace, it would not be possible to call :func:`jax.abs` in our frontend.
 
 This would result in :func:`jax.numpy.abs` or :func:`jax.lax.abs` overwriting the other one in an arbitrary manner.
 In fact, neither of these should be added to the root namespace, as it does not exist in the native :mod:`jax` framework.

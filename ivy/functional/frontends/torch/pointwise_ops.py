@@ -246,8 +246,8 @@ def logical_xor(input, other, *, out=None):
 @to_ivy_arrays_and_back
 def round(input, *, decimals=0, out=None):
     m = ivy.full(input.shape, 10**decimals)
-    upscale = ivy.multiply(input, m, out=out)
-    rounded = ivy.round(upscale, out=out)
+    upscale = ivy.multiply(input, m)
+    rounded = ivy.round(upscale)
     return ivy.divide(rounded, m, out=out)
 
 
@@ -504,6 +504,12 @@ def logit(input, eps=None, *, out=None):
     return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+@to_ivy_arrays_and_back
+def erf(input, *, out=None):
+    return ivy.erf(input, out=out)
+
+
 @to_ivy_arrays_and_back
 def sgn(input, *, out=None):
     if ivy.is_complex_dtype(input.dtype):
@@ -513,3 +519,9 @@ def sgn(input, *, out=None):
         )
     else:
         return ivy.sign(input, out=out)
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
+    return ivy.nan_to_num(input, nan=nan, posinf=posinf, neginf=neginf, out=out)

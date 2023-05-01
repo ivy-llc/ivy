@@ -1,4 +1,4 @@
-"""Base class for deriving trainable modules"""
+"""Base class for deriving trainable modules."""
 
 # global
 from typing import Union, Optional
@@ -17,8 +17,8 @@ class Sequential(Module):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ):
         """
-        A sequential container. Modules will be added to it in the order they are
-        passed in the constructor.
+        Initialize a sequential container. Modules will be added to it in the order they
+        are passed in the constructor.
 
         Parameters
         ----------
@@ -30,7 +30,6 @@ class Sequential(Module):
         v
             the variables for each submodule in the sequence, constructed internally by
             default.
-
         """
         if v is not None:
             for i, submod in enumerate(sub_modules):
@@ -59,7 +58,6 @@ class Sequential(Module):
         -------
         ret
             The outputs following the linear operation and bias addition.
-
         """
         x = inputs
         for i, submod in enumerate(self._submodules):
