@@ -896,3 +896,55 @@ def test_one_hot(
         dtype=dtype,
         ground_truth_backend=ground_truth_backend,
     )
+
+
+@st.composite
+def _compress_helper(draw):
+    dtype, arr = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=st.tuples(
+                st.integers(min_value=2, max_value=10),
+                st.integers(min_value=2, max_value=10),
+            ),
+        )
+    )
+
+    a = ivy.array(arr)
+    valid_axis_dims = list(range(-a.ndim, a.ndim))
+
+    ax = draw(st.sampled_from(valid_axis_dims))
+    while ax == 0:
+        ax = draw(st.sampled_from(valid_axis_dims))
+    ax = abs(ax)
+    condition = draw(st.just([True]))
+    condition = condition * ax
+
+    return dtype, arr, condition
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.compress",
+    dtype_a_condition=_compress_helper(),
+    test_with_out=st.just(False),
+)
+def test_compress(
+    *,
+    dtype_a_condition,
+    test_flags,
+    on_device,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, a, condition = dtype_a_condition
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        condition=condition,
+        a=a[0],
+        ground_truth_backend=ground_truth_backend,
+    )

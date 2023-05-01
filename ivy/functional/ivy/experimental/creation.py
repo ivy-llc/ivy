@@ -701,7 +701,7 @@ def compress(
         arr = ivy.moveaxis(a, axis, 0)
 
     condition_arr, extra = condition_arr[: arr.shape[0]], condition_arr[arr.shape[0] :]
-    if extra.any():
+    if any(extra):
         raise ivy.utils.exceptions.IvyException(
             "Condition contains entries that are out of bounds"
         )
