@@ -200,7 +200,7 @@ def exp(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.exp Not Implemented")
+    return mx.nd.exp(x)
 
 
 def expm1(
@@ -306,7 +306,7 @@ def log(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.log Not Implemented")
+    return mx.nd.log(x)
 
 
 def log10(
