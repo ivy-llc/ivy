@@ -183,8 +183,8 @@ class BatchNorm2D(Module):
             eps=self._epsilon,
             momentum=self._momentum,
             training=self.training,
-            scale=self.v.weight if self._affine else None,
-            offset=self.v.bias if self._affine else None,
+            scale=self.v.w if self._affine else None,
+            offset=self.v.b if self._affine else None,
         )
         if self._track_running_stats:
             self.v.running_mean = running_mean
