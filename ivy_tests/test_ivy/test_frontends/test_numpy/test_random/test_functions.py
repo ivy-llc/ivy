@@ -447,6 +447,7 @@ def test_numpy_chisquare(
 
 
 # lognormal
+# min value is set 0
 @handle_frontend_test(
     fn_tree="numpy.random.lognormal",
     input_dtypes=helpers.get_dtypes("float", index=2),
