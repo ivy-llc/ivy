@@ -433,6 +433,8 @@ def ptp(a, axis=None, out=None, keepdims=False):
     return ivy.subtract(x, y)
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is None:
@@ -447,5 +449,10 @@ def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     not_nan_mask_count1 = ivy.sum(
         not_nan_mask1, axis=axis, dtype=dtype, keepdims=keepdims, out=out
     )
-    ret_nanmean = ivy.divide(array_sum1, not_nan_mask_count1)
+    count_zero_handel = ivy.where(
+        not_nan_mask_count1 != 0,
+        not_nan_mask_count1,
+        ivy.full_like(not_nan_mask_count1, ivy.nan),
+    )
+    ret_nanmean = ivy.divide(array_sum1, count_zero_handel)
     return ret_nanmean

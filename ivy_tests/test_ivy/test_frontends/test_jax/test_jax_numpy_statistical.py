@@ -915,25 +915,37 @@ def test_jax_numpy_ptp(
 
 
 # nanmean
+@st.composite
+def _get_castable_dtype_with_nan(draw):
+    available_dtypes = helpers.get_dtypes("float")
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=1,
+            large_abs_safety_factor=6,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+            allow_nan=True,
+            allow_inf=True,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
+    )
+    return dtype1, [values], axis, dtype2
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.nanmean",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-        large_abs_safety_factor=2,
-        safety_factor_scale="log",
-        allow_nan=True,
-        allow_inf=True,
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_x_axis_castable_dtype=_get_castable_dtype_with_nan(),
     keepdims=st.booleans(),
     where=np_helpers.where(),
 )
 def test_jax_numpy_nanmean(
-    dtype_x_axis,
-    dtype,
+    dtype_x_axis_castable_dtype,
     frontend,
     test_flags,
     fn_tree,
@@ -941,21 +953,21 @@ def test_jax_numpy_nanmean(
     where,
     keepdims,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, x, axis, castable_dtype = dtype_x_axis_castable_dtype
     where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtypes,
+        input_dtype=[input_dtypes],
         test_flags=test_flags,
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
-        fn_tree=fn_tree,
         on_device=on_device,
+        fn_tree=fn_tree,
         a=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=castable_dtype,
         out=None,
         keepdims=keepdims,
         where=where,
