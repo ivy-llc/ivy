@@ -767,6 +767,7 @@ from ivy.utils.backend import (
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
+    set_mxnet_backend,
     previous_backend,
     backend_stack,
     choose_random_backend,
@@ -967,8 +968,6 @@ native_inplace_support = None
 
 supports_gradients = None
 
-if "IVY_BACKEND" in os.environ:
-    ivy.set_backend(os.environ["IVY_BACKEND"])
 
 # Array Significant Figures #
 
