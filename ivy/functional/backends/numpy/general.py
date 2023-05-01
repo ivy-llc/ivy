@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence, Callable
+from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -29,7 +29,9 @@ def current_backend_str() -> str:
 
 
 @_scalar_output_to_0d_array
-def get_item(x: np.ndarray, /, query: np.ndarray) -> np.ndarray:
+def get_item(x: np.ndarray, /, query: np.ndarray, *, copy: bool = None) -> np.ndarray:
+    if copy:
+        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 
@@ -370,7 +372,6 @@ def vmap(
     @ivy.output_to_native_arrays
     @ivy.inputs_to_native_arrays
     def _vmap(*args):
-
         # convert args tuple to list to allow mutability using moveaxis ahead.
         args = list(args)
 
@@ -465,3 +466,11 @@ def isin(
 
 
 isin.support_native_out = True
+
+
+def itemsize(x: np.ndarray) -> int:
+    return x.itemsize
+
+
+def strides(x: np.ndarray) -> Tuple[int]:
+    return x.strides

@@ -12,6 +12,7 @@ from ivy.functional.backends.paddle.device import to_device
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
+    _check_valid_scale,
 )
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 from . import backend_version
@@ -41,15 +42,18 @@ def random_uniform(
     high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
     shape = _check_bounds_and_get_shape(low, high, shape)
     # Set range and seed
-    range = high - low
+    rng = high - low
     if seed:
         _ = paddle.seed(seed)
-    return to_device(
-        paddle.cast(paddle.uniform(shape, min=0.0, max=1.0) * range + low, dtype),
-        device,
-    )
+    random_base = paddle.uniform(shape, min=0.0, max=1.0)
+    with ivy.ArrayMode(False):
+        return ivy.add(ivy.multiply(random_base, rng), low).cast(dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
+)
 def random_normal(
     *,
     mean: Union[float, paddle.Tensor] = 0.0,
@@ -60,7 +64,16 @@ def random_normal(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
+    if seed:
+        paddle.seed(seed)
+    if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
+        return paddle.normal(mean, std, shape).cast(dtype)
+    if mean.dtype not in [paddle.float32, paddle.float64]:
+        mean = mean.cast("float32")
+    std = std.cast(mean.dtype)
+    return paddle.normal(mean, std).cast(dtype)
 
 
 def multinomial(
@@ -117,15 +130,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "uint16",
-                "bfloat16",
-            )
-        }
-    },
-    backend_version,
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def shuffle(
     x: paddle.Tensor,

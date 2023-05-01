@@ -99,15 +99,15 @@ def mean(
             ret = paddle.mean(x.real(), axis=axis, keepdim=keepdims) + 1j * paddle.mean(
                 x.imag(), axis=axis, keepdim=keepdims
             )
-            if x.ndim == 1 and not keepdims:
+            if ret.ndim == 1 and not keepdims and axis is None:
                 ret = ret.squeeze()
             return ret
         ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
-        if x.ndim == 1 and not keepdims:
+        if ret.ndim == 1 and not keepdims and axis is None:
             ret = ret.squeeze()
         return ret.astype(x.dtype)
     ret = paddle.mean(x, axis=axis, keepdim=keepdims)
-    if x.ndim == 1 and not keepdims:
+    if ret.ndim == 1 and not keepdims and axis is None:
         ret = ret.squeeze()
     return ret
 
@@ -172,11 +172,10 @@ def sum(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    dtype = x.dtype if dtype is None else dtype
+    dtype = ivy.as_ivy_dtype(dtype)
     if x.dtype in [paddle.int8, paddle.uint8]:
-        dtype = x.dtype if dtype is None else dtype
-        return paddle.sum(
-            x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims
-        ).cast(dtype)
+        return paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
     return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
@@ -200,7 +199,8 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int16")}},
+    backend_version,
 )
 def cumprod(
     x: paddle.Tensor,
@@ -239,7 +239,8 @@ def cumprod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
 )
 def cumsum(
     x: paddle.Tensor,
@@ -250,7 +251,35 @@ def cumsum(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = dtype if dtype is not None else x.dtype
+    if ivy.as_native_dtype(dtype) in [
+        paddle.uint8,
+        paddle.int8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x = paddle.cast(x, "float32")
+    else:
+        x = paddle.cast(x, dtype)
+    if not (exclusive or reverse):
+        return paddle.cumsum(x, axis=axis).cast(dtype)
+    elif exclusive and reverse:
+        with ivy.ArrayMode(False):
+            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = ivy.swapaxes(x, axis, -1)
+            return ivy.flip(x, axis=(axis,)).cast(dtype)
+    elif exclusive:
+        with ivy.ArrayMode(False):
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = paddle.cumsum(x, -1)
+            return ivy.swapaxes(x, axis, -1).cast(dtype)
+    else:
+        with ivy.ArrayMode(False):
+            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
+            return ivy.flip(x, axis=axis).cast(dtype)
 
 
 def einsum(

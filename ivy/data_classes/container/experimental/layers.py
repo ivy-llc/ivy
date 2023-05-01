@@ -22,9 +22,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.max_pool1d. This method simply
-        wraps the function, and so the docstring for ivy.max_pool1d also applies
-        to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.max_pool1d. This method simply wraps
+        the function, and so the docstring for ivy.max_pool1d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -89,9 +90,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of `ivy.max_pool1d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool1d` also applies
-        to this method with minimal changes.
+        """
+        ivy.Container instance method variant of `ivy.max_pool1d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool1d` also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -158,9 +160,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.max_pool2dd. This method simply
-        wraps the function, and so the docstring for ivy.max_pool2d also applies
-        to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.max_pool2dd. This method simply wraps
+        the function, and so the docstring for ivy.max_pool2d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -227,9 +230,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
-        to this method with minimal changes.
+        """
+        ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool2d` also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -296,9 +300,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.max_pool3d. This method simply
-        wraps the function, and so the docstring for ivy.max_pool3d also applies
-        to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.max_pool3d. This method simply wraps
+        the function, and so the docstring for ivy.max_pool3d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -364,9 +369,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.max_pool3d. This method simply
-        wraps the function, and so the docstring for ivy.max_pool3d also applies
-        to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.max_pool3d. This method simply wraps
+        the function, and so the docstring for ivy.max_pool3d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -427,15 +433,17 @@ class _ContainerWithLayersExperimental(ContainerBase):
         *,
         data_format: str = "NWC",
         count_include_pad: bool = False,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.avg_pool1d. This method simply
-        wraps the function, and so the docstring for ivy.avg_pool1d also applies
-        to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.avg_pool1d. This method simply wraps
+        the function, and so the docstring for ivy.avg_pool1d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -453,6 +461,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             NWC" or "NCW". Defaults to "NWC".
         count_include_pad
             Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
         out
             optional output array, for writing the result to.
 
@@ -482,6 +492,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             padding,
             data_format=data_format,
             count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -498,15 +509,17 @@ class _ContainerWithLayersExperimental(ContainerBase):
         *,
         data_format: str = "NWC",
         count_include_pad: bool = False,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of `ivy.avg_pool1d`. This method simply
-        wraps the function, and so the docstring for `ivy.avg_pool1d` also applies
-        to this method with minimal changes.
+        """
+        ivy.Container instance method variant of `ivy.avg_pool1d`. This method simply
+        wraps the function, and so the docstring for `ivy.avg_pool1d` also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -524,6 +537,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             NWC" or "NCW". Defaults to "NWC".
         count_include_pad
             Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
         out
             optional output array, for writing the result to.
 
@@ -552,6 +567,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             padding,
             data_format=data_format,
             count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -568,15 +584,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.avg_pool2d. This method simply
-        wraps the function, and so the docstring for ivy.avg_pool2d also applies
-        to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.avg_pool2d. This method simply wraps
+        the function, and so the docstring for ivy.avg_pool2d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -591,6 +611,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as divisor,
+            otherwise kernel_size will be used.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -618,6 +645,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -633,15 +663,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of `ivy.avg_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.avg_pool2d` also applies
-        to this method with minimal changes.
+        """
+        ivy.Container instance method variant of `ivy.avg_pool2d`. This method simply
+        wraps the function, and so the docstring for `ivy.avg_pool2d` also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -656,6 +690,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as divisor,
+            otherwise kernel_size will be used.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -682,6 +723,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -698,15 +742,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.avg_pool3d. This method simply
-        wraps the function, and so the docstring for ivy.avg_pool3d also applies
-        to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.avg_pool3d. This method simply wraps
+        the function, and so the docstring for ivy.avg_pool3d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -721,6 +769,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as the divisor, otherwise
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -751,6 +805,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -766,15 +823,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.avg_pool3d. This method simply
-        wraps the function, and so the docstring for ivy.avg_pool3d also applies
-        to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.avg_pool3d. This method simply wraps
+        the function, and so the docstring for ivy.avg_pool3d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -789,6 +850,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as the divisor, otherwise
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -818,6 +885,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -840,9 +910,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.dct. This method simply wraps
-        the function, and so the docstring for ivy.dct also applies to this method
-        with minimal changes.
+        """
+        ivy.Container static method variant of ivy.dct. This method simply wraps the
+        function, and so the docstring for ivy.dct also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -915,9 +986,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         norm: Optional[Literal["ortho"]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.dct. This method simply wraps
-        the function, and so the docstring for ivy.dct also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.dct. This method simply wraps the
+        function, and so the docstring for ivy.dct also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -973,9 +1045,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ):
-        """ivy.Container static method variant of ivy.fft. This method simply wraps
-        the function, and so the docstring for ivy.fft also applies to this method
-        with minimal changes.
+        """
+        ivy.Container static method variant of ivy.fft. This method simply wraps the
+        function, and so the docstring for ivy.fft also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1040,9 +1113,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ):
-        """ivy.Container instance method variant of ivy.fft. This method simply wraps
-        the function, and so the docstring for ivy.fft also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.fft. This method simply wraps the
+        function, and so the docstring for ivy.fft also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1106,9 +1180,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ):
-        """ivy.Container static method variant of ivy.ifft. This method simply wraps
-        the function, and so the docstring for ivy.ifft also applies to this method
-        with minimal changes.
+        """
+        ivy.Container static method variant of ivy.ifft. This method simply wraps the
+        function, and so the docstring for ivy.ifft also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1172,9 +1247,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ):
-        """ivy.Container instance method variant of ivy.ifft. This method simply wraps
-        the function, and so the docstring for ivy.ifft also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.ifft. This method simply wraps the
+        function, and so the docstring for ivy.ifft also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1393,8 +1469,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Down/up samples the input to the given size.
-        The algorithm used for interpolation is determined by mode.
+        Down/up samples the input to the given size. The algorithm used for
+        interpolation is determined by mode.
 
         Parameters
         ----------
@@ -1479,8 +1555,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Down/up samples the input to the given size.
-        The algorithm used for interpolation is determined by mode.
+        Down/up samples the input to the given size. The algorithm used for
+        interpolation is determined by mode.
 
         Parameters
         ----------
@@ -1549,7 +1625,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.adaptive_avg_pool1d. This method
+        """
+        ivy.Container static method variant of ivy.adaptive_avg_pool1d. This method
         simply wraps the function, and so the docstring for ivy.adaptive_avg_pool1d also
         applies to this method with minimal changes.
 
@@ -1588,7 +1665,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Applies a 1D adaptive average pooling over an input signal composed of several
+        Apply a 1D adaptive average pooling over an input signal composed of several
         input planes.
 
         Parameters
@@ -1622,7 +1699,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.adaptive_avg_pool2d. This method
+        """
+        ivy.Container static method variant of ivy.adaptive_avg_pool2d. This method
         simply wraps the function, and so the docstring for ivy.adaptive_avg_pool2d also
         applies to this method with minimal changes.
 
@@ -1639,7 +1717,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         -------
             The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
             (C, S_0, S_1), where S = `output_size`
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "adaptive_avg_pool2d",
@@ -1662,7 +1739,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Applies a 2D adaptive average pooling over an input signal composed of several
+        Apply a 2D adaptive average pooling over an input signal composed of several
         input planes.
 
         Parameters

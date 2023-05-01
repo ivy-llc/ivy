@@ -7,6 +7,7 @@ from ivy.func_wrapper import (
     handle_array_function,
     handle_nestable,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -27,6 +28,7 @@ def _reduce_loss(red, loss, axis, out):
 # ------#
 
 
+@inputs_to_ivy_arrays
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_nestable
@@ -41,7 +43,8 @@ def cross_entropy(
     reduction: str = "sum",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes cross-entropy between predicted and true discrete distributions.
+    """
+    Compute cross-entropy between predicted and true discrete distributions.
 
     Parameters
     ----------
@@ -74,7 +77,6 @@ def cross_entropy(
     >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
     >>> print(ivy.cross_entropy(x, z))
     ivy.array(0.35667497)
-
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
@@ -82,6 +84,7 @@ def cross_entropy(
     return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
+@inputs_to_ivy_arrays
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_nestable
@@ -95,7 +98,8 @@ def binary_cross_entropy(
     reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the binary cross entropy loss.
+    """
+    Compute the binary cross entropy loss.
 
     Parameters
     ----------
@@ -177,7 +181,6 @@ def binary_cross_entropy(
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
     ivy.array([0.223, 0.223, 0.223, 0.223])
-
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
@@ -189,6 +192,7 @@ def binary_cross_entropy(
     )
 
 
+@inputs_to_ivy_arrays
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_nestable
@@ -203,7 +207,8 @@ def sparse_cross_entropy(
     reduction: str = "sum",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes sparse cross entropy between logits and labels.
+    """
+    Compute sparse cross entropy between logits and labels.
 
     Parameters
     ----------
@@ -296,7 +301,6 @@ def sparse_cross_entropy(
      {
          a: ivy.array([0.357])
      }
-
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     true = ivy.one_hot(true, pred.shape[axis])

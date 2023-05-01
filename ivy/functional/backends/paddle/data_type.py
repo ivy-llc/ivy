@@ -129,13 +129,11 @@ def astype(
 )
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
     if len(arrays) > 1:
-        desired_shape = ivy.broadcast_shapes([arrays[0].shape, arrays[1].shape])
+        desired_shape = ivy.broadcast_shapes(arrays[0].shape, arrays[1].shape)
         if len(arrays) > 2:
             with ivy.ArrayMode(False):
                 for i in range(2, len(arrays)):
-                    desired_shape = ivy.broadcast_shapes(
-                        [desired_shape, arrays[i].shape]
-                    )
+                    desired_shape = ivy.broadcast_shapes(desired_shape, arrays[i].shape)
     else:
         return [arrays[0]]
     result = []
@@ -296,6 +294,8 @@ def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
 
 
 def is_native_dtype(dtype_in: Union[paddle.dtype, str], /) -> bool:
+    if dtype_in.__hash__ is None:
+        return False
     if dtype_in in ivy_dtype_dict:
         return True
     else:
