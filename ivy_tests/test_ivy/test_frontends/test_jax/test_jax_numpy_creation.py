@@ -60,6 +60,43 @@ def test_jax_numpy_array(
     )
 
 
+# ndarray
+@handle_frontend_test(
+    fn_tree="jax.numpy.ndarray",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=1, max_value=10),
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        shared_dtype=True,
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_ndarray(
+    dtype_and_x,
+    dtype,
+    on_device,
+    test_flags,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        object=x,
+        dtype=dtype,
+        copy=False,
+        order="K",
+    )
+
+
 # zeros_like
 @handle_frontend_test(
     fn_tree="jax.numpy.zeros_like",

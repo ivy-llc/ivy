@@ -27,6 +27,12 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
+def ndarray(shape, dtype=None, buffer=None, offset=0, strides=None, order=None):
+    return ivy.ndarray(shape, dtype=dtype, buffer=buffer, offset=offset, strides=strides, order=order)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 def zeros_like(a, dtype=None, shape=None):
     if shape:
         return ivy.zeros(shape, dtype=dtype)
