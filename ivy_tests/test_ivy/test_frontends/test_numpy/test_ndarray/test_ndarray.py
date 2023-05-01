@@ -151,7 +151,8 @@ def test_numpy_ndarray_astype(
     init_tree="numpy.array",
     method_name="argmax",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=st.one_of(helpers.get_dtypes("float_and_integer"),
+                                   helpers.get_dtypes("bool")),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
