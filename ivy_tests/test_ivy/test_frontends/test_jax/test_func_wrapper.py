@@ -40,7 +40,7 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
     output = inputs_to_ivy_arrays(_fn)(input_native)
     assert isinstance(output, ivy.Array)
     assert ivy.as_ivy_dtype(input_native.dtype) == output.dtype
-    assert ivy.all(input_native == output.data)
+    assert ivy.all(ivy.equal(input_native, output.data))
 
     # check for frontend array
     input_frontend = DeviceArray(x[0])
@@ -88,7 +88,7 @@ def test_to_ivy_arrays_and_back(dtype_and_x):
     output = to_ivy_arrays_and_back(_fn)(input_native, check_default=True)
     assert isinstance(output, DeviceArray)
     assert ivy.as_ivy_dtype(input_native.dtype) == output.dtype
-    assert ivy.all(input_native == output.ivy_array.data)
+    assert ivy.all(ivy.equal(input_native, output.ivy_array.data))
 
     # check for frontend array
     input_frontend = DeviceArray(x[0])
