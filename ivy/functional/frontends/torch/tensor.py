@@ -1020,3 +1020,7 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
+
+    def short(self, memory_format=None):
+        self.ivy_array = ivy.astype(self.ivy_array, ivy.int16, copy=False)
+        return self
