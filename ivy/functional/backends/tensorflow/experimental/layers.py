@@ -643,8 +643,7 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[
-        Literal[
+    mode: Literal[
             "linear",
             "bilinear",
             "trilinear",
@@ -658,8 +657,7 @@ def interpolate(
             "lanczos3",
             "lanczos5",
             "gaussian",
-        ]
-    ] = "linear",
+        ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
