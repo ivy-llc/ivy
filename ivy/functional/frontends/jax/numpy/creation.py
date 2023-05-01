@@ -213,3 +213,11 @@ def csingle(x):
 @to_ivy_arrays_and_back
 def cdouble(x):
     return ivy.astype(x, ivy.complex128)
+
+
+@to_ivy_arrays_and_back
+def size(a, axis=None):
+    if axis is not None:
+        sh = a.shape
+        return sh[axis]
+    return a.size
