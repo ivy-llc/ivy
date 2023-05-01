@@ -859,3 +859,32 @@ def test_jax_numpy_cdouble(
         on_device=on_device,
         x=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.size",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=["int64"],
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+)
+def test_jax_numpy_size(
+    dtype_x_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+    )
