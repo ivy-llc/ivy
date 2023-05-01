@@ -226,6 +226,8 @@ def dtype_bits(dtype_in: Union[torch.dtype, str, np.dtype], /) -> int:
 
 
 def is_native_dtype(dtype_in: Union[torch.dtype, str], /) -> bool:
+    if dtype_in.__hash__ is None:
+        return False
     if dtype_in in ivy_dtype_dict:
         return True
     else:
