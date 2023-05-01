@@ -135,8 +135,8 @@ def for_loop(
     iterable
         The iterable to loop over.
     body_fn
-        A function to call each iteration, first taking the iterator value and then a tuple of
-        extra parameters.
+        A function to call each iteration, first taking the iterator value and then a
+        tuple of extra parameters.
     vars
         Extra parameters to be passed to body_fn.
 
@@ -159,7 +159,6 @@ def for_loop(
     >>> 6
     ```
     """
-
     iterator = iterable.__iter__()
 
     vars_dict = _tuple_to_dict(vars)
