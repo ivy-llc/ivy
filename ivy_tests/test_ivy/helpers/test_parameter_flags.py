@@ -33,6 +33,13 @@ def _as_varaible_strategy(draw):
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
 
 
+@st.composite
+def _compile_strategy(draw):  # TODO remove later when paddle is supported
+    if test_globals.CURRENT_BACKEND().backend == "paddle":
+        draw(st.just(False))
+    draw(st.booleans())
+
+
 BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltAsVariableStrategy = _as_varaible_strategy()
 BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
@@ -40,7 +47,7 @@ BuiltInstanceStrategy = st.booleans()
 BuiltInplaceStrategy = st.just(False)
 BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
-BuiltCompileStrategy = st.booleans()
+BuiltCompileStrategy = _compile_strategy()
 BuiltFrontendArrayStrategy = st.booleans()
 
 
@@ -70,7 +77,7 @@ def build_flag(key: str, value: bool):
 
 
 def as_cont(*, x):
-    """Returns x as an Ivy Container, containing x at all its leaves."""
+    """Return x as an Ivy Container, containing x at all its leaves."""
     return ivy.Container({"a": x, "b": {"c": x, "d": x}})
 
 
@@ -193,7 +200,6 @@ class FrontendFunctionTestFlags(TestFlags):
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
             f"generate_frontend_arrays={self.generate_frontend_arrays}. "
-
         )
 
     def __repr__(self):
@@ -219,7 +225,7 @@ def frontend_function_flags(
             inplace=inplace,
             as_variable=as_variable,
             native_arrays=native_arrays,
-            generate_frontend_arrays=generate_frontend_arrays
+            generate_frontend_arrays=generate_frontend_arrays,
         )
     )
 

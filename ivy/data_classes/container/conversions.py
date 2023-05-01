@@ -1,5 +1,8 @@
-"""Collection of Ivy functions for wrapping functions to accept and return
-ivy.Container instances.
+"""
+Ivy wrapping functions for conversions.
+
+Collection of Ivy functions for wrapping functions to accept and return
+ivy.Array instances.
 """
 
 # global
@@ -12,7 +15,7 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithConversions(ContainerBase):
     @staticmethod
-    def static_to_native(
+    def _static_to_native(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         nested: bool = False,
         include_derived: Optional[Dict[type, bool]] = None,
@@ -24,9 +27,10 @@ class _ContainerWithConversions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.to_native. This method simply
-        wraps the function, and so the docstring for ivy.to_native also applies
-        to this method with minimal changes.
+        ivy.Container static method variant of ivy.to_native.
+
+        This method simply wraps the function, and so the docstring for ivy.to_native
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -58,7 +62,6 @@ class _ContainerWithConversions(ContainerBase):
         -------
         ret
             Container object with all sub-arrays converted to their native format.
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "to_native",
@@ -84,9 +87,10 @@ class _ContainerWithConversions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.to_native. This method simply
-        wraps the function, and so the docstring for ivy.to_native also applies
-        to this method with minimal changes.
+        ivy.Container instance method variant of ivy.to_native.
+
+        This method simply wraps the function, and so the docstring for ivy.to_native
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -118,9 +122,8 @@ class _ContainerWithConversions(ContainerBase):
         -------
         ret
             Container object with all sub-arrays converted to their native format.
-
         """
-        return self.static_to_native(
+        return self._static_to_native(
             self,
             nested,
             include_derived,
@@ -132,7 +135,7 @@ class _ContainerWithConversions(ContainerBase):
         )
 
     @staticmethod
-    def static_to_ivy(
+    def _static_to_ivy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         nested: bool = False,
         include_derived: Optional[Dict[type, bool]] = None,
@@ -144,9 +147,10 @@ class _ContainerWithConversions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.to_ivy. This method simply
-        wraps the function, and so the docstring for ivy.to_ivy also applies
-        to this method with minimal changes.
+        ivy.Container static method variant of ivy.to_ivy.
+
+        This method simply wraps the function, and so the docstring for ivy.to_ivy also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -179,7 +183,6 @@ class _ContainerWithConversions(ContainerBase):
         ret
             Container object with all native sub-arrays converted to their ivy.Array
             instances.
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "to_ivy",
@@ -205,9 +208,10 @@ class _ContainerWithConversions(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.to_ivy. This method simply
-        wraps the function, and so the docstring for ivy.to_ivy also applies
-        to this method with minimal changes.
+        ivy.Container instance method variant of ivy.to_ivy.
+
+        This method simply wraps the function, and so the docstring for ivy.to_ivy also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -240,9 +244,8 @@ class _ContainerWithConversions(ContainerBase):
         ret
             Container object with all native sub-arrays converted to their ivy.Array
             instances.
-
         """
-        return self.static_to_ivy(
+        return self._static_to_ivy(
             self,
             nested,
             include_derived,

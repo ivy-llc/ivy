@@ -20,9 +20,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.sinc. This method simply
-        wraps the function, and so the docstring for ivy.sinc also
-        applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.sinc. This method simply wraps the
+        function, and so the docstring for ivy.sinc also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -82,9 +82,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sinc. This method simply
-        wraps the function, and so the docstring for ivy.sinc also
-        applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.sinc. This method simply wraps the
+        function, and so the docstring for ivy.sinc also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -147,8 +147,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.lcm. This method simply wraps the
-        function, and so the docstring for ivy.lcm also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.lcm also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -176,7 +176,6 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             a: ivy.array([10, 21, 60]),
             b: ivy.array([96, 1080, 1550, 130])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "lcm",
@@ -201,8 +200,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.lcm. This method simply wraps the
-        function, and so the docstring for ivy.lcm also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.lcm also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -230,7 +229,6 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             a: ivy.array([10, 24, 60]),
             b: ivy.array([96, 1080, 1550, 130])
         }
-
         """
         return self.static_lcm(
             self,
@@ -255,9 +253,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.fmod. This method simply wraps
-        the function, and so the docstring for ivy.fmod also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.fmod. This method simply wraps the
+        function, and so the docstring for ivy.fmod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -303,9 +301,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.fmod. This method simply
-        wraps the function, and so the docstring for ivy.fmod also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.fmod. This method simply wraps the
+        function, and so the docstring for ivy.fmod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -348,9 +347,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.fmax. This method simply wraps
-        the function, and so the docstring for ivy.fmax also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.fmax. This method simply wraps the
+        function, and so the docstring for ivy.fmax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -396,9 +395,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.fmax. This method simply
-        wraps the function, and so the docstring for ivy.fmax also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.fmax. This method simply wraps the
+        function, and so the docstring for ivy.fmax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -441,9 +441,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.fmin. This method simply wraps
-        the function, and so the docstring for ivy.fmin also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.fmin. This method simply wraps the
+        function, and so the docstring for ivy.fmin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -471,7 +471,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([0., 0., nan])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "fmin",
             x1,
             x2,
@@ -489,9 +489,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.fmin. This method simply
-        wraps the function, and so the docstring for ivy.fmin also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.fmin. This method simply wraps the
+        function, and so the docstring for ivy.fmin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -582,7 +583,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.float_power. This method simply
+        """
+        ivy.Container instance method variant of ivy.float_power. This method simply
         wraps the function, and so the docstring for ivy.float_power also applies to
         this method with minimal changes.
 
@@ -626,9 +628,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.exp2. This method simply wraps
-        the function, and so the docstring for ivy.exp2 also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.exp2. This method simply wraps the
+        function, and so the docstring for ivy.exp2 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -669,9 +671,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.exp2. This method simply
-        wraps the function, and so the docstring for ivy.exp2 also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.exp2. This method simply wraps the
+        function, and so the docstring for ivy.exp2 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -712,8 +715,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.copysign. This method simply wraps
-        the function, and so the docstring for ivy.copysign also applies to this
-        method with minimal changes.
+        the function, and so the docstring for ivy.copysign also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -764,9 +767,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.copysign. This method simply
-        wraps the function, and so the docstring for ivy.copysign also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.copysign. This method simply wraps
+        the function, and so the docstring for ivy.copysign also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -817,8 +821,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.count_nonzero. This method simply
-        wraps the function, and so the docstring for ivy.count_nonzero also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.count_nonzero also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -906,9 +910,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.count_nonzero. This method
-        simply wraps the function, and so the docstring for ivy.count_nonzero also
-        applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.count_nonzero. This method simply
+        wraps the function, and so the docstring for ivy.count_nonzero also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -997,9 +1001,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.nansum. This method simply wraps
-        the function, and so the docstring for ivy.nansum also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.nansum. This method simply wraps the
+        function, and so the docstring for ivy.nansum also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1068,9 +1072,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.nansum. This method simply
-        wraps the function, and so the docstring for ivy.nansum also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.nansum. This method simply wraps
+        the function, and so the docstring for ivy.nansum also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1128,9 +1132,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.gcd. This method simply wraps
-        the function, and so the docstring for ivy.gcd also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.gcd. This method simply wraps the
+        function, and so the docstring for ivy.gcd also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1176,9 +1180,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.gcd. This method simply
-        wraps the function, and so the docstring for ivy.gcd also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.gcd. This method simply wraps the
+        function, and so the docstring for ivy.gcd also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1224,9 +1229,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.isclose. This method simply wraps
-        the function, and so the docstring for ivy.isclose also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.isclose. This method simply wraps the
+        function, and so the docstring for ivy.isclose also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1323,9 +1328,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.isclose. This method simply
-        wraps the function, and so the docstring for ivy.isclose also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.isclose. This method simply wraps
+        the function, and so the docstring for ivy.isclose also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1419,9 +1424,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.angle. This method simply wraps
-        the function, and so the docstring for ivy.angle also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.angle. This method simply wraps the
+        function, and so the docstring for ivy.angle also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1480,9 +1485,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.angle. This method simply
-        wraps the function, and so the docstring for ivy.angle also applies to
-        this method with minimal changes.
+        ivy.Container instance method variant of ivy.angle. This method simply wraps the
+        function, and so the docstring for ivy.angle also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1536,9 +1541,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.imag. This method simply
-        wraps the function, and so the docstring for ivy.imag also applies to
-        this method with minimal changes.
+        ivy.Container static method variant of ivy.imag. This method simply wraps the
+        function, and so the docstring for ivy.imag also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1585,9 +1590,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.imag. This method simply
-        wraps the function, and so the docstring for ivy.imag also applies to
-        this method with minimal changes.
+        ivy.Container instance method variant of ivy.imag. This method simply wraps the
+        function, and so the docstring for ivy.imag also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1699,9 +1704,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         neginf: Optional[Union[float, int]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.nan_to_num. This method simply
-        wraps the function, and so the docstring for ivy.nan_to_num also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.nan_to_num. This method simply
+        wraps the function, and so the docstring for ivy.nan_to_num also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1806,9 +1812,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.logaddexp2. This method simply
-        wraps the function, and so the docstring for ivy.logaddexp2 also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.logaddexp2. This method simply
+        wraps the function, and so the docstring for ivy.logaddexp2 also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1850,9 +1857,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.signbit. This method simply wraps
-        the function, and so the docstring for ivy.signbit also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.signbit. This method simply wraps the
+        function, and so the docstring for ivy.signbit also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1892,9 +1899,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.signbit. This method simply
-        wraps the function, and so the docstring for ivy.signbit also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.signbit. This method simply wraps
+        the function, and so the docstring for ivy.signbit also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1933,9 +1941,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.hypot. This method simply wraps
-        the function, and so the docstring for ivy.hypot also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.hypot. This method simply wraps the
+        function, and so the docstring for ivy.hypot also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1998,9 +2006,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.hypot. This method simply
-        wraps the function, and so the docstring for ivy.hypot also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.hypot. This method simply wraps the
+        function, and so the docstring for ivy.hypot also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2157,9 +2165,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.allclose. This method simply
-        wraps the function, and so the docstring for ivy.allclose also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.allclose. This method simply wraps
+        the function, and so the docstring for ivy.allclose also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -2246,9 +2254,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.diff. This method simply wraps
-        the function, and so the docstring for ivy.diff also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.diff. This method simply wraps the
+        function, and so the docstring for ivy.diff also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2318,9 +2326,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.diff. This method simply
-        wraps the function, and so the docstring for ivy.diff also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.diff. This method simply wraps the
+        function, and so the docstring for ivy.diff also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2371,9 +2380,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.fix. This method simply wraps
-        the function, and so the docstring for ivy.fix also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.fix. This method simply wraps the
+        function, and so the docstring for ivy.fix also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2414,9 +2423,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.fix. This method simply
-        wraps the function, and so the docstring for ivy.fix also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.fix. This method simply wraps the
+        function, and so the docstring for ivy.fix also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2522,9 +2532,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.nextafter. This method simply
-        wraps the function, and so the docstring for ivy.nextafter also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.nextafter. This method simply wraps
+        the function, and so the docstring for ivy.nextafter also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -2588,9 +2598,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.zeta. This method simply wraps
-        the function, and so the docstring for ivy.zeta also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.zeta. This method simply wraps the
+        function, and so the docstring for ivy.zeta also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2653,9 +2663,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.zeta. This method simply
-        wraps the function, and so the docstring for ivy.zeta also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.zeta. This method simply wraps the
+        function, and so the docstring for ivy.zeta also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2738,7 +2748,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         edge_order: int = 1,
         axis: Optional[Union[int, list, tuple]] = None,
     ) -> ivy.Container:
-        """Calculates gradient of x with respect to (w.r.t.) spacing
+        """
+        Calculate gradient of x with respect to (w.r.t.) spacing.
+
         Parameters
         ----------
             x
@@ -2860,7 +2872,6 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([[0.33333333, 0.5, 1., 1.33333333],
                           [3.33333333, 5., 10., 13.33333333]])
         }]
-
         """
         return self.static_gradient(
             self, spacing=spacing, edge_order=edge_order, axis=axis
@@ -2879,9 +2890,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.xlogy. This method simply wraps
-        the function, and so the docstring for ivy.xlogy also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.xlogy. This method simply wraps the
+        function, and so the docstring for ivy.xlogy also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2945,9 +2956,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.xlogy. This method simply
-        wraps the function, and so the docstring for ivy.xlogy also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.xlogy. This method simply wraps the
+        function, and so the docstring for ivy.xlogy also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -3010,9 +3021,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.real.
-        This method simply wraps the function, and so the docstring for
-        ivy.real also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.real. This method simply wraps the
+        function, and so the docstring for ivy.real also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -3072,9 +3083,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.real.
-        This method simply wraps the function, and so the docstring
-        for ivy.real also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.real. This method simply wraps the
+        function, and so the docstring for ivy.real also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -3136,9 +3147,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Maps the values of the input tensor to either 0 or 1,
-        element-wise, based on the outcome of a comparison
-        against a threshold value.
+        Map the values of the input tensor to either 0 or 1, element-wise, based on the
+        outcome of a comparison against a threshold value.
 
         Parameters
         ----------
@@ -3189,9 +3199,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Maps the values of the input tensor to either 0 or 1,
-        element-wise, based on the outcome of a comparison
-        against a threshold value.
+        Map the values of the input tensor to either 0 or 1, element-wise, based on the
+        outcome of a comparison against a threshold value.
 
         Parameters
         ----------
@@ -3240,9 +3249,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.conj.
-        This method simply wraps the function, and so the docstring for
-        ivy.conj also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.conj. This method simply wraps the
+        function, and so the docstring for ivy.conj also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -3303,9 +3312,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.conj.
-        This method simply wraps the function, and so the docstring
-        for ivy.conj also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.conj. This method simply wraps the
+        function, and so the docstring for ivy.conj also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -3367,9 +3376,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.ldexp. This method simply
-        wraps the function, and so the docstring for ivy.ldexp also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.ldexp. This method simply wraps the
+        function, and so the docstring for ivy.ldexp also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -3426,9 +3435,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.ldexp. This method simply
-        wraps the function, and so the docstring for ivy.ldexp also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.ldexp. This method simply wraps the
+        function, and so the docstring for ivy.ldexp also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -3458,6 +3468,130 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_ldexp(self, x2, out=out)
 
     @staticmethod
+    def static_lerp(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        end: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        weight: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.lerp. This method simply wraps the
+        function, and so the docstring for ivy.lerp also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        input
+            The container whose arrays should be used as parameter: input
+        end
+            The container whose arrays should be used as parameter: end
+        weight
+            The container whose arrays or scalar should be used as parameter: weight
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including  input + ((end - input) * weight)
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> input = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> end = ivy.array([10.])
+        >>> weight = 1.1
+        >>> y = ivy.Container.static_lerp(input, end, weight)
+        >>> print(y)
+        {
+            a: ivy.array([11., 10.90000057, 10.80000019]),
+            b: ivy.array([10.70000076, 10.60000038, 10.5])
+        }
+        >>> input = ivy.Container(a=ivy.array([10.1, 11.1]), b=ivy.array([10, 11]))
+        >>> end = ivy.Container(a=ivy.array([5]))
+        >>> weight = ivy.Container(a=0.5)
+        >>> y = ivy.Container.static_lerp(input, end, weight)
+        >>> print(y)
+        {
+            a: ivy.array([7.55000019, 8.05000019]),
+            b: {
+                a: ivy.array([7.5, 8.])
+            }
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "lerp",
+            input,
+            end,
+            weight,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def lerp(
+        self: ivy.Container,
+        end: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        weight: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.lerp. This method simply wraps the
+        function, and so the docstring for ivy.lerp also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container whose arrays should be used as parameter: input
+        end
+            The container whose arrays should be used as parameter: end
+        weight
+            The container whose arrays or scalar should be used as parameter: weight
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including  input + ((end - input) * weight)
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> input = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> end = ivy.Container(a=ivy.array([10, 10, 10]), b=ivy.array([20, 20, 20]))
+        >>> weight = ivy.Container(a=ivy.array(0.5), b=ivy.array([0.4, 0.5, 0.6]))
+        >>> input.lerp(end, weight)
+        {
+            a: ivy.array([5.5, 6., 6.5]),
+            b: ivy.array([8.60000038, 12.5, 16.])
+        }
+        """
+        return self.static_lerp(self, end, weight, out=out)
+
+    @staticmethod
     def static_frexp(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -3469,9 +3603,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.frexp. This method simply
-        wraps the function, and so the docstring for ivy.frexp also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.frexp. This method simply wraps the
+        function, and so the docstring for ivy.frexp also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -3522,9 +3656,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.frexp. This method simply
-        wraps the function, and so the docstring for ivy.frexp also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.frexp. This method simply wraps the
+        function, and so the docstring for ivy.frexp also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

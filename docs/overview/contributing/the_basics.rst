@@ -53,11 +53,11 @@ We make extensive use of `ToDo list issues <https://github.com/unifyai/ivy/issue
 
 We have a clear process for contributors to engage with such ToDo lists:
 
-a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: `function reformatting <https://lets-unify.ai/ivy/contributing/open_tasks.html#function-formatting>`_, `frontend APIs <https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis>`_ and `ivy API extensions <https://lets-unify.ai/ivy/contributing/open_tasks.html#ivy-api-extensions>`_.
+a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: `function reformatting <https://lets-unify.ai/docs/ivy/overview/contributing/open_tasks.html#function-formatting>`_, `frontend APIs <https://lets-unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis>`_ and `ivy experimental API <https://lets-unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api>`_.
 
 b. Create a new issue with the title being just the name of the sub-task you would like to work on.
 
-c. comment on the ToDo list issue with a reference to this issue like so:
+c. Comment on the ToDo list issue with a reference to this issue like so:
 
    :code:`- [ ] #Issue_number`
 
@@ -69,13 +69,14 @@ d. Start working on the task, and create a PR as soon as you have a full or part
    :code:`Close #Issue_number`
 
    This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is the 
-   first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you        through the process of getting it working 🙂
+   first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
+   Also remember to make the PR name well described and if there are some details that can support your changes add them to the first comment of the PR.
 
 e. Wait for us to review your PR.
    Once we have reviewed your PR we will either merge or request changes.
    Every time you respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
 
-f. Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!
+f. Once the PR is in good shape, we will merge into master, and then you become an Ivy contributor!
 
 In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue.
 If another 7 days pass without any changes, the issue will be closed and the task will be made free for others in the community.
@@ -113,7 +114,7 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 For questions, please reach out on `discord`_ in the `todo list issues channel`_!
 
 Ivy Experimental API
-----------
+--------------------
 
 We primarily invite contributors to contribute to the tasks listed as :ref:`Open Tasks` as they are on our roadmap currently.
 As a result of this we mainly recommend contributions which fall under the :ref:`Open Tasks`.
@@ -133,6 +134,12 @@ Managing Your Fork
 
 When contributing to Ivy, the first step is create a fork of the repository.
 Then, it's best practice to create a separate branch for each new pull request (PR) you create.
+This can be done using:
+
+.. code-block:: bash
+
+   git checkout -b name_of_your_branch
+
 The master branch then simply has the role of being kept up to date with upstream.
 You *can* create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.
 
@@ -172,7 +179,7 @@ Armed with this information, you can then for example directly tag (using @) the
 Here we describe a workflow to help navigate this question of "who to ask".
 
 With Command Line:
-****
+******************
 
 **git blame** - Show what revision and author last modified each line of a file
 
@@ -186,7 +193,7 @@ With Command Line:
     git log <commit_id> -p
 
 With Browser:
-****
+*************
 
 **Git Blame View** is a handy tool to view the line-by-line revision history for an entire file, or view the revision history of a single line within a file.
 
@@ -300,7 +307,7 @@ Check the `git documentation <https://git-scm.com/doc>`_ for more details.
 
 As a final note, a beautiful commit history is not something we particularly care about.
 We're much more concerned that the code itself is good, that things are updated as quickly as possible, and that all developers are able to work efficiently.
-If a mistake is commited into the history, it's generally not too difficult to simply undo this in future commits, so don't stress about this too much 🙂
+If a mistake is committed into the history, it's generally not too difficult to simply undo this in future commits, so don't stress about this too much 🙂
 
 For questions, please reach out on the on `discord`_ in the `commit frequency channel`_!
 
@@ -342,148 +349,142 @@ Running Tests Locally
 ---------------------
 
 With Docker
-****
+***********
 
 #. With PyCharm (With or without docker):
     #. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
         
-        .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_button_pycharm.png?raw=true
-           :width: 420
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_button_pycharm.png?raw=true
+        :width: 420
         
     #. Testing can be done for the entire project, individual submodules, individual files and individual tests.
        This can be done by selecting the appropriate configuration from the top pane in PyCharm.
         
-        .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_with_pycharm.png?raw=true
-           :width: 420
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_with_pycharm.png?raw=true
+        :width: 420
         
 
 #. Through the command line (With docker):
     #. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
 
-        .. code-block:: none
+    .. code-block:: none
 
-            docker exec <container-name> rm -rf ivy
-            docker cp ivy <container-name>:/ 
+        docker exec <container-name> rm -rf ivy
+        docker cp ivy <container-name>:/ 
 
     #. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
 
-        .. code-block:: none
+    .. code-block:: none
 
-            docker exec -it ivy_container bash 
-            cd ivy
+        docker exec -it ivy_container bash 
+        cd ivy
 
     #. Run the test using the pytest command.
-
         #. Ivy Tests:
-
             #. For a single function: 
 
-                .. code-block:: none
-                
-                    pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
+            .. code-block:: none
+            
+                pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
             
             #. For a single file:
 
-                .. code-block:: none
-                
-                    pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
+            .. code-block:: none
+            
+                pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
             #. For all tests:
 
-                .. code-block:: none
+            .. code-block:: none
 
-                    pytest ivy_tests/test_ivy/ --no-header --no-summary -q
+                pytest ivy_tests/test_ivy/ --no-header --no-summary -q
 
-        #.  Array API Tests:
-
+        #. Array API Tests:
             #. For a single function: 
 
-                .. code-block:: none
-                
-                    pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+            .. code-block:: none
+            
+                pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
             
             #. For a single file:
 
-                .. code-block:: none
-                
-                    pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+            .. code-block:: none
+            
+                pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
             
             #. For all tests:
 
-                .. code-block:: none
+            .. code-block:: none
 
-                    pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+                pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
         
         #. For the entire project:
 
-            .. code-block:: none
-                
-                pytest ivy_tests/ --no-header --no-summary -q
+        .. code-block:: none
+            
+            pytest ivy_tests/ --no-header --no-summary -q
 
 #. Through the command line (Without docker):
     #. We need to first enter inside the virtual environment.
 
-        .. code-block:: none
+    .. code-block:: none
 
-            ivy_dev\Scripts\activate.bat
+        ivy_dev\Scripts\activate.bat
 
-        (on Windows)
+    (on Windows)
 
-        OR
+    OR
 
-        .. code-block:: none
+    .. code-block:: none
 
-            source ivy_dev/bin/activate
+        source ivy_dev/bin/activate
 
-        (on Mac/Linux)
+    (on Mac/Linux)
 
     #. Run the test using the pytest command.
-
         #. Ivy Tests:
-
             #. For a single function: 
 
-                .. code-block:: none
-                
-                    python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
+            .. code-block:: none
+            
+                python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
             
             #. For a single file:
 
-                .. code-block:: none
-                
-                    python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
+            .. code-block:: none
+            
+                python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
             #. For all tests:
 
-                .. code-block:: none
+            .. code-block:: none
 
-                    python -m pytest ivy_tests/test_ivy/ --no-header --no-summary -q
+                python -m pytest ivy_tests/test_ivy/ --no-header --no-summary -q
 
         #.  Array API Tests 
-
             #. For a single function: 
 
-                .. code-block:: none
-                
-                    python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+            .. code-block:: none
             
+                python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+        
             #. For a single file:
 
-                .. code-block:: none
-                
-                    python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+            .. code-block:: none
+            
+                python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
             
             #. For all tests:
 
-                .. code-block:: none
+            .. code-block:: none
 
-                    python -m pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+                python -m pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
         
         #. For the entire project
 
-            .. code-block:: none
-                
-                python -m pytest ivy_tests/ --no-header --no-summary -q
+        .. code-block:: none
+            
+            python -m pytest ivy_tests/ --no-header --no-summary -q
 
 #. Optional Flags: Various optional flags are available for running the tests such as :code:`device`, :code:`backend`, etc.
     #. :code:`device`: 
@@ -502,39 +503,34 @@ With Docker
 Getting the most out of IDE
 ---------------------------
 with PyCharm
-****
+************
 #. Find a text:
-        #. :code:`Ctrl+F` will prompt you to type in the text to be found, if not already selected, and then find all the instances of text within current file.
+    #. :code:`Ctrl+F` will prompt you to type in the text to be found, if not already selected, and then find all the instances of text within current file.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_file.png?raw=true
-               :align: center
-               :width: 50%
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_file.png?raw=true
+        :align: center
 
-        #. :code:`Ctrl+Shift+F` will find all the instances of text within the project.
+    #. :code:`Ctrl+Shift+F` will find all the instances of text within the project.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_project_wide.png?raw=true
-               :align: center
-               :width: 50%
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_project_wide.png?raw=true
+        :align: center
 
 #. Find+Replace a text:
-        #. :code:`Ctrl+R` will prompt you to type in the text to be found and the text to be replaced, if not already selected, within current file.
+    #. :code:`Ctrl+R` will prompt you to type in the text to be found and the text to be replaced, if not already selected, within current file.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_n_replace_file.png?raw=true
-               :align: center
-               :width: 50%
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_n_replace_file.png?raw=true
+        :align: center
 
-        #. :code:`Ctrl+Shift+R` will prompt you to type in the text to be found and the text to be replaced, if not already selected, within the whole project.
+    #. :code:`Ctrl+Shift+R` will prompt you to type in the text to be found and the text to be replaced, if not already selected, within the whole project.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_and_replace_project_wide.png?raw=true
-               :align: center
-               :width: 50%
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_and_replace_project_wide.png?raw=true
+        :align: center
 
 #. Find and multiply the cursor:
-        #. :code:`Ctrl+Shift+Alt+J` will find all the instances of selected text and multiply the cursor to all these locations.
+    #. :code:`Ctrl+Shift+Alt+J` will find all the instances of selected text and multiply the cursor to all these locations.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/multiple_cursor.png?raw=true
-               :align: center
-               :width: 50%
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/multiple_cursor.png?raw=true
+        :align: center
 
     You can visit `Pycharm Blog`_ for more details on efficient coding!
 
@@ -544,7 +540,6 @@ with PyCharm
 
         .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/adding_breakpoint.png?raw=true
            :aligh: center
-           :width: 50%
 
     #. Enter into the debug mode:
         #. Click on Run icon and Select **Debug test** or press :code:`Shift+F9`.
@@ -552,7 +547,6 @@ with PyCharm
 
         .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/open_in_debug_mode.png?raw=true
            :align: center
-           :width: 50%
 
     #. Stepping through the code:
         #. Step over: 
@@ -562,7 +556,6 @@ with PyCharm
 
             .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/step_over.png?raw=true
                :align: center
-               :width: 50%
 
         #. Step into:
             Steps into the method to show what happens inside it.
@@ -579,7 +572,6 @@ with PyCharm
 
                 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/smart_step_into.png?raw=true
                    :align: center
-                   :width: 50%
 
                 #. Click the desired method.
 
@@ -593,7 +585,6 @@ with PyCharm
 
             .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/console_coding.png?raw=true
                :aligh: center
-               :width: 50%
 
     #. Using **try-except**:
         #. PyChram is great at pointing the lines of code which are causing tests to fail.
@@ -601,7 +592,6 @@ with PyCharm
 
         .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/try_except.png?raw=true
            :align: center
-           :width: 50%
 
     #. Dummy **test** file:
         #. Create a separate dummy :code:`test.py` file wherein you can evaluate a particular test failure.
@@ -609,7 +599,6 @@ with PyCharm
 
         .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/dummy_test.png?raw=true
            :align: center
-           :width: 50%
 
     PyCharm has a detailed blog on efficient `Debugging`_ which is quite useful.
 

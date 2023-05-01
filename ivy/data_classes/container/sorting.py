@@ -11,7 +11,7 @@ import ivy
 # noinspection PyMissingConstructor
 class _ContainerWithSorting(ContainerBase):
     @staticmethod
-    def static_argsort(
+    def _static_argsort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -26,8 +26,8 @@ class _ContainerWithSorting(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argsort. This method simply wraps the
-        function, and so the docstring for ivy.argsort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.argsort also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -111,7 +111,6 @@ class _ContainerWithSorting(ContainerBase):
             a: ivy.array([2, 0, 1]),
             b: ivy.array([[1, 0],[0,1]])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "argsort",
@@ -140,9 +139,8 @@ class _ContainerWithSorting(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.argsort.
-        This method simply wraps the function, and
-        so the docstring for ivy.argsort also applies to this method
+        ivy.Container instance method variant of ivy.argsort. This method simply wraps
+        the function, and so the docstring for ivy.argsort also applies to this method
         with minimal changes.
 
         Parameters
@@ -198,7 +196,7 @@ class _ContainerWithSorting(ContainerBase):
             b: ivy.array([0, 1])
         }
         """
-        return self.static_argsort(
+        return self._static_argsort(
             self,
             axis=axis,
             descending=descending,
@@ -211,7 +209,7 @@ class _ContainerWithSorting(ContainerBase):
         )
 
     @staticmethod
-    def static_sort(
+    def _static_sort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -226,8 +224,8 @@ class _ContainerWithSorting(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.sort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sort also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -279,8 +277,8 @@ class _ContainerWithSorting(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.sort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sort also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -319,9 +317,8 @@ class _ContainerWithSorting(ContainerBase):
             a: ivy.array([0.5, 6., 8.]),
             b: ivy.array([[0.7, 9.],[0., 0.4]])
         }
-
         """
-        return self.static_sort(
+        return self._static_sort(
             self,
             axis=axis,
             descending=descending,
@@ -334,7 +331,7 @@ class _ContainerWithSorting(ContainerBase):
         )
 
     @staticmethod
-    def static_searchsorted(
+    def _static_searchsorted(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -352,9 +349,10 @@ class _ContainerWithSorting(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.searchsorted.
-        This method simply wraps the function, and so the docstring for ivy.searchsorted
-        also applies to this method with minimal changes.
 
+        This method simply wraps the function, and so the docstring for
+        ivy.searchsorted also applies to this method with minimal
+        changes.
         """
         return ContainerBase.cont_multi_map_in_function(
             "searchsorted",
@@ -386,11 +384,12 @@ class _ContainerWithSorting(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.searchsorted.
-        This method simply wraps the function, and so the docstring for ivy.searchsorted
-        also applies to this method with minimal changes.
 
+        This method simply wraps the function, and so the docstring for
+        ivy.searchsorted also applies to this method with minimal
+        changes.
         """
-        return self.static_searchsorted(
+        return self._static_searchsorted(
             self,
             v,
             side=side,

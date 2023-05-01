@@ -3,9 +3,6 @@
 # copy not implemented
 ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_asarray_arrays
 
-# https://github.com/numpy/numpy/issues/20870
-ivy_tests/array_api_testing/test_array_api/array_api_tests/test_data_type_functions.py::test_can_cast
-
 # waiting on NumPy to allow/revert distinct NaNs for np.unique
 # https://github.com/numpy/numpy/issues/20326#issuecomment-1012380448
 ivy_tests/array_api_testing/test_array_api/array_api_tests/test_set_functions.py

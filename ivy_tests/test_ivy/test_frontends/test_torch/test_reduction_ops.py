@@ -8,8 +8,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical\
-    import statistical_dtype_values as statistical_dtype_values_experimental
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
+    statistical_dtype_values as statistical_dtype_values_experimental,
+)
 
 
 @handle_frontend_test(
@@ -332,6 +333,38 @@ def test_torch_nanmean(
         input=x[0],
         dim=axis,
         keepdim=keepdims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.median",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_median(
+    *,
+    dtype_input_axis,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, input, dim = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        dim=dim,
+        keepdim=keepdim,
     )
 
 
@@ -727,5 +760,77 @@ def test_torch_count_nonzero(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+        dim=axis,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.logsumexp",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-50,
+        max_value=50,
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_logsumexp(
+    *,
+    dtype_input_axis,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.unique",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    return_inverse=st.booleans(),
+    return_counts=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_torch_unique(
+    *,
+    dtype_x_axis,
+    return_inverse,
+    return_counts,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        sorted=True,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
         dim=axis,
     )

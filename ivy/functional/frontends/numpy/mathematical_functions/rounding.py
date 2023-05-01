@@ -49,6 +49,28 @@ def fix(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
+def _floor(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    ret = ivy.floor(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def _trunc(
     x,
     /,
@@ -71,7 +93,7 @@ def _trunc(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def rint(
+def _rint(
     x,
     /,
     out=None,
@@ -86,3 +108,12 @@ def rint(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, x), out=out)
     return ret
+
+
+@handle_numpy_out
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def around(a, decimals=0, out=None):
+    if ivy.shape(a) == ():
+        a = ivy.expand_dims(a, axis=0)
+    return ivy.round(a, decimals=decimals, out=out)

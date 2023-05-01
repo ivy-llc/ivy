@@ -9,7 +9,7 @@ from ivy.data_classes.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class _ContainerWithRandom(ContainerBase):
     @staticmethod
-    def static_random_uniform(
+    def _static_random_uniform(
         *,
         low: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 0.0,
         high: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
@@ -23,9 +23,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.random_uniform. This method
-        simply wraps the function, and so the docstring for ivy.random_uniform also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.random_uniform. This method simply
+        wraps the function, and so the docstring for ivy.random_uniform also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -126,9 +127,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.random_uniform. This method
-        simply wraps the function, and so the docstring for ivy.random_uniform also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.random_uniform. This method simply
+        wraps the function, and so the docstring for ivy.random_uniform also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -283,7 +285,7 @@ class _ContainerWithRandom(ContainerBase):
                           [16.2, 31.7]])
         }
         """
-        return self.static_random_uniform(
+        return self._static_random_uniform(
             low=self,
             high=high,
             shape=shape,
@@ -298,7 +300,7 @@ class _ContainerWithRandom(ContainerBase):
         )
 
     @staticmethod
-    def static_random_normal(
+    def _static_random_normal(
         *,
         mean: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 0.0,
         std: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
@@ -312,9 +314,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.random_normal. This method
-        simply wraps the function, and so the docstring for ivy.random_normal
-        also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.random_normal. This method simply
+        wraps the function, and so the docstring for ivy.random_normal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -413,9 +416,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.random_normal. This method
-        simply wraps the function, and so the docstring for ivy.random_normal also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.random_normal. This method simply
+        wraps the function, and so the docstring for ivy.random_normal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -569,7 +573,7 @@ class _ContainerWithRandom(ContainerBase):
                           [23., 29.4]])
         }
         """
-        return self.static_random_normal(
+        return self._static_random_normal(
             mean=self,
             std=std,
             shape=shape,
@@ -584,7 +588,7 @@ class _ContainerWithRandom(ContainerBase):
         )
 
     @staticmethod
-    def static_multinomial(
+    def _static_multinomial(
         population_size: int,
         num_samples: int,
         /,
@@ -600,9 +604,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.multinomial. This method
-        simply wraps the function, and so the docstring for ivy.multinomial also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.multinomial. This method simply wraps
+        the function, and so the docstring for ivy.multinomial also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -674,9 +679,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.multinomial. This method
-        simply wraps the function, and so the docstring for ivy.multinomial also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.multinomial. This method simply
+        wraps the function, and so the docstring for ivy.multinomial also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -716,7 +722,7 @@ class _ContainerWithRandom(ContainerBase):
         ret
             Drawn samples from the parameterized normal distribution.
         """
-        return self.static_multinomial(
+        return self._static_multinomial(
             population_size,
             num_samples,
             batch_size=batch_size,
@@ -732,7 +738,7 @@ class _ContainerWithRandom(ContainerBase):
         )
 
     @staticmethod
-    def static_randint(
+    def _static_randint(
         low: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         high: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -747,9 +753,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.randint. This method
-        simply wraps the function, and so the docstring for ivy.randint also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.randint. This method simply wraps the
+        function, and so the docstring for ivy.randint also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -847,9 +854,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.randint. This method
-        simply wraps the function, and so the docstring for ivy.randint also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.randint. This method simply wraps
+        the function, and so the docstring for ivy.randint also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1003,7 +1011,7 @@ class _ContainerWithRandom(ContainerBase):
                           [10, 6]])
         }
         """
-        return self.static_randint(
+        return self._static_randint(
             self,
             high,
             shape=shape,
@@ -1018,7 +1026,7 @@ class _ContainerWithRandom(ContainerBase):
         )
 
     @staticmethod
-    def static_shuffle(
+    def _static_shuffle(
         x: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -1029,9 +1037,10 @@ class _ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.shuffle. This method
-        simply wraps the function, and so the docstring for ivy.shuffle also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.shuffle. This method simply wraps the
+        function, and so the docstring for ivy.shuffle also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1091,9 +1100,10 @@ class _ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.shuffle. This method
-        simply wraps the function, and so the docstring for ivy.shuffle also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.shuffle. This method simply wraps
+        the function, and so the docstring for ivy.shuffle also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1131,7 +1141,7 @@ class _ContainerWithRandom(ContainerBase):
             b: ivy.array([6, 7, 1])
         }
         """
-        return self.static_shuffle(
+        return self._static_shuffle(
             self,
             seed=seed,
             key_chains=key_chains,
