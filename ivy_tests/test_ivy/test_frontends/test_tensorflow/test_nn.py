@@ -1380,37 +1380,29 @@ def test_tensorflow_crelu(
     )
 
 
-@st.composite
-def _conv_transpose_args(draw):
-    dims = draw(st.integers(min_value=1, max_value=3))
-    data_formats = ["NWC", "NHWC", "NDHWC"]
-    data_format = data_formats[dims - 1]
-    return (
-        dims,
-        draw(
-            helpers.arrays_for_pooling(
-                min_dims=dims + 2, max_dims=dims + 2, min_side=1, max_side=4
-            )
-        ),
-        data_format,
-    )
-
-
 # conv_transpose
 @handle_frontend_test(
     fn_tree="tensorflow.nn.conv_transpose",
-    dims_df_v_f_s_p_os=_conv_transpose_args(),
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NWC", "NHWC", "NDHWC"]),
+        padding=st.sampled_from(["SAME"]),
+        type="2d",
+        transpose=True,
+    ),
+    dims=st.integers(min_value=1, max_value=3),
     test_with_out=st.just(False),
 )
 def test_tensorflow_conv_transpose(
     *,
-    dims_df_v_f_s_p_os,
+    x_f_d_df,
+    dims,
     test_flags,
     frontend,
     fn_tree,
     on_device,
 ):
-    dims, (input_dtype, x, filters, strides, padding), data_format = dims_df_v_f_s_p_os
+    input_dtype, x, filters, dilation, data_format, strides, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
