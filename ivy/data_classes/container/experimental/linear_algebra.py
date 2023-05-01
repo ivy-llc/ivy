@@ -935,7 +935,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "solve_triangular",
             self,
-            b=b,
+            b,
             lower=lower,
             transpose=transpose,
             unit_diagonal=unit_diagonal,
@@ -1007,7 +1007,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         """
         return self.static_solve_triangular(
             self,
-            b=b,
+            b,
             lower=lower,
             transpose=transpose,
             unit_diagonal=unit_diagonal,
