@@ -1,4 +1,7 @@
-"""Collection of Paddle activation functions, wrapped to fit Ivy syntax and
+"""
+Paddle activation functions.
+
+Collection of Paddle activation functions, wrapped to fit Ivy syntax and
 signature.
 """
 from typing import Optional, Union
@@ -23,7 +26,6 @@ unsupported_dtypes = [
     "complex128",
     "bool",
 ]
-default_float = ivy.default_float_dtype()
 
 
 @with_unsupported_device_and_dtypes(
@@ -33,7 +35,7 @@ def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     if ivy.as_ivy_dtype(x.dtype) in unsupported_dtypes:
         if paddle.is_complex(x):
             return F.relu(x.real()) + 1j * F.relu(x.imag())
-        return F.relu(x.cast(default_float)).cast(x.dtype)
+        return F.relu(x.cast("float32")).cast(x.dtype)
     return F.relu(x)
 
 
@@ -52,7 +54,7 @@ def leaky_relu(
             return F.leaky_relu(x.real(), negative_slope=alpha) + 1j * F.leaky_relu(
                 x.imag(), negative_slope=alpha
             )
-        return F.leaky_relu(x.cast(default_float), negative_slope=alpha).cast(x.dtype)
+        return F.leaky_relu(x.cast("float32"), negative_slope=alpha).cast(x.dtype)
     return F.leaky_relu(x, negative_slope=alpha)
 
 
@@ -73,7 +75,7 @@ def gelu(
                     0.5 * x * (1 + ivy.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
                 )
             return 0.5 * x * (1 + ivy.erf(x / ivy.sqrt(2)))
-        return F.gelu(x.cast(default_float), approximate=approximate).cast(x.dtype)
+        return F.gelu(x.cast("float32"), approximate=approximate).cast(x.dtype)
     return F.gelu(x, approximate=approximate)
 
 
@@ -86,7 +88,7 @@ def sigmoid(
     if ivy.as_ivy_dtype(x.dtype) in unsupported_dtypes:
         if paddle.is_complex(x):
             return 1 / (1 + ivy.exp(x))
-        return F.sigmoid(x.cast(default_float)).cast(x.dtype)
+        return F.sigmoid(x.cast("float32")).cast(x.dtype)
     return F.sigmoid(x)
 
 
@@ -146,18 +148,17 @@ def log_softmax(
     axis: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ):
-    x = ivy.array(x)
-    x_max = ivy.max(x, axis=axis, keepdims=True)
-    if x_max.ndim > 0:
-        x_max[~ivy.isfinite(x_max)] = 0
-    elif not ivy.isfinite(x_max):
-        x_max = 0
-    exp_tmp = ivy.exp(x - x_max)
+    if axis is None:
+        axis = -1
+    with ivy.ArrayMode(False):
+        x_max = ivy.max(x, axis=axis, keepdims=True)
+        x_max = ivy.where(ivy.isfinite(x_max), x_max, ivy.zeros_like(x_max))
+        exp_tmp = ivy.exp(ivy.subtract(x, x_max))
 
-    s = ivy.sum(exp_tmp, axis=axis, keepdims=True)
-    ret = ivy.log(s)
-    ret = x - x_max - ret
-    return ret
+        s = ivy.sum(exp_tmp, axis=axis, keepdims=True)
+        ret = ivy.log(s)
+        ret = ivy.subtract(ivy.subtract(x, x_max), ret)
+        return ret
 
 
 @with_unsupported_device_and_dtypes(
@@ -167,5 +168,5 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     if ivy.as_ivy_dtype(x.dtype) in unsupported_dtypes:
         if paddle.is_complex(x):
             return x * ivy.tanh(ivy.log1p(ivy.exp(x)))
-        return F.mish(x.cast(default_float)).cast(x.dtype)
+        return F.mish(x.cast("float32")).cast(x.dtype)
     return F.mish(x)

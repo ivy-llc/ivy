@@ -2,7 +2,16 @@
 from __future__ import annotations
 import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
+from typing import (
+    Union,
+    Tuple,
+    Optional,
+    List,
+    Sequence,
+    Callable,
+    Protocol,
+    TypeVar,
+)
 import numpy as np
 
 # local
@@ -16,6 +25,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     outputs_to_ivy_arrays,
     inputs_to_native_arrays,
+    inputs_to_native_shapes,
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -29,11 +39,11 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
 
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _asarray_handle_nestable(*args, **kwargs):
         """
-        Calls `fn` with the *nestable* property of the function correctly handled.
-        This means mapping the function to the container leaves if any containers are
-        passed in the input.
+        Call `fn` with the *nestable* property of the function correctly handled. This
+        means mapping the function to the container leaves if any containers are passed
+        in the input.
 
         Parameters
         ----------
@@ -57,8 +67,8 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
         # the passed arguments, returning an ivy or a native array.
         return fn(*args, **kwargs)
 
-    new_fn.handle_nestable = True
-    return new_fn
+    _asarray_handle_nestable.handle_nestable = True
+    return _asarray_handle_nestable
 
 
 def _ivy_to_native(x):
@@ -78,11 +88,13 @@ def _ivy_to_native(x):
 
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, dtype=None, **kwargs):
+    def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
         """
-        Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
-        and return arrays are all converted to `ivy.Array` instances. This wrapper is
-        specifically for the backend implementations of asarray.
+        Wrap `fn` so that input arrays are all converted to `ivy.NativeArray` instances
+        and return arrays are all converted to `ivy.Array` instances.
+
+        This wrapper is specifically for the backend implementations of
+        asarray.
         """
         # When possible we want to not nest this
         # because nested calls introduce massive overhead
@@ -93,14 +105,14 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
-    return new_fn
+    return _asarray_to_native_arrays_and_back
 
 
 def asarray_infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, device=None, **kwargs):
+    def _asarray_infer_device(*args, device=None, **kwargs):
         """
-        Determines the correct `device`, and then calls the function with the `device`
+        Determine the correct `device`, and then calls the function with the `device`
         passed explicitly. This wrapper is specifically for the backend implementations
         of asarray.
 
@@ -131,8 +143,8 @@ def asarray_infer_device(fn: Callable) -> Callable:
         # call the function with device provided explicitly
         return fn(*args, device=device, **kwargs)
 
-    new_fn.infer_device = True
-    return new_fn
+    _asarray_infer_device.infer_device = True
+    return _asarray_infer_device
 
 
 # Type hints #
@@ -154,8 +166,8 @@ class NestedSequence(Protocol[_T_co]):
 # -------------------#
 
 
-@handle_array_function
 @infer_device
+@handle_array_function
 @outputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -170,7 +182,8 @@ def arange(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns evenly spaced values within a given interval, with the spacing being
+    """
+    Return evenly spaced values within a given interval, with the spacing being
     specified.
 
     Values are generated within the half-open interval [start, stop) (in other words,
@@ -248,7 +261,6 @@ def arange(
     >>> x = ivy.arange(start, stop, step, dtype=dtype, device=device)
     >>> print(x, x.dtype, x.device)
     ivy.array([1., 3., 5., 7., 9.]) float64 cpu
-
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out
@@ -276,7 +288,8 @@ def asarray(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Converts the input to an array.
+    """
+    Convert the input to an array.
 
     Parameters
     ----------
@@ -345,24 +358,27 @@ def asarray(
     )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @outputs_to_ivy_arrays
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 def zeros(
-    shape: Union[ivy.Shape, ivy.NativeShape],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array having a specified ``shape`` and filled with zeros.
+    """Return a new array having a specified ``shape`` and filled with zeros.
 
     Parameters
     ----------
+    size
+        list, tuple or a sequence of integers representing the output array shape.
     shape
        output array shape.
     dtype
@@ -391,6 +407,17 @@ def zeros(
 
     Examples
     --------
+    With `Sequence[int]` input:
+    >>> x = ivy.zeros(1,1)
+    >>> print(x)
+    ivy.array([[0.]])
+
+    With :class:`tuple` input:
+    >>> x = ivy.zeros((1,1))
+    >>> print(x)
+    ivy.array([[0.]])
+
+    With :class:`ivy.NativeShape` input:
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
     >>> print(x)
@@ -402,27 +429,34 @@ def zeros(
     >>> print(x)
     ivy.array([0., 0., 0., 0., 0.])
     """
-    return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    return current_backend().zeros(
+        size, shape=shape, dtype=dtype, device=device, out=out
+    )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @outputs_to_ivy_arrays
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 def ones(
-    shape: Union[ivy.Shape, ivy.NativeShape],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array having a specified ``shape`` and filled with ones.
+    """Return a new array having a specified ``shape`` and filled with ones.
 
     Parameters
     ----------
+    size
+        list, tuple or a sequence of integers representing the output array shape.
     shape
         output array shape.
     dtype
@@ -451,11 +485,22 @@ def ones(
 
     Examples
     --------
+    With `Sequence[int]` input:
+
+    >>> x = ivy.ones(1,1)
+    >>> print(x)
+    ivy.array([[1.]])
+
+    With :class:`tuple` input:
+    >>> x = ivy.ones((1,1))
+    >>> print(x)
+    ivy.array([[1.]])
+
     With :class:`ivy.Shape` input:
 
     >>> shape = (2,2)
-    >>> y = ivy.ones(shape)
-    >>> print(y)
+    >>> x = ivy.ones(shape)
+    >>> print(x)
     ivy.array([[1., 1.],
            [1., 1.]])
 
@@ -486,12 +531,16 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    return current_backend().ones(shape, dtype=dtype, device=device, out=out)
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    return current_backend().ones(
+        size, shape=shape, dtype=dtype, device=device, out=out
+    )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -505,7 +554,7 @@ def full_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with ``fill_value`` and having the same ``shape`` as
+    """Return a new array filled with ``fill_value`` and having the same ``shape`` as
     an input array ``x`` .
 
     Parameters
@@ -594,9 +643,9 @@ def full_like(
     )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -609,7 +658,7 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with ones and having the same shape as an input
+    """Return a new array filled with ones and having the same shape as an input
     array ``x``.
 
     Parameters
@@ -711,9 +760,9 @@ def ones_like(
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -726,7 +775,7 @@ def zeros_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with zeros and having the same ``shape`` as an input
+    """Return a new array filled with zeros and having the same ``shape`` as an input
     array ``x``.
 
     Parameters
@@ -840,7 +889,7 @@ def tril(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
+    """Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -888,7 +937,7 @@ def triu(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
+    """Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -924,26 +973,30 @@ def triu(
     return current_backend(x).triu(x, k=k, out=out)
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @outputs_to_ivy_arrays
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 def empty(
-    shape: Union[ivy.Shape, ivy.NativeShape],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array of given shape and type, filled with zeros.
+    """
+    Return a new array of given shape and type, filled with zeros.
 
     Parameters
     ----------
+    size
+        list, tuple or a sequence of integers representing the output array shape.
     shape
-        output array shape.
+       output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be the
         default floating-point data type. Default: ``None``.
@@ -967,14 +1020,17 @@ def empty(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
-    return current_backend().empty(shape, dtype=dtype, device=device, out=out)
+    if len(size) != 0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    return current_backend().empty(
+        size, shape=shape, dtype=dtype, device=device, out=out
+    )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -987,7 +1043,8 @@ def empty_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an uninitialized array with the same shape as an input array x.
+    """
+    Return an uninitialized array with the same shape as an input array x.
 
     Parameters
     ----------
@@ -1017,14 +1074,13 @@ def empty_like(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @outputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -1040,7 +1096,8 @@ def eye(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.
+    """
+    Return a two-dimensional array with ones on the k diagonal and zeros elsewhere.
 
     Parameters
     ----------
@@ -1155,7 +1212,6 @@ def eye(
                [0., 0., 1.]])
 
     # Array ``x1`` is now stored on the CPU.
-
     """
     return current_backend().eye(
         n_rows,
@@ -1168,9 +1224,9 @@ def eye(
     )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -1187,8 +1243,8 @@ def linspace(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Generates a certain number of evenly-spaced values in an interval along a given
-    axis.
+    """
+    Generate a certain number of evenly-spaced values in an interval along a given axis.
 
     See :math:`arange` that allows to specify the step size of evenly spaced values in
     an interval.
@@ -1281,12 +1337,15 @@ def linspace(
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
+@handle_out_argument
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional(ivy.Array) = None,
 ) -> List[ivy.Array]:
-    """Returns coordinate matrices from coordinate vectors.
+    """
+    Return coordinate matrices from coordinate vectors.
 
     Parameters
     ----------
@@ -1385,26 +1444,30 @@ def meshgrid(
     >>> print(yv)
     ivy.array([[3, 3],
             [4, 4]])
-
     """
-    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
+    return current_backend().meshgrid(
+        *arrays, sparse=sparse, indexing=indexing, out=out
+    )
 
 
-@handle_array_function
 @infer_device
+@handle_array_function
+@inputs_to_native_arrays
 @outputs_to_ivy_arrays
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array having a specified ``shape`` and filled with ``fill_value``.
+    """Return a new array having a specified ``shape`` and filled with ``fill_value``.
 
     Parameters
     ----------
@@ -1505,7 +1568,7 @@ def full(
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Returns a new array containing the data from another (array) object with a
+    """Return a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
 
     Parameters
@@ -1555,11 +1618,13 @@ array = asarray
 @handle_nestable
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     to_ivy_array: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Copy an array.
+    """
+    Copy an array.
 
     Parameters
     ----------
@@ -1651,7 +1716,6 @@ def copy_array(
         a: ivy.array([1, 0, 1]),
         b: ivy.array([-1, 0, 1, 1])
     }
-
     """
     return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
@@ -1664,7 +1728,8 @@ def native_array(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.NativeArray:
-    """Converts the input to a native array.
+    """
+    Convert the input to a native array.
 
     Parameters
     ----------
@@ -1681,6 +1746,26 @@ def native_array(
     ret
         A native array interpretation of x.
 
+    Examples
+    --------
+    With :class:`List[Number]` input:
+
+    >>> x = [1, 2, 3]
+    >>> x_native = native_array(x)
+    >>> print(x_native)
+    [1. 2. 3.]
+
+    With :class:`np.ndarray` input:
+    >>> y = np.array([4, 5, 6])
+    >>> y_native = native_array(y)
+    >>> print(y_native)
+    [4. 5. 6.]
+
+    With :class:`ivy.Array` input:
+    >>> z = ivy.array([7, 8, 9])
+    >>> z_native = native_array(z)
+    >>> print(z_native)
+    [7. 8. 9.]
     """
     # ToDo: Make this more efficient,
     # ideally without first converting to ivy.Array with ivy.asarray and then
@@ -1689,8 +1774,8 @@ def native_array(
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
-@handle_array_function
 @infer_device
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -1707,7 +1792,8 @@ def one_hot(
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a one-hot array. The locations represented by indices in the parameter
+    """
+    Return a one-hot array. The locations represented by indices in the parameter
     indices take value on_value, while all other locations take value off_value.
 
     Parameters
@@ -1801,9 +1887,9 @@ def one_hot(
     )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -1821,8 +1907,9 @@ def logspace(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Generates a certain number of evenly-spaced values in log space, in an interval
-    along a given axis.
+    """
+    Generate a certain number of evenly-spaced values in log space, in an interval along
+    a given axis.
 
     Parameters
     ----------
@@ -1900,7 +1987,6 @@ def logspace(
                [100., 464.15888336]
                [1000., 2154.43469003]
                [10000., 10000.]])
-
     """
     return base ** linspace(
         start,

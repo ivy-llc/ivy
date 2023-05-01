@@ -18,14 +18,14 @@ Ivy Frontends
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
-.. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
+.. _`open task`: https://lets-unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
 .. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
 .. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
 Introduction
 ------------
 
-On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_.
+On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://lets-unify.ai/docs/ivy/design/ivy_as_a_transpiler.html>`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
 
@@ -46,7 +46,7 @@ In this particular case both are fine, and in fact are `aliases`_.
 
 However, sometimes an extra namespace path is necessary.
 Taking JAX as an example, the functions :func:`jax.numpy.abs` and :func:`jax.lax.abs` both exist, while :func:`jax.abs` does not exist.
-In our JAX frontend, if we add both of these to the root namespace, it would be possible to call :func:`jax.abs` in our frontend.
+In our JAX frontend, if we add both of these to the root namespace, it would not be possible to call :func:`jax.abs` in our frontend.
 
 This would result in :func:`jax.numpy.abs` or :func:`jax.lax.abs` overwriting the other one in an arbitrary manner.
 In fact, neither of these should be added to the root namespace, as it does not exist in the native :mod:`jax` framework.
@@ -74,7 +74,7 @@ There will be some implicit discussion of the locations of frontend functions in
 The native arrays of each framework have their own attributes and instance methods which differ from the attributes and instance methods of :class:`ivy.Array`.
 As such we have implemented framework-specific array classes: :class:`tf_frontend.Tensor`, :class:`torch_frontend.Tensor`, :class:`numpy_frontend.ndarray`, and :class:`jax_frontend.DeviceArray`.
 These classes simply wrap an :class:`ivy.Array`, which is stored in the :code:`ivy_array` attribute, and behave as closely as possible to the native framework array classes.
-This is explained further in the `Classes and Instance Methods <https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods>`_ section.
+This is explained further in the `Classes and Instance Methods <https://lets-unify.ai/docs/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods>`_ section.
 
 As we aim to replicate the frontend frameworks as closely as possible, all functions accept their frontend array class (as well as :class:`ivy.Array` and :class:`ivy.NativeArray`) and return a frontend array.
 However, since most logic in each function is handled by Ivy, the :class:`ivy.Array` must be extracted from any frontend array inputs.
@@ -83,6 +83,16 @@ Therefore we add the wrapper :code:`@to_ivy_arrays_and_back` to virtually all fu
 There are more framework-specific classes we support in the frontends such as NumPy and Tensorflow :class:`Dtype` classes, NumPy and Jax :class:`Scalars`, NumPy :class:`Matrix`, etc.
 All these increase the fidelity of our frontends.
 
+
+Writing Frontend Functions
+-------------------
+
+Ideally all frontend functions should call the equivalent ivy function and only be one line long.
+In Ivy we already try to superset the functionality of each framework, meaning that we should not have to deal with implementing extra functionality through the frontends.
+In the case a function is missing some functionality which is needed to match with the frontend framework, it is strongly advised that the backend ivy function is updated to support this.
+The main reason for this policy is because the frontends are strictly composed of ivy functions and any composition of them is bound to be slower than a backend implementation written using native backend framework functions.
+
+Of course the frontends wouldn't be needed if they completely relied on Ivy, so some framework specific nuances will be described below:
 
 **Jax**
 
@@ -269,7 +279,9 @@ In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` 
         else:
             return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
-This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensorFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`. Both the functions have identical behaviour except for the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax`. In some corner cases, arguments are renamed such as :func:`tf.math.argmax`, the :code:`dimension` argument replaces the :code:`axis` argument. 
+This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensorFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`.
+Both the functions have identical behaviour except for the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax`.
+In some corner cases, arguments are renamed such as :func:`tf.math.argmax`, the :code:`dimension` argument replaces the :code:`axis` argument.
 Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle these variations.
 
 .. code-block:: python
@@ -386,7 +398,7 @@ Temporary Compositions
 
 Alternatively, if after creating the new issue you would rather not wait around for a member of our team to review and possibly add to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_, you can instead go straight ahead add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified if/when :func:`ivy.func_name` is add to Ivy.
 
-The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis>`_ section.
+The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://lets-unify.ai/docs/ivy/contributing/open_tasks.html#frontend-apis>`_ section.
 
 
 Supported Data Types and Devices
@@ -411,7 +423,7 @@ For these reasons, all frontend functions which correspond to functions with lim
 
 .. code-block:: python
 
-   logical_and.supported_dtypes = ("bool",)
+   @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 
 The same logic applies to unsupported devices.
 Even if the wrapped Ivy function supports more devices, we should still flag the frontend function supported devices to be the same as those supported by the function in the native framework.

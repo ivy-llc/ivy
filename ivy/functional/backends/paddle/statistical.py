@@ -10,7 +10,7 @@ import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # Array API Standard #
 # -------------------#
@@ -41,9 +41,7 @@ def min(
             masked_x = ivy.to_native(ivy.greater_equal(x, paddle.amin(x.real())) * x)
             imag = paddle.amin(masked_x.imag(), axis=axis, keepdim=keepdims)
             return real + 1j * imag
-        return paddle.amin(
-            x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims
-        ).cast(x.dtype)
+        return paddle.amin(x.cast("float32"), axis=axis, keepdim=keepdims).cast(x.dtype)
     return paddle.amin(x, axis=axis, keepdim=keepdims)
 
 
@@ -72,9 +70,7 @@ def max(
             masked_x = ivy.to_native(ivy.greater_equal(x, paddle.amax(x.real())) * x)
             imag = paddle.amax(masked_x.imag(), axis=axis, keepdim=keepdims)
             return real + 1j * imag
-        return paddle.amax(
-            x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims
-        ).cast(x.dtype)
+        return paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims).cast(x.dtype)
     return paddle.amax(x, axis=axis, keepdim=keepdims)
 
 
@@ -103,13 +99,17 @@ def mean(
             ret = paddle.mean(x.real(), axis=axis, keepdim=keepdims) + 1j * paddle.mean(
                 x.imag(), axis=axis, keepdim=keepdims
             )
-            return ret if keepdims else ret.squeeze()
-        ret = paddle.mean(
-            x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims
-        )
-        return ret.astype(x.dtype) if keepdims else ret.squeeze().astype(x.dtype)
+            if ret.ndim == 1 and not keepdims and axis is None:
+                ret = ret.squeeze()
+            return ret
+        ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
+        if ret.ndim == 1 and not keepdims and axis is None:
+            ret = ret.squeeze()
+        return ret.astype(x.dtype)
     ret = paddle.mean(x, axis=axis, keepdim=keepdims)
-    return ret if keepdims else ret.squeeze()
+    if ret.ndim == 1 and not keepdims and axis is None:
+        ret = ret.squeeze()
+    return ret
 
 
 @with_unsupported_device_and_dtypes(
@@ -172,11 +172,10 @@ def sum(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    dtype = x.dtype if dtype is None else dtype
+    dtype = ivy.as_ivy_dtype(dtype)
     if x.dtype in [paddle.int8, paddle.uint8]:
-        dtype = x.dtype if dtype is None else dtype
-        return paddle.sum(
-            x.cast(ivy.default_float_dtype()), axis=axis, dtype=dtype, keepdim=keepdims
-        ).cast(dtype)
+        return paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
     return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
@@ -200,7 +199,8 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int16")}},
+    backend_version,
 )
 def cumprod(
     x: paddle.Tensor,
@@ -212,11 +212,35 @@ def cumprod(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = dtype if dtype is not None else x.dtype
+    if dtype in [paddle.uint8, paddle.int8, paddle.int16]:
+        x = paddle.cast(x, "int32")
+    else:
+        x = paddle.cast(x, dtype)
+    if not (exclusive or reverse):
+        return paddle.cumprod(x, dim=axis).cast(dtype)
+    elif exclusive and reverse:
+        with ivy.ArrayMode(False):
+            x = paddle.cumprod(ivy.flip(x, axis=(axis,)), dim=axis)
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = ivy.swapaxes(x, axis, -1)
+            return ivy.flip(x, axis=(axis,)).cast(dtype)
+    elif exclusive:
+        with ivy.ArrayMode(False):
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = paddle.cumprod(x, -1)
+            return ivy.swapaxes(x, axis, -1).cast(dtype)
+    else:
+        with ivy.ArrayMode(False):
+            x = paddle.cumprod(ivy.flip(x, axis=(axis,)), dim=axis)
+            return ivy.flip(x, axis=axis).cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
 )
 def cumsum(
     x: paddle.Tensor,
@@ -227,7 +251,35 @@ def cumsum(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = dtype if dtype is not None else x.dtype
+    if ivy.as_native_dtype(dtype) in [
+        paddle.uint8,
+        paddle.int8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x = paddle.cast(x, "float32")
+    else:
+        x = paddle.cast(x, dtype)
+    if not (exclusive or reverse):
+        return paddle.cumsum(x, axis=axis).cast(dtype)
+    elif exclusive and reverse:
+        with ivy.ArrayMode(False):
+            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = ivy.swapaxes(x, axis, -1)
+            return ivy.flip(x, axis=(axis,)).cast(dtype)
+    elif exclusive:
+        with ivy.ArrayMode(False):
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = paddle.cumsum(x, -1)
+            return ivy.swapaxes(x, axis, -1).cast(dtype)
+    else:
+        with ivy.ArrayMode(False):
+            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
+            return ivy.flip(x, axis=axis).cast(dtype)
 
 
 def einsum(

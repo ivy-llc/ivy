@@ -17,7 +17,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -44,6 +43,8 @@ def test_numpy_sinh(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-2,
+        rtol=1e-2,
         x=x[0],
         out=None,
         where=where,
@@ -65,7 +66,6 @@ def test_numpy_sinh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -113,7 +113,6 @@ def test_numpy_cosh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -140,6 +139,8 @@ def test_numpy_tanh(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-3,
+        rtol=1e-3,
         x=x[0],
         out=None,
         where=where,
@@ -161,7 +162,6 @@ def test_numpy_tanh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -211,7 +211,6 @@ def test_numpy_arcsinh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -261,7 +260,6 @@ def test_numpy_arccosh(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(

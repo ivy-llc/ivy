@@ -1,6 +1,8 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+from jax.numpy import tril, triu
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -197,10 +199,9 @@ def test_jax_numpy_tril_indices(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        n_rows=n_rows,
+        n=n_rows,
         k=k,
     )
-
 
 
 # triu_indices
@@ -230,6 +231,7 @@ def test_jax_numpy_triu_indices(
         on_device=on_device,
     )
 
+
 # triu_indices_from
 @handle_frontend_test(
     fn_tree="jax.numpy.triu_indices_from",
@@ -242,7 +244,6 @@ def test_jax_numpy_triu_indices(
     k=helpers.ints(min_value=-5, max_value=5),
     test_with_out=st.just(False),
 )
-
 def test_jax_numpy_triu_indices_from(
     dtype_and_x,
     k,
@@ -261,7 +262,8 @@ def test_jax_numpy_triu_indices_from(
         arr=x[0],
         k=k,
     )
-    
+
+
 # tril_indices_from
 @handle_frontend_test(
     fn_tree="jax.numpy.tril_indices_from",
@@ -274,7 +276,6 @@ def test_jax_numpy_triu_indices_from(
     k=helpers.ints(min_value=-5, max_value=5),
     test_with_out=st.just(False),
 )
-
 def test_jax_numpy_tril_indices_from(
     dtype_and_x,
     k,
@@ -292,4 +293,116 @@ def test_jax_numpy_tril_indices_from(
         on_device=on_device,
         arr=x[0],
         k=k,
+    )
+
+
+# unravel_index
+@st.composite
+def max_value_as_shape_prod(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+        )
+    )
+    dtype_and_x = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=["int32", "int64"],
+            min_value=0,
+            max_value=np.prod(shape) - 1,
+        )
+    )
+    return dtype_and_x, shape
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.unravel_index",
+    dtype_x_shape=max_value_as_shape_prod(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_unravel_index(
+    *,
+    dtype_x_shape,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype_and_x, shape = dtype_x_shape
+    input_dtype, x = dtype_and_x[0], dtype_and_x[1]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        indices=x[0],
+        shape=shape,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.mask_indices",
+    n=helpers.ints(min_value=3, max_value=10),
+    mask_func=st.sampled_from([triu, tril]),
+    k=helpers.ints(min_value=-5, max_value=5),
+    input_dtype=helpers.get_dtypes("numeric"),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(2),
+)
+def test_jax_numpy_mask_indices(
+    n,
+    mask_func,
+    k,
+    input_dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        mask_func=mask_func,
+        k=k,
+    )
+
+
+@st.composite
+def _get_dtype_square_x(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"), shape=(dim_size, dim_size)
+        )
+    )
+    return dtype_x
+
+
+@handle_frontend_test(
+    dtype_x=_get_dtype_square_x(),
+    fn_tree="jax.numpy.diag_indices_from",
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_diag_indices_from(
+    dtype_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x[0],
     )

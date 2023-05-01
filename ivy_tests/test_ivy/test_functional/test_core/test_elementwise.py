@@ -22,9 +22,7 @@ def not_too_close_to_zero(x):
 # abs
 @handle_test(
     fn_tree="functional.ivy.abs",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_abs(
     *,
@@ -362,8 +360,20 @@ def test_bitwise_left_shift(
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
+    dtype = np.promote_types(input_dtype[0], input_dtype[1])
+    bit_cap = (
+        np.iinfo(dtype).bits
+        - np.maximum(np.ceil(np.log2(np.abs(x[0]))).astype(input_dtype[1]), 0)
+        - 1
+    )
+    bit_cap = np.iinfo(dtype).bits if "u" in dtype.name else bit_cap
     x[1] = np.asarray(
-        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+        np.clip(
+            x[1],
+            0,
+            bit_cap,
+            dtype=input_dtype[1],
+        )
     )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -1541,10 +1551,12 @@ def test_remainder(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    decimals=st.integers(min_value=0, max_value=5),
 )
 def test_round(
     *,
     dtype_and_x,
+    decimals,
     test_flags,
     backend_fw,
     fn_name,
@@ -1560,6 +1572,7 @@ def test_round(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        decimals=decimals,
     )
 
 
@@ -1648,7 +1661,9 @@ def test_sinh(
 @handle_test(
     fn_tree="functional.ivy.square",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
 )
 def test_square(
@@ -2093,4 +2108,44 @@ def test_isreal(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# fmod
+@handle_test(
+    fn_tree="functional.ivy.fmod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=False,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=6,
+        safety_factor_scale="log",
+    ),
+    test_gradients=st.just(False),
+)
+def test_fmod(
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    # Make sure values is not too close to zero
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
+    # jax raises inconsistent gradients for negative numbers in x1
+    if (np.any(x[0] < 0) or np.any(x[1] < 0)) and ivy.current_backend_str() == "jax":
+        test_flags.test_gradients = False
+    test_flags.as_variable = [test_flags.as_variable, False]
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        ground_truth_backend="jax",
+        fw=backend_fw,
+        fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
     )

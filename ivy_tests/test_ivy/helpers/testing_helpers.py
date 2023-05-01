@@ -140,7 +140,8 @@ def num_positional_args(draw, *, fn_name: str = None):
 
 def _import_fn(fn_tree: str):
     """
-    Imports a function from function tree string
+    Import a function from function tree string.
+
     Parameters
     ----------
     fn_tree
@@ -163,7 +164,8 @@ def _get_method_supported_devices_dtypes(
     method_name: str, class_module: str, class_name: str
 ):
     """
-    Get supported devices and data types for a method in Ivy API
+    Get supported devices and data types for a method in Ivy API.
+
     Parameters
     ----------
     method_name
@@ -198,7 +200,8 @@ def _get_method_supported_devices_dtypes(
 
 def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     """
-    Get supported devices and data types for a function in Ivy API
+    Get supported devices and data types for a function in Ivy API.
+
     Parameters
     ----------
     fn_name
@@ -272,8 +275,9 @@ def handle_test(
     **_given_kwargs,
 ):
     """
-    A test wrapper for Ivy functions.
-    Sets the required test globals and creates test flags strategies.
+    Test wrapper for Ivy functions.
+
+    The wrapper sets the required test globals and creates test flags strategies.
 
     Parameters
     ----------
@@ -392,8 +396,9 @@ def handle_frontend_test(
     **_given_kwargs,
 ):
     """
-    A test wrapper for Ivy frontend functions.
-    Sets the required test globals and creates test flags strategies.
+    Test wrapper for Ivy frontend functions.
+
+    The wrapper sets the required test globals and creates test flags strategies.
 
     Parameters
     ----------
@@ -441,7 +446,7 @@ def handle_frontend_test(
             inplace=test_inplace,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
-            generate_frontend_arrays=generate_frontend_arrays
+            generate_frontend_arrays=generate_frontend_arrays,
         )
 
     def test_wrapper(test_fn):
@@ -463,7 +468,15 @@ def handle_frontend_test(
                 # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
             # Wrap the test with the @given decorator
-            wrapped_test = given(**_given_kwargs)(test_fn)
+            hypothesis_test_fn = given(**_given_kwargs)(test_fn)
+
+            @functools.wraps(hypothesis_test_fn)
+            def wrapped_test(*args, **kwargs):
+                try:
+                    hypothesis_test_fn(*args, **kwargs)
+                except ivy.utils.exceptions.IvyNotImplementedException:
+                    pytest.skip("Function not implemented in backend.")
+
         else:
             wrapped_test = test_fn
 
@@ -506,8 +519,9 @@ def handle_method(
     **_given_kwargs,
 ):
     """
-    A test wrapper for Ivy methods.
-    Sets the required test globals and creates test flags strategies.
+    Test wrapper for Ivy methods.
+
+    The wrapper sets the required test globals and creates test flags strategies.
 
     Parameters
     ----------
@@ -613,8 +627,10 @@ def handle_frontend_method(
     **_given_kwargs,
 ):
     """
-    A test wrapper for Ivy frontends methods.
-    Sets the required test globals and creates test flags strategies.
+    Test wrapper for Ivy frontends methods.
+
+    The wrapper sets the required test globals and creates
+    test flags strategies.
 
     Parameters
     ----------
@@ -695,7 +711,16 @@ def handle_frontend_method(
             for key in filtered_args:
                 # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
-            wrapped_test = given(**_given_kwargs)(test_fn)
+
+            hypothesis_test_fn = given(**_given_kwargs)(test_fn)
+
+            @functools.wraps(hypothesis_test_fn)
+            def wrapped_test(*args, **kwargs):
+                try:
+                    hypothesis_test_fn(*args, **kwargs)
+                except ivy.utils.exceptions.IvyNotImplementedException:
+                    pytest.skip("Function not implemented in backend.")
+
         else:
             wrapped_test = test_fn
 

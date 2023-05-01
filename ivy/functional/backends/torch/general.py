@@ -1,9 +1,10 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from functools import reduce
+import math
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List
+from typing import Optional, Union, Sequence, Callable, List, Tuple
 
 try:
     import functorch
@@ -14,7 +15,7 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
 from ivy.functional.ivy.general import _parse_ellipsis
 from . import backend_version, is_variable
 
@@ -70,7 +71,11 @@ def get_item(
     x: torch.Tensor,
     /,
     query: torch.Tensor,
+    *,
+    copy: bool = None,
 ) -> torch.Tensor:
+    if copy:
+        x = torch.clone(x)
     if ivy.is_array(query) and ivy.dtype(query, as_native=True) is not torch.bool:
         return x.__getitem__(query.to(torch.int64))
     if isinstance(query, slice) and query.step is not None and query.step < 0:
@@ -298,7 +303,7 @@ def inplace_update(
             x_native[()] = val_native
         if ivy.is_ivy_array(x):
             x.data = x_native
-
+            _update_torch_views(x)
         else:
             x = ivy.to_ivy(x_native)
         if ensure_in_backend:
@@ -594,9 +599,43 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
 ) -> Callable:
+    @ivy.output_to_native_arrays
+    @ivy.inputs_to_native_arrays
     def _vmap(*args):
         new_fun = lambda *args: ivy.to_native(func(*args))
         new_func = functorch.vmap(new_fun, in_axes, out_axes)
-        return ivy.to_ivy(new_func(*args))
+        return new_func(*args)
 
     return _vmap
+
+
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
+)
+def isin(
+    elements: torch.tensor,
+    test_elements: torch.tensor,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> torch.tensor:
+    return torch.isin(
+        elements,
+        test_elements,
+        assume_unique=assume_unique,
+        invert=invert,
+    )
+
+
+isin.support_native_out = True
+
+
+def itemsize(x: torch.tensor) -> int:
+    return x.element_size()
+
+
+def strides(x: torch.tensor) -> Tuple[int]:
+    return tuple(
+        [int(stride * math.ceil(ivy.dtype_bits(x.dtype) / 8)) for stride in x.stride()]
+    )

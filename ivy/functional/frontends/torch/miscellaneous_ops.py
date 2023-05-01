@@ -366,3 +366,18 @@ def searchsorted(
     if out_int32:
         ret = ivy.astype(ret, "int32")
     return ret
+
+
+@to_ivy_arrays_and_back
+def atleast_3d(*tensors):
+    return ivy.atleast_3d(*tensors)
+
+
+@to_ivy_arrays_and_back
+def diag(input, diagonal=0, *, out=None):
+    return ivy.diag(input, k=diagonal)
+
+
+@to_ivy_arrays_and_back
+def clone(input):
+    return ivy.copy_array(input)

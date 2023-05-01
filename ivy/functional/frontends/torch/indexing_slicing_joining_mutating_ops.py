@@ -280,3 +280,58 @@ def where(condition, input=None, other=None):
 @to_ivy_arrays_and_back
 def conj(input):
     return ivy.conj(input)
+
+
+@to_ivy_arrays_and_back
+def index_add(input, dim, index, source, *, alpha=1, out=None):
+    input = ivy.swapaxes(input, dim, 0)
+    source = ivy.swapaxes(source, dim, 0)
+    _to_adds = []
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda x: x[0]))
+    while index:
+        _curr_idx = index[0][0]
+        while len(_to_adds) < _curr_idx:
+            _to_adds.append(ivy.zeros_like(source[0]))
+        _to_add_cum = ivy.get_item(source, index[0][1])
+        while (1 < len(index)) and (index[0][0] == index[1][0]):
+            _to_add_cum = _to_add_cum + ivy.get_item(source, index.pop(1)[1])
+        index.pop(0)
+        _to_adds.append(_to_add_cum)
+    while len(_to_adds) < input.shape[0]:
+        _to_adds.append(ivy.zeros_like(source[0]))
+    _to_adds = ivy.stack(_to_adds)
+    if len(input.shape) < 2:
+        # Added this line due to the paddle backend treating scalars as 1-d arrays
+        _to_adds = ivy.flatten(_to_adds)
+
+    ret = ivy.add(input, _to_adds, alpha=alpha)
+    ret = ivy.swapaxes(ret, 0, dim, out=out)
+    return ret
+
+
+@to_ivy_arrays_and_back
+def index_copy(input, dim, index, source, *, out=None):
+    input = ivy.swapaxes(input, dim, 0)
+    source = ivy.swapaxes(source, dim, 0)
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda x: x[0]))
+    res = []
+    while index:
+        _curr_idx = index[0][0]
+        for i in range(len(res), _curr_idx):
+            res.append(ivy.get_item(input, i))
+        while (1 < len(index)) and (index[0][0] == index[1][0]):
+            index.pop(0)
+        res.append(ivy.get_item(source, index[0][1]))
+        index.pop(0)
+    for i in range(len(res), input.shape[0]):
+        res.append(ivy.get_item(input, i))
+    res = ivy.stack(res)
+    if len(input.shape) < 2:
+        res = ivy.flatten(res)
+
+    return ivy.swapaxes(res, 0, dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def masked_select(input, mask, out=None):
+    return ivy.flatten(input[mask], out=out)

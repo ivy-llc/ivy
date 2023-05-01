@@ -1,27 +1,13 @@
-name: docs
-on: [push]
+name: Update docs
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+
 jobs:
   update-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 🛎️Ivy
-        uses: actions/checkout@v2
-        with:
-          path: ivy
-          persist-credentials: false
-
-      - name: Build Docs
-        run: |
-          cd ivy/docs
-          bash make_docs.sh
-          cd ../..
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: ivy/docs/build
-          CLEAN: false
-          GIT_CONFIG_NAME: ivy-seed
-          GIT_CONFIG_EMAIL: ivydl.team@gmail.com
+    name: Update docs
+    uses: unifyai/workflows/.github/workflows/docs.yml@master
+    secrets: inherit

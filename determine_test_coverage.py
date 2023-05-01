@@ -3,7 +3,6 @@ import sys
 from pydriller import Repository
 import pickle  # noqa
 from tqdm import tqdm
-from random import shuffle
 import bz2
 import _pickle as cPickle
 
@@ -12,7 +11,7 @@ tests = {}
 BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 
 os.system("git config --global --add safe.directory /ivy")
-N = 32
+N = 40
 run_iter = int(sys.argv[1])
 
 os.system(
@@ -32,13 +31,13 @@ with open("test_names") as f:
             test_name = test_name[:pos]
         test_names_without_backend.append(test_name)
 
-shuffle(test_names_without_backend)
 for test_name in test_names_without_backend:
     for backend in BACKENDS:
         test_backend = test_name + "," + backend
         test_names.append(test_backend)
 
 test_names = list(set(test_names))
+test_names.sort()
 
 # Create a Dictionary of Test Names to Index
 tests["index_mapping"] = test_names
@@ -64,7 +63,7 @@ if __name__ == "__main__":
     for test_backend in tqdm(test_names[start:end]):
         test_name, backend = test_backend.split(",")
         command = (
-            f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest /bin/bash -c "coverage run --source=ivy,'  # noqa
+            f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,'  # noqa
             f"ivy_tests -m pytest {test_name} --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
             f'annotate > coverage_output" '
         )

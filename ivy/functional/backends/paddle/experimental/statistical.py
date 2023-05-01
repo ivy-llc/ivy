@@ -9,7 +9,22 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "uint16",
+                "bfloat16",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def median(
     input: paddle.Tensor,
@@ -19,17 +34,22 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-     if input.ndim==0:
+    if input.ndim == 0:
         input = input.unsqueeze(0)
         return paddle.median(x=input, axis=axis).squeeze()
-     elif input.ndim == 1:
-         return paddle.median(x=input) if keepdims else paddle.median(x=input).squeeze()
-        
-     return paddle.median(x=input, axis=axis, keepdim=keepdims)
+    elif input.ndim == 1:
+        return paddle.median(x=input) if keepdims else paddle.median(x=input).squeeze()
+
+    return paddle.median(x=input, axis=axis, keepdim=keepdims)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")
+        }
+    },
+    backend_version,
 )
 def nanmean(
     a: paddle.Tensor,
@@ -43,12 +63,14 @@ def nanmean(
     if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
         if dtype is None:
             dtype = a.dtype
-        a = a.cast('float32')
+        a = a.cast("float32")
         paddle.nanmean(x=a, axis=axis, keepdim=keepdims).cast(dtype)
     return paddle.nanmean(x=a, axis=axis, keepdim=keepdims).cast(dtype)
 
 
-def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpolation='linear'):
+def _compute_quantile(
+    x, q, axis=None, keepdim=False, ignore_nan=False, interpolation="linear"
+):
     # Validate x
     if not isinstance(x, paddle.Tensor):
         raise TypeError("input x should be a Tensor.")
@@ -78,10 +100,11 @@ def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpol
             axis_src, axis_dst = [], []
             for axis_single in axis:
                 if not isinstance(axis_single, int) or not (
-                        axis_single < dims and axis_single >= -dims
+                    axis_single < dims and axis_single >= -dims
                 ):
                     raise ValueError(
-                        "Axis should be None, int, or a list, element should in range [-rank(x), rank(x))."
+                        "Axis should be None, int, or a list, element should in "
+                        "range [-rank(x), rank(x))."
                     )
                 if axis_single < 0:
                     axis_single = axis_single + dims
@@ -94,16 +117,15 @@ def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpol
         else:
             if not isinstance(axis, int) or not (axis < dims and axis >= -dims):
                 raise ValueError(
-                    "Axis should be None, int, or a list, element should in range [-rank(x), rank(x))."
+                    "Axis should be None, int, or a list, element should in "
+                    "range [-rank(x), rank(x))."
                 )
             if axis < 0:
                 axis += dims
             out_shape[axis] = 1
 
     mask = x.isnan()
-    valid_counts = mask.logical_not().sum(
-        axis=axis, keepdim=True, dtype='float64'
-    )
+    valid_counts = mask.logical_not().sum(axis=axis, keepdim=True, dtype="float64")
 
     indices = []
 
@@ -111,7 +133,7 @@ def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpol
         if q_num < 0 or q_num > 1:
             raise ValueError("q should be in range [0, 1]")
         if paddle.in_dynamic_mode():
-            q_num = paddle.to_tensor(q_num, dtype='float64')
+            q_num = paddle.to_tensor(q_num, dtype="float64")
         if ignore_nan:
             indices.append(q_num * (valid_counts - 1))
         else:
@@ -126,32 +148,30 @@ def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpol
     outputs = []
 
     for index in indices:
-        if interpolation not in ['linear', 'lower', 'higher', 'midpoint', 'nearest']:
+        if interpolation not in ["linear", "lower", "higher", "midpoint", "nearest"]:
             raise ValueError(
-                "interpolation must be 'linear', 'lower', 'higher', 'midpoint', or 'nearest'")
-        if interpolation == 'lower':
+                "interpolation must be 'linear', 'lower', 'higher', 'midpoint', "
+                "or 'nearest'"
+            )
+        if interpolation == "lower":
             index = paddle.floor(index)
-        elif interpolation == 'higher':
+        elif interpolation == "higher":
             index = paddle.ceil(index)
-        elif interpolation == 'nearest':
+        elif interpolation == "nearest":
             index = paddle.round(index)
-        elif interpolation == 'midpoint':
+        elif interpolation == "midpoint":
             index_floor = paddle.floor(index)
             index_ceil = paddle.ceil(index)
             index = (index_floor + index_ceil) / 2
 
         indices_below = paddle.floor(index).astype(paddle.int32)
         indices_upper = paddle.ceil(index).astype(paddle.int32)
-        tensor_upper = paddle.take_along_axis(
-            sorted_tensor, indices_upper, axis=axis
-        )
-        tensor_below = paddle.take_along_axis(
-            sorted_tensor, indices_below, axis=axis
-        )
-        weights = index - indices_below.astype('float64')
+        tensor_upper = paddle.take_along_axis(sorted_tensor, indices_upper, axis=axis)
+        tensor_below = paddle.take_along_axis(sorted_tensor, indices_below, axis=axis)
+        weights = index - indices_below.astype("float64")
         out = paddle.lerp(
-            tensor_below.astype('float64'),
-            tensor_upper.astype('float64'),
+            tensor_below.astype("float64"),
+            tensor_upper.astype("float64"),
             weights,
         )
         if not keepdim:
@@ -169,8 +189,21 @@ def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpol
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16",
-                                 "bfloat16", "float16", "complex64", "complex128")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "uint16",
+                "bfloat16",
+                "float16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
 )
 def quantile(
     a: paddle.Tensor,
@@ -182,8 +215,14 @@ def quantile(
     interpolation: Optional[str] = "linear",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-
-    return _compute_quantile(x=a, q=q, axis=axis, keepdim=keepdims, interpolation=interpolation, ignore_nan=False)
+    return _compute_quantile(
+        x=a,
+        q=q,
+        axis=axis,
+        keepdim=keepdims,
+        interpolation=interpolation,
+        ignore_nan=False,
+    )
 
 
 def corrcoef(
