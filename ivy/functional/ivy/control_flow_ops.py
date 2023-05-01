@@ -15,8 +15,8 @@ def if_else(
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
-    Takes a boolean condition and two functions as input. If the condition is True,
-    the first function is executed and its result is returned. Otherwise, the second
+    Take a boolean condition and two functions as input. If the condition is True, the
+    first function is executed and its result is returned. Otherwise, the second
     function is executed and its result is returned.
 
     Parameters
@@ -33,7 +33,8 @@ def if_else(
     Returns
     -------
     ret
-        The result of executing either body_fn or orelse_fn depending on the value of cond.
+        The result of executing either body_fn or orelse_fn depending on the value of
+        cond.
 
     Examples
     --------
@@ -52,7 +53,6 @@ def if_else(
     >>> result = ivy.if_else(cond, body_fn, orelse_fn, vars=(vars,))
     >>> print(result)
     ivy.array([0.5, 1.0, 1.5])
-
     """
 
     @to_native_arrays_and_back
@@ -72,7 +72,7 @@ def while_loop(
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
-    Takes a test function, a body function and a set of variables as input. The body
+    Take a test function, a body function and a set of variables as input. The body
     function is executed repeatedly while the test function returns True.
 
     Parameters
@@ -81,7 +81,8 @@ def while_loop(
         A callable function that returns a boolean value representing whether the
         loop should continue.
     body_fn
-        A callable function to be executed repeatedly while the test function returns True.
+        A callable function to be executed repeatedly while the test function returns
+        True.
     vars
         Additional variables to be passed to the functions.
 
@@ -107,7 +108,6 @@ def while_loop(
     >>> result = ivy.while_loop(test_fn, body_fn, vars=vars)
     >>> print(result)
     (3, 8)
-
     """
 
     @to_native_arrays_and_back

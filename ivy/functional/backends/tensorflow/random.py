@@ -1,4 +1,7 @@
-"""Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
+"""
+TensorFlow random functions.
+
+Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
 signature.
 """
 

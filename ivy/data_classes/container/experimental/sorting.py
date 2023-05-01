@@ -20,8 +20,8 @@ class _ContainerWithSortingExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.msort. This method simply wraps the
-        function, and so the docstring for ivy.msort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.msort also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -74,10 +74,9 @@ class _ContainerWithSortingExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.msort.
-        This method simply wraps the function, and
-        so the docstring for ivy.msort also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.msort. This method simply wraps the
+        function, and so the docstring for ivy.msort also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -130,8 +129,8 @@ class _ContainerWithSortingExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.lexsort. This method simply wraps the
-        function, and so the docstring for ivy.lexsort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.lexsort also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -183,9 +182,8 @@ class _ContainerWithSortingExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.lexsort.
-        This method simply wraps the function, and
-        so the docstring for ivy.lexsort also applies to this method
+        ivy.Container instance method variant of ivy.lexsort. This method simply wraps
+        the function, and so the docstring for ivy.lexsort also applies to this method
         with minimal changes.
 
         Parameters

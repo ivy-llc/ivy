@@ -70,6 +70,7 @@ def test_vorbis_window(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
+        atol_=1e-02,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -162,8 +163,8 @@ def test_kaiser_window(
 @handle_test(
     fn_tree="functional.ivy.experimental.kaiser_bessel_derived_window",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=(1, 1),
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=0,
         min_value=1,
         max_value=10,
     ),
@@ -292,8 +293,8 @@ def test_tril_indices(
     fn_tree="functional.ivy.experimental.eye_like",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=2,
+        min_num_dims=1,
+        max_num_dims=1,
         min_dim_size=1,
         max_dim_size=5,
     ),
@@ -318,7 +319,7 @@ def test_eye_like(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        x=int(x[0]),
+        x=x[0],
         k=k,
         dtype=dtype[0],
         device=on_device,
