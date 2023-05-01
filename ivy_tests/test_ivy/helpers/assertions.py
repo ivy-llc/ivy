@@ -50,6 +50,13 @@ def assert_all_close(
         if ret_np.dtype == "bfloat16" or ret_from_gt_np.dtype == "bfloat16":
             ret_np = ret_np.astype("float64")
             ret_from_gt_np = ret_from_gt_np.astype("float64")
+        # try:
+        #     assert np.allclose(
+        #         np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
+        #     ), "{} != {}".format(ret_np, ret_from_gt_np)
+        # except:
+        #     print('ABC')
+
         assert np.allclose(
             np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
         ), (

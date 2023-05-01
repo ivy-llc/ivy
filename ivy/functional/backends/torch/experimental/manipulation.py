@@ -1,6 +1,8 @@
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+from typing import Optional, Union, Sequence, Tuple, NamedTuple, List, Literal, Callable, Any
 from numbers import Number
-from ivy.func_wrapper import with_unsupported_dtypes
+
+import numpy as np
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 import torch
 import ivy
@@ -271,3 +273,105 @@ def expand(
 
 
 expand.support_native_out = False
+
+
+def _can_handle_padding(input_shape, pad, mode):
+    n_dims = len(input_shape)
+    if n_dims == 0:
+        return False
+    if n_dims == 1 and mode != 'circular':
+        return False
+    if mode == 'circular':
+        return True
+    if isinstance(pad, int):
+        return False
+    for i in range(n_dims):
+        if not isinstance(pad[2 * i], int) or not isinstance(pad[2 * i + 1], int):
+            return False
+        if input_shape[i] + pad[2*i] + pad[2*i+1] < 0:
+            return False
+    return True
+
+
+def _check_tuple(t):
+    if isinstance(t, tuple):
+        if len(t) == 1 and not isinstance(t[0], tuple):
+            return t[0], True
+        else:
+            has_multiple_values = False
+            size = 0
+            for elem in t:
+                elem_val, elem_has_multiple_values = _check_tuple(elem)
+                if elem_has_multiple_values:
+                    has_multiple_values = True
+                size += elem_val
+            return size, has_multiple_values
+    else:
+        return 1, False
+
+
+def _check(*args, **kwargs):
+
+    mode = kwargs['mode']
+    if mode in ["linear_ramp",
+                    "maximum",
+                    "symmetric",
+                    "mean",
+                    "median",
+                    "minimum",
+                    "edge",
+                    "wrap",
+                    "empty",
+    ]:
+        return False
+    else:
+        inp = args[0]
+        pad = args[1]
+        if mode == 'constant':
+
+            c = kwargs['constant_values']
+            val, cond = _check_tuple(c)
+            if cond is False:
+                return False
+            else:
+                kwargs['constant_values'] = val
+                return True
+        elif _can_handle_padding(inp.shape, pad, mode):
+            return True
+        else:
+            if kwargs['mode'] == 'replicate':
+                kwargs['mode'] = 'edge'
+            elif kwargs['mode'] == 'circular':
+                kwargs['mode'] = 'wrap'
+            return False
+
+
+@handle_mixed_function(lambda *args, **kwargs: _check(*args, **kwargs))
+def pad(
+    input: torch.Tensor,
+    pad_width: Union[Sequence[Sequence[int]], torch.Tensor, int],
+    /,
+    *,
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "reflect",
+            "wrap",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Sequence[torch.Tensor], int] = 1,
+    constant_values: Number = 0,
+    end_values: Number = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+    **kwargs: Optional[Any],
+) -> torch.Tensor:
+
+    return torch.nn.functional.pad(
+        input=input,
+        pad=pad_width,
+        mode=mode,
+        value=constant_values,
+        )
+

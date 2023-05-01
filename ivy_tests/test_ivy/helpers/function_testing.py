@@ -291,6 +291,8 @@ def test_function(
         not test_flags.native_arrays[0] or test_flags.container[0]
     )
 
+    instance_method=False
+
     args, kwargs = create_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_arrays,
@@ -344,11 +346,9 @@ def test_function(
             target_fn = instance.__getattribute__(fn_name)
     else:
         target_fn = ivy.__dict__[fn_name]
-
-    ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
-        target_fn, *args, test_compile=test_flags.test_compile, **kwargs
-    )
-
+        ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
+            target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+        )
     # Assert indices of return if the indices of the out array provided
     if test_flags.with_out and not test_flags.test_compile:
         test_ret = (
@@ -488,9 +488,8 @@ def test_function(
                 ground_truth_backend=ground_truth_backend,
                 on_device=on_device,
             )
-
-    if gt_returned_array:
-        ret_device = ivy.dev(ret_from_target)
+        if gt_returned_array:
+            ret_device = ivy.dev(ret_from_target)
 
         assert (
             ret_device == ret_from_gt_device

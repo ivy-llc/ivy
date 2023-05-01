@@ -111,3 +111,21 @@ def test_handle_mixed_function(x, weight, expected):
     with patch(test_fn) as test_mock_function:
         ivy.linear(x, weight)
         assert test_mock_function.called == expected
+
+
+@pytest.mark.parametrize(
+    ("input", "pad_width", "mode", "expected"),
+    [
+        ([[1, 2, 3], [4, 5, 6]], ((1, 1), (2, 2)), "constant", True),
+        ([[1, 1], [1, 1]], (1, 1), "median", False),
+    ]
+)
+def test_handle_mixed_function_pad(input, pad_width, mode, expected):
+    test_fn = 'torch.nn.functional.pad'
+    if ivy.current_backend_str() != 'torch' or ivy.current_backend_str() != 'tensorflow':
+        # ivy.matmul is used inside the compositional implementation
+        test_fn = 'ivy.moveaxis'
+        expected = True
+    with patch(test_fn) as test_mock_function:
+        ivy.linear(x, weight)
+        assert test_mock_function.called == expected

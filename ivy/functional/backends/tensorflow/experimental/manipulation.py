@@ -1,6 +1,8 @@
-from typing import Union, Optional, Sequence, Tuple, NamedTuple, List
+from typing import Union, Optional, Sequence, Tuple, NamedTuple, List, Literal
 from numbers import Number
-from ivy.func_wrapper import with_unsupported_dtypes
+
+import numpy as np
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 import tensorflow as tf
 import ivy
@@ -234,3 +236,88 @@ def expand(
         if dim < 0:
             shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
+
+
+def _check_tuple(t):
+    if isinstance(t, tuple):
+        if len(t) == 1 and not isinstance(t[0], tuple):
+            return t[0], True
+        else:
+            has_multiple_values = False
+            size = 0
+            for elem in t:
+                elem_val, elem_has_multiple_values = _check_tuple(elem)
+                if elem_has_multiple_values:
+                    has_multiple_values = True
+                size += elem_val
+            return size, has_multiple_values
+    else:
+        return 1, False
+
+
+def _check_dimension(tensor, padding, mode):
+    if mode == 'reflect':
+
+        for i in range(tensor.shape.rank):
+            if padding[i][0] > tensor.shape[i] - 1 or padding[i][1] > tensor.shape[i] - 1:
+                return False
+            return True
+
+    elif mode == 'symmetric':
+
+        for i in range(tensor.shape.rank):
+            if padding[i][0] > tensor.shape[i] or padding[i][1] > tensor.shape[i]:
+                return False
+        return True
+
+
+def _check(*args, **kwargs):
+
+    mode = kwargs['mode']
+    if mode in ["linear_ramp",
+                    "maximum",
+                    "mean",
+                    "median",
+                    "minimum",
+                    "edge",
+                    "wrap",
+                    "empty",
+    ]:
+        return False
+    else:
+        if mode == 'constant':
+            c = kwargs['constant_values']
+            val, cond = _check_tuple(c)
+            if cond is False:
+                return False
+            else:
+                kwargs['constant_values'] = val
+                return True
+        else:
+            pad = args[1]
+            inp = args[0]
+            if isinstance(pad, tuple):
+                if _check_dimension(inp, pad, mode):
+                    return True
+                else:
+                    return False
+            elif isinstance(pad, int):
+                return False
+
+
+@handle_mixed_function(lambda *args, **kwargs: _check(*args, **kwargs))
+def pad(
+    input: tf.Tensor,
+    /,
+    pad_width: Union[Sequence[Sequence[int]], tf.Tensor, int],
+    *,
+    mode: Optional[Literal["constant", "reflect", "symmetric"]] = "constant",
+    stat_length: Optional[Union[tf.Tensor, int]] = None,
+    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    end_values: Optional[Number] = 0,
+    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+
+    return tf.pad(input, pad_width, mode=mode,
+                  constant_values=constant_values)
