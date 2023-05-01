@@ -17,7 +17,7 @@ def acos(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.acos Not Implemented")
+    return mx.nd.arccos(x)
 
 
 def acosh(
@@ -26,7 +26,7 @@ def acosh(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.acosh Not Implemented")
+    return mx.nd.arccosh(x)
 
 
 def add(
@@ -48,7 +48,7 @@ def asin(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.asin Not Implemented")
+    return mx.nd.arcsin(x)
 
 
 def asinh(
@@ -57,7 +57,7 @@ def asinh(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.asinh Not Implemented")
+    return mx.nd.arcsinh(x)
 
 
 def atan(
@@ -66,7 +66,7 @@ def atan(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.atan Not Implemented")
+    return mx.nd.arctan(x)
 
 
 def atan2(
@@ -76,7 +76,7 @@ def atan2(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.atan2 Not Implemented")
+    return mx.nd.arctan2(x1, x2)
 
 
 def atanh(
@@ -85,7 +85,7 @@ def atanh(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.atanh Not Implemented")
+    return mx.nd.arctanh(x)
 
 
 def bitwise_and(
