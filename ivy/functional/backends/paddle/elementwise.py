@@ -770,29 +770,31 @@ def pow(
 def round(
     x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    def _np_round(x):
+    def _np_round(x, decimals):
         # this is a logic to mimic np.round behaviour
         # which rounds odd numbers up and even numbers down at limits like 0.5
         eps = 1e-6 * paddle.sign(x)
+
         with ivy.ArrayMode(False):
+            # check if the integer is even or odd
+            candidate_ints = ivy.remainder(ivy.trunc(x), 2.0).astype(bool)
+            # check if the fraction is exactly half
+            candidate_fractions = ivy.equal(ivy.abs(ivy.subtract(x, ivy.trunc(x))), 0.5)
             x = ivy.where(
-                remainder(trunc(x), 2.0).astype(
-                    bool
-                ),  # check if the integer is even or odd
-                x,
+                ivy.logical_and(~candidate_ints, candidate_fractions),
                 x - eps,
+                x,
             )
-            ret_dtype = x.dtype
-            factor = pow(10, decimals).astype(ret_dtype)
-            factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
-            return divide(paddle.round(multiply(x, factor)), factor_denom)
+            factor = ivy.pow(10, decimals).astype(x.dtype)
+            factor_denom = ivy.where(ivy.isinf(x), 1, factor)
+            return ivy.divide(paddle.round(ivy.multiply(x, factor)), factor_denom)
 
     x, _ = ivy.promote_types_of_inputs(x, x)
     if x.dtype not in [paddle.float32, paddle.float64]:
         if paddle.is_complex(x):
-            return _np_round(x.real()) + _np_round(x.imag()) * 1j
-        return _np_round(x.cast("float32")).cast(x.dtype)
-    return _np_round(x)
+            return _np_round(x.real(), decimals) + _np_round(x.imag(), decimals) * 1j
+        return _np_round(x.cast("float32"), decimals).cast(x.dtype)
+    return _np_round(x, decimals)
 
 
 @with_unsupported_device_and_dtypes(

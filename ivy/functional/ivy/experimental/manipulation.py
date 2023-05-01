@@ -1185,6 +1185,7 @@ def pad(
             )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
+            stat_pair = ivy.to_numpy(stat_pair)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
@@ -1630,9 +1631,9 @@ def expand(
 def _check_bounds(shape0, strides0, shape1, strides1, itemsize):
     ndim0 = len(shape0)
     ndim1 = len(shape1)
-    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + \
-        sum(strides1[i] - strides0[i] for i in range(min(ndim0, ndim1))) <= \
-        sum((shape0[i] - 1) * itemsize for i in range(ndim0))
+    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + sum(
+        strides1[i] - strides0[i] for i in range(min(ndim0, ndim1))
+    ) <= sum((shape0[i] - 1) * itemsize for i in range(ndim0))
 
 
 @inputs_to_native_shapes
@@ -1687,7 +1688,7 @@ def as_strided(
     dst_index = 0
     for index in ivy.ndindex(shape):
         src_index = sum(index[i] * strides[i] for i in range(len(shape)))
-        dst[dst_index: dst_index + itemsize] = src[src_index: src_index + itemsize]
+        dst[dst_index : dst_index + itemsize] = src[src_index : src_index + itemsize]
         dst_index += itemsize
 
     return ivy.reshape(

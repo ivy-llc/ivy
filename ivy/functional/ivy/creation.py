@@ -1461,6 +1461,7 @@ def meshgrid(
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -1617,6 +1618,7 @@ array = asarray
 @handle_nestable
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     to_ivy_array: bool = True,
     out: Optional[ivy.Array] = None,
