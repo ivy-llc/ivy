@@ -14,6 +14,8 @@ from ivy.utils.exceptions import handle_exceptions
 #       Bins as str is not defined (check Numpy implementation).
 #       Permit multiple axis.
 #       Modify documentation to match the above modifications.
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -31,7 +33,7 @@ def histogram(
     weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     density: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Compute the histogram of the array ``a``.
 
@@ -130,7 +132,7 @@ def histogram(
     (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
     (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
     """
-    return ivy.current_backend(a).histogram(
+    hist = ivy.current_backend(a).histogram(
         a,
         bins=bins,
         axis=axis,
@@ -142,6 +144,11 @@ def histogram(
         density=density,
         out=out,
     )
+    if isinstance(bins, int):
+        bin_edges = ivy.linspace(range[0], range[1], bins + 1)
+    else:
+        bin_edges = bins
+    return hist, bin_edges
 
 
 @to_native_arrays_and_back
