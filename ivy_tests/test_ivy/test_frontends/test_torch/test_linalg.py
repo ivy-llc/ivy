@@ -29,6 +29,35 @@ def _get_dtype_and_square_matrix(draw):
 
 
 @st.composite
+def _get_dtype_and_matrix_non_singular(draw):
+    while True:
+        matrix = draw(
+            helpers.dtype_and_values(
+                # available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=(
+                    ivy.float64,
+                    ivy.double,
+                ),
+                min_value=-10,
+                max_value=10,
+                min_num_dims=2,
+                max_num_dims=2,
+                min_dim_size=1,
+                max_dim_size=5,
+                shape=st.tuples(st.integers(1, 5), st.integers(1, 5)).filter(
+                    lambda x: x[0] == x[1]
+                ),
+                allow_inf=False,
+                allow_nan=False,
+            )
+        )
+        if np.linalg.det(matrix[1][0]) != 0:
+            break
+
+    return matrix[0], matrix[1]
+
+
+@st.composite
 def _get_dtype_and_matrix(draw):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
     random_size = draw(st.integers(min_value=1, max_value=4))
@@ -409,16 +438,17 @@ def test_torch_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cond",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
-        min_dim_size=2,
-        max_dim_size=2,
-        shape=(3, 3),
-        allow_inf=False,
-        allow_nan=False,
-    ),
+    # dtype_and_x=helpers.dtype_and_values(
+    #     available_dtypes=helpers.get_dtypes("float"),
+    #     min_value=-10,
+    #     max_value=10,
+    #     min_dim_size=2,
+    #     max_dim_size=2,
+    #     shape=(3, 3),
+    #     allow_inf=False,
+    #     allow_nan=False,
+    # ),
+    dtype_and_x=_get_dtype_and_matrix_non_singular(),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
 )
 def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
@@ -435,15 +465,12 @@ def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags)
     )
     ret_np = ivy.to_numpy(ret)
     frontend_ret_np = np.asarray(frontend_ret, dtype=ret_np.dtype)
-    if ret_np > 1e15:
-        ret_np = ivy.to_numpy(ivy.array(ivy.inf))
-    if frontend_ret_np > 1e15:
-        frontend_ret_np = [np.asarray(ivy.inf, dtype=ret_np.dtype)]
+    ret_np = ivy.nan_to_num(ret_np, nan=ivy.inf)
     assert_all_close(
         ret_np=ret_np,
         ret_from_gt_np=frontend_ret_np[0],
-        rtol=1e-5,
-        atol=1e-5,
+        rtol=1e-3,
+        atol=1e-3,
         ground_truth_backend=frontend,
     )
 

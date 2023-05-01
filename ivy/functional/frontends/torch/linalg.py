@@ -90,8 +90,6 @@ def slogdet(input, *, out=None):
 @with_unsupported_dtypes({"2.0.0 and below": ("bfloat16", "float16")}, "torch")
 @to_ivy_arrays_and_back
 def cond(input, p=None, *, out=None):
-    if ivy.isnan(input).any():
-        return ivy.inf
     return ivy.cond(input, p=p, out=out)
 
 
