@@ -248,10 +248,12 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     ivy.set_backend('torch')  # set backend to PyTorch (or any other backend!)
 
     model = Regressor(input_dim=1, output_dim=1)
-    optimizer = ivy.Adam(0.1)
+    optimizer = ivy.Adam(0.3)
 
-    x = ivy.random.random_normal(shape=(500, 1), std=10, mean=-1)
-    y = 0.2 * x ** 2 + 0.5 * x + 0.1 + ivy.random.random_normal(shape=(500, 1), mean=0, std=1)
+    n_training_examples = 2000
+    noise = ivy.random.random_normal(shape=(n_training_examples, 1), mean=0, std=0.1)
+    x = ivy.linspace(-6, 3, n_training_examples).reshape((n_training_examples, 1))
+    y = 0.2 * x ** 2 + 0.5 * x + 0.1 + noise
 
 
     def loss_fn(pred, target):
