@@ -2893,6 +2893,7 @@ def test_numpy_instance_mod__(
         on_device=on_device,
     )
 
+#ptp    
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -2901,7 +2902,6 @@ def test_numpy_instance_mod__(
         available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
         max_axis=0,
-        min_num_dims=1,
         force_int_axis=True,
     ),
 )
