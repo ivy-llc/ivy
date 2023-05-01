@@ -57,11 +57,14 @@ COPY requirements/requirements.txt .
 ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/"
 RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
     pip3 install --upgrade --no-cache-dir -r requirements.txt &&\
-    pip-autoremove torch, tensorflow, numpy ,jax ,jaxlib -y &&\
-    pip install torch --target='/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu \
-    pip install tensorflow --target ='/opt/fw/tensorflow' --no-cache-dir &&\
+    pip-autoremove torch &&\
+    pip-autoremove tensorflow-cpu &&\
+    pip-autoremove jax &&\
+    pip-autoremove jaxlib &&\
+    pip install torch --target='/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
+    pip install tensorflow-cpu --target ='/opt/fw/tensorflow' --no-cache-dir &&\
     pip install jax[cpu] --target ='/opt/fw/jax' --no-cache-dir &&\
-    pip install jaxlib --target ='/opt/fw/jaxlib' --no-cache-dir &&\
+    pip install jaxlib --target ='/opt/fw/jax' --no-cache-dir &&\
     pip install numpy --target ='/opt/fw/numpy' --no-cache-dir
 
 COPY run_tests_CLI/test_dependencies.py .
