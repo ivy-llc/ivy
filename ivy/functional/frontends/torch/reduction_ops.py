@@ -95,7 +95,7 @@ def median(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def std(input, dim, unbiased, keepdim=False, *, out=None):
+def std(input, dim=None, unbiased=True, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 
 
