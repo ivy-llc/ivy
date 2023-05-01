@@ -436,7 +436,10 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
         return linspace_method(start, stop, num, dtype=dtype, device=device)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
-        res = torch.transpose(res, axis, -1)
+        i = res.ndim - 1
+        while i > axis:
+            res = res.transpose(i - 1, i)
+            i = i - 1
     return res.to(device)
 
 
