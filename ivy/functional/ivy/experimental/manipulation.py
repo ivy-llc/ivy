@@ -1185,6 +1185,7 @@ def pad(
             )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
+            stat_pair = ivy.to_numpy(stat_pair)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
