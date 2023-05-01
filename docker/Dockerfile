@@ -54,7 +54,11 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 # Install local optional
 COPY requirements/optional.txt .
 COPY requirements/requirements.txt .
-ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/"
+ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/torch"
+ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/tensorflow"'
+ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/jax"
+ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/numpy"
+
 RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
     pip3 install --upgrade --no-cache-dir -r requirements.txt &&\
     pip-autoremove torch -y &&\
