@@ -231,10 +231,14 @@ def cummax(
         if exclusive and reverse:
             indices = __find_cummax_indices(jnp.flip(x, axis=axis), axis=axis)
             x = jlax.cummax(jnp.flip(x, axis=axis), axis=axis)
-            x, indices = jnp.swapaxes(x, axis, -1), jnp.swapaxes(indices, axis, -1)
-            x, indices = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1), jnp.concatenate(
-                (jnp.zeros_like(indices[..., -1:]), indices[..., :-1]), -1)
-            x, indices = jnp.swapaxes(x, axis, -1), jnp.swapaxes(indices, axis, -1)
+            x, indices = jnp.swapaxes(x, axis, -1), \
+                jnp.swapaxes(indices, axis, -1)
+            x, indices = jnp.concatenate((jnp.zeros_like(x[..., -1:]),
+                                          x[..., :-1]), -1), \
+                jnp.concatenate((jnp.zeros_like(indices[..., -1:]),
+                                 indices[..., :-1]), -1)
+            x, indices = jnp.swapaxes(x, axis, -1), \
+                jnp.swapaxes(indices, axis, -1)
             res, indices = jnp.flip(x, axis=axis), jnp.flip(indices, axis=axis)
         elif exclusive:
             x = jnp.swapaxes(x, axis, -1)
@@ -257,18 +261,20 @@ def __find_cummax_indices(
         x: JaxArray,
         axis: int = 0,
 ) -> JaxArray:
-    indice, indices = [], []
+    n, indice, indices = 0, [], []
 
-    if type(x[0]) == ArrayImpl and len(x[0].shape)>=1:
+    if type(x[0]) == ArrayImpl and len(x[0].shape) >= 1:
         if axis == 1:
+
             for ret1 in x:
                 indices.append(
-                    [n := idx if idx == 0 else n if ret1[n] > y else (n := idx) for idx, y in enumerate(ret1)])
+                    [n := idx if idx == 0 else n if ret1[n] > y
+                        else (n := idx) for idx, y in enumerate(ret1)])
         else:
             n1 = {}
             for index, ret1 in enumerate(x):
                 indice = []
-                if type(ret1) == ArrayImpl and len(x[0].shape)>=1:
+                if type(ret1) == ArrayImpl and len(x[0].shape) >= 1:
                     for idx1, x1 in enumerate(ret1):
                         if index == 0 or x[index][idx1] >= x[n1[idx1]][idx1]:
                             n1[idx1] = index
@@ -279,7 +285,17 @@ def __find_cummax_indices(
                     indice.append(index)
                 indices.append(indice)
     else:
-        indices = [n := idx if idx == 0 else n if x[n] > y else (n := idx) for idx, y in enumerate(x)]
+        n, indices = 0, []
+        for idx, y in enumerate(x):
+            if x[n] > y:
+                indices.append(n)
+            elif idx == 0:
+                n = idx
+                indices.append(idx)
+            else:
+                n = idx
+                indices.append(idx)
+
     return jnp.asarray(indices)
 
 

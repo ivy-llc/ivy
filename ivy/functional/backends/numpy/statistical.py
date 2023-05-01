@@ -265,8 +265,9 @@ def cummax(
             indices = __find_cummax_indices(np.flip(x, axis=axis), axis=axis)
             x = np.maximum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=x.dtype)
             x, indices = np.swapaxes(x, axis, -1), np.swapaxes(indices, axis, -1)
-            x, indices = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1), np.concatenate(
-                (np.zeros_like(indices[..., -1:]), indices[..., :-1]), -1)
+            x, indices = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1),\
+                np.concatenate((np.zeros_like(indices[..., -1:]),
+                                indices[..., :-1]), -1)
             x, indices = np.swapaxes(x, axis, -1), np.swapaxes(indices, axis, -1)
             res, indices = np.flip(x, axis=axis), np.flip(indices, axis=axis)
 
@@ -283,8 +284,6 @@ def cummax(
             x = np.maximum.accumulate(x, axis=axis)
             res, indices = np.flip(x, axis=axis), np.flip(indices, axis=axis)
         return res, indices
-    # X=x.tolist()
-    # ret=pd.DataFrame(X).cummax() if axis==0 and len(x.shape)==1 else pd.DataFrame(X).T.cummax()
     indices = __find_cummax_indices(x, axis=axis)
     return np.maximum.accumulate(x, axis=axis, dtype=x.dtype), indices
 
@@ -302,7 +301,7 @@ def __find_cummax_indices(
         if axis == 1:
             for ret1 in x:
                 indices.append(
-                    [n := idx if idx == 0 else n if ret1[n] > y else (n := idx) for idx, y in enumerate(ret1)])
+                    __find_indices_values(ret1, indice=[]))
         else:
             n1 = {}
             for index, ret1 in enumerate(x):
@@ -315,9 +314,21 @@ def __find_cummax_indices(
                         indice.append(n1[idx1])
                 indices.append(indice)
     else:
-        indices = [n := idx if idx == 0 else n if x[n] > y else (n := idx) for idx, y in enumerate(x)]
+        indices = __find_indices_values(x, indice=[])
 
     return np.array(indices)
+
+
+def __find_indices_values(
+        ret1: np.ndarray,
+        indice: list):
+    n = 0
+    for idx, y in enumerate(ret1):
+        if ret1[n] <= y or idx == 0:
+            n = idx
+        indice.append(n)
+
+    return indice
 
 
 @_scalar_output_to_0d_array
