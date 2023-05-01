@@ -118,7 +118,7 @@ def take(
     indices_are_sorted=False,
     fill_value=None,
 ):
-    return ivy.take_along_axis(a, indices, axis, out=out)
+    return ivy.gather(a, indices, axis=axis, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -306,9 +306,9 @@ def blackman(M):
     a0 = (1 - alpha) / 2
     a1 = 1 / 2
     a2 = alpha / 2
-    z = (
+    ret = (
         a0
         - a1 * ivy.cos(2 * ivy.pi * n / (M - 1))
         + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
     )
-    return z
+    return ret
