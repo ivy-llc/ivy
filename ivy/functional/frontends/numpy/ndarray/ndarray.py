@@ -360,10 +360,9 @@ class ndarray:
         self,
     ):
         return np_frontend.copy(self)
-    
+
     def __deepcopy__(self, memo):
         return self.__class__(np_frontend.copy(self))
-
 
     def __neg__(
         self,

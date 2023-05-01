@@ -291,7 +291,7 @@ def dtype_values_and_axes(draw):
     axis1, axis2 = draw(
         helpers.get_axis(
             shape=x_shape,
-            sorted=False,
+            sort_values=False,
             unique=True,
             min_size=2,
             max_size=2,
@@ -2725,7 +2725,9 @@ def test_numpy_instance_tobytes__(
         frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
-#tolist
+
+
+# tolist
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -2755,9 +2757,9 @@ def test_numpy_instance_tolist__(
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         on_device=on_device,
-        test_values=False, #Todo change this after we add __iter__ to ndarray
-
+        test_values=False,  # Todo change this after we add __iter__ to ndarray
     )
+
 
 # __getitem__
 @handle_frontend_method(

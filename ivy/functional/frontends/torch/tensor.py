@@ -48,6 +48,10 @@ class Tensor:
     def shape(self):
         return self.ivy_array.shape
 
+    @property
+    def imag(self):
+        return self.ivy_array.imag()
+
     # Setters #
     # --------#
 

@@ -17,6 +17,31 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_element
 )
 
 
+@st.composite
+def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
+    available_dtypes = helpers.get_dtypes("numeric")
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=1,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+            allow_nan=allow_nan,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
+    )
+    if use_where:
+        where = draw(np_frontend_helpers.where(shape=shape))
+        return [dtype1], [values], axis, dtype2, where
+    return [dtype1], [values], axis, dtype2
+
+
 # sign
 @handle_frontend_test(
     fn_tree="jax.numpy.sign",
@@ -650,14 +675,14 @@ def test_jax_numpy_mod(
         min_value=0,
         exclude_min=True,
     ),
-    test_with_out = st.just(False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_modf(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.iscomplex(x))
@@ -669,7 +694,7 @@ def test_jax_numpy_modf(
         on_device=on_device,
         x=x[0],
     )
-    
+
 
 # divmod
 @handle_frontend_test(
@@ -2770,4 +2795,45 @@ def test_jax_numpy_signbit(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.product",
+    dtype_x_axis_dtype_where=_get_castable_dtypes_values(use_where=True),
+    keepdims=st.booleans(),
+    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
+    promote_integers=st.booleans(),
+)
+def test_jax_numpy_product(
+    dtype_x_axis_dtype_where,
+    keepdims,
+    initial,
+    promote_integers,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype_where
+    if ivy.current_backend_str() == "torch":
+        assume(not test_flags.as_variable[0])
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        dtype=dtype,
+        keepdims=keepdims,
+        initial=initial,
+        where=where,
+        promote_integers=promote_integers,
     )
