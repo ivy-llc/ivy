@@ -75,7 +75,6 @@ def _train_task(
     num_tasks,
     stop_gradients,
 ):
-
     # init
     total_cost = 0
     all_grads = list()
@@ -86,7 +85,6 @@ def _train_task(
 
     # iterate through inner loop training steps
     for i in range(inner_grad_steps):
-
         # compute inner gradient for update the inner variables
         cost, inner_update_grads = ivy.execute_with_gradients(
             lambda v: inner_cost_fn(
@@ -487,7 +485,6 @@ def fomaml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
@@ -540,7 +537,8 @@ def reptile_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform step of Reptile.
+    """
+    Perform step of Reptile.
 
     Parameters
     ----------
@@ -575,7 +573,6 @@ def reptile_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
@@ -640,7 +637,8 @@ def maml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform step of vanilla second order MAML.
+    """
+    Perform step of vanilla second order MAML.
 
     Parameters
     ----------
@@ -700,7 +698,6 @@ def maml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]

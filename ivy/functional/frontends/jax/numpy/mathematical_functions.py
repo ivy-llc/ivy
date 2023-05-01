@@ -9,8 +9,14 @@ from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 from math import factorial
 
 
+# sign
 @to_ivy_arrays_and_back
-def absolute(x):
+def sign(x, /):
+    return ivy.sign(x, out=None)
+
+
+@to_ivy_arrays_and_back
+def absolute(x, /):
     return ivy.abs(x)
 
 
@@ -118,6 +124,13 @@ def floor(x):
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def modf(x, /, out=None):
+    y1 = ivy.floor(x)
+    y2 = x - y1
+    return y2,y1
 
 
 @to_ivy_arrays_and_back
@@ -601,3 +614,9 @@ def polymul(a1, a2, *, trim_leading_zeros=False):
     if len(a2) == 0:
         a2 = ivy.asarray([0], dtype=a2.dtype)
     return convolve(a1, a2, mode="full")
+
+
+@to_ivy_arrays_and_back
+def signbit(x, /):
+    x = ivy.array(x)
+    return ivy.signbit(x)

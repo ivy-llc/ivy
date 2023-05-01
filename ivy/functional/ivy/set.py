@@ -25,13 +25,15 @@ from ivy.utils.exceptions import handle_exceptions
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """Returns the unique elements of an input array ``x``, the first occurring indices
+    """Return the unique elements of an input array ``x``, the first occurring indices
     for each unique element in ``x``, the indices from the set of unique elements that
     reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
 
@@ -66,8 +68,11 @@ def unique_all(
     Parameters
     ----------
     x
-        input array. If ``x`` has more than one dimension, the function must flatten
-        ``x`` and return the unique elements of the flattened array.
+        input array.
+
+    axis
+        the axis to apply unique on. If None, the unique elements of the flattened ``x``
+        are returned.
 
     Returns
     -------
@@ -78,20 +83,19 @@ def unique_all(
           type as ``x``.
         - second element must have the field name ``indices`` and must be an array
           containing the indices (first occurrences) of ``x`` that result in ``values``.
-          The array must have the same shape as ``values`` and must have the default
+          The array must have the same length as ``values`` and must have the default
           array index data type.
         - third element must have the field name ``inverse_indices`` and must be an
           array containing the indices of ``values`` that reconstruct ``x``. The array
-          must have the same shape as ``x`` and must have the default array index data
-          type.
+          must have the same length as the ``axis`` dimension of ``x`` and must have the
+          default array index data type.
         - fourth element must have the field name ``counts`` and must be an array
           containing the number of times each unique element occurs in ``x``. The
-          returned array must have same shape as ``values`` and must have the default
-          array index data type.
+          returned array must have the same length as ``values`` and must have the
+          default array index data type.
 
         .. note::
-           The order of unique elements is not specified and may vary between
-           implementations.
+           The returned unique elements are ordered by value.
 
 
     This function conforms to the `Array API Standard
@@ -134,7 +138,7 @@ def unique_all(
        counts=ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
 
     """
-    return ivy.current_backend(x).unique_all(x)
+    return ivy.current_backend(x).unique_all(x, axis=axis)
 
 
 @handle_array_function
@@ -146,7 +150,7 @@ def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """Returns the unique elements of an input array ``x``, and the indices from the
+    """Return the unique elements of an input array ``x``, and the indices from the
      set of unique elements that reconstruct ``x``.
 
      .. admonition:: Data-dependent output shape
@@ -250,7 +254,7 @@ def unique_values(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the unique elements of an input array ``x``.
+    """Return the unique elements of an input array ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
@@ -334,7 +338,7 @@ def unique_counts(
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """
-    Returns the unique elements of an input array ``x`` and the corresponding counts for
+    Return the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
