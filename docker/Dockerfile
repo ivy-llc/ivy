@@ -57,10 +57,10 @@ COPY requirements/requirements.txt .
 ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/"
 RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
     pip3 install --upgrade --no-cache-dir -r requirements.txt &&\
-    pip-autoremove torch &&\
-    pip-autoremove tensorflow-cpu &&\
-    pip-autoremove jax &&\
-    pip-autoremove jaxlib &&\
+    pip-autoremove torch -y &&\
+    pip-autoremove tensorflow-cpu -y &&\
+    pip-autoremove jax -y &&\
+    pip-autoremove jaxlib -y &&\
     pip install torch --target='/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
     pip install tensorflow-cpu --target ='/opt/fw/tensorflow' --no-cache-dir &&\
     pip install jax[cpu] --target ='/opt/fw/jax' --no-cache-dir &&\
