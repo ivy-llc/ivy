@@ -464,6 +464,9 @@ class ndarray:
         if not dtype:
             return self
         return np_frontend.array(self, dtype=dtype)
+    
+    def __array_wrap__(self, out_arr, context=None):
+        return np_frontend.array(out_arr)
 
     def __getitem__(self, key, /):
         ivy_args = ivy.nested_map([self, key], _to_ivy_array)
