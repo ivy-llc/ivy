@@ -147,7 +147,7 @@ class BatchNorm2D(Module):
         """Create internal variables for the layer."""
         if self._affine:
             return {
-                "bias": self._bias_init.create_variables(
+                "b": self._bias_init.create_variables(
                     self._bias_shape, device, dtype=dtype
                 ),
                 "running_mean": self._running_mean_init.create_variables(
@@ -156,7 +156,7 @@ class BatchNorm2D(Module):
                 "running_var": self._running_var_init.create_variables(
                     self._running_var_shape, device, dtype=dtype
                 ),
-                "weight": self._weight_init.create_variables(
+                "w": self._weight_init.create_variables(
                     self._weight_shape, device, dtype=dtype
                 ),
             }
