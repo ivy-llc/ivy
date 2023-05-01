@@ -55,7 +55,7 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 COPY requirements/optional.txt .
 COPY requirements/requirements.txt .
 ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/torch"
-ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/tensorflow"'
+ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/tensorflow"
 ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/jax"
 ENV PYTHONPATH "${PYTHONPATH}:/opt/fw/numpy"
 
