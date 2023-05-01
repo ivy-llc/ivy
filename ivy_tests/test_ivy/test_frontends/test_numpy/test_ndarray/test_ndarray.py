@@ -291,7 +291,7 @@ def dtype_values_and_axes(draw):
     axis1, axis2 = draw(
         helpers.get_axis(
             shape=x_shape,
-            sorted=False,
+            sort_values=False,
             unique=True,
             min_size=2,
             max_size=2,
