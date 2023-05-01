@@ -589,36 +589,19 @@ def test_cond(
     )
 
 
-@st.composite
-def _generate_solve_triangular_dtype_and_arrays(draw):
-    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
-    matrices_dims = draw(
-        st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=2)
-    )
-    shape_1 = (matrices_dims[0], matrices_dims[0])
-
-    matrix_1 = draw(
-        helpers.dtype_and_values(
-            shape=shape_1,
-            dtype=input_dtype,
-            min_value=-10,
-            max_value=10,
-        )
-    )
-    matrix_2 = draw(
-        helpers.dtype_and_values(
-            shape=shape_1,
-            dtype=input_dtype,
-            min_value=-10,
-            max_value=10,
-        )
-    )
-
-    return input_dtype, [matrix_1[1][0], matrix_2[1][0]]
-
 @handle_test(
     fn_tree="functional.ivy.experimental.solve_triangular",
-    dtype_x=_generate_solve_triangular_dtype_and_arrays(),
+    dtype_x=helpers.dtype_and_values(
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_value=-10,
+        max_value=50,
+        num_arrays=2,
+        allow_nan=False,
+        shared_dtype=True,
+    ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     lower = st.booleans(),
