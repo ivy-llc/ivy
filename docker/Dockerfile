@@ -26,17 +26,6 @@ ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
 ENV PYTHONPATH "/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/numpy:/opt/miniconda/envs/multienv/bin"
 
-RUN pip-autoremove torch -y &&\
-    pip-autoremove tensorflow-cpu -y &&\
-    pip-autoremove jax -y &&\
-    pip-autoremove jaxlib -y &&\
-    pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
-    pip install tensorflow-cpu --target '/opt/fw/tensorflow' --no-cache-dir &&\
-    pip install jax[cpu] --target '/opt/fw/jax' --no-cache-dir &&\
-    pip install jaxlib --target '/opt/fw/jax' --no-cache-dir &&\
-    pip install numpy --target '/opt/fw/numpy' --no-cache-dir
-
-
 RUN apt-get update && \
     apt-get install -y python3-pip python3-tk && \
     apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
@@ -48,6 +37,21 @@ RUN apt-get update && \
     pip3 install --upgrade pip && \
     pip3 install pip-autoremove &&\
     pip3 install setuptools==58.5.3
+
+ENV PYTHONPATH "/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/numpy:/opt/miniconda/envs/multienv/bin"
+
+RUN pip-autoremove torch -y &&\
+    pip-autoremove tensorflow-cpu -y &&\
+    pip-autoremove jax -y &&\
+    pip-autoremove jaxlib -y &&\
+    pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
+    pip install tensorflow-cpu --target '/opt/fw/tensorflow' --no-cache-dir &&\
+    pip install jax[cpu] --target '/opt/fw/jax' --no-cache-dir &&\
+    pip install jaxlib --target '/opt/fw/jax' --no-cache-dir &&\
+    pip install numpy --target '/opt/fw/numpy' --no-cache-dir
+
+
+
 
 RUN pip3 install --no-cache-dir torch --extra-index-url https://download.pytorch.org/whl/cpu
 RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
