@@ -63,8 +63,8 @@ RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
     pip-autoremove tensorflow-cpu -y &&\
     pip-autoremove jax -y &&\
     pip-autoremove jaxlib -y &&\
-    pip install torch --target='/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
-    pip install tensorflow-cpu --target ='/opt/fw/tensorflow' --no-cache-dir &&\
+    pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
+    pip install tensorflow-cpu --target '/opt/fw/tensorflow' --no-cache-dir &&\
     pip install jax[cpu] --target '/opt/fw/jax' --no-cache-dir &&\
     pip install jaxlib --target '/opt/fw/jax' --no-cache-dir &&\
     pip install numpy --target '/opt/fw/numpy' --no-cache-dir
