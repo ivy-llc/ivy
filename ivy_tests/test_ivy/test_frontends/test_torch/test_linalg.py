@@ -33,7 +33,6 @@ def _get_dtype_and_matrix_non_singular(draw):
     while True:
         matrix = draw(
             helpers.dtype_and_values(
-                # available_dtypes=helpers.get_dtypes("float"),
                 available_dtypes=(
                     ivy.float64,
                     ivy.double,
