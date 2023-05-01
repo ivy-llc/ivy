@@ -499,7 +499,7 @@ def crelu(features, axis=-1, name=None):
     return ivy.relu(c)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, "tensorflow")
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv_transpose(
     value,
