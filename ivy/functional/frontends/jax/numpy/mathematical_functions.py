@@ -620,3 +620,31 @@ def polymul(a1, a2, *, trim_leading_zeros=False):
 def signbit(x, /):
     x = ivy.array(x)
     return ivy.signbit(x)
+
+
+@to_ivy_arrays_and_back
+def product(
+    a,
+    *,
+    axis=None,
+    dtype=None,
+    keepdims=False,
+    initial=None,
+    where=None,
+    promote_integers=True,
+    out=None,
+):
+    if ivy.is_array(where):
+        a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
+    if promote_integers:
+        if dtype is None:
+            dtype = a.dtype
+    if initial is not None:
+        if axis is not None:
+            s = ivy.to_list(ivy.shape(a, as_array=True))
+            s[axis] = 1
+            header = ivy.full(ivy.Shape(tuple(s)), initial)
+            a = ivy.concat([header, a], axis=axis)
+        else:
+            a[0] *= initial
+    return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
