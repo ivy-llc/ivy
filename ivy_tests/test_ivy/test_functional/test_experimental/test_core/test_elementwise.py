@@ -550,7 +550,7 @@ def test_isclose(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="numpy",
         fw=backend_fw,
         fn_name=fn_name,
         a=x[0],

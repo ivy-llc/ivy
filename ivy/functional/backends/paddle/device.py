@@ -77,6 +77,12 @@ def clear_mem_on_dev(device: Place, /):
         paddle.device.cuda.empty_cache()
 
 
+def clear_cached_mem_on_dev(device: str, /):
+    if "gpu" in device:
+        paddle.device.cuda.empty_cache()
+    return None
+
+
 def num_gpus() -> int:
     return paddle.device.cuda.device_count()
 

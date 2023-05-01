@@ -228,6 +228,13 @@ class Shape:
             self._shape = self._shape + list(other)
         return self
 
+    def __radd__(self, other):
+        try:
+            self._shape = other + self._shape
+        except TypeError:
+            self._shape = list(other) + self._shape
+        return self
+
     def __mul__(self, other):
         self._shape = self._shape * other
         return self
@@ -760,6 +767,7 @@ from ivy.utils.backend import (
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
+    set_mxnet_backend,
     previous_backend,
     backend_stack,
     choose_random_backend,
