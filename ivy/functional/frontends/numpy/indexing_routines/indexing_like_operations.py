@@ -83,10 +83,12 @@ def fill_diagonal(a, val, wrap=False):
 
 
 def compress(condition, arr, axis=None):
+    a = axis
     if axis is None:
         arr = arr.ravel()
         axis = 0
-    splitarr = ivy.split(arr, arr.shape[axis], axis=axis)
+    arr_shape = arr.shape[axis]
+    splitarr = ivy.split(arr, arr_shape, a)
     selectedarrs = [arr for i, arr in enumerate(splitarr) if condition[i]]
     out = ivy.concat(selectedarrs, axis=axis)
     return out
