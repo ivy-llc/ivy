@@ -184,7 +184,7 @@ def for_loop(
 
     packed_vars = (iterator, body_fn, vars_dict)
 
-    return while_loop(test_fn, empty_function, packed_vars)
+    return _dict_to_tuple(while_loop(test_fn, empty_function, packed_vars)[2])  
 
 
 def _tuple_to_dict(t):
