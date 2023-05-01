@@ -600,6 +600,12 @@ def polyint(p, m=1, k=None):
         return p
     if k is None:
         k_arr = ivy.zeros((m,), dtype=p.dtype)
+    elif isinstance(k, (int, float)):
+        k_arr = ivy.full((m,), k, dtype=p.dtype)
+    elif ivy.asarray(k).shape == (1,):
+        k_arr = ivy.full((m,), ivy.asarray(k)[0], dtype=p.dtype)
+    elif ivy.asarray(k).shape == (m,):
+        k_arr = ivy.asarray(k, dtype=p.dtype)
     else:
         raise ValueError("k must be a scalar or a rank-1 array of length 1 or m.")
     grid = (ivy.arange(p.size + m, dtype=p.dtype)[ivy.newaxis]
