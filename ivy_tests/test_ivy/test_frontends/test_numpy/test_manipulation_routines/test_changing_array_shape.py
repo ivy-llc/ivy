@@ -181,6 +181,13 @@ def test_numpy_moveaxis(
         destination=destination,
     )
     
+
+# resize  
+@handle_frontend_test(
+    fn_tree="numpy.resize",
+    dtypes_x_shape=dtypes_x_reshape(),
+    # order=st.sampled_from(["C", "F", "A"]), 
+)
 def test_numpy_resize(
     *,
     dtypes_x_shape,
