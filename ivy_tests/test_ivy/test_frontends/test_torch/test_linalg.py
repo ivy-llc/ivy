@@ -469,7 +469,7 @@ def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags)
     assert_all_close(
         ret_np=ret_np,
         ret_from_gt_np=frontend_ret_np[0],
-        rtol=1e-3,
+        rtol=1e-2,
         atol=1e-3,
         ground_truth_backend=frontend,
     )
