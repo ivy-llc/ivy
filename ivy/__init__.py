@@ -221,6 +221,9 @@ class Shape:
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
 
+    def __iter__(self):
+        return iter(self._shape)
+
     def __add__(self, other):
         try:
             self._shape = self._shape + other
