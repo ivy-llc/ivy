@@ -203,6 +203,11 @@ def FloorMod(*, x, y, name="FloorMod"):
 
 
 @to_ivy_arrays_and_back
+def FFT(*, input, name="FFT"):
+    return ivy.astype(ivy.fft(input, -1), input.dtype)
+
+
+@to_ivy_arrays_and_back
 def Gather(*, params, indices, validate_indices=None, name="Gather"):
     return ivy.gather(params, indices, axis=0, batch_dims=0)
 
@@ -234,9 +239,7 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
-@to_ivy_arrays_and_back
-def Reciprocal(*, x, name=None):
-    return ivy.reciprocal(x)
+Reciprocal = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.reciprocal))
 
 
 @to_ivy_arrays_and_back

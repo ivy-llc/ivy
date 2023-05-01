@@ -25,6 +25,7 @@ _dtype_kind_keys = {
     "signed_integer",
     "complex",
     "real_and_complex",
+    "float_and_integer",
     "float_and_complex",
     "bool",
 }
@@ -61,6 +62,10 @@ def _get_type_dict(framework, kind):
         return tuple(
             set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
         )
+    elif kind == "float_and_integer":
+        return tuple(
+            set(framework.valid_float_dtypes).union(framework.valid_int_dtypes)
+        )
     elif kind == "bool":
         return tuple(
             set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
@@ -80,10 +85,9 @@ def get_dtypes(
     draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
 ):
     """
-    Draws a valid dtypes for the test function. For frontend tests,
-    it draws the data types from the intersection between backend
-    framework data types and frontend framework dtypes, otherwise,
-    draws it from backend framework data types.
+    Draws a valid dtypes for the test function. For frontend tests, it draws the data
+    types from the intersection between backend framework data types and frontend
+    framework dtypes, otherwise, draws it from backend framework data types.
 
     Parameters
     ----------
@@ -239,7 +243,8 @@ def array_dtypes(
     shared_dtype=False,
     array_api_dtypes=False,
 ):
-    """Draws a list of data types.
+    """
+    Draws a list of data types.
 
     Parameters
     ----------

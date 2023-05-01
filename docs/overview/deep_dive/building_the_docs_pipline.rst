@@ -57,18 +57,21 @@ will result in the creation of documentation for the project in the directory
 Options
 """""""
 
---no-cleanup                    Disable the backup/cleanup procedure
---git-add                       Stage changed files before generating the docs, this is 
-                                useful if you want know which files changed by you when 
-                                used with ``--no-cleanup``
---skip-dependencies-install     Skip installing python dependencies
+-h, --help                       Show this help
+-C, --no-cleanup                 Disable the backup/cleanup procedure
+-g, --git-add                    Stage changed files before generating the docs
+-s, --skip-dependencies-install  Skip installing dependencies using pip
+-j, --jobs N                     Build in parallel with N processes where possible 
+                                 (special value ``auto`` will set N to cpu-count)
+-D setting                       Override a setting in ``conf.py``
 
 The Docker image
 ~~~~~~~~~~~~~~~~
 
 The Docker image `unifyai/doc-builder <https://hub.docker.com/r/unifyai/doc-builder>`_
 works as a wrapper around the ``make_docs_without_docker.sh`` script. It runs the script
-on the ``/project`` directory, located in the container `as shown here <https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L20>`_:
+on the ``/project`` directory, located in the container `as shown here 
+<https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L21>`_:
 
 .. code-block:: bash
 
@@ -79,6 +82,12 @@ To build the docs through docker you use this command:
 .. code-block:: bash
 
     docker run -v /path/to/project:/project unifyai/doc-builder
+
+You can as well add options described in the :ref:`The convenience script` section.
+
+.. code-block:: bash
+    
+    docker run -v /path/to/project:/project unifyai/doc-builder --no-cleanup
 
 How Ivy's docs is structured
 -----------------------------
