@@ -353,7 +353,7 @@ def logical_and(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.logical_and Not Implemented")
+    return mx.nd.logical_and(x1, x2)
 
 
 def logical_not(
@@ -362,7 +362,7 @@ def logical_not(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.logical_not Not Implemented")
+    return mx.nd.logical_not(x)
 
 
 def logical_or(
@@ -372,7 +372,7 @@ def logical_or(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.logical_or Not Implemented")
+    return mx.nd.logical_or(x1, x2)
 
 
 def logical_xor(
@@ -382,7 +382,7 @@ def logical_xor(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.logical_xor Not Implemented")
+    return mx.nd.logical_xor(x1, x2)
 
 
 def multiply(
