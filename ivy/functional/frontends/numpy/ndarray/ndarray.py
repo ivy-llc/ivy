@@ -478,3 +478,12 @@ class ndarray:
 
     def __mod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
+    
+    def ptp(self, *, axis=None, out=None, keepdims=False, where=True):
+        return np_frontend.ptp(
+            self._ivy_array,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+            where=where,
+        )
