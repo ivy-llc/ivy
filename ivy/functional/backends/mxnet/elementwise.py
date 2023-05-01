@@ -162,7 +162,7 @@ def cos(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.cos Not Implemented")
+    return mx.nd.cos(x)
 
 
 def cosh(
@@ -171,7 +171,7 @@ def cosh(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.cosh Not Implemented")
+    return mx.nd.cosh(x)
 
 
 def divide(
@@ -469,7 +469,7 @@ def sin(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.sin Not Implemented")
+    return mx.nd.sin(x)
 
 
 def sinh(
@@ -478,7 +478,7 @@ def sinh(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.sinh Not Implemented")
+    return mx.nd.sinh(x)
 
 
 def sqrt(
@@ -516,7 +516,7 @@ def tan(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.tan Not Implemented")
+    return mx.nd.tan(x)
 
 
 def tanh(
@@ -525,7 +525,7 @@ def tanh(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.tanh Not Implemented")
+    return mx.nd.tanh(x)
 
 
 def trunc(
