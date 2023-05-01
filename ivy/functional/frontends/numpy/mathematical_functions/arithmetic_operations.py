@@ -298,6 +298,7 @@ def _mod(
 def _modf(
     x,
     /,
+    out1_2=(None, None),
     out=None,
     *,
     where=True,
@@ -364,6 +365,7 @@ def _divmod(
     x1,
     x2,
     /,
+    out1_2=(None, None),
     out=None,
     *,
     where=True,
