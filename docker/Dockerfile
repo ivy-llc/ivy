@@ -54,7 +54,7 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 # Install local optional
 COPY requirements/optional.txt .
 COPY requirements/requirements.txt .
-ENV PYTHONPATH "/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/numpy:${PYTHONPATH}"
+ENV PYTHONPATH "/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/numpy:/opt/miniconda/envs/multienv/bin"
 
 
 RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
@@ -65,9 +65,9 @@ RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
     pip-autoremove jaxlib -y &&\
     pip install torch --target='/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
     pip install tensorflow-cpu --target ='/opt/fw/tensorflow' --no-cache-dir &&\
-    pip install jax[cpu] --target ='/opt/fw/jax' --no-cache-dir &&\
-    pip install jaxlib --target ='/opt/fw/jax' --no-cache-dir &&\
-    pip install numpy --target ='/opt/fw/numpy' --no-cache-dir
+    pip install jax[cpu] --target '/opt/fw/jax' --no-cache-dir &&\
+    pip install jaxlib --target '/opt/fw/jax' --no-cache-dir &&\
+    pip install numpy --target '/opt/fw/numpy' --no-cache-dir
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
