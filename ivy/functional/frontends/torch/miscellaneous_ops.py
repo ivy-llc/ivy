@@ -376,3 +376,8 @@ def atleast_3d(*tensors):
 @to_ivy_arrays_and_back
 def diag(input, diagonal=0, *, out=None):
     return ivy.diag(input, k=diagonal)
+
+
+@to_ivy_arrays_and_back
+def clone(input):
+    return ivy.copy_array(input)
