@@ -62,7 +62,5 @@ def test_numpy_rftt(*, dtype_and_x, frontend, test_flags, fn_tree, on_device):
         a=x,
         n=None,
         axis=-1,
-        norm="backward",
+        norm="backward"
     )
-
-    
