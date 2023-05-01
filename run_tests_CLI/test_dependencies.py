@@ -5,7 +5,9 @@ import os
 import argparse
 import termcolor
 import importlib
+import faulthandler
 
+faulthandler.enable()
 ERROR = False
 ERROR_MSG = "\n"
 WARN = False

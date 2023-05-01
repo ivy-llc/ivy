@@ -64,6 +64,16 @@ class DeviceArray:
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)
 
+    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=None):
+        return jax_frontend.numpy.mean(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            where=where,
+        )
+
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 

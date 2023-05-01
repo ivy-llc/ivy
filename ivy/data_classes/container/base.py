@@ -3705,6 +3705,7 @@ class ContainerBase(dict, abc.ABC):
                 "tensorflow": "([",
                 "torch": "([",
                 "paddle": "])",
+                "mxnet": "])",
             }
             split_phrase = split_phrase_dict[self._cont_ivy.current_backend_str()]
             array_str_in_split = array_str_in.split(split_phrase)

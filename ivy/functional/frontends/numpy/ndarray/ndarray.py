@@ -311,6 +311,9 @@ class ndarray:
             out=out,
         )
 
+    def tolist(self) -> list:
+        return self._ivy_array.to_list()
+
     def view(self):
         return np_frontend.reshape(self, tuple(self.shape))
 
@@ -357,6 +360,9 @@ class ndarray:
         self,
     ):
         return np_frontend.copy(self)
+
+    def __deepcopy__(self, memo):
+        return self.__class__(np_frontend.copy(self))
 
     def __neg__(
         self,
