@@ -1,6 +1,7 @@
 from typing import Union, Optional
 import mxnet as mx
 
+
 def msort(
     a: Union[(None, mx.ndarray.NDArray, list, tuple)],
     /,

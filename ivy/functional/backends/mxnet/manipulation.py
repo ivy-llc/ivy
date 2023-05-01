@@ -131,7 +131,9 @@ def constant_pad(
     raise NotImplementedError("mxnet.constant_pad Not Implemented")
 
 
-def zero_pad(x, /, pad_width, *, out: Optional[Union[(None, mx.ndarray.NDArray)]] = None):
+def zero_pad(
+    x, /, pad_width, *, out: Optional[Union[(None, mx.ndarray.NDArray)]] = None
+):
     raise NotImplementedError("mxnet.zero_pad Not Implemented")
 
 

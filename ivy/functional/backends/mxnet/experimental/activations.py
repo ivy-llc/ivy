@@ -1,6 +1,7 @@
 from typing import Optional, Union
 import mxnet as mx
 
+
 def logit(
     x: Union[(None, mx.ndarray.NDArray)],
     /,

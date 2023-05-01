@@ -95,11 +95,15 @@ def finfo(type: Union[(None, str, None, mx.ndarray.NDArray, np.ndarray)], /) -> 
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[(None, str, None, mx.ndarray.NDArray, np.ndarray)], /) -> np.iinfo:
+def iinfo(
+    type: Union[(None, str, None, mx.ndarray.NDArray, np.ndarray)], /
+) -> np.iinfo:
     raise NotImplementedError("mxnet.iinfo Not Implemented")
 
 
-def result_type(*arrays_and_dtypes: Union[(None, mx.ndarray.NDArray, None)]) -> ivy.Dtype:
+def result_type(
+    *arrays_and_dtypes: Union[(None, mx.ndarray.NDArray, None)]
+) -> ivy.Dtype:
     raise NotImplementedError("mxnet.result_type Not Implemented")
 
 

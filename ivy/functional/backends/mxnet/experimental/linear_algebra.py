@@ -14,7 +14,11 @@ def eigh_tridiagonal(
     ] = None,
     tol: Optional[float] = None,
 ) -> Union[
-    (None, mx.ndarray.NDArray, Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])])
+    (
+        None,
+        mx.ndarray.NDArray,
+        Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])],
+    )
 ]:
     raise NotImplementedError("mxnet.eigh_tridiagonal Not Implemented")
 
@@ -61,7 +65,9 @@ def eig(
     raise NotImplementedError("mxnet.eig Not Implemented")
 
 
-def eigvals(x: Union[(None, mx.ndarray.NDArray)], /) -> Union[(None, mx.ndarray.NDArray)]:
+def eigvals(
+    x: Union[(None, mx.ndarray.NDArray)], /
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.eigvals Not Implemented")
 
 

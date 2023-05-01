@@ -209,7 +209,9 @@ def svd(
     *,
     full_matrices: bool = True,
     compute_uv: bool = True,
-) -> Union[(Union[(None, mx.ndarray.NDArray)], Tuple[(Union[(None, mx.ndarray.NDArray)], ...)])]:
+) -> Union[
+    (Union[(None, mx.ndarray.NDArray)], Tuple[(Union[(None, mx.ndarray.NDArray)], ...)])
+]:
     raise NotImplementedError("mxnet.svd Not Implemented")
 
 

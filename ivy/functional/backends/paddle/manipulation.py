@@ -357,7 +357,7 @@ def tile(
                 shape = repeats
                 shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
             else:
-                shape = ivy.multiply(x.shape, repeats).to_list()
+                shape = ivy.multiply(x.shape, repeats).tolist()
             return ivy.zeros(shape).cast(x.dtype)
 
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:

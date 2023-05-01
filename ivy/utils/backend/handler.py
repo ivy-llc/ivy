@@ -517,6 +517,7 @@ def set_mxnet_backend():
     """  # noqa
     set_backend("mxnet")
 
+
 @prevent_access_locally
 def previous_backend():
     """
