@@ -1,11 +1,3 @@
-jax[cpu] # unpinned, we test for latest version now, mod_name=jax
-jaxlib # unpinned, we test for latest version now
-tensorflow-cpu  # unpinned, we test for latest version now, mod_name=tensorflow
-tensorflow-addons # unpinned, we test for latest version now, mod_name=tensorflow_addons
-tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
-torch # unpinned, we test for latest version now
-torch-scatter # unpinned, mod_name=torch_scatter
-functorch # unpinned, we test for latest version now
 h5py # unpinned
 pytest # unpinned
 networkx # unpinned
@@ -14,15 +6,24 @@ pymongo # unpinned
 redis # unpinned
 matplotlib # unpinned
 opencv-python # unpinned , mod_name=cv2
+jax[cpu] # unpinned, we test for latest version now
+jaxlib # unpinned, we test for latest version now
 paddlepaddle # unpinned , mod_name=paddle
+tensorflow-cpu  # unpinned, we test for latest version now
+tensorflow-addons # unpinned, we test for latest version now, mod_name=tensorflow_addons
+tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
+torch # unpinned, we test for latest version now
+torch-scatter # unpinned, mod_name=torch_scatter
+functorch # unpinned, we test for latest version now
 scipy # unpinned
 dm-haiku # unpinned mod_name=haiku
 flax
 pydriller
 tqdm
 coverage
-scikit-learn # mod_name=sklearn
+scikit-learn
 pandas
 pyspark
+mxnet
 autoflake # for backend generation
 snakeviz # for profiling
