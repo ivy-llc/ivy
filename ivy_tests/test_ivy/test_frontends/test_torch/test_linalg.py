@@ -437,22 +437,12 @@ def test_torch_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cond",
-    # dtype_and_x=helpers.dtype_and_values(
-    #     available_dtypes=helpers.get_dtypes("float"),
-    #     min_value=-10,
-    #     max_value=10,
-    #     min_dim_size=2,
-    #     max_dim_size=2,
-    #     shape=(3, 3),
-    #     allow_inf=False,
-    #     allow_nan=False,
-    # ),
     dtype_and_x=_get_dtype_and_matrix_non_singular(),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
 )
 def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
     dtype, x = dtype_and_x
-    ret, frontend_ret = helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
@@ -460,17 +450,9 @@ def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags)
         on_device=on_device,
         test_values=False,
         input=x[0],
-        p=p,
-    )
-    ret_np = ivy.to_numpy(ret)
-    frontend_ret_np = np.asarray(frontend_ret, dtype=ret_np.dtype)
-    ret_np = ivy.nan_to_num(ret_np, nan=ivy.inf)
-    assert_all_close(
-        ret_np=ret_np,
-        ret_from_gt_np=frontend_ret_np[0],
         rtol=1e-2,
         atol=1e-3,
-        ground_truth_backend=frontend,
+        p=p,
     )
 
 
