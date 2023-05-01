@@ -173,13 +173,13 @@ def test_jax_devicearray_conj(
     keepdims=st.booleans(),
 )
 def test_jax_devicearray_mean(
-        dtype_and_x,
-        keepdims,
-        on_device,
-        frontend,
-        frontend_method_data,
-        init_flags,
-        method_flags,
+    dtype_and_x,
+    keepdims,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_method(
@@ -198,7 +198,7 @@ def test_jax_devicearray_mean(
         method_flags=method_flags,
         on_device=on_device,
     )
-    
+
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,

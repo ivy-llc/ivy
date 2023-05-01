@@ -130,7 +130,7 @@ def mod(x1, x2, /):
 def modf(x, /, out=None):
     y1 = ivy.floor(x)
     y2 = x - y1
-    return y2,y1
+    return y2, y1
 
 
 @to_ivy_arrays_and_back

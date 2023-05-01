@@ -122,21 +122,21 @@ def while_loop(
 
 
 def for_loop(
-    iterable: Iterable[Any], 
+    iterable: Iterable[Any],
     body_fn: Callable,
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ):
     """
-    Loops over an iterable, passing the current iteration along with a tuple of variables
-    into the provided body function. 
+    Loops over an iterable, passing the current iteration along with a tuple of
+    variables into the provided body function.
 
     Parameters
     ----------
     iterable
         The iterable to loop over.
     body_fn
-        A function to call each iteration, first taking the iterator value and then a tuple of
-        extra parameters. 
+        A function to call each iteration, first taking the iterator value
+        and then a tuple of extra parameters.
     vars
         Extra parameters to be passed to body_fn.
 
@@ -159,7 +159,6 @@ def for_loop(
     >>> 6
     ```
     """
-
     iterator = iterable.__iter__()
 
     vars_dict = _tuple_to_dict(vars)
@@ -174,21 +173,19 @@ def for_loop(
 
         for k in range(len(vars_tuple)):
             vars_dict[k] = vars_tuple[k]
-            
-        return True
 
+        return True
 
     def empty_function(iterator, original_body, vars_dict):
         return (iterator, original_body, vars_dict)
 
-
     packed_vars = (iterator, body_fn, vars_dict)
 
-    return while_loop(test_fn, empty_function, packed_vars)
+    return _dict_to_tuple(while_loop(test_fn, empty_function, packed_vars)[2])
 
 
 def _tuple_to_dict(t):
-    return {k:t[k] for k in range(len(t))}
+    return {k: t[k] for k in range(len(t))}
 
 
 def _dict_to_tuple(d):
