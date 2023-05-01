@@ -40,7 +40,7 @@ def test_jax_devicearray_property_dtype(
 ):
     dtype, data = dtype_x
     x = DeviceArray(data[0])
-    assert x.dtype.ivy_dtype == dtype[0]
+    assert x.dtype == dtype[0]
 
 
 @given(
