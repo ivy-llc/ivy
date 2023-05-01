@@ -35,3 +35,8 @@ def ifftshift(x, axes=None):
     roll = ivy.roll(x, shift, axis=axes)
 
     return roll
+
+
+@to_ivy_arrays_and_back
+def rfft(a, n=None, axis=-1, norm="backward"):
+    return ivy.rfft(a, axis=axis, norm=norm, n=n)
