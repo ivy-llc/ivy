@@ -1147,6 +1147,7 @@ def cumprod(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )
 
+
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -1161,8 +1162,9 @@ def cummax(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a namedtuple where values is the cumulative maximum of elements of input in the given axis. And
-    indices is the index location of each maximum value found in the given axis.
+    """Return a namedtuple where values is the cumulative maximum of elements
+     of input in the given axis. And indices is the index location of each
+     maximum value found in the given axis.
 
     Parameters
     ----------
@@ -1202,7 +1204,8 @@ def cummax(
     >>> x = ivy.array([[ 63,  43, -16,  -4],[ 21,  82,  59,  33]])
     >>> ivy.cummax(x,axis=0,reverse=False, dtype='int64', out=x)
     >>> print(x)
-    [ivy.array([[ 63,  43, -16,  -4],[ 63,  82,  59,  33]]),ivy.array([[0, 0, 0, 0],[0, 1, 1, 1]])]
+    [ivy.array([[ 63,  43, -16,  -4],[ 63,  82,  59,  33]]),
+    ivy.array([[0, 0, 0, 0],[0, 1, 1, 1]])]
 
     >>> x = ivy.array([[-36,  83, -81],
         [ 23,  29,  63],
@@ -1233,7 +1236,8 @@ def cummax(
     [ivy.array([47, 47,  0]),ivy.array([0, 0, 0])]
 
     """
-    return current_backend(x).cummax(x, reverse=reverse,axis=axis, exclusive=exclusive, out=out)
+    return current_backend(x).cummax(x, reverse=reverse, axis=axis,
+                                     exclusive=exclusive, out=out)
 
 
 @handle_exceptions
