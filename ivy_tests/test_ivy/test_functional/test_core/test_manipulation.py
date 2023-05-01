@@ -575,15 +575,16 @@ def test_repeat(
 
 
 @st.composite
-def _get_splits(draw):
-    """
-    Generate valid splits, either by generating an integer that evenly divides the axis
-    or a list of splits that sum to the length of the axis being split.
-    """
-    shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
-    axis = draw(
-        st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
+def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
+    """Generate valid splits, either by generating an integer that evenly divides the
+    axis or a list of splits that sum to the length of the axis being split."""
+    shape = draw(
+        st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
     )
+    if axis is None:
+        axis = draw(
+            st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
+        )
 
     @st.composite
     def get_int_split(draw):
@@ -608,7 +609,10 @@ def _get_splits(draw):
             num_or_size_splits.append(split_value)
         return num_or_size_splits
 
-    return draw(get_list_split() | get_int_split() | st.none())
+    if allow_none:
+        return draw(get_list_split() | get_int_split() | st.none())
+    else:
+        return draw(get_list_split() | get_int_split())
 
 
 @handle_test(

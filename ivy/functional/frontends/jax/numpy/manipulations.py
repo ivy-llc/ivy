@@ -70,6 +70,10 @@ def flipud(m):
 
 @to_ivy_arrays_and_back
 def transpose(a, axes=None):
+    if ivy.isscalar(a):
+        return ivy.array(a)
+    elif a.ndim == 1:
+        return a
     if not axes:
         axes = list(range(len(a.shape)))[::-1]
     if type(axes) is int:
@@ -114,7 +118,7 @@ def take(
     indices_are_sorted=False,
     fill_value=None,
 ):
-    return ivy.take_along_axis(a, indices, axis, out=out)
+    return ivy.gather(a, indices, axis=axis, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -128,8 +132,8 @@ def broadcast_shapes(*shapes):
 
 
 @to_ivy_arrays_and_back
-def broadcast_to(arr, shape):
-    return ivy.broadcast_to(arr, shape)
+def broadcast_to(array, shape):
+    return ivy.broadcast_to(array, shape)
 
 
 @to_ivy_arrays_and_back
@@ -251,6 +255,10 @@ def row_stack(tup):
 
 
 @to_ivy_arrays_and_back
+def pad(array, pad_width, mode="constant", **kwargs):
+    return ivy.pad(array, pad_width, mode=mode, **kwargs)
+
+
 def hamming(M):
     if M <= 1:
         return ivy.ones([M], dtype=ivy.float64)
@@ -285,3 +293,22 @@ def tri(N, M=None, k=0, dtype="float64"):
         M = N
     ones = ivy.ones((N, M), dtype=dtype)
     return ivy.tril(ones, k=k)
+
+
+@to_ivy_arrays_and_back
+def blackman(M):
+    if M < 1:
+        return ivy.array([])
+    if M == 1:
+        return ivy.ones(1)
+    n = ivy.arange(0, M)
+    alpha = 0.16
+    a0 = (1 - alpha) / 2
+    a1 = 1 / 2
+    a2 = alpha / 2
+    ret = (
+        a0
+        - a1 * ivy.cos(2 * ivy.pi * n / (M - 1))
+        + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
+    )
+    return ret
