@@ -30,7 +30,6 @@ def native_sparse_array(
     dense_shape=None,
     format="coo",
 ):
-
     if _is_data_not_indices_values_and_shape(
         data,
         coo_indices,

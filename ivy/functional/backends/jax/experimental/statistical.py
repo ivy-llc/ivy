@@ -169,7 +169,6 @@ def quantile(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if isinstance(axis, list):
         axis = tuple(axis)
 

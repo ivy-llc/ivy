@@ -475,45 +475,6 @@ def sinh(x):
 
 @to_ivy_arrays_and_back
 def slice(operand, start_indices, limit_indices, strides=None):
-    if operand.ndim != len(start_indices):
-        msg = (
-            "slice start_indices must have length equal to the number of "
-            "dimensions of the operand, got indices {} for operand shape {}."
-        )
-        raise TypeError(msg.format(start_indices, operand.shape))
-
-    if len(start_indices) != len(limit_indices):
-        msg = (
-            "slice limit_indices must have the same length as start_indices, "
-            "got start_indices {} and limit_indices {}."
-        )
-        raise TypeError(msg.format(start_indices, limit_indices))
-
-    if not tuple(limit_indices) <= operand.shape:
-        msg = (
-            "slice limit_indices must be less than or equal to operand shape, "
-            "got limit_indices {} for operand shape {}."
-        )
-        raise TypeError(msg.format(limit_indices, operand.shape))
-
-    if not all(si >= 0 for si in start_indices):
-        msg = (
-            "slice start_indices must be greater than or equal to zero, "
-            "got start_indices of {}."
-        )
-        raise TypeError(msg.format(start_indices))
-
-    if not limit_indices >= start_indices:
-        msg = (
-            "slice limit_indices must be greater than or equal to start_indices,"
-            " got start_indices {} and limit_indices {}."
-        )
-        raise TypeError(msg.format(start_indices, limit_indices))
-
-    start_indices, limit_indices = map(
-        lambda x: ivy.array(x) if isinstance(x, int) else x,
-        [start_indices, limit_indices],
-    )
     strides = [1] * len(operand.shape) if strides is None else strides
 
     full_slice = ()
@@ -522,9 +483,7 @@ def slice(operand, start_indices, limit_indices, strides=None):
         start_i = int(start_indices[i])
         limit_i = int(limit_indices[i])
         full_slice += (py_slice(start_i, limit_i, strides_i),)
-    ret = operand[full_slice] if full_slice else operand
-
-    return ivy.expand_dims(ret)
+    return operand[full_slice]
 
 
 @to_ivy_arrays_and_back
@@ -615,3 +574,8 @@ def squeeze(array, dimensions):
 @to_ivy_arrays_and_back
 def real(x):
     return ivy.real(x)
+
+
+@to_ivy_arrays_and_back
+def nextafter(x1, x2):
+    return ivy.nextafter(x1, x2)

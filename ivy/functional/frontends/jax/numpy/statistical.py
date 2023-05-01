@@ -153,7 +153,6 @@ amax = max
 
 @to_ivy_arrays_and_back
 def average(a, axis=None, weights=None, returned=False, keepdims=False):
-
     # canonicalize_axis to ensure axis or the values in axis > 0
     if isinstance(axis, tuple) or isinstance(axis, list):
         a_ndim = len(ivy.shape(a))

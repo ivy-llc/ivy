@@ -3,7 +3,6 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-from ivy.functional.frontends.numpy import dtype
 
 
 class DeviceArray:
@@ -15,9 +14,9 @@ class DeviceArray:
 
     def __repr__(self):
         main = (
-            str(self.ivy_array.__repr__()).replace(
-                "ivy.array", "ivy.frontends.jax.DeviceArray"
-            )
+            str(self.ivy_array.__repr__())
+            .replace("ivy.array", "ivy.frontends.jax.DeviceArray")
+            .replace(")", "")
             + ", dtype="
             + str(self.ivy_array.dtype)
         )
@@ -60,6 +59,19 @@ class DeviceArray:
             axis=axis,
             out=out,
             keepdims=keepdims,
+        )
+
+    def conj(self, /):
+        return jax_frontend.numpy.conj(self._ivy_array)
+
+    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=None):
+        return jax_frontend.numpy.mean(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            where=where,
         )
 
     def __add__(self, other):
