@@ -889,13 +889,13 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
     @staticmethod
     def static_solve_triangular(
         self: ivy.Container,
+        b: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        b: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         lower: bool = True,
         transpose: bool = False,
         unit_diagonal: bool = False,
