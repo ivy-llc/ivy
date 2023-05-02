@@ -118,7 +118,7 @@ def take(
     indices_are_sorted=False,
     fill_value=None,
 ):
-    return ivy.take_along_axis(a, indices, axis, out=out)
+    return ivy.gather(a, indices, axis=axis, out=out)
 
 
 @to_ivy_arrays_and_back

@@ -12,7 +12,7 @@ from ... import config
 from dataclasses import dataclass
 
 # needed for multiversion
-available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle"]
+available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
 FWS_DICT = {
     "": lambda: None,
 }
@@ -32,6 +32,9 @@ if "torch" in available_frameworks:
 
 if "paddle" in available_frameworks:
     FWS_DICT["paddle"] = lambda x=None: _get_ivy_paddle(x)
+
+if "mxnet" in available_frameworks:
+    FWS_DICT["mxnet"] = lambda x=None: _get_ivy_mxnet(x)
 
 
 # This is used to make sure the variable is not being overriden
@@ -149,6 +152,17 @@ def _get_ivy_paddle(version=None):
     except ImportError:
         return None
     return ivy.functional.backends.paddle
+
+
+def _get_ivy_mxnet(version=None):
+    """Import mxnet module from ivy."""
+    if version:
+        config.allow_global_framework_imports(fw=[version])
+    try:
+        import ivy.functional.backends.mxnet
+    except ImportError:
+        return None
+    return ivy.functional.backends.mxnet
 
 
 # Setup

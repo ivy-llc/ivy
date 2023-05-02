@@ -20,7 +20,7 @@ def test_dtype_instances():
     assert ivy.exists(ivy.int32)
     assert ivy.exists(ivy.int64)
     assert ivy.exists(ivy.uint8)
-    if ivy.current_backend_str() not in ["torch", "paddle"]:
+    if ivy.current_backend_str() not in ["torch", "paddle", "mxnet"]:
         assert ivy.exists(ivy.uint16)
         assert ivy.exists(ivy.uint32)
         assert ivy.exists(ivy.uint64)
@@ -894,6 +894,7 @@ _composition_1.test_unsupported_dtypes = {
         "complex64",
         "complex128",
     ),
+    "mxnet": ("uint16", "uint32", "uint64", "complex64", "complex128"),
 }
 
 
@@ -1043,14 +1044,13 @@ def test_invalid_dtype(
     fw = backend_fw.current_backend_str()
     invalid_dtypes = backend_fw.invalid_dtypes
     if dtype_in in invalid_dtypes:
-        assert res is True, (
-            f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
-        )
+        assert (
+            res is True
+        ), f"fDtype = {dtype_in!r} is a valid dtype for {fw}, butresult = {res}"
     else:
-        assert res is False, (
-            f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, but"
-            f"result = {res}"
-        )
+        assert (
+            res is False
+        ), f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, butresult = {res}"
 
 
 # unset_default_dtype
@@ -1144,14 +1144,13 @@ def test_valid_dtype(
     fw = backend_fw.current_backend_str()
     valid_dtypes = backend_fw.valid_dtypes
     if dtype_in in valid_dtypes:
-        assert res is True, (
-            f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, but"
-            f"result = {res}"
-        )
+        assert (
+            res is True
+        ), f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, butresult = {res}"
     else:
-        assert res is False, (
-            f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
-        )
+        assert (
+            res is False
+        ), f"fDtype = {dtype_in!r} is a valid dtype for {fw}, butresult = {res}"
 
 
 # is_native_dtype
