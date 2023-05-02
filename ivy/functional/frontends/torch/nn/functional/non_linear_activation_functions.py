@@ -110,12 +110,6 @@ def gelu(input, *, approximate="none"):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-def tanh(input):
-    return ivy.tanh(input)
-
-
-@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
         "1.11.0 and below": (
@@ -135,6 +129,12 @@ def softmin(input, dim=None, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     return ivy.softmax(-input, axis=dim)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def tanh(input):
+    return ivy.tanh(input)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
