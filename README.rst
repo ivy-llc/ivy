@@ -1595,6 +1595,14 @@ Join our amazing community as a code contributor, and help accelerate our journe
 
 |
 
+.. raw:: html
+
+   <a href="https://github.com/unifyai/ivy/graphs/contributors">
+     <img src="./contributor-map.svg" />
+   </a>
+
+|
+
 Community
 ------------
 

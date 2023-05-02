@@ -1,0 +1,14 @@
+name: Create Ivy Contributions Map
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    
+    steps:
+      - name: Ivy Map
+        uses: tunaitis/contributor-map@v1 
