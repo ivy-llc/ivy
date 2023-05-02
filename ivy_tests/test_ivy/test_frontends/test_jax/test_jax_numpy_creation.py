@@ -459,7 +459,7 @@ def test_jax_numpy_full_like(
 # identity
 @handle_frontend_test(
     fn_tree="jax.numpy.identity",
-    n=helpers.ints(min_value=3, max_value=10),
+    n=helpers.ints(min_max=helpers.min_max_bound(3, 10)),
     dtypes=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
@@ -579,7 +579,7 @@ def test_jax_numpy_full(
 
 @st.composite
 def _get_dtype_and_range(draw):
-    dim = draw(helpers.ints(min_value=2, max_value=5))
+    dim = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     start = draw(
         helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
@@ -594,9 +594,9 @@ def _get_dtype_and_range(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.logspace",
     dtype_start_stop=_get_dtype_and_range(),
-    num=helpers.ints(min_value=5, max_value=50),
-    base=helpers.ints(min_value=2, max_value=10),
-    axis=helpers.ints(min_value=-1, max_value=0),
+    num=helpers.ints(min_max=helpers.min_max_bound(2, 50)),
+    base=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
+    axis=helpers.ints(min_max=helpers.min_max_bound(-1, 0)),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_logspace(

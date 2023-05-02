@@ -89,13 +89,14 @@ def test_jax_numpy_clip(
 # concatenate
 @st.composite
 def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_dims = draw(st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 4)),
+                              key="num_dims"))
     num_arrays = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 4)), key="num_arrays")
     )
     common_shape = draw(
         helpers.list_of_size(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             size=num_dims - 1,
         )
     )

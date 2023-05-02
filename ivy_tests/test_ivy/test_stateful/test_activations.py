@@ -188,7 +188,7 @@ def test_leaky_relu(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    axis=helpers.ints(min_value=-1, max_value=0),
+    axis=helpers.ints(min_max=helpers.min_max_bound(-1, 0)),
     method_num_positional_args=helpers.num_positional_args(fn_name="Softmax._forward"),
     test_gradients=st.just(True),
 )
@@ -231,7 +231,7 @@ def test_softmax(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    axis=helpers.ints(min_value=-1, max_value=0),
+    axis=helpers.ints(min_max=helpers.min_max_bound(-1, 0)),
     method_num_positional_args=helpers.num_positional_args(
         fn_name="LogSoftmax._forward"
     ),

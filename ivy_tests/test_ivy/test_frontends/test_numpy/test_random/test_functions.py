@@ -209,7 +209,7 @@ def test_numpy_geometric(
 # multinomial
 @handle_frontend_test(
     fn_tree="numpy.random.multinomial",
-    n=helpers.ints(min_value=2, max_value=10),
+    n=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
     dtype=helpers.get_dtypes("float", full=False),
     size=st.tuples(
         st.integers(min_value=1, max_value=10), st.integers(min_value=2, max_value=2)

@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _diag_helpe
         min_dim_size=1,
         max_dim_size=5,
     ),
-    k=helpers.ints(min_value=-10, max_value=10),
+    k=helpers.ints(min_max=helpers.min_max_bound(-10, 10)),
     test_with_out=st.just(False),
 )
 def test_numpy_tril(

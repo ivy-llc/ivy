@@ -16,24 +16,24 @@ def _get_range_for_grid(draw):
     start = draw(st.booleans())
     step = draw(st.booleans())
     if start:
-        start = draw(helpers.ints(min_value=-25, max_value=25))
+        start = draw(helpers.ints(min_max=helpers.min_max_bound(-25, 25)))
         stop = draw(st.booleans())
         if stop:
-            stop = draw(helpers.ints(min_value=30, max_value=100))
+            stop = draw(helpers.ints(min_max=helpers.min_max_bound(30, 100)))
         else:
             stop = None
     else:
         start = None
-        stop = draw(helpers.ints(min_value=30, max_value=100))
+        stop = draw(helpers.ints(min_max=helpers.min_max_bound(30, 100)))
     if step:
-        step = draw(helpers.ints(min_value=1, max_value=5))
+        step = draw(helpers.ints(min_max=helpers.min_max_bound(1, 5)))
         return start, stop, step
     return start, stop, None
 
 
 @st.composite
 def _get_dtype_and_range(draw):
-    dim = draw(helpers.ints(min_value=2, max_value=5))
+    dim = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     start = draw(
         helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
@@ -47,9 +47,9 @@ def _get_dtype_and_range(draw):
 # arange
 @handle_frontend_test(
     fn_tree="numpy.arange",
-    start=helpers.ints(min_value=-50, max_value=0),
-    stop=helpers.ints(min_value=1, max_value=50),
-    step=helpers.ints(min_value=1, max_value=5),
+    start=helpers.ints(min_max=helpers.min_max_bound(-50, 0)),
+    stop=helpers.ints(min_max=helpers.min_max_bound(1, 50)),
+    step=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
     dtype=helpers.get_dtypes("float"),
     test_with_out=st.just(False),
 )
@@ -80,8 +80,8 @@ def test_numpy_arange(
 @handle_frontend_test(
     fn_tree="numpy.linspace",
     dtype_start_stop=_get_dtype_and_range(),
-    num=helpers.ints(min_value=2, max_value=5),
-    axis=helpers.ints(min_value=-1, max_value=0),
+    num=helpers.ints(min_max=helpers.min_max_bound(2, 5)),
+    axis=helpers.ints(min_max=helpers.min_max_bound(-1, 0)),
     test_with_out=st.just(False),
 )
 def test_numpy_linspace(
@@ -114,8 +114,8 @@ def test_numpy_linspace(
 @handle_frontend_test(
     fn_tree="numpy.logspace",
     dtype_start_stop=_get_dtype_and_range(),
-    num=helpers.ints(min_value=5, max_value=50),
-    base=helpers.ints(min_value=2, max_value=10),
+    num=helpers.ints(min_max=helpers.min_max_bound(5, 50)),
+    base=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
     axis=helpers.ints(min_value=-1, max_value=0),
     test_with_out=st.just(False),
 )

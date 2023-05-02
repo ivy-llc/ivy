@@ -15,7 +15,7 @@ CLASS_TREE = "ivy.functional.frontends.numpy.random.Generator"
     class_tree=CLASS_TREE,
     init_tree="numpy.random.Generator",
     method_name="multinomial",
-    n=helpers.ints(min_value=2, max_value=10),
+    n=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
     dtype=helpers.get_dtypes("float", full=False),
     size=st.tuples(
         st.integers(min_value=1, max_value=10), st.integers(min_value=2, max_value=2)

@@ -172,9 +172,9 @@ def test_jax_lax_concat(
 def _fill_value(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
+        return draw(helpers.ints(min_max=helpers.min_max_bound(0, 5)))
     elif ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
+        return draw(helpers.ints(min_max=helpers.min_max_bound(-5, 5)))
     return draw(helpers.floats(min_value=-5, max_value=5))
 
 
@@ -1614,7 +1614,7 @@ def test_jax_lax_transpose(
 
 @st.composite
 def _get_dtype_inputs_for_dot(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=5))
+    dim_size = draw(helpers.ints(min_max=helpers.min_max_bound(1, 5)))
     dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
     if dim_size == 1:
         lhs = draw(
@@ -2418,7 +2418,7 @@ def test_jax_lax_select(
         min_dim_size=4,
         max_dim_size=10,
     ),
-    k=helpers.ints(min_value=1, max_value=4),
+    k=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
     test_with_out=st.just(False),
 )
 def test_jax_lax_top_k(

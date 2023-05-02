@@ -6,6 +6,7 @@ from jax.numpy import tril, triu
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import min_max_bound
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -79,9 +80,9 @@ def _diag_helper(draw):
     )
     shape = x[0].shape
     if len(shape) == 2:
-        k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
+        k = draw(helpers.ints(min_max=min_max_bound(-shape[0] + 1, shape[1] - 1)))
     else:
-        k = draw(helpers.ints(min_value=0, max_value=shape[0]))
+        k = draw(helpers.ints(min_max=min_max_bound(0, shape[0])))
     return dtype, x, k
 
 
@@ -112,8 +113,8 @@ def test_jax_numpy_diag(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.diag_indices",
-    n=helpers.ints(min_value=1, max_value=10),
-    ndim=helpers.ints(min_value=2, max_value=10),
+    n=helpers.ints(min_max=min_max_bound(1, 10)),
+    ndim=helpers.ints(min_max=min_max_bound(2, 10)),
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
@@ -179,8 +180,8 @@ def test_jax_numpy_take_along_axis(
 # Tril_indices
 @handle_frontend_test(
     fn_tree="jax.numpy.tril_indices",
-    n_rows=helpers.ints(min_value=1, max_value=10),
-    k=helpers.ints(min_value=2, max_value=10),
+    n_rows=helpers.ints(min_max=min_max_bound(1, 10)),
+    k=helpers.ints(min_max=min_max_bound(2, 10)),
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
@@ -207,8 +208,8 @@ def test_jax_numpy_tril_indices(
 # triu_indices
 @handle_frontend_test(
     fn_tree="jax.numpy.triu_indices",
-    n=helpers.ints(min_value=2, max_value=10),
-    k=helpers.ints(min_value=-10, max_value=10),
+    n=helpers.ints(min_max=min_max_bound(2, 10)),
+    k=helpers.ints(min_max=min_max_bound(-10, 10)),
     input_dtypes=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
@@ -241,7 +242,7 @@ def test_jax_numpy_triu_indices(
         min_num_dims=2,
         max_num_dims=5,
     ),
-    k=helpers.ints(min_value=-5, max_value=5),
+    k=helpers.ints(min_max=helpers.min_max_bound(-5, 5)),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_triu_indices_from(
@@ -273,7 +274,7 @@ def test_jax_numpy_triu_indices_from(
         min_num_dims=2,
         max_num_dims=5,
     ),
-    k=helpers.ints(min_value=-5, max_value=5),
+    k=helpers.ints(min_max=helpers.min_max_bound(-5, 5)),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_tril_indices_from(
@@ -345,9 +346,9 @@ def test_jax_numpy_unravel_index(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.mask_indices",
-    n=helpers.ints(min_value=3, max_value=10),
+    n=helpers.ints(min_max=helpers.min_max_bound(3, 10)),
     mask_func=st.sampled_from([triu, tril]),
-    k=helpers.ints(min_value=-5, max_value=5),
+    k=helpers.ints(min_max=helpers.min_max_bound(-5, 5)),
     input_dtype=helpers.get_dtypes("numeric"),
     test_with_out=st.just(False),
     number_positional_args=st.just(2),
@@ -376,7 +377,7 @@ def test_jax_numpy_mask_indices(
 
 @st.composite
 def _get_dtype_square_x(draw):
-    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype_x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"), shape=(dim_size, dim_size)

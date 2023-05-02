@@ -221,7 +221,7 @@ def test_jax_nn_sigmoid(
 # one_hot
 @st.composite
 def _dtype_indices_classes_axis(draw):
-    classes = draw(helpers.ints(min_value=2, max_value=100))
+    classes = draw(helpers.ints(min_max=helpers.min_max_bound(2, 100)))
     dtype, indices, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("integer"),
@@ -411,7 +411,7 @@ def test_jax_nn_log_softmax(
         min_dim_size=4,
         max_dim_size=4,
     ),
-    axis=helpers.ints(min_value=-1, max_value=0),
+    axis=helpers.ints(min_max=helpers.min_max_bound(-1, 0)),
     test_with_out=st.just(False),
 )
 def test_jax_nn_glu(

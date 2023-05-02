@@ -84,9 +84,9 @@ def test_numpy_empty_like(
 # eye
 @handle_frontend_test(
     fn_tree="numpy.eye",
-    rows=helpers.ints(min_value=3, max_value=10),
-    cols=helpers.ints(min_value=3, max_value=10),
-    k=helpers.ints(min_value=0, max_value=2),
+    rows=helpers.ints(min_max=helpers.min_max_bound(3, 10)),
+    cols=helpers.ints(min_max=helpers.min_max_bound(3, 10)),
+    k=helpers.ints(min_max=helpers.min_max_bound(0, 2)),
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
@@ -116,7 +116,7 @@ def test_numpy_eye(
 # identity
 @handle_frontend_test(
     fn_tree="numpy.identity",
-    n=helpers.ints(min_value=1, max_value=10),
+    n=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )

@@ -7,6 +7,7 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import min_max_bound
 from ivy_tests.test_ivy.helpers import assert_all_close, handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
@@ -21,7 +22,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -117,7 +118,7 @@ def test_jax_numpy_det(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -170,7 +171,7 @@ def test_jax_numpy_eig(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -227,7 +228,7 @@ def test_jax_numpy_eigh(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
         max_value=100,
-        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=min_max_bound(1, 10)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -264,7 +265,7 @@ def test_jax_numpy_inv(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -345,7 +346,7 @@ def test_jax_numpy_qr(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -385,7 +386,7 @@ def test_jax_numpy_eigvals(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -484,7 +485,7 @@ def test_jax_numpy_matrix_rank(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+        shape=helpers.ints(min_max=min_max_bound(2, 5)).map(lambda x: tuple([x, x + 1])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -600,14 +601,14 @@ def test_jax_numpy_norm(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
         max_value=100,
-        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=min_max_bound(1, 10)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
-    n=helpers.ints(min_value=1, max_value=8),
+    n=helpers.ints(min_max=min_max_bound(1, 8)),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_matrix_power(
@@ -648,7 +649,7 @@ def _get_solve_matrices(draw):
     )
     input_dtype = draw(input_dtype_strategy)
 
-    dim = draw(helpers.ints(min_value=2, max_value=5))
+    dim = draw(helpers.ints(min_max=min_max_bound(2, 5)))
 
     first_matrix = draw(
         helpers.array_values(
@@ -734,7 +735,7 @@ def test_jax_numpy_pinv(
 # tensorinv
 @st.composite
 def _get_inv_square_matrices(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=10))
+    dim_size = draw(helpers.ints(min_max=min_max_bound(1, 10)))
 
     batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))
 

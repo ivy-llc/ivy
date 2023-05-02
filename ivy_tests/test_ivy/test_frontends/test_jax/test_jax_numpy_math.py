@@ -143,8 +143,8 @@ def test_jax_numpy_angle(
 # diff
 @st.composite
 def _get_dtype_input_and_vector(draw):
-    size1 = draw(helpers.ints(min_value=1, max_value=5))
-    size2 = draw(helpers.ints(min_value=1, max_value=5))
+    size1 = draw(helpers.ints(min_max=helpers.min_max_bound(1, 5)))
+    size2 = draw(helpers.ints(min_max=helpers.min_max_bound(1, 5)))
     dtype = draw(helpers.get_dtypes("integer"))
     vec1 = draw(helpers.array_values(dtype=dtype[0], shape=(size1, size2)))
     return dtype, vec1
@@ -556,7 +556,7 @@ def test_jax_numpy_exp(
 # dot
 @st.composite
 def _get_dtype_input_and_vectors(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=5))
+    dim_size = draw(helpers.ints(min_max=helpers.min_max_bound(1, 5)))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     if dim_size == 1:
         vec1 = draw(
