@@ -769,3 +769,28 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
+
+
+def stft(
+    signal: np.ndarray,
+    frame_step: Union[int, Tuple[int]],
+    /,
+    *,
+    onesided: bool = False,
+    window: Optional[Union[int, Tuple[int]]] = None,
+    frame_length: Optional[Union[int, Tuple[int]]] = None,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if window == 0 :
+        nstfts = ((signal.shape[1] - length) // step) + 1
+        for i in range(nstfts):
+            start = i * step
+            stop = i * step + length
+            complex_out = np.fft.fft(signal[0, start:stop, 0])[0:onesided_length]
+            output[0, i] = np.stack((complex_out.real, complex_out.imag), axis=1)
+            res = np.transpose(res, output[0, i])
+        return res
+    else:
+        return np.fft.stft(signal, frame_step, window, frame_length)
+        
