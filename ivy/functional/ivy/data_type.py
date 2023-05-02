@@ -1585,7 +1585,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
     )
     if hasattr(fn, "handle_mixed_function"):
         return {
-            "compositional": function_supported_dtypes(fn.compos),
+            "compositional": function_supported_dtypes(fn.compos, recurse=recurse),
             "primary": _get_dtypes(fn, complement=False),
         }
     else:
@@ -1631,7 +1631,7 @@ def function_unsupported_dtypes(
     )
     if hasattr(fn, "handle_mixed_function"):
         return {
-            "compositional": function_unsupported_dtypes(fn.compos),
+            "compositional": function_unsupported_dtypes(fn.compos, recurse=recurse),
             "primary": _get_dtypes(fn, complement=True),
         }
     else:

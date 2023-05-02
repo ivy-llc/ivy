@@ -1188,7 +1188,7 @@ def function_supported_devices(
     )
     if hasattr(fn, "handle_mixed_function"):
         return {
-            "compositional": function_supported_devices(fn.compos),
+            "compositional": function_supported_devices(fn.compos, recurse=recurse),
             "primary": _get_devices(fn, complement=False),
         }
     else:
@@ -1234,7 +1234,7 @@ def function_unsupported_devices(
     )
     if hasattr(fn, "handle_mixed_function"):
         return {
-            "compositional": function_unsupported_devices(fn.compos),
+            "compositional": function_unsupported_devices(fn.compos, recurse=recurse),
             "primary": _get_devices(fn, complement=True),
         }
     else:
