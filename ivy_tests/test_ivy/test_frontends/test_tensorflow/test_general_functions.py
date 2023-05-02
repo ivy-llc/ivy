@@ -1865,7 +1865,6 @@ def test_tensorflow_scan(
     )
 
 
-
 @handle_frontend_test(
     fn_tree="tensorflow.norm",
     aliases=["tensorflow.norm"],
