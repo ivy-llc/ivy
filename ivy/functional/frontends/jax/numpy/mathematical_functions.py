@@ -127,6 +127,13 @@ def mod(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def modf(x, /, out=None):
+    y1 = ivy.floor(x)
+    y2 = x - y1
+    return y2, y1
+
+
+@to_ivy_arrays_and_back
 def divmod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return tuple([ivy.floor_divide(x1, x2), ivy.remainder(x1, x2)])
@@ -589,6 +596,32 @@ def polyder(p, m=1):
     return result
 
 
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("float16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def polyint(p, m=1, k=None):
+    p = ivy.asarray(p)
+    m = int(m)
+    if m == 0:
+        return p
+    if k is None:
+        k_arr = ivy.zeros((m,), dtype=p.dtype)
+    elif isinstance(k, (int, float)):
+        k_arr = ivy.full((m,), k, dtype=p.dtype)
+    elif ivy.asarray(k).shape == (1,):
+        k_arr = ivy.full((m,), ivy.asarray(k)[0], dtype=p.dtype)
+    elif ivy.asarray(k).shape == (m,):
+        k_arr = ivy.asarray(k, dtype=p.dtype)
+    else:
+        raise ValueError("k must be a scalar or a rank-1 array of length 1 or m.")
+    grid = (ivy.arange(p.size + m, dtype=p.dtype)[ivy.newaxis]
+            - ivy.arange(m, dtype=p.dtype)[:, ivy.newaxis])
+    coeff = ivy.maximum(1, grid).prod(axis=0)[::-1]
+    return ivy.divide(ivy.concat((p, k_arr)), coeff).astype(p.dtype)
+
+
 @to_ivy_arrays_and_back
 def polysub(a1, a2):
     n = max(a1.size, a2.size) - 1
@@ -607,3 +640,37 @@ def polymul(a1, a2, *, trim_leading_zeros=False):
     if len(a2) == 0:
         a2 = ivy.asarray([0], dtype=a2.dtype)
     return convolve(a1, a2, mode="full")
+
+
+@to_ivy_arrays_and_back
+def signbit(x, /):
+    x = ivy.array(x)
+    return ivy.signbit(x)
+
+
+@to_ivy_arrays_and_back
+def product(
+    a,
+    *,
+    axis=None,
+    dtype=None,
+    keepdims=False,
+    initial=None,
+    where=None,
+    promote_integers=True,
+    out=None,
+):
+    if ivy.is_array(where):
+        a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
+    if promote_integers:
+        if dtype is None:
+            dtype = a.dtype
+    if initial is not None:
+        if axis is not None:
+            s = ivy.to_list(ivy.shape(a, as_array=True))
+            s[axis] = 1
+            header = ivy.full(ivy.Shape(tuple(s)), initial)
+            a = ivy.concat([header, a], axis=axis)
+        else:
+            a[0] *= initial
+    return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
