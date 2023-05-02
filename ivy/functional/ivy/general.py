@@ -3571,6 +3571,10 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
 
+    if hasattr(fn, "handle_mixed_function"):
+        supported_devices = supported_devices["primary"]
+        supported_dtypes = supported_dtypes["primary"]
+
     supported = {}
     # Generate a base supported set from other attributes
     for device in supported_devices:
@@ -3666,16 +3670,13 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
          attributes cannot both exist in a particular backend",
     )
 
-    if hasattr(fn, "mixed_function") and (
-        ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
-    ):
-        supported_devices_dtypes = _mixed_functions_devices_and_dtypes(
-            fn,
-            _dnd_dict_intersection,
-            function_supported_devices_and_dtypes,
-            recurse=recurse,
-            complement=False,
-        )
+    if hasattr(fn, "handle_mixed_function"):
+        return {
+            "compositional": function_supported_devices_and_dtypes(
+                fn.compos, recurse=recurse
+            ),
+            "primary": _get_devices_and_dtypes(fn, complement=False),
+        }
     else:
         supported_devices_dtypes = _get_devices_and_dtypes(fn, complement=False)
         if recurse:
@@ -3687,7 +3688,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
                 wrapper=lambda x: x,
             )
 
-    return supported_devices_dtypes
+        return supported_devices_dtypes
 
 
 @handle_nestable
@@ -3715,16 +3716,13 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
         "supported_device_and_dtypes and unsupported_device_and_dtypes \
          attributes cannot both exist in a particular backend",
     )
-    if hasattr(fn, "mixed_function") and (
-        ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
-    ):
-        unsupported_devices_dtypes = _mixed_functions_devices_and_dtypes(
-            fn,
-            _dnd_dict_union,
-            function_unsupported_devices_and_dtypes,
-            recurse=recurse,
-            complement=True,
-        )
+    if hasattr(fn, "handle_mixed_function"):
+        return {
+            "compositional": function_unsupported_devices_and_dtypes(
+                fn.compos, recurse=recurse
+            ),
+            "primary": _get_devices_and_dtypes(fn, complement=True),
+        }
     else:
         unsupported_devices_dtypes = _get_devices_and_dtypes(fn, complement=True)
         if recurse:
