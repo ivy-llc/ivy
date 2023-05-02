@@ -525,7 +525,7 @@ def abs(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-    where: bool = True,
+    where: Optional[torch.Tensor] = True,
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if x.dtype is torch.bool:
