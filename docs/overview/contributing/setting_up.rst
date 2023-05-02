@@ -41,6 +41,32 @@ Then add Ivy original repository as upstream, to easily sync with latest changes
 
     git remote add upstream https://github.com/unifyai/ivy.git
 
+
+Pre-Commit
+----------
+
+Our development team also make use of the :code:`pre-commit` PyPI `package <https://pypi.org/project/pre-commit/>`_.
+
+Check out their `page <https://pre-commit.com/>`_ for more details.
+
+In a nutshell, this enables us to add pre-commit hooks which check for lint errors before a commit is accepted, and then also (in most cases) automatically make the necessary fixes.
+If the lint tests fail when a commit is attempted, then the commit will not succeed, and the problematic lines are printed to the terminal.
+Fixes are then applied automatically where possible.
+To proceed with the commit, the modified files must be re-added using git, and the commit will then succeed on the next attempt.
+
+In order to install and properly set up pre-commit, these steps should be followed:
+
+1. Run :code:`python3 -m pip install pre-commit`
+
+2. Enter into your cloned ivy folder, for example :code:`cd ~/ivy`
+
+3. Run :code:`pre-commit install`
+
+That's it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.
+
+For questions, please reach out on `discord`_ in the `pre-commit channel`_!
+
+
 PyCharm
 -------
 
@@ -667,30 +693,6 @@ Note: Currently you do not need to comment out the :code:`conftest.py` file in t
     src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 
-
-Pre-Commit
-----------
-
-In addition to the docker interpreter, our development team also make use of the :code:`pre-commit` PyPI `package <https://pypi.org/project/pre-commit/>`_.
-
-Check out their `page <https://pre-commit.com/>`_ for more details.
-
-In a nutshell, this enables us to add pre-commit hooks which check for lint errors before a commit is accepted, and then also (in most cases) automatically make the necessary fixes.
-If the lint tests fail when a commit is attempted, then the commit will not succeed, and the problematic lines are printed to the terminal.
-Fixes are then applied automatically where possible.
-To proceed with the commit, the modified files must be re-added using git, and the commit will then succeed on the next attempt.
-
-In order to install and properly set up pre-commit, these steps should be followed:
-
-1. Run :code:`python3 -m pip install pre-commit`
-
-2. Enter into your cloned ivy folder, for example :code:`cd ~/ivy`
-
-3. Run :code:`pre-commit install`
-
-That's it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.
-
-For questions, please reach out on `discord`_ in the `pre-commit channel`_!
 
 **Round Up**
 
