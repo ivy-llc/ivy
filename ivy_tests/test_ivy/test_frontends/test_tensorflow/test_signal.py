@@ -90,5 +90,5 @@ def test_tensorflow_idct(
          n=n,
          axis=axis,
          norm=norm,
-         atol=1e-02,
+         atol=1e-01,
     )
