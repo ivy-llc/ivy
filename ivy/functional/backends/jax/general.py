@@ -453,4 +453,4 @@ def itemsize(x: JaxArray) -> int:
 
 @with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def strides(x: JaxArray) -> Tuple[int]:
-    return jax.device_get(jax.device_put(_to_array(x))).strides
+    return to_numpy(x).strides
