@@ -98,6 +98,9 @@ def test_dev(*, dtype_and_x, test_flags):
             x = _variable(x)
 
         ret = ivy.dev(x)
+        nat_ret = ivy.dev(x, as_native=True)
+        # native test
+        assert ivy.is_native_dev(nat_ret)
         # type test
         assert isinstance(ret, str)
         # value test
@@ -144,18 +147,18 @@ def test_as_ivy_dev(*, dtype_and_x, test_flags):
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_as_native_dev(*, dtype_and_x, test_flags, on_device):
+def test_as_native_dev(*, dtype_and_x, test_flags):
     dtype, x = dtype_and_x
     dtype = dtype[0]
     x = x[0]
 
-    for device in _get_possible_devices():
+    for on_device in _get_possible_devices():
         x = ivy.asarray(x, device=on_device)
-        if test_flags.as_variable:
+        if test_flags.as_variable and ivy.is_float_dtype(dtype):
             x = _variable(x)
 
         device = ivy.as_native_dev(on_device)
-        ret = ivy.as_native_dev(ivy.dev(x))
+        ret = ivy.dev(x, as_native=True)
         # value test
         if ivy.current_backend_str() == "tensorflow":
             assert "/" + ":".join(ret[1:].split(":")[-2:]) == "/" + ":".join(
@@ -167,6 +170,28 @@ def test_as_native_dev(*, dtype_and_x, test_flags, on_device):
             assert ret._equals(device)
         else:
             assert ret == device
+
+
+# is_native_dev
+@handle_test(
+    fn_tree="functional.ivy.is_native_dev",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_is_native_dev(*, dtype_and_x, test_flags):
+    dtype, x = dtype_and_x
+    dtype = dtype[0]
+    x = x[0]
+
+    for on_device in _get_possible_devices():
+        x = ivy.asarray(x, device=on_device)
+        if test_flags.as_variable and ivy.is_float_dtype(dtype):
+            x = _variable(x)
+        native_dev = ivy.dev(x, as_native=True)
+        assert ivy.is_native_dev(native_dev)
+        if ivy.current_backend_str() != "numpy":
+            assert not ivy.is_native_dev(on_device)
 
 
 # Device Allocation #
