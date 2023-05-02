@@ -2,6 +2,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -251,3 +252,21 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
         values.append(results.counts)
 
     return Results(*values)
+
+
+@to_ivy_arrays_and_back
+def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
+    if (type(dim) in [tuple, list]) and (len(dim) == 2):
+        return torch_frontend.linalg.matrix_norm(
+            input, p, dim, keepdim, out=out, dtype=dtype
+        )
+    # Else resort to a vector norm
+    else:
+        if isinstance(p, str):
+            return torch_frontend.linalg.vector_norm(
+                input, ord=2, dim=dim, keepdim=keepdim, out=out, dtype=dtype
+            )
+        else:
+            return torch_frontend.linalg.vector_norm(
+                input, ord=p, dim=dim, keepdim=keepdim, out=out, dtype=dtype
+            )

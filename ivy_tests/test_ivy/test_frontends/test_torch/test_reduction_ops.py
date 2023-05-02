@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy
@@ -833,4 +834,51 @@ def test_torch_unique(
         return_inverse=return_inverse,
         return_counts=return_counts,
         dim=axis,
+    )
+
+
+# norm
+@handle_frontend_test(
+    fn_tree="torch.norm",
+    dtype_values_axis=helpers.dtype_values_axis(
+        num_arrays=1,
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+        # min_value=-1e20,
+        # max_value=1e20,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
+    ),
+    # "inf"
+    p=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+    keepdim=st.booleans(),
+    dtype=helpers.get_dtypes("valid"),
+)
+def test_torch_norm(
+    *,
+    dtype_values_axis,
+    p,
+    keepdim,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        p=p,
+        dim=axis,
+        keepdim=keepdim,
+        dtype=dtype[0],
     )
