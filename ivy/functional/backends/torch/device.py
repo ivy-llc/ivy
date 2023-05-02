@@ -23,47 +23,60 @@ def dev(
 ) -> Union[ivy.Device, torch.device]:
     dv = x.device
     if as_native:
-        if isinstance(dv, torch.device):
-            dv = dv.type
-        return torch.device(dv.replace("gpu", "cuda"))
+        return dev
     return as_ivy_dev(dv)
 
 
 def to_device(
     x: torch.Tensor,
-    device: torch.device,
+    device: Union[torch.device, ivy.Device],
     /,
     *,
     stream: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if device is None:
-        return x
-    ret = x.to(as_native_dev(device))
-    if isinstance(x, torch.nn.Parameter):
-        return torch.nn.Parameter(ret)
-    return ret
+    if device is not None:
+        current_dev = dev(x, as_native=True)
+        native_dev = as_native_dev(as_ivy_dev(device))
+        if current_dev != native_dev:
+            ret = x.to(device=native_dev)
+            if isinstance(x, torch.nn.Parameter):
+                return torch.nn.Parameter(ret)
+            return ret
+    return x
 
 
-def as_ivy_dev(device: torch.device, /):
+def as_ivy_dev(device, /):
     if isinstance(device, str):
         return ivy.Device(device)
-    dev_type, dev_idx = (device.type, device.index)
-    if dev_type == "cpu":
-        return ivy.Device(dev_type)
-    return ivy.Device(
-        dev_type.replace("cuda", "gpu")
-        + (":" + (str(dev_idx) if dev_idx is not None else "0"))
+    if is_native_dev(device):
+        dev_type, dev_idx = (device.type, device.index)
+        if dev_type == "cpu":
+            return ivy.Device(dev_type)
+        return ivy.Device(
+            dev_type.replace("cuda", "gpu")
+            + (":" + (str(dev_idx) if dev_idx is not None else "0"))
+        )
+    raise ivy.utils.exceptions.IvyError(
+        f"{device} couldn't be converted to ivy device."
+        + "Expcted a torch.device or a string of value type '(cpu|cuda|gpu)[:<index>]"
     )
 
 
 def as_native_dev(
-    device: Optional[Union[ivy.Device, torch.device]] = None,
+    device: Optional[Union[ivy.Device, torch.device]],
     /,
-) -> Optional[torch.device]:
-    if not isinstance(device, str):
+) -> torch.device:
+    if is_native_dev(device):
         return device
-    return torch.device(ivy.Device(device).replace("gpu", "cuda"))
+    if isinstance(device, str):
+        return torch.device(ivy.Device(device).replace("gpu", "cuda"))
+    else:
+        raise ivy.utils.exceptions.IvyError("Wrong set or order of arguments provided.")
+
+
+def is_native_dev(device, /):
+    return isinstance(device, torch.device)
 
 
 def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:

@@ -77,7 +77,12 @@ class Device(str):
         if dev_str != "":
             ivy.utils.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
             if dev_str != "cpu":
-                # ivy.assertions.check_equal(dev_str[3], ":")
+                ivy.assertions.check_equal(
+                    dev_str[3],
+                    ":",
+                    False,
+                    "device string must be of the form 'device_type:device_id'",
+                )
                 ivy.utils.assertions.check_true(
                     dev_str[4:].isnumeric(),
                     message="{} must be numeric".format(dev_str[4:]),

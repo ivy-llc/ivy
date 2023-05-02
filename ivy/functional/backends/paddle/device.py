@@ -71,6 +71,12 @@ def as_native_dev(
         return paddle.fluid.libpaddle.CUDAPlace()
 
 
+def is_native_device(device: Place, /):
+    return isinstance(
+        device, (paddle.fluid.libpaddle.CUDAPlace, paddle.fluid.libpaddle.CPUPlace)
+    )
+
+
 def clear_mem_on_dev(device: Place, /):
     device = as_native_dev(device)
     if isinstance(device, paddle.fluid.libpaddle.CUDAPlace):

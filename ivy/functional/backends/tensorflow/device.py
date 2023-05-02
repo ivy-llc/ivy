@@ -45,10 +45,10 @@ def to_device(
 ) -> Union[tf.Tensor, tf.Variable]:
     if device is None:
         return x
-    device = as_native_dev(device)
-    current_dev = dev(x)
-    if not _same_device(current_dev, device):
-        with tf.device("/" + device.upper()):
+    native_device = as_native_dev(as_ivy_dev(device))
+    current_dev = dev(x, as_native=True)
+    if not _same_device(current_dev, native_device):
+        with tf.device(native_device):
             return tf.identity(x)
     return x
 
@@ -56,23 +56,36 @@ def to_device(
 def as_ivy_dev(device: str, /):
     if isinstance(device, str) and "/" not in device:
         return ivy.Device(device)
-    dev_in_split = device[1:].split(":")[-2:]
-    if len(dev_in_split) == 1:
-        return ivy.Device(dev_in_split[0])
-    dev_type, dev_idx = dev_in_split
-    dev_type = dev_type.lower()
-    if dev_type == "cpu":
-        return ivy.Device(dev_type)
-    return ivy.Device(":".join([dev_type, dev_idx]))
+    if is_native_dev(device):
+        dev_in_split = device[1:].split(":")[-2:]
+        dev_type, dev_idx = dev_in_split
+        dev_type = dev_type.lower()
+        return ivy.Device(":".join([dev_type, dev_idx]))
 
 
 def as_native_dev(device: str, /):
+    if is_native_dev(device):
+        return _shorten_device(device)
+    if isinstance(device, str) and "/" not in device:
+        ret = "/" + ivy.Device(device).upper()
+        if not ret[-1].isnumeric():
+            ret += ":0"
+        return ret
+    else:
+        raise TypeError("Cannot convert {device} to a tensorflow device")
+
+
+def is_native_dev(device: str, /):
     if isinstance(device, str) and "/" in device:
-        return device
-    ret = "/" + ivy.Device(device).upper()
-    if not ret[-1].isnumeric():
-        ret += ":0"
-    return ret
+        dev_in_split = device[1:].split(":")[-2:]
+        if len(dev_in_split) == 2:
+            if dev_in_split[0] in ["CPU", "GPU", "TPU"] and dev_in_split[1].isnumeric():
+                return True
+    return False
+
+
+def _shorten_device(device: str):
+    return "/" + ":".join(device[1:].split(":")[-2:])
 
 
 def clear_cached_mem_on_dev(device: str, /):

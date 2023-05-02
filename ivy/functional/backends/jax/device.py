@@ -5,6 +5,7 @@ import os
 import jax
 from typing import Union, Optional
 import jaxlib.xla_extension
+import logging
 
 # local
 import ivy
@@ -37,10 +38,14 @@ def dev(
     as_native: bool = False,
 ) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
+        logging.warn(
+            "Cannot get device from DynamicJaxprTracer, returning empty string."
+        )
+        if as_native:  # fallback
+            return jax.devices()[0]
         return ""
     try:
-        dv = _to_array(x).device_buffer.device
-        dv = dv()
+        dv = _to_array(x).device()
     except Exception:
         dv = jax.devices()[0]
     if as_native:
@@ -50,16 +55,17 @@ def dev(
 
 def to_device(
     x: JaxArray,
-    device: jaxlib.xla_extension.Device,
+    device: Union[jaxlib.xla_extension.Device, ivy.Device],
     /,
     *,
     stream: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ):
     if device is not None:
-        cur_dev = as_native_dev(dev(x))
+        device = as_native_dev(device)
+        cur_dev = dev(x, as_native=True)
         if cur_dev != device:
-            x = jax.device_put(x, as_native_dev(device))
+            x = jax.device_put(x, device)
     return x
 
 
@@ -67,36 +73,52 @@ def to_device(
 # since if we use to_device, it will return ivy.array which is not desirable
 def _to_device(x, device=None):
     if device is not None:
-        cur_dev = as_native_dev(dev(x))
+        cur_dev = dev(x, as_native=True)
         if cur_dev != device:
+            # Uses async dispatch, data commited only when required
             x = jax.device_put(x, as_native_dev(device))
     return x
 
 
 def as_ivy_dev(device, /):
+    # doesn't check if device is a valid device
     if isinstance(device, str):
         return ivy.Device(device)
-    if device is None:
-        return None
-    p, dev_id = (device.platform, device.id)
-    if p == "cpu":
-        return ivy.Device(p)
-    return ivy.Device(p + ":" + str(dev_id))
+    if is_native_dev(device):  # no duck typing
+        p, dev_id = (device.platform, device.id)
+        return ivy.Device(p + ":" + str(dev_id))
+    else:
+        raise TypeError(
+            f"Cannot convert {device} to an ivy device. Expected a "
+            + f"jaxlib.xla_extension.Device or str, got {type(device)}"
+        )
 
 
 def as_native_dev(device, /):
-    if not isinstance(device, str):
+    # checks if device is a valid device internally
+    if is_native_dev(device):
         return device
-    dev_split = ivy.Device(device).split(":")
-    device = dev_split[0]
-    if len(dev_split) > 1:
-        idx = int(dev_split[1])
+    if isinstance(device, str):
+        dev_split = ivy.Device(device).split(":")
+        device = dev_split[0]
+        if len(dev_split) > 1:
+            idx = int(dev_split[1])
+        else:
+            idx = 0
+        return jax.devices(device)[idx]
     else:
-        idx = 0
-    return jax.devices(device)[idx]
+        raise TypeError(
+            f"Cannot convert {device} to an jaxlib.xla_extension.Device. Expected a "
+            + f"jaxlib.xla_extension.Device or str, got {type(device)}"
+        )
+
+
+def is_native_dev(device, /):
+    return isinstance(device, jaxlib.xla_extension.Device)
 
 
 def clear_cached_mem_on_dev(device: str, /):
+    # Refer: https://github.com/google/jax/issues/1222 [updated 2023-04-29]
     return None
 
 
