@@ -3491,8 +3491,10 @@ def _valid_attrib_combinations(fn, backend, dnd_dict, first_attr_name, other_att
             attr_list = attr_list.get(backend, ())
     ivy.utils.assertions.check_false(
         dnd_dict and attr_list,
-        f"Cannot specify both {first_attr_name} and {other_attr_name} "
-        "cannot both be defined for the same function",
+        (
+            f"Cannot specify both {first_attr_name} and {other_attr_name} "
+            "cannot both be defined for the same function"
+        ),
     )
 
 
@@ -3513,8 +3515,10 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
 
     ivy.utils.assertions.check_false(
         fn_unsupported_dnd and fn_supported_dnd,
-        "unsupported_device_and_dtype and supported_device_and_dtype \
-        cannot both be defined for the same function",
+        (
+            "unsupported_device_and_dtype and supported_device_and_dtype cannot"
+            " both be defined for the same function"
+        ),
     )
 
     us = "unsupported_device_and_dtype"
@@ -3666,8 +3670,10 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
-        "supported_device_and_dtypes and unsupported_device_and_dtypes \
-         attributes cannot both exist in a particular backend",
+        (
+            "supported_device_and_dtypes and unsupported_device_and_dtypes "
+            "attributes cannot both exist in a particular backend"
+        ),
     )
 
     if hasattr(fn, "handle_mixed_function"):
@@ -3713,8 +3719,10 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
-        "supported_device_and_dtypes and unsupported_device_and_dtypes \
-         attributes cannot both exist in a particular backend",
+        (
+            "supported_device_and_dtypes and unsupported_device_and_dtypes "
+            "attributes cannot both exist in a particular backend"
+        ),
     )
     if hasattr(fn, "handle_mixed_function"):
         return {

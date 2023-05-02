@@ -213,9 +213,11 @@ def test_asarray(
     if as_list:
         if isinstance(x, list):
             x = [
-                list(i)
-                if len(i.shape) > 0
-                else [complex(i) if "complex" in dtype[0] else float(i)]
+                (
+                    list(i)
+                    if len(i.shape) > 0
+                    else [complex(i) if "complex" in dtype[0] else float(i)]
+                )
                 for i in x
             ]
         else:

@@ -443,10 +443,8 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     ret
         A tuple of inputs and castable dtype.
     """
-    bound_dtype_bits = (
-        lambda d: ivy.dtype_bits(d) / 2
-        if ivy.is_complex_dtype(d)
-        else ivy.dtype_bits(d)
+    bound_dtype_bits = lambda d: (
+        ivy.dtype_bits(d) / 2 if ivy.is_complex_dtype(d) else ivy.dtype_bits(d)
     )
 
     def cast_filter(d):

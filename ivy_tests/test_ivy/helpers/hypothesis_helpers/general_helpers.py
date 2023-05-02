@@ -115,7 +115,7 @@ def apply_safety_factor(
     else:
         raise ValueError(
             f"{safety_factor_scale} is not a valid safety factor scale."
-            f" use 'log' or 'linear'."
+            " use 'log' or 'linear'."
         )
     if kind_dtype == "int":
         return int(min_value), int(max_value), None
@@ -345,9 +345,9 @@ def get_axis(
     -------
         A strategy that draws an axis or axes.
     """
-    assert not (force_int and force_tuple), (
-        "Cannot return an int and a tuple. If " "both are valid then set both to False."
-    )
+    assert not (
+        force_int and force_tuple
+    ), "Cannot return an int and a tuple. If both are valid then set both to False."
 
     # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
@@ -393,9 +393,11 @@ def get_axis(
 
     axis = draw(
         st.one_of(*valid_strategies).filter(
-            lambda x: all([i != axes + j for i in x for j in x])
-            if (isinstance(x, list) and unique and allow_neg)
-            else True
+            lambda x: (
+                all([i != axes + j for i in x for j in x])
+                if (isinstance(x, list) and unique and allow_neg)
+                else True
+            )
         )
     )
 
@@ -417,6 +419,8 @@ def x_and_filters(
     draw, dim: int = 2, transpose: bool = False, depthwise=False, mixed_fn_index=0
 ):
     """
+    Draws a random x and filters for a convolution.
+
     Parameters
     ----------
     draw

@@ -20,9 +20,9 @@ try:
         pass
 except ImportError:
     warnings.warn(
-        "pynvml installation was not found in the environment,\
-         functionalities of the Ivy's device module will be limited.\
-         Please install pynvml if you wish to use GPUs with Ivy."
+        "pynvml installation was not found in the environment, functionalities"
+        " of the Ivy's device module will be limited. Please install pynvml if"
+        " you wish to use GPUs with Ivy."
     )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
@@ -1036,12 +1036,17 @@ def split_func_call(
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
     inputs_split = [
-        ivy.split(
-            inp, num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
-        )
-        if ivy.is_array(inp)
-        else inp.split(
-            num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+        (
+            ivy.split(
+                inp,
+                num_or_size_splits=chunk_sizes,
+                axis=input_axes[i],
+                with_remainder=True,
+            )
+            if ivy.is_array(inp)
+            else inp.split(
+                num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+            )
         )
         for i, inp in enumerate(inputs)
     ]
@@ -1183,8 +1188,10 @@ def function_supported_devices(
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        "supported_devices and unsupported_devices attributes cannot both \
-        exist in a particular backend",
+        (
+            "supported_devices and unsupported_devices attributes cannot both "
+            "exist in a particular backend"
+        ),
     )
     if hasattr(fn, "handle_mixed_function"):
         return {
@@ -1229,8 +1236,10 @@ def function_unsupported_devices(
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        "supported_devices and unsupported_devices attributes cannot both \
-        exist in a particular backend",
+        (
+            "supported_devices and unsupported_devices attributes cannot both "
+            "exist in a particular backend"
+        ),
     )
     if hasattr(fn, "handle_mixed_function"):
         return {

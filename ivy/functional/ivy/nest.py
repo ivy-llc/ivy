@@ -1070,21 +1070,27 @@ def nested_map(
     class_instance = type(x)
     tuple_check_fn = ivy.default(
         _tuple_check_fn,
-        (lambda x_, t_: isinstance(x_, t_))
-        if include_derived[tuple]
-        else (lambda x_, t_: type(x_) is t_),
+        (
+            (lambda x_, t_: isinstance(x_, t_))
+            if include_derived[tuple]
+            else (lambda x_, t_: type(x_) is t_)
+        ),
     )
     list_check_fn = ivy.default(
         _list_check_fn,
-        (lambda x_, t_: isinstance(x_, t_))
-        if include_derived[list]
-        else (lambda x_, t_: type(x_) is t_),
+        (
+            (lambda x_, t_: isinstance(x_, t_))
+            if include_derived[list]
+            else (lambda x_, t_: type(x_) is t_)
+        ),
     )
     dict_check_fn = ivy.default(
         _dict_check_fn,
-        (lambda x_, t_: isinstance(x_, t_))
-        if include_derived[dict]
-        else (lambda x_, t_: type(x_) is t_),
+        (
+            (lambda x_, t_: isinstance(x_, t_))
+            if include_derived[dict]
+            else (lambda x_, t_: type(x_) is t_)
+        ),
     )
 
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
@@ -1392,20 +1398,20 @@ def nested_multi_map(
         for index, val in enumerate(nest0):
             if is_dict:
                 values = [
-                    nest[index]
-                    if isinstance(nest, (tuple, list))
-                    else nest[val]
-                    if isinstance(nest, dict)
-                    else nest
+                    (
+                        nest[index]
+                        if isinstance(nest, (tuple, list))
+                        else nest[val] if isinstance(nest, dict) else nest
+                    )
                     for nest in nests
                 ]
             else:
                 values = [
-                    nest[index]
-                    if isinstance(nest, (tuple, list))
-                    else nest[list(nest)[index]]
-                    if isinstance(nest, dict)
-                    else nest
+                    (
+                        nest[index]
+                        if isinstance(nest, (tuple, list))
+                        else nest[list(nest)[index]] if isinstance(nest, dict) else nest
+                    )
                     for nest in nests
                 ]
             value0 = values[0]
@@ -1429,9 +1435,13 @@ def nested_multi_map(
             if ret is not None:
                 if to_ivy and isinstance(nest, (ivy.Array, ivy.NativeArray)):
                     ret = ivy.array(ivy.to_list(ret))
-                return_nest.append(ret) if isinstance(
-                    return_nest, (list)
-                ) else return_nest.update({val if is_dict else list(nest)[index]: ret})
+                (
+                    return_nest.append(ret)
+                    if isinstance(return_nest, (list))
+                    else return_nest.update(
+                        {val if is_dict else list(nest)[index]: ret}
+                    )
+                )
     else:
         values = nests
         value0 = values[0]
@@ -1453,17 +1463,23 @@ def nested_multi_map(
                 if ivy.is_array(value0):
                     if not to_ivy:
                         value0 = ivy.array(value0)
-                return_nest.append(value0) if isinstance(
-                    return_nest, list
-                ) else return_nest.update({this_index_chain: value0}) if isinstance(
-                    return_nest, dict
-                ) else return_nest
+                (
+                    return_nest.append(value0)
+                    if isinstance(return_nest, list)
+                    else (
+                        return_nest.update({this_index_chain: value0})
+                        if isinstance(return_nest, dict)
+                        else return_nest
+                    )
+                )
                 return (
                     tuple(return_nest)
                     if isinstance(nest, tuple)
-                    else ivy.Container(return_nest)
-                    if ivy.is_ivy_container(nest)
-                    else return_nest
+                    else (
+                        ivy.Container(return_nest)
+                        if ivy.is_ivy_container(nest)
+                        else return_nest
+                    )
                 )
         ret = func(values, this_index_chain)
         if to_ivy:
@@ -1478,9 +1494,7 @@ def nested_multi_map(
     return (
         tuple(return_nest)
         if isinstance(nest0, tuple)
-        else ivy.Container(return_nest)
-        if ivy.is_ivy_container(nest0)
-        else return_nest
+        else ivy.Container(return_nest) if ivy.is_ivy_container(nest0) else return_nest
     )
 
 
