@@ -153,12 +153,12 @@ def gamma(
 
     Parameters
     ----------
-    shape
-        Shape parameter of the gamma distribution.
     alpha
         Alpha parameter of the gamma distribution.
     beta
         Beta parameter of the gamma distribution.
+    shape
+        Shape parameter of the gamma distribution.
     device
         device on which to create the array. 'cuda:0',
         'cuda:1', 'cpu' etc. (Default value = None).
