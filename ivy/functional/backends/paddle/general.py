@@ -509,9 +509,11 @@ def scatter_nd(
         # handle numeric updates
         updates = ivy.array(updates)
         updates = updates.cast(
-            ivy.dtype(out, as_native=True)
-            if ivy.exists(out)
-            else ivy.default_dtype(item=updates),
+            (
+                ivy.dtype(out, as_native=True)
+                if ivy.exists(out)
+                else ivy.default_dtype(item=updates)
+            ),
         )
         contains_slices = (
             any(isinstance(idx, slice) for idx in indices)
@@ -542,9 +544,7 @@ def scatter_nd(
             shape = (
                 shape
                 if ivy.exists(shape)
-                else out.shape
-                if ivy.exists(out)
-                else updates.shape
+                else out.shape if ivy.exists(out) else updates.shape
             )
             indices = _parse_ellipsis(indices, len(shape))
             indices = ivy.stack(
@@ -552,16 +552,20 @@ def scatter_nd(
                     ivy.flatten(value)
                     for value in ivy.meshgrid(
                         *[
-                            ivy.arange(s)
-                            if idx == slice(None, None, None)
-                            else ivy.arange(
-                                ivy.default(idx.start, 0),
-                                ivy.default(idx.stop, s),
-                                ivy.default(idx.step, 1),
+                            (
+                                ivy.arange(s)
+                                if idx == slice(None, None, None)
+                                else (
+                                    ivy.arange(
+                                        ivy.default(idx.start, 0),
+                                        ivy.default(idx.stop, s),
+                                        ivy.default(idx.step, 1),
+                                    )
+                                    if isinstance(idx, slice)
+                                    and (idx != slice(None, None, None))
+                                    else ivy.array([idx % s])
+                                )
                             )
-                            if isinstance(idx, slice)
-                            and (idx != slice(None, None, None))
-                            else ivy.array([idx % s])
                             for s, idx in zip(shape, indices)
                         ],
                         indexing="ij",
@@ -573,9 +577,7 @@ def scatter_nd(
             shape = (
                 shape
                 if ivy.exists(shape)
-                else out.shape
-                if ivy.exists(out)
-                else updates.shape
+                else out.shape if ivy.exists(out) else updates.shape
             )
             if isinstance(indices, (tuple, list)):
                 indices = (
@@ -586,16 +588,20 @@ def scatter_nd(
                         ivy.flatten(value)
                         for value in ivy.meshgrid(
                             *[
-                                ivy.arange(s)
-                                if idx == slice(None, None, None)
-                                else ivy.arange(
-                                    ivy.default(idx.start, 0),
-                                    ivy.default(idx.stop, s),
-                                    ivy.default(idx.step, 1),
+                                (
+                                    ivy.arange(s)
+                                    if idx == slice(None, None, None)
+                                    else (
+                                        ivy.arange(
+                                            ivy.default(idx.start, 0),
+                                            ivy.default(idx.stop, s),
+                                            ivy.default(idx.step, 1),
+                                        )
+                                        if isinstance(idx, slice)
+                                        and (idx != slice(None, None, None))
+                                        else ivy.array([idx % s])
+                                    )
                                 )
-                                if isinstance(idx, slice)
-                                and (idx != slice(None, None, None))
-                                else ivy.array([idx % s])
                                 for s, idx in zip(shape, indices)
                             ],
                             indexing="ij",
@@ -634,16 +640,20 @@ def scatter_nd(
                             ivy.flatten(value)
                             for value in ivy.meshgrid(
                                 *[
-                                    ivy.arange(s)
-                                    if idx == slice(None, None, None)
-                                    else ivy.arange(
-                                        ivy.default(idx.start, 0),
-                                        ivy.ivy.default(idx.stop, s),
-                                        ivy.default(idx.step, 1),
+                                    (
+                                        ivy.arange(s)
+                                        if idx == slice(None, None, None)
+                                        else (
+                                            ivy.arange(
+                                                ivy.default(idx.start, 0),
+                                                ivy.ivy.default(idx.stop, s),
+                                                ivy.default(idx.step, 1),
+                                            )
+                                            if isinstance(idx, slice)
+                                            and idx != slice(None, None, None)
+                                            else ivy.array([idx % s])
+                                        )
                                     )
-                                    if isinstance(idx, slice)
-                                    and idx != slice(None, None, None)
-                                    else ivy.array([idx % s])
                                     for s, idx in zip(shape, index)
                                 ],
                                 indexing="xy",

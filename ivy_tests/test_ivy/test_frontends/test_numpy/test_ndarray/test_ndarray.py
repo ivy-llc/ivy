@@ -84,6 +84,21 @@ def test_numpy_ndarray_property_shape(
         ret_shape=True,
     ),
 )
+def test_numpy_ndarray_property_ndim(
+    dtype_x,
+):
+    dtype, data, shape = dtype_x
+    x = ndarray(shape, dtype[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim)
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        ret_shape=True,
+    ),
+)
 def test_numpy_ndarray_property_T(
     dtype_x,
 ):
@@ -151,7 +166,9 @@ def test_numpy_ndarray_astype(
     init_tree="numpy.array",
     method_name="argmax",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=st.one_of(
+            helpers.get_dtypes("float_and_integer"), helpers.get_dtypes("bool")
+        ),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,

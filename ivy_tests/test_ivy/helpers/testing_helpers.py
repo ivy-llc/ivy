@@ -459,9 +459,11 @@ def handle_frontend_test(
             # Check if these arguments are being asked for
             possible_arguments = {
                 "test_flags": test_flags,
-                "fn_tree": st.sampled_from([fn_tree] + aliases)
-                if aliases is not None
-                else st.just(fn_tree),
+                "fn_tree": (
+                    st.sampled_from([fn_tree] + aliases)
+                    if aliases is not None
+                    else st.just(fn_tree)
+                ),
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:

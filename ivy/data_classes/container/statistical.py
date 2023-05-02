@@ -79,9 +79,11 @@ class _ContainerWithStatistical(ContainerBase):
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.min(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.min(x_, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -157,9 +159,11 @@ class _ContainerWithStatistical(ContainerBase):
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.max(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.max(x_, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -289,9 +293,11 @@ class _ContainerWithStatistical(ContainerBase):
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.mean(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.mean(x_, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -404,11 +410,11 @@ class _ContainerWithStatistical(ContainerBase):
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.var(
-                    x_, axis=axis, correction=correction, keepdims=keepdims
-                )
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.var(x_, axis=axis, correction=correction, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -952,11 +958,11 @@ class _ContainerWithStatistical(ContainerBase):
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.std(
-                    x_, axis=axis, correction=correction, keepdims=keepdims
-                )
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.std(x_, axis=axis, correction=correction, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
