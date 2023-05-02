@@ -3516,7 +3516,7 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
     ivy.utils.assertions.check_false(
         fn_unsupported_dnd and fn_supported_dnd,
         (
-            "unsupported_device_and_dtype and supported_device_and_dtype         cannot"
+            "unsupported_device_and_dtype and supported_device_and_dtype cannot"
             " both be defined for the same function"
         ),
     )
@@ -3645,8 +3645,8 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
         (
-            "supported_device_and_dtypes and unsupported_device_and_dtypes         "
-            " attributes cannot both exist in a particular backend"
+            "supported_device_and_dtypes and unsupported_device_and_dtypes "
+            "attributes cannot both exist in a particular backend"
         ),
     )
     supported_devices_dtype = _get_devices_and_dtypes(fn, complement=False)
@@ -3686,8 +3686,8 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
         (
-            "supported_device_and_dtypes and unsupported_device_and_dtypes         "
-            " attributes cannot both exist in a particular backend"
+            "supported_device_and_dtypes and unsupported_device_and_dtypes "
+            "attributes cannot both exist in a particular backend"
         ),
     )
     unsupported_devices_dtype = _get_devices_and_dtypes(fn, complement=True)

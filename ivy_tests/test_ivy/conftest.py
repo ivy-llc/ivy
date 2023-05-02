@@ -269,12 +269,12 @@ def process_cl_flags(config) -> Dict[str, bool]:
         if v[0] and v[1]:
             raise Exception(
                 f"--skip-{k}--testing and --with-{k}--testing flags cannot be used "
-                " together"
+                "together"
             )
         if v[1] and no_extra_testing:
             raise Exception(
                 f"--with-{k}--testing and --no-extra-testing flags cannot be used "
-                " together"
+                "together"
             )
         # skipping a test
         if v[0] or no_extra_testing:

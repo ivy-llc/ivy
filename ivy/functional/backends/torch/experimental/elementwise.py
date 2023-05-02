@@ -84,9 +84,9 @@ def trapz(
     else:
         if dx is not None:
             TypeError(
-                "trapezoid() received an invalid combination of arguments - got        "
-                "    (Tensor, Tensor, int), but expected one of: *            (Tensor"
-                " y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
+                "trapezoid() received an invalid combination of arguments - got "
+                "(Tensor, Tensor, int), but expected one of: *(Tensor "
+                "y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
             )
         else:
             return torch.trapezoid(y, x=x, dim=axis)

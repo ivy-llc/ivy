@@ -618,7 +618,7 @@ def conj(
     return tf.math.conj(x)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": "unsigned"}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("unsigned",)}, backend_version)
 def ldexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable, int],
@@ -640,7 +640,7 @@ def ldexp(
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": "unsigned"}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("unsigned",)}, backend_version)
 def frexp(
     x: Union[tf.Tensor, tf.Variable],
     /,

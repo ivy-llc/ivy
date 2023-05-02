@@ -22,7 +22,7 @@ from . import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": "int8"},
+    {"2.4.2 and below": ("int8",)},
     backend_version,
 )
 def random_uniform(

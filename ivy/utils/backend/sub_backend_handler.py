@@ -57,20 +57,20 @@ def set_sub_backend(sub_backend_str: str):
 
     if ivy.current_backend_str() not in _backend_to_sub_backends_dict.keys():
         logging.warn(
-            f"backend {ivy.current_backend_str()}                  does not have any"
+            f"backend {ivy.current_backend_str()} does not have any"
             " supported sub_backends"
         )
         return
 
     if sub_backend_str not in _all_sub_backends:
         raise IvyException(
-            "sub_backend must be one from                 "
+            "sub_backend must be one from"
             f" {_backend_to_sub_backends_dict[ivy.current_backend_str()]}"
         )
 
     if sub_backend_str not in _backend_to_sub_backends_dict[ivy.current_backend_str()]:
         logging.warn(
-            f"{ivy.current_backend_str()} does not support                 "
+            f"{ivy.current_backend_str()} does not support"
             f" {sub_backend_str} as a sub_backend"
         )
         return

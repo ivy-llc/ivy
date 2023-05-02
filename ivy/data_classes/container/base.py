@@ -1121,8 +1121,8 @@ class ContainerBase(dict, abc.ABC):
         ivy.utils.assertions.check_exists(
             h5py,
             message=(
-                "You must install python package h5py in order to load hdf5            "
-                " files from disk into a container."
+                "You must install python package h5py in order to load hdf5 "
+                "files from disk into a container."
             ),
         )
         container_dict = dict()
@@ -1207,8 +1207,8 @@ class ContainerBase(dict, abc.ABC):
         ivy.utils.assertions.check_exists(
             h5py,
             message=(
-                "You must install python package h5py in order to determine            "
-                " the size of hdf5 files."
+                "You must install python package h5py in order to determine "
+                "the size of hdf5 files."
             ),
         )
         if type(h5_obj_or_filepath) is str:
@@ -1248,8 +1248,8 @@ class ContainerBase(dict, abc.ABC):
         ivy.utils.assertions.check_exists(
             h5py,
             message=(
-                "You must install python package h5py in order to shuffle            "
-                " hdf5 files on disk."
+                "You must install python package h5py in order to shuffle "
+                "hdf5 files on disk."
             ),
         )
         if seed_value is None:
@@ -1971,8 +1971,8 @@ class ContainerBase(dict, abc.ABC):
         ivy.utils.assertions.check_exists(
             h5py,
             message=(
-                "You must install python package h5py in order to save            "
-                " containers to disk as hdf5 files."
+                "You must install python package h5py in order to save "
+                "containers to disk as hdf5 files."
             ),
         )
         if type(h5_obj_or_filepath) is str:
@@ -2684,8 +2684,8 @@ class ContainerBase(dict, abc.ABC):
                 key,
                 sub_cont,
                 message=(
-                    "key chain must already exist in container in order to             "
-                    "    call cont_overwrite_at_key_chain"
+                    "key chain must already exist in container in order to "
+                    "call cont_overwrite_at_key_chain"
                 ),
             )
             sub_cont = sub_cont[key]
@@ -2693,8 +2693,8 @@ class ContainerBase(dict, abc.ABC):
             keys[-1],
             sub_cont,
             message=(
-                "key chain must already exist in container in order to             call"
-                " cont_overwrite_at_key_chain"
+                "key chain must already exist in container in order to call "
+                "cont_overwrite_at_key_chain"
             ),
         )
         sub_cont[keys[-1]] = val
@@ -2761,8 +2761,8 @@ class ContainerBase(dict, abc.ABC):
                 k,
                 return_dict,
                 message=(
-                    "key chain must already exist in container in order to             "
-                    "    call cont_overwrite_at_key_chain"
+                    "key chain must already exist in container in order to "
+                    "call cont_overwrite_at_key_chain"
                 ),
             )
             if isinstance(v, dict):

@@ -137,7 +137,7 @@ def cond(x, p=None):
     else:
         if ivy.get_num_dims(x) < 2:
             raise ValueError(
-                "%d-dimensional array given.Array must be at least two-dimensional"
+                "%d-dimensional array given. Array must be at least two-dimensional"
                 % ivy.get_num_dims(x)
             )
         m, n = ivy.shape(x)[-2:]
