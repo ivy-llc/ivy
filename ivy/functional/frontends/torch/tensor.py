@@ -365,14 +365,14 @@ class Tensor:
                     if isinstance(args[2], bool):
                         if "copy" in kwargs:
                             raise ValueError(
-                                "Argument 'copy' is defined both"
-                                + " as positional and keyword argument."
+                                "Argument 'copy' is defined both "
+                                "as positional and keyword argument."
                             )
                         copy = args[2]
                     else:
-                        raise ivy.utils.exceptions.IvyError(
+                        raise ValueError(
                             "The postional argumnet 'copy'"
-                            + f"expected a boolean type, got {type(args[2])}."
+                            f"expected a boolean type, got {type(args[2])}."
                         )
 
             # dtype, non_blocking=False, copy=False, memory_format=torch.preserve_format
@@ -384,36 +384,36 @@ class Tensor:
                 if "dtype" in kwargs:
                     raise ValueError(
                         "Argument 'dtype' is defined both as positional "
-                        + "and keyword argument."
+                        "and keyword argument."
                     )
                 if "device" in kwargs:
                     raise ValueError(
-                        "Argument 'dtype' cannot be defined with dtype as "
-                        + "positional argument."
+                        "Argument 'device' cannot be defined with dtype as "
+                        "positional argument."
                     )
-                dtype = args[0]
+                dtype = ivy.as_ivy_dtype(args[0])
                 if len(args) > 2:
                     if isinstance(args[2], bool):
                         if "copy" in kwargs:
                             raise ValueError(
                                 "Argument 'copy' is defined both as positional "
-                                + "and keyword argument."
+                                "and keyword argument."
                             )
                         copy = args[2]
                     else:
                         raise ivy.utils.exceptions.IvyError(
-                            "The postional argumnet 'copy' expected a boolean"
-                            + f"type, got {type(args[2])}."
+                            "The postional argumnet 'copy' expected a boolean "
+                            f"type, got {type(args[2])}."
                         )
 
             # device=None, dtype=None, non_blocking=False, copy=False, memory_format
             elif isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
                 if "device" in kwargs:
                     raise ValueError(
-                        "Argument 'device' is defined both as positional"
-                        + "and keyword argument."
+                        "Argument 'device' is defined both as positional "
+                        "and keyword argument."
                     )
-                device = args[0]
+                device = ivy.as_ivy_dev(args[0])
                 if len(args) > 1:
                     if (
                         isinstance(args[1], (ivy.Dtype, ivy.NativeDtype))
@@ -422,22 +422,22 @@ class Tensor:
                     ):
                         if "dtype" in kwargs:
                             raise ValueError(
-                                "Argument 'dtype' is defined both as positional"
-                                + " and keyword argument."
+                                "Argument 'dtype' is defined both as positional "
+                                "and keyword argument."
                             )
-                        dtype = args[1]
+                        dtype = ivy.as_ivy_dtype(args[1])
                     if len(args) > 3:
                         if isinstance(args[3], bool):
                             if "copy" in kwargs:
                                 raise ValueError(
-                                    "Argument 'copy' is defined both as positional"
-                                    + " and keyword argument."
+                                    "Argument 'copy' is defined both as positional "
+                                    "and keyword argument."
                                 )
                             copy = args[3]
                         else:
                             raise ivy.utils.exceptions.IvyError(
-                                "The postional argumnet 'copy' expected a boolean"
-                                + f" type, got {type(args[3])}."
+                                "The postional argumnet 'copy' expected a boolean "
+                                + f"type, got {type(args[3])}."
                             )
             else:
                 raise ivy.utils.exceptions.IvyError(
@@ -450,7 +450,7 @@ class Tensor:
             ret = self
 
         # might not be required
-        if ret.dtype == ivy.dtype(dtype) and ret.device == ivy.dev(args[0]):
+        if ret.dtype == dtype and ret.device == device:
             return ret
 
         ret.ivy_array = ivy.asarray(
