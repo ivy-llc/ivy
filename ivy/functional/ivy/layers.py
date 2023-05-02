@@ -2102,7 +2102,7 @@ def stft(
         If onesided is false, the output has the shape: [batch_size][frames][frame_length][2],
         where frame_length is the length of the DFT.
     """
-    return ivy.stft(
+    return current_backend(signal).stft(
         signal,
         frame_step,
         onesided=onesided,
@@ -2111,4 +2111,3 @@ def stft(
         norm=norm,
         out=out,
     )
-    
