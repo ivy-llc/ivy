@@ -123,19 +123,7 @@ def adjoint(
     return tf.linalg.adjoint(x)
 
 
-@with_supported_dtypes(
-    {
-        "2.9.1": (
-            "bfloat16",
-            "float16",
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-        )
-    },
-    backend_version,
-)
+@with_unsupported_dtypes({"2.9.1": ("complex64", "complex128",)}, backend_version,)
 def multi_dot(
     x: Sequence[Union[tf.Tensor, tf.Variable]],
     /,
