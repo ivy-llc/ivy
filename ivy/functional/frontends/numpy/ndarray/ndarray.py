@@ -488,3 +488,10 @@ class ndarray:
 
     def __mod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
+    
+    def ptp(self, *, axis=None, out=None, keepdims=False):
+        ret = ivy.max(self.ivy_array) - ivy.min(self.ivy_array)
+        if axis==int :
+            return ivy.flatten(self.ivy_array, order="C")
+        else:
+            return np_frontend.ndarray(ret, _init_overload=True)
