@@ -872,6 +872,12 @@ class Tensor:
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
 
+    def __iter__(self):
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d tensor not supported")
+        for i in range(self.ndim):
+            yield self[i]
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __radd__(self, other):
         return torch_frontend.add(other, self)

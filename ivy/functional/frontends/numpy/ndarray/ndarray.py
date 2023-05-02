@@ -480,5 +480,11 @@ class ndarray:
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
 
+    def __iter__(self):
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d ndarray not supported")
+        for i in range(self.ndim):
+            yield self[i]
+
     def __mod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
