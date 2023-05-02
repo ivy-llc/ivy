@@ -540,7 +540,7 @@ def _pad_helper(draw):
             ]
         )
     )
-    if mode == "median":
+    if mode in ["median", "minimum", "maximum"]:
         dtypes = "float"
     else:
         dtypes = "numeric"
