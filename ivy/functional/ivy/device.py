@@ -179,12 +179,13 @@ def get_all_ivy_arrays_on_dev(
     device = ivy.as_ivy_dev(device)
     all_arrays = list()
     for obj in gc.get_objects():
-        # noinspection PyBroadException
-        try:
-            if ivy.is_ivy_array(obj) and ivy.dev(obj) == device:
-                all_arrays.append(obj)
-        except Exception:
-            pass
+        if (
+            type(obj) == ivy.data_classes.array.array.Array
+            and ivy.is_ivy_array(obj)
+            and ivy.dev(obj) == device
+        ):
+            all_arrays.append(obj)
+
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 

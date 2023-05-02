@@ -32,7 +32,9 @@ print("          cat combined_test_results.txt")
 print()
 print("      - name: New Failures Introduced")
 print("        run: |")
-print('          find . -name "new_failures_*.txt" -exec cat {} + > new_failures_introduced.txt')
+print(
+    '          find . -name "new_failures_*.txt" -exec cat {} + > new_failures_introduced.txt'
+)
 print('          echo "New Failures Introduced:"')
 print("          cat new_failures_introduced.txt")
 print()
@@ -65,7 +67,9 @@ for i in range(1, total_jobs + 1):
     else:
         print("          python determine_tests.py")
     print("          set -o pipefail")
-    print(f"          python run_tests_pr.py new_failures_{i}.txt | tee test_results_{i}.txt")
+    print(
+        f"          python run_tests_pr.py new_failures_{i}.txt | tee test_results_{i}.txt"
+    )
     print("        continue-on-error: true")
     print()
     print("      - name: Upload test results")

@@ -325,7 +325,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 def inputs_to_native_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
             lambda x: x.shape
@@ -334,13 +334,13 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
         )
         return fn(*args, **kwargs)
 
-    new_fn.inputs_to_native_shapes = True
-    return new_fn
+    _inputs_to_native_shapes.inputs_to_native_shapes = True
+    return _inputs_to_native_shapes
 
 
 def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
             lambda x: x.shape
@@ -349,8 +349,8 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
         )
         return fn(*args, **kwargs)
 
-    new_fn.outputs_to_ivy_shapes = True
-    return new_fn
+    _outputs_to_ivy_shapes.outputs_to_ivy_shapes = True
+    return _outputs_to_ivy_shapes
 
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:

@@ -1041,3 +1041,259 @@ jobs:
            user-email: rashul.chutani@gmail.com
            commit-message: Update Mapping
            target-branch: master32
+
+   job_33:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           pip install pydriller tqdm
+           cd ivy
+           python determine_test_coverage.py 32
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master33
+
+   job_34:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           pip install pydriller tqdm
+           cd ivy
+           python determine_test_coverage.py 33
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master34
+
+   job_35:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           pip install pydriller tqdm
+           cd ivy
+           python determine_test_coverage.py 34
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master35
+
+   job_36:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           pip install pydriller tqdm
+           cd ivy
+           python determine_test_coverage.py 35
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master36
+
+   job_37:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           pip install pydriller tqdm
+           cd ivy
+           python determine_test_coverage.py 36
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master37
+
+   job_38:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           pip install pydriller tqdm
+           cd ivy
+           python determine_test_coverage.py 37
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master38
+
+   job_39:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           pip install pydriller tqdm
+           cd ivy
+           python determine_test_coverage.py 38
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master39
+
+   job_40:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 150
+
+       - name: Determine Test Coverage
+         run: |
+           pip install pydriller tqdm
+           cd ivy
+           python determine_test_coverage.py 39
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master40
