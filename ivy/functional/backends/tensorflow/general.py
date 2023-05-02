@@ -103,13 +103,8 @@ def gather(
     batch_dims: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if axis is None:
-        axis = batch_dims
-    else:
-        axis = axis % len(params.shape)
+    axis = axis % len(params.shape)
     batch_dims = batch_dims % len(params.shape)
-    if axis < batch_dims:
-        axis = batch_dims
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
