@@ -15,17 +15,28 @@ def directory_generator(req, base="/opt/miniconda/fw/"):
 def install_pkg(path, pkg, base="fw/"):
     if pkg.split("==")[0] == "torch":
         subprocess.run(
-            f"pip3 install {pkg} --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu --target={path} --no-cache-dir",
+            (
+                f"pip3 install {pkg} --default-timeout=100 --extra-index-url"
+                f" https://download.pytorch.org/whl/cpu --target={path} --no-cache-dir"
+            ),
             shell=True,
         )
     elif pkg.split("==")[0] == "jaxlib":
         subprocess.run(
-            f"pip3 install {pkg} --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_releases.html  --target={path} --no-cache-dir",
+            (
+                f"pip3 install {pkg} --default-timeout=100 -f"
+                " https://storage.googleapis.com/jax-releases/jax_releases.html "
+                f" --target={path} --no-cache-dir"
+            ),
             shell=True,
         )
     elif pkg.split("==")[0] == "tensorflow":
         subprocess.run(
-            f"pip3 install tensorflow-cpu=={pkg.split('==')[1]} --default-timeout=100  --target={path} --no-cache-dir",
+            (
+                "pip3 install"
+                f" tensorflow-cpu=={pkg.split('==')[1]} --default-timeout=100 "
+                f" --target={path} --no-cache-dir"
+            ),
             shell=True,
         )
     else:
@@ -42,23 +53,39 @@ if __name__ == "__main__":
         for i in arg_lis[2:]:
             if i.split("/")[0] == "torch":
                 subprocess.run(
-                    f"pip3 install torch=={i.split('/')[1]} --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu  --no-cache-dir",
+                    (
+                        f"pip3 install torch=={i.split('/')[1]} --default-timeout=100"
+                        " --extra-index-url https://download.pytorch.org/whl/cpu "
+                        " --no-cache-dir"
+                    ),
                     shell=True,
                 )
             elif i.split("/")[0] == "tensorflow":
                 print(i, "heere")
                 subprocess.run(
-                    f"pip3 install tensorflow-cpu=={i.split('/')[1]} --default-timeout=100   --no-cache-dir",
+                    (
+                        "pip3 install"
+                        f" tensorflow-cpu=={i.split('/')[1]} --default-timeout=100  "
+                        " --no-cache-dir"
+                    ),
                     shell=True,
                 )
             elif i.split("/")[0] == "jaxlib":
                 subprocess.run(
-                    f"pip3 install {i} --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_releases.html  --no-cache-dir",
+                    (
+                        f"pip3 install {i} --default-timeout=100 -f"
+                        " https://storage.googleapis.com/jax-releases/jax_releases.html"
+                        "  --no-cache-dir"
+                    ),
                     shell=True,
                 )
             else:
                 subprocess.run(
-                    f"pip3 install {i.split('/')[0]}=={i.split('/')[1]} --default-timeout=100   --no-cache-dir",
+                    (
+                        "pip3 install"
+                        f" {i.split('/')[0]}=={i.split('/')[1]} --default-timeout=100  "
+                        " --no-cache-dir"
+                    ),
                     shell=True,
                 )
         try:
@@ -72,14 +99,21 @@ if __name__ == "__main__":
             import torch  # noqa
         except:
             subprocess.run(
-                f"pip3 install torch --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu  --no-cache-dir",
+                (
+                    f"pip3 install torch --default-timeout=100 --extra-index-url"
+                    f" https://download.pytorch.org/whl/cpu  --no-cache-dir"
+                ),
                 shell=True,
             )
         try:
             import jaxlib  # noqa
         except:
             subprocess.run(
-                f"pip3 install jaxlib --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_releases.html  --no-cache-dir",
+                (
+                    f"pip3 install jaxlib --default-timeout=100 -f"
+                    f" https://storage.googleapis.com/jax-releases/jax_releases.html "
+                    f" --no-cache-dir"
+                ),
                 shell=True,
             )
         try:

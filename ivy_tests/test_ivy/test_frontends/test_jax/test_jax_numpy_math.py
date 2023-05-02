@@ -675,14 +675,14 @@ def test_jax_numpy_mod(
         min_value=0,
         exclude_min=True,
     ),
-    test_with_out = st.just(False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_modf(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.iscomplex(x))
@@ -694,7 +694,7 @@ def test_jax_numpy_modf(
         on_device=on_device,
         x=x[0],
     )
-    
+
 
 # divmod
 @handle_frontend_test(
