@@ -15,12 +15,16 @@ floats_info = {
 
 @st.composite
 def min_max_bound(draw, min_value=None, max_value=None):
-    return draw(st.just(min_value)), draw(st.just(max_value))
+    min_val = draw(st.just(min_value))
+    max_val = draw(st.just(max_value))
+    return min_val, max_val
 
 
 @st.composite
 def exclude_min_max(draw, exclude_min=True, exclude_max=True):
-    return draw(st.just(exclude_min)), draw(st.just(exclude_max))
+    min_ex = draw(st.just(exclude_min))
+    max_ex = draw(st.just(exclude_max))
+    return min_ex, max_ex
 
 
 @st.composite
@@ -29,10 +33,9 @@ def min_max_bound_exclusion(draw,
                             max_value=None,
                             exclude_min=True,
                             exclude_max=True):
-    return draw(min_max_bound(min_value=min_value,
-                              max_value=max_value)), draw(exclude_min_max(exclude_min=exclude_min,
-                                                                          exclude_max=exclude_max))
-
+    min_val, max_val = draw(min_max_bound(min_value=min_value, max_value=max_value))
+    min_ex, max_ex = draw(exclude_min_max(exclude_min=exclude_min, exclude_max=exclude_max))
+    return min_val, max_val, min_ex, max_ex
 
 @st.composite
 def floats(
@@ -93,7 +96,7 @@ def floats(
         Float.
     """
 
-    min_value, max_value, exclude_min, exclude_max = min_max_bound_exclusion()
+    min_value, max_value, exclude_min, exclude_max = draw(min_max_bound_exclusion)
     # ToDo assert that if min or max can be represented
     dtype = draw(dtype_helpers.get_dtypes("float", full=False, prune_function=False))
     dtype = dtype[0]
