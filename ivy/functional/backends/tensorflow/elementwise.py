@@ -14,7 +14,7 @@ def abs(
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    where: bool = True,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not tf.is_tensor(x):
         x = tf.convert_to_tensor(x)
