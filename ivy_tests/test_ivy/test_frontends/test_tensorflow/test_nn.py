@@ -1402,7 +1402,7 @@ def test_tensorflow_conv_transpose(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, filters, dilation, data_format, strides, padding = x_f_d_df
+    input_dtype, x, filters, dilations, data_format, strides, padding, output_shape = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
