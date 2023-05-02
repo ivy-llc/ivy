@@ -14,17 +14,35 @@ floats_info = {
 
 
 @st.composite
+def min_max_bound(draw, min_value=None, max_value=None):
+    return draw(st.just(min_value)), draw(st.just(max_value))
+
+
+@st.composite
+def exclude_min_max(draw, exclude_min=True, exclude_max=True):
+    return draw(st.just(exclude_min)), draw(st.just(exclude_max))
+
+
+@st.composite
+def min_max_bound_exclusion(draw,
+                            min_value=None,
+                            max_value=None,
+                            exclude_min=True,
+                            exclude_max=True):
+    return draw(min_max_bound(min_value=min_value,
+                              max_value=max_value)), draw(exclude_min_max(exclude_min=exclude_min,
+                                                                          exclude_max=exclude_max))
+
+
+@st.composite
 def floats(
     draw,
     *,
-    min_value=None,
-    max_value=None,
+    min_max_bound_exclusion=min_max_bound_exclusion,
     abs_smallest_val=None,
     allow_nan=False,
     allow_inf=False,
     allow_subnormal=False,
-    exclude_min=True,
-    exclude_max=True,
     large_abs_safety_factor=1.1,
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
@@ -38,20 +56,14 @@ def floats(
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    min_value
-        minimum value of floats generated.
-    max_value
-        maximum value of floats generated.
+    min_max_bound_exclusion
+        strategy that generates the min and maximum values and whether to exclude them.
     allow_nan
         if True, allow Nans in the list.
     allow_inf
         if True, allow inf in the list.
     allow_subnormal
         if True, allow subnormals in the list.
-    exclude_min
-        if True, exclude the minimum limit.
-    exclude_max
-        if True, exclude the maximum limit.
     large_abs_safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
@@ -80,6 +92,8 @@ def floats(
     ret
         Float.
     """
+
+    min_value, max_value, exclude_min, exclude_max = min_max_bound_exclusion()
     # ToDo assert that if min or max can be represented
     dtype = draw(dtype_helpers.get_dtypes("float", full=False, prune_function=False))
     dtype = dtype[0]
@@ -136,8 +150,7 @@ def floats(
 def ints(
     draw,
     *,
-    min_value=None,
-    max_value=None,
+    min_max_values=min_max_bound,
     safety_factor=1.1,
     safety_factor_scale=None,
 ):
@@ -149,10 +162,8 @@ def ints(
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    min_value
-        minimum value of integers generated.
-    max_value
-        maximum value of integers generated.
+    min_max_values
+        strategy that draws a tuple of min and max values.
     safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
@@ -172,6 +183,7 @@ def ints(
         Integer.
     """
     dtype = draw(dtype_helpers.get_dtypes("integer", full=False, prune_function=False))
+    min_value, max_value = min_max_values()
     if min_value is None and max_value is None:
         safety_factor_scale = "linear"
     if safety_factor_scale is not None:
@@ -189,8 +201,7 @@ def ints(
 def number(
     draw,
     *,
-    min_value=None,
-    max_value=None,
+    min_max_values=min_max_bound,
     large_abs_safety_factor=1.1,
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
@@ -203,10 +214,8 @@ def number(
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    min_value
-        minimum value of integers generated.
-    max_value
-        maximum value of integers generated.
+    min_max_values
+        strategy that draws a tuple of min and max values.
     large_abs_safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
@@ -236,6 +245,7 @@ def number(
     ret
         An integer or float.
     """
+    min_value, max_value = min_max_values()
     return draw(
         ints(
             min_value=min_value,
