@@ -28,7 +28,7 @@ def floats(
     large_abs_safety_factor=1.1,
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
-    mixed_fn_index=0,
+    mixed_fn_compos=True,
 ):
     """
     Draws an arbitrarily sized list of floats with a safety factor applied to avoid
@@ -77,10 +77,11 @@ def floats(
     safety_factor_scale
         The operation to use for the safety factor scaling. Can be "linear" or "log".
         Default value = "linear".
-    mixed_fn_index
-        Indicates whether to draw from the dtypes of compositional implementation or
-         backend specific implementation for mixed partial functions.
-          Default is compositional.
+    mixed_fn_compos
+        boolean if True, the function will generate using the float dtypes
+        of the compositional implementation for mixed partial functions and
+        if False, it will generate using the float dtypes of the
+        primary implementation.
 
     Returns
     -------
@@ -90,7 +91,7 @@ def floats(
     # ToDo assert that if min or max can be represented
     dtype = draw(
         dtype_helpers.get_dtypes(
-            "float", mixed_fn_index=mixed_fn_index, full=False, prune_function=False
+            "float", mixed_fn_compos=mixed_fn_compos, full=False, prune_function=False
         )
     )
     dtype = dtype[0]
@@ -151,7 +152,7 @@ def ints(
     max_value=None,
     safety_factor=1.1,
     safety_factor_scale=None,
-    mixed_fn_index=0,
+    mixed_fn_compos=True,
 ):
     """
     Draws an integer with a safety factor if specified.
@@ -177,10 +178,11 @@ def ints(
     safety_factor_scale
         The operation to use for the safety factor scaling. Can be "linear" or "log".
         Default value = "linear".
-    mixed_fn_index
-        Indicates whether to draw from the dtypes of compositional implementation or
-         backend specific implementation for mixed partial functions.
-          Default is compositional.
+    mixed_fn_compos
+        boolean if True, the function will generate using the integer dtypes
+        of the compositional implementation for mixed partial functions and
+        if False, it will generate using the integer dtypes of the
+        primary implementation.
 
     Returns
     -------
@@ -189,7 +191,7 @@ def ints(
     """
     dtype = draw(
         dtype_helpers.get_dtypes(
-            "integer", mixed_fn_index=mixed_fn_index, full=False, prune_function=False
+            "integer", mixed_fn_compos=mixed_fn_compos, full=False, prune_function=False
         )
     )
     if min_value is None and max_value is None:
@@ -214,7 +216,7 @@ def number(
     large_abs_safety_factor=1.1,
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
-    mixed_fn_index=0,
+    mixed_fn_compos=True,
 ):
     """
     Draws integers or floats with a safety factor applied to values.
@@ -251,10 +253,12 @@ def number(
     safety_factor_scale
         The operation to use for the safety factor scaling. Can be "linear" or "log".
         Default value = "linear".
-    mixed_fn_index
-        Indicates whether to draw from the dtypes of compositional implementation or
-         backend specific implementation for mixed partial functions.
-          Default is compositional.
+    mixed_fn_compos
+        boolean if True, the function will generate using the numeric dtypes
+        of the compositional implementation for mixed partial functions and
+        if False, it will generate using the numeric dtypes of the
+        primary implementation.
+
 
     Returns
     -------
@@ -267,7 +271,7 @@ def number(
             max_value=max_value,
             safety_factor=large_abs_safety_factor,
             safety_factor_scale=safety_factor_scale,
-            mixed_fn_index=mixed_fn_index,
+            mixed_fn_compos=mixed_fn_compos,
         )
         | floats(
             min_value=min_value,
@@ -275,6 +279,6 @@ def number(
             small_abs_safety_factor=small_abs_safety_factor,
             large_abs_safety_factor=large_abs_safety_factor,
             safety_factor_scale=safety_factor_scale,
-            mixed_fn_index=mixed_fn_index,
+            mixed_fn_compos=mixed_fn_compos,
         )
     )

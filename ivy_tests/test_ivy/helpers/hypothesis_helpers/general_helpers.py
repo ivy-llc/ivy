@@ -416,7 +416,11 @@ def get_axis(
 
 @st.composite
 def x_and_filters(
-    draw, dim: int = 2, transpose: bool = False, depthwise=False, mixed_fn_index=0
+    draw,
+    dim: int = 2,
+    transpose: bool = False,
+    depthwise=False,
+    mixed_fn_compos=True,
 ):
     """
     Draws a random x and filters for a convolution.
@@ -447,7 +451,7 @@ def x_and_filters(
     output_channels = draw(st.integers(1, 5))
     dilations = draw(st.integers(1, 2))
     dtype = draw(
-        dtype_helpers.get_dtypes("float", mixed_fn_index=mixed_fn_index, full=False)
+        dtype_helpers.get_dtypes("float", mixed_fn_compos=mixed_fn_compos, full=False)
     )
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
@@ -514,7 +518,7 @@ def x_and_filters(
 
 
 @st.composite
-def embedding_helper(draw, mixed_fn_index=0):
+def embedding_helper(draw, mixed_fn_compos=True):
     """
     Obtain weights for embeddings, the corresponding indices, the padding indices.
 
@@ -533,7 +537,7 @@ def embedding_helper(draw, mixed_fn_index=0):
             available_dtypes=[
                 x
                 for x in draw(
-                    dtype_helpers.get_dtypes("numeric", mixed_fn_index=mixed_fn_index)
+                    dtype_helpers.get_dtypes("numeric", mixed_fn_compos=mixed_fn_compos)
                 )
                 if "float" in x or "complex" in x
             ],

@@ -16,13 +16,17 @@ from ivy.functional.ivy.layers import _deconv_length
 
 @st.composite
 def x_and_linear(draw):
-    mixed_fn_index = draw(helpers.ints(min_value=0, max_value=1))
+    mixed_fn_compos = draw(st.booleans())
     is_torch_backend = ivy.current_backend_str() == "torch"
     dtype = draw(
-        helpers.get_dtypes("numeric", full=False, mixed_fn_index=mixed_fn_index)
+        helpers.get_dtypes("numeric", full=False, mixed_fn_compos=mixed_fn_compos)
     )
-    in_features = draw(helpers.ints(min_value=1, max_value=2))
-    out_features = draw(helpers.ints(min_value=1, max_value=2))
+    in_features = draw(
+        helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
+    )
+    out_features = draw(
+        helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
+    )
 
     x_shape = (
         1,
@@ -33,7 +37,7 @@ def x_and_linear(draw):
     weight_shape = (1,) + (out_features,) + (in_features,)
     # if backend is torch and we're testing the primary implementation
     # weight.ndim should be equal to 2
-    if is_torch_backend and mixed_fn_index:
+    if is_torch_backend and not mixed_fn_compos:
         weight_shape = (out_features,) + (in_features,)
 
     bias_shape = (

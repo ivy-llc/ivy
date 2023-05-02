@@ -31,16 +31,13 @@ _dtype_kind_keys = {
 }
 
 
-def _get_fn_dtypes(framework, kind="valid"):
+def _get_fn_dtypes(framework, mixed_fn_dtypes="compositional", kind="valid"):
     all_devices_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
         framework.backend
     ]
-    dtypes = []
-    if not isinstance(all_devices_dtypes, tuple):
-        all_devices_dtypes = (all_devices_dtypes,)
-    for devices_dtypes in all_devices_dtypes:
-        dtypes.append(devices_dtypes[test_globals.CURRENT_DEVICE_STRIPPED][kind])
-    return tuple(dtypes) if len(dtypes) > 1 else dtypes[0]
+    if mixed_fn_dtypes in all_devices_dtypes:
+        all_devices_dtypes = all_devices_dtypes[mixed_fn_dtypes]
+    return all_devices_dtypes[test_globals.CURRENT_DEVICE_STRIPPED][kind]
 
 
 def _get_type_dict(framework, kind):
@@ -91,7 +88,7 @@ def get_dtypes(
     draw,
     kind="valid",
     index=0,
-    mixed_fn_index=0,
+    mixed_fn_compos=True,
     full=True,
     none=False,
     key=None,
@@ -112,10 +109,10 @@ def get_dtypes(
         real_and_complex, float_and_complex, bool, and unsigned
     index
         list indexing incase a test needs to be skipped for a particular dtype(s)
-    mixed_fn_index
-        Indicates whether to draw from the dtypes of compositional implementation or
-         backend specific implementation for mixed partial functions.
-          Default is compositional.
+    mixed_fn_compos
+        boolean if True, the function will return the dtypes of the compositional
+        implementation for mixed partial functions and if False, it will return
+        the dtypes of the primary implementation.
     full
         returns the complete list of valid types
     none
@@ -184,14 +181,16 @@ def get_dtypes(
     >>> get_dtypes("valid", prune_function=False)
     ['float16']
     """
+    mixed_fn_dtypes = "compositional" if mixed_fn_compos else "primary"
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = retrieval_fn(test_globals.CURRENT_BACKEND(), kind)
-            valid_dtypes = (
-                set(valid_dtypes[mixed_fn_index])
-                if isinstance(valid_dtypes, tuple)
-                else set(valid_dtypes)
+            valid_dtypes = set(
+                retrieval_fn(
+                    test_globals.CURRENT_BACKEND(),
+                    mixed_fn_dtypes=mixed_fn_dtypes,
+                    kind=kind,
+                )
             )
         else:
             raise RuntimeError(
