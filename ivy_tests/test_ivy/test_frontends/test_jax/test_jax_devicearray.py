@@ -40,7 +40,7 @@ def test_jax_devicearray_property_dtype(
 ):
     dtype, data = dtype_x
     x = DeviceArray(data[0])
-    assert x.dtype.ivy_dtype == dtype[0]
+    assert x.dtype == dtype[0]
 
 
 @given(
@@ -341,7 +341,7 @@ def test_jax_devicearray__ne_(
     init_tree="jax.numpy.array",
     method_name="__lt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -377,7 +377,7 @@ def test_jax_devicearray__lt_(
     init_tree="jax.numpy.array",
     method_name="__le__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
     ),
 )
@@ -413,7 +413,7 @@ def test_jax_devicearray__le_(
     init_tree="jax.numpy.array",
     method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
     ),
 )
@@ -449,7 +449,7 @@ def test_jax_devicearray__gt_(
     init_tree="jax.numpy.array",
     method_name="__ge__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
     ),
 )

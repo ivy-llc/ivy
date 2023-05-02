@@ -188,6 +188,12 @@ class DeviceArray:
 
     def __setitem__(self, idx, val):
         raise ivy.utils.exceptions.IvyException(
-            "ivy.functional.frontends.jax.DeviceArray object "
-            "doesn't support assignment"
+            "ivy.functional.frontends.jax.DeviceArray object doesn't support assignment"
         )
+
+    def __iter__(self):
+        ndim = len(self.shape)
+        if ndim == 0:
+            raise TypeError("iteration over a 0-d devicearray not supported")
+        for i in range(ndim):
+            yield self[i]
