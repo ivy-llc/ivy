@@ -18,12 +18,19 @@ def directory_generator(req, base="/fw/"):
 def install_pkg(path, pkg, base="fw/"):
     if pkg.split("==")[0] if "==" in pkg else pkg == "torch":
         subprocess.run(
-            f"pip3 install --upgrade {pkg} --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cu118  --no-cache-dir",
+            (
+                f"pip3 install --upgrade {pkg} --default-timeout=100 --extra-index-url"
+                " https://download.pytorch.org/whl/cu118  --no-cache-dir"
+            ),
             shell=True,
         )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "jaxlib":
         subprocess.run(
-            f"pip install --upgrade 'jax[cuda11_local]' -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html   --no-cache-dir",
+            (
+                f"pip install --upgrade 'jax[cuda11_local]' -f"
+                f" https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
+                f" --no-cache-dir"
+            ),
             shell=True,
         )
     else:

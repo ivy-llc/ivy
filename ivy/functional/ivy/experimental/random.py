@@ -153,12 +153,12 @@ def gamma(
 
     Parameters
     ----------
-    shape
-        Shape parameter of the gamma distribution.
     alpha
         Alpha parameter of the gamma distribution.
     beta
         Beta parameter of the gamma distribution.
+    shape
+        Shape parameter of the gamma distribution.
     device
         device on which to create the array. 'cuda:0',
         'cuda:1', 'cpu' etc. (Default value = None).
@@ -177,7 +177,7 @@ def gamma(
         Returns an array filled with random values sampled from a gamma distribution.
     """
     return ivy.current_backend().gamma(
-        shape, alpha, beta, device=device, dtype=dtype, seed=seed, out=out
+        alpha, beta, shape=shape, device=device, dtype=dtype, seed=seed, out=out
     )
 
 
