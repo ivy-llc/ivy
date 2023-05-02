@@ -47,11 +47,3 @@ def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
     return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed)
 
 
-# stateless_binomial
-@to_ivy_arrays_and_back
-def stateless_binomial(
-        shape, seed, counts, probs, output_dtype=ivy.int32, name=None
-):
-    return ivy.stateless_binomial(shape=shape, seed=seed[0] + seed[1], counts=counts, probs=probs,
-                                  output_dtype=output_dtype
-                                  )
