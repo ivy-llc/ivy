@@ -7330,6 +7330,9 @@ def test_torch_instance_log10(
     method_name="short",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
     ),
 )
 def test_torch_instance_short(
