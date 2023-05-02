@@ -37,15 +37,19 @@ def min_max_bound_exclusion(draw,
     min_ex, max_ex = draw(exclude_min_max(exclude_min=exclude_min, exclude_max=exclude_max))
     return min_val, max_val, min_ex, max_ex
 
+
 @st.composite
 def floats(
     draw,
     *,
-    min_max_bound_exclusion=min_max_bound_exclusion,
+    min_value=None,
+    max_value=None,
     abs_smallest_val=None,
     allow_nan=False,
     allow_inf=False,
     allow_subnormal=False,
+    exclude_min=True,
+    exclude_max=True,
     large_abs_safety_factor=1.1,
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
@@ -59,14 +63,22 @@ def floats(
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    min_max_bound_exclusion
-        strategy that generates the min and maximum values and whether to exclude them.
+    min_value
+        minimum value of floats generated.
+    max_value
+        maximum value of floats generated.
+    abs_smallest_val
+        the absolute smallest representable value of the data type.
     allow_nan
         if True, allow Nans in the list.
     allow_inf
         if True, allow inf in the list.
     allow_subnormal
         if True, allow subnormals in the list.
+    exclude_min
+        if True, exclude the minimum limit.
+    exclude_max
+        if True, exclude the maximum limit.
     large_abs_safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
@@ -93,10 +105,8 @@ def floats(
     Returns
     -------
     ret
-        Float.
+        A strategy that draws floats.
     """
-
-    min_value, max_value, exclude_min, exclude_max = draw(min_max_bound_exclusion)
     # ToDo assert that if min or max can be represented
     dtype = draw(dtype_helpers.get_dtypes("float", full=False, prune_function=False))
     dtype = dtype[0]
@@ -153,7 +163,8 @@ def floats(
 def ints(
     draw,
     *,
-    min_max_values=min_max_bound,
+    min_value=None,
+    max_value=None,
     safety_factor=1.1,
     safety_factor_scale=None,
 ):
@@ -165,8 +176,10 @@ def ints(
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    min_max_values
-        strategy that draws a tuple of min and max values.
+    min_value
+        minimum value of integers generated.
+    max_value
+        maximum value of integers generated.
     safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
@@ -183,10 +196,9 @@ def ints(
     Returns
     -------
     ret
-        Integer.
+        A strategy that draws integers.
     """
     dtype = draw(dtype_helpers.get_dtypes("integer", full=False, prune_function=False))
-    min_value, max_value = min_max_values()
     if min_value is None and max_value is None:
         safety_factor_scale = "linear"
     if safety_factor_scale is not None:
@@ -204,7 +216,8 @@ def ints(
 def number(
     draw,
     *,
-    min_max_values=min_max_bound,
+    min_value=None,
+    max_value=None,
     large_abs_safety_factor=1.1,
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
@@ -217,8 +230,10 @@ def number(
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    min_max_values
-        strategy that draws a tuple of min and max values.
+    min_value
+        minimum value of integers generated.
+    max_value
+        maximum value of integers generated.
     large_abs_safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
@@ -246,9 +261,8 @@ def number(
     Returns
     -------
     ret
-        An integer or float.
+        A strategy that draws integers or floats.
     """
-    min_value, max_value = min_max_values()
     return draw(
         ints(
             min_value=min_value,
