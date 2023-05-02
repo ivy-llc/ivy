@@ -844,7 +844,6 @@ def test_nextafter(
         valid_axis=True,
         force_int_axis=True,
     ),
-    n=st.integers(min_value=0, max_value=5),
     dtype_prepend=helpers.dtype_and_values(
         available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
         min_num_dims=1,
@@ -855,6 +854,7 @@ def test_nextafter(
         min_num_dims=1,
         max_num_dims=1,
     ),
+    n=st.integers(min_value=0, max_value=5),
     test_gradients=st.just(False),
 )
 def test_diff(
