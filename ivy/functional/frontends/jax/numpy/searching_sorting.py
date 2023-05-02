@@ -46,8 +46,7 @@ def argwhere(a, /, *, size=None, fill_value=None):
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
         logging.warning(
-            "'kind' argument to argsort is ignored; only 'stable' sorts "
-            "are supported."
+            "'kind' argument to argsort is ignored; only 'stable' sorts are supported."
         )
     if order is not None:
         raise ivy.utils.exceptions.IvyError(

@@ -613,7 +613,7 @@ def test_jax_numpy_stack(
     fn_tree="jax.numpy.take",
     dtype_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=['int32', 'int64'],
+        indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,

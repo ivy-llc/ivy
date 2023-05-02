@@ -17,9 +17,9 @@ try:
     import pynvml
 except ImportError:
     warnings.warn(
-        "pynvml installation was not found in the environment,\
-         functionalities of the Ivy's device module will be limited.\
-         Please install pynvml if you wish to use GPUs with Ivy."
+        "pynvml installation was not found in the environment, functionalities"
+        " of the Ivy's device module will be limited. Please install pynvml if"
+        " you wish to use GPUs with Ivy."
     )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
@@ -35,7 +35,7 @@ from ivy.functional.ivy.device import _get_nvml_gpu_handle
 # ------- #
 
 
-def _ram_array_and_clear_test(metric_fn, size=10000000):
+def _ram_array_and_clear_test(metric_fn, size=1000000000):
     # This function checks if the memory usage changes before, during and after
 
     # Measure usage before creating array
@@ -162,6 +162,8 @@ def test_as_native_dev(*, dtype_and_x, test_flags, on_device):
             )
         elif ivy.current_backend_str() == "torch":
             assert ret.type == device.type
+        elif ivy.current_backend_str() == "paddle":
+            assert ret._equals(device)
         else:
             assert ret == device
 
@@ -231,7 +233,10 @@ def test_to_device(
         assert x_on_dev is out
 
         # should be the same device
-        assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
+        if "paddle" not in ivy.current_backend_str():
+            assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
+        else:
+            assert ivy.dev(x_on_dev, as_native=False) == ivy.dev(out, as_native=False)
 
         # check if native arrays are the same
         # these backends do not support native inplace updates

@@ -326,9 +326,11 @@ def scatter_nd(
     updates = tf.constant(updates)
     updates = tf.cast(
         updates,
-        ivy.dtype(out, as_native=True)
-        if ivy.exists(out)
-        else ivy.default_dtype(item=updates),
+        (
+            ivy.dtype(out, as_native=True)
+            if ivy.exists(out)
+            else ivy.default_dtype(item=updates)
+        ),
     )
     contains_slices = (
         any(isinstance(idx, slice) for idx in indices)
@@ -358,9 +360,7 @@ def scatter_nd(
         shape = (
             shape
             if ivy.exists(shape)
-            else out.shape
-            if ivy.exists(out)
-            else updates.shape
+            else out.shape if ivy.exists(out) else updates.shape
         )
         indices = _parse_ellipsis(indices, len(shape))
         indices = tf.stack(
@@ -368,15 +368,20 @@ def scatter_nd(
                 tf.reshape(value, (-1,))
                 for value in tf.meshgrid(
                     *[
-                        tf.range(s)
-                        if idx == slice(None, None, None)
-                        else tf.range(
-                            ivy.default(idx.start, 0),
-                            ivy.default(idx.stop, s),
-                            ivy.default(idx.step, 1),
+                        (
+                            tf.range(s)
+                            if idx == slice(None, None, None)
+                            else (
+                                tf.range(
+                                    ivy.default(idx.start, 0),
+                                    ivy.default(idx.stop, s),
+                                    ivy.default(idx.step, 1),
+                                )
+                                if isinstance(idx, slice)
+                                and (idx != slice(None, None, None))
+                                else tf.constant([idx % s])
+                            )
                         )
-                        if isinstance(idx, slice) and (idx != slice(None, None, None))
-                        else tf.constant([idx % s])
                         for s, idx in zip(shape, indices)
                     ],
                     indexing="ij",
@@ -388,9 +393,7 @@ def scatter_nd(
         shape = (
             shape
             if ivy.exists(shape)
-            else out.shape
-            if ivy.exists(out)
-            else updates.shape
+            else out.shape if ivy.exists(out) else updates.shape
         )
         if isinstance(indices, (tuple, list)):
             indices = _parse_index(indices, len(shape)) if -1 in indices else indices
@@ -399,16 +402,20 @@ def scatter_nd(
                     tf.reshape(value, (-1,))
                     for value in tf.meshgrid(
                         *[
-                            tf.range(s)
-                            if idx == slice(None, None, None)
-                            else tf.range(
-                                ivy.default(idx.start, 0),
-                                ivy.default(idx.stop, s),
-                                ivy.default(idx.step, 1),
+                            (
+                                tf.range(s)
+                                if idx == slice(None, None, None)
+                                else (
+                                    tf.range(
+                                        ivy.default(idx.start, 0),
+                                        ivy.default(idx.stop, s),
+                                        ivy.default(idx.step, 1),
+                                    )
+                                    if isinstance(idx, slice)
+                                    and (idx != slice(None, None, None))
+                                    else tf.constant([idx % s])
+                                )
                             )
-                            if isinstance(idx, slice)
-                            and (idx != slice(None, None, None))
-                            else tf.constant([idx % s])
                             for s, idx in zip(shape, indices)
                         ],
                         indexing="ij",
@@ -447,16 +454,20 @@ def scatter_nd(
                         tf.reshape(value, (-1,))
                         for value in tf.meshgrid(
                             *[
-                                tf.range(s)
-                                if idx == slice(None, None, None)
-                                else tf.range(
-                                    ivy.default(idx.start, 0),
-                                    ivy.ivy.default(idx.stop, s),
-                                    ivy.default(idx.step, 1),
+                                (
+                                    tf.range(s)
+                                    if idx == slice(None, None, None)
+                                    else (
+                                        tf.range(
+                                            ivy.default(idx.start, 0),
+                                            ivy.ivy.default(idx.stop, s),
+                                            ivy.default(idx.step, 1),
+                                        )
+                                        if isinstance(idx, slice)
+                                        and idx != slice(None, None, None)
+                                        else tf.constant([idx % s])
+                                    )
                                 )
-                                if isinstance(idx, slice)
-                                and idx != slice(None, None, None)
-                                else tf.constant([idx % s])
                                 for s, idx in zip(shape, index)
                             ],
                             indexing="xy",
