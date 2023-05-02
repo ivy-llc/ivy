@@ -42,3 +42,25 @@ def test_numpy_ifttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         x=arr[0],
         axes=None,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.fft",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
+    ),
+)
+def test_numpy_ftt(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        n=None,
+        axis=-1,
+        norm=None,
+    )
