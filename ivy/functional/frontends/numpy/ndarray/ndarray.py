@@ -469,7 +469,7 @@ class ndarray:
         if context is None:
             return np_frontend.asarray(self)
         else:
-            return ivy.array(out_arr)
+            return np_frontend.array(out_arr)
 
     def __getitem__(self, key, /):
         ivy_args = ivy.nested_map([self, key], _to_ivy_array)
