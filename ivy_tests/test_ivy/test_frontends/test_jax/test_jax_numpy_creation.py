@@ -864,7 +864,7 @@ def test_jax_numpy_cdouble(
 @handle_frontend_test(
     fn_tree="jax.numpy.size",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=["int64"],
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
