@@ -1158,7 +1158,7 @@ def test_torch_broadcast_shapes(
     fn_tree="torch.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
 )
@@ -1237,7 +1237,7 @@ def test_torch_searchsorted(
     fn_tree="torch.atleast_3d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
 )

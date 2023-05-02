@@ -1015,7 +1015,7 @@ def test_numpy_instance_ravel(
         min_num_dims=2,
         min_dim_size=2,
     ),
-    repeats=helpers.ints(min_value=2, max_value=5),
+    repeats=helpers.ints(min_max=helpers.min_max_bound(2, 5)),
     axis=helpers.ints(min_value=-1, max_value=1),
 )
 def test_numpy_instance_repeat(
@@ -1519,7 +1519,7 @@ def test_numpy_instance_rtruediv__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    power=helpers.ints(min_value=1, max_value=3),
+    power=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
 )
 def test_numpy_instance_pow__(
     dtype_and_x,
@@ -2413,7 +2413,7 @@ def test_numpy_instance_itruediv__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    power=helpers.ints(min_value=1, max_value=3),
+    power=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
 )
 def test_numpy_instance_ipow__(
     dtype_and_x,

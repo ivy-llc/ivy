@@ -4470,7 +4470,7 @@ def test_torch_instance_matmul(
 
 @st.composite
 def _array_idxes_n_dtype(draw, **kwargs):
-    num_dims = draw(helpers.ints(min_value=1, max_value=4))
+    num_dims = draw(helpers.ints(min_max=helpers.min_max_bound(1, 4)))
     dtype, x = draw(
         helpers.dtype_and_values(
             **kwargs, min_num_dims=num_dims, max_num_dims=num_dims, shared_dtype=True
@@ -5697,11 +5697,11 @@ def test_torch_instance_index_select(
 
 @st.composite
 def _arrays_dim_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_dims = draw(st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 4)), key="num_dims"))
     num_arrays = 2
     common_shape = draw(
         helpers.lists(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             min_size=num_dims - 1,
             max_size=num_dims - 1,
         )
@@ -5709,7 +5709,7 @@ def _arrays_dim_idx_n_dtypes(draw):
     _dim = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
         helpers.lists(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             min_size=num_arrays,
             max_size=num_arrays,
         )
@@ -6331,7 +6331,7 @@ def test_torch_instance_real(
 def _masked_fill_helper(draw):
     cond, xs, dtypes = draw(_broadcastable_trio())
     if ivy.is_uint_dtype(dtypes[0]):
-        fill_value = draw(helpers.ints(min_value=0, max_value=5))
+        fill_value = draw(helpers.ints(min_max=helpers.min_max_bound(0, 5)))
     elif ivy.is_int_dtype(dtypes[0]):
         fill_value = draw(helpers.ints(min_value=-5, max_value=5))
     else:

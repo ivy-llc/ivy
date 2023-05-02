@@ -22,12 +22,12 @@ from ivy_tests.test_ivy.helpers import handle_test
 # fomaml step unique vars
 @handle_test(
     fn_tree="functional.ivy.fomaml_step",
-    inner_grad_steps=helpers.ints(min_value=1, max_value=3),
+    inner_grad_steps=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
     batched=st.booleans(),
     stop_gradients=st.booleans(),
-    num_tasks=helpers.ints(min_value=1, max_value=2),
+    num_tasks=helpers.ints(min_max=helpers.min_max_bound(1, 2)),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
 def test_fomaml_step_unique_vars(
@@ -171,12 +171,12 @@ def test_fomaml_step_unique_vars(
 # fomaml step shared vars
 @handle_test(
     fn_tree="functional.ivy.fomaml_step",
-    inner_grad_steps=helpers.ints(min_value=1, max_value=3),
+    inner_grad_steps=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
     batched=st.booleans(),
     stop_gradients=st.booleans(),
-    num_tasks=helpers.ints(min_value=1, max_value=2),
+    num_tasks=helpers.ints(min_max=helpers.min_max_bound(1, 2)),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
 def test_fomaml_step_shared_vars(
@@ -339,12 +339,12 @@ def test_fomaml_step_shared_vars(
 # fomaml step overlapping vars
 @handle_test(
     fn_tree="functional.ivy.fomaml_step",
-    inner_grad_steps=helpers.ints(min_value=1, max_value=3),
+    inner_grad_steps=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
     batched=st.booleans(),
     stop_gradients=st.booleans(),
-    num_tasks=helpers.ints(min_value=1, max_value=2),
+    num_tasks=helpers.ints(min_max=helpers.min_max_bound(1, 2)),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
 def test_fomaml_step_overlapping_vars(

@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @st.composite
 def _generate_prelu_arrays(draw):
-    arr_size = draw(helpers.ints(min_value=2, max_value=5))
+    arr_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     input = draw(
         helpers.array_values(
@@ -248,7 +248,7 @@ def test_torch_softmin(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     threshold=helpers.floats(min_value=0.0, max_value=1.0),
-    value=helpers.ints(min_value=5, max_value=20),
+    value=helpers.ints(min_max=helpers.min_max_bound(5, 20)),
     test_with_out=st.just(False),
     test_inplace=st.booleans(),
 )
@@ -282,7 +282,7 @@ def test_torch_threshold(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     threshold=helpers.floats(min_value=0.0, max_value=1.0),
-    value=helpers.ints(min_value=5, max_value=20),
+    value=helpers.ints(min_max=helpers.min_max_bound(5, 20)),
     test_with_out=st.just(False),
     test_inplace=st.booleans(),
 )
@@ -758,7 +758,7 @@ def test_torch_silu(
 @st.composite
 def _glu_arrays(draw):
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    shape = draw(st.shared(helpers.ints(min_value=1, max_value=5)))
+    shape = draw(st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 5))))
     shape = shape * 2
     input = draw(helpers.array_values(dtype=dtype[0], shape=(shape, shape)))
     dim = draw(st.shared(helpers.get_axis(shape=(shape,), force_int=True)))
@@ -1021,7 +1021,7 @@ def test_torch_hardtanh_(
         force_int_axis=True,
         valid_axis=True,
     ),
-    p=helpers.ints(min_value=2, max_value=5),
+    p=helpers.ints(min_max=helpers.min_max_bound(2, 5)),
 )
 def test_torch_normalize(
     *,

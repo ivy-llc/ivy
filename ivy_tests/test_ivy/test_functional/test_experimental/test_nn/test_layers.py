@@ -248,9 +248,9 @@ def valid_dct(draw):
     n = draw(st.sampled_from([None, "int"]))
     axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len))
     norm = draw(st.sampled_from([None, "ortho"]))
-    type = draw(helpers.ints(min_value=1, max_value=4))
+    type = draw(helpers.ints(min_max=helpers.min_max_bound(1, 4)))
     if n == "int":
-        n = draw(helpers.ints(min_value=1, max_value=20))
+        n = draw(helpers.ints(min_max=helpers.min_max_bound(1, 20)))
         if n <= 1 and type == 1:
             n = 2
     if norm == "ortho" and type == 1:
@@ -331,7 +331,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "lanczos5",
         "nearest-exact",
     ]:
-        num_dims = draw(helpers.ints(min_value=1, max_value=3)) + 2
+        num_dims = draw(helpers.ints(min_max=helpers.min_max_bound(1, 3))) + 2
         align_corners = None
     dtype, x = draw(
         helpers.dtype_and_values(
@@ -362,7 +362,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         size = draw(
             st.one_of(
                 helpers.lists(
-                    x=helpers.ints(min_value=1, max_value=3),
+                    x=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
@@ -711,7 +711,7 @@ def test_dft(
         max_value=100,
         min_value=-100,
     ),
-    output_size=helpers.ints(min_value=1, max_value=10),
+    output_size=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
     # TODO: need to debug for containers
@@ -751,10 +751,10 @@ def test_adaptive_avg_pool1d(
     ),
     output_size=st.one_of(
         st.tuples(
-            helpers.ints(min_value=1, max_value=10),
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
         ),
-        helpers.ints(min_value=1, max_value=10),
+        helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
     ground_truth_backend="torch",

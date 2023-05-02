@@ -58,7 +58,7 @@ def test_numpy_reshape(
     dtype_x_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), ret_shape=True
     ),
-    factor=helpers.ints(min_value=1, max_value=5),
+    factor=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
     test_with_out=st.just(False),
 )
 def test_numpy_broadcast_to(

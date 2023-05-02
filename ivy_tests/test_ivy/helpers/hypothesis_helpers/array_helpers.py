@@ -16,7 +16,7 @@ from . import dtype_helpers, number_helpers
 
 @st.composite
 def array_bools(
-    draw, *, size=st.shared(number_helpers.ints(min_max=helpers.min_max_bound(1, 4)), key="size")
+    draw, *, size=st.shared(number_helpers.ints(min_max=number_helpers.min_max_bound(1, 4)), key="size")
 ):
     """
     Draws a list of booleans with a given size.

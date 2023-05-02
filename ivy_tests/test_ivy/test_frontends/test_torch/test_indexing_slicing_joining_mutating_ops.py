@@ -19,20 +19,20 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # 
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_dims = draw(st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 4)), key="num_dims"))
     num_arrays = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="num_arrays")
     )
     common_shape = draw(
         helpers.list_of_size(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
         helpers.list_of_size(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             size=num_arrays,
         )
     )
@@ -54,7 +54,7 @@ def _arrays_idx_n_dtypes(draw):
 # noinspection DuplicatedCode
 @st.composite
 def _array_idxes_n_dtype(draw, **kwargs):
-    num_dims = draw(helpers.ints(min_value=1, max_value=4))
+    num_dims = draw(helpers.ints(min_max=helpers.min_max_bound(1, 4)))
     dtype, x = draw(
         helpers.dtype_and_values(
             **kwargs, min_num_dims=num_dims, max_num_dims=num_dims, shared_dtype=True
@@ -325,7 +325,7 @@ def test_torch_reshape(
     fn_tree="torch.stack",
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
+        num_arrays=st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="num_arrays"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     dim=helpers.get_axis(
@@ -1221,11 +1221,11 @@ def test_torch_conj(
 
 @st.composite
 def _arrays_dim_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_dims = draw(st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 4)), key="num_dims"))
     num_arrays = 2
     common_shape = draw(
         helpers.lists(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             min_size=num_dims - 1,
             max_size=num_dims - 1,
         )
@@ -1233,7 +1233,7 @@ def _arrays_dim_idx_n_dtypes(draw):
     _dim = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
         helpers.lists(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             min_size=num_arrays,
             max_size=num_arrays,
         )

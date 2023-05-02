@@ -108,18 +108,18 @@ def _x_and_filters(
         if not transpose:
             filter_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_max=helpers.min_max_bound(3, 5)),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 3)),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 3)),
                 )
             )
             min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (fdilations[0] - 1)
         else:
             filter_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_max=helpers.min_max_bound(3, 5)),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 3)),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 3)),
                 )
             )
             min_x_width = 1
@@ -130,7 +130,7 @@ def _x_and_filters(
         if data_format == "NWC":
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 5)),
                     helpers.ints(min_value=min_x_width, max_value=100),
                     helpers.ints(min_value=d_in, max_value=d_in),
                 )
@@ -139,7 +139,7 @@ def _x_and_filters(
         else:
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 5)),
                     helpers.ints(min_value=d_in, max_value=d_in),
                     helpers.ints(min_value=min_x_width, max_value=100),
                 )
@@ -158,10 +158,10 @@ def _x_and_filters(
         min_x_width = 1
         filter_shape = draw(
             st.tuples(
-                helpers.ints(min_value=3, max_value=5),
-                helpers.ints(min_value=3, max_value=5),
-                helpers.ints(min_value=1, max_value=3),
-                helpers.ints(min_value=1, max_value=3),
+                helpers.ints(min_max=helpers.min_max_bound(3, 5)),
+                helpers.ints(min_max=helpers.min_max_bound(3, 5)),
+                helpers.ints(min_max=helpers.min_max_bound(1, 3)),
+                helpers.ints(min_max=helpers.min_max_bound(1, 3)),
             )
         )
         if not transpose:
@@ -174,7 +174,7 @@ def _x_and_filters(
         if data_format == "NHWC":
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 5)),
                     helpers.ints(min_value=min_x_height, max_value=100),
                     helpers.ints(min_value=min_x_width, max_value=100),
                     helpers.ints(min_value=d_in, max_value=d_in),
@@ -185,7 +185,7 @@ def _x_and_filters(
         else:
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 5)),
                     helpers.ints(min_value=d_in, max_value=d_in),
                     helpers.ints(min_value=min_x_height, max_value=100),
                     helpers.ints(min_value=min_x_width, max_value=100),
@@ -204,11 +204,11 @@ def _x_and_filters(
     elif dim == 3:
         filter_shape = draw(
             st.tuples(
-                helpers.ints(min_value=3, max_value=5),
-                helpers.ints(min_value=3, max_value=5),
-                helpers.ints(min_value=3, max_value=5),
-                helpers.ints(min_value=1, max_value=3),
-                helpers.ints(min_value=1, max_value=3),
+                helpers.ints(min_max=helpers.min_max_bound(3, 5)),
+                helpers.ints(min_max=helpers.min_max_bound(3, 5)),
+                helpers.ints(min_max=helpers.min_max_bound(3, 5)),
+                helpers.ints(min_max=helpers.min_max_bound(1, 3)),
+                helpers.ints(min_max=helpers.min_max_bound(1, 3)),
             )
         )
         if not transpose:
@@ -226,7 +226,7 @@ def _x_and_filters(
         if data_format == "NDHWC":
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 5)),
                     helpers.ints(min_value=min_x_depth, max_value=100),
                     helpers.ints(min_value=min_x_height, max_value=100),
                     helpers.ints(min_value=min_x_width, max_value=100),
@@ -239,7 +239,7 @@ def _x_and_filters(
         else:
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_max=helpers.min_max_bound(1, 5)),
                     helpers.ints(min_value=d_in, max_value=d_in),
                     helpers.ints(min_value=min_x_depth, max_value=100),
                     helpers.ints(min_value=min_x_height, max_value=100),
@@ -279,7 +279,7 @@ def _x_and_filters(
             1,
             1,
             filter_shape[-1] * filter_shape[-2],
-            draw(helpers.ints(min_value=1, max_value=3)),
+            draw(helpers.ints(min_max=helpers.min_max_bound(1, 3))),
         )
         p_filters = draw(
             helpers.array_values(
@@ -842,7 +842,7 @@ def test_tensorflow_batch_normalization(
     fn_tree="tensorflow.nn.dropout",
     dtype_x_noiseshape=_dropout_helper(),
     rate=helpers.floats(min_value=0, max_value=0.9),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_with_out=st.just(False),
 )
 def test_tensorflow_dropout(

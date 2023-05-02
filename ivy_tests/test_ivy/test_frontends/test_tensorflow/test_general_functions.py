@@ -231,10 +231,10 @@ def test_tensorflow_clip_by_norm(
 # eye
 @handle_frontend_test(
     fn_tree="tensorflow.eye",
-    n_rows=helpers.ints(min_value=0, max_value=10),
-    n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
+    n_rows=helpers.ints(min_max=helpers.min_max_bound(0, 10)),
+    n_cols=st.none() | helpers.ints(min_max=helpers.min_max_bound(0, 10)),
     batch_shape=st.lists(
-        helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
+        helpers.ints(min_max=helpers.min_max_bound(1, 10)), min_size=1, max_size=2
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )
@@ -861,8 +861,8 @@ def test_tensorflow_ensure_shape(
 @handle_frontend_test(
     fn_tree="tensorflow.range",
     start=helpers.ints(min_value=-50, max_value=0),
-    limit=helpers.ints(min_value=1, max_value=50),
-    delta=helpers.ints(min_value=1, max_value=5),
+    limit=helpers.ints(min_max=helpers.min_max_bound(1, 50)),
+    delta=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
     dtype=helpers.get_dtypes("float"),
     test_with_out=st.just(False),
 )
@@ -967,7 +967,7 @@ def test_tensorflow_searchsorted(
     fn_tree="tensorflow.stack",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
+        num_arrays=st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="num_arrays"),
         shape=helpers.get_shape(min_num_dims=1),
         shared_dtype=True,
         valid_axis=True,
@@ -1354,7 +1354,7 @@ def _linspace_helper(draw):
 @handle_frontend_test(
     fn_tree="tensorflow.linspace",
     dtype_and_params=_linspace_helper(),
-    num=helpers.ints(min_value=2, max_value=10),
+    num=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
     axis=helpers.ints(min_value=-1, max_value=0),
 )
 def test_tensorflow_linspace(
@@ -1723,7 +1723,7 @@ def test_tensorflow_split(
         valid_axis=True,
         force_int_axis=True,
     ),
-    repeats=helpers.ints(min_value=1, max_value=5),
+    repeats=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
 )
 def test_tensorflow_repeat(
     *,

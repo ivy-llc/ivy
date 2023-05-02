@@ -15,10 +15,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_num_dims=1,
         max_num_dims=1,
     ),
-    minval=helpers.ints(min_value=0, max_value=3),
-    maxval=helpers.ints(min_value=4, max_value=10),
+    minval=helpers.ints(min_max=helpers.min_max_bound(0, 3)),
+    maxval=helpers.ints(min_max=helpers.min_max_bound(4, 10)),
     dtype=helpers.get_dtypes("float", full=False),
-    seed=helpers.ints(min_value=0, max_value=10),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 10)),
     test_with_out=st.just(False),
 )
 def test_tensorflow_uniform(
@@ -61,7 +61,7 @@ def test_tensorflow_uniform(
     mean=st.floats(allow_nan=False, allow_infinity=False, width=32),
     stddev=st.floats(allow_nan=False, allow_infinity=False, width=32, min_value=0),
     dtype=helpers.get_dtypes("float", full=False),
-    seed=helpers.ints(min_value=0, max_value=10),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 10)),
     test_with_out=st.just(False),
 )
 def test_tensorflow_normal(
@@ -94,7 +94,7 @@ def test_tensorflow_normal(
 @handle_frontend_test(
     fn_tree="tensorflow.random.shuffle",
     dtype_value=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    seed=helpers.ints(min_value=0, max_value=10),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 10)),
     test_with_out=st.just(False),
 )
 def test_tensorflow_shuffle(
@@ -184,7 +184,7 @@ def test_tensorflow_stateless_uniform(
         ),
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    seed=helpers.ints(min_value=0, max_value=10),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 10)),
     test_with_out=st.just(False),
 )
 def test_tensorflow_poisson(

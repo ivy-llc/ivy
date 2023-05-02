@@ -268,7 +268,7 @@ def test_grad(x, dtype, func, backend_fw, nth):
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
     ),
-    step=helpers.ints(min_value=1, max_value=3),
+    step=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
     beta1_n_beta2_n_epsilon=helpers.list_of_size(
         x=helpers.floats(min_value=1e-1, max_value=1),
         size=3,
@@ -479,7 +479,7 @@ def test_adam_update(
         max_value=1e5,
         num_arrays=4,
     ),
-    step=helpers.ints(min_value=1, max_value=100),
+    step=helpers.ints(min_max=helpers.min_max_bound(1, 100)),
     beta1_n_beta2_n_epsilon_n_lambda=helpers.list_of_size(
         x=helpers.floats(
             min_value=1e-2,
@@ -488,7 +488,7 @@ def test_adam_update(
         size=4,
     ),
     mtr=st.one_of(
-        helpers.ints(min_value=1, max_value=10),
+        helpers.ints(min_max=helpers.min_max_bound(1, 10)),
         st.floats(min_value=1e-2, max_value=10, exclude_min=True),
     ),
     stopgrad=st.booleans(),

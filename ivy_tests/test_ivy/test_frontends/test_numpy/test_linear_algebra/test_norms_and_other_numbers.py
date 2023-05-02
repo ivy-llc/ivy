@@ -52,7 +52,7 @@ def _norm_helper(draw):
                 safety_factor_scale="log",
             )
         )
-        ints = draw(helpers.ints(min_value=1, max_value=2))
+        ints = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
         floats = draw(helpers.floats(min_value=1, max_value=2))
         ord = draw(st.sampled_from([ints, floats, float("inf"), float("-inf")]))
         check_stable = False

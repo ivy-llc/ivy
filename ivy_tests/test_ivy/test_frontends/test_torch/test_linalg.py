@@ -18,7 +18,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import 
 # helpers
 @st.composite
 def _get_dtype_and_square_matrix(draw):
-    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     mat = draw(
         helpers.array_values(
@@ -53,7 +53,7 @@ def _get_dtype_and_matrix(draw):
         max_value=1e04,
     ),
     kd=st.booleans(),
-    ord=helpers.ints(min_value=1, max_value=2),
+    ord=helpers.ints(min_max=helpers.min_max_bound(1, 2)),
     dtype=helpers.get_dtypes("valid"),
 )
 def test_torch_vector_norm(
@@ -91,7 +91,7 @@ def test_torch_vector_norm(
         min_value=-1e4,
         max_value=1e4,
         small_abs_safety_factor=3,
-        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 10)).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
 )
 def test_torch_inv(
@@ -122,7 +122,7 @@ def test_torch_inv(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_value=0,
         max_value=20,
-        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 10)).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
 )
 def test_torch_inv_ex(
@@ -269,7 +269,7 @@ def test_torch_slogdet(
 @st.composite
 def _get_symmetrix_matrix(draw):
     input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("float")))))
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
+    random_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 4)))
     batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
     num_independnt_vals = int((random_size**2) / 2 + random_size / 2)
     array_vals_flat = np.array(
@@ -412,7 +412,7 @@ def test_torch_eigvalsh(
     fn_tree="torch.linalg.matrix_power",
     aliases=["torch.matrix_power"],
     dtype_and_x=_get_dtype_and_square_matrix(),
-    n=helpers.ints(min_value=2, max_value=5),
+    n=helpers.ints(min_max=helpers.min_max_bound(2, 5)),
 )
 def test_torch_matrix_power(
     *,
@@ -638,7 +638,7 @@ def test_torch_cholesky(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ),
     full_matrices=st.booleans(),
 )
@@ -732,7 +732,7 @@ def test_torch_eig(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -809,7 +809,7 @@ def test_torch_svdvals(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x + 1])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -857,8 +857,8 @@ def _tensorinv_helper(draw):
         result.append(x)
         return np.array(result)
 
-    ind = draw(helpers.ints(min_value=1, max_value=6))
-    product_half = draw(helpers.ints(min_value=2, max_value=25))
+    ind = draw(helpers.ints(min_max=helpers.min_max_bound(1, 6)))
+    product_half = draw(helpers.ints(min_max=helpers.min_max_bound(2, 25)))
     factors_list = factors(product_half)
     shape = ()
     while len(shape) < ind and ind > 2:
@@ -930,7 +930,7 @@ def _get_solve_matrices(draw):
     )
     input_dtype = draw(input_dtype_strategy)
 
-    dim = draw(helpers.ints(min_value=2, max_value=5))
+    dim = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
 
     first_matrix = draw(
         helpers.array_values(
@@ -992,9 +992,9 @@ def _lu_factor_helper(draw):
     # batch dimensions
     input_dtype = draw(helpers.get_dtypes("float"))
 
-    dim1 = draw(helpers.ints(min_value=2, max_value=3))
-    dim2 = draw(helpers.ints(min_value=2, max_value=3))
-    # batch_dim = draw(helpers.ints(min_value=0, max_value=2))
+    dim1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 3)))
+    dim2 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 3)))
+    # batch_dim = draw(helpers.ints(min_max=helpers.min_max_bound(0, 2)))
     batch_dim = 0
 
     if batch_dim == 0:
@@ -1095,7 +1095,7 @@ def test_torch_matmul(
 def _vander_helper(draw):
     # generate input matrix of shape (*, n) and where '*' is one or more
     # batch dimensions
-    N = draw(helpers.ints(min_value=2, max_value=5))
+    N = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     if draw(helpers.floats(min_value=0, max_value=1.0)) < 0.5:
         N = None
 

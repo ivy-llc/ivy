@@ -225,20 +225,20 @@ def test_tensorflow_BroadcastTo(  # NOQA
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_dims = draw(st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 4)), key="num_dims"))
     num_arrays = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="num_arrays")
     )
     common_shape = draw(
         helpers.list_of_size(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
         helpers.list_of_size(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             size=num_arrays,
         )
     )
@@ -446,7 +446,7 @@ def test_tensorflow_Div(  # NOQA
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
+        return draw(helpers.ints(min_max=helpers.min_max_bound(0, 5)))
     elif ivy.is_int_dtype(dtype):
         return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(helpers.floats(min_value=-5, max_value=5))
@@ -2294,7 +2294,7 @@ def test_tensorflow_OnesLike(  # NOQA
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ),
     test_with_out=st.just(False),
 )
@@ -2456,7 +2456,7 @@ def test_tensorflow_LeftShift(  # NOQA
     fn_tree="tensorflow.raw_ops.MatrixDeterminant",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
         min_value=-5,
         max_value=5,
     ),
@@ -2786,7 +2786,7 @@ def test_tensorflow_TruncateDiv(  # NOQA
     fn_tree="tensorflow.raw_ops.MatrixInverse",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 10)).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     adjoint=st.booleans(),
     test_with_out=st.just(False),
@@ -3398,7 +3398,7 @@ def _LinSpace_helper(draw):
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.LinSpace",
     dtype_and_params=_LinSpace_helper(),
-    num=helpers.ints(min_value=2, max_value=10),
+    num=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
 )
 def test_tensorflow_LinSpace(
     *,

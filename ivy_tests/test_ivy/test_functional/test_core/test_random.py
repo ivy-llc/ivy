@@ -29,7 +29,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_dim_size=2,
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_random_uniform(
@@ -94,7 +94,7 @@ def test_random_uniform(
         min_dim_size=2,
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_random_normal(
@@ -140,11 +140,11 @@ def test_random_normal(
 @st.composite
 def _pop_size_num_samples_replace_n_probs(draw):
     prob_dtype = draw(helpers.get_dtypes("float", full=False))
-    batch_size = draw(helpers.ints(min_value=1, max_value=5))
-    population_size = draw(helpers.ints(min_value=1, max_value=20))
+    batch_size = draw(helpers.ints(min_max=helpers.min_max_bound(1, 5)))
+    population_size = draw(helpers.ints(min_max=helpers.min_max_bound(1, 20)))
     replace = draw(st.booleans())
     if replace:
-        num_samples = draw(helpers.ints(min_value=1, max_value=20))
+        num_samples = draw(helpers.ints(min_max=helpers.min_max_bound(1, 20)))
     else:
         num_samples = draw(helpers.ints(min_value=1, max_value=population_size))
     probs = draw(
@@ -165,7 +165,7 @@ def _pop_size_num_samples_replace_n_probs(draw):
 @handle_test(
     fn_tree="functional.ivy.multinomial",
     everything=_pop_size_num_samples_replace_n_probs(),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_multinomial(
@@ -218,8 +218,8 @@ def test_multinomial(
 @st.composite
 def _gen_randint_data(draw):
     dtype = draw(helpers.get_dtypes("signed_integer", full=False))
-    dim1 = draw(helpers.ints(min_value=1, max_value=5))
-    dim2 = draw(helpers.ints(min_value=2, max_value=8))
+    dim1 = draw(helpers.ints(min_max=helpers.min_max_bound(1, 5)))
+    dim2 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 8)))
     low = draw(
         helpers.array_values(
             dtype=dtype[0],
@@ -243,7 +243,7 @@ def _gen_randint_data(draw):
 @handle_test(
     fn_tree="functional.ivy.randint",
     dtype_low_high=_gen_randint_data(),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_randint(
@@ -288,7 +288,7 @@ def test_randint(
 # seed
 @handle_test(
     fn_tree="functional.ivy.seed",
-    seed_val=helpers.ints(min_value=0, max_value=2147483647),
+    seed_val=helpers.ints(min_max=helpers.min_max_bound(0, 2147483647)),
 )
 def test_seed(seed_val):
     # smoke test
@@ -304,7 +304,7 @@ def test_seed(seed_val):
         min_num_dims=1,
         min_dim_size=2,
     ),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_shuffle(

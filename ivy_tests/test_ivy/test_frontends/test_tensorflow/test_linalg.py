@@ -257,7 +257,7 @@ def _get_hermitian_pos_def_matrix(draw):
         )
     )
     shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="shared_size")
     )
     gen = draw(
         helpers.array_values(
@@ -330,7 +330,7 @@ def _get_cholesky_matrix(draw):
         )
     )
     shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="shared_size")
     )
     gen = draw(
         helpers.array_values(
@@ -355,7 +355,7 @@ def _get_second_matrix(draw):
         )
     )
     shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="shared_size")
     )
     return input_dtype, draw(
         helpers.array_values(
@@ -660,7 +660,7 @@ def test_tensorflow_global_norm(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -725,7 +725,7 @@ def test_tensorflow_linalg_cross(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ),
     full_matrices=st.booleans(),
     compute_uv=st.just(True),

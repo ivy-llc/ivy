@@ -15,8 +15,8 @@ from ivy.functional.ivy.layers import _deconv_length
 @st.composite
 def x_and_linear(draw, dtypes):
     dtype = draw(dtypes)
-    in_features = draw(helpers.ints(min_value=1, max_value=2))
-    out_features = draw(helpers.ints(min_value=1, max_value=2))
+    in_features = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
+    out_features = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
 
     x_shape = (
         1,
@@ -109,7 +109,7 @@ def _dropout_helper(draw):
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
     training=st.booleans(),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
 )
@@ -158,9 +158,9 @@ def test_dropout(
 @st.composite
 def x_and_scaled_attention(draw, dtypes):
     dtype = draw(dtypes)
-    num_queries = draw(helpers.ints(min_value=1, max_value=2))
-    num_keys = draw(helpers.ints(min_value=1, max_value=2))
-    feat_dim = draw(helpers.ints(min_value=1, max_value=2))
+    num_queries = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
+    num_keys = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
+    feat_dim = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
     scale = draw(helpers.floats(min_value=0.1, max_value=1))
 
     q_shape = (1,) + (num_queries,) + (feat_dim,)
@@ -228,10 +228,10 @@ def test_scaled_dot_product_attention(
 @st.composite
 def x_and_mha(draw, dtypes):
     dtype = draw(dtypes)
-    num_queries = draw(helpers.ints(min_value=1, max_value=3))
-    feat_dim = draw(helpers.ints(min_value=1, max_value=3))
-    num_heads = draw(helpers.ints(min_value=1, max_value=3))
-    num_keys = draw(helpers.ints(min_value=1, max_value=3))
+    num_queries = draw(helpers.ints(min_max=helpers.min_max_bound(1, 3)))
+    feat_dim = draw(helpers.ints(min_max=helpers.min_max_bound(1, 3)))
+    num_heads = draw(helpers.ints(min_max=helpers.min_max_bound(1, 3)))
+    num_keys = draw(helpers.ints(min_max=helpers.min_max_bound(1, 3)))
 
     x_mha_shape = (num_queries,) + (feat_dim * num_heads,)
     context_shape = (num_keys,) + (2 * feat_dim * num_heads,)
@@ -855,9 +855,9 @@ def x_and_lstm(draw, dtypes):
     dtype = draw(dtypes)
     batch_shape = (1,)
 
-    t = draw(helpers.ints(min_value=1, max_value=2))
-    _in_ = draw(helpers.ints(min_value=1, max_value=2))
-    _out_ = draw(helpers.ints(min_value=1, max_value=2))
+    t = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
+    _in_ = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
+    _out_ = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
 
     x_lstm_shape = batch_shape + (t,) + (_in_,)
     init_h_shape = batch_shape + (_out_,)

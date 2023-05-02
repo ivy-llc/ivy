@@ -86,8 +86,8 @@ def test_numpy_unravel_index(
 
 @handle_frontend_test(
     fn_tree="numpy.diag_indices",
-    n=helpers.ints(min_value=1, max_value=10),
-    ndim=helpers.ints(min_value=2, max_value=10),
+    n=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
+    ndim=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
@@ -113,8 +113,8 @@ def test_numpy_diag_indices(
 
 @handle_frontend_test(
     fn_tree="numpy.tril_indices",
-    n=helpers.ints(min_value=1, max_value=10),
-    m=helpers.ints(min_value=1, max_value=10),
+    n=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
+    m=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     k=st.integers(min_value=-10, max_value=10),
     test_with_out=st.just(False),
 )

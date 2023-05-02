@@ -79,7 +79,7 @@ def test_histogram_helper(draw):
     bins = draw(
         helpers.array_values(
             dtype=dtype_input,
-            shape=(draw(helpers.ints(min_value=1, max_value=10)),),
+            shape=(draw(helpers.ints(min_max=helpers.min_max_bound(1, 10))),),
             abs_smallest_val=-10,
             min_value=-10,
             max_value=10,

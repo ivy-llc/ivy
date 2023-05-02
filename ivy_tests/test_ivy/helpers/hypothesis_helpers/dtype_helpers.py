@@ -238,7 +238,7 @@ def get_dtypes(
 def array_dtypes(
     draw,
     *,
-    num_arrays=st.shared(nh.ints(nh.min_max_bound(1, 4)), key="num_arrays"),
+    num_arrays=st.shared(nh.ints(min_max=nh.min_max_bound(1, 4)), key="num_arrays"),
     available_dtypes=get_dtypes("valid"),
     shared_dtype=False,
     array_api_dtypes=False,

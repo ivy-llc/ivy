@@ -733,7 +733,7 @@ def test_torch_kthvalue(
         max_dim_size=10,
     ),
     dim=helpers.ints(min_value=-1, max_value=0),
-    k=helpers.ints(min_value=1, max_value=4),
+    k=helpers.ints(min_max=helpers.min_max_bound(1, 4)),
     largest=st.booleans(),
     sorted=st.booleans(),
 )

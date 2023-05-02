@@ -58,7 +58,7 @@ def test_native_array(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num=helpers.ints(min_value=1, max_value=5),
+    num=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
     axis=st.none(),
 )
 def test_linspace(
@@ -108,7 +108,7 @@ def test_linspace(
         small_abs_safety_factor=24,
         safety_factor_scale="log",
     ),
-    num=helpers.ints(min_value=1, max_value=5),
+    num=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
     base=helpers.floats(min_value=0.1, max_value=3.0),
     axis=st.none(),
 )
@@ -146,8 +146,8 @@ def test_logspace(
 # arange
 @handle_test(
     fn_tree="functional.ivy.arange",
-    start=helpers.ints(min_value=0, max_value=50),
-    stop=helpers.ints(min_value=0, max_value=50) | st.none(),
+    start=helpers.ints(min_max=helpers.min_max_bound(0, 50)),
+    stop=helpers.ints(min_max=helpers.min_max_bound(0, 50)) | st.none(),
     step=helpers.ints(min_value=-50, max_value=50).filter(
         lambda x: True if x != 0 else False
     ),
@@ -343,11 +343,11 @@ def test_empty_like(
 
 # eye
 @handle_test(
-    n_rows=helpers.ints(min_value=0, max_value=10),
-    n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
+    n_rows=helpers.ints(min_max=helpers.min_max_bound(0, 10)),
+    n_cols=st.none() | helpers.ints(min_max=helpers.min_max_bound(0, 10)),
     k=helpers.ints(min_value=-10, max_value=10),
     batch_shape=st.lists(
-        helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
+        helpers.ints(min_max=helpers.min_max_bound(1, 10)), min_size=1, max_size=2
     ),
     dtype=helpers.get_dtypes("valid", full=False),
     fn_tree="functional.ivy.eye",
@@ -420,7 +420,7 @@ def test_from_dlpack(
 def _fill_value(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
+        return draw(helpers.ints(min_max=helpers.min_max_bound(0, 5)))
     if ivy.is_int_dtype(dtype):
         return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(helpers.floats(min_value=-5, max_value=5))
@@ -836,7 +836,7 @@ def test_copy_array(
 
 @st.composite
 def _dtype_indices_depth_axis(draw):
-    depth = draw(helpers.ints(min_value=2, max_value=100))
+    depth = draw(helpers.ints(min_max=helpers.min_max_bound(2, 100)))
     dtype, indices, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),

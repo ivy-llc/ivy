@@ -203,7 +203,7 @@ def test_flipud(
             min_num_dims=1,
         ),
         shared_dtype=True,
-        num_arrays=helpers.ints(min_value=2, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
     ),
     test_gradients=st.just(False),
 )
@@ -234,7 +234,7 @@ def test_vstack(
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
-        num_arrays=helpers.ints(min_value=2, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
         shape=helpers.get_shape(
             min_num_dims=1,
         ),
@@ -358,7 +358,7 @@ def test_rot90(
         max_dim_size=10,
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
-    k=helpers.ints(min_value=1, max_value=4),
+    k=helpers.ints(min_max=helpers.min_max_bound(1, 4)),
     largest=st.booleans(),
     test_gradients=st.just(False),
 )
@@ -680,7 +680,7 @@ def test_dsplit(
     fn_tree="functional.ivy.experimental.atleast_1d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=5),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -715,7 +715,7 @@ def test_atleast_1d(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
         shape=helpers.get_shape(
             min_num_dims=1,
         ),
@@ -748,7 +748,7 @@ def test_dstack(
     fn_tree="functional.ivy.experimental.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=5),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -782,7 +782,7 @@ def test_atleast_2d(
     fn_tree="functional.ivy.experimental.atleast_3d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=5),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -1024,7 +1024,7 @@ def _concat_from_sequence_helper(draw):
     dtypes, arrays, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
-            num_arrays=helpers.ints(min_value=1, max_value=6),
+            num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 6)),
             ret_shape=True,
             min_num_dims=2,
             min_dim_size=2,
@@ -1082,10 +1082,10 @@ def _associative_scan_helper(draw):
         ).filter(lambda _x: "float16" not in _x)
     )
     random_size = draw(
-        st.shared(helpers.ints(min_value=1, max_value=5), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 5)), key="shared_size")
     )
     shared_size = draw(
-        st.shared(helpers.ints(min_value=1, max_value=5), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 5)), key="shared_size")
     )
     shape = tuple([random_size, shared_size, shared_size])
     matrix = draw(

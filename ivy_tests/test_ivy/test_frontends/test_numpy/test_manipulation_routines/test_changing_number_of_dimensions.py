@@ -88,7 +88,7 @@ def test_numpy_expand_dims(
     fn_tree="numpy.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
 )
@@ -120,7 +120,7 @@ def test_numpy_atleast_2d(
     fn_tree="numpy.atleast_3d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
 )
@@ -152,7 +152,7 @@ def test_numpy_atleast_3d(
     fn_tree="numpy.atleast_1d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
 )
@@ -182,7 +182,7 @@ def test_numpy_atleast_1d(
 # broadcast_arrays
 @st.composite
 def broadcastable_arrays(draw, dtypes):
-    num_arrays = st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays")
+    num_arrays = st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 5)), key="num_arrays")
     shapes = draw(num_arrays.flatmap(helpers.mutually_broadcastable_shapes))
     dtypes = draw(dtypes)
     arrays = []

@@ -549,7 +549,7 @@ def test_multi_dot(
 def _cond_data_gen_helper(draw):
     dtype_x = helpers.dtype_and_values(
         available_dtypes=(ivy.float32, ivy.float64),
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
         max_value=10,
         min_value=-10,
         allow_nan=False,
@@ -644,7 +644,7 @@ def _get_dtype_value1_value2_cov(
     # modifiers: rowVar, bias, ddof
     rowVar = draw(st.booleans())
     bias = draw(st.booleans())
-    ddof = draw(helpers.ints(min_value=0, max_value=1))
+    ddof = draw(helpers.ints(min_max=helpers.min_max_bound(0, 1)))
 
     numVals = None
     if rowVar is False:

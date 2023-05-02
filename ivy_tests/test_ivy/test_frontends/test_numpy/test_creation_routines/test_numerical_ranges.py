@@ -266,7 +266,7 @@ def test_numpy_ogrid(range, class_, method_name):
 @handle_frontend_test(
     fn_tree="numpy.geomspace",
     dtype_start_stop=_get_dtype_and_range(),
-    num=helpers.ints(min_value=5, max_value=50),
+    num=helpers.ints(min_max=helpers.min_max_bound(5, 50)),
     endpoint=st.booleans(),
     test_with_out=st.just(False),
 )

@@ -79,8 +79,8 @@ def test_numpy_triu(
 # tri
 @handle_frontend_test(
     fn_tree="numpy.tri",
-    rows=helpers.ints(min_value=3, max_value=10),
-    cols=helpers.ints(min_value=3, max_value=10),
+    rows=helpers.ints(min_max=helpers.min_max_bound(3, 10)),
+    cols=helpers.ints(min_max=helpers.min_max_bound(3, 10)),
     k=helpers.ints(min_value=-10, max_value=10),
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
@@ -137,7 +137,7 @@ def test_numpy_diag(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
         ),
         large_abs_safety_factor=15,
         small_abs_safety_factor=15,

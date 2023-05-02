@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_num_dims=2,
         min_dim_size=2,
     ),
-    shift=helpers.ints(min_value=1, max_value=10),
+    shift=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     axis=helpers.ints(min_value=-1, max_value=1),
     test_with_out=st.just(False),
 )

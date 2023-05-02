@@ -106,7 +106,7 @@ def test_astype(
 # broadcast arrays
 @st.composite
 def broadcastable_arrays(draw, dtypes):
-    num_arrays = st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays")
+    num_arrays = st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 5)), key="num_arrays")
     shapes = draw(num_arrays.flatmap(helpers.mutually_broadcastable_shapes))
     dtypes = draw(dtypes)
     arrays = []
@@ -340,7 +340,7 @@ def test_iinfo(
     fn_tree="functional.ivy.result_type",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays"),
+        num_arrays=st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 5)), key="num_arrays"),
         shared_dtype=False,
     ),
     test_with_out=st.just(False),
@@ -465,7 +465,7 @@ def test_default_dtype(
     array=helpers.array_values(
         dtype=dtype_shared,
         shape=helpers.lists(
-            x=helpers.ints(min_value=1, max_value=5),
+            x=helpers.ints(min_max=helpers.min_max_bound(1, 5)),
             min_size="num_dims",
             max_size="num_dims",
             size_bounds=[1, 5],
@@ -860,7 +860,7 @@ def test_default_complex_dtype(
 
 @st.composite
 def dtypes_list(draw):
-    num = draw(st.one_of(helpers.ints(min_value=1, max_value=5)))
+    num = draw(st.one_of(helpers.ints(min_max=helpers.min_max_bound(1, 5))))
     return draw(
         st.lists(
             st.sampled_from(ivy.valid_dtypes),

@@ -26,7 +26,7 @@ import ivy
     size=st.tuples(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_dirichlet(
@@ -81,7 +81,7 @@ def test_dirichlet(
         num_arrays=2,
         exclude_min=True,
     ),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_beta(
@@ -135,7 +135,7 @@ def test_beta(
         num_arrays=2,
         exclude_min=True,
     ),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_gamma(
@@ -190,7 +190,7 @@ def test_gamma(
         max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_poisson(
@@ -242,7 +242,7 @@ def test_poisson(
         max_value=1,
         min_num_dims=0,
     ),
-    seed=helpers.ints(min_value=0, max_value=100),
+    seed=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     test_gradients=st.just(False),
 )
 def test_bernoulli(

@@ -193,7 +193,7 @@ def test_adam_optimizer(
         size=4,
     ),
     mtr=st.one_of(
-        helpers.ints(min_value=1, max_value=10),
+        helpers.ints(min_max=helpers.min_max_bound(1, 10)),
         st.floats(min_value=1e-2, max_value=10, exclude_min=True),
     ),
     inplace=st.booleans(),

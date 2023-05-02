@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def _fill_value(draw):
     dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
+        return draw(helpers.ints(min_max=helpers.min_max_bound(0, 5)))
     elif ivy.is_int_dtype(dtype):
         return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(helpers.floats(min_value=-5, max_value=5))
@@ -24,10 +24,10 @@ def _fill_value(draw):
 
 @st.composite
 def _start_stop_step(draw):
-    start = draw(helpers.ints(min_value=0, max_value=50))
-    stop = draw(helpers.ints(min_value=0, max_value=50))
+    start = draw(helpers.ints(min_max=helpers.min_max_bound(0, 50)))
+    stop = draw(helpers.ints(min_max=helpers.min_max_bound(0, 50)))
     if start < stop:
-        step = draw(helpers.ints(min_value=1, max_value=50))
+        step = draw(helpers.ints(min_max=helpers.min_max_bound(1, 50)))
     else:
         step = draw(helpers.ints(min_value=-50, max_value=-1))
     return start, stop, step
@@ -100,7 +100,7 @@ def test_torch_ones_like(
 # ones
 @handle_frontend_test(
     fn_tree="torch.ones",
-    size=helpers.ints(min_value=1, max_value=3),
+    size=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -143,7 +143,7 @@ def test_torch_ones(
 # zeros
 @handle_frontend_test(
     fn_tree="torch.zeros",
-    size=helpers.ints(min_value=1, max_value=3),
+    size=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -213,7 +213,7 @@ def test_torch_zeros_like(
 # empty
 @handle_frontend_test(
     fn_tree="torch.empty",
-    size=helpers.ints(min_value=1, max_value=3),
+    size=helpers.ints(min_max=helpers.min_max_bound(1, 3)),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,

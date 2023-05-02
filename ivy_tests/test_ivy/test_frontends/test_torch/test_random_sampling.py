@@ -11,9 +11,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @st.composite
 def _pop_size_num_samples_replace_n_probs(draw):
     prob_dtype = draw(helpers.get_dtypes("float", full=False))
-    batch_size = draw(helpers.ints(min_value=1, max_value=5))
+    batch_size = draw(helpers.ints(min_max=helpers.min_max_bound(1, 5)))
     replace = draw(st.booleans())
-    num_samples = draw(helpers.ints(min_value=1, max_value=20))
+    num_samples = draw(helpers.ints(min_max=helpers.min_max_bound(1, 20)))
     probs = draw(
         helpers.array_values(
             dtype=prob_dtype[0],
@@ -133,8 +133,8 @@ def test_torch_poisson(
 # randint
 @handle_frontend_test(
     fn_tree="torch.randint",
-    low=helpers.ints(min_value=0, max_value=10),
-    high=helpers.ints(min_value=11, max_value=20),
+    low=helpers.ints(min_max=helpers.min_max_bound(0, 10)),
+    high=helpers.ints(min_max=helpers.min_max_bound(11, 20)),
     size=helpers.get_shape(),
     dtype=helpers.get_dtypes("integer"),
 )

@@ -221,9 +221,9 @@ def test_numpy_matmul(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 8)).map(lambda x: tuple([x, x])),
     ),
-    n=helpers.ints(min_value=1, max_value=8),
+    n=helpers.ints(min_max=helpers.min_max_bound(1, 8)),
     test_with_out=st.just(False),
 )
 def test_numpy_matrix_power(

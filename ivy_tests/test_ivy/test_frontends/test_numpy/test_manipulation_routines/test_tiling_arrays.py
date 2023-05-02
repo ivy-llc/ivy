@@ -53,7 +53,7 @@ def test_numpy_tile(
         min_num_dims=2,
         min_dim_size=2,
     ),
-    repeats=helpers.ints(min_value=2, max_value=5),
+    repeats=helpers.ints(min_max=helpers.min_max_bound(2, 5)),
     axis=helpers.ints(min_value=-1, max_value=1),
     test_with_out=st.just(False),
 )

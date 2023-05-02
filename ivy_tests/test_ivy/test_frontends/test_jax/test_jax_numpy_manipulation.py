@@ -580,7 +580,7 @@ def test_jax_numpy_expand_dims(
     fn_tree="jax.numpy.stack",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
+        num_arrays=st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="num_arrays"),
         shape=helpers.get_shape(min_num_dims=1),
         shared_dtype=True,
         valid_axis=True,
@@ -648,7 +648,7 @@ def test_jax_numpy_take(
     fn_tree="jax.numpy.broadcast_arrays",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
@@ -710,7 +710,7 @@ def test_jax_numpy_broadcast_shapes(
 # broadcast_to
 @st.composite
 def _get_input_and_broadcast_shape(draw):
-    dim1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     x_dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
@@ -721,7 +721,7 @@ def _get_input_and_broadcast_shape(draw):
             shape=(dim1,),
         )
     )
-    broadcast_dim = draw(helpers.ints(min_value=1, max_value=3))
+    broadcast_dim = draw(helpers.ints(min_max=helpers.min_max_bound(1, 3)))
     shape = ()
     for _ in range(broadcast_dim):
         shape += (draw(helpers.ints(min_value=1, max_value=dim1)),)
@@ -851,7 +851,7 @@ def test_jax_numpy_swapaxes(
     fn_tree="jax.numpy.atleast_3d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
 )
@@ -883,7 +883,7 @@ def test_jax_numpy_atleast_3d(
     fn_tree="jax.numpy.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
 )
@@ -915,7 +915,7 @@ def test_jax_numpy_atleast_2d(
     fn_tree="jax.numpy.atleast_1d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
 )
@@ -1257,7 +1257,7 @@ def test_jax_numpy_tile(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
-        num_arrays=helpers.ints(min_value=1, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
         shape=helpers.get_shape(
             min_num_dims=1,
         ),
@@ -1368,11 +1368,11 @@ def test_jax_numpy_hsplit(
         available_dtypes=[ivy.int32],
         max_num_dims=1,
         min_dim_size=st.shared(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
             key="shift_len",
         ),
         max_dim_size=st.shared(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
             key="shift_len",
         ),
     ),
@@ -1381,11 +1381,11 @@ def test_jax_numpy_hsplit(
         force_tuple=True,
         unique=False,
         min_size=st.shared(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
             key="shift_len",
         ),
         max_size=st.shared(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
             key="shift_len",
         ),
     ),
@@ -1430,7 +1430,7 @@ def test_jax_numpy_roll(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
     ),
-    factor=helpers.ints(min_value=2, max_value=6),
+    factor=helpers.ints(min_max=helpers.min_max_bound(2, 6)),
 )
 def test_jax_numpy_row_stack(
     dtype_and_x,
@@ -1547,7 +1547,7 @@ def test_jax_numpy_pad(
 # hamming
 @handle_frontend_test(
     fn_tree="jax.numpy.hamming",
-    m=helpers.ints(min_value=0, max_value=20),
+    m=helpers.ints(min_max=helpers.min_max_bound(0, 20)),
 )
 def test_jax_numpy_hamming(
     m,
@@ -1569,7 +1569,7 @@ def test_jax_numpy_hamming(
 # hanning
 @handle_frontend_test(
     fn_tree="jax.numpy.hanning",
-    m=helpers.ints(min_value=0, max_value=20),
+    m=helpers.ints(min_max=helpers.min_max_bound(0, 20)),
 )
 def test_jax_numpy_hanning(
     m,
@@ -1591,7 +1591,7 @@ def test_jax_numpy_hanning(
 # kaiser
 @handle_frontend_test(
     fn_tree="jax.numpy.kaiser",
-    m=helpers.ints(min_value=0, max_value=100),
+    m=helpers.ints(min_max=helpers.min_max_bound(0, 100)),
     beta=helpers.floats(min_value=-10, max_value=10),
 )
 def test_jax_numpy_kaiser(
@@ -1616,8 +1616,8 @@ def test_jax_numpy_kaiser(
 # tri
 @handle_frontend_test(
     fn_tree="jax.numpy.tri",
-    rows=helpers.ints(min_value=3, max_value=10),
-    cols=helpers.ints(min_value=3, max_value=10),
+    rows=helpers.ints(min_max=helpers.min_max_bound(3, 10)),
+    cols=helpers.ints(min_max=helpers.min_max_bound(3, 10)),
     k=helpers.ints(min_value=-10, max_value=10),
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
@@ -1648,7 +1648,7 @@ def test_jax_numpy_tri(
 # blackman
 @handle_frontend_test(
     fn_tree="jax.numpy.blackman",
-    m=helpers.ints(min_value=0, max_value=20),
+    m=helpers.ints(min_max=helpers.min_max_bound(0, 20)),
 )
 def test_jax_numpy_blackman(
     m,

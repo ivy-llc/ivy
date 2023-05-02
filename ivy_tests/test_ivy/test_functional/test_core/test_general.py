@@ -1553,7 +1553,7 @@ def test_is_ivy_container(
     fn_tree="functional.ivy.all_equal",
     dtypes_and_xs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=2, max_value=10),
+        num_arrays=helpers.ints(min_max=helpers.min_max_bound(2, 10)),
         min_num_dims=1,
     ),
     equality_matrix=st.booleans(),

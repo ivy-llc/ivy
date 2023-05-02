@@ -209,7 +209,7 @@ def test_torch_max_pool2d(
         max_value=100,
         min_value=-100,
     ),
-    output_size=helpers.ints(min_value=1, max_value=10),
+    output_size=helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     test_with_out=st.just(False),
 )
 def test_torch_adaptive_avg_pool1d(
@@ -247,10 +247,10 @@ def test_torch_adaptive_avg_pool1d(
     ),
     output_size=st.one_of(
         st.tuples(
-            helpers.ints(min_value=1, max_value=10),
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
         ),
-        helpers.ints(min_value=1, max_value=10),
+        helpers.ints(min_max=helpers.min_max_bound(1, 10)),
     ),
     test_with_out=st.just(False),
 )

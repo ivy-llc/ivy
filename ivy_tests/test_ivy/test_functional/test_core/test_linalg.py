@@ -133,7 +133,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
 def _get_dtype_and_matrix(draw, *, symmetric=False):
     # batch_shape, shared, random_size
     input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("float")))))
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
+    random_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 4)))
     batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
     if symmetric:
         num_independnt_vals = int((random_size**2) / 2 + random_size / 2)
@@ -177,10 +177,10 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False, conjugate=False):
         ).filter(lambda x: "float16" not in x)
     )
     shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="shared_size")
     )
     random_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="shared_size")
     )
     matrix = draw(
         helpers.array_values(
@@ -216,10 +216,10 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
         ).filter(lambda x: "float16" not in x)
     )
     shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="shared_size")
     )
     random_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="shared_size")
     )
     matrix = draw(
         helpers.array_values(
@@ -295,7 +295,7 @@ def test_vector_to_skew_symmetric_matrix(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=1e-3,
         max_value=20,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 8)).map(lambda x: tuple([x, x])),
     ),
     n=helpers.ints(min_value=-6, max_value=6),
 )
@@ -368,7 +368,7 @@ def test_matmul(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=2,
         max_value=5,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 8)).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
 )
 def test_det(
@@ -535,7 +535,7 @@ def test_inner(
         available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,
         safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 20)).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     adjoint=st.booleans(),
 )
@@ -635,7 +635,7 @@ def test_outer(
         min_value=2,
         max_value=5,
         safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 20)).map(lambda x: tuple([x, x])),
     ),
     test_with_out=st.just(False),
 )
@@ -683,7 +683,7 @@ def _get_first_matrix(draw, adjoint=True):
     input_dtype = draw(input_dtype_strategy)
 
     shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="shared_size")
     )
     matrix = draw(
         helpers.array_values(
@@ -714,7 +714,7 @@ def _get_second_matrix(draw):
     input_dtype = draw(input_dtype_strategy)
 
     shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="shared_size")
     )
     return input_dtype, draw(
         helpers.array_values(
@@ -928,7 +928,7 @@ def test_vecdot(
     ),
     kd=st.booleans(),
     ord=st.one_of(
-        helpers.ints(min_value=1, max_value=2),
+        helpers.ints(min_max=helpers.min_max_bound(1, 2)),
         helpers.floats(min_value=1.0, max_value=2.0),
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
@@ -1205,7 +1205,7 @@ def _matrix_rank_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
-            shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+            shape=helpers.ints(min_max=helpers.min_max_bound(2, 20)).map(lambda x: tuple([x, x])),
             min_value=-1e05,
             max_value=1e05,
             abs_smallest_val=1e-05,
@@ -1260,7 +1260,7 @@ def test_matrix_rank(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ),
     upper=st.booleans(),
 )
@@ -1428,7 +1428,7 @@ def test_diag(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
         ),
         large_abs_safety_factor=15,
         small_abs_safety_factor=15,

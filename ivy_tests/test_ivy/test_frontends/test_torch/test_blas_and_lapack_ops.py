@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # helpers
 @st.composite
 def _get_dtype_and_square_matrix(draw):
-    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("float", full=True))
     dtype = [
         draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
@@ -26,8 +26,8 @@ def _get_dtype_and_square_matrix(draw):
 
 @st.composite
 def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
-    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2, max_value=5))
+    dim_size1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("float", full=True))
     dtype = [
         draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
@@ -54,9 +54,9 @@ def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
 
 @st.composite
 def _get_dtype_input_and_matrices(draw, with_input=False):
-    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
-    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    dim_size2 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    shared_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("float", full=True))
     dtype = [
         draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
@@ -83,14 +83,14 @@ def _get_dtype_input_and_matrices(draw, with_input=False):
 
 @st.composite
 def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
-    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
-    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    dim_size2 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    shared_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("float", full=True))
     dtype = [
         draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
     ]
-    batch_size = draw(helpers.ints(min_value=2, max_value=4))
+    batch_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 4)))
     mat1 = draw(
         helpers.array_values(
             dtype=dtype[0],
@@ -129,8 +129,8 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
 
 @st.composite
 def _get_dtype_input_and_mat_vec(draw, *, with_input=False):
-    dim_size = draw(helpers.ints(min_value=2, max_value=5))
-    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    shared_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("float", full=True))
     dtype = [
         draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
@@ -410,7 +410,7 @@ def test_torch_bmm(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 5)).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
@@ -799,8 +799,8 @@ def test_torch_dot(
 
 @st.composite
 def _get_dtype_and_matrices(draw):
-    dim1 = draw(helpers.ints(min_value=2, max_value=7))
-    dim2 = draw(helpers.ints(min_value=2, max_value=7))
+    dim1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 7)))
+    dim2 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 7)))
     dtype = draw(helpers.get_dtypes("float", full=False))
 
     matr1 = draw(

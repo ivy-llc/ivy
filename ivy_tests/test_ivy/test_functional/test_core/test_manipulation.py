@@ -14,20 +14,20 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @st.composite
 def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_dims = draw(st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 4)), key="num_dims"))
     num_arrays = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="num_arrays")
     )
     common_shape = draw(
         helpers.list_of_size(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
         helpers.list_of_size(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             size=num_arrays,
         )
     )
@@ -244,11 +244,11 @@ def test_reshape(
         available_dtypes=[ivy.int32],
         max_num_dims=1,
         min_dim_size=st.shared(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
             key="shift_len",
         ),
         max_dim_size=st.shared(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
             key="shift_len",
         ),
     ),
@@ -257,11 +257,11 @@ def test_reshape(
         force_tuple=True,
         unique=False,
         min_size=st.shared(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
             key="shift_len",
         ),
         max_size=st.shared(
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_max=helpers.min_max_bound(1, 10)),
             key="shift_len",
         ),
     ),
@@ -350,7 +350,7 @@ def test_squeeze(
 def _stack_helper(draw):
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="values_shape"))
     num_arrays = draw(
-        st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(1, 3)), key="num_arrays")
     )
     dtype = draw(st.sampled_from(draw(helpers.get_dtypes("valid"))))
     arrays = []
@@ -452,8 +452,8 @@ def _constant_pad_helper(draw):
         draw(
             st.lists(
                 st.tuples(
-                    helpers.ints(min_value=0, max_value=5),
-                    helpers.ints(min_value=0, max_value=5),
+                    helpers.ints(min_max=helpers.min_max_bound(0, 5)),
+                    helpers.ints(min_max=helpers.min_max_bound(0, 5)),
                 ),
                 min_size=len(shape),
                 max_size=len(shape),

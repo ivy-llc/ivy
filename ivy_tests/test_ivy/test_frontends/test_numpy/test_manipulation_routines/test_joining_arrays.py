@@ -11,7 +11,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 @st.composite
 def _arrays_idx_n_dtypes(draw):
     num_arrays = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+        st.shared(helpers.ints(min_max=helpers.min_max_bound(2, 4)), key="num_arrays")
     )
     shape = draw(
         helpers.get_shape(
@@ -70,7 +70,7 @@ def test_numpy_concatenate(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
     ),
-    factor=helpers.ints(min_value=2, max_value=6),
+    factor=helpers.ints(min_max=helpers.min_max_bound(2, 6)),
 )
 def test_numpy_stack(
     dtype_and_x,
@@ -102,7 +102,7 @@ def test_numpy_stack(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
     ),
-    factor=helpers.ints(min_value=2, max_value=6),
+    factor=helpers.ints(min_max=helpers.min_max_bound(2, 6)),
 )
 def test_numpy_vstack(
     dtype_and_x,
@@ -133,7 +133,7 @@ def test_numpy_vstack(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
     ),
-    factor=helpers.ints(min_value=2, max_value=6),
+    factor=helpers.ints(min_max=helpers.min_max_bound(2, 6)),
 )
 def test_numpy_hstack(
     dtype_and_x,

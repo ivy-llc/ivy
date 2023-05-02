@@ -47,7 +47,7 @@ def test_numpy_solve(
         available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,
         safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_max=helpers.min_max_bound(2, 20)).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     test_with_out=st.just(False),
 )
@@ -100,7 +100,7 @@ def test_numpy_pinv(
 # tensorinv
 @st.composite
 def _get_inv_square_matrices(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=10))
+    dim_size = draw(helpers.ints(min_max=helpers.min_max_bound(1, 10)))
 
     batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))
 
@@ -170,8 +170,8 @@ def test_numpy_tensorinv(
 
 @st.composite
 def _get_lstsq_matrices(draw):
-    shape1 = draw(helpers.ints(min_value=2, max_value=10))
-    shape2 = draw(helpers.ints(min_value=2, max_value=10))
+    shape1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 10)))
+    shape2 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 10)))
     input_dtype = "float64"
     a = draw(
         helpers.array_values(

@@ -11,9 +11,9 @@ from ivy_tests.test_ivy.helpers import handle_method
 
 @st.composite
 def _sparse_coo_indices_values_shape(draw):
-    num_elem = draw(helpers.ints(min_value=2, max_value=8))
-    dim1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim2 = draw(helpers.ints(min_value=5, max_value=10))
+    num_elem = draw(helpers.ints(min_max=helpers.min_max_bound(2, 8)))
+    dim1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    dim2 = draw(helpers.ints(min_max=helpers.min_max_bound(5, 10)))
     value_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
     coo_indices = draw(
         helpers.array_values(
@@ -31,9 +31,9 @@ def _sparse_coo_indices_values_shape(draw):
 
 @st.composite
 def _sparse_csr_indices_values_shape(draw):
-    num_elem = draw(helpers.ints(min_value=2, max_value=8))
-    dim1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim2 = draw(helpers.ints(min_value=5, max_value=10))
+    num_elem = draw(helpers.ints(min_max=helpers.min_max_bound(2, 8)))
+    dim1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    dim2 = draw(helpers.ints(min_max=helpers.min_max_bound(5, 10)))
     value_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
     values = draw(helpers.array_values(dtype=value_dtype, shape=(num_elem,)))
     col_indices = draw(
@@ -61,11 +61,11 @@ def _sparse_csr_indices_values_shape(draw):
 
 @st.composite
 def _sparse_bsr_indices_values_shape(draw):
-    nblockrows = draw(helpers.ints(min_value=2, max_value=5))
-    nblockcols = draw(helpers.ints(min_value=2, max_value=5))
+    nblockrows = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    nblockcols = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
 
-    dim1 = draw(helpers.ints(min_value=3, max_value=5))
-    dim2 = draw(helpers.ints(min_value=2, max_value=5))
+    dim1 = draw(helpers.ints(min_max=helpers.min_max_bound(3, 5)))
+    dim2 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
 
     value_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
 
@@ -103,9 +103,9 @@ def _sparse_bsr_indices_values_shape(draw):
 
 @st.composite
 def _sparse_csc_indices_values_shape(draw):
-    num_elem = draw(helpers.ints(min_value=2, max_value=8))
-    dim1 = draw(helpers.ints(min_value=5, max_value=10))
-    dim2 = draw(helpers.ints(min_value=2, max_value=5))
+    num_elem = draw(helpers.ints(min_max=helpers.min_max_bound(2, 8)))
+    dim1 = draw(helpers.ints(min_max=helpers.min_max_bound(5, 10)))
+    dim2 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     value_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
     values = draw(helpers.array_values(dtype=value_dtype, shape=(num_elem,)))
     row_indices = draw(
@@ -133,11 +133,11 @@ def _sparse_csc_indices_values_shape(draw):
 
 @st.composite
 def _sparse_bsc_indices_values_shape(draw):
-    nblockrows = draw(helpers.ints(min_value=2, max_value=5))
-    nblockcols = draw(helpers.ints(min_value=2, max_value=5))
+    nblockrows = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    nblockcols = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
 
-    dim1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim2 = draw(helpers.ints(min_value=3, max_value=5))
+    dim1 = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
+    dim2 = draw(helpers.ints(min_max=helpers.min_max_bound(3, 5)))
 
     value_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
 

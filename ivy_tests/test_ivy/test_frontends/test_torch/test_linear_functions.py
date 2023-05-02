@@ -9,8 +9,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @st.composite
 def x_and_linear(draw, dtypes):
     dtype = draw(dtypes)
-    in_features = draw(helpers.ints(min_value=1, max_value=2))
-    out_features = draw(helpers.ints(min_value=1, max_value=2))
+    in_features = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
+    out_features = draw(helpers.ints(min_max=helpers.min_max_bound(1, 2)))
 
     x_shape = (
         1,
