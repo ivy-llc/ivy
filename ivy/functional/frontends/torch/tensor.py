@@ -52,6 +52,10 @@ class Tensor:
     def imag(self):
         return self.ivy_array.imag()
 
+    @property
+    def ndim(self):
+        return self.dim()
+
     # Setters #
     # --------#
 

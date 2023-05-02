@@ -53,6 +53,10 @@ class ndarray:
     def dtype(self):
         return self.ivy_array.dtype
 
+    @property
+    def ndim(self):
+        return len(self.shape)
+
     # Setters #
     # --------#
 
