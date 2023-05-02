@@ -17,9 +17,9 @@ try:
     import pynvml
 except ImportError:
     warnings.warn(
-        "pynvml installation was not found in the environment,\
-         functionalities of the Ivy's device module will be limited.\
-         Please install pynvml if you wish to use GPUs with Ivy."
+        "pynvml installation was not found in the environment, functionalities"
+        " of the Ivy's device module will be limited. Please install pynvml if"
+        " you wish to use GPUs with Ivy."
     )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 

@@ -56,7 +56,7 @@ def _array_and_axes_permute_helper(
                 shape=shape,
                 allow_neg=False,
                 allow_none=False,
-                sorted=False,
+                sort_values=False,
                 unique=True,
                 min_size=len(shape),
                 max_size=len(shape),
@@ -65,7 +65,7 @@ def _array_and_axes_permute_helper(
             ),
         ).filter(lambda x: x != tuple(range(len(shape))))
     )
-    return (array, dtype, axes)
+    return array, dtype, axes
 
 
 @st.composite
@@ -78,7 +78,7 @@ def where(draw, *, shape=None):
 
 
 # noinspection PyShadowingNames
-def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
+def _test_frontend_function_ignoring_uninitialized(*args, **kwargs):
     # TODO: this is a hack to get around, but not sure if it is efficient way to do it.
     where = kwargs["where"]
     if kwargs["frontend"] == "numpy":
@@ -171,7 +171,7 @@ def test_frontend_function(*args, where=None, **kwargs):
     else:
         kwargs["where"] = where
         if "out" in kwargs and kwargs["out"] is None:
-            _test_frontend_function_ignoring_unitialized(*args, **kwargs)
+            _test_frontend_function_ignoring_uninitialized(*args, **kwargs)
             return
         else:
             helpers.test_frontend_function(*args, **kwargs)

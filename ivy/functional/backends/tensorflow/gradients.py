@@ -195,7 +195,7 @@ def grad(f, argnums=0):
                     x.append(args[i])
             else:
                 raise TypeError(
-                    f"argnums should be passed as int or a list/tuple of ints."
+                    "argnums should be passed as int or a list/tuple of ints."
                     f" Found {type(argnums)}"
                 )
             if n == 0:
