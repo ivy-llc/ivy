@@ -200,7 +200,7 @@ def nanmedian(
     result = jnp.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=False, out=None
     )
-    if out != None:
+    if out is not None:
         out = result.copy()
     if overwrite_input:
         input = result.copy()
