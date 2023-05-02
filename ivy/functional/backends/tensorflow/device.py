@@ -59,6 +59,8 @@ def as_ivy_dev(device: str, /):
         dev_in_split = device[1:].split(":")[-2:]
         dev_type, dev_idx = dev_in_split
         dev_type = dev_type.lower()
+        if dev_type == "cpu" and dev_idx == "0":
+            return ivy.Device("cpu")
         return ivy.Device(":".join([dev_type, dev_idx]))
     else:
         raise ivy.utils.exceptions.IvyException(
