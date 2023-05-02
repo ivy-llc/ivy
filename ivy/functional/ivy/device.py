@@ -1157,7 +1157,9 @@ def _mixed_functions_devices(fn, merge_fn, get_fn, recurse=True, complement=Fals
 
 @handle_nestable
 @handle_exceptions
-def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
+def function_supported_devices(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
     """
     Return the supported devices of the current backend's function.
 
@@ -1184,16 +1186,11 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
         "supported_devices and unsupported_devices attributes cannot both \
         exist in a particular backend",
     )
-    if hasattr(fn, "mixed_function") and (
-        ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
-    ):
-        supported_devices = _mixed_functions_devices(
-            fn,
-            set.intersection,
-            function_supported_devices,
-            recurse=recurse,
-            complement=False,
-        )
+    if hasattr(fn, "handle_mixed_function"):
+        return {
+            "compositional": function_supported_devices(fn.compos),
+            "primary": _get_devices(fn, complement=False),
+        }
     else:
         supported_devices = set(_get_devices(fn, complement=False))
         if recurse:
@@ -1201,12 +1198,14 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
                 fn, supported_devices, set.intersection, function_supported_devices
             )
 
-    return tuple(supported_devices)
+        return tuple(supported_devices)
 
 
 @handle_nestable
 @handle_exceptions
-def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
+def function_unsupported_devices(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
     """
     Return the unsupported devices of the current backend's function.
 
@@ -1233,16 +1232,11 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
         "supported_devices and unsupported_devices attributes cannot both \
         exist in a particular backend",
     )
-    if hasattr(fn, "mixed_function") and (
-        ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
-    ):
-        unsupported_devices = _mixed_functions_devices(
-            fn,
-            set.union,
-            function_unsupported_devices,
-            recurse=recurse,
-            complement=True,
-        )
+    if hasattr(fn, "handle_mixed_function"):
+        return {
+            "compositional": function_unsupported_devices(fn.compos),
+            "primary": _get_devices(fn, complement=True),
+        }
     else:
         unsupported_devices = set(_get_devices(fn, complement=True))
         if recurse:
@@ -1250,7 +1244,7 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
                 fn, unsupported_devices, set.union, function_unsupported_devices
             )
 
-    return tuple(unsupported_devices)
+        return tuple(unsupported_devices)
 
 
 # Profiler #
