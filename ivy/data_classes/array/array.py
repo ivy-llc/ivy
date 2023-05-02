@@ -142,6 +142,10 @@ class Array(
             self._data = data.data
         elif ivy.is_native_array(data):
             self._data = data
+            if hasattr(data, 'weak_type') and data.weak_type:
+                self.weak_type = True
+            else:
+                self.weak_type = False
         elif isinstance(data, np.ndarray):
             self._data = ivy.asarray(data)._data
         else:

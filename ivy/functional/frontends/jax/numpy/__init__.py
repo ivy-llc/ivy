@@ -433,6 +433,10 @@ def promote_types_of_jax_inputs(
     used as inputs only for those functions that expect an array-like or
     tensor-like objects, otherwise it might give unexpected results.
     """
+    if x1.weak_type and x1.ivy_array.shape == ():
+        x1 = ivy.to_scalar(x1.ivy_array)
+    if x2.weak_type and x2.ivy_array.shape == ():
+        x2 = ivy.to_scalar(x2.ivy_array)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:

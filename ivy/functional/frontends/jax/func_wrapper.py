@@ -10,12 +10,6 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 def _from_jax_frontend_array_to_ivy_array(x):
-    if (
-        isinstance(x, jax_frontend.DeviceArray)
-        and x.weak_type
-        and x.ivy_array.shape == ()
-    ):
-        return ivy.to_scalar(x.ivy_array)
     if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
