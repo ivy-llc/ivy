@@ -23,7 +23,8 @@ def _to_native(x: Any, inplace: bool = False, to_ignore: tuple = ()) -> Any:
         return x
     if isinstance(x, ivy.Array):
         return x.data
-    elif isinstance(x, ivy.Shape):
+    # to prevent the graph from breaking for the time being
+    elif type(x) is ivy.Shape:
         return x.shape
     elif isinstance(x, ivy.Container):
         return x.cont_map(

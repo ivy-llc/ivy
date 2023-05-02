@@ -60,7 +60,7 @@ def test_layer_norm_layer(
 def _generate_batchnorm_data(draw):
     batch_size = draw(st.integers(min_value=2, max_value=5))
     num_features = draw(st.integers(min_value=2, max_value=3))
-    num_dims = draw(st.integers(min_value=1, max_value=2))
+    num_dims = draw(st.integers(min_value=1, max_value=3))
     dims = [draw(st.integers(1, 5)) for i in range(num_dims)]
     x_shape = [batch_size] + [*dims] + [num_features]
     dtype, inputs = draw(
