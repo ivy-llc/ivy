@@ -277,7 +277,6 @@ def cummax(
             x = np.swapaxes(x, axis, -1)
             indices = __find_cummax_indices(x, axis=axis)
             res = np.maximum.accumulate(x, axis=axis, dtype=x.dtype)
-            # res,indices = np.swapaxes(y, axis, -1),np.swapaxes(indices, axis, -1)
         elif reverse:
             x = np.flip(x, axis=axis)
             indices = __find_cummax_indices(x, axis=axis)
