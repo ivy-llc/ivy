@@ -673,8 +673,8 @@ def test_jax_numpy_meshgrid(
 @handle_frontend_test(
     fn_tree="jax.numpy.linspace",
     dtype_start_stop=_get_dtype_and_range(),
-    num=helpers.ints(min_value=2, max_value=5),
-    axis=helpers.ints(min_value=-1, max_value=0),
+    num=helpers.ints(min_max=helpers.min_max_bound(2, 5)),
+    axis=helpers.ints(min_max=helpers.min_max_bound(-1, 0)),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_linspace(
@@ -783,7 +783,7 @@ def test_jax_numpy_double(
 @handle_frontend_test(
     fn_tree="jax.numpy.geomspace",
     dtype_start_stop=_get_dtype_and_range(),
-    num=helpers.ints(min_value=5, max_value=50),
+    num=helpers.ints(min_max=helpers.min_max_bound(5, 50)),
     endpoint=st.booleans(),
     test_with_out=st.just(False),
 )

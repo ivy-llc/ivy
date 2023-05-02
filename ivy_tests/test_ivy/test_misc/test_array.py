@@ -22,11 +22,11 @@ from ivy.data_classes.array import Array
 def _getitem_setitem(draw, available_dtypes=None):
     if available_dtypes is None:
         available_dtypes = helpers.get_dtypes("numeric")
-    arr_size = draw(helpers.ints(min_value=2, max_value=10))
+    arr_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 10)))
     x = draw(
         helpers.dtype_and_values(available_dtypes=available_dtypes, shape=(arr_size,))
     )
-    index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
+    index = draw(helpers.ints(min_max=helpers.min_max_bound(2, arr_size - 1)))
     return index, x
 
 

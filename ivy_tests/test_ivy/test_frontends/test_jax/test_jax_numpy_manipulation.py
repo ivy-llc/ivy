@@ -100,10 +100,10 @@ def _arrays_idx_n_dtypes(draw):
             size=num_dims - 1,
         )
     )
-    unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
+    unique_idx = draw(helpers.ints(min_max=helpers.min_max_bound(2, num_dims - 1)))
     unique_dims = draw(
         helpers.list_of_size(
-            x=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_max=helpers.min_max_bound(2, 3)),
             size=num_arrays,
         )
     )
