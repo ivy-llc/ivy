@@ -43,7 +43,7 @@ def dev(
         )
         if as_native:  # fallback
             return jax.devices()[0]
-        return ""
+        return ""  # change might break something
     try:
         dv = _to_array(x).device()
     except Exception:
@@ -74,9 +74,10 @@ def to_device(
 def _to_device(x, device=None):
     if device is not None:
         cur_dev = dev(x, as_native=True)
+        device = as_native_dev(device)
         if cur_dev != device:
             # Uses async dispatch, data commited only when required
-            x = jax.device_put(x, as_native_dev(device))
+            x = jax.device_put(x, device)
     return x
 
 
@@ -86,11 +87,13 @@ def as_ivy_dev(device, /):
         return ivy.Device(device)
     if is_native_dev(device):  # no duck typing
         p, dev_id = (device.platform, device.id)
+        if p == "cpu" and dev_id == 0:
+            return ivy.Device(p)
         return ivy.Device(p + ":" + str(dev_id))
     else:
-        raise TypeError(
+        raise ivy.utils.exceptions.IvyException(
             f"Cannot convert {device} to an ivy device. Expected a "
-            + f"jaxlib.xla_extension.Device or str, got {type(device)}"
+            f"jaxlib.xla_extension.Device or str, got {type(device)}"
         )
 
 
@@ -107,9 +110,9 @@ def as_native_dev(device, /):
             idx = 0
         return jax.devices(device)[idx]
     else:
-        raise TypeError(
-            f"Cannot convert {device} to an jaxlib.xla_extension.Device. Expected a "
-            + f"jaxlib.xla_extension.Device or str, got {type(device)}"
+        raise ivy.utils.exceptions.IvyException(
+            f"Cannot convert {device} to an ivy device. Expected a "
+            f"jaxlib.xla_extension.Device or str, got {type(device)}"
         )
 
 

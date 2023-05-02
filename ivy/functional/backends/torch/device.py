@@ -23,7 +23,7 @@ def dev(
 ) -> Union[ivy.Device, torch.device]:
     dv = x.device
     if as_native:
-        return dev
+        return dv
     return as_ivy_dev(dv)
 
 
@@ -48,8 +48,8 @@ def to_device(
 
 def as_ivy_dev(device, /):
     if isinstance(device, str):
-        if "cuda" in device:
-            device = device.replace("cuda", "gpu")
+        if device.startswith("cpu"):
+            return ivy.Device("cpu")
         return ivy.Device(device)
     if is_native_dev(device):
         dev_type, dev_idx = (device.type, device.index)
@@ -61,7 +61,7 @@ def as_ivy_dev(device, /):
         )
     raise ivy.utils.exceptions.IvyError(
         f"{device} couldn't be converted to ivy device. "
-        + "Expcted a torch.device or a string of value type '(cpu|cuda|gpu)[:<index>]"
+        "Expcted a torch.device or a string of value type '(cpu|cuda|gpu)[:<index>]"
     )
 
 
@@ -72,9 +72,14 @@ def as_native_dev(
     if is_native_dev(device):
         return device
     if isinstance(device, str):
+        if device.startswith("cpu"):
+            return torch.device("cpu")
         return torch.device(ivy.Device(device).replace("gpu", "cuda"))
     else:
-        raise ivy.utils.exceptions.IvyError("Wrong set or order of arguments provided.")
+        raise ivy.utils.exceptions.IvyError(
+            f"{device} couldn't be converted to torch.device. "
+            "Expcted a torch.device or a string of value type '(cpu|cuda|gpu)[:<index>]"
+        )
 
 
 def is_native_dev(device, /):

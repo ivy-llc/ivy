@@ -71,7 +71,6 @@ def to_device(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if device is not None:
-        device = as_native_dev(device)
         if "gpu" in device:
             raise ivy.utils.exceptions.IvyException(
                 "Native Numpy does not support GPU placement, "

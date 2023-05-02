@@ -43,13 +43,12 @@ def to_device(
     stream: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if device is None:
-        return x
-    native_device = as_native_dev(as_ivy_dev(device))
-    current_dev = dev(x, as_native=True)
-    if not _same_device(current_dev, native_device):
-        with tf.device(native_device):
-            return tf.identity(x)
+    if device is not None:
+        native_device = as_native_dev(device)
+        current_dev = dev(x, as_native=True)
+        if not _same_device(current_dev, native_device):
+            with tf.device(native_device):
+                return tf.identity(x)
     return x
 
 
@@ -61,6 +60,11 @@ def as_ivy_dev(device: str, /):
         dev_type, dev_idx = dev_in_split
         dev_type = dev_type.lower()
         return ivy.Device(":".join([dev_type, dev_idx]))
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            f"Cannot convert {device} to an ivy device. Expected a "
+            f"str, got {type(device)}"
+        )
 
 
 def as_native_dev(device: str, /):
@@ -72,11 +76,14 @@ def as_native_dev(device: str, /):
             ret += ":0"
         return ret
     else:
-        raise TypeError("Cannot convert {device} to a tensorflow device")
+        raise ivy.utils.exceptions.IvyException(
+            f"Cannot convert {device} to an ivy device. Expected a "
+            f"str, got {type(device)}"
+        )
 
 
 def is_native_dev(device: str, /):
-    if isinstance(device, str) and "/" in device:
+    if isinstance(device, str) and device[0] == "/":
         dev_in_split = device[1:].split(":")[-2:]
         if len(dev_in_split) == 2:
             if dev_in_split[0] in ["CPU", "GPU", "TPU"] and dev_in_split[1].isnumeric():
