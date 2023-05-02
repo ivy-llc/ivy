@@ -43,6 +43,8 @@ class Sequential(Module):
                             '"submodules/v{}", where {} is an idx'
                         )
         self._submodules = list(sub_modules)
+        for submodule in self._submodules:
+            submodule.build()
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _forward(self, inputs):
