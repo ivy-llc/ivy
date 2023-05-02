@@ -1868,3 +1868,41 @@ def test_tensorflow_norm(
         axis=axis,
         keepdims=keepdims,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.meshgrid",
+    aliases=["tensorflow.meshgrid"],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    indexing=st.one_of('ij', 'xy'),
+    sparse=st.booleans(),
+)
+def test_tensorflow_meshgrid(
+        *,
+        arrays,
+        sparse,
+        indexing,
+        input_dtype,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+):
+    dtype, arrays = dtype_and_x
+    sparse = sparse
+    indexing = indexing
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arrays=arrays,
+        sparse=sparse,
+        indexing=indexing,
+    )

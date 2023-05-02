@@ -481,3 +481,8 @@ norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def meshgrid(*arrays, sparse=False, indexing):
+    return ivy.meshgrid(arrays, sparse, indexing)
