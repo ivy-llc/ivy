@@ -229,11 +229,18 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
+        is_mixed = hasattr(_fn, "mixed_function") and ivy.__dict__[_fn.__name__] != _fn
+        _is_mixed_partial = False
+        if is_mixed:
+            _fn = ivy.__dict__[_fn.__name__]
+            _is_mixed_partial = hasattr(_fn, "handle_mixed_function")
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
-        # for mixed partial functions, a tuple of two dictonaries will be returned
-        if not isinstance(devices_and_dtypes, tuple):
-            devices_and_dtypes = (devices_and_dtypes,)
-            # Issue with bfloat16 and tensorflow
+        devices_and_dtypes = (
+            tuple(devices_and_dtypes.values())
+            if _is_mixed_partial
+            else (devices_and_dtypes,)
+        )
+        # Issue with bfloat16 and tensorflow
         for device_and_dtype in devices_and_dtypes:
             try:
                 if "bfloat16" in device_and_dtype["gpu"]:
@@ -251,7 +258,10 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
                 )
             all_organized_dtypes.append(organized_dtypes)
         supported_device_dtypes[b] = (
-            tuple(all_organized_dtypes)
+            {
+                "compositional": all_organized_dtypes[0],
+                "primary": all_organized_dtypes[1],
+            }
             if len(all_organized_dtypes) > 1
             else all_organized_dtypes[0]
         )

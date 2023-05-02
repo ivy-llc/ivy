@@ -212,11 +212,6 @@ def get_shape(
     -------
         A strategy that draws a tuple.
     """
-    lists_strategy = st.lists(
-        number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
-        min_size=min_num_dims,
-        max_size=max_num_dims,
-    )
     if allow_none:
         shape = draw(
             st.none()
@@ -406,6 +401,7 @@ def get_axis(
 
     if type(axis) == list:
         if sort_values:
+
             def sort_key(ele, max_len):
                 if ele < 0:
                     return ele + max_len
@@ -420,7 +416,7 @@ def get_axis(
 def x_and_filters(
     draw, dim: int = 2, transpose: bool = False, depthwise=False, mixed_fn_index=0
 ):
-
+    """
     Parameters
     ----------
     draw
@@ -515,8 +511,8 @@ def x_and_filters(
 
 @st.composite
 def embedding_helper(draw, mixed_fn_index=0):
-   """Helper function used to obtain weights for embeddings, the corresponding
-    indices, the padding indices.
+    """
+    Obtain weights for embeddings, the corresponding indices, the padding indices.
 
     Parameters
     ----------
