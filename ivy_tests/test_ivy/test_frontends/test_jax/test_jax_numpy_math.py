@@ -2701,6 +2701,52 @@ def test_jax_numpy_polyder(
     )
 
 
+# polyint
+@st.composite
+def _get_array_values_m_and_k(draw):
+    dtype_and_x= draw(helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        )
+    )
+    dtype, x = dtype_and_x
+    m = draw(st.integers(min_value=0, max_value=10))
+    max_bound = m-1
+    if max_bound <= m:
+        k = None
+    else:
+        k = draw(st.integers(min_value=0, max_value=max_bound))
+    return dtype, x, m, k
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.polyint",
+    dtype_and_x_and_k=_get_array_values_m_and_k(),
+)
+def test_jax_numpy_polyint(
+    *,
+    dtype_and_x_and_k,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x, m, k = dtype_and_x_and_k
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        p=x[0],
+        m=m,
+        k=k,
+    )
+
+
 # polysub
 @handle_frontend_test(
     fn_tree="jax.numpy.polysub",
