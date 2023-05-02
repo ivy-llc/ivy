@@ -163,8 +163,7 @@ def floats(
 def ints(
     draw,
     *,
-    min_value=None,
-    max_value=None,
+    min_max=min_max_bound,
     safety_factor=1.1,
     safety_factor_scale=None,
 ):
@@ -176,10 +175,8 @@ def ints(
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    min_value
-        minimum value of integers generated.
-    max_value
-        maximum value of integers generated.
+    min_max
+        minimum and maximum value of integers generated.
     safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
@@ -199,6 +196,7 @@ def ints(
         A strategy that draws integers.
     """
     dtype = draw(dtype_helpers.get_dtypes("integer", full=False, prune_function=False))
+    min_value, max_value = draw(min_max)
     if min_value is None and max_value is None:
         safety_factor_scale = "linear"
     if safety_factor_scale is not None:
@@ -265,8 +263,7 @@ def number(
     """
     return draw(
         ints(
-            min_value=min_value,
-            max_value=max_value,
+            min_max=min_max_bound(min_value, max_value),
             safety_factor=large_abs_safety_factor,
             safety_factor_scale=safety_factor_scale,
         )

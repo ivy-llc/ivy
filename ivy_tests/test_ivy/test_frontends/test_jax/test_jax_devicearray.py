@@ -1381,7 +1381,7 @@ def test_jax_special_rmod(
 
 @st.composite
 def _get_dtype_input_and_vectors(draw):
-    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size = draw(helpers.ints(min_max=helpers.min_max_bound(2, 5)))
     dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
     vec1 = draw(
         helpers.array_values(

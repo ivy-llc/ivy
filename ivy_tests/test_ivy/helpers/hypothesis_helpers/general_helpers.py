@@ -143,7 +143,8 @@ def reshape_shapes(draw, *, shape):
         shape = draw(shape)
     size = 1 if len(shape) == 0 else math.prod(shape)
     rshape = draw(
-        st.lists(number_helpers.ints(min_value=0)).filter(
+        st.lists(number_helpers.ints(min_max=number_helpers.min_max_bound(0,
+                                                                          None))).filter(
             lambda s: math.prod(s) == size
         )
     )
@@ -210,7 +211,8 @@ def get_shape(
         shape = draw(
             st.none()
             | st.lists(
-                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+                number_helpers.ints(min_max=number_helpers.min_max_bound(min_dim_size,
+                                                                         max_dim_size)),
                 min_size=min_num_dims,
                 max_size=max_num_dims,
             )
@@ -218,7 +220,8 @@ def get_shape(
     else:
         shape = draw(
             st.lists(
-                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+                number_helpers.ints(min_max=number_helpers.min_max_bound(min_dim_size,
+                                                                         max_dim_size)),
                 min_size=min_num_dims,
                 max_size=max_num_dims,
             )

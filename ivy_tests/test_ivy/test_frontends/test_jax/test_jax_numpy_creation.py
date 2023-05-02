@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     as_list=st.booleans(),
     copy=st.booleans(),
-    ndmin=helpers.ints(min_value=0, max_value=10),
+    ndmin=helpers.ints(min_max=helpers.min_max_bound(0, 10)),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_array(
@@ -298,9 +298,9 @@ def test_jax_numpy_hstack(
 # eye
 @handle_frontend_test(
     fn_tree="jax.numpy.eye",
-    n=helpers.ints(min_value=3, max_value=10),
-    m=st.none() | helpers.ints(min_value=3, max_value=10),
-    k=helpers.ints(min_value=-2, max_value=2),
+    n=helpers.ints(min_max=helpers.min_max_bound(3, 10)),
+    m=st.none() | helpers.ints(min_max=helpers.min_max_bound(3, 10)),
+    k=helpers.ints(min_max=helpers.min_max_bound(-2, 2)),
     dtypes=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
@@ -339,7 +339,7 @@ def test_jax_numpy_eye(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    k=helpers.ints(min_value=-10, max_value=10),
+    k=helpers.ints(min_max=helpers.min_max_bound(-10, 10)),
     test_with_out=st.just(False),
 )
 def test_numpy_triu(

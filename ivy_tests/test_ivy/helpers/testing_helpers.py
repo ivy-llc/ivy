@@ -80,7 +80,8 @@ def num_positional_args_method(draw, *, method):
         elif param.kind == param.VAR_KEYWORD:
             num_keyword_only += 1
     return draw(
-        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
+        nh.ints(min_max=nh.min_max_bound(num_positional_only,
+                                         (total - num_keyword_only)))
     )
 
 
@@ -131,7 +132,8 @@ def num_positional_args(draw, *, fn_name: str = None):
         elif param.kind == param.VAR_KEYWORD:
             num_keyword_only += 1
     return draw(
-        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
+        nh.ints(min_max=nh.min_max_bound(num_positional_only,
+                                         (total - num_keyword_only)))
     )
 
 

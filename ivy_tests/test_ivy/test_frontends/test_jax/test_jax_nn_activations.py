@@ -372,7 +372,7 @@ def test_jax_nn_log_sigmoid(
         min_value=-2,
         min_num_dims=1,
     ),
-    axis=helpers.ints(min_value=-1, max_value=0),
+    axis=helpers.ints(min_max=helpers.min_max_bound(-1, 0)),
     test_with_out=st.just(False),
 )
 def test_jax_nn_log_softmax(

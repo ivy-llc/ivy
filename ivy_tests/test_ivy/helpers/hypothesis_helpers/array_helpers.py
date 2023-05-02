@@ -16,7 +16,7 @@ from . import dtype_helpers, number_helpers
 
 @st.composite
 def array_bools(
-    draw, *, size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
+    draw, *, size=st.shared(number_helpers.ints(min_max=helpers.min_max_bound(1, 4)), key="size")
 ):
     """
     Draws a list of booleans with a given size.
@@ -175,7 +175,8 @@ def lists(
     """
     if not isinstance(min_size, int) or not isinstance(max_size, int):
         integers = (
-            number_helpers.ints(min_value=size_bounds[0], max_value=size_bounds[1])
+            number_helpers.ints(min_max=helpers.min_max_bound(size_bounds[0],
+                                                              size_bounds[1]))
             if size_bounds
             else number_helpers.ints()
         )
@@ -598,7 +599,7 @@ def dtype_values_axis(
                 )
             )
     else:
-        axis = draw(number_helpers.ints(min_value=min_axis, max_value=max_axis))
+        axis = draw(number_helpers.ints(min_max=helpers.min_max_bound(min_axis, max_axis)))
     if ret_shape:
         return dtype, values, axis, arr_shape
     return dtype, values, axis
@@ -737,17 +738,14 @@ def array_indices_axis(
         batch_shape = x_shape[0:0]
     else:
         axis = draw(
-            number_helpers.ints(
-                min_value=-1 * len(x_shape),
-                max_value=len(x_shape) - 1,
+            number_helpers.ints(min_max=helpers.min_max_bound(1 * len(x_shape),
+                                                              len(x_shape) - 1)
+
             )
         )
         batch_dims = draw(
-            number_helpers.ints(
-                min_value=0,
-                max_value=max(0, axis),
+            number_helpers.ints(min_max=helpers.min_max_bound(0, max(0, axis)))
             )
-        )
         batch_shape = x_shape[0:batch_dims]
     if indices_same_dims:
         indices_shape = x_shape

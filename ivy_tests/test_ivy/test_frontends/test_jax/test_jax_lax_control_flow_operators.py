@@ -84,7 +84,7 @@ def test_jax_map(
         min_num_dims=1,
         min_dim_size=1,
     ),
-    index=helpers.ints(min_value=-10, max_value=10),
+    index=helpers.ints(min_max=helpers.min_max_bound(-10, 10)),
     test_with_out=st.just(False),
 )
 def test_jax_switch(
