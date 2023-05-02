@@ -37,7 +37,7 @@ def to_device(
 ) -> torch.Tensor:
     if device is not None:
         current_dev = dev(x, as_native=True)
-        native_dev = as_native_dev(as_ivy_dev(device))
+        native_dev = as_native_dev(device)
         if current_dev != native_dev:
             ret = x.to(device=native_dev)
             if isinstance(x, torch.nn.Parameter):
@@ -48,6 +48,8 @@ def to_device(
 
 def as_ivy_dev(device, /):
     if isinstance(device, str):
+        if "cuda" in device:
+            device = device.replace("cuda", "gpu")
         return ivy.Device(device)
     if is_native_dev(device):
         dev_type, dev_idx = (device.type, device.index)
@@ -58,7 +60,7 @@ def as_ivy_dev(device, /):
             + (":" + (str(dev_idx) if dev_idx is not None else "0"))
         )
     raise ivy.utils.exceptions.IvyError(
-        f"{device} couldn't be converted to ivy device."
+        f"{device} couldn't be converted to ivy device. "
         + "Expcted a torch.device or a string of value type '(cpu|cuda|gpu)[:<index>]"
     )
 
