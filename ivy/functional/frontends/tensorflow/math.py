@@ -519,8 +519,8 @@ def nextafter(x1, x2, name=None):
     },
     "tensorflow",
 )
-def abs(x, name=None):
-    return ivy.where(x != 0, ivy.abs(x), 0)
+def abs(x, name=None, where=None):
+    return ivy.abs(x, where=where)
 
 
 @to_ivy_arrays_and_back

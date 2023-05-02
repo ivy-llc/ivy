@@ -30,7 +30,8 @@ def abs(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+    where: Optional[ivy.Array] = False,
+) -> ivy.Array:  # noqa
     """Calculate the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
     ``x`` but has positive sign).
@@ -54,6 +55,8 @@ def abs(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    where
+        optional output array, a boolean mask
 
     Returns
     -------
@@ -102,8 +105,8 @@ def abs(
     }
 
     """
-    backend = ivy.current_backend(x)
-    return ivy.where(x != 0, backend, ivy.abs(x, out=out))
+
+    return ivy.current_backend(x).abs(x, out=out, where=where)
 
 
 @handle_array_function

@@ -12,9 +12,15 @@ from . import backend_version
 
 @_scalar_output_to_0d_array
 def abs(
-    x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
+    x: Union[float, np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+    where: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.where(x != 0, np.absolute(x), 0)
+    if where:
+        return np.absolute(x, out=out, where=where)
+    return np.absolute(x, out=out)
 
 
 abs.support_native_out = True

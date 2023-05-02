@@ -521,12 +521,18 @@ trunc.support_native_out = True
 
 
 def abs(
-    x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+    x: Union[float, torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+    where: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if x.dtype is torch.bool:
         return x
-    return torch.where(x != 0, torch.abs(x, out=out), 0)
+    if where:
+        return torch.abs(x, out=out, where=where)
+    return torch.abs(x, out=out)
 
 
 abs.support_native_out = True

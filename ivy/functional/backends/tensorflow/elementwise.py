@@ -14,13 +14,16 @@ def abs(
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not tf.is_tensor(x):
         x = tf.convert_to_tensor(x)
     x_dtype = ivy.dtype(x)
     if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
-    return tf.where(x != 0, tf.abs(x), 0)
+    if where:
+        return tf.abs(x, where=where)
+    return tf.abs(x)
 
 
 def acos(

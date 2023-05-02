@@ -12,7 +12,13 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def abs(
+    x: Union[float, JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+    where: Optional[ivy.Array] = None,
+) -> JaxArray:
     if "bool" in str(x.dtype):
         return x
     # jnp.where is used for consistent gradients
