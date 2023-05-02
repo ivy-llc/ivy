@@ -167,6 +167,8 @@ def count_nonzero(
             x = x.unsqueeze(d - 1)
         return x
     elif isinstance(axis, int):
+        if axis == -1:
+            return x.unsqueeze(x.dim()-2)
         return x.unsqueeze(axis - 1)
     return x
 

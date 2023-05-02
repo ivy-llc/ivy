@@ -44,7 +44,7 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/setting_up.rst
    contributing/the_basics.rst
    contributing/building_the_docs.rst
-   Deep Dive <https://lets-unify.ai/docs/ivy/overview/deep_dive.html>
+   Deep Dive <https://unify.ai/docs/ivy/overview/deep_dive.html>
    contributing/open_tasks.rst
    contributing/applied_libraries.rst
    contributing/helpful_resources.rst
