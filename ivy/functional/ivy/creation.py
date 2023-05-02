@@ -367,8 +367,8 @@ def asarray(
 @handle_array_like_without_promotion
 @handle_nestable
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -377,8 +377,6 @@ def zeros(
 
     Parameters
     ----------
-    size
-        list, tuple or a sequence of integers representing the output array shape.
     shape
        output array shape.
     dtype
@@ -407,16 +405,6 @@ def zeros(
 
     Examples
     --------
-    With `Sequence[int]` input:
-    >>> x = ivy.zeros(1,1)
-    >>> print(x)
-    ivy.array([[0.]])
-
-    With :class:`tuple` input:
-    >>> x = ivy.zeros((1,1))
-    >>> print(x)
-    ivy.array([[0.]])
-
     With :class:`ivy.NativeShape` input:
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
@@ -429,11 +417,7 @@ def zeros(
     >>> print(x)
     ivy.array([0., 0., 0., 0., 0.])
     """
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    return current_backend().zeros(
-        size, shape=shape, dtype=dtype, device=device, out=out
-    )
+    return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
@@ -445,8 +429,8 @@ def zeros(
 @handle_array_like_without_promotion
 @handle_nestable
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -455,8 +439,6 @@ def ones(
 
     Parameters
     ----------
-    size
-        list, tuple or a sequence of integers representing the output array shape.
     shape
         output array shape.
     dtype
@@ -485,17 +467,6 @@ def ones(
 
     Examples
     --------
-    With `Sequence[int]` input:
-
-    >>> x = ivy.ones(1,1)
-    >>> print(x)
-    ivy.array([[1.]])
-
-    With :class:`tuple` input:
-    >>> x = ivy.ones((1,1))
-    >>> print(x)
-    ivy.array([[1.]])
-
     With :class:`ivy.Shape` input:
 
     >>> shape = (2,2)
@@ -531,11 +502,7 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    return current_backend().ones(
-        size, shape=shape, dtype=dtype, device=device, out=out
-    )
+    return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
@@ -982,8 +949,8 @@ def triu(
 @handle_array_like_without_promotion
 @handle_nestable
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -993,8 +960,6 @@ def empty(
 
     Parameters
     ----------
-    size
-        list, tuple or a sequence of integers representing the output array shape.
     shape
        output array shape.
     dtype
@@ -1021,11 +986,7 @@ def empty(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    return current_backend().empty(
-        size, shape=shape, dtype=dtype, device=device, out=out
-    )
+    return current_backend().empty(shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
