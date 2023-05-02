@@ -1350,9 +1350,11 @@ class LSTM(Module):
                     {
                         "w": self._w_init.create_variables(
                             (
-                                self._input_channels
-                                if i == 0
-                                else self._output_channels,
+                                (
+                                    self._input_channels
+                                    if i == 0
+                                    else self._output_channels
+                                ),
                                 4 * self._output_channels,
                             ),
                             device,

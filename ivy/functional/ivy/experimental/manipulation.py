@@ -145,13 +145,13 @@ def flatten(
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
-            f"Dimension out of range (expected to be in range of\
-                {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
+            "Dimension out of range (expected to be in range of"
+            f" {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
         )
     if end_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
-            f"Dimension out of range (expected to be in range of\
-                {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
+            "Dimension out of range (expected to be in range of"
+            f" {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
         )
     if start_dim < 0:
         start_dim = len(x.shape) + start_dim
@@ -881,9 +881,11 @@ def _to_pairs(x, n):
         ivy.utils.assertions.check_equal(
             ivy.asarray(list(x)).shape,
             (n, 2),
-            message="tuple argument should contain "
-            "ndim pairs where ndim is the number of "
-            "the input's dimensions",
+            message=(
+                "tuple argument should contain "
+                "ndim pairs where ndim is the number of "
+                "the input's dimensions"
+            ),
         )
     return x
 
@@ -1185,6 +1187,7 @@ def pad(
             )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
+            stat_pair = ivy.to_numpy(stat_pair)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False

@@ -409,9 +409,11 @@ class Array(
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        ivy.set_backend(state["backend"]) if state["backend"] is not None and len(
-            state["backend"]
-        ) > 0 else ivy.current_backend(state["data"])
+        (
+            ivy.set_backend(state["backend"])
+            if state["backend"] is not None and len(state["backend"]) > 0
+            else ivy.current_backend(state["data"])
+        )
         ivy_array = ivy.array(state["data"])
         ivy.previous_backend()
 
