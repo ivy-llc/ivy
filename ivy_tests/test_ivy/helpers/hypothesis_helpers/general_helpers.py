@@ -406,6 +406,7 @@ def get_axis(
 
     if type(axis) == list:
         if sort_values:
+
             def sort_key(ele, max_len):
                 if ele < 0:
                     return ele + max_len
@@ -418,7 +419,8 @@ def get_axis(
 
 @st.composite
 def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
-    """Draws a random x and filters for a convolution.
+    """
+    Draws a random x and filters for a convolution.
 
     Parameters
     ----------
@@ -512,8 +514,9 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
 
 @st.composite
 def embedding_helper(draw):
-    """Helper function used to obtain weights for embeddings, the corresponding
-    indices, the padding indices.
+    """
+    Helper function used to obtain weights for embeddings, the corresponding indices,
+    the padding indices.
 
     Parameters
     ----------

@@ -1033,7 +1033,8 @@ def arrays_and_axes(
     return_dtype=False,
     force_int_axis=False,
 ):
-    """Generates a list of arrays and axes.
+    """
+    Generates a list of arrays and axes.
 
     Parameters
     ----------
