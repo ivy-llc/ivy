@@ -467,7 +467,7 @@ class ndarray:
     
     def __array_wrap__(self, out_arr, context=None):
         if context is None:
-            return np_frontend.asarray(self)
+            return ndarray.view(self)
         else:
             return np_frontend.array(out_arr)
 
