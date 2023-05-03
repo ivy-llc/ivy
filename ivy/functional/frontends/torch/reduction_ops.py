@@ -251,3 +251,10 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
         values.append(results.counts)
 
     return Results(*values)
+
+def mode(input, dim=-1, keepdim=False, *, out=None):
+    unique_data, counts = ivy.unique_counts(input)
+    max_count = ivy.max(counts, axis=dim, keepdims=True)
+    isc = ivy.isclose(counts, max_count, rtol=1e-05, atol=1e-08,equal_nan=False, Out=None)
+    modes = ivy.where(ivy.equal(counts, max_count), x1 = isc, x2 = unique_data, out=None)
+    return modes
