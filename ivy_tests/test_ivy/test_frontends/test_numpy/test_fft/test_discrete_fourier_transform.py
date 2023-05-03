@@ -55,7 +55,7 @@ def test_numpy_ifttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
     norm=st.sampled_from(["backward", "ortho", "forward"]),
     n=st.integers(min_value=2, max_value=10),
 )
-def test_numpy_ftt(dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_device):
+def test_numpy_fft(dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_device):
     input_dtype, x , axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
