@@ -468,7 +468,8 @@ def test_torch_initial_seed(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    # Call the test_frontend_function and capture the output.
+    output = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
@@ -477,3 +478,11 @@ def test_torch_initial_seed(
         on_device=on_device,
         input=x[0],
     )
+
+    # Check that the output is an integer.
+    assert isinstance(output, int), f"Expected output to be an integer, but got {type(output)}"
+
+    # Check that the output is within the valid range of seed values.
+    min_seed_value = -(2 ** 63)
+    max_seed_value = 2 ** 63 - 1
+    assert min_seed_value <= output <= max_seed_value, f"Expected output to be within [{min_seed_value}, {max_seed_value}], but got {output}"
