@@ -2,7 +2,7 @@ Formatting
 ==========
 
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
-.. _`pre-commit guide`: https://lets-unify.ai/docs/ivy/contributing/setting_up.html#pre-commit
+.. _`pre-commit guide`: https://unify.ai/docs/ivy/contributing/setting_up.html#pre-commit
 .. _`formatting channel`: https://discord.com/channels/799879767196958751/1028266706436624456
 .. _`formatting forum`: https://discord.com/channels/799879767196958751/1028297504820838480
 

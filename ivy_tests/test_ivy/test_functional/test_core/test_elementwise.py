@@ -2130,6 +2130,7 @@ def test_fmod(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # Make sure values is not too close to zero
@@ -2143,7 +2144,7 @@ def test_fmod(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="jax",
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
