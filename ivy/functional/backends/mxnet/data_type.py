@@ -8,21 +8,17 @@ ivy_dtype_dict = {
     None: "bool",
 }
 native_dtype_dict = {
-    "int8": None,
-    "int16": None,
-    "int32": None,
-    "int64": None,
-    "uint8": None,
-    "uint16": None,
-    "uint32": None,
-    "uint64": None,
-    "bfloat16": None,
-    "float16": None,
-    "float32": None,
-    "float64": None,
-    "complex64": None,
-    "complex128": None,
-    "bool": None,
+    "int8": np.int8,
+    "int16": np.int16,
+    "int32": np.int32,
+    "int64": np.int64,
+    "uint8": np.uint8,
+    "float16": np.float16,
+    "float32": np.float32,
+    "float64": np.float64,
+    "complex64": np.complex64,
+    "complex128": np.complex128,
+    "bool": np.bool_,
 }
 
 
@@ -118,7 +114,22 @@ def as_ivy_dtype(
 
 
 def as_native_dtype(dtype_in: Union[(None, str, bool, int, float, np.dtype)]) -> None:
-    raise NotImplementedError("mxnet.as_native_dtype Not Implemented")
+    if dtype_in is int:
+        return ivy.default_int_dtype(as_native=True)
+    if dtype_in is float:
+        return ivy.default_float_dtype(as_native=True)
+    if dtype_in is complex:
+        return ivy.default_complex_dtype(as_native=True)
+    if dtype_in is bool:
+        return np.dtype("bool")
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    if dtype_in in native_dtype_dict:
+        return native_dtype_dict[ivy.Dtype(dtype_in)]
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
+        )
 
 
 def dtype(
