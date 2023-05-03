@@ -2707,8 +2707,8 @@ def lu(
     /,
     *,
     pivot: bool = True,
-    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
-) -> Tuple[ivy.Array, ivy.Array]:
+    out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
     """
     Parameters
     ----------
