@@ -102,7 +102,6 @@ def standard_gamma(shape, size=None):
 @from_zero_dim_arrays_to_scalar
 def binomial(n, p, size=None):
     def comb(k,n):
-        x = 1
         if k>=n:
             KMinusn=k-n
             return math.factorial(n)/ (math.factorial(k)*math.factorial(KMinusn))
