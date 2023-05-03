@@ -1868,3 +1868,33 @@ def test_tensorflow_norm(
         axis=axis,
         keepdims=keepdims,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.unique",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_unique(
+    *,
+    dtype_and_x,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )

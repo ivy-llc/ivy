@@ -487,3 +487,11 @@ norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def unique(x, out_idx=ivy.int32, name=None):
+    ret = ivy.unique_all(x)
+    y = ret[0]
+    idx = ivy.astype(ret[2], out_idx)
+    return y, idx
