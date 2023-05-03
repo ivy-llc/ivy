@@ -243,7 +243,12 @@ class Shape:
         return self
 
     def __eq__(self, other):
-        return self._shape == other
+        if isinstance(other, tuple) and not isinstance(self._shape, tuple):
+            return tuple(self._shape) == other
+        elif isinstance(other, list) and not isinstance(self._shape, list):
+            return list(self._shape) == other
+        else:
+            return self._shape == other
 
     def __ge__(self, other):
         return self._shape >= other
