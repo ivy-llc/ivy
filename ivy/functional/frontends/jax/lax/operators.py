@@ -488,9 +488,7 @@ def slice(operand, start_indices, limit_indices, strides=None):
         start_i = int(start_indices[i])
         limit_i = int(limit_indices[i])
         full_slice += (_slice(start_i, limit_i, strides_i),)
-    ret = operand[full_slice] if full_slice else operand
-
-    return ivy.expand_dims(ret)
+    return operand[full_slice]
 
 
 @to_ivy_arrays_and_back
