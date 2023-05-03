@@ -29,6 +29,7 @@
             var colabImg = document.createElement('img');
             colabImg.src = 'https://colab.research.google.com/assets/colab-badge.svg';
             colabImg.style.verticalAlign = 'middle';
+            colabImg.style.width = "110%";
             colabBadge.appendChild(colabImg);
 
             // create the second badge element with a link
@@ -39,13 +40,15 @@
             var githubImg = document.createElement('img');
             githubImg.src = 'https://badgen.net/badge/icon/github?icon=github&label';
             githubImg.style.verticalAlign = 'middle';
+            githubImg.style.width = "110%";
             githubBadge.appendChild(githubImg);
-            githubBadge.style.marginLeft = '10px';
+            githubBadge.style.marginLeft = '20px';
 
             // add the badges to the container
             badgesContainer.appendChild(colabBadge);
             badgesContainer.appendChild(githubBadge);
             badgesContainer.style.marginBottom = '20px';
+            badgesContainer.style.marginTop = '20px';
 
             // insert the container after the h1 header
             h1.parentNode.insertBefore(badgesContainer, h1.nextSibling);
