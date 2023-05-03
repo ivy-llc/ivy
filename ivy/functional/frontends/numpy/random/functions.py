@@ -100,7 +100,7 @@ def standard_gamma(shape, size=None):
 #Binomial
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def binomial(n, p, size):
+def binomial(n, p, size=None):
     def comb(k,n):
         x = 1
         if k>=n:
@@ -111,7 +111,7 @@ def binomial(n, p, size):
     
     oneMinusP = ivy.subtract(1, p)
     nMinusSize = ivy.subtract(n,size)
-    return ivy.pow(oneMinusP, nMinusSize)*ivy.pow(p, size)*comb(size[0],n)
+    return (ivy.pow(oneMinusP, nMinusSize))*(ivy.pow(p, size))*comb(size[0],n)
     
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
