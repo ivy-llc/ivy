@@ -774,6 +774,7 @@ from ivy.utils.backend import (
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
+    set_paddle_backend,
     set_mxnet_backend,
     previous_backend,
     backend_stack,

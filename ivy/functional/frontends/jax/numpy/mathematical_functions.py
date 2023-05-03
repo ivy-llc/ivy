@@ -616,8 +616,10 @@ def polyint(p, m=1, k=None):
         k_arr = ivy.asarray(k, dtype=p.dtype)
     else:
         raise ValueError("k must be a scalar or a rank-1 array of length 1 or m.")
-    grid = (ivy.arange(p.size + m, dtype=p.dtype)[ivy.newaxis]
-            - ivy.arange(m, dtype=p.dtype)[:, ivy.newaxis])
+    grid = (
+        ivy.arange(p.size + m, dtype=p.dtype)[ivy.newaxis]
+        - ivy.arange(m, dtype=p.dtype)[:, ivy.newaxis]
+    )
     coeff = ivy.maximum(1, grid).prod(axis=0)[::-1]
     return ivy.divide(ivy.concat((p, k_arr)), coeff).astype(p.dtype)
 
