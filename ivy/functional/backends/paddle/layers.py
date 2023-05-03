@@ -122,7 +122,7 @@ def conv2d(
     raise IvyNotImplementedException()
 
 
-# noinspection PyUnresolvedReferences
+@with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, backend_version)
 def conv2d_transpose(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -135,7 +135,14 @@ def conv2d_transpose(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    return paddle.nn.functional.conv2d_transpose(x=x, 
+                                                 weight=filters,
+                                                 stride=strides,
+                                                 padding=padding,
+                                                 output_size=output_shape,
+                                                 data_format=data_format,
+                                                 dilation=dilations,
+                                                 )
 
 
 # noinspection PyUnresolvedReferences
