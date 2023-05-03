@@ -113,10 +113,6 @@ def as_ivy_dtype(
     raise NotImplementedError("mxnet.as_ivy_dtype Not Implemented")
 
 
-def as_native_dtype(dtype_in: Union[(None, str, bool, int, float, np.dtype)]) -> None:
-    raise NotImplementedError("mxnet.as_native_dtype Not Implemented")
-
-
 def dtype(
     x: Union[(None, mx.ndarray.NDArray, np.ndarray)], *, as_native: bool = False
 ) -> ivy.Dtype:
