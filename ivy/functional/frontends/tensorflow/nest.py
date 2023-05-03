@@ -2,15 +2,6 @@
 import ivy.functional.frontends.tensorflow.ragged as ragged_tf
 import ivy
 
-# try:
-#     import tensorflow as tf
-# except ImportError:
-#     import types
-#
-#     tf = types.SimpleNamespace()
-#     tf.Tensor = None
-#     tf.RaggedTensor = None
-
 
 def _is_composite_array(x):
     if isinstance(x, ragged_tf.ragged.RaggedTensor):
