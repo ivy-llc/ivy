@@ -291,6 +291,9 @@ class ndarray:
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self.data, order=order)
 
+    def tofile(self, fid, sep="", format="%s"):
+        return self._ivy_array.tofile(fid, sep=sep, format=format)
+
     def tolist(self) -> list:
         return self._ivy_array.to_list()
 
