@@ -1053,3 +1053,7 @@ class Tensor:
             mean=mean, std=std, shape=self.shape, dtype=self.dtype, device=self.device
         )
         return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def addcdiv(self, tensor1, tensor2, *, value=1):
+        return torch_frontend.addcdiv(self, tensor1, tensor2, value=value)
