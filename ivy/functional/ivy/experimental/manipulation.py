@@ -1701,7 +1701,11 @@ def as_strided(
 as_strided.mixed_function = True
 
 # ToDo: modify test handlers to take this attribute into account for valid dtypes
-as_strided.unsupported_dtypes = {"tensorflow": ("uint32", "uint64")}
+as_strided.unsupported_dtypes = {
+    "tensorflow": ("uint32", "uint64", "bfloat16"),
+    "torch": ("bfloat16",),
+    "jax": ("bfloat16",)
+}
 
 
 @to_native_arrays_and_back
