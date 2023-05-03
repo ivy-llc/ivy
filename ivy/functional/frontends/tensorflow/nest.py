@@ -24,9 +24,9 @@ def _flatten_composite_array(x, expand_composites=False):
 
 
 def flatten(structure, expand_composites=False):
-    if expand_composites and _is_composite_array(structure):
-        return _flatten_composite_array(structure)
-    elif isinstance(structure, (tuple, list)):
+    # if expand_composites and _is_composite_array(structure):
+        # return _flatten_composite_array(structure)
+    if isinstance(structure, (tuple, list)):
         new_struc = []
         for child in structure:
             new_struc += flatten(child)
