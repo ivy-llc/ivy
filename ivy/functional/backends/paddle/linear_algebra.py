@@ -709,3 +709,17 @@ def vector_to_skew_symmetric_matrix(
     row3 = paddle.concat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return paddle.concat((row1, row2, row3), -2)
+
+
+def lu(
+    A: paddle.Tensor,
+    /,
+    *,
+    pivot: bool = True,
+    permute_l: bool = 0,
+    out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
+    res = namedtuple("PLU", ["P", "L", "U"])
+    lu, p, _ = paddle.linalg.lu(A, pivot=pivot)
+    P, L, U = paddle.linalg.lu_unpack(lu,p)
+    return res(P, L, U)

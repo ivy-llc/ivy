@@ -796,3 +796,14 @@ def vector_to_skew_symmetric_matrix(
     # BS x 3 x 3
     ret = tf.concat((row1, row2, row3), -2)
     return ret
+
+def lu(
+    A: tf.Tensor,
+    /,
+    *,
+    pivot: bool = True,
+    permute_l: bool = 0,
+    out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
+) -> Tuple[tf.Tensor, tf.Tensor, tf.Tensor]:
+    # not unpacking properly, still implementing
+    return tf.linalg.lu(A)

@@ -539,3 +539,16 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
+
+
+def lu(
+    A: torch.Tensor,
+    /,
+    *,
+    pivot: bool = True,
+    permute_l: bool = 0,
+    out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    res = namedtuple("PLU", ["P", "L", "U"])
+    P, L, U = torch.linalg.lu(A)
+    return res(P, L, U)

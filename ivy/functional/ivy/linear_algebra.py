@@ -2702,13 +2702,13 @@ def vector_to_skew_symmetric_matrix(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-def lu_factor(
+def lu(
     A: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     pivot: bool = True,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Parameters
     ----------

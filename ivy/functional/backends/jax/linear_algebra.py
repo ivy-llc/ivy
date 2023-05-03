@@ -3,6 +3,7 @@ from collections import namedtuple
 from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple
 
 import jax.numpy as jnp
+import jax.scipy as jsp
 
 # local
 import ivy
@@ -534,3 +535,15 @@ def vector_to_skew_symmetric_matrix(
     row3 = jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return jnp.concatenate((row1, row2, row3), -2)
+
+
+def lu(
+    A: JaxArray,
+    /,
+    *,
+    permute_l: bool = 0,
+    out: Optional[JaxArray] = None
+) -> Tuple[JaxArray, JaxArray, JaxArray]:
+    res = namedtuple("PLU", ["P", "L", "U"])
+    P, L, U = jsp.linalg.lu(A)
+    return res(P, L, U)
