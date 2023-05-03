@@ -1,9 +1,8 @@
-# global
 import ivy
 
 
 class ResidualBlock(ivy.Module):
-    def __init__(self, in_channels, out_channels, stride = 1, downsample = None):
+    def __init__(self, in_channels, out_channels, stride=1, downsample=None):
         """
         Helper module that is used in the ResNet implementation.
         :param in_channels: number of input channels
@@ -11,20 +10,24 @@ class ResidualBlock(ivy.Module):
         :param stride: stride used in the convolutions
         :param downsample: downsample function used in the residual path
         """
-        super(ResidualBlock, self).__init__()
-        self.conv1 = ivy.Sequential(
-                        ivy.Conv2D(in_channels, out_channels, [3, 3], stride, 1),
-                        ivy.BatchNorm2D(out_channels),
-                        ivy.ReLU()
-                    )
-        self.conv2 = ivy.Sequential(
-                        ivy.Conv2D(out_channels, out_channels, [3, 3], 1, 1),
-                        ivy.BatchNorm2D(out_channels)
-                    )
-        self.downsample = downsample
-        self.relu = ivy.ReLU()
+        self.in_channels = in_channels
         self.out_channels = out_channels
-        
+        self.downsample = downsample
+        self.stride = stride
+        self.relu = ivy.ReLU()
+        super(ResidualBlock, self).__init__()
+
+    def _build(self, *args, **kwrgs):
+        self.conv1 = ivy.Sequential(
+            ivy.Conv2D(self.in_channels, self.out_channels, [3, 3], self.stride, 1),
+            ivy.BatchNorm2D(self.out_channels),
+            ivy.ReLU(),
+        )
+        self.conv2 = ivy.Sequential(
+            ivy.Conv2D(self.out_channels, self.out_channels, [3, 3], 1, 1),
+            ivy.BatchNorm2D(self.out_channels),
+        )
+
     def _forward(self, x):
         residual = x
         out = self.conv1(x)
@@ -34,44 +37,84 @@ class ResidualBlock(ivy.Module):
         out = ivy.add(out, residual)
         out = self.relu(out)
         return out
-    
+
+
+class ResLayer(ivy.Module):
+    def __init__(
+        self,
+        block,
+        planes,
+        blocks,
+        current_inplanes,
+        stride=1,
+    ):
+        """Helper module that is used in the ResNet implementation."""
+        self.block = block
+        self.planes = planes
+        self.blocks = blocks
+        self.stride = stride
+        self.current_inplanes = current_inplanes
+        super(ResLayer, self).__init__()
+
+    def _build(self, *args, **kwargs):
+        downsample = None
+        layers = []
+        if self.stride != 1 or self.current_inplanes != self.planes:
+            downsample = ivy.Sequential(
+                ivy.Conv2D(
+                    self.current_inplanes, self.planes, [1, 1], self.stride, 0
+                ),  # check if padding is correct
+                ivy.BatchNorm2D(self.planes),
+            )
+
+        layers.append(
+            self.block(self.current_inplanes, self.planes, self.stride, downsample)
+        )
+
+        self.current_inplanes = self.planes
+        for _ in range(1, self.blocks):
+            layers.append(self.block(self.current_inplanes, self.planes))
+        self.res_layer = ivy.Sequential(*layers)
+
+    def _forward(self, inputs):
+        return self.res_layer(inputs)
+
+
 class ResNet(ivy.Module):
-    def __init__(self, block, layers, num_classes = 10):
+    def __init__(self, block, layers, num_classes=10):
         """
-        ResNet implementation.
+        Resnet implementation.
         :param block: residual block used in the network
         :param layers: list containing the number of blocks per layer
         :param num_classes: number of classes in the dataset
         """
-        super(ResNet, self).__init__()
+        self.num_classes = num_classes
+        self.block = block
+        self.layers = layers
         self.inplanes = 64
         self.conv1 = ivy.Sequential(
-                        ivy.Conv2D(3, 64, [7, 7], 2, 3),
-                        ivy.BatchNorm2D(64),
-                        ivy.ReLU())
+            ivy.Conv2D(3, 64, [7, 7], 2, 3), ivy.BatchNorm2D(64), ivy.ReLU()
+        )
         self.maxpool = ivy.MaxPool2D(3, 2, 1)
-        self.layer0 = self._make_layer(block, 64, layers[0], stride = 1)
-        self.layer1 = self._make_layer(block, 128, layers[1], stride = 2)
-        self.layer2 = self._make_layer(block, 256, layers[2], stride = 2)
-        self.layer3 = self._make_layer(block, 512, layers[3], stride = 2)
+
+        self.layer0 = ResLayer(
+            self.block, 64, self.layers[0], current_inplanes=64, stride=1
+        )
+        self.layer1 = ResLayer(
+            self.block, 128, self.layers[1], current_inplanes=64, stride=2
+        )
+        self.layer2 = ResLayer(
+            self.block, 256, self.layers[2], current_inplanes=128, stride=2
+        )
+        self.layer3 = ResLayer(
+            self.block, 512, self.layers[3], current_inplanes=256, stride=2
+        )
+
         self.avgpool = ivy.AvgPool2D(7, 1, 0)
-        self.fc = ivy.Linear(512, num_classes)
-        
-    def _make_layer(self, block, planes, blocks, stride=1):
-        downsample = None
-        if stride != 1 or self.inplanes != planes:
-            downsample = ivy.Sequential(
-                ivy.Conv2D(self.inplanes, planes, [1, 1], stride, 0), #check if padding is correct
-                ivy.BatchNorm2D(planes),
-            )
-        layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample))
-        self.inplanes = planes
-        for _ in range(1, blocks):
-            layers.append(block(self.inplanes, planes))
-        return ivy.Sequential(*layers)
-    
-    
+        self.fc = ivy.Linear(512, self.num_classes)
+
+        super(ResNet, self).__init__()
+
     def _forward(self, x):
         x = self.conv1(x)
         x = self.maxpool(x)
@@ -84,27 +127,3 @@ class ResNet(ivy.Module):
         x = x.reshape((x.shape[0], -1))
         x = self.fc(x)
         return x
-    
-def resnet_18():
-    """
-    ResNet-18 model
-    """
-    return ResNet(ResidualBlock, [2, 2, 2, 2])
-
-def resnet_34():
-    """
-    ResNet-34 model
-    """
-    return ResNet(ResidualBlock, [3, 4, 6, 3])
-
-def resnet_101():
-    """
-    ResNet-101 model
-    """
-    return ResNet(ResidualBlock, [3, 4, 23, 3])
-
-def resnet_152():
-    """
-    ResNet-152 model
-    """
-    return ResNet(ResidualBlock, [3, 8, 36, 3])
