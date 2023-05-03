@@ -98,10 +98,11 @@ def finfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> Finfo:
 
 
 @_handle_nestable_dtype_info
-def iinfo(
-    type: Union[(None, str, None, mx.ndarray.NDArray, np.ndarray)], /
-) -> np.iinfo:
-    raise NotImplementedError("mxnet.iinfo Not Implemented")
+def iinfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> np.iinfo:
+    # using np.iinfo as mx use np dtypes and mxnet iinfo not provided
+    if isinstance(type, mx.ndarray.NDArray):
+        type = type.asnumpy().dtype
+    return np.iinfo(ivy.as_native_dtype(type))
 
 
 def result_type(
