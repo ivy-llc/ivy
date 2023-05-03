@@ -467,7 +467,6 @@ def test_print_all_ivy_arrays_on_dev(
     on_device,
 ):
     arr = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
-    print("arr", arr)
 
     # Flush to avoid artifact
     sys.stdout.flush()
