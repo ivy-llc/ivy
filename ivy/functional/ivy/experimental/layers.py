@@ -1614,9 +1614,6 @@ def _get_size(scale_factor, size, dims, x_shape):
     return size
 
 
-interpolate.mixed_function = True
-
-
 def _output_ceil_shape(w, f, p, s):
     return math.ceil((w - f + p) / s) + 1
 
