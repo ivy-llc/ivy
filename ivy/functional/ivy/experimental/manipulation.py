@@ -1699,6 +1699,9 @@ def as_strided(
 
 as_strided.mixed_function = True
 
+# ToDo: modify test handlers to take this attribute into account for valid dtypes
+as_strided.unsupported_dtypes = {"tensorflow": ("uint32", "uint64")}
+
 
 @to_native_arrays_and_back
 @handle_out_argument
