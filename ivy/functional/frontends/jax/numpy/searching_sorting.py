@@ -180,3 +180,8 @@ def unique(
     # indexing each element whose condition is True except for the values
     uniques = [uniques[0]] + [uni for idx, uni in enumerate(uniques[1:]) if bools[idx]]
     return uniques
+
+
+@to_ivy_arrays_and_back
+def union1d(ar1, ar2, *, size=None, fill_value=None):
+    return unique(ivy.concat((ar1, ar2)), size=size, fill_value=fill_value)[0]
