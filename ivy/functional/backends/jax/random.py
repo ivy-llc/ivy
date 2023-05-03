@@ -92,6 +92,39 @@ def random_normal(
         + mean
     )
 
+def multivariate_normal(
+    *,
+    mean: Union[float, JaxArray] = 0.0,
+    cov: Union[float, JaxArray] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: jaxlib.xla_extension.Device,
+    dtype: jnp.dtype,
+    seed: Optional[int] = None,
+    method: Optional[str] = 'cholesky',
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    _check_valid_scale(cov)
+    shape = _check_bounds_and_get_shape(mean, cov, shape)
+
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
+    return (
+        to_device(
+            jax.random.multivariate_normal(
+                key = rng_input, 
+                mean = mean, 
+                cov = cov, 
+                shape = shape, 
+                method =method, 
+                dtype = dtype
+            ),
+            device,
+        )
+    )
+
 
 @with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def multinomial(
