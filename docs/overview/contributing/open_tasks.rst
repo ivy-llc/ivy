@@ -13,7 +13,7 @@ Here, we explain all tasks which are currently open for contributions from the c
 This section of the docs will be updated frequently, whereby new tasks will be added and completed tasks will be removed.
 The tasks outlined here are generally broad high-level tasks, each of which is made up of many individual sub-tasks, distributed across task-specific `ToDo List Issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
-Please read about `ToDo List Issues <https://lets-unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues>`_ in detail before continuing.
+Please read about `ToDo List Issues <https://unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues>`_ in detail before continuing.
 All tasks should be selected and allocated as described in the ToDo List Issues section.
 We make no mention of task selection and allocation in the explanations below, which instead focus on the steps to complete only once a sub-task has been allocated to you.
 
@@ -224,9 +224,9 @@ A general workflow for these tasks would be:
 
 #. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`, sometimes as a composition if the respective backends do not behave in a similar way.
    You may also use submodule-specific helper functions to recreate the behaviour.
-   Refer the `Backend API Guide <https://lets-unify.ai/docs/ivy/deep_dive/navigating_the_code.html#backend-api>`_ on how this can be done.
+   Refer the `Backend API Guide <https://unify.ai/docs/ivy/deep_dive/navigating_the_code.html#backend-api>`_ on how this can be done.
 #. Implement the functions in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation.
-   Refer the `Ivy API Guide <https://lets-unify.ai/docs/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
+   Refer the `Ivy API Guide <https://unify.ai/docs/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
 #. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
    in :mod:`ivy/array/experimental/[relevant_submodule].py`
 #. Write tests for the function using the :ref:`Ivy Tests` guide, and make sure they are passing.

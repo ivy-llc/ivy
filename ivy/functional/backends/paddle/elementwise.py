@@ -1156,6 +1156,9 @@ def isreal(
         return paddle.ones_like(x, dtype="bool")
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def fmod(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -1165,6 +1168,5 @@ def fmod(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     with ivy.ArrayMode(False):
-        res = ivy.floor_divide(ivy.abs(x1), ivy.abs(x2))
-        res = ivy.multiply(res, ivy.abs(x2))
-        return ivy.multiply(ivy.abs(ivy.subtract(ivy.abs(x1), res)), ivy.sign(x1))
+        res = ivy.remainder(ivy.abs(x1), ivy.abs(x2))
+        return ivy.where(ivy.less(x1, 0), -res, res)
