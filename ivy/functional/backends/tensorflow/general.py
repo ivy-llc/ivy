@@ -481,7 +481,7 @@ def scatter_nd(
     )
     if sum(updates.shape) < sum(expected_shape):
         updates = ivy.broadcast_to(updates, expected_shape)._data
-    elif sum(updates.shape) > sum(expected_shape):
+    elif sum(updates.shape) >= sum(expected_shape):
         indices_shape = updates.shape[:1] + indices.shape[-1]
         if sum(indices.shape) < sum(indices_shape):
             indices = ivy.broadcast_to(indices, indices_shape)._data
