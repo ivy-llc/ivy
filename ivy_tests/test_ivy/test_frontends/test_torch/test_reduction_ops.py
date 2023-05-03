@@ -840,7 +840,7 @@ def test_torch_unique(
     )
 
     
- @handle_frontend_test(
+@handle_frontend_test(
     fn_tree="torch.mode",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
