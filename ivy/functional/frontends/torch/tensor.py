@@ -52,6 +52,16 @@ class Tensor:
     def imag(self):
         return self.ivy_array.imag()
 
+    @property
+    def ndim(self):
+        return self.dim()
+
+    @property
+    def T(self):
+        if self.ndim == 1:
+            return self
+        return torch_frontend.permute(self, list(range(self.ndim))[::-1])
+
     # Setters #
     # --------#
 
@@ -868,6 +878,12 @@ class Tensor:
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
 
+    def __iter__(self):
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d tensor not supported")
+        for i in range(self.ndim):
+            yield self[i]
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __radd__(self, other):
         return torch_frontend.add(other, self)
@@ -1020,3 +1036,14 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def prod(self, dim=None, keepdim=False, *, dtype=None):
+        return torch_frontend.prod(self, dim=dim, keepdim=keepdim, dtype=dtype)
+
+    def div(self, other, *, rounding_mode=None):
+        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    def div_(self, other, *, rounding_mode=None):
+        self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
+        return self

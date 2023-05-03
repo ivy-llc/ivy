@@ -1,6 +1,7 @@
 # global
 import pytest
 from types import SimpleNamespace
+import numpy as np
 
 
 try:
@@ -132,6 +133,20 @@ def test_torch_tensor_property_imag(
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.imag, ivy.imag(data[0]))
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        ret_shape=True,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_tensor_property_ndim(
+    dtype_x,
+):
+    dtype, data, shape = dtype_x
+    x = Tensor(data[0])
+    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim)
 
 
 # chunk
@@ -7315,6 +7330,141 @@ def test_torch_instance_log10(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# prod
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="prod",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
+    ),
+    dtype=helpers.get_dtypes("float", none=True, full=False),
+    keepdims=st.booleans(),
+)
+def test_torch_instance_prod(
+    dtype_x_axis,
+    dtype,
+    keepdims,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    if ivy.current_backend_str() == "torch":
+        init_flags.as_variable = [False]
+        method_flags.as_variable = [False]
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "keepdim": keepdims,
+            "dtype": dtype[0],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# div
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="div",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
+)
+def test_torch_instance_div(
+    dtype_and_x,
+    rounding_mode,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+            "rounding_mode": rounding_mode,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# div_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="div_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
+)
+def test_torch_instance_div_(
+    dtype_and_x,
+    rounding_mode,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+            "rounding_mode": rounding_mode,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,

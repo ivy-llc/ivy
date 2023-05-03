@@ -178,7 +178,7 @@ def quantile(
     # quantile method in numpy backend, always return an array with dtype=float64.
     # in other backends, the output is the same dtype as the input.
 
-    tuple(axis) if isinstance(axis, list) else axis
+    (tuple(axis) if isinstance(axis, list) else axis)
 
     return np.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
