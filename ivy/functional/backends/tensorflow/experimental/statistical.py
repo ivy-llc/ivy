@@ -159,15 +159,21 @@ def nanmedian(
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
     keepdims: bool = False,
+    overwrite_input: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tfp.stats.percentile(
+    result = tfp.stats.percentile(
         input,
         50.0,
         axis=axis,
         interpolation="midpoint",
         keepdims=keepdims,
     )
+    if out is not None:
+        out = tf.identity(result)
+    if overwrite_input:
+        input = tf.identity(result)
+    return result
 
 
 def bincount(
