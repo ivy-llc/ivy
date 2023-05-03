@@ -1,6 +1,8 @@
+# global
+
+# local
 from . import cluster
 from . import constants
-from . import datasets
 from . import fft
 from . import fftpack
 from . import integrate
@@ -18,4 +20,5 @@ from . import stats
 
 import ivy.functional.frontends.numpy as np
 
-_frontend_array = np.array
+
+array = _frontend_array = np.array
