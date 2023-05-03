@@ -2025,7 +2025,7 @@ def test_jax_numpy_rint(
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_function(
-        input_dtypes=input_dtype[0],
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
