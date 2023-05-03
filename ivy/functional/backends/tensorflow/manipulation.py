@@ -51,7 +51,7 @@ def concat(
     try:
         return tf.concat(xs, axis)
     except (tf.errors.InvalidArgumentError, np.AxisError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(str(error))
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def expand_dims(
@@ -67,7 +67,7 @@ def expand_dims(
         ret = tf.reshape(x, shape=out_shape)
         return ret
     except (tf.errors.InvalidArgumentError, np.AxisError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(str(error))
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def flip(
@@ -204,7 +204,7 @@ def stack(
     try:
         return tf.experimental.numpy.stack(arrays, axis)
     except ValueError as e:
-        raise ivy.utils.exceptions.IvyIndexError(str(e))
+        raise ivy.utils.exceptions.IvyIndexError(e)
 
 
 # Extra #

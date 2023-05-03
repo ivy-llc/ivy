@@ -117,12 +117,12 @@ class IvyIndexError(IvyException, IndexError):
         super().__init__(*messages, include_backend=include_backend)
 
 
-class IvyAttributeError(AttributeError, IvyException):
+class IvyAttributeError(IvyException, AttributeError):
     def __init__(self, *messages, include_backend=False):
         super().__init__(*messages, include_backend=include_backend)
 
 
-class IvyValueError(ValueError, IvyException):
+class IvyValueError(IvyException, ValueError):
     def __init__(self, *messages, include_backend=False):
         super().__init__(*messages, include_backend=include_backend)
 
