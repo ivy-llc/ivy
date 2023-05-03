@@ -15,8 +15,6 @@ native_dtype_dict = {
     "float16": np.float16,
     "float32": np.float32,
     "float64": np.float64,
-    "complex64": np.complex64,
-    "complex128": np.complex128,
     "bool": np.bool_,
 }
 
