@@ -22,8 +22,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
         """
         ivy.Container static method variant of ivy.binary_cross_entropy_with_logits.
         This method simply wraps the function, and so the docstring for
-        ivy.binary_cross_entropy_with_logits also applies to this method
-        with minimal changes.
+        ivy.binary_cross_entropy_with_logits also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -87,10 +87,10 @@ class _ContainerWithLossesExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container method variant of ivy.binary_cross_entropy_with_logits.
-        This method simply wraps the function, and so the docstring for
-        ivy.binary_cross_entropy_with_logits also applies to this method
-        with minimal changes.
+        ivy.Container method variant of ivy.binary_cross_entropy_with_logits. This
+        method simply wraps the function, and so the docstring for
+        ivy.binary_cross_entropy_with_logits also applies to this method with minimal
+        changes.
 
         Parameters
         ----------

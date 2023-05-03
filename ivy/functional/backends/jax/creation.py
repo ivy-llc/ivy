@@ -89,18 +89,12 @@ def asarray(
 
 
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return _to_device(jnp.empty(shape, dtype), device=device)
 
 
@@ -250,23 +244,18 @@ def meshgrid(
     *arrays: JaxArray,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[JaxArray] = None,
 ) -> List[JaxArray]:
     return jnp.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return _to_device(jnp.ones(shape, dtype), device=device)
 
 
@@ -290,18 +279,12 @@ def triu(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxAr
 
 
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return _to_device(
         jnp.zeros(shape, dtype),
         device=device,

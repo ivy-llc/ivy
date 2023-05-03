@@ -221,11 +221,21 @@ class Shape:
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
 
+    def __iter__(self):
+        return iter(self._shape)
+
     def __add__(self, other):
         try:
             self._shape = self._shape + other
         except TypeError:
             self._shape = self._shape + list(other)
+        return self
+
+    def __radd__(self, other):
+        try:
+            self._shape = other + self._shape
+        except TypeError:
+            self._shape = list(other) + self._shape
         return self
 
     def __mul__(self, other):
@@ -575,6 +585,10 @@ array_api_promotion_table = {
     (bool, bool): bool,
 }
 locks = {"backend_setter": threading.Lock()}
+
+# the extra promotion table follows numpy safe casting convention
+# the following link discusses the different approaches to dtype promotions
+# https://jax.readthedocs.io/en/latest/jep/9407-type-promotion.html
 extra_promotion_table = {
     (bool, uint16): uint16,
     (bool, int32): int32,
@@ -618,22 +632,22 @@ extra_promotion_table = {
     (float32, int8): float32,
     (int8, float64): float64,
     (float64, int8): float64,
-    (int16, float16): float16,
-    (float16, int16): float16,
+    (int16, float16): float32,
+    (float16, int16): float32,
     (int16, float32): float32,
     (float32, int16): float32,
     (int16, float64): float64,
     (float64, int16): float64,
-    (int32, float16): float16,
-    (float16, int32): float16,
-    (int32, float32): float32,
-    (float32, int32): float32,
+    (int32, float16): float64,
+    (float16, int32): float64,
+    (int32, float32): float64,
+    (float32, int32): float64,
     (int32, float64): float64,
     (float64, int32): float64,
-    (int64, float16): float16,
-    (float16, int64): float16,
-    (int64, float32): float32,
-    (float32, int64): float32,
+    (int64, float16): float64,
+    (float16, int64): float64,
+    (int64, float32): float64,
+    (float32, int64): float64,
     (int64, float64): float64,
     (float64, int64): float64,
     (uint8, float16): float16,
@@ -642,41 +656,41 @@ extra_promotion_table = {
     (float32, uint8): float32,
     (uint8, float64): float64,
     (float64, uint8): float64,
-    (uint16, float16): float16,
-    (float16, uint16): float16,
+    (uint16, float16): float32,
+    (float16, uint16): float32,
     (uint16, float32): float32,
     (float32, uint16): float32,
     (uint16, float64): float64,
     (float64, uint16): float64,
-    (uint32, float16): float16,
-    (float16, uint32): float16,
-    (uint32, float32): float32,
-    (float32, uint32): float32,
+    (uint32, float16): float64,
+    (float16, uint32): float64,
+    (uint32, float32): float64,
+    (float32, uint32): float64,
     (uint32, float64): float64,
     (float64, uint32): float64,
-    (uint64, float16): float16,
-    (float16, uint64): float16,
-    (uint64, float32): float32,
-    (float32, uint64): float32,
+    (uint64, float16): float64,
+    (float16, uint64): float64,
+    (uint64, float32): float64,
+    (float32, uint64): float64,
     (uint64, float64): float64,
     (float64, uint64): float64,
     (bfloat16, bfloat16): bfloat16,
     (bfloat16, uint8): bfloat16,
     (uint8, bfloat16): bfloat16,
-    (bfloat16, uint16): bfloat16,
-    (uint16, bfloat16): bfloat16,
-    (bfloat16, uint32): bfloat16,
-    (uint32, bfloat16): bfloat16,
-    (bfloat16, uint64): bfloat16,
-    (uint64, bfloat16): bfloat16,
+    (bfloat16, uint16): float32,
+    (uint16, bfloat16): float32,
+    (bfloat16, uint32): float64,
+    (uint32, bfloat16): float64,
+    (bfloat16, uint64): float64,
+    (uint64, bfloat16): float64,
     (bfloat16, int8): bfloat16,
     (int8, bfloat16): bfloat16,
-    (bfloat16, int16): bfloat16,
-    (int16, bfloat16): bfloat16,
-    (bfloat16, int32): bfloat16,
-    (int32, bfloat16): bfloat16,
-    (bfloat16, int64): bfloat16,
-    (int64, bfloat16): bfloat16,
+    (bfloat16, int16): float32,
+    (int16, bfloat16): float32,
+    (bfloat16, int32): float64,
+    (int32, bfloat16): float64,
+    (bfloat16, int64): float64,
+    (int64, bfloat16): float64,
     (bfloat16, float16): float32,
     (float16, bfloat16): float32,
     (bfloat16, float32): float32,
@@ -687,18 +701,18 @@ extra_promotion_table = {
     (int8, complex64): complex64,
     (complex64, int16): complex64,
     (int16, complex64): complex64,
-    (complex64, int32): complex64,
-    (int32, complex64): complex64,
-    (complex64, int64): complex64,
-    (int64, complex64): complex64,
+    (complex64, int32): complex128,
+    (int32, complex64): complex128,
+    (complex64, int64): complex128,
+    (int64, complex64): complex128,
     (complex64, uint8): complex64,
     (uint8, complex64): complex64,
     (complex64, uint16): complex64,
     (uint16, complex64): complex64,
-    (complex64, uint32): complex64,
-    (uint32, complex64): complex64,
-    (complex64, uint64): complex64,
-    (uint64, complex64): complex64,
+    (complex64, uint32): complex128,
+    (uint32, complex64): complex128,
+    (complex64, uint64): complex128,
+    (uint64, complex64): complex128,
     (complex64, float16): complex64,
     (float16, complex64): complex64,
     (complex64, float32): complex64,
@@ -760,6 +774,8 @@ from ivy.utils.backend import (
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
+    set_paddle_backend,
+    set_mxnet_backend,
     previous_backend,
     backend_stack,
     choose_random_backend,
@@ -960,8 +976,6 @@ native_inplace_support = None
 
 supports_gradients = None
 
-if "IVY_BACKEND" in os.environ:
-    ivy.set_backend(os.environ["IVY_BACKEND"])
 
 # Array Significant Figures #
 
@@ -991,7 +1005,8 @@ vec_sig_fig.__name__ = "vec_sig_fig"
 
 
 def array_significant_figures(sig_figs=None):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -1001,7 +1016,6 @@ def array_significant_figures(sig_figs=None):
     Returns
     -------
     ret
-
     """
     if ivy.exists(sig_figs):
         _assert_array_significant_figures_formatting(sig_figs)
@@ -1015,13 +1029,13 @@ def array_significant_figures(sig_figs=None):
 
 
 def set_array_significant_figures(sig_figs):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     sig_figs
         optional int, number of significant figures to be shown when printing
-
     """
     _assert_array_significant_figures_formatting(sig_figs)
     global array_significant_figures_stack
@@ -1044,7 +1058,8 @@ def _assert_array_decimal_values_formatting(dec_vals):
 
 
 def array_decimal_values(dec_vals=None):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -1054,7 +1069,6 @@ def array_decimal_values(dec_vals=None):
     Returns
     -------
     ret
-
     """
     if ivy.exists(dec_vals):
         _assert_array_decimal_values_formatting(dec_vals)
@@ -1068,13 +1082,13 @@ def array_decimal_values(dec_vals=None):
 
 
 def set_array_decimal_values(dec_vals):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     dec_vals
         optional int, number of significant figures to be shown when printing
-
     """
     _assert_array_decimal_values_formatting(dec_vals)
     global array_decimal_values_stack
@@ -1089,7 +1103,8 @@ def unset_array_decimal_values():
 
 
 def warning_level():
-    """Summary.
+    """
+    Summary.
 
     Returns
     -------
@@ -1105,13 +1120,13 @@ def warning_level():
 
 
 def set_warning_level(warn_level):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     warn_level
         string for the warning level to be set, one of "none", "ivy_only", "all"
-
     """
     global warning_level_stack
     warning_level_stack.append(warn_level)
@@ -1134,13 +1149,13 @@ def warn(warning_message, stacklevel=0):
 
 
 def get_nan_policy():
-    """Summary.
+    """
+    Summary.
 
     Returns
     -------
     ret
         current nan policy, default is "nothing"
-
     """
     global nan_policy_stack
     if not nan_policy_stack:
@@ -1151,14 +1166,14 @@ def get_nan_policy():
 
 
 def set_nan_policy(warn_level):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
     nan_policy
         string for the nan policy to be set, one of
         "nothing", "warns", "raise_exception"
-
     """
     global nan_policy_stack
     if warn_level not in ["nothing", "warns", "raise_exception"]:
@@ -1179,7 +1194,7 @@ def unset_nan_policy():
 
 
 def get_dynamic_backend():
-    """Returns the current dynamic backend setting, with the default being True"""
+    """Return the current dynamic backend setting, with the default being True."""
     global dynamic_backend_stack
     if not dynamic_backend_stack:
         return True
@@ -1188,7 +1203,7 @@ def get_dynamic_backend():
 
 
 def set_dynamic_backend(flag):
-    """Sets the global dynamic backend setting to the provided flag (True or False)"""
+    """Set the global dynamic backend setting to the provided flag (True or False)"""
     global dynamic_backend_stack
     if flag not in [True, False]:
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
@@ -1197,8 +1212,9 @@ def set_dynamic_backend(flag):
 
 def unset_dynamic_backend():
     """
-    Removes the current dynamic backend setting,
-    restoring the previous setting (if any)
+    Remove the current dynamic backend setting.
+
+    Also restore the previous setting (if any)
     """
     global dynamic_backend_stack
     if dynamic_backend_stack:

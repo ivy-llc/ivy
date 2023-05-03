@@ -26,10 +26,11 @@ def dirichlet(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Draw size samples of dimension k from a Dirichlet distribution.
-    A Dirichlet-distributed random variable can be seen as a multivariate
-    generalization of a Beta distribution. The Dirichlet distribution is
-    a conjugate prior of a multinomial distribution in Bayesian inference.
+    """
+    Draw size samples of dimension k from a Dirichlet distribution. A Dirichlet-
+    distributed random variable can be seen as a multivariate generalization of a Beta
+    distribution. The Dirichlet distribution is a conjugate prior of a multinomial
+    distribution in Bayesian inference.
 
     Parameters
     ----------
@@ -94,7 +95,8 @@ def beta(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an array filled with random values sampled from a beta distribution.
+    """
+    Return an array filled with random values sampled from a beta distribution.
 
     Parameters
     ----------
@@ -146,16 +148,17 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an array filled with random values sampled from a gamma distribution.
+    """
+    Return an array filled with random values sampled from a gamma distribution.
 
     Parameters
     ----------
-    shape
-        Shape parameter of the gamma distribution.
     alpha
         Alpha parameter of the gamma distribution.
     beta
         Beta parameter of the gamma distribution.
+    shape
+        Shape parameter of the gamma distribution.
     device
         device on which to create the array. 'cuda:0',
         'cuda:1', 'cpu' etc. (Default value = None).
@@ -174,7 +177,7 @@ def gamma(
         Returns an array filled with random values sampled from a gamma distribution.
     """
     return ivy.current_backend().gamma(
-        shape, alpha, beta, device=device, dtype=dtype, seed=seed, out=out
+        alpha, beta, shape=shape, device=device, dtype=dtype, seed=seed, out=out
     )
 
 
@@ -262,8 +265,8 @@ def bernoulli(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Draws samples from Bernoulli distrubution paramterized by
-    probs or logits (but not both)
+    Draws samples from Bernoulli distrubution paramterized by probs or logits (but not
+    both)
 
     Parameters
     ----------

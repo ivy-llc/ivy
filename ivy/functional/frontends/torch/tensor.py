@@ -48,6 +48,20 @@ class Tensor:
     def shape(self):
         return self.ivy_array.shape
 
+    @property
+    def imag(self):
+        return self.ivy_array.imag()
+
+    @property
+    def ndim(self):
+        return self.dim()
+
+    @property
+    def T(self):
+        if self.ndim == 1:
+            return self
+        return torch_frontend.permute(self, list(range(self.ndim))[::-1])
+
     # Setters #
     # --------#
 
@@ -96,6 +110,15 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add_(self, other, *, alpha=1):
         self.ivy_array = self.add(other, alpha=alpha).ivy_array
+        return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def addbmm(self, batch1, batch2, *, beta=1, alpha=1):
+        return torch_frontend.addbmm(self, batch1, batch2, beta=beta, alpha=alpha)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def addbmm_(self, batch1, batch2, *, beta=1, alpha=1):
+        self.ivy_array = self.addbmm(batch1, batch2, beta=beta, alpha=alpha).ivy_array
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
@@ -442,6 +465,11 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def arccosh_(self):
+        self.ivy_array = self.arccosh().ivy_array
+        return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def arccos(self):
         return torch_frontend.arccos(self)
 
@@ -757,6 +785,12 @@ class Tensor:
         ).ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def index_add(self, dim, index, source, *, alpha=1):
+        return torch_frontend.index_add(
+            self._ivy_array, dim, index, source, alpha=alpha
+        )
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh_(self):
         self.ivy_array = self.acosh().ivy_array
@@ -843,6 +877,12 @@ class Tensor:
     def __setitem__(self, key, value, /):
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
+
+    def __iter__(self):
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d tensor not supported")
+        for i in range(self.ndim):
+            yield self[i]
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __radd__(self, other):
@@ -950,6 +990,11 @@ class Tensor:
     def mul(self, other):
         return torch_frontend.mul(self, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def ceil_(self):
+        self.ivy_array = torch_frontend.ceil(self).ivy_array
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def mul_(self, other):
         self.ivy_array = self.mul(other).ivy_array
@@ -971,3 +1016,40 @@ class Tensor:
 
     def reciprocal(self):
         return torch_frontend.reciprocal(self)
+
+    def fill_(self, value):
+        self.ivy_array = torch_frontend.full_like(
+            self, value, dtype=self.dtype, device=self.device
+        ).ivy_array
+        return self
+
+    def nonzero(self):
+        return torch_frontend.nonzero(self)
+
+    def mm(self, mat2):
+        return torch_frontend.mm(self, mat2)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+    def square(self):
+        return torch_frontend.square(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def log10(self):
+        return torch_frontend.log10(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def prod(self, dim=None, keepdim=False, *, dtype=None):
+        return torch_frontend.prod(self, dim=dim, keepdim=keepdim, dtype=dtype)
+
+    def div(self, other, *, rounding_mode=None):
+        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    def div_(self, other, *, rounding_mode=None):
+        self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
+        return self
+
+    def normal_(self, mean=0, std=1, *, generator=None):
+        self.ivy_array = ivy.random_normal(
+            mean=mean, std=std, shape=self.shape, dtype=self.dtype, device=self.device
+        )
+        return self

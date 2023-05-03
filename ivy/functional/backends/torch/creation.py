@@ -173,18 +173,12 @@ def asarray(
 
 
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return torch.empty(
         shape,
         dtype=dtype,
@@ -449,6 +443,7 @@ def meshgrid(
     *arrays: torch.Tensor,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[torch.Tensor] = None,
 ) -> List[torch.Tensor]:
     if not sparse:
         return list(torch.meshgrid(*arrays, indexing=indexing))
@@ -467,18 +462,12 @@ def meshgrid(
 
 
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return torch.ones(shape, dtype=dtype, device=device, out=out)
 
 
@@ -543,18 +532,12 @@ triu.support_native_out = True
 
 
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
 
 

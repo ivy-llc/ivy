@@ -21,8 +21,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
     ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
         """
         ivy.Array instance method variant of ivy.eigh_tridiagonal. This method simply
-        wraps the function, and so the docstring for ivy.eigh_tridiagonal also
-        applies to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.eigh_tridiagonal also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -90,9 +90,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.diagflat.
-        This method simply wraps the function, and so the docstring for
-        ivy.diagflat also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.diagflat. This method simply wraps the
+        function, and so the docstring for ivy.diagflat also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -120,9 +120,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.kron.
-        This method simply wraps the function, and so the docstring for
-        ivy.kron also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.kron also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -135,9 +135,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
     def matrix_exp(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.kron.
-        This method simply wraps the function, and so the docstring for
-        ivy.matrix_exp also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.matrix_exp also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -158,9 +158,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         /,
     ) -> Tuple[ivy.Array, ...]:
         """
-        ivy.Array instance method variant of ivy.eig.
-        This method simply wraps the function, and so the docstring for
-        ivy.eig also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.eig. This method simply wraps the
+        function, and so the docstring for ivy.eig also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -179,9 +179,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         /,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.eigvals.
-        This method simply wraps the function, and so the docstring for
-        ivy.eigvals also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.eigvals. This method simply wraps the
+        function, and so the docstring for ivy.eigvals also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -198,9 +198,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.adjoint.
-        This method simply wraps the function, and so the docstring for
-        ivy.adjoint also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.adjoint. This method simply wraps the
+        function, and so the docstring for ivy.adjoint also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -224,9 +224,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.multi_dot.
-        This method simply wraps the function, and so the docstring for
-        ivy.multi_dot also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.multi_dot. This method simply wraps the
+        function, and so the docstring for ivy.multi_dot also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -243,9 +243,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         self: ivy.Array, /, *, p: Optional[Union[int, float, str]] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.cond.
-        This method simply wraps the function, and so the docstring for
-        ivy.cond also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.cond. This method simply wraps the
+        function, and so the docstring for ivy.cond also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -273,8 +273,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.cov. This method simply wraps the
-        function, and so the docstring for ivy.cov also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.cov also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

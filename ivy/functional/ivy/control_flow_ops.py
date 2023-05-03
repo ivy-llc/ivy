@@ -15,8 +15,8 @@ def if_else(
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
-    Takes a boolean condition and two functions as input. If the condition is True,
-    the first function is executed and its result is returned. Otherwise, the second
+    Take a boolean condition and two functions as input. If the condition is True, the
+    first function is executed and its result is returned. Otherwise, the second
     function is executed and its result is returned.
 
     Parameters
@@ -53,7 +53,6 @@ def if_else(
     >>> result = ivy.if_else(cond, body_fn, orelse_fn, vars=(vars,))
     >>> print(result)
     ivy.array([0.5, 1.0, 1.5])
-
     """
 
     @to_native_arrays_and_back
@@ -73,7 +72,7 @@ def while_loop(
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
-    Takes a test function, a body function and a set of variables as input. The body
+    Take a test function, a body function and a set of variables as input. The body
     function is executed repeatedly while the test function returns True.
 
     Parameters
@@ -109,7 +108,6 @@ def while_loop(
     >>> result = ivy.while_loop(test_fn, body_fn, vars=vars)
     >>> print(result)
     (3, 8)
-
     """
 
     @to_native_arrays_and_back
@@ -121,3 +119,74 @@ def while_loop(
     body_fn = to_ivy_arrays_and_back(body_fn)
 
     return _while_loop(test_fn, body_fn, vars)
+
+
+def for_loop(
+    iterable: Iterable[Any],
+    body_fn: Callable,
+    vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
+):
+    """
+    Loops over an iterable, passing the current iteration along with a tuple of
+    variables into the provided body function.
+
+    Parameters
+    ----------
+    iterable
+        The iterable to loop over.
+    body_fn
+        A function to call each iteration, first taking the iterator value
+        and then a tuple of extra parameters.
+    vars
+        Extra parameters to be passed to body_fn.
+
+    Returns
+    -------
+    ret
+        The loop's return value (if any).
+
+    Example
+    ----
+    ```
+    def body_fn(k, args):
+        print(k+1)
+        return args
+
+    lst = [5,6]
+
+    ivy.for_loop(lst, body_fn, ())
+    >>> 5
+    >>> 6
+    ```
+    """
+    iterator = iterable.__iter__()
+
+    vars_dict = _tuple_to_dict(vars)
+
+    def test_fn(iterator, original_body, vars_dict):
+        try:
+            val = iterator.__next__()
+        except StopIteration:
+            return False
+
+        vars_tuple = original_body(val, _dict_to_tuple(vars_dict))
+
+        for k in range(len(vars_tuple)):
+            vars_dict[k] = vars_tuple[k]
+
+        return True
+
+    def empty_function(iterator, original_body, vars_dict):
+        return (iterator, original_body, vars_dict)
+
+    packed_vars = (iterator, body_fn, vars_dict)
+
+    return _dict_to_tuple(while_loop(test_fn, empty_function, packed_vars)[2])
+
+
+def _tuple_to_dict(t):
+    return {k: t[k] for k in range(len(t))}
+
+
+def _dict_to_tuple(d):
+    return tuple([d[k] for k in d])
