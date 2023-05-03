@@ -77,6 +77,7 @@ def asarray(
     obj: Union[
         tf.Tensor,
         tf.Variable,
+        tf.TensorShape,
         bool,
         int,
         float,
@@ -92,6 +93,12 @@ def asarray(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
+        if isinstance(obj, tf.TensorShape):
+            if dtype is None:
+                return tf.convert_to_tensor(obj.as_list())
+            else:
+                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+                return tf.convert_to_tensor(obj.as_list(), dtype=dtype)
         if copy:
             if dtype is None and isinstance(obj, tf.Tensor):
                 return tf.identity(obj)

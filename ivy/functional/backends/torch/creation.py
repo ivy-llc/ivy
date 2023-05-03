@@ -103,6 +103,7 @@ def asarray(
     obj: Union[
         torch.Tensor,
         np.ndarray,
+        torch.Size,
         bool,
         int,
         float,
