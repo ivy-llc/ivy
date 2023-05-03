@@ -256,5 +256,5 @@ def mode(input, dim=-1, keepdim=False, *, out=None):
     unique_data, counts = ivy.unique_counts(input)
     max_count = ivy.max(counts, axis=dim, keepdims=True)
     isc = ivy.isclose(counts, max_count, rtol=1e-05, atol=1e-08,equal_nan=False)
-    modes = ivy.where(ivy.equal(counts, max_count), modes, ivy.default(out, ivy.zeros_like(modes)), out=None)
+    modes = ivy.where(ivy.equal(counts, max_count), -1, modes)
     return modes
