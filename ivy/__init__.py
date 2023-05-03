@@ -192,15 +192,6 @@ class Dtype(str):
         return can_cast(self, to)
 
 
-def shape_casting_helper(ivy_shape, other):
-    if isinstance(other, tuple) and not isinstance(ivy_shape, tuple):
-        return tuple(ivy_shape)
-    elif isinstance(other, list) and not isinstance(ivy_shape, list):
-        return list(ivy_shape)
-    else:
-        return ivy_shape
-
-
 class Shape:
     def __init__(self, shape_tup):
         valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
@@ -220,6 +211,15 @@ class Shape:
             self._shape = ivy.to_native_shape(shape_tup)
         else:
             self._shape = None
+
+    @staticmethod
+    def _shape_casting_helper(ivy_shape, other):
+        if isinstance(other, tuple) and not isinstance(ivy_shape, tuple):
+            return tuple(ivy_shape)
+        elif isinstance(other, list) and not isinstance(ivy_shape, list):
+            return list(ivy_shape)
+        else:
+            return ivy_shape
 
     def __repr__(self):
         pattern = r"\d+(?:,\s*\d+)*"
@@ -252,23 +252,23 @@ class Shape:
         return self
 
     def __eq__(self, other):
-        self._shape = shape_casting_helper(self._shape, other)
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape == other
 
     def __ge__(self, other):
-        self._shape = shape_casting_helper(self._shape, other)
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape >= other
 
     def __gt__(self, other):
-        self._shape = shape_casting_helper(self._shape, other)
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape > other
 
     def __le__(self, other):
-        self._shape = shape_casting_helper(self._shape, other)
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape <= other
 
     def __lt__(self, other):
-        self._shape = shape_casting_helper(self._shape, other)
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape < other
 
     def __getattribute__(self, item):
