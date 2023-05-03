@@ -134,6 +134,20 @@ def test_torch_tensor_property_imag(
     ivy.utils.assertions.check_equal(x.imag, ivy.imag(data[0]))
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        ret_shape=True,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_tensor_property_ndim(
+    dtype_x,
+):
+    dtype, data, shape = dtype_x
+    x = Tensor(data[0])
+    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim)
+
+
 # chunk
 @pytest.mark.skip("Testing takes a lot of time")
 @handle_frontend_method(

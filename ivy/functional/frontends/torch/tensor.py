@@ -52,6 +52,10 @@ class Tensor:
     def imag(self):
         return self.ivy_array.imag()
 
+    @property
+    def ndim(self):
+        return self.dim()
+
     # Setters #
     # --------#
 
@@ -867,6 +871,12 @@ class Tensor:
     def __setitem__(self, key, value, /):
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
+
+    def __iter__(self):
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d tensor not supported")
+        for i in range(self.ndim):
+            yield self[i]
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __radd__(self, other):
