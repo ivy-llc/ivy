@@ -56,12 +56,10 @@ def valid_idct(draw):
             shared_dtype=True,
         )
     )
-    n = draw(st.sampled_from([None]))
-    axis = draw(st.sampled_from(["int"]))
+    n = None
+    axis = -1
     norm = draw(st.sampled_from([None, "ortho"]))
     type = draw(helpers.ints(min_value=1, max_value=4))
-    if axis == "int":
-        axis = -1
     if norm == "ortho" and type == 1:
         norm = None
     return dtype, x, type, n, axis, norm
