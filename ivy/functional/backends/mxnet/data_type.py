@@ -27,39 +27,39 @@ native_dtype_dict = {
 
 
 class Finfo:
-    def __init__(self, mx_finfo: np.finfo):
-        raise NotImplementedError("mxnet.__init__ Not Implemented")
+    def __init__(self, mx_finfo: mx.np.finfo):
+        self._mx_finfo = mx_finfo
 
     def __repr__(self):
-        raise NotImplementedError("mxnet.__repr__ Not Implemented")
+        return repr(self._mx_finfo)
 
     @property
     def bits(self):
-        raise NotImplementedError("mxnet.bits Not Implemented")
+        return self._mx_finfo.bits
 
     @property
     def eps(self):
-        raise NotImplementedError("mxnet.eps Not Implemented")
+        return float(self._mx_finfo.eps)
 
     @property
     def max(self):
-        raise NotImplementedError("mxnet.max Not Implemented")
+        return float(self._mx_finfo.max)
 
     @property
     def min(self):
-        raise NotImplementedError("mxnet.min Not Implemented")
+        return float(self._mx_finfo.min)
 
     @property
     def smallest_normal(self):
-        raise NotImplementedError("mxnet.smallest_normal Not Implemented")
+        return float(self._mx_finfo.tiny)
 
 
 class Bfloat16Finfo:
-    def __init__(self):
-        raise NotImplementedError("mxnet.__init__ Not Implemented")
+    def __init__(self, mx_finfo: mx.np.finfo):
+        self._mx_finfo = mx_finfo
 
     def __repr__(self):
-        raise NotImplementedError("mxnet.__repr__ Not Implemented")
+        return repr(self._mx_finfo)
 
 
 def astype(
@@ -90,8 +90,11 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[(None, str, None, mx.ndarray.NDArray, np.ndarray)], /) -> Finfo:
-    raise NotImplementedError("mxnet.finfo Not Implemented")
+def finfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> Finfo:
+    if isinstance(type, mx.ndarray.NDArray):
+        type = type.dtype
+    return Finfo(mx.np.finfo(ivy.as_native_dtype(type)))
+
 
 
 @_handle_nestable_dtype_info
