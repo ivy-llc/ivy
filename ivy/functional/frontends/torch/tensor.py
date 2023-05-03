@@ -1047,3 +1047,9 @@ class Tensor:
     def div_(self, other, *, rounding_mode=None):
         self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
         return self
+
+    def normal_(self, mean=0, std=1, *, generator=None):
+        self.ivy_array = ivy.random_normal(
+            mean=mean, std=std, shape=self.shape, dtype=self.dtype, device=self.device
+        )
+        return self
