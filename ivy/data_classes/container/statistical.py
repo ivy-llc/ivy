@@ -22,10 +22,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.min.
-        This method simply wraps the function, and so
-        the docstring for ivy.min also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.min. This method simply wraps the
+        function, and so the docstring for ivy.min also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -80,9 +79,11 @@ class _ContainerWithStatistical(ContainerBase):
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.min(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.min(x_, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -103,10 +104,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.max.
-        This method simply wraps the function, and so
-        the docstring for ivy.max also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.max. This method simply wraps the
+        function, and so the docstring for ivy.max also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -158,9 +159,11 @@ class _ContainerWithStatistical(ContainerBase):
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.max(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.max(x_, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -181,10 +184,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.mean.
-        This method simply wraps the function, and so
-        the docstring for ivy.mean also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.mean. This method simply wraps the
+        function, and so the docstring for ivy.mean also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -287,13 +290,14 @@ class _ContainerWithStatistical(ContainerBase):
             a: ivy.array([1., 2.]),
             b: ivy.array([3., 4.])
         }
-
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.mean(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.mean(x_, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -316,10 +320,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.var.
-        This method simply wraps the function, and so the
-        docstring for ivy.var also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.var. This method simply wraps the
+        function, and so the docstring for ivy.var also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -404,15 +407,14 @@ class _ContainerWithStatistical(ContainerBase):
             a: ivy.array([2.25, 2.25, 2.25]),
             b: ivy.array([2.25, 2.25, 2.25])
         }
-
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.var(
-                    x_, axis=axis, correction=correction, keepdims=keepdims
-                )
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.var(x_, axis=axis, correction=correction, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -436,10 +438,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.var.
-        This method simply wraps the function, and so
-        the docstring for ivy.var also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.var. This method simply wraps the
+        function, and so the docstring for ivy.var also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -480,7 +481,6 @@ class _ContainerWithStatistical(ContainerBase):
             a:ivy.array(0.12666667),
             b:ivy.array(0.11555555)
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "var",
@@ -509,10 +509,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ):
-        """ivy.Container static method variant of ivy.prod.
-        This method simply wraps the function, and so
-        the docstring for ivy.prod also applies to this method
-        with minimal changes.
+        """
+        ivy.Container static method variant of ivy.prod. This method simply wraps the
+        function, and so the docstring for ivy.prod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -648,10 +648,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.prod.
-        This method simply wraps the function, and so
-        the docstring for ivy.prod also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.prod. This method simply wraps the
+        function, and so the docstring for ivy.prod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -838,10 +838,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.std.
-        This method simply wraps the function, and so
-        the docstring for ivy.std also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.std. This method simply wraps the
+        function, and so the docstring for ivy.std also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -955,16 +955,14 @@ class _ContainerWithStatistical(ContainerBase):
         a: ivy.array([1.2472192, 0.]),
         b: ivy.array([2.44948983, 1.41421354])
         }
-
-
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.std(
-                    x_, axis=axis, correction=correction, keepdims=keepdims
-                )
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.std(x_, axis=axis, correction=correction, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -991,9 +989,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cumsum. This method
-        simply wraps the function, and so the docstring for ivy.cumsum
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.cumsum. This method simply wraps the
+        function, and so the docstring for ivy.cumsum also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1133,9 +1131,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cumsum. This method
-        simply wraps the function, and so the docstring for ivy.cumsum
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.cumsum. This method simply wraps
+        the function, and so the docstring for ivy.cumsum also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1290,9 +1288,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cumprod. This method
-        simply wraps the function, and so the docstring for ivy.cumprod
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.cumprod. This method simply wraps the
+        function, and so the docstring for ivy.cumprod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1382,9 +1380,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cumprod. This method
-        simply wraps the function, and so the docstring for ivy.cumprod
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.cumprod. This method simply wraps
+        the function, and so the docstring for ivy.cumprod also applies to this method
+        with minimal changes.
 
         Parameters
         ----------

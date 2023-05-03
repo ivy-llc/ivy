@@ -31,9 +31,11 @@ def _compute_cost_and_update_grads(
             lambda v: cost_fn(
                 batch, v=variables.cont_set_at_key_chains(v) if unique_outer else v
             ),
-            variables.cont_at_key_chains(outer_v, ignore_none=True)
-            if keep_outer_v
-            else variables.cont_prune_key_chains(outer_v, ignore_none=True),
+            (
+                variables.cont_at_key_chains(outer_v, ignore_none=True)
+                if keep_outer_v
+                else variables.cont_prune_key_chains(outer_v, ignore_none=True)
+            ),
             retain_grads=False,
         )
         var = (
@@ -91,9 +93,11 @@ def _train_task(
                 inner_batch,
                 v=variables.cont_set_at_key_chains(v) if unique_inner else v,
             ),
-            variables.cont_at_key_chains(inner_v, ignore_none=True)
-            if keep_innver_v
-            else variables.cont_prune_key_chains(inner_v, ignore_none=True),
+            (
+                variables.cont_at_key_chains(inner_v, ignore_none=True)
+                if keep_innver_v
+                else variables.cont_prune_key_chains(inner_v, ignore_none=True)
+            ),
             retain_grads=order > 1,
         )
         var = (
@@ -103,9 +107,11 @@ def _train_task(
         )
         inner_update_grads = ivy.Container(
             {
-                k: ivy.zeros_like(v)
-                if k not in inner_update_grads
-                else inner_update_grads[k]
+                k: (
+                    ivy.zeros_like(v)
+                    if k not in inner_update_grads
+                    else inner_update_grads[k]
+                )
                 for k, v in var.cont_to_iterator()
             }
         )
@@ -135,9 +141,11 @@ def _train_task(
         if unique_inner:
             variables = variables.cont_set_at_key_chains(
                 inner_optimization_step(
-                    variables.cont_at_key_chains(inner_v)
-                    if keep_innver_v
-                    else variables.cont_prune_key_chains(inner_v),
+                    (
+                        variables.cont_at_key_chains(inner_v)
+                        if keep_innver_v
+                        else variables.cont_prune_key_chains(inner_v)
+                    ),
                     inner_update_grads,
                     inner_learning_rate,
                     stop_gradients=stop_gradients,
@@ -485,7 +493,6 @@ def fomaml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
@@ -538,7 +545,8 @@ def reptile_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform step of Reptile.
+    """
+    Perform step of Reptile.
 
     Parameters
     ----------
@@ -573,7 +581,6 @@ def reptile_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
@@ -638,7 +645,8 @@ def maml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform step of vanilla second order MAML.
+    """
+    Perform step of vanilla second order MAML.
 
     Parameters
     ----------
@@ -698,7 +706,6 @@ def maml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
@@ -725,9 +732,11 @@ def maml_step(
             num_tasks,
             False,
         ),
-        variables.cont_at_key_chains(outer_v, ignore_none=True)
-        if keep_outer_v
-        else variables.cont_prune_key_chains(outer_v, ignore_none=True),
+        (
+            variables.cont_at_key_chains(outer_v, ignore_none=True)
+            if keep_outer_v
+            else variables.cont_prune_key_chains(outer_v, ignore_none=True)
+        ),
     )
     if isinstance(func_ret, tuple):
         grads = grads["0"] if "0" in grads else grads

@@ -11,7 +11,7 @@ except ImportError:
 
 
 def seed() -> int:
-    """Returns a 64 bit number used to seed the RNG"""
+    """Return a 64 bit number used to seed the RNG."""
     return int(ivy.randint(-(2**63), 2**63 - 1))
 
 
@@ -201,7 +201,7 @@ def randperm(
     requires_grad=False,
     pin_memory=False
 ):
-    arr = ivy.arange(n)
-    ret = ivy.shuffle(arr)
+    arr = ivy.arange(n, device=device, dtype=dtype)
+    ret = ivy.shuffle(arr, out=out)
 
     return ret

@@ -29,6 +29,34 @@ def _get_dtype_and_square_matrix(draw):
 
 
 @st.composite
+def _get_dtype_and_matrix_non_singular(draw):
+    while True:
+        matrix = draw(
+            helpers.dtype_and_values(
+                available_dtypes=(
+                    ivy.float64,
+                    ivy.double,
+                ),
+                min_value=-10,
+                max_value=10,
+                min_num_dims=2,
+                max_num_dims=2,
+                min_dim_size=1,
+                max_dim_size=5,
+                shape=st.tuples(st.integers(1, 5), st.integers(1, 5)).filter(
+                    lambda x: x[0] == x[1]
+                ),
+                allow_inf=False,
+                allow_nan=False,
+            )
+        )
+        if np.linalg.det(matrix[1][0]) != 0:
+            break
+
+    return matrix[0], matrix[1]
+
+
+@st.composite
 def _get_dtype_and_matrix(draw):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
     random_size = draw(st.integers(min_value=1, max_value=4))
@@ -334,11 +362,8 @@ def test_torch_eigvals(
         input=x[0],
         test_values=False,
     )
-
-    """
-    In "ret" we have out eigenvalues calculated with our backend and
-    in "frontend_ret" are our eigenvalues calculated with the specified frontend
-    """
+    """In "ret" we have out eigenvalues calculated with our backend and in
+    "frontend_ret" are our eigenvalues calculated with the specified frontend."""
 
     """
     Depending on the chosen framework there may be small differences between our
@@ -407,6 +432,27 @@ def test_torch_eigvalsh(
         UPLO=UPLO,
         atol=1e-4,
         rtol=1e-3,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.cond",
+    dtype_and_x=_get_dtype_and_matrix_non_singular(),
+    p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+)
+def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x[0],
+        rtol=1e-2,
+        atol=1e-3,
+        p=p,
     )
 
 

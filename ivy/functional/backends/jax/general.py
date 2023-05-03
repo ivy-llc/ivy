@@ -9,15 +9,8 @@ from operator import mul
 from functools import reduce
 from typing import Iterable, Optional, Union, Sequence, Callable, Tuple
 import multiprocessing as _multiprocessing
+import importlib
 
-
-# necessary import, because stateful imports jax as soon as you import ivy, however,
-# during multiversion # jax is not there, and therefore a later import results in some
-# sort of circular import, so haiku is needed
-import haiku  # NOQA
-
-
-from haiku._src.data_structures import FlatMapping
 
 # local
 import ivy
@@ -28,6 +21,13 @@ from . import backend_version
 
 
 def container_types():
+    flat_mapping_spec = importlib.util.find_spec(
+        "FlatMapping", "haiku._src.data_structures"
+    )
+    if not flat_mapping_spec:
+        from haiku._src.data_structures import FlatMapping
+    else:
+        FlatMapping = importlib.util.module_from_spec(flat_mapping_spec)
     return [FlatMapping]
 
 
@@ -57,6 +57,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
+@with_unsupported_dtypes({"0.4.8 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -325,9 +326,10 @@ def scatter_nd(
 ) -> JaxArray:
     # parse numeric inputs
     if (
-        len(indices) != 0
-        and indices != Ellipsis
-        and not (isinstance(indices, Iterable) and Ellipsis in indices)
+        indices != Ellipsis
+        and not (
+            isinstance(indices, Iterable) and (Ellipsis in indices or len(indices) != 0)
+        )
         and not isinstance(indices, slice)
         and not (
             isinstance(indices, Iterable) and any(isinstance(k, slice) for k in indices)
@@ -342,9 +344,11 @@ def scatter_nd(
 
     updates = jnp.array(
         updates,
-        dtype=ivy.dtype(out, as_native=True)
-        if ivy.exists(out)
-        else ivy.default_dtype(item=updates),
+        dtype=(
+            ivy.dtype(out, as_native=True)
+            if ivy.exists(out)
+            else ivy.default_dtype(item=updates)
+        ),
     )
 
     # handle Ellipsis
@@ -450,4 +454,4 @@ def itemsize(x: JaxArray) -> int:
 
 @with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def strides(x: JaxArray) -> Tuple[int]:
-    return jax.device_get(jax.device_put(x)).strides
+    return to_numpy(x).strides

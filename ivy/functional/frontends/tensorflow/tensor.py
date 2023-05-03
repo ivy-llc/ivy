@@ -231,6 +231,13 @@ class EagerTensor:
             "doesn't support assignment"
         )
 
+    def __iter__(self):
+        ndim = len(self.shape)
+        if ndim == 0:
+            raise TypeError("iteration over a 0-d tensor not supported")
+        for i in range(ndim):
+            yield self[i]
+
 
 # Dummy Tensor class to help with compilation, don't add methods here
 class Tensor(EagerTensor):

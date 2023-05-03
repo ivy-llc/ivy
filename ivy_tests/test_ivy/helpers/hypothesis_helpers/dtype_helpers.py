@@ -85,10 +85,9 @@ def get_dtypes(
     draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
 ):
     """
-    Draws a valid dtypes for the test function. For frontend tests,
-    it draws the data types from the intersection between backend
-    framework data types and frontend framework dtypes, otherwise,
-    draws it from backend framework data types.
+    Draws a valid dtypes for the test function. For frontend tests, it draws the data
+    types from the intersection between backend framework data types and frontend
+    framework dtypes, otherwise, draws it from backend framework data types.
 
     Parameters
     ----------
@@ -104,11 +103,69 @@ def get_dtypes(
         returns the complete list of valid types
     none
         allow none in the list of valid types
+    key
+        if provided, a shared value will be drawn from the strategy and passed to the
+        function as the keyword argument with the given name.
+    prune_function
+        if True, the function will prune the data types to only include the ones that
+        are supported by the current backend. If False, the function will return all
+        the data types supported by the current backend.
 
     Returns
     -------
     ret
-        dtype string
+        A strategy that draws dtype strings
+
+    Examples
+    --------
+    >>> get_dtypes()
+    ['float16',
+        'uint8',
+        'complex128',
+        'bool',
+        'uint32',
+        'float64',
+        'int8',
+        'int16',
+        'complex64',
+        'float32',
+        'int32',
+        'uint16',
+        'int64',
+        'uint64']
+
+    >>> get_dtypes(kind='valid', full=False)
+    ['int16']
+
+    >>> get_dtypes(kind='valid', full=False)
+    ['uint16']
+
+    >>> get_dtypes(kind='numeric', full=False)
+    ['complex64']
+
+    >>> get_dtypes(kind='float', full=False, key="leaky_relu")
+    ['float16']
+
+    >>> get_dtypes(kind='float', full=False, key="searchsorted")
+    ['bfloat16']
+
+    >>> get_dtypes(kind='float', full=False, key="dtype")
+    ['float32']
+
+    >>> get_dtypes("numeric", prune_function=False)
+    ['int16']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['uint32']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['complex128']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['bool']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['float16']
     """
     if prune_function:
         retrieval_fn = _get_fn_dtypes
@@ -123,8 +180,8 @@ def get_dtypes(
         retrieval_fn = _get_type_dict
         valid_dtypes = set(retrieval_fn(ivy, kind))
 
-    # The function may be called from a frontend test or an IVY api test
-    # In the case of a IVY api test, the function should make sure it returns a valid
+    # The function may be called from a frontend test or an Ivy API test
+    # In the case of an Ivy API test, the function should make sure it returns a valid
     # dtypes for the backend and also for the ground truth backend, if it is called from
     # a frontend test, we should also count for the frontend support data types
     # In conclusion, the following operations will get the intersection of
@@ -162,7 +219,6 @@ def get_dtypes(
                 process.stdin.write(
                     f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
                 )
-
                 process.stdin.flush()
             except Exception as e:
                 print(
@@ -187,7 +243,7 @@ def get_dtypes(
             frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
-    # Make sure we return dtypes that are compatiable with ground truth backend
+    # Make sure we return dtypes that are compatible with ground truth backend
     ground_truth_is_set = (
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
     )
@@ -244,7 +300,8 @@ def array_dtypes(
     shared_dtype=False,
     array_api_dtypes=False,
 ):
-    """Draws a list of data types.
+    """
+    Draws a list of data types.
 
     Parameters
     ----------
@@ -263,7 +320,48 @@ def array_dtypes(
 
     Returns
     -------
-    A strategy that draws a list.
+        A strategy that draws a list of data types.
+
+    Examples
+    --------
+    >>> array_dtypes(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     shared_dtype=True,
+    ... )
+    ['float64']
+
+    >>> array_dtypes(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     shared_dtype=True,
+    ... )
+    ['int8', 'int8']
+
+    >>> array_dtypes(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     shared_dtype=True,
+    ... )
+    ['int32', 'int32', 'int32', 'int32']
+
+    >>> array_dtypes(
+    ...     num_arrays=5,
+    ...     available_dtypes=get_dtypes("valid"),
+    ...     shared_dtype=False,
+    ... )
+    ['int8', 'float64', 'complex64', 'int8', 'bool']
+
+    >>> array_dtypes(
+    ...     num_arrays=5,
+    ...     available_dtypes=get_dtypes("valid"),
+    ...     shared_dtype=False,
+    ... )
+    ['bool', 'complex64', 'bool', 'complex64', 'bool']
+
+    >>> array_dtypes(
+    ...     num_arrays=5,
+    ...     available_dtypes=get_dtypes("valid"),
+    ...     shared_dtype=False,
+    ... )
+    ['float64', 'int8', 'float64', 'int8', 'float64']
     """
     if isinstance(available_dtypes, st._internal.SearchStrategy):
         available_dtypes = draw(available_dtypes)
@@ -323,10 +421,8 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     ret
         A tuple of inputs and castable dtype.
     """
-    bound_dtype_bits = (
-        lambda d: ivy.dtype_bits(d) / 2
-        if ivy.is_complex_dtype(d)
-        else ivy.dtype_bits(d)
+    bound_dtype_bits = lambda d: (
+        ivy.dtype_bits(d) / 2 if ivy.is_complex_dtype(d) else ivy.dtype_bits(d)
     )
 
     def cast_filter(d):

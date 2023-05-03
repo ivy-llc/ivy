@@ -39,15 +39,14 @@ def _dilate_pad_conv(x, filters, strides, padding, dims, dilations):
     elif isinstance(padding, int):
         pad_list = [(padding, padding)] * dims
     else:
-        pad_list = padding
+        pad_list = [(_p, _p) if isinstance(_p, int) else _p for _p in padding]
+
+    pad_width = [(0, 0), *pad_list, (0, 0)]
+
     x = np.pad(
         x,
-        [
-            (0, 0),
-            *pad_list,
-            (0, 0),
-        ],
-        "constant",
+        pad_width=pad_width,
+        mode="constant",
     )
     return x, filters
 

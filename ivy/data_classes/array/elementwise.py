@@ -11,8 +11,8 @@ class _ArrayWithElementwise(abc.ABC):
     def abs(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.abs. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.abs also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -40,8 +40,8 @@ class _ArrayWithElementwise(abc.ABC):
     def acosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.acosh. This method simply wraps the
-        function, and so the docstring for ivy.acosh also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.acosh also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -65,15 +65,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = x.acosh()
         >>> print(y)
         ivy.array([1.32, 2.99, 0.  ])
-
         """
         return ivy.acosh(self._data, out=out)
 
     def acos(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.acos. This method simply wraps the
-        function, and so the docstring for ivy.acos also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.acos also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -95,7 +94,6 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = x.acos()
         >>> print(y)
         ivy.array([0.  , 1.57, 2.69])
-
         """
         return ivy.acos(self._data, out=out)
 
@@ -109,8 +107,8 @@ class _ArrayWithElementwise(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.add. This method simply wraps the
-        function, and so the docstring for ivy.add also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.add also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -150,8 +148,8 @@ class _ArrayWithElementwise(abc.ABC):
     def asin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.asin. This method simply wraps the
-        function, and so the docstring for ivy.asin also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.asin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -187,8 +185,8 @@ class _ArrayWithElementwise(abc.ABC):
     def asinh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.asinh. This method simply wraps the
-        function, and so the docstring for ivy.asinh also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.asinh also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -218,8 +216,8 @@ class _ArrayWithElementwise(abc.ABC):
     def atan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.atan. This method simply wraps the
-        function, and so the docstring for ivy.atan also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.atan also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -241,7 +239,6 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = x.atan()
         >>> print(y)
         ivy.array([ 0.785,  0.464, -0.464])
-
         """
         return ivy.atan(self._data, out=out)
 
@@ -254,8 +251,8 @@ class _ArrayWithElementwise(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.atan2. This method simply wraps the
-        function, and so the docstring for ivy.atan2 also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.atan2 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -329,8 +326,8 @@ class _ArrayWithElementwise(abc.ABC):
     def atanh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.atanh. This method simply wraps the
-        function, and so the docstring for ivy.atanh also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.atanh also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -354,7 +351,6 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = x.atanh()
         >>> print(y)
         ivy.array([ 0.   ,  0.549, -1.47 ])
-
         """
         return ivy.atanh(self._data, out=out)
 
@@ -366,9 +362,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_and.
-        This method simply wraps the function, and so the docstring for
-        ivy.bitwise_and also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_and. This method simply wraps
+        the function, and so the docstring for ivy.bitwise_and also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -412,9 +408,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_left_shift.
-        This method simply wraps the function, and so the docstring for
-        ivy.bitwise_left_shift also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_left_shift. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_left_shift also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -441,9 +437,9 @@ class _ArrayWithElementwise(abc.ABC):
         self: ivy.Array, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_invert.
-        This method simply wraps the function, and so the docstring
-        for ivy.bitiwse_invert also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_invert. This method simply
+        wraps the function, and so the docstring for ivy.bitiwse_invert also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -482,9 +478,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_or. This method simply
-        wraps the function, and so the docstring for ivy.bitwise_or also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_or. This method simply wraps
+        the function, and so the docstring for ivy.bitwise_or also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -521,9 +517,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_right_shift.
-        This method simply wraps the function, and so the docstring
-        for ivy.bitwise_right_shift also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_right_shift. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_right_shift also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -562,9 +558,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_xor.
-        This method simply wraps the function, and so the docstring
-        for ivy.bitwise_xor also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_xor. This method simply wraps
+        the function, and so the docstring for ivy.bitwise_xor also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -597,9 +593,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def ceil(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.ceil.
-        This method simply wraps the function, and so the docstring for
-        ivy.ceil also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.ceil. This method simply wraps the
+        function, and so the docstring for ivy.ceil also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -627,8 +623,8 @@ class _ArrayWithElementwise(abc.ABC):
     def cos(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.cos. This method simply wraps the
-        function, and so the docstring for ivy.cos also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.cos also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -670,9 +666,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def cosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.cosh. This method simply wraps
-        the function, and so the docstring for ivy.cosh also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.cosh. This method simply wraps the
+        function, and so the docstring for ivy.cosh also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -711,9 +707,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.divide. This method simply
-        wraps the function, and so the docstring for ivy.divide also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.divide. This method simply wraps the
+        function, and so the docstring for ivy.divide also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -762,9 +758,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.equal.
-        This method simply wraps the function, and so the docstring for
-        ivy.equal also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.equal. This method simply wraps the
+        function, and so the docstring for ivy.equal also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -825,9 +821,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def exp(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.exp. This method simply
-        wraps the function, and so the docstring for ivy.exp also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.exp. This method simply wraps the
+        function, and so the docstring for ivy.exp also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -855,8 +851,8 @@ class _ArrayWithElementwise(abc.ABC):
     def expm1(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.expm1. This method simply wraps the
-        function, and so the docstring for ivy.expm1 also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.expm1 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -890,9 +886,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def floor(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.floor. This method simply wraps
-        the function, and so the docstring for ivy.floor also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.floor. This method simply wraps the
+        function, and so the docstring for ivy.floor also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -925,9 +921,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.floor_divide.
-        This method simply wraps the function, and so the docstring for ivy.floor_divide
-        also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.floor_divide. This method simply wraps
+        the function, and so the docstring for ivy.floor_divide also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -976,9 +972,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.greater.
-        This method simply wraps the function, and so the docstring for
-        ivy.greater also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.greater. This method simply wraps the
+        function, and so the docstring for ivy.greater also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1005,7 +1001,6 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = x1.greater(x2)
         >>> print(y)
         ivy.array([False,  True,  True])
-
         """
         return ivy.greater(self._data, x2, out=out)
 
@@ -1017,9 +1012,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.greater_equal.
-        This method simply wraps the function, and so the docstring for
-        ivy.greater_equal also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.greater_equal. This method simply wraps
+        the function, and so the docstring for ivy.greater_equal also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1051,9 +1046,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def isfinite(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.isfinite.
-        This method simply wraps the function, and so the docstring
-        for ivy.isfinite also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.isfinite. This method simply wraps the
+        function, and so the docstring for ivy.isfinite also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1087,9 +1082,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.isinf. This method simply wraps
-        the function, and so the docstring for ivy.isinf also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.isinf. This method simply wraps the
+        function, and so the docstring for ivy.isinf also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1145,9 +1140,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def isnan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.isnan. This method simply wraps
-        the function, and so the docstring for ivy.isnan also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.isnan. This method simply wraps the
+        function, and so the docstring for ivy.isnan also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1195,7 +1190,6 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[False, False, False],
             [False, False, False],
             [False, False, False]])
-
         """
         return ivy.isnan(self._data, out=out)
 
@@ -1207,9 +1201,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.less. This method simply wraps
-        the function, and so the docstring for ivy.less also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.less. This method simply wraps the
+        function, and so the docstring for ivy.less also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1236,7 +1230,6 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = x1.less(x2)
         >>> print(y)
         ivy.array([ True, False, False])
-
         """
         return ivy.less(self._data, x2, out=out)
 
@@ -1248,9 +1241,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.less_equal.
-        This method simply wraps the function, and so the docstring
-        for ivy.less_equal also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.less_equal. This method simply wraps
+        the function, and so the docstring for ivy.less_equal also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1304,9 +1297,8 @@ class _ArrayWithElementwise(abc.ABC):
     def log(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.log. This method simply wraps the
-        function, and so the docstring for ivy.log also applies to this method
-        with minimal changes.
-
+        function, and so the docstring for ivy.log also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1348,9 +1340,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def log1p(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.log1p.
-        This method simply wraps the function, and so the docstring
-        for ivy.log1p also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.log1p. This method simply wraps the
+        function, and so the docstring for ivy.log1p also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1378,15 +1370,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x.log1p(out = x)
         >>> print(x)
         ivy.array([0.0953, 0.001 ])
-
         """
         return ivy.log1p(self._data, out=out)
 
     def log2(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.log2.
-        This method simply wraps the function, and so the docstring for
-        ivy.log2 also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.log2. This method simply wraps the
+        function, and so the docstring for ivy.log2 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1408,8 +1399,8 @@ class _ArrayWithElementwise(abc.ABC):
     def log10(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.log10. This method simply wraps the
-        function, and so the docstring for ivy.log10 also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.log10 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1457,9 +1448,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logaddexp.
-        This method simply wraps the function, and so the docstring for
-        ivy.logaddexp also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.logaddexp. This method simply wraps the
+        function, and so the docstring for ivy.logaddexp also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1487,7 +1478,6 @@ class _ArrayWithElementwise(abc.ABC):
         >>> z = x.logaddexp(y)
         >>> print(z)
         ivy.array([ 3.31,  5.05, 15.  ])
-
         """
         return ivy.logaddexp(self._data, x2, out=out)
 
@@ -1498,9 +1488,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logical_and.
-        This method simply wraps the function, and so the docstring for
-        ivy.logical_and also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.logical_and. This method simply wraps
+        the function, and so the docstring for ivy.logical_and also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1534,9 +1524,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def logical_not(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logical_not.
-        This method simply wraps the function, and so the docstring
-        for ivy.logical_not also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.logical_not. This method simply wraps
+        the function, and so the docstring for ivy.logical_not also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1574,9 +1564,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logical_or.
-        This method simply wraps the function, and so the docstring for
-        ivy.logical_or also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.logical_or. This method simply wraps
+        the function, and so the docstring for ivy.logical_or also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1625,9 +1615,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logical_xor.
-        This method simply wraps the function, and so the docstring
-        for ivy.logical_xor also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.logical_xor. This method simply wraps
+        the function, and so the docstring for ivy.logical_xor also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1665,10 +1655,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.multiply.
-        This method simply wraps the function, and so the docstring
-        for ivy.multiply also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.multiply. This method simply wraps the
+        function, and so the docstring for ivy.multiply also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1718,9 +1707,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ):
         """
-        ivy.Array instance method variant of ivy.maximum.
-        This method simply wraps the function, and so the docstring
-        for ivy.maximum also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.maximum. This method simply wraps the
+        function, and so the docstring for ivy.maximum also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1777,9 +1766,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ):
         """
-        ivy.Array instance method variant of ivy.minimum.
-        This method simply wraps the function, and so the docstring
-        for ivy.minimum also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.minimum. This method simply wraps the
+        function, and so the docstring for ivy.minimum also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1829,9 +1818,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def negative(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.negative.
-        This method simply wraps the function, and so the docstring
-        for ivy.negative also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.negative. This method simply wraps the
+        function, and so the docstring for ivy.negative also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1868,7 +1857,6 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(x)
         ivy.array([[ -1.1, -2.2, -3.3],
         [4.4, 5.5, 6.6]])
-
         """
         return ivy.negative(self._data, out=out)
 
@@ -1880,9 +1868,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.not_equal.
-        This method simply wraps the function, and so the docstring
-        for ivy.not_equal also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.not_equal. This method simply wraps the
+        function, and so the docstring for ivy.not_equal also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1942,9 +1930,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def positive(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.positive.
-        This method simply wraps the function, and so the docstring
-        for ivy.positive also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.positive. This method simply wraps the
+        function, and so the docstring for ivy.positive also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1981,7 +1969,6 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(x)
         ivy.array([[ 1.1,  2.2,  3.3],
         [-4.4, -5.5, -6.6]])
-
         """
         return ivy.positive(self._data, out=out)
 
@@ -1994,8 +1981,8 @@ class _ArrayWithElementwise(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.pow. This method simply wraps the
-        function, and so the docstring for ivy.pow also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.pow also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2043,9 +2030,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.remainder.
-        This method simply wraps the function, and so the docstring
-        for ivy.remainder also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.remainder. This method simply wraps the
+        function, and so the docstring for ivy.remainder also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -2095,8 +2082,8 @@ class _ArrayWithElementwise(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.round. This method simply wraps the
-        function, and so the docstring for ivy.round also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.round also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2145,8 +2132,8 @@ class _ArrayWithElementwise(abc.ABC):
     def sign(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sign. This method simply wraps the
-        function, and so the docstring for ivy.sign also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sign also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2185,8 +2172,8 @@ class _ArrayWithElementwise(abc.ABC):
     def sin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sin. This method simply wraps the
-        function, and so the docstring for ivy.sin also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2216,8 +2203,8 @@ class _ArrayWithElementwise(abc.ABC):
     def sinh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sinh. This method simply wraps the
-        function, and so the docstring for ivy.sinh also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sinh also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2250,9 +2237,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def square(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.square.
-        This method simply wraps the function, and so the docstring
-        for ivy.square also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.square. This method simply wraps the
+        function, and so the docstring for ivy.square also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2288,8 +2275,8 @@ class _ArrayWithElementwise(abc.ABC):
     def sqrt(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sqrt. This method simply wraps the
-        function, and so the docstring for ivy.sqrt also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sqrt also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2327,10 +2314,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.subtract.
-        This method simply wraps the function, and so the docstring
-        for ivy.subtract also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.subtract. This method simply wraps the
+        function, and so the docstring for ivy.subtract also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2371,8 +2357,8 @@ class _ArrayWithElementwise(abc.ABC):
     def tan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tan. This method simply wraps the
-        function, and so the docstring for ivy.tan also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.tan also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2402,8 +2388,8 @@ class _ArrayWithElementwise(abc.ABC):
     def tanh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tanh. This method simply wraps the
-        function, and so the docstring for ivy.tanh also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.tanh also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2433,8 +2419,8 @@ class _ArrayWithElementwise(abc.ABC):
     def trunc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.trunc. This method simply wraps the
-        function, and so the docstring for ivy.trunc also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.trunc also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2462,8 +2448,8 @@ class _ArrayWithElementwise(abc.ABC):
     def erf(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.erf. This method simply wraps the
-        function, and so the docstring for ivy.erf also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.erf also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2516,15 +2502,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = x.reciprocal()
         >>> print(y)
         ivy.array([1., 0.5, 0.333])
-
         """
         return ivy.reciprocal(self._data, out=out)
 
     def deg2rad(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.deg2rad.
-        This method simply wraps the function, and so the docstring
-        for ivy.deg2rad also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.deg2rad. This method simply wraps the
+        function, and so the docstring for ivy.deg2rad also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2547,15 +2532,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y=x.deg2rad()
         >>> print(y)
         ivy.array([1.57, 3.14, 4.71, 6.28])
-
         """
         return ivy.deg2rad(self._data, out=out)
 
     def rad2deg(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.rad2deg.
-        This method simply wraps the function, and so the docstring
-        for ivy.rad2deg also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.rad2deg. This method simply wraps the
+        function, and so the docstring for ivy.rad2deg also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2578,7 +2562,6 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y=x.rad2deg()
         >>> print(y)
         ivy.array([ 57.3, 286. , 458. , 573. ])
-
         """
         return ivy.rad2deg(self._data, out=out)
 
@@ -2590,9 +2573,9 @@ class _ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.trunc_divide. This method simply
-        wraps the function, and so the docstring for ivy.trunc_divide also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.trunc_divide. This method simply wraps
+        the function, and so the docstring for ivy.trunc_divide also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -2627,9 +2610,9 @@ class _ArrayWithElementwise(abc.ABC):
 
     def isreal(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.isreal. This method simply wraps
-        the function, and so the docstring for ivy.isreal also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.isreal. This method simply wraps the
+        function, and so the docstring for ivy.isreal also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

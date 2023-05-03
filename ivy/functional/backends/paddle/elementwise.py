@@ -115,14 +115,14 @@ def equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     with ivy.ArrayMode(False):
         diff = ivy.subtract(x1, x2)
         ret = ivy.logical_and(ivy.less_equal(diff, 0), ivy.greater_equal(diff, 0))
-
-    # ret result is sufficient for all cases except where the value is +/-INF of NaN
-    return ivy.to_native(
-        ivy.where(ivy.isnan(diff), ~ivy.logical_or(ivy.isnan(x1), ivy.isnan(x2)), ret)
-    )
+        # ret result is sufficient for all cases except where the value is +/-INF of NaN
+        return ivy.where(
+            ivy.isnan(diff), ~ivy.logical_or(ivy.isnan(x1), ivy.isnan(x2)), ret
+        )
 
 
 @with_unsupported_device_and_dtypes(
@@ -358,8 +358,7 @@ def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            with ivy.ArrayMode(False):
-                return ivy.logical_or(paddle.isnan(x.real()), paddle.isnan(x.imag()))
+            return paddle.logical_or(paddle.isnan(x.real()), paddle.isnan(x.imag()))
         return paddle.isnan(x.cast("float32"))
     return paddle.isnan(x)
 
@@ -771,29 +770,31 @@ def pow(
 def round(
     x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    def _np_round(x):
+    def _np_round(x, decimals):
         # this is a logic to mimic np.round behaviour
         # which rounds odd numbers up and even numbers down at limits like 0.5
         eps = 1e-6 * paddle.sign(x)
+
         with ivy.ArrayMode(False):
+            # check if the integer is even or odd
+            candidate_ints = ivy.remainder(ivy.trunc(x), 2.0).astype(bool)
+            # check if the fraction is exactly half
+            candidate_fractions = ivy.equal(ivy.abs(ivy.subtract(x, ivy.trunc(x))), 0.5)
             x = ivy.where(
-                remainder(trunc(x), 2.0).astype(
-                    bool
-                ),  # check if the integer is even or odd
-                x,
+                ivy.logical_and(~candidate_ints, candidate_fractions),
                 x - eps,
+                x,
             )
-            ret_dtype = x.dtype
-            factor = pow(10, decimals).astype(ret_dtype)
-            factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
-            return divide(paddle.round(multiply(x, factor)), factor_denom)
+            factor = ivy.pow(10, decimals).astype(x.dtype)
+            factor_denom = ivy.where(ivy.isinf(x), 1, factor)
+            return ivy.divide(paddle.round(ivy.multiply(x, factor)), factor_denom)
 
     x, _ = ivy.promote_types_of_inputs(x, x)
     if x.dtype not in [paddle.float32, paddle.float64]:
         if paddle.is_complex(x):
-            return _np_round(x.real()) + _np_round(x.imag()) * 1j
-        return _np_round(x.cast("float32")).cast(x.dtype)
-    return _np_round(x)
+            return _np_round(x.real(), decimals) + _np_round(x.imag(), decimals) * 1j
+        return _np_round(x.cast("float32"), decimals).cast(x.dtype)
+    return _np_round(x, decimals)
 
 
 @with_unsupported_device_and_dtypes(
@@ -1155,6 +1156,9 @@ def isreal(
         return paddle.ones_like(x, dtype="bool")
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def fmod(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -1164,6 +1168,5 @@ def fmod(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     with ivy.ArrayMode(False):
-        res = ivy.floor_divide(ivy.abs(x1), ivy.abs(x2))
-        res = ivy.multiply(res, ivy.abs(x2))
-        return ivy.multiply(ivy.abs(ivy.subtract(ivy.abs(x1), res)), ivy.sign(x1))
+        res = ivy.remainder(ivy.abs(x1), ivy.abs(x2))
+        return ivy.where(ivy.less(x1, 0), -res, res)

@@ -29,8 +29,9 @@ def floats(
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
 ):
-    """Draws an arbitrarily sized list of floats with a safety factor applied
-        to avoid values being generated at the edge of a dtype limit.
+    """
+    Draws an arbitrarily sized list of floats with a safety factor applied to avoid
+    values being generated at the edge of a dtype limit.
 
     Parameters
     ----------
@@ -41,6 +42,8 @@ def floats(
         minimum value of floats generated.
     max_value
         maximum value of floats generated.
+    abs_smallest_val
+        the absolute smallest representable value of the data type.
     allow_nan
         if True, allow Nans in the list.
     allow_inf
@@ -77,7 +80,7 @@ def floats(
     Returns
     -------
     ret
-        Float.
+        A strategy that draws floats.
     """
     # ToDo assert that if min or max can be represented
     dtype = draw(dtype_helpers.get_dtypes("float", full=False, prune_function=False))
@@ -140,7 +143,8 @@ def ints(
     safety_factor=1.1,
     safety_factor_scale=None,
 ):
-    """Draws an integer with a safety factor if specified.
+    """
+    Draws an integer with a safety factor if specified.
 
     Parameters
     ----------
@@ -167,7 +171,7 @@ def ints(
     Returns
     -------
     ret
-        Integer.
+        A strategy that draws integers.
     """
     dtype = draw(dtype_helpers.get_dtypes("integer", full=False, prune_function=False))
     if min_value is None and max_value is None:
@@ -193,8 +197,8 @@ def number(
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
 ):
-    """Draws integers or floats with a safety factor
-    applied to values.
+    """
+    Draws integers or floats with a safety factor applied to values.
 
     Parameters
     ----------
@@ -232,7 +236,7 @@ def number(
     Returns
     -------
     ret
-        An integer or float.
+        A strategy that draws integers or floats.
     """
     return draw(
         ints(

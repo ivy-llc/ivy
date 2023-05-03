@@ -46,6 +46,7 @@ def fmax(
 fmax.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def fmin(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -83,9 +84,9 @@ def trapz(
     else:
         if dx is not None:
             TypeError(
-                "trapezoid() received an invalid combination of arguments - got\
-            (Tensor, Tensor, int), but expected one of: *\
-            (Tensor y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
+                "trapezoid() received an invalid combination of arguments - got "
+                "(Tensor, Tensor, int), but expected one of: *(Tensor "
+                "y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
             )
         else:
             return torch.trapezoid(y, x=x, dim=axis)
@@ -166,6 +167,11 @@ def count_nonzero(
             x = x.unsqueeze(d - 1)
         return x
     elif isinstance(axis, int):
+        if axis == -1:
+            temp = x.dim() - 2
+            if temp < -1:
+                temp = 0
+            return x.unsqueeze(temp)
         return x.unsqueeze(axis - 1)
     return x
 
@@ -363,6 +369,7 @@ def fix(
 fix.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.13.1 and below": ("float16",)}, backend_version)
 def nextafter(
     x1: torch.Tensor,
     x2: torch.Tensor,
