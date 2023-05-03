@@ -20,8 +20,8 @@ NativeShape = tuple
 NativeSparseArray = mx.ndarray.sparse.BaseSparseNDArray
 
 
-valid_devices = (["cpu", "gpu"],)
-invalid_devices = (["tpu"],)
+valid_devices = ("cpu", "gpu")
+invalid_devices = ("tpu",)
 
 # native data types
 native_int8 = np.dtype("int8")
