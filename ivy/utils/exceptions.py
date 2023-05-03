@@ -69,44 +69,6 @@ sys.excepthook = _custom_exception_handle
 
 
 class IvyException(Exception):
-    def __init__(self, message):
-        super().__init__(message)
-
-
-def _combine_messages(*messages, include_backend=True):
-    if not include_backend:
-        return " ".join(messages)
-    default = [
-        "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
-    ]
-    delimiter = ": "
-    for message in messages:
-        default.append(message)
-    return delimiter.join(default)
-
-
-class IvyBackendException(IvyException):
-    def __init__(self, *messages):
-        self._default = [
-            "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
-        ]
-        self._delimiter = ": "
-        for message in messages:
-            self._default.append(message)
-        super().__init__(self._delimiter.join(self._default))
-
-
-class IvyNotImplementedException(NotImplementedError):
-    def __init__(self, message=""):
-        super().__init__(message)
-
-
-class IvyError(IvyException):
-    def __init__(self, *messages, include_backend=False):
-        super().__init__(_combine_messages(*messages, include_backend=include_backend))
-
-
-class IvyIndexError(IndexError, IvyException):
     def __init__(self, *messages, include_backend=False):
         self.native_error = (
             messages[0]
@@ -123,24 +85,56 @@ class IvyIndexError(IndexError, IvyException):
             super().__init__(str(messages[0]))
 
 
+def _combine_messages(*messages, include_backend=True):
+    if not include_backend:
+        return " ".join(messages)
+    default = [
+        "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
+    ]
+    delimiter = ": "
+    for message in messages:
+        default.append(message)
+    return delimiter.join(default)
+
+
+class IvyBackendException(IvyException):
+    def __init__(self, *messages, include_backend=False):
+        super().__init__(*messages, include_backend=include_backend)
+
+
+class IvyNotImplementedException(NotImplementedError):
+    def __init__(self, message=""):
+        super().__init__(message)
+
+
+class IvyError(IvyException):
+    def __init__(self, *messages, include_backend=False):
+        super().__init__(*messages, include_backend=include_backend)
+
+
+class IvyIndexError(IvyException, IndexError):
+    def __init__(self, *messages, include_backend=False):
+        super().__init__(*messages, include_backend=include_backend)
+
+
 class IvyAttributeError(AttributeError, IvyException):
     def __init__(self, *messages, include_backend=False):
-        super().__init__(_combine_messages(*messages, include_backend=include_backend))
+        super().__init__(*messages, include_backend=include_backend)
 
 
 class IvyValueError(ValueError, IvyException):
     def __init__(self, *messages, include_backend=False):
-        super().__init__(_combine_messages(*messages, include_backend=include_backend))
+        super().__init__(*messages, include_backend=include_backend)
 
 
 class IvyBroadcastShapeError(IvyException):
     def __init__(self, *messages, include_backend=False):
-        super().__init__(_combine_messages(*messages, include_backend=include_backend))
+        super().__init__(*messages, include_backend=include_backend)
 
 
 class IvyDtypePromotionError(IvyException):
     def __init__(self, *messages, include_backend=False):
-        super().__init__(_combine_messages(*messages, include_backend=include_backend))
+        super().__init__(*messages, include_backend=include_backend)
 
 
 def handle_exceptions(fn: Callable) -> Callable:
@@ -186,19 +180,21 @@ def handle_exceptions(fn: Callable) -> Callable:
             raise ivy.utils.exceptions.IvyIndexError(
                 fn.__name__, str(e), include_backend=True
             )
-        except AttributeError as e:
+        except (AttributeError, IvyAttributeError) as e:
             _print_traceback_history()
             raise ivy.utils.exceptions.IvyAttributeError(
                 fn.__name__, str(e), include_backend=True
             )
-        except ValueError as e:
+        except (ValueError, IvyValueError) as e:
             _print_traceback_history()
             raise ivy.utils.exceptions.IvyValueError(
                 fn.__name__, str(e), include_backend=True
             )
-        except Exception as e:
+        except (Exception, IvyBackendException) as e:
             _print_traceback_history()
-            raise ivy.utils.exceptions.IvyBackendException(fn.__name__, str(e))
+            raise ivy.utils.exceptions.IvyBackendException(
+                fn.__name__, str(e), include_backend=True
+            )
 
     _handle_exceptions.handle_exceptions = True
     return _handle_exceptions
