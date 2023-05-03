@@ -73,6 +73,7 @@ def permutation(x, /):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+
 def beta(a, b, size=None):
     return ivy.beta(a, b, shape=size)
 
@@ -110,3 +111,4 @@ def chisquare(df, size=None):
         df = df * ivy.ones(size)
 
     return ivy.gamma(df / 2, 2, dtype="float64")
+
