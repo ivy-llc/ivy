@@ -9,7 +9,6 @@ ivy_dtype_dict = {
 }
 native_dtype_dict = {
     "int8": np.int8,
-    "int16": np.int16,
     "int32": np.int32,
     "int64": np.int64,
     "uint8": np.uint8,
