@@ -61,8 +61,10 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
         ivy.utils.assertions.check_equal(
             targets_batch,
             pred_batch,
-            message="first dim of predictions: {} must match targets length: {}".format(
-                pred_batch, targets_batch
+            message=(
+                "first dim of predictions: {} must match targets length: {}".format(
+                    pred_batch, targets_batch
+                )
             ),
         )
 
