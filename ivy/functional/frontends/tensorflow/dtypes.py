@@ -117,29 +117,22 @@ class DType:
 
 
 def as_dtype(type_value):
-    if isinstance(type_value, DType):
-        return type_value
-    if ivy.is_native_dtype(type_value):
-        return DType(tf_frontend.tensorflow_type_to_enum[ivy.as_ivy_dtype(type_value)])
-    if type_value in tf_frontend.tensorflow_enum_to_type:
-        return DType(type_value)
-    if type_value in tf_frontend.tensorflow_type_to_enum:
-        return DType(tf_frontend.tensorflow_type_to_enum[type_value])
-    if type_value is float:
-        return DType(1)
-    if type_value is bool:
-        return DType(10)
-    if isinstance(type_value, np_frontend.dtype):
-        return DType(tf_frontend.tensorflow_type_to_enum[type_value.ivy_dtype])
-    if issubclass(type_value, np_frontend.generic):
+    if isinstance(type_value, (DType, np_frontend.dtype)):
         return DType(
-            tf_frontend.tensorflow_type_to_enum[
-                np_frontend.numpy_scalar_to_dtype[type_value]
-            ]
+            tf_frontend.tensorflow_type_to_enum.get(
+                getattr(type_value, "ivy_dtype", type_value), type_value
+            )
         )
-    raise ivy.utils.exceptions.IvyException(
-        f"Cannot convert the argument 'type_value': {type_value!r} "
-        "to a TensorFlow Dtype"
+    if type_value in (float, bool):
+        return DType(1 if type_value is float else 10)
+    return DType(
+        tf_frontend.tensorflow_type_to_enum.get(
+            type_value,
+            ivy.utils.exceptions.IvyException(
+                f"Cannot convert the argument 'type_value': {type_value!r} to a"
+                " TensorFlow Dtype"
+            ),
+        )
     )
 
 
