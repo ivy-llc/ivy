@@ -77,7 +77,7 @@ def main():
         x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)
     ]
     directories = set(directories_filtered)
-    for test_backend in tqdm(test_names[:1]):
+    for test_backend in tqdm(test_names):
         test_name, backend = test_backend.split(",")
         command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy unifyai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,ivy_tests -m pytest {test_name} -k \\"{k_flag[backend]}\\" --disable-warnings --tb=short -vv > coverage_output;coverage annotate > coverage_output" '  # noqa
         os.system(command)
