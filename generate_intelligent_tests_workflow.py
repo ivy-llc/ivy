@@ -1,4 +1,4 @@
-total_jobs = 32
+total_jobs = 40
 job_prefix = "run_tests_"
 
 print("name: intelligent-tests-pr")
@@ -22,7 +22,7 @@ print("    steps:")
 print("      - name: Download all test results")
 print("        uses: actions/download-artifact@v3")
 print()
-print("      - name: Combine test results")
+print("      - name: Combined Test Results")
 print("        run: |")
 print(
     '          find . -name "test_results_*.txt" -exec cat {} + >'
@@ -33,12 +33,14 @@ print("          cat combined_test_results.txt")
 print()
 print("      - name: New Failures Introduced")
 print("        run: |")
-print(
-    '          find . -name "new_failures_*.txt" -exec cat {} + >'
-    " new_failures_introduced.txt"
-)
-print('          echo "New Failures Introduced:"')
-print("          cat new_failures_introduced.txt")
+print('          find . -name "new_failures_*.txt" -exec cat {} + > combined_failures.txt')
+print('          if [ -s combined_failures.txt ]')
+print("          then")
+print('              echo "This PR introduces the following new failing tests:"')
+print('              cat combined_failures.txt')
+print('          else')
+print('              echo "This PR does not introduce any new test failures! Yippee!"')
+print('          fi')
 print()
 for i in range(1, total_jobs + 1):
     print(f"  {job_prefix}{i}:")
