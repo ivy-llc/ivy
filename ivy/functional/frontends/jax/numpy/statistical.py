@@ -429,7 +429,15 @@ def ptp(a, axis=None, out=None, keepdims=False):
 
 
 @to_ivy_arrays_and_back
-def nanmedian(a, axis=None, keepdims=False, out=None, overwrite_input=False):
+def nanmedian(
+    a,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    overwrite_input=False,
+):
     return ivy.nanmedian(
         a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
     )

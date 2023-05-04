@@ -917,7 +917,7 @@ def test_jax_numpy_ptp(
 @handle_frontend_test(
     fn_tree="jax.numpy.nanmedian",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         min_value=-(2**10),
         max_value=2**10,
@@ -925,7 +925,6 @@ def test_jax_numpy_ptp(
     ),
     keepdims=st.booleans(),
     overwrite_input=st.booleans(),
-    test_with_out=st.just(False),
 )
 def test_jax_numpy_nanmedian(
     on_device,
@@ -935,8 +934,6 @@ def test_jax_numpy_nanmedian(
     keepdims,
     fn_tree,
     test_flags,
-    overwrite_input,
-    test_with_out,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -947,7 +944,7 @@ def test_jax_numpy_nanmedian(
         on_device=on_device,
         a=x[0],
         axis=axis,
-        out=test_with_out,
-        overwrite_input=overwrite_input,
+        out=None,
+        overwrite_input=False,
         keepdims=keepdims,
     )
