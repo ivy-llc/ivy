@@ -1,5 +1,7 @@
 name: github-release
-on: [push]
+on:
+  release:
+    types: [published]
 jobs:
   release-if-tagged-commit:
     runs-on: ubuntu-latest
@@ -10,24 +12,24 @@ jobs:
           path: ivy
           persist-credentials: false
 
-      - name: Install Dependencies
-        run: |
-          sudo apt-get install python3-venv
-          python3 -m pip install --upgrade pip
-          python3 -m pip install --upgrade build
-          python3 -m pip install --upgrade twine
-
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-
-      - name: Release on Github
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-        uses: actions/create-release@v1
-        with:
-          draft: false
-          prerelease: false
-          release_name: Ivy ${{ steps.get_version.outputs.VERSION }}
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+#      - name: Install Dependencies
+#        run: |
+#          sudo apt-get install python3-venv
+#          python3 -m pip install --upgrade pip
+#          python3 -m pip install --upgrade build
+#          python3 -m pip install --upgrade twine
+#
+#      - name: Get the version
+#        id: get_version
+#        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+#
+#      - name: Release on Github
+#        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+#        uses: actions/create-release@v1
+#        with:
+#          draft: false
+#          prerelease: false
+#          release_name: Ivy ${{ steps.get_version.outputs.VERSION }}
+#          tag_name: ${{ steps.get_version.outputs.VERSION }}
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
