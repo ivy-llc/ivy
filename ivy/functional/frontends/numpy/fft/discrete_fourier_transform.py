@@ -34,4 +34,4 @@ def ifftshift(x, axes=None):
 
 @to_ivy_arrays_and_back
 def fft(a, n=None, axis=-1, norm=None):
-    return ivy.fft(a, axis, norm=norm, n=n)
+    return ivy.fft(ivy.astype(a, ivy.complex128), axis, norm=norm, n=n)
