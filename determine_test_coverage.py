@@ -16,7 +16,9 @@ N = 40
 run_iter = int(sys.argv[1])
 
 os.system(
-    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names"
+    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest"
+    " python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump"
+    " true > test_names"
     # noqa
 )
 test_names_without_backend = []

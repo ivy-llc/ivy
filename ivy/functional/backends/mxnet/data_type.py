@@ -29,8 +29,8 @@ char_rep_dtype_dict = {
     "f4": "float32",
     "f8": "float64",
     "u1": "uint8",
-
 }
+
 
 class Finfo:
     def __init__(self, mx_finfo: mx.np.finfo):
@@ -100,7 +100,6 @@ def finfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> Finfo:
     if isinstance(type, mx.ndarray.NDArray):
         type = type.dtype
     return Finfo(mx.np.finfo(ivy.as_native_dtype(type)))
-
 
 
 @_handle_nestable_dtype_info

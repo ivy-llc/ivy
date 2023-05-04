@@ -11,6 +11,7 @@ def variable(x, /):
 def is_variable(x, /, *, exclusive=False):
     raise NotImplementedError("mxnet.is_variable Not Implemented")
 
+
 def variable_data(x, /):
     raise NotImplementedError("mxnet.variable_data Not Implemented")
 
