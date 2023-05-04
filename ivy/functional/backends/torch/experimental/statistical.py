@@ -292,8 +292,6 @@ def nanmedian(
         )
 
     result = result.to(dtype)
-    if out is not None:
-        out = result.clone()
     if overwrite_input:
         input = result.clone()
     return result

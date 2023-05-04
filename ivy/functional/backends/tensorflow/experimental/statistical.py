@@ -169,8 +169,6 @@ def nanmedian(
         interpolation="midpoint",
         keepdims=keepdims,
     )
-    if out is not None:
-        out = tf.identity(result)
     if overwrite_input:
         input = tf.identity(result)
     return result
