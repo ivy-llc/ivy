@@ -152,6 +152,13 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
+
+            if hasattr(fn, "handle_mixed_function"):
+                f_supported["compositional"] = merge_fn(
+                    f_supported["compositional"], out
+                )
+                f_supported["primary"] = merge_fn(f_supported["primary"], out)
+                out = f_supported
             out = merge_fn(f_supported, out)
             continue
         elif "frontend" in fn.__module__ or (
