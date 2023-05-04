@@ -385,7 +385,7 @@ def _stateless_gamma_helper(draw):
             shape=shape_b,
         )
     )
-    return shape, alpha[0], beta[0], dtype
+    return shape, alpha[0], beta[0], _
 
 
 @handle_frontend_test(
