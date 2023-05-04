@@ -1,7 +1,6 @@
 name: github-release
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
 jobs:
   release-if-tagged-commit:
     runs-on: ubuntu-latest
