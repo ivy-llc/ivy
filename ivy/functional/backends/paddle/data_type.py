@@ -263,7 +263,7 @@ def as_native_dtype(
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(
-            "Cannot convert to Paddle dtype." f" {dtype_in} is not supported by Paddle."
+            f"Cannot convert to Paddle dtype. {dtype_in} is not supported by Paddle."
         )
 
 

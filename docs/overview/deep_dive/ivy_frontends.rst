@@ -18,16 +18,16 @@ Ivy Frontends
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
-.. _`open task`: https://lets-unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
+.. _`open task`: https://unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
 .. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
 .. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
 Introduction
 ------------
 
-On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://lets-unify.ai/docs/ivy/design/ivy_as_a_transpiler.html>`_.
+On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html>`_.
 
-Let's start with some examples to have a better idea on Ivy Frontends!
+
 
 
 The Frontend Basics
@@ -74,7 +74,7 @@ There will be some implicit discussion of the locations of frontend functions in
 The native arrays of each framework have their own attributes and instance methods which differ from the attributes and instance methods of :class:`ivy.Array`.
 As such we have implemented framework-specific array classes: :class:`tf_frontend.Tensor`, :class:`torch_frontend.Tensor`, :class:`numpy_frontend.ndarray`, and :class:`jax_frontend.DeviceArray`.
 These classes simply wrap an :class:`ivy.Array`, which is stored in the :code:`ivy_array` attribute, and behave as closely as possible to the native framework array classes.
-This is explained further in the `Classes and Instance Methods <https://lets-unify.ai/docs/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods>`_ section.
+This is explained further in the `Classes and Instance Methods <https://unify.ai/docs/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods>`_ section.
 
 As we aim to replicate the frontend frameworks as closely as possible, all functions accept their frontend array class (as well as :class:`ivy.Array` and :class:`ivy.NativeArray`) and return a frontend array.
 However, since most logic in each function is handled by Ivy, the :class:`ivy.Array` must be extracted from any frontend array inputs.
@@ -86,13 +86,6 @@ All these increase the fidelity of our frontends.
 
 Writing Frontend Functions
 -------------------
-
-Ideally all frontend functions should call the equivalent ivy function and only be one line long.
-In Ivy we already try to superset the functionality of each framework, meaning that we should not have to deal with implementing extra functionality through the frontends.
-In the case a function is missing some functionality which is needed to match with the frontend framework, it is strongly advised that the backend ivy function is updated to support this.
-The main reason for this policy is because the frontends are strictly composed of ivy functions and any composition of them is bound to be slower than a backend implementation written using native backend framework functions.
-
-Of course the frontends wouldn't be needed if they completely relied on Ivy, so some framework specific nuances will be described below:
 
 **Jax**
 
@@ -321,42 +314,25 @@ We wrap :func:`ivy.add` as usual.
 :func:`tan` is also placed under :mod:`pointwise_ops` as is the case in the `torch`_ framework.
 Looking at the `torch.tan`_ documentation, we can mimic the same arguments, and again simply wrap :func:`ivy.tan`, also making use of the :code:`out` argument in this case.
 
-Unused Arguments
-----------------
+Short Frontend Implementations
+-----------------------------
 
-As can be seen from the examples above, there are often cases where we do not add support for particular arguments in the frontend function.
-Generally, we can omit support for a particular argument only if: the argument **does not** fundamentally affect the input-output behaviour of the function in a mathematical sense.
-The only two exceptions to this rule are arguments related to either the data type or the device on which the returned array(s) should reside.
-Examples of arguments which can be omitted, on account that they do not change the mathematics of the function are arguments which relate to:
+Ideally all frontend functions should call the equivalent Ivy function and only be one line long. This is mainly because compositional implementations are bound to be slower than direct backend implementation calls.
 
-* the algorithm or approximations used under the hood, such as :code:`precision` and :code:`preferred_element_type` in `jax.lax.conv_general_dilated <https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57>`_.
+In case a frontend function is complex and there is no equivalent Ivy function to use, it is strongly advised to add that function to our Experimental API. To do so, you are invited to open a *Missing Function Suggestion* issue as described in the `Open Tasks <https://unify.ai/docs/ivy/overview/contributing/the_basics.html#id4>`_ section. A member of our team will then review your issue, and if the proposed addition is deemed to be timely and sensible, we will add the function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 
-* the specific array class in the original framework, such as :code:`subok` in `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
+In case there *is* an equivalent Ivy function, but it's missing some functionality which is needed to match with the frontend framework, it is strongly advised that the backend ivy function is updated to support this. To do so, you are invited to make a comment under `this <https://github.com/unifyai/ivy/issues/6406>`_ dedicated issue. A member of our team will then review your suggestion, and if deemed sensible, we will create a subtask issue to extend the function.
 
-* the labelling of functions for organizational purposes, such as :code:`name` in `tf.math.add <https://github.com/tensorflow/tensorflow/blob/v2.10.0/tensorflow/python/ops/math_ops.py#L3926-L4004>`_.
+At this point in time, you can reserve the new task for yourself and get it implemented in a unique PR. Once merged, you can then resume working on the frontend function, which will now be a much easier task with your suggested extension added to Ivy.
 
-There are likely to be many other examples of arguments which do not fundamentally affect the input-output behaviour of the function in a mathematical sense, and so can also be omitted from Ivy's frontend implementation.
+Temporary Compositions
+----------------------
 
-The reason we omit these arguments in Ivy is because Ivy is not designed to provide low-level control to functions that extend beyond the pure mathematics of the function.
-This is a requirement because Ivy abstracts the backend framework, and therefore also abstracts everything below the backend framework's functional API, including the backend array class, the low-level language compiled to, the device etc.
-Most ML frameworks do not offer per-array control of the memory layout, and control for the finer details of the algorithmic approximations under the hood, and so we cannot in general offer this level of control at the Ivy API level, nor the frontend API level as a direct result.
-As explained above, this is not a problem, as the memory layout has no bearing at all on the input-output behaviour of the function.
-In contrast, the algorithmic approximation may have a marginal bearing on the final results in some cases, but Ivy is only designed to unify to within a reasonable numeric approximation in any case, and so omitting these arguments also very much fits within Ivy's design.
-
-
-Compositions
-------------
-
-In many cases, frontend functions meet the following criteria:
-
-* the function is unique to a particular frontend framework, and does not exist in the other frameworks
-* the function has extra features and/or arguments on top of the most similar ivy function that is available
-
-In such cases, compositions are required to replicate the function behaviour. Although the second case is less common as we try and maintain a superset within Ivy functions.
+Alternatively, if you would rather not wait around for a member of our team to review your suggestion, you can instead go straight ahead and add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified if/when :func:`ivy.func_name` is added to Ivy.
 
 **Examples**
 
-The native TensorFlow function :func:`tf.reduce_logsumexp` does not have an equivalent function in Ivy, therefore its composed of multiple Ivy functions instead.
+The native TensorFlow function :func:`tf.reduce_logsumexp` does not have an equivalent function in Ivy, therefore it can be composed of multiple Ivy functions instead.
 
 **TensorFlow Frontend**
 
@@ -380,26 +356,29 @@ The native TensorFlow function :func:`tf.reduce_logsumexp` does not have an equi
 
 Through compositions, we can easily meet the required input-output behaviour for the TensorFlow frontend function.
 
-Missing Ivy Functions
----------------------
+The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://unify.ai/docs/ivy/contributing/open_tasks.html#frontend-apis>`_ section.
 
-Sometimes, there is a clear omission of an Ivy function, which would make the frontend implementation much simpler.
-For example, at the time of writing, implementing :func:`median` for the NumPy frontend would require a very manual and heavily compositional implementation.
-However, if the function :func:`ivy.median` was added to Ivy's functional API, then this frontend implementation would become very simple, with some light wrapping around :func:`ivy.median`.
+Unused Arguments
+----------------
 
-Adding :func:`ivy.median` would be a sensible decision, as many frameworks support this function.
-When you come across such a function which is missing from Ivy, you should create a new issue on the Ivy repo, with the title :func:`ivy.func_name` and with the labels :code:`Suggestion`, :code:`Experimental`, :code:`Ivy API` and :code:`Next Release`.
-A member of our team will then review this issue, and if the proposed addition is deemed to be timely and sensible, then we will add this function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
-At this point in time, you can reserve the function for yourself and get it implemented in a unique PR.
-Once merged, you can then resume working on the frontend function, which will now be a much easier task with the new addition to Ivy.
+As can be seen from the examples above, there are often cases where we do not add support for particular arguments in the frontend function.
+Generally, we can omit support for a particular argument only if: the argument **does not** fundamentally affect the input-output behaviour of the function in a mathematical sense.
+The only two exceptions to this rule are arguments related to either the data type or the device on which the returned array(s) should reside.
+Examples of arguments which can be omitted, on account that they do not change the mathematics of the function are arguments which relate to:
 
-Temporary Compositions
-----------------------
+* the algorithm or approximations used under the hood, such as :code:`precision` and :code:`preferred_element_type` in `jax.lax.conv_general_dilated <https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57>`_.
 
-Alternatively, if after creating the new issue you would rather not wait around for a member of our team to review and possibly add to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_, you can instead go straight ahead add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified if/when :func:`ivy.func_name` is add to Ivy.
+* the specific array class in the original framework, such as :code:`subok` in `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
 
-The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://lets-unify.ai/docs/ivy/contributing/open_tasks.html#frontend-apis>`_ section.
+* the labelling of functions for organizational purposes, such as :code:`name` in `tf.math.add <https://github.com/tensorflow/tensorflow/blob/v2.10.0/tensorflow/python/ops/math_ops.py#L3926-L4004>`_.
 
+There are likely to be many other examples of arguments which do not fundamentally affect the input-output behaviour of the function in a mathematical sense, and so can also be omitted from Ivy's frontend implementation.
+
+The reason we omit these arguments in Ivy is because Ivy is not designed to provide low-level control to functions that extend beyond the pure mathematics of the function.
+This is a requirement because Ivy abstracts the backend framework, and therefore also abstracts everything below the backend framework's functional API, including the backend array class, the low-level language compiled to, the device etc.
+Most ML frameworks do not offer per-array control of the memory layout, and control for the finer details of the algorithmic approximations under the hood, and so we cannot in general offer this level of control at the Ivy API level, nor the frontend API level as a direct result.
+As explained above, this is not a problem, as the memory layout has no bearing at all on the input-output behaviour of the function.
+In contrast, the algorithmic approximation may have a marginal bearing on the final results in some cases, but Ivy is only designed to unify to within a reasonable numeric approximation in any case, and so omitting these arguments also very much fits within Ivy's design.
 
 Supported Data Types and Devices
 --------------------------------

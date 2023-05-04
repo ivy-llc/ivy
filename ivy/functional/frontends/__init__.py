@@ -3,6 +3,7 @@ versions = {
     "tensorflow": "2.9.0",
     "numpy": "1.23.2",
     "jax": "0.3.16",
+    "scipy": "1.10.1",
 }
 
 import importlib
@@ -11,6 +12,7 @@ from . import numpy
 from . import jax
 from . import tensorflow
 from . import torch
+from . import scipy
 
 
 def fn_name_from_version_specific_fn_name(name, version):
@@ -97,3 +99,4 @@ set_frontend_to_specific_version(torch)
 set_frontend_to_specific_version(tensorflow)
 set_frontend_to_specific_version(jax)
 set_frontend_to_specific_version(numpy)
+set_frontend_to_specific_version(scipy)
