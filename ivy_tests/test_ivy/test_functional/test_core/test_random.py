@@ -137,6 +137,58 @@ def test_random_normal(
         assert u.dtype == v.dtype
 
 
+# multivariate_normal
+mean_strategy = st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10)
+cov_strategy = st.lists(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10), min_size=2, max_size=10)
+@handle_test(
+    fn_tree="functional.ivy.multivariate_normal",
+    mean_cov = st.tuples(mean_strategy, cov_strategy),
+    mean_dtype = mean_strategy.example().dtype,
+    cov_dtype = cov_strategy.example()[0].dtype,
+    dtype=helpers.get_dtypes("float", full=False),
+    seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
+)
+def test_multivariate_normal(
+    mean_cov,
+    mean_dtype,
+    cov_dtype,
+    dtype,
+    seed,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    mean, cov = mean_cov
+
+    def call():
+        return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=mean_dtype+cov_dtype,
+            test_flags=test_flags,
+            on_device=on_device,
+            fw=backend_fw,
+            fn_name=fn_name,
+            test_values=False,
+            mean=mean,
+            cov=cov,
+            shape=None,
+            dtype=dtype[0],
+            seed=seed,
+        )
+
+    ret, ret_gt = call()
+    if seed:
+        ret1, ret_gt1 = call()
+        assert ivy.any(ret == ret1)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for u, v in zip(ret, ret_gt):
+        assert u.dtype == v.dtype
+
+
 @st.composite
 def _pop_size_num_samples_replace_n_probs(draw):
     prob_dtype = draw(helpers.get_dtypes("float", full=False))
