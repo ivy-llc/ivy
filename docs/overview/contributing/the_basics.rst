@@ -10,6 +10,7 @@ The Basics
 .. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
 .. _`PyCharm blog`: https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html
 .. _`Debugging`: https://www.jetbrains.com/help/pycharm/debugging-code.html
+.. _`Ivy Experimental API Open Task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api
 
 Getting Help
 ------------
@@ -116,18 +117,15 @@ For questions, please reach out on `discord`_ in the `todo list issues channel`_
 Ivy Experimental API
 --------------------
 
-We primarily invite contributors to contribute to the tasks listed as :ref:`Open Tasks` as they are on our roadmap currently.
-As a result of this we mainly recommend contributions which fall under the :ref:`Open Tasks`.
-However, if a contributor would like to extend Ivy's functionality with new functions, submodules, etc. then the workflow should ideally be the following:
-
-#. Such contributors need to create a PR with the label :code:`Experimental`.
-#. They should also describe what they're adding, as it makes it easier for us to understand its purpose and use from your point of view.
-#. After regular intervals of time, the team would go through all PRs with the :code:`Experimental` label and take a call on it's use.
-#. If the functionality added is useful in the short-term, then we would get the PR merged to master, either directly or after some back-and-forth with suggestions, if necessary.
-   This is a rare scenario as most of what we need to work on before a release would generally be either already present or being worked on by someone on the team.
-#. If the functionality added could be potentially useful in a future release or is something that aligns with our future roadmap, then we would add the :code:`Future Release` label to it, and take a look at it again after the next release.
-#. Unfortunately, if the functionality added is redundant or something that won't be useful in the long term, we'll have to close that PR.
-   We'll clearly specify the reason behind doing so as well.
+We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap.
+As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
+However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in :ref:`Creating an Issue on Ivy’s GitHub using a Template`.
+In this template form, you'll be asked to fill in the reason you think we should implement the suggested function. There are 3 main reasons we propose in the template:
+* 3+ of the native frameworks have this function
+* it's an NN-related function and should be as efficient as possible
+* it's needed for a complex/long frontend function implementation
+You will also be asked to fill in the links to any native implementations of the suggested function. This is to make the reviewing of your suggestion easier.
+We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task`_.
 
 Managing Your Fork
 ------------------
