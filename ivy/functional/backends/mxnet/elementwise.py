@@ -475,6 +475,9 @@ def sin(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    if x.shape == ():
+        ret = mx.nd.sin(mx.nd.array([x.asscalar()]))
+        return ret.reshape(())
     return mx.nd.sin(x)
 
 
