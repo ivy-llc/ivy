@@ -1478,4 +1478,6 @@ def test_tensorflow_pool(
         input=x[0],
         strides=strides,
         padding=padding,
+        window_shape=(2, 2), 
+        pooling_type='MAX',
     )
