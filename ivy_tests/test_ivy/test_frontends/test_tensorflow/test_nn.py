@@ -1458,7 +1458,7 @@ def test_tensorflow_avg_pool3d(
     x_k_s_p_df=helpers.arrays_for_pooling(
         min_dims=5, max_dims=5, min_side=1, max_side=4
     ),
-    test_with_out=st.just(False),
+    test_with_out=False
 )
 def test_tensorflow_pool(
     *,
