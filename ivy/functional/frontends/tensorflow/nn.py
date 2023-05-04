@@ -445,7 +445,7 @@ def convolution(
     # Inconsistent input and filter depths
     if input_depth != filters_depth:
         raise ValueError(
-            f"`input` and `filter` must have the same depth: "
+            "`input` and `filter` must have the same depth: "
             f"{input_depth} vs {filters_depth}."
         )
 

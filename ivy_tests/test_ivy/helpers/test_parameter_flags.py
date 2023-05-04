@@ -67,9 +67,9 @@ def build_flag(key: str, value: bool):
     if value is not None:
         value = st.just(value)
     # Prevent silently passing if variables names were changed
-    assert flags_mapping[key] in globals().keys(), (
-        f"{flags_mapping[key]} is not " f"a valid flag variable."
-    )
+    assert (
+        flags_mapping[key] in globals().keys()
+    ), f"{flags_mapping[key]} is not a valid flag variable."
     globals()[flags_mapping[key]] = value
 
 

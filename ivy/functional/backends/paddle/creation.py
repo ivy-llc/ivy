@@ -100,6 +100,7 @@ def asarray(
         bool,
         int,
         float,
+        list,
         NestedSequence,
         SupportsBufferProtocol,
     ],
@@ -174,18 +175,12 @@ def asarray(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return to_device(paddle.empty(shape=shape).cast(dtype), device)
 
 
@@ -461,7 +456,6 @@ def meshgrid(
         paddle.reshape(paddle.to_tensor(a), (sd[:i] + (-1,) + sd[i + 1 :]))
         for i, a in enumerate(arrays)
     ]
-
     if indexing == "xy" and len(arrays) > 1:
         res[0] = paddle.reshape(res[0], (1, -1) + sd[2:])
         res[1] = paddle.reshape(res[1], (-1, 1) + sd[2:])
@@ -473,18 +467,12 @@ def meshgrid(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return to_device(paddle.ones(shape=shape).cast(dtype), device)
 
 
@@ -550,18 +538,12 @@ def triu(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return to_device(paddle.zeros(shape=shape).cast(dtype), device)
 
 

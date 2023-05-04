@@ -540,7 +540,7 @@ def _pad_helper(draw):
             ]
         )
     )
-    if mode == "median":
+    if mode in ["median", "minimum", "maximum"]:
         dtypes = "float"
     else:
         dtypes = "numeric"
@@ -985,7 +985,7 @@ def _as_strided_helper(draw):
             max_size=new_ndim,
         ).filter(lambda x: all(x[i] % itemsize == 0 for i in range(new_ndim)))
     )
-    assume(_check_bounds(x.shape, x.strides, shape, strides, itemsize))
+    assume(_check_bounds(x.shape, shape, strides, itemsize))
     return dtype, x, shape, strides
 
 

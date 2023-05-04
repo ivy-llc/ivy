@@ -145,13 +145,13 @@ def flatten(
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
-            f"Dimension out of range (expected to be in range of\
-                {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
+            "Dimension out of range (expected to be in range of"
+            f" {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
         )
     if end_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
-            f"Dimension out of range (expected to be in range of\
-                {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
+            "Dimension out of range (expected to be in range of"
+            f" {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
         )
     if start_dim < 0:
         start_dim = len(x.shape) + start_dim
@@ -881,9 +881,11 @@ def _to_pairs(x, n):
         ivy.utils.assertions.check_equal(
             ivy.asarray(list(x)).shape,
             (n, 2),
-            message="tuple argument should contain "
-            "ndim pairs where ndim is the number of "
-            "the input's dimensions",
+            message=(
+                "tuple argument should contain "
+                "ndim pairs where ndim is the number of "
+                "the input's dimensions"
+            ),
         )
     return x
 
@@ -1185,6 +1187,7 @@ def pad(
             )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
+            stat_pair = ivy.to_numpy(stat_pair)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
@@ -1627,12 +1630,11 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-def _check_bounds(shape0, strides0, shape1, strides1, itemsize):
-    ndim0 = len(shape0)
+def _check_bounds(shape0, shape1, strides1, itemsize):
+    numel0 = math.prod(shape0)
     ndim1 = len(shape1)
-    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + sum(
-        strides1[i] - strides0[i] for i in range(min(ndim0, ndim1))
-    ) <= sum((shape0[i] - 1) * itemsize for i in range(ndim0))
+    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + itemsize <= \
+        numel0 * itemsize
 
 
 @inputs_to_native_shapes
@@ -1673,7 +1675,7 @@ def as_strided(
        [4, 5, 6]])
     """
     itemsize = x.itemsize
-    if not _check_bounds(x.shape, x.strides, shape, strides, itemsize):
+    if not _check_bounds(x.shape, shape, strides, itemsize):
         raise ivy.exceptions.IvyException("attempted unsafe memory access")
     if any(strides[i] % itemsize != 0 for i in range(len(strides))):
         raise ivy.exceptions.IvyException("strides must be multiple of itemsize")
