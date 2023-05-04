@@ -44,8 +44,6 @@ RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
 RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
     sed -i '/nvidia/d' requirements/requirements.txt && \
-    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --upgrade --no-cache-dir -r /dev/stdin && \
-    cat requirements/optional.txt | grep -v "ivy-" | pip3 install --upgrade --no-cache-dir -r /dev/stdin && \
     python3 -m pip install --user -e . && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
@@ -56,20 +54,15 @@ COPY requirements/optional.txt .
 COPY requirements/requirements.txt .
 ENV PYTHONPATH "/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/numpy:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
 
-
-RUN pip3 install --upgrade --no-cache-dir -r optional.txt && \
-    pip3 install --upgrade --no-cache-dir -r requirements.txt &&\
-    pip-autoremove torch -y &&\
-    pip-autoremove tensorflow-cpu -y &&\
-    pip-autoremove jax -y &&\
-    pip-autoremove jaxlib -y &&\
-    pip-autoremove paddlepaddle -y &&\
-    pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
+# currently uninstalling the installed frameworks, and re-installing latest ones in specific directories
+RUN pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
     pip install tensorflow-cpu --target '/opt/fw/tensorflow' --no-cache-dir &&\
     pip install jax[cpu] --target '/opt/fw/jax' --no-cache-dir &&\
     pip install jaxlib --target '/opt/fw/jax' --no-cache-dir &&\
     pip install numpy --target '/opt/fw/numpy' --no-cache-dir &&\
-    pip install paddlepaddle --target '/opt/fw/paddle' --no-cache-dir
+    pip install paddlepaddle --target '/opt/fw/paddle' --no-cache-dir &&\
+    pip3 install --upgrade --no-cache-dir -r optional.txt && \
+    pip3 install --upgrade --no-cache-dir -r requirements.txt 
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
