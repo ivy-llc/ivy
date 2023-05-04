@@ -203,6 +203,71 @@ class _ArrayWithRandom(abc.ABC):
             out=out,
         )
 
+    def multivariate_normal(
+        self: ivy.Array,
+        /,
+        *,
+        cov: Union[float, ivy.Array, ivy.NativeArray] = 1.0,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        method: Optional[str] = 'cholesky',
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.multivariate_normal. This method simply wraps
+        the function, and so the docstring for ivy.multivariate_normal also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The mean vector to sample from. Default is ``[0.0, 0.0]``.
+        cov
+            A positive definite covariance matrix.
+            Must be non-negative. Default is ``[[1.0,0.0] , [0.0,1.0]]``.
+        shape
+            optional, a tuple of nonnegative integers specifying the result
+            batch shape; that is, the prefix of the result shape excluding the last
+            axis. Must be broadcast-compatible with ``mean.shape[:-1]`` and
+            ``cov.shape[:-2]``. The default (None) produces a result batch shape by
+            broadcasting together the batch shapes of ``mean`` and ``cov``.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None).
+        dtype
+            optional, a float dtype for the returned values (default float64 if
+            jax_enable_x64 is true, otherwise float32).
+        method
+            optional, a method to compute the factor of cov. Must be one of ``svd``, ``eigh``, 
+            and ``cholesky``. Default ``cholesky``. 
+            For singular covariance matrices, use ``svd`` or ``eigh``.
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A random array with the specified dtype and shape given by
+            ``shape + mean.shape[-1:]`` if ``shape`` is not None, or else
+            ``broadcast_shapes(mean.shape[:-1], cov.shape[:-2]) + mean.shape[-1:]``.
+        """
+        return ivy.multivariate_normal(
+            mean=self._data,
+            cov=cov,
+            shape=shape,
+            device=device,
+            dtype=dtype,
+            method=method,
+            seed=seed,
+            out=out,
+        )
+        
+
     def multinomial(
         self: ivy.Array,
         population_size: int,
