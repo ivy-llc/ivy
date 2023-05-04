@@ -85,6 +85,7 @@ def main():
             backend = backend.strip("\n")
             coll, submod, test_fn = get_submodule(test)
             command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest timeout 30m python3 -m pytest {test} -k \\"{k_flag[backend]}\\" --tb=short -vv'  # noqa
+            print(command)
             print(f"\n{'*' * 100}")
             print(f"{line[:-1]}")
             print(f"{'*' * 100}\n")
