@@ -56,6 +56,12 @@ class Tensor:
     def ndim(self):
         return self.dim()
 
+    @property
+    def T(self):
+        if self.ndim == 1:
+            return self
+        return torch_frontend.permute(self, list(range(self.ndim))[::-1])
+
     # Setters #
     # --------#
 
@@ -1030,3 +1036,24 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def prod(self, dim=None, keepdim=False, *, dtype=None):
+        return torch_frontend.prod(self, dim=dim, keepdim=keepdim, dtype=dtype)
+
+    def div(self, other, *, rounding_mode=None):
+        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    def div_(self, other, *, rounding_mode=None):
+        self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
+        return self
+
+    def normal_(self, mean=0, std=1, *, generator=None):
+        self.ivy_array = ivy.random_normal(
+            mean=mean, std=std, shape=self.shape, dtype=self.dtype, device=self.device
+        )
+        return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def addcdiv(self, tensor1, tensor2, *, value=1):
+        return torch_frontend.addcdiv(self, tensor1, tensor2, value=value)

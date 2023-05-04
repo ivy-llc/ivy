@@ -46,7 +46,9 @@ def arange(
 @asarray_infer_device
 @asarray_handle_nestable
 def asarray(
-    obj: Union[np.ndarray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    obj: Union[
+        np.ndarray, bool, int, float, tuple, NestedSequence, SupportsBufferProtocol
+    ],
     /,
     *,
     copy: Optional[bool] = None,
