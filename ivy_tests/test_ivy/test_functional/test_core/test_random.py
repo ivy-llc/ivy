@@ -137,22 +137,18 @@ def test_random_normal(
         assert u.dtype == v.dtype
 
 
-# multivariate_normal
-mean_strategy = st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10)
-cov_strategy = st.lists(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10), min_size=2, max_size=10)
+# jax_multivariate_normal
 @handle_test(
-    fn_tree="functional.ivy.multivariate_normal",
-    mean_cov = st.tuples(mean_strategy, cov_strategy),
-    mean_dtype = mean_strategy.example().dtype,
-    cov_dtype = cov_strategy.example()[0].dtype,
-    dtype=helpers.get_dtypes("float", full=False),
+    fn_tree="functional.jax.multivariate_normal",
+    mean_cov=st.tuples(
+        st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10),
+        st.lists(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10), min_size=2, max_size=10)
+    ),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
 )
-def test_multivariate_normal(
+def test_jax_multivariate_normal(
     mean_cov,
-    mean_dtype,
-    cov_dtype,
     dtype,
     seed,
     test_flags,
@@ -163,10 +159,13 @@ def test_multivariate_normal(
 ):
     mean, cov = mean_cov
 
+    mean_dtype = type(mean[0])
+    cov_dtype = type(cov[0][0])
+
     def call():
         return helpers.test_function(
             ground_truth_backend=ground_truth_backend,
-            input_dtypes=mean_dtype+cov_dtype,
+            input_dtypes=(mean_dtype, cov_dtype),
             test_flags=test_flags,
             on_device=on_device,
             fw=backend_fw,
@@ -175,7 +174,7 @@ def test_multivariate_normal(
             mean=mean,
             cov=cov,
             shape=None,
-            dtype=dtype[0],
+            dtype=dtype,
             seed=seed,
         )
 
