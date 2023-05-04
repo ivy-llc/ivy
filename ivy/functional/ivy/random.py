@@ -312,6 +312,69 @@ def random_normal(
 
 
 @infer_device
+@infer_dtype
+@handle_array_function
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def multivariate_normal(
+    *,
+    mean: Union[float, ivy.NativeArray, ivy.Array] = [0.0, 0.0],
+    cov: Union[float, ivy.NativeArray, ivy.Array] = [[1.0, 0.0], [0.0, 1.0]],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    method: Optional[str] = 'cholesky',
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Multivariate normal distribution.
+
+    Parameters
+    ----------
+    mean
+        The mean vector to sample from. Default is ``[0.0, 0.0]``.
+    cov
+        A positive definite covariance matrix.
+        Must be non-negative. Default is ``[[1.0,0.0] , [0.0,1.0]]``.
+    shape
+        optional, a tuple of nonnegative integers specifying the result
+        batch shape; that is, the prefix of the result shape excluding the last
+        axis. Must be broadcast-compatible with ``mean.shape[:-1]`` and
+        ``cov.shape[:-2]``. The default (None) produces a result batch shape by
+        broadcasting together the batch shapes of ``mean`` and ``cov``.
+    device
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        (Default value = None).
+    dtype
+        optional, a float dtype for the returned values (default float64 if
+        jax_enable_x64 is true, otherwise float32).
+    method
+        optional, a method to compute the factor of cov. Must be one of ``svd``, ``eigh``, 
+        and ``cholesky``. Default ``cholesky``. 
+        For singular covariance matrices, use ``svd`` or ``eigh``.
+    seed
+        A python integer. Used to create a random seed distribution
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A random array with the specified dtype and shape given by
+        ``shape + mean.shape[-1:]`` if ``shape`` is not None, or else
+        ``broadcast_shapes(mean.shape[:-1], cov.shape[:-2]) + mean.shape[-1:]``.
+    """
+    return ivy.current_backend().multivariate_normal(
+        mean = mean, cov=cov, shape=shape, dtype=dtype, seed=seed, method=method, device=device, out=out
+    )
+
+
+@infer_device
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument

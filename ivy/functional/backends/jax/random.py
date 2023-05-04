@@ -94,8 +94,8 @@ def random_normal(
 
 def multivariate_normal(
     *,
-    mean: Union[float, JaxArray] = 0.0,
-    cov: Union[float, JaxArray] = 1.0,
+    mean: Union[float, JaxArray] = [0.0, 0.0],
+    cov: Union[float, JaxArray] = [[1.0, 0.0], [0.0, 1.0]],
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: jaxlib.xla_extension.Device,
     dtype: jnp.dtype,
