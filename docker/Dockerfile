@@ -43,8 +43,6 @@ RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
 # Install Ivy Upstream
 RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
-    sed -i '/nvidia/d' requirements/requirements.txt && \
-    python3 -m pip install --user -e . && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
 
@@ -62,7 +60,7 @@ RUN pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url
     pip install numpy --target '/opt/fw/numpy' --no-cache-dir &&\
     pip install paddlepaddle --target '/opt/fw/paddle' --no-cache-dir &&\
     pip3 install --upgrade --no-cache-dir -r optional.txt && \
-    pip3 install --upgrade --no-cache-dir -r requirements.txt 
+    pip3 install --upgrade --no-cache-dir -r requirements.txt
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
