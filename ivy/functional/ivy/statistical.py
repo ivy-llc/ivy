@@ -47,7 +47,8 @@ def min(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the minimum value of the input array ``x``.
+    """
+    Calculate the minimum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
@@ -149,7 +150,8 @@ def max(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the maximum value of the input array ``x``.
+    """
+    Calculate the maximum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the maximum value is zero, the
@@ -226,8 +228,8 @@ def max(
     >>> y = ivy.max(x)
     >>> print(y)
     {
-        a: ivy.array(2.),
-        b: ivy.array(5.)
+        a: ivy.array(2.0),
+        b: ivy.array(5.0)
     }
 
     >>> x = ivy.Container(a=ivy.array([[1, 2, 3],[-1,0,2]]),
@@ -257,7 +259,8 @@ def mean(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the arithmetic mean of the input array ``x``.
+    """
+    Calculate the arithmetic mean of the input array ``x``.
 
     **Special Cases**
 
@@ -314,19 +317,19 @@ def mean(
     >>> x = ivy.array([3., 4., 5.])
     >>> y = ivy.mean(x)
     >>> print(y)
-    ivy.array(4.)
+    ivy.array(4.0)
 
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.array(0.)
     >>> ivy.mean(x, out=y)
     >>> print(y)
-    ivy.array(1.)
+    ivy.array(1.0)
 
     >>> x = ivy.array([[-1., -2., -3., 0., -1.], [1., 2., 3., 0., 1.]])
     >>> y = ivy.array([0., 0.])
     >>> ivy.mean(x, axis=1, out=y)
     >>> print(y)
-    ivy.array([-1.4,  1.4])
+    ivy.array([-1.4, 1.4])
 
 
     With :class:`ivy.Container` input:
@@ -335,7 +338,7 @@ def mean(
     >>> y = ivy.mean(x)
     >>> print(y)
     {
-        a: ivy.array(0.),
+        a: ivy.array(0.0),
         b: ivy.array(0.90000004)
     }
 
@@ -435,18 +438,18 @@ def prod(
     >>> x = ivy.array([[3., 4., 5.]])
     >>> y = ivy.prod(x, keepdims=True)
     >>> print(y)
-    ivy.array([60.])
+    ivy.array([60.0])
 
     >>> x = ivy.array([2., 1.])
     >>> y = ivy.array(0.)
     >>> ivy.prod(x, out=y)
     >>> print(y)
-    ivy.array(2.)
+    ivy.array(2.0)
 
     >>> x = ivy.array([[-1., -2.], [3., 3.]])
     >>> y = ivy.prod(x, axis=1)
     >>> print(y)
-    ivy.array([2., 9.])
+    ivy.array([2.0, 9.0])
 
     With :class:`ivy.Container` input:
 
@@ -454,7 +457,7 @@ def prod(
     >>> y = ivy.prod(x)
     >>> print(y)
     {
-        a: ivy.array(-0.),
+        a: ivy.array(-0.0),
         b: ivy.array(0.30800003)
     }
 
@@ -463,10 +466,8 @@ def prod(
     >>> y = ivy.prod(x, axis=1, keepdims=True)
     >>> print(y)
     {
-        a: ivy.array([[2.],
-                      [12.]]),
-        b: ivy.array([[20.],
-                      [30.]])
+        a: ivy.array([[2.0], [12.0]]),
+        b: ivy.array([[20.0], [30.0]])
     }
     """
     return current_backend(x).prod(
@@ -489,7 +490,8 @@ def std(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the standard deviation of the input array ``x``.
+    """
+    Calculate the standard deviation of the input array ``x``.
 
     **Special Cases**
 
@@ -562,12 +564,12 @@ def std(
     >>> x = ivy.array([-1., 0., 1.])
     >>> z = ivy.std(x, correction=1)
     >>> print(z)
-    ivy.array(1.)
+    ivy.array(1.0)
 
     >>> x = ivy.array([[0., 4.]])
     >>> y = ivy.std(x, keepdims=True)
     >>> print(y)
-    ivy.array([[2.]])
+    ivy.array([[2.0]])
 
     >>> x = ivy.array([2., 1.])
     >>> y = ivy.array(0.)
@@ -578,7 +580,7 @@ def std(
     >>> x = ivy.array([[-1., -2.], [3., 3.]])
     >>> y = ivy.std(x, axis=1)
     >>> print(y)
-    ivy.array([1.5, 1. ])
+    ivy.array([1.5, 1.0])
 
     With :class:`ivy.Container` input:
 
@@ -595,12 +597,9 @@ def std(
     >>> y = ivy.std(x, axis=1, keepdims=True)
     >>> print(y)
     {
-        a: ivy.array([[1.],
-                      [1.5]]),
-        b: ivy.array([[1.],
-                      [0.5]])
+        a: ivy.array([[1.0], [1.5]]),
+        b: ivy.array([[1.0], [0.5]])
     }
-
     """
     return current_backend(x).std(
         x, axis=axis, correction=correction, keepdims=keepdims, out=out
@@ -622,7 +621,8 @@ def sum(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the sum of the input array ``x``.
+    """
+    Calculate the sum of the input array ``x``.
 
     **Special Cases**
 
@@ -725,7 +725,7 @@ def sum(
     >>> y = ivy.array([0.0,0.0,0.0])
     >>> ivy.sum(x, out=y)
     >>> print(y)
-    ivy.array(8.)
+    ivy.array(8.0)
 
     With :class:`ivy.Container` input:
 
@@ -733,8 +733,8 @@ def sum(
     >>> y = ivy.sum(x)
     >>> print(y)
     {
-        a: ivy.array(3.),
-        b: ivy.array(12.)
+        a: ivy.array(3.0),
+        b: ivy.array(12.0)
     }
     """
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
@@ -827,8 +827,7 @@ def var(
 
     >>> x = ivy.array([[0.1, 0.2, 0.3], [0.3, 0.9, 0.10]])
     >>> print(ivy.var(x, axis=1, keepdims=True))
-    ivy.array([[0.00666667],
-       [0.11555555]])
+    ivy.array([[0.00666667], [0.11555555]])
 
     >>> x = ivy.array([[0.1, 0.2, 0.3], [0.3, 0.9, 0.10]])
     >>> y = ivy.var(x, correction=1)
@@ -925,24 +924,20 @@ def cumsum(
     >>> y = ivy.zeros((2,3))
     >>> ivy.cumsum(x, axis=0, exclusive=False, reverse=True, out=y)
     >>> print(y)
-    ivy.array([[7, 7, 2],
-               [1, 3, 0]])
+    ivy.array([[7, 7, 2], [1, 3, 0]])
 
     >>> x = ivy.array([[1, 5, 2],
     ...                [4, 3, 0]])
     >>> y = ivy.cumsum(x, axis=0, exclusive=True, reverse=True)
     >>> print(y)
-    ivy.array([[4, 3, 0],
-               [0, 0, 0]])
+    ivy.array([[4, 3, 0], [0, 0, 0]])
 
     >>> x = ivy.array([[2, 4, 5],
     ...                [3, 6, 5],
     ...                [1, 3, 10]])
     >>> ivy.cumsum(x,axis=1,reverse=True, dtype='int64', out=x)
     >>> print(x)
-    ivy.array([[11,  9,  5],
-               [14, 11,  5],
-               [14, 13, 10]])
+    ivy.array([[11, 9, 5], [14, 11, 5], [14, 13, 10]])
 
     With :class:`ivy.Container` input:
 
@@ -968,11 +963,8 @@ def cumsum(
     >>> print(y)
     {
         a: ivy.array([[8, 7, 4]]),
-        b: ivy.array([[16, 13, 8],
-                      [16, 11, 5]]),
-        c: ivy.array([[7, 5, 1],
-                      [18, 15, 9],
-                      [5, 5, 3]])
+        b: ivy.array([[16, 13, 8], [16, 11, 5]]),
+        c: ivy.array([[7, 5, 1], [18, 15, 9], [5, 5, 3]])
     }
 
     >>> x = ivy.Container(a=ivy.array([[0],
@@ -985,13 +977,9 @@ def cumsum(
     >>> ivy.cumsum(x,axis=0,out=x)
     >>> print(x)
     {
-        a: ivy.array([[0],
-                      [5]]),
-        b: ivy.array([[6, 8, 7],
-                      [10, 10, 10]]),
-        c: ivy.array([[1, 2],
-                      [4, 6],
-                      [10, 10]])
+        a: ivy.array([[0], [5]]),
+        b: ivy.array([[6, 8, 7], [10, 10, 10]]),
+        c: ivy.array([[1, 2], [4, 6], [10, 10]])
     }
     """
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
@@ -1071,24 +1059,18 @@ def cumprod(
     >>> y = ivy.zeros((3, 2))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
-    ivy.array([[ 1.,  2.],
-               [ 1.,  5.],
-               [ 1., 11.]])
+    ivy.array([[1.0, 2.0], [1.0, 5.0], [1.0, 11.0]])
 
     >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> ivy.cumprod(x, axis=0, exclusive=True, out=x)
     >>> print(x)
-    ivy.array([[1,  1],
-               [2,  3],
-               [10, 21]])
+    ivy.array([[1, 1], [2, 3], [10, 21]])
 
     >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> y = ivy.zeros((3, 2))
     >>> x.cumprod(axis=0, exclusive=True, out=y)
     >>> print(x)
-    ivy.array([[1.,  1.],
-                [2.,  3.],
-                [10., 21.]])
+    ivy.array([[1.0, 1.0], [2.0, 3.0], [10.0, 21.0]])
 
     With :class:`ivy.Container` input:
 
@@ -1111,36 +1093,24 @@ def cumprod(
     >>> x = ivy.Container(a=ivy.array([[2, 3],
                                        [5, 7],
                                        [11, 13]]),
-                          b=ivy.array([[3, 4],
-                                       [4, 5],
-                                       [5, 6]]))
+                          b=ivy.array([[3, 4], [4, 5], [5, 6]]))
     >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
     {
-        a: ivy.array([[1, 2],
-                      [1, 5],
-                      [1, 11]]),
-        b: ivy.array([[1, 3],
-                      [1, 4],
-                      [1, 5]])
+        a: ivy.array([[1, 2], [1, 5], [1, 11]]),
+        b: ivy.array([[1, 3], [1, 4], [1, 5]])
     }
 
     >>> x = ivy.Container(a=ivy.array([[2, 3],
                                         [5, 7],
                                         [11, 13]]),
-                            b=ivy.array([[3, 4],
-                                        [4, 5],
-                                        [5, 6]]))
+                            b=ivy.array([[3, 4], [4, 5], [5, 6]]))
     >>> x.cumprod(axis=0, exclusive=True, out=x)
     >>> print(x)
     {
-        a: ivy.array([[1, 1],
-                      [2, 3],
-                      [10, 21]]),
-        b: ivy.array([[1, 1],
-                      [3, 4],
-                      [15, 42]])
+        a: ivy.array([[1, 1], [2, 3], [10, 21]]),
+        b: ivy.array([[1, 1], [3, 4], [15, 42]])
     }
     """
     return current_backend(x).cumprod(

@@ -2019,12 +2019,10 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_to_jsonable(self, return_dict=None):
         """
-
         Parameters
         ----------
         return_dict
             Default value = None)
-
         """
         if return_dict is None:
             return_dict = self.cont_copy()
@@ -2100,7 +2098,6 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_to_iterator(self, key_chain="", leaf_keys_only=False, include_empty=False):
         """
-
         Parameters
         ----------
         key_chain
@@ -2113,7 +2110,6 @@ class ContainerBase(dict, abc.ABC):
         Returns
         -------
             Iterator for the container elements.
-
         """
         for key, value in self.items():
             if leaf_keys_only:
@@ -2127,7 +2123,6 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_to_iterator_values(self, include_empty=False):
         """
-
         Parameters
         ----------
         include_empty
@@ -2136,7 +2131,6 @@ class ContainerBase(dict, abc.ABC):
         Returns
         -------
             Iterator for the container values.
-
         """
         for key, value in self.items():
             if isinstance(value, ivy.Container) and (not include_empty or value):
@@ -2149,7 +2143,6 @@ class ContainerBase(dict, abc.ABC):
         self, key_chain="", leaf_keys_only=False, include_empty=False
     ):
         """
-
         Parameters
         ----------
         key_chain
@@ -2162,7 +2155,6 @@ class ContainerBase(dict, abc.ABC):
         Returns
         -------
             Iterator for the container elements.
-
         """
         for key, value in self.items():
             if leaf_keys_only:
@@ -2230,13 +2222,11 @@ class ContainerBase(dict, abc.ABC):
 
         def map_fn(x, kc):
             """
-
             Parameters
             ----------
             x
                 param kc:
             kc
-
             """
             nonlocal has_key
             if query_key in kc:
@@ -2374,13 +2364,11 @@ class ContainerBase(dict, abc.ABC):
 
         def _check_sub_cont(sub_cont, kc):
             """
-
             Parameters
             ----------
             sub_cont
                 param kc:
             kc
-
             """
             sub_struc_key_chains = sub_struc_to_find.cont_all_key_chains()
             kcs_in_sub_cont = [kc in sub_cont for kc in sub_struc_key_chains]
@@ -2574,25 +2562,21 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_all_key_chains(self, include_empty=False):
         """
-
         Parameters
         ----------
         include_empty
             Default value = False)
-
         """
         return [kc for kc, v in self.cont_to_iterator(include_empty=include_empty)]
 
     def cont_key_chains_containing(self, sub_str, include_empty=False):
         """
-
         Parameters
         ----------
         sub_str
             param include_empty: (Default value = False)
         include_empty
              (Default value = False)
-
         """
         return [
             kc
@@ -2797,13 +2781,11 @@ class ContainerBase(dict, abc.ABC):
 
         def map_fn(x, kc):
             """
-
             Parameters
             ----------
             x
                 param kc:
             kc
-
             """
             nonlocal key_chains_to_prune
             for query_key in query_keys:

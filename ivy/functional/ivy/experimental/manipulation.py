@@ -116,26 +116,33 @@ def flatten(
          )
     >>> ivy.flatten(x, start_dim = 1, end_dim = 2)
     ivy.array(
-        [[[ 5,  5,  0,  6],
-          [17, 15, 11, 16],
-          [ 6,  3, 13, 12],
-          [ 6, 18, 10,  4],
-          [ 5,  1, 17,  3],
-          [14, 14, 18,  6]],
-
-         [[12,  0,  1, 13],
-          [ 8,  7,  0,  3],
-          [19, 12,  6, 17],
-          [ 4, 15,  6, 15],
-          [ 0,  5, 17,  9],
-          [ 9,  3,  6, 19]],
-
-         [[17, 13, 11, 16],
-          [ 4, 18, 17,  4],
-          [10, 10,  9,  1],
-          [19, 17, 13, 10],
-          [ 4, 19, 16, 17],
-          [ 2, 12,  8, 14]]]))
+        [
+            [
+                [5, 5, 0, 6],
+                [17, 15, 11, 16],
+                [6, 3, 13, 12],
+                [6, 18, 10, 4],
+                [5, 1, 17, 3],
+                [14, 14, 18, 6],
+            ],
+            [
+                [12, 0, 1, 13],
+                [8, 7, 0, 3],
+                [19, 12, 6, 17],
+                [4, 15, 6, 15],
+                [0, 5, 17, 9],
+                [9, 3, 6, 19],
+            ],
+            [
+                [17, 13, 11, 16],
+                [4, 18, 17, 4],
+                [10, 10, 9, 1],
+                [19, 17, 13, 10],
+                [4, 19, 16, 17],
+                [2, 12, 8, 14],
+            ],
+        ]
+    ))
     """
     if copy:
         x = ivy.copy_array(x)
@@ -341,7 +348,7 @@ def heaviside(
     >>> x1 = ivy.array([-1.5, 0, 2.0])
     >>> x2 = ivy.array([1.2, -2.0, 3.5])
     >>> ivy.heaviside(x1, x2)
-    ivy.array([0., -2., 1.])
+    ivy.array([0.0, -2.0, 1.0])
     """
     return ivy.current_backend().heaviside(x1, x2, out=out)
 
@@ -379,9 +386,13 @@ def flipud(
     --------
     >>> m = ivy.diag([1, 2, 3])
     >>> ivy.flipud(m)
-    ivy.array([[ 0.,  0.,  3.],
-        [ 0.,  2.,  0.],
-        [ 1.,  0.,  0.]])
+    ivy.array(
+        [
+            [0.0, 0.0, 3.0],
+            [0.0, 2.0, 0.0],
+            [1.0, 0.0, 0.0],
+        ]
+    )
     """
     return ivy.current_backend().flipud(m, copy=copy, out=out)
 
@@ -413,18 +424,15 @@ def vstack(
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([2, 3, 4])
     >>> ivy.vstack((x, y))
-    ivy.array([[1, 2, 3],
-           [2, 3, 4]])
+    ivy.array([[1, 2, 3], [2, 3, 4]])
     >>> ivy.vstack((x, y, x, y))
-    ivy.array([[1, 2, 3],
-               [2, 3, 4],
-               [1, 2, 3],
-               [2, 3, 4]])
+    ivy.array(
+        [[1, 2, 3], [2, 3, 4], [1, 2, 3], [2, 3, 4]]
+    )
 
     >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
     >>> print(ivy.vstack(y))
-    ivy.array([[5, 6],
-               [7, 8]])
+    ivy.array([[5, 6], [7, 8]])
     """
     return ivy.current_backend().vstack(arrays, out=out)
 
@@ -510,41 +518,29 @@ def rot90(
     With :code:`ivy.Array` input:
     >>> m = ivy.array([[1,2], [3,4]])
     >>> ivy.rot90(m)
-    ivy.array([[2, 4],
-           [1, 3]])
+    ivy.array([[2, 4], [1, 3]])
     >>> m = ivy.array([[1,2], [3,4]])
     >>> ivy.rot90(m, k=2)
-    ivy.array([[4, 3],
-           [2, 1]])
+    ivy.array([[4, 3], [2, 1]])
     >>> m = ivy.array([[[0, 1],\
                         [2, 3]],\
                        [[4, 5],\
                         [6, 7]]])
     >>> ivy.rot90(m, k=2, axes=(1,2))
-    ivy.array([[[3, 2],
-            [1, 0]],
-
-           [[7, 6],
-            [5, 4]]])
+    ivy.array([[[3, 2], [1, 0]], [[7, 6], [5, 4]]])
     With :code:`ivy.NativeArray` input:
     >>> m = ivy.native_array([[1,2], [3,4]])
     >>> ivy.rot90(m)
-    ivy.array([[2, 4],
-           [1, 3]])
+    ivy.array([[2, 4], [1, 3]])
     >>> m = ivy.native_array([[1,2], [3,4]])
     >>> ivy.rot90(m, k=2)
-    ivy.array([[4, 3],
-           [2, 1]])
+    ivy.array([[4, 3], [2, 1]])
     >>> m = ivy.native_array([[[0, 1],\
                                [2, 3]],\
                               [[4, 5],\
                                [6, 7]]])
     >>> ivy.rot90(m, k=2, axes=(1,2))
-    ivy.array([[[3, 2],
-            [1, 0]],
-
-           [[7, 6],
-            [5, 4]]])
+    ivy.array([[[3, 2], [1, 0]], [[7, 6], [5, 4]]])
     """
     return ivy.current_backend(m).rot90(m, copy=copy, k=k, axes=axes, out=out)
 
@@ -592,20 +588,20 @@ def top_k(
     >>> x = ivy.array([2., 1., -3., 5., 9., 0., -4])
     >>> y = ivy.top_k(x, 2)
     >>> print(y)
-    top_k(values=ivy.array([9., 5.]), indices=ivy.array([4, 3]))
+    top_k(values=ivy.array([9.0, 5.0]), indices=ivy.array([4, 3]))
 
     >>> x = ivy.array([[-2., 3., 4., 0.], [-8., 0., -1., 2.]])
     >>> y = ivy.top_k(x, 2, axis=1, largest=False)
     >>> print(y)
-    top_k(values=ivy.array([[-2.,  0.],[-8., -1.]]),
-    ...   indices=ivy.array([[0, 3],[0, 2]]))
+    top_k(values=ivy.array([[-2.0, 0.0], [-8.0, -1.0]]),
+    ...   indices=ivy.array([[0, 3], [0, 2]]))
 
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([2., 1., -3., 5., 9., 0., -4])
     >>> y = ivy.top_k(x, 3)
     >>> print(y)
-    top_k(values=ivy.array([9., 5., 2.]), indices=ivy.array([4, 3, 0]))
+    top_k(values=ivy.array([9.0, 5.0, 2.0]), indices=ivy.array([4, 3, 0]))
 
     With :class:`ivy.Container` input:
 
@@ -614,11 +610,11 @@ def top_k(
     >>> print(y)
     {
         a: [
-            values = ivy.array([ 2, -1]),
+            values = ivy.array([2, -1]),
             indices = ivy.array([1, 0])
         ],
         b: [
-            values = ivy.array([5., 4.]),
+            values = ivy.array([5.0, 4.0]),
             indices = ivy.array([1, 0])
         ]
     }
@@ -660,9 +656,7 @@ def fliplr(
     --------
     >>> m = ivy.diag([1, 2, 3])
     >>> ivy.fliplr(m)
-    ivy.array([[0, 0, 1],
-           [0, 2, 0],
-           [3, 0, 0]])
+    ivy.array([[0, 0, 1], [0, 2, 0], [3, 0, 0]])
     """
     return ivy.current_backend().fliplr(m, copy=copy, out=out)
 
@@ -697,7 +691,7 @@ def i0(
     --------
     >>> x = ivy.array([1, 2, 3])
     >>> ivy.i0(x)
-    ivy.array([1.26606588, 2.2795853 , 4.88079259])
+    ivy.array([1.26606588, 2.2795853, 4.88079259])
     """
     return ivy.current_backend(x).i0(x, out=out)
 
@@ -1090,28 +1084,40 @@ def pad(
     >>> padding = ((1, 1), (2, 2))
     >>> y = ivy.pad(x, padding, mode="constant", constant_values=0)
     >>> print(y)
-    ivy.array([[0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 1, 2, 3, 0, 0],
-               [0, 0, 4, 5, 6, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0]])
+    ivy.array(
+        [
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 2, 3, 0, 0],
+            [0, 0, 4, 5, 6, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+        ]
+    )
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> padding = ((1, 1), (2, 2))
     >>> y = ivy.pad(x, padding, mode="reflect")
     >>> print(y)
-    ivy.array([[6, 5, 4, 5, 6, 5, 4],
-               [3, 2, 1, 2, 3, 2, 1],
-               [6, 5, 4, 5, 6, 5, 4],
-               [3, 2, 1, 2, 3, 2, 1]])
+    ivy.array(
+        [
+            [6, 5, 4, 5, 6, 5, 4],
+            [3, 2, 1, 2, 3, 2, 1],
+            [6, 5, 4, 5, 6, 5, 4],
+            [3, 2, 1, 2, 3, 2, 1],
+        ]
+    )
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> padding = ((1, 1), (2, 2))
     >>> y = ivy.pad(x, padding, mode="symmetric")
     >>> print(y)
-    ivy.array([[2, 1, 1, 2, 3, 3, 2],
-               [2, 1, 1, 2, 3, 3, 2],
-               [5, 4, 4, 5, 6, 6, 5],
-               [5, 4, 4, 5, 6, 6, 5]])
+    ivy.array(
+        [
+            [2, 1, 1, 2, 3, 3, 2],
+            [2, 1, 1, 2, 3, 3, 2],
+            [5, 4, 4, 5, 6, 6, 5],
+            [5, 4, 4, 5, 6, 6, 5],
+        ]
+    )
 
     With :class:`ivy.NativeArray` input:
 
@@ -1119,10 +1125,14 @@ def pad(
     >>> padding = ((1, 1), (2, 2))
     >>> y = ivy.pad(x, padding, mode="constant", constant_values=7)
     >>> print(y)
-    ivy.array([[7, 7, 7, 7, 7, 7, 7],
-               [7, 7, 1, 2, 3, 7, 7],
-               [7, 7, 4, 5, 6, 7, 7],
-               [7, 7, 7, 7, 7, 7, 7]])
+    ivy.array(
+        [
+            [7, 7, 7, 7, 7, 7, 7],
+            [7, 7, 1, 2, 3, 7, 7],
+            [7, 7, 4, 5, 6, 7, 7],
+            [7, 7, 7, 7, 7, 7, 7],
+        ]
+    )
 
     With :class:`ivy.Container` input:
 
@@ -1253,7 +1263,7 @@ def vsplit(
           [6.,  7.]]]
         )
     >>> ivy.vsplit(ary, 2)
-    [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
+    [ivy.array([[[0.0, 1.0], [2.0, 3.0]]]), ivy.array([[[4.0, 5.0], [6.0, 7.0]]])])
     """
     return ivy.current_backend(ary).vsplit(ary, indices_or_sections, copy=copy)
 
@@ -1299,8 +1309,18 @@ def dsplit(
           [12.,  13.,  14.,  15.]]]
         )
     >>> ivy.dsplit(ary, 2)
-    [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
-     ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
+    [ivy.array(
+         [
+             [[0.0, 1.0], [4.0, 5.0]],
+             [[8.0, 9.0], [12.0, 13.0]],
+         ]
+     ),
+     ivy.array(
+         [
+             [[2.0, 3.0], [6.0, 7.0]],
+             [[10.0, 11.0], [14.0, 15.0]],
+         ]
+     )]
     """
     return ivy.current_backend(ary).dsplit(ary, indices_or_sections, copy=copy)
 
@@ -1369,15 +1389,11 @@ def dstack(
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([2, 3, 4])
     >>> ivy.dstack((x, y))
-    ivy.array([[[1, 2],
-                [2, 3],
-                [3, 4]]])
+    ivy.array([[[1, 2], [2, 3], [3, 4]]])
     >>> x = ivy.array([[1], [2], [3]])
     >>> y = ivy.array([[2], [3], [4]])
     >>> ivy.dstack((x, y))
-    ivy.array([[[1, 2]],
-               [[2, 3]],
-               [[3, 4]]])
+    ivy.array([[[1, 2]], [[2, 3]], [[3, 4]]])
     """
     return ivy.current_backend().dstack(arrays)
 
@@ -1451,18 +1467,13 @@ def atleast_3d(
     --------
     >>> ary1 = ivy.array([5,6])
     >>> ivy.atleast_3d(ary1)
-    ivy.array([[[5],
-            [6]]])
+    ivy.array([[[5], [6]]])
     >>> ary2 = ivy.array([[[3,4]]])
     >>> ivy.atleast_3d(ary2)
     ivy.array([[[3, 4]]])
     >>> ary3 = ivy.array([[3,4],[9,10]])
     >>> ivy.atleast_3d(6,7,ary3)
-    [ivy.array([[[6]]]), ivy.array([[[7]]]), ivy.array([[[ 3],
-            [ 4]],
-
-           [[ 9],
-            [10]]])]
+    [ivy.array([[[6]]]), ivy.array([[[7]]]), ivy.array([[[3], [4]], [[9], [10]]])]
     """
     return ivy.current_backend().atleast_3d(*arys, copy=copy)
 
@@ -1555,14 +1566,22 @@ def hsplit(
              [12., 13., 14., 15.]]
             )
     >>> ivy.hsplit(ary, 2)
-        [ivy.array([[ 0.,  1.],
-                    [ 4.,  5.],
-                    [ 8.,  9.],
-                    [12., 13.]]),
-         ivy.array([[ 2.,  3.],
-                    [ 6.,  7.],
-                    [10., 11.],
-                    [14., 15.]])]
+        [ivy.array(
+             [
+                 [0.0, 1.0],
+                 [4.0, 5.0],
+                 [8.0, 9.0],
+                 [12.0, 13.0],
+             ]
+         ),
+         ivy.array(
+             [
+                 [2.0, 3.0],
+                 [6.0, 7.0],
+                 [10.0, 11.0],
+                 [14.0, 15.0],
+             ]
+         )]
     """
     return ivy.current_backend(ary).hsplit(ary, indices_or_sections, copy=copy)
 
@@ -1671,10 +1690,9 @@ def as_strided(
     --------
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> ivy.as_strided(x, (4, 3), (8, 8))
-    ivy.array([[1, 2, 3],
-       [2, 3, 4],
-       [3, 4, 5],
-       [4, 5, 6]])
+    ivy.array(
+        [[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6]]
+    )
     """
     itemsize = x.itemsize
     if not _check_bounds(x.shape, shape, strides, itemsize):

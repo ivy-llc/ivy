@@ -102,7 +102,8 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Draws samples from a uniform distribution. Samples are uniformly distributed over
+    """
+    Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
     other words, any value within the given interval is equally likely to be drawn by
     uniform.
@@ -369,8 +370,7 @@ def multinomial(
 
     >>> y = ivy.multinomial(10, 5, batch_size=2, seed=42)
     >>> print(y)
-    ivy.array([[3, 9, 7, 5, 1],
-           [1, 0, 8, 6, 7]])
+    ivy.array([[3, 9, 7, 5, 1], [1, 0, 8, 6, 7]])
 
     >>> y = ivy.multinomial(10, 5, replace=False)
     >>> print(y)
@@ -479,8 +479,7 @@ def randint(
 
     >>> y = ivy.randint(2, 20, shape=(2, 2), device='cpu', seed=42)
     >>> print(y)
-    ivy.array([[ 8, 16],
-               [12,  9]])
+    ivy.array([[8, 16], [12, 9]])
 
     >>> x = ivy.array([1, 2, 3])
     >>> ivy.randint(0, 10, shape=(3,), out=x)
@@ -490,9 +489,7 @@ def randint(
     >>> y = ivy.zeros((3, 3))
     >>> ivy.randint(3, 15, shape=(3, 3), device='cpu', out=y)
     >>> print(y)
-    ivy.array([[ 7,  7,  5],
-               [12,  8,  8],
-               [ 8, 11,  3]])
+    ivy.array([[7, 7, 5], [12, 8, 8], [8, 11, 3]])
     """
     return ivy.current_backend().randint(
         low, high, shape=shape, device=device, dtype=dtype, seed=seed, out=out

@@ -174,9 +174,13 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x3 = ivy.array([1, 0])
         >>> y = x1.all_equal(x2, x3, equality_matrix=True)
         >>> print(y)
-        ivy.array([[ True,  True, False],
-           [ True,  True, False],
-           [False, False,  True]])
+        ivy.array(
+            [
+                [True, True, False],
+                [True, True, False],
+                [False, False, True],
+            ]
+        )
         """
         arrays = [self] + [x for x in x2]
         return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
@@ -250,7 +254,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> y = ivy.array([0, 1])
         >>> gather = x.gather(y)
         >>> print(gather)
-        ivy.array([0., 1.])
+        ivy.array([0.0, 1.0])
         """
         return ivy.gather(self, indices, axis=axis, batch_dims=batch_dims, out=out)
 
@@ -295,7 +299,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> updates = ivy.array([9, 10, 11, 12])
         >>> scatter = indices.scatter_nd(updates, reduction='replace', out=arr)
         >>> print(scatter)
-        ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
+        ivy.array([1, 11, 3, 10, 9, 6, 7, 12, 9, 10])
 
         With scatter values into an empty array
 
@@ -304,8 +308,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> updates = ivy.array([25, 40, 21, 22])
         >>> scatter = indices.scatter_nd(updates, shape=shape)
         >>> print(scatter)
-        ivy.array([[ 0,  0, 22, 40,  0],
-                    [ 0, 21,  0,  0, 25]])
+        ivy.array([[0, 0, 22, 40, 0], [0, 21, 0, 0, 25]])
         """
         return ivy.scatter_nd(self, updates, shape, reduction=reduction, out=out)
 
@@ -387,9 +390,7 @@ class _ArrayWithGeneral(abc.ABC):
         ...               [-4, -5, -6]])
         >>> y = x.einops_rearrange("height width -> width height")
         >>> print(y)
-        ivy.array([[ 1, -4],
-            [ 2, -5],
-            [ 3, -6]])
+        ivy.array([[1, -4], [2, -5], [3, -6]])
 
         >>> x = ivy.array([[[ 1,  2,  3],
         ...                  [ 4,  5,  6]],
@@ -397,16 +398,21 @@ class _ArrayWithGeneral(abc.ABC):
         ...                  [10, 11, 12]]])
         >>> y = x.einops_rearrange("c h w -> c (h w)")
         >>> print(y)
-        ivy.array([[ 1,  2,  3,  4,  5,  6],
-            [ 7,  8,  9, 10, 11, 12]])
+        ivy.array(
+            [[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12]]
+        )
 
         >>> x = ivy.array([[1, 2, 3, 4, 5, 6]
         ...               [7, 8, 9, 10, 11, 12]])
         >>> y = x.einops_rearrange("c (h w) -> (c h) w", h=2, w=3)
-        ivy.array([[ 1,  2,  3],
-            [ 4,  5,  6],
-            [ 7,  8,  9],
-            [10, 11, 12]])
+        ivy.array(
+            [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+                [10, 11, 12],
+            ]
+        )
         """
         return ivy.einops_rearrange(self._data, pattern, out=out, **axes_lengths)
 
@@ -455,8 +461,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         >>> reduced = x.einops_reduce('a b c -> b c', 'max')
         >>> print(reduced)
-        ivy.array([[ 5,  5],
-                   [11,  7]])
+        ivy.array([[5, 5], [11, 7]])
 
         With :class:`ivy.Array` inputs:
 
@@ -466,8 +471,7 @@ class _ArrayWithGeneral(abc.ABC):
         ...                 [9, 7, 1]]])
         >>> reduced = x.einops_reduce('a b c -> a () c', 'min')
         >>> print(reduced)
-        ivy.array([[[5, 2, 3]],
-                   [[3, 5, 1]]])
+        ivy.array([[[5, 2, 3]], [[3, 5, 1]]])
         """
         return ivy.einops_reduce(
             self._data, pattern, reduction, out=out, **axes_lengths
@@ -510,8 +514,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([5,4])
         >>> y = x.einops_repeat('a -> a c', c=3)
         >>> print(y)
-        ivy.array([[5, 5, 5],
-                   [4, 4, 4]])
+        ivy.array([[5, 5, 5], [4, 4, 4]])
 
         With :class:`ivy.Array` inputs:
 
@@ -519,7 +522,12 @@ class _ArrayWithGeneral(abc.ABC):
         ...                [2, 3]])
         >>> y = x.einops_repeat('a b ->  a b c', c=3)
         >>> print(y)
-        ivy.array([[[5, 5, 5], [4, 4, 4]], [[2, 2, 2], [3, 3, 3]]])
+        ivy.array(
+            [
+                [[5, 5, 5], [4, 4, 4]],
+                [[2, 2, 2], [3, 3, 3]],
+            ]
+        )
         >>> print(y.shape)
         (2, 2, 3)
         """
@@ -695,19 +703,18 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.asarray([4., 5., 6.])
         >>> y = x.stable_divide(2)
         >>> print(y)
-        ivy.array([2., 2.5, 3.])
+        ivy.array([2.0, 2.5, 3.0])
 
         >>> x = ivy.asarray([4, 5, 6])
         >>> y = x.stable_divide(4, min_denominator=1)
         >>> print(y)
-        ivy.array([0.8, 1. , 1.2])
+        ivy.array([0.8, 1.0, 1.2])
 
         >>> x = ivy.asarray([[4., 5., 6.], [7., 8., 9.]])
         >>> y = ivy.asarray([[1., 2., 3.], [2., 3., 4.]])
         >>> z = x.stable_divide(y)
         >>> print(z)
-        ivy.array([[4.  , 2.5 , 2.  ],
-                [3.5 , 2.67, 2.25]])
+        ivy.array([[4.0, 2.5, 2.0], [3.5, 2.67, 2.25]])
         """
         return ivy.stable_divide(self, denominator, min_denominator=min_denominator)
 
@@ -749,7 +756,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.clip_vector_norm(2.0)
         >>> print(y)
-        ivy.array([0., 0.894, 1.79])
+        ivy.array([0.0, 0.894, 1.79])
         """
         return ivy.clip_vector_norm(self, max_norm, p=p, out=out)
 
@@ -816,7 +823,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
         IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types 
+        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types
         with jax backend
         """
         return ivy.assert_supports_inplace(self)
@@ -893,24 +900,70 @@ class _ArrayWithGeneral(abc.ABC):
         >>> y = 1.5
         >>> z = x.fourier_encode(y)
         >>> print(z)
-        ivy.array([[ 1.0000000e+00, 1.2246468e-16, 0.0000000e+00, 0.0000000e+00,
-                     0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                     1.0000000e+00],
-                   [ 2.0000000e+00, -2.4492936e-16, 0.0000000e+00, 0.0000000e+00,
-                     0.0000000e+00, 1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                     1.0000000e+00],
-                   [ 3.0000000e+00, 3.6739404e-16, 0.0000000e+00, 0.0000000e+00,
-                     0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                     1.0000000e+00]])
+        ivy.array(
+            [
+                [
+                    1.0000000e00,
+                    1.2246468e-16,
+                    0.0000000e00,
+                    0.0000000e00,
+                    0.0000000e00,
+                    -1.0000000e00,
+                    1.0000000e00,
+                    1.0000000e00,
+                    1.0000000e00,
+                ],
+                [
+                    2.0000000e00,
+                    -2.4492936e-16,
+                    0.0000000e00,
+                    0.0000000e00,
+                    0.0000000e00,
+                    1.0000000e00,
+                    1.0000000e00,
+                    1.0000000e00,
+                    1.0000000e00,
+                ],
+                [
+                    3.0000000e00,
+                    3.6739404e-16,
+                    0.0000000e00,
+                    0.0000000e00,
+                    0.0000000e00,
+                    -1.0000000e00,
+                    1.0000000e00,
+                    1.0000000e00,
+                    1.0000000e00,
+                ],
+            ]
+        )
 
         >>> x = ivy.array([3, 10])
         >>> y = 2.5
         >>> z = x.fourier_encode(y, num_bands=3)
         >>> print(z)
-        ivy.array([[ 3.0000000e+00,  3.6739404e-16,  3.6739404e-16,  3.6739404e-16,
-                    -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
-                   [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15, -1.2246468e-15,
-                     1.0000000e+00,  1.0000000e+00,  1.0000000e+00]])
+        ivy.array(
+            [
+                [
+                    3.0000000e00,
+                    3.6739404e-16,
+                    3.6739404e-16,
+                    3.6739404e-16,
+                    -1.0000000e00,
+                    -1.0000000e00,
+                    -1.0000000e00,
+                ],
+                [
+                    1.0000000e01,
+                    -1.2246468e-15,
+                    -1.2246468e-15,
+                    -1.2246468e-15,
+                    1.0000000e00,
+                    1.0000000e00,
+                    1.0000000e00,
+                ],
+            ]
+        )
         """
         return ivy.fourier_encode(
             self,
@@ -1033,7 +1086,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([1, 2, 3, 1.2])
         >>> y = x.default(0)
         >>> print(y)
-        ivy.array([1. , 2. , 3. , 1.2])
+        ivy.array([1.0, 2.0, 3.0, 1.2])
         """
         return ivy.default(
             self,
@@ -1119,7 +1172,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> y = ivy.array([0, 0, 0], dtype=ivy.int32)
         >>> x.inplace_update(y, keep_input_dtype=True)
         >>> print(x, x.dtype)
-        ivy.array([0., 0., 0.]) float32
+        ivy.array([0.0, 0.0, 0.0]) float32
 
         With :class:`ivy.Array` input and default backend set as `torch`:
 
@@ -1217,7 +1270,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([[0., 1., 2.]])
         >>> y = x.clip_matrix_norm(2.0)
         >>> print(y)
-        ivy.array([[0.   , 0.894, 1.79 ]])
+        ivy.array([[0.0, 0.894, 1.79]])
         """
         return ivy.clip_matrix_norm(self, max_norm, p=p, out=out)
 
@@ -1308,7 +1361,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> b = x.get_num_dims(as_array=False)
         >>> print(b)
         3
-        
+
         >>> b = x.get_num_dims(as_array=True)
         >>> print(b)
         ivy.array(3)
@@ -1352,12 +1405,14 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([[10, 7, 4], [3, 2, 1]])
         >>> y = ivy.array([1, 2, 3])
         >>> x.isin(y)
-        ivy.array([[False, False, False], [ True,  True,  True]])
+        ivy.array(
+            [[False, False, False], [True, True, True]]
+        )
 
         >>> x = ivy.array([3, 2, 1, 0])
         >>> y = ivy.array([1, 2, 3])
         >>> x.isin(y, invert=True)
-        ivy.array([False, False, False,  True])
+        ivy.array([False, False, False, True])
         """
         return ivy.isin(
             self._data, test_elements, assume_unique=assume_unique, invert=invert

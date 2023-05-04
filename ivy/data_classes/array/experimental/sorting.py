@@ -35,10 +35,7 @@ class _ArrayWithSortingExperimental(abc.ABC):
         --------
         >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
         >>> a.msort()
-        ivy.array(
-            [[6, 2, 6],
-            [8, 9, 6]]
-            )
+        ivy.array([[6, 2, 6], [8, 9, 6]])
         """
         return ivy.msort(self._data, out=out)
 

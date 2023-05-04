@@ -58,43 +58,38 @@ class _ArrayWithRandom(abc.ABC):
         --------
         >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
         >>> x.random_uniform(high=10.2)
-        ivy.array([[9.86, 4.89],
-                   [7.06, 7.47]])
+        ivy.array([[9.86, 4.89], [7.06, 7.47]])
 
         >>> x.random_uniform(high=10.2, device='cpu')
-        ivy.array([[9.86, 4.89],
-                   [7.06, 7.47]])
+        ivy.array([[9.86, 4.89], [7.06, 7.47]])
 
         >>> x.random_uniform(high=14.2, dtype='float16')
-        ivy.array([[9.86, 4.89],
-                   [7.06, 7.47]])
+        ivy.array([[9.86, 4.89], [7.06, 7.47]])
 
         >>> x.random_uniform(high=10.8, device='cpu', dtype='float64')
-        ivy.array([[9.86, 4.89],
-                   [7.06, 7.47]])
+        ivy.array([[9.86, 4.89], [7.06, 7.47]])
 
         >>> z = ivy.ones((2,2))
         >>> x.random_uniform(high=11.2, device='cpu', dtype='float64', out=z)
-        ivy.array([[10.1 ,  6.53],
-                   [ 7.94,  8.85]])
+        ivy.array([[10.1, 6.53], [7.94, 8.85]])
 
         >>> x = ivy.array([8.7, 9.3])
         >>> y = ivy.array([12.8, 14.5])
         >>> x.random_uniform(y)
-        ivy.array([12.1, 14. ])
+        ivy.array([12.1, 14.0])
 
         >>> x.random_uniform(high=y, device='cpu')
-        ivy.array([12.1, 14. ])
+        ivy.array([12.1, 14.0])
 
         >>> x.random_uniform(high=y, dtype='float16')
-        ivy.array([12.1, 14. ])
+        ivy.array([12.1, 14.0])
 
         >>> x.random_uniform(high=y, device='cpu', dtype='float64')
-        ivy.array([12.1, 14. ])
+        ivy.array([12.1, 14.0])
 
         >>> z = ivy.ones((2,))
         >>> x.random_uniform(high=y, device='cpu', dtype='float64', out=z)
-        ivy.array([12.1, 14. ])
+        ivy.array([12.1, 14.0])
         """
         return ivy.random_uniform(
             low=self._data,
@@ -155,43 +150,38 @@ class _ArrayWithRandom(abc.ABC):
         --------
         >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
         >>> x.random_normal(std=10.2)
-        ivy.array([[19.   , -6.44 ],
-                   [ 5.72 ,  0.235]])
+        ivy.array([[19.0, -6.44], [5.72, 0.235]])
 
         >>> x.random_normal(std=10.2, device='cpu')
-        ivy.array([[18.7 , 25.2 ],
-                   [27.5 , -3.22]])
+        ivy.array([[18.7, 25.2], [27.5, -3.22]])
 
         >>> x.random_normal(std=14.2, dtype='float16')
-        ivy.array([[26.6 , 12.1 ],
-                   [ 4.56,  5.49]])
+        ivy.array([[26.6, 12.1], [4.56, 5.49]])
 
         >>> x.random_normal(std=10.8, device='cpu', dtype='float64')
-        ivy.array([[ 1.02, -1.39],
-                   [14.2 , -1.  ]])
+        ivy.array([[1.02, -1.39], [14.2, -1.0]])
 
         >>> z = ivy.ones((2,2))
         >>> x.random_normal(std=11.2, device='cpu', dtype='float64', out=z)
-        ivy.array([[ 7.72, -8.32],
-                   [ 4.95, 15.8 ]])
+        ivy.array([[7.72, -8.32], [4.95, 15.8]])
 
         >>> x = ivy.array([8.7, 9.3])
         >>> y = ivy.array([12.8, 14.5])
         >>> x.random_normal(std=y)
-        ivy.array([-10.8,  12.1])
+        ivy.array([-10.8, 12.1])
 
         >>> x.random_normal(std=y, device='cpu')
-        ivy.array([ 13. , -26.9])
+        ivy.array([13.0, -26.9])
 
         >>> x.random_normal(std=y, dtype='float16')
-        ivy.array([14.3  , -0.807])
+        ivy.array([14.3, -0.807])
 
         >>> x.random_normal(std=y, device='cpu', dtype='float64')
-        ivy.array([21.3 ,  3.85])
+        ivy.array([21.3, 3.85])
 
         >>> z = ivy.ones((2,))
         >>> x.random_normal(std=y, device='cpu', dtype='float64', out=z)
-        ivy.array([ 4.32, 42.2 ])
+        ivy.array([4.32, 42.2])
         """
         return ivy.random_normal(
             mean=self._data,
@@ -307,39 +297,34 @@ class _ArrayWithRandom(abc.ABC):
         --------
         >>> x = ivy.array([[1, 2], [0, 5]])
         >>> x.randint(10)
-        ivy.array([[1, 5],
-                   [9, 7]])
+        ivy.array([[1, 5], [9, 7]])
 
         >>> x.randint(8, device='cpu')
-        ivy.array([[6, 5],
-                   [0, 5]])
+        ivy.array([[6, 5], [0, 5]])
 
         >>> x.randint(9, dtype='int8')
-        ivy.array([[1, 2],
-                   [7, 7]])
+        ivy.array([[1, 2], [7, 7]])
 
         >>> x.randint(14, device='cpu', dtype='int16')
-        ivy.array([[6, 5],
-                   [0, 5]])
+        ivy.array([[6, 5], [0, 5]])
 
         >>> z = ivy.ones((2,2))
         >>> x.randint(16, device='cpu', dtype='int64', out=z)
-        ivy.array([[1, 2],
-                   [7, 7]])
+        ivy.array([[1, 2], [7, 7]])
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([23, 25, 98])
         >>> x.randint(y)
-        ivy.array([ 5, 14, 18])
+        ivy.array([5, 14, 18])
 
         >>> x.randint(y, device='cpu')
         ivy.array([20, 13, 46])
 
         >>> x.randint(y, dtype='int32')
-        ivy.array([ 9, 18, 33])
+        ivy.array([9, 18, 33])
 
         >>> x.randint(y, device='cpu', dtype='int16')
-        ivy.array([ 9, 20, 85])
+        ivy.array([9, 20, 85])
 
         >>> z = ivy.ones((3,))
         >>> x.randint(y, device='cpu', dtype='int64', out=z)

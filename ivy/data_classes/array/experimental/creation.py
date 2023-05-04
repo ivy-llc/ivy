@@ -50,7 +50,6 @@ class _ArrayWithCreationExperimental(abc.ABC):
         >>> x = ivy.array([[2, 3, 8],[1, 2, 1]])
         >>> y = x.eye_like()
         >>> print(y)
-        ivy.array([[1., 0., 0.],
-                    0., 1., 0.]])
+        ivy.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]])
         """
         return ivy.eye_like(self._data, k=k, dtype=dtype, device=device, out=out)

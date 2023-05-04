@@ -33,7 +33,8 @@ def unique_all(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """Return the unique elements of an input array ``x``, the first occurring indices
+    """
+    Return the unique elements of an input array ``x``, the first occurring indices
     for each unique element in ``x``, the indices from the set of unique elements that
     reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
 
@@ -126,17 +127,74 @@ def unique_all(
     >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
     >>> z = ivy.unique_all(x)
     >>> print(z)
-    Results(values=ivy.array([-1.2119    , -0.62519997, -0.3238    , -0.0545    ,  0.0775    ,
-        0.2577    ,  0.40329999,  0.59439999,  0.74430001,  0.81010002,
-        0.84600002,  0.92979997,         nan,         nan,         nan,
-               nan]),
-        indices=ivy.array([ 4,  6, 12, 11, 14,  9,  7, 13,  8,  1,  3,  2,  0,  5, 10, 15]),
-        inverse_indices=ivy.array([[12,  9, 11, 10],
-                                   [ 0, 12,  1,  6],
-                                   [ 8,  5, 12,  3],
-                                   [ 2,  7,  4, 12]]),
-       counts=ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
-
+    Results(values=ivy.array(
+                       [
+                           -1.2119,
+                           -0.62519997,
+                           -0.3238,
+                           -0.0545,
+                           0.0775,
+                           0.2577,
+                           0.40329999,
+                           0.59439999,
+                           0.74430001,
+                           0.81010002,
+                           0.84600002,
+                           0.92979997,
+                           nan,
+                           nan,
+                           nan,
+                           nan,
+                       ]
+                   ),
+        indices=ivy.array(
+                    [
+                        4,
+                        6,
+                        12,
+                        11,
+                        14,
+                        9,
+                        7,
+                        13,
+                        8,
+                        1,
+                        3,
+                        2,
+                        0,
+                        5,
+                        10,
+                        15,
+                    ]
+                ),
+        inverse_indices=ivy.array(
+                            [
+                                [12, 9, 11, 10],
+                                [0, 12, 1, 6],
+                                [8, 5, 12, 3],
+                                [2, 7, 4, 12],
+                            ]
+                        ),
+       counts=ivy.array(
+                  [
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                      1,
+                  ]
+              ))
     """
     return ivy.current_backend(x).unique_all(x, axis=axis)
 
@@ -150,7 +208,8 @@ def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """Return the unique elements of an input array ``x``, and the indices from the
+    """
+    Return the unique elements of an input array ``x``, and the indices from the
      set of unique elements that reconstruct ``x``.
 
      .. admonition:: Data-dependent output shape
@@ -254,7 +313,8 @@ def unique_values(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the unique elements of an input array ``x``.
+    """
+    Return the unique elements of an input array ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
@@ -323,7 +383,6 @@ def unique_values(
     >>> c = ivy.array([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 5.0, -0.0, 0.0, float('nan'), float('nan')])
     >>> ivy.unique_values(c)
     array([0., 1., 2., 3., 4., 5., nan, -0.])
-
     """
     return ivy.current_backend(x).unique_values(x, out=out)
 
@@ -412,7 +471,15 @@ def unique_counts(
     >>> x = ivy.array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
     >>> y = ivy.unique_counts(x)
     >>> print(y)
-    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998, 2.29999995]),
+    Results(values=ivy.array(
+                       [
+                           0.2,
+                           0.30000001,
+                           0.40000001,
+                           1.39999998,
+                           2.29999995,
+                       ]
+                   ),
             counts=ivy.array([3, 1, 1, 1, 1]))
 
     With :class:`ivy.Container` input:

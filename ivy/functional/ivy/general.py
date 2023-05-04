@@ -673,9 +673,13 @@ def all_equal(
     >>> x3 = ivy.array([1, 0])
     >>> y = ivy.all_equal(x1, x2, x3, equality_matrix=True)
     >>> print(y)
-    ivy.array([[ True,  True, False],
-       [ True,  True, False],
-       [False, False,  True]])
+    ivy.array(
+        [
+            [True, True, False],
+            [True, True, False],
+            [False, False, True],
+        ]
+    )
 
     With one :class:`ivy.Container` inputs:
 
@@ -1144,25 +1148,71 @@ def fourier_encode(
     >>> y = 1.5
     >>> z = ivy.fourier_encode(x,y)
     >>> print(z)
-    ivy.array([[ 1.0000000e+00, 1.2246468e-16, 0.0000000e+00, 0.0000000e+00,
-                 0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                 1.0000000e+00],
-               [ 2.0000000e+00, -2.4492936e-16, 0.0000000e+00, 0.0000000e+00,
-                 0.0000000e+00, 1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                 1.0000000e+00],
-               [ 3.0000000e+00, 3.6739404e-16, 0.0000000e+00, 0.0000000e+00,
-                 0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                 1.0000000e+00]])
+    ivy.array(
+        [
+            [
+                1.0000000e00,
+                1.2246468e-16,
+                0.0000000e00,
+                0.0000000e00,
+                0.0000000e00,
+                -1.0000000e00,
+                1.0000000e00,
+                1.0000000e00,
+                1.0000000e00,
+            ],
+            [
+                2.0000000e00,
+                -2.4492936e-16,
+                0.0000000e00,
+                0.0000000e00,
+                0.0000000e00,
+                1.0000000e00,
+                1.0000000e00,
+                1.0000000e00,
+                1.0000000e00,
+            ],
+            [
+                3.0000000e00,
+                3.6739404e-16,
+                0.0000000e00,
+                0.0000000e00,
+                0.0000000e00,
+                -1.0000000e00,
+                1.0000000e00,
+                1.0000000e00,
+                1.0000000e00,
+            ],
+        ]
+    )
 
 
     >>> x = ivy.array([3,10])
     >>> y = 2.5
     >>> z = ivy.fourier_encode(x, y, num_bands=3)
     >>> print(z)
-    ivy.array([[ 3.0000000e+00,  3.6739404e-16,  3.6739404e-16, 3.6739404e-16,
-                -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
-               [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15, -1.2246468e-15,
-                 1.0000000e+00,  1.0000000e+00,  1.0000000e+00]])
+    ivy.array(
+        [
+            [
+                3.0000000e00,
+                3.6739404e-16,
+                3.6739404e-16,
+                3.6739404e-16,
+                -1.0000000e00,
+                -1.0000000e00,
+                -1.0000000e00,
+            ],
+            [
+                1.0000000e01,
+                -1.2246468e-15,
+                -1.2246468e-15,
+                -1.2246468e-15,
+                1.0000000e00,
+                1.0000000e00,
+                1.0000000e00,
+            ],
+        ]
+    )
     """
     x_in = x
     dim = x.shape[-1]
@@ -1669,13 +1719,13 @@ def match_kwargs(
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
     >>> print(x)
-    [{'out': ivy.array([0., 0., 0.])}, {'bias': ivy.array([0, 1, 2])}]
+    [{'out': ivy.array([0.0, 0.0, 0.0])}, {'bias': ivy.array([0, 1, 2])}]
 
     >>> o = ivy.zeros(3)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
     >>> print(x)
-    [{'out': ivy.array([0., 0., 0.]), 'bias': ivy.array([0, 1, 2])}, {}]
+    [{'out': ivy.array([0.0, 0.0, 0.0]), 'bias': ivy.array([0, 1, 2])}, {}]
     """
     split_kwargs = list()
     for receiver in receivers:
@@ -1825,9 +1875,7 @@ def einops_rearrange(
     ...               [-4, -5, -6]])
     >>> y = x.einops_rearrange("height width -> width height")
     >>> print(y)
-    ivy.array([[ 1, -4],
-        [ 2, -5],
-        [ 3, -6]])
+    ivy.array([[1, -4], [2, -5], [3, -6]])
 
     >>> x = ivy.array([[[ 1,  2,  3],
     ...                  [ 4,  5,  6]],
@@ -1835,17 +1883,22 @@ def einops_rearrange(
     ...                  [10, 11, 12]]])
     >>> y = x.einops_rearrange("c h w -> c (h w)")
     >>> print(y)
-    ivy.array([[ 1,  2,  3,  4,  5,  6],
-        [ 7,  8,  9, 10, 11, 12]])
+    ivy.array(
+        [[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12]]
+    )
 
     >>> x = ivy.array([[1, 2, 3, 4, 5, 6],
     ...            [7, 8, 9, 10, 11, 12]])
     >>> y = ivy.zeros((4,3))
     >>> x.einops_rearrange("c (h w) -> (c h) w", out=y, h=2, w=3)
-    ivy.array([[ 1,  2,  3],
-       [ 4,  5,  6],
-       [ 7,  8,  9],
-       [10, 11, 12]])
+    ivy.array(
+        [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+            [10, 11, 12],
+        ]
+    )
 
     With :class:`ivy.Container` input:
 
@@ -1956,7 +2009,7 @@ def einops_reduce(
     ...                [3.66, 24.29, 3.64]])
     >>> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
     >>> print(reduced)
-    ivy.array([-0.40499985, 12.61000061, 0.1500001 ])
+    ivy.array([-0.40499985, 12.61000061, 0.1500001])
 
     With :class:`ivy.Container` input:
 
@@ -2025,8 +2078,7 @@ def einops_repeat(
     >>> x = ivy.array([1, 2, 3, 4])
     >>> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
     >>> print(repeated)
-    ivy.array([[1, 2, 3, 4],
-               [1, 2, 3, 4]])
+    ivy.array([[1, 2, 3, 4], [1, 2, 3, 4]])
 
     With :class:`ivy.Container` input:
 
@@ -2037,10 +2089,8 @@ def einops_repeat(
     >>> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
     >>> print(repeated)
     {
-        a: ivy.array([[4, 5, 4, 5],
-                      [1, 3, 1, 3]]),
-        b: ivy.array([[9, 10, 9, 10],
-                      [4, 2, 4, 2]])
+        a: ivy.array([[4, 5, 4, 5], [1, 3, 1, 3]]),
+        b: ivy.array([[9, 10, 9, 10], [4, 2, 4, 2]])
     }
     """
     ret = einops.repeat(x._data, pattern, **axes_lengths)
@@ -2200,22 +2250,21 @@ def stable_divide(
     ...                  [40., 50., 60.]])
     >>> y = ivy.stable_divide(x, 10.)
     >>> print(y)
-    ivy.array([[1., 2., 3.],
-              [4., 5., 6.]])
+    ivy.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
 
 
     >>> x = ivy.asarray([1,2,3])
     >>> y = np.array((1., 3., 5.))
     >>> z = ivy.stable_divide(x, y)
     >>> print(z)
-    ivy.array([1.   , 0.667, 0.6  ])
+    ivy.array([1.0, 0.667, 0.6])
 
     >>> x = ivy.asarray([1., 2., 4.])
     >>> y = ivy.asarray([1., 0.5, 0.25])
     >>> z = ivy.asarray([0.01, 0.02, 0.03])
     >>> w = ivy.stable_divide(x, y, min_denominator=z)
     >>> print(w)
-    ivy.array([ 0.99,  3.85, 14.3 ])
+    ivy.array([0.99, 3.85, 14.3])
 
     With :class:`ivy.Container` input:
 
@@ -2223,8 +2272,8 @@ def stable_divide(
     >>> y = ivy.stable_divide(x, 0.5)
     >>> print(y)
     {
-        a: ivy.array([20., 30.]),
-        b: ivy.array([40., 50.])
+        a: ivy.array([20.0, 30.0]),
+        b: ivy.array([40.0, 50.0])
     }
 
 
@@ -2233,8 +2282,8 @@ def stable_divide(
     >>> z = ivy.stable_divide(x, y)
     >>> print(z)
     {
-        a: ivy.array([2., 0.8]),
-        b: ivy.array([0.857, 10.])
+        a: ivy.array([2.0, 0.8]),
+        b: ivy.array([0.857, 10.0])
     }
     """
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
@@ -2598,7 +2647,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     -------
     ret
         True if supports, raises IvyBackendException otherwise
-    
+
     This function is *nestable*, and therefore also accepts :code:'ivy.Container'
     instance in place of the argument.
 
@@ -2749,7 +2798,7 @@ def inplace_update(
     >>> y = ivy.array([0, 0, 0], dtype=ivy.int32)
     >>> ivy.inplace_update(x, y, keep_input_dtype=True)
     >>> print(x, x.dtype)
-    ivy.array([0., 0., 0.]) float32
+    ivy.array([0.0, 0.0, 0.0]) float32
 
     With :class:`ivy.Container` instances:, and backend set as `torch`:
 
@@ -2820,9 +2869,13 @@ def inplace_decrement(
     >>> x = ivy.array([[5.3, 7., 0.],[6.8, 8, 3.9],[0., 10., 6.3]])
     >>> y = ivy.inplace_decrement(x, 1.25)
     >>> print(y)
-    ivy.array([[ 4.05,  5.75, -1.25],
-       [ 5.55,  6.75,  2.65],
-       [-1.25,  8.75,  5.05]])
+    ivy.array(
+        [
+            [4.05, 5.75, -1.25],
+            [5.55, 6.75, 2.65],
+            [-1.25, 8.75, 5.05],
+        ]
+    )
 
     With :class:`ivy.Container` input:
 
@@ -2830,7 +2883,7 @@ def inplace_decrement(
     >>> y = ivy.inplace_decrement(x, 1.5)
     >>> print(y)
     {
-        a: ivy.array([-1., -6.5, 28.5]),
+        a: ivy.array([-1.0, -6.5, 28.5]),
         b: ivy.array([-1.5, -26.5, 48.5])
     }
 
@@ -2839,8 +2892,8 @@ def inplace_decrement(
     >>> z = ivy.inplace_decrement(x, y)
     >>> print(z)
     {
-        a: ivy.array([0., 0., 0.]),
-        b: ivy.array([0., 0., 0.])
+        a: ivy.array([0.0, 0.0, 0.0]),
+        b: ivy.array([0.0, 0.0, 0.0])
     }
 
     >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
@@ -2848,8 +2901,8 @@ def inplace_decrement(
     >>> z = ivy.inplace_decrement(x, y)
     >>> print(z)
     {
-        a: ivy.array([1., 1.5, 3.]),
-        b: ivy.array([0., 50., 3.5])
+        a: ivy.array([1.0, 1.5, 3.0]),
+        b: ivy.array([0.0, 50.0, 3.5])
     }
     """
     return current_backend(x).inplace_decrement(x, val)
@@ -2885,9 +2938,13 @@ def inplace_increment(
     >>> x = ivy.array([[5.3, 7., 0.],[6.8, 8, 3.9],[0., 10., 6.3]])
     >>> y = ivy.inplace_increment(x, 3.)
     >>> print(y)
-    ivy.array([[ 8.3, 10.,  3.],
-       [ 9.8, 11.,  6.9],
-       [ 3., 13.,  9.3]])
+    ivy.array(
+        [
+            [8.3, 10.0, 3.0],
+            [9.8, 11.0, 6.9],
+            [3.0, 13.0, 9.3],
+        ]
+    )
 
     With :class:`ivy.Container` input:
 
@@ -2905,8 +2962,8 @@ def inplace_increment(
     >>> z = ivy.inplace_increment(x, y)
     >>> print(z)
     {
-        a: ivy.array([0., 30., 60.]),
-        b: ivy.array([0., 50., 100.])
+        a: ivy.array([0.0, 30.0, 60.0]),
+        b: ivy.array([0.0, 50.0, 100.0])
     }
     """
     return current_backend(x).inplace_increment(x, val)
@@ -3047,7 +3104,7 @@ def scatter_nd(
     >>> shape = ivy.array([8])
     >>> scatter = ivy.scatter_nd(indices, updates, shape)
     >>> print(scatter)
-    ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
+    ivy.array([0, 11, 0, 10, 9, 0, 0, 12])
 
     With scatter into an empty array, With :class:`ivy.Container` input:
 
@@ -3135,14 +3192,19 @@ def gather(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.array([1, 2])
     >>> print(ivy.gather(x, y))
-    ivy.array([1., 2.])
+    ivy.array([1.0, 2.0])
 
     >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
     >>> y = ivy.array([[0, 1],[1, 2]])
     >>> z = ivy.array([[0., 0.],[0., 0.]])
     >>> ivy.gather(x, y, out=z)
     >>> print(z)
-    ivy.array([[[0., 1.],[1., 2.]],[[3., 4.],[4., 5.]]])
+    ivy.array(
+        [
+            [[0.0, 1.0], [1.0, 2.0]],
+            [[3.0, 4.0], [4.0, 5.0]],
+        ]
+    )
 
     >>> x = ivy.array([[[0., 1.], [2., 3.]],
     ...                [[8., 9.], [10., 11.]]])
@@ -3150,10 +3212,13 @@ def gather(
     >>> ivy.gather(x, y, axis=0, out=x)
     >>> print(x)
     ivy.array(
-        [[[[ 0.,  1.],
-           [ 2.,  3.]],
-          [[ 8.,  9.],
-           [10., 11.]]]])
+        [
+            [
+                [[0.0, 1.0], [2.0, 3.0]],
+                [[8.0, 9.0], [10.0, 11.0]],
+            ]
+        ]
+    )
 
     >>> x = ivy.array([[0, 10, 20, 0, 0],
     ...                [0, 0, 0, 30, 40],
@@ -3161,7 +3226,7 @@ def gather(
     >>> y = ivy.array([[1, 2],[3, 4],[1, 4]])
     >>> z = ivy.gather(x, y, batch_dims=1)
     >>> print(z)
-    ivy.array([[10, 20], [30, 40],[10, 40]])
+    ivy.array([[10, 20], [30, 40], [10, 40]])
 
     With :class:`ivy.Container` input:
 
@@ -3171,8 +3236,8 @@ def gather(
     ...                   b = ivy.array([1, 2]))
     >>> print(ivy.gather(x, y))
     {
-        a: ivy.array([0., 1.]),
-        b: ivy.array([5., 6.])
+        a: ivy.array([0.0, 1.0]),
+        b: ivy.array([5.0, 6.0])
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -3182,8 +3247,8 @@ def gather(
     >>> y = ivy.array([0, 1])
     >>> print(ivy.gather(x, y))
     {
-        a: ivy.array([0., 1.]),
-        b: ivy.array([4., 5.])
+        a: ivy.array([0.0, 1.0]),
+        b: ivy.array([4.0, 5.0])
     }
     """
     return current_backend(params, indices).gather(
@@ -3232,12 +3297,12 @@ def gather_nd(
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6.])
     >>> y = ivy.array([1])
     >>> print(ivy.gather_nd(x, y))
-    ivy.array(1.)
+    ivy.array(1.0)
 
     >>> x = ivy.array([[0., 1.], [2., 3.], [4., 5.]])
     >>> y = ivy.array([[0],[1],[1]], dtype='int32')
     >>> z = ivy.gather_nd(x,y,batch_dims=1)
-    ivy.array([0., 3., 5.])
+    ivy.array([0.0, 3.0, 5.0])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -3245,8 +3310,8 @@ def gather_nd(
     >>> y = ivy.array([1])
     >>> print(ivy.gather_nd(x, y))
     {
-        a: ivy.array(1.),
-        b: ivy.array(5.)
+        a: ivy.array(1.0),
+        b: ivy.array(5.0)
     }
 
     With :class:`ivy.Container` input:
@@ -3257,8 +3322,8 @@ def gather_nd(
     ...                   b=ivy.array([0]))
     >>> print(ivy.gather_nd(x, y))
     {
-        a: ivy.array(30.),
-        b: ivy.array([0., 100., 200.])
+        a: ivy.array(30.0),
+        b: ivy.array([0.0, 100.0, 200.0])
     }
     """
     res = current_backend(params, indices).gather_nd(
@@ -3328,7 +3393,6 @@ def shape(
 
     >>> print(z)
     ivy.array([2, 3])
-
     """
     return current_backend(x).shape(x, as_array=as_array)
 
@@ -3800,12 +3864,14 @@ def isin(
     >>> x = ivy.array([[10, 7, 4], [3, 2, 1]])
     >>> y = ivy.array([1, 2, 3])
     >>> ivy.isin(x, y)
-    ivy.array([[False, False, False], [ True,  True,  True]])
+    ivy.array(
+        [[False, False, False], [True, True, True]]
+    )
 
     >>> x = ivy.array([3, 2, 1, 0])
     >>> y = ivy.array([1, 2, 3])
     >>> ivy.isin(x, y, invert=True)
-    ivy.array([False, False, False,  True])
+    ivy.array([False, False, False, True])
     """
     return ivy.current_backend().isin(
         elements, test_elements, assume_unique=assume_unique, invert=invert

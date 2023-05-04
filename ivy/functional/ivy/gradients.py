@@ -344,13 +344,12 @@ def stop_gradient(
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.stop_gradient(x, preserve_type=True)
     >>> print(y)
-    ivy.array([1., 2., 3.])
+    ivy.array([1.0, 2.0, 3.0])
 
     >>> x = ivy.zeros((2, 3))
     >>> ivy.stop_gradient(x, preserve_type=False, out=x)
     >>> print(x)
-    ivy.array([[0., 0., 0.],
-               [0., 0., 0.]])
+    ivy.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
 
     With one :class:`ivy.Container` inputs:
 
@@ -359,8 +358,8 @@ def stop_gradient(
     >>> y = ivy.stop_gradient(x, preserve_type=False)
     >>> print(y)
     {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., 5.])
+        a: ivy.array([0.0, 1.0, 2.0]),
+        b: ivy.array([3.0, 4.0, 5.0])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -370,8 +369,8 @@ def stop_gradient(
     >>> ivy.stop_gradient(x, preserve_type=True, out=x)
     >>> print(x)
     {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., 5.])
+        a: ivy.array([0.0, 1.0, 2.0]),
+        b: ivy.array([3.0, 4.0, 5.0])
     }
     """
     return current_backend(x).stop_gradient(x, preserve_type=preserve_type, out=out)
@@ -425,8 +424,12 @@ def execute_with_gradients(
     >>> func = lambda x: ivy.mean(ivy.square(x))
     >>> func_ret = ivy.execute_with_gradients(func, x, retain_grads=True)
     >>> print(func_ret)
-    (ivy.array(29.), ivy.array([[0.33333334, 1.33333337, 2.        ],
-       [0.66666669, 2.        , 3.        ]]))
+    (ivy.array(29.0), ivy.array(
+                          [
+                              [0.33333334, 1.33333337, 2.0],
+                              [0.66666669, 2.0, 3.0],
+                          ]
+                      ))
 
     With :class:`ivy.Container` input:
 
@@ -441,12 +444,12 @@ def execute_with_gradients(
     },
     {
     a: {
-        a: ivy.array([0.66666669, 2.66666675, 4.]),
-        b: ivy.array([0., 0., 0.])
+        a: ivy.array([0.66666669, 2.66666675, 4.0]),
+        b: ivy.array([0.0, 0.0, 0.0])
     },
     b: {
-        a: ivy.array([0., 0., 0.]),
-        b: ivy.array([1.33333337, 4., 6.])
+        a: ivy.array([0.0, 0.0, 0.0]),
+        b: ivy.array([1.33333337, 4.0, 6.0])
     }
     })
     """
@@ -487,7 +490,9 @@ def value_and_grad(func: Callable) -> Callable:
     >>> grad_fn = ivy.value_and_grad(func)
     >>> value_grad = grad_fn(x)
     >>> print(value_grad)
-    (ivy.array(16.423332), ivy.array([[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]))
+    (ivy.array(16.423332), ivy.array(
+                               [[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]
+                           ))
     """
     return current_backend(None).value_and_grad(func)
 
@@ -520,8 +525,9 @@ def jac(func: Callable) -> Callable:
     >>> jac_fn = ivy.jac(func)
     >>> jacobian = jac_fn(x)
     >>> print(jacobian)
-    ivy.array([[1.53 , 0.7  , 1.67 ],
-    ...        [0.933, 0.433, 2.07 ]])
+    ivy.array(
+        [[1.53, 0.7, 1.67], ...[0.933, 0.433, 2.07]]
+    )
     """
     return current_backend(None).jac(func)
 
@@ -554,8 +560,9 @@ def grad(func: Callable, argnums: Union[int, Sequence[int]] = 0) -> Callable:
     >>> grad_fn = ivy.grad(func)
     >>> grad = grad_fn(x)
     >>> print(grad)
-    ivy.array([[1.53 , 0.7  , 1.67 ],
-    ...        [0.933, 0.433, 2.07 ]])
+    ivy.array(
+        [[1.53, 0.7, 1.67], ...[0.933, 0.433, 2.07]]
+    )
     """
     return current_backend(None).grad(func, argnums=argnums)
 
@@ -623,9 +630,9 @@ def adam_step(
     >>> step = ivy.array(3)
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)
     >>> print(adam_step_delta)
-    (ivy.array([0.2020105,0.22187898,0.24144873]),
-        ivy.array([1.,1.10000002,1.20000005]),
-        ivy.array([1.,1.00300002,1.00800002]))
+    (ivy.array([0.2020105, 0.22187898, 0.24144873]),
+        ivy.array([1.0, 1.10000002, 1.20000005]),
+        ivy.array([1.0, 1.00300002, 1.00800002]))
 
     >>> dcdw = ivy.array([[1., 4., -3.], [2., 3., 0.5]])
     >>> mw = ivy.zeros((2,3))
@@ -637,12 +644,13 @@ def adam_step(
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2,
     ...                                 epsilon=epsilon)
     >>> print(adam_step_delta)
-    (ivy.array([[ 1.,  1., -1.],
-    ...         [ 1.,  1.,  1.]]),
-    ... ivy.array([[ 0.14,  0.56, -0.42],
-    ...            [ 0.28,  0.42,  0.07]]),
-     ivy.array([[0.05  , 0.8   , 0.45  ],
-                [0.2   , 0.45  , 0.0125]]))
+    (ivy.array([[1.0, 1.0, -1.0], ...[1.0, 1.0, 1.0]]),
+    ... ivy.array(
+            [[0.14, 0.56, -0.42], ...[0.28, 0.42, 0.07]]
+        ),
+     ivy.array(
+         [[0.05, 0.8, 0.45], [0.2, 0.45, 0.0125]]
+     ))
 
     >>> dcdw = ivy.array([1, -2, 3])
     >>> mw = ivy.ones(1)
@@ -667,13 +675,13 @@ def adam_step(
     ...                                 epsilon=epsilon)
     >>> print(adam_step_delta)
     ({
-        a: ivy.array([6.49e+04, 1.74e+01, 1.95e+01]),
+        a: ivy.array([6.49e04, 1.74e01, 1.95e01]),
         b: ivy.array([2.02, 4.82, 8.17])
     }, {
         a: ivy.array([0.87, 3.61, 8.09]),
-        b: ivy.array([1.26, 4., 8.48])
+        b: ivy.array([1.26, 4.0, 8.48])
     }, {
-        a: ivy.array([0., 0.024, 0.096]),
+        a: ivy.array([0.0, 0.024, 0.096]),
         b: ivy.array([0.216, 0.384, 0.6])
     })
 
@@ -693,13 +701,13 @@ def adam_step(
     ...                                 epsilon=epsilon)
     >>> print(adam_step_delta)
     ({
-        a: ivy.array([0., 0.626, 0.626]),
+        a: ivy.array([0.0, 0.626, 0.626]),
         b: ivy.array([0.626, 0.626, 0.626])
     }, {
-        a: ivy.array([0., 0.13, 0.26]),
+        a: ivy.array([0.0, 0.13, 0.26]),
         b: ivy.array([0.39, 0.52, 0.65])
     }, {
-        a: ivy.array([0., 0.024, 0.096]),
+        a: ivy.array([0.0, 0.024, 0.096]),
         b: ivy.array([0.216, 0.384, 0.6])
     })
     """
@@ -768,7 +776,7 @@ def optimizer_update(
     >>> lr = 3e-4
     >>> ws_new = ivy.optimizer_update(w, effective_grad, lr)
     >>> print(ws_new)
-    ivy.array([1., 2., 3.])
+    ivy.array([1.0, 2.0, 3.0])
 
     >>> w = ivy.array([1., 2., 3.])
     >>> effective_grad = ivy.zeros(3)
@@ -776,7 +784,7 @@ def optimizer_update(
     >>> ws_new = ivy.optimizer_update(w, effective_grad, lr,
     ...                               out=None, stop_gradients=True)
     >>> print(ws_new)
-    ivy.array([1., 2., 3.])
+    ivy.array([1.0, 2.0, 3.0])
 
     >>> w = ivy.array([[1., 2.], [4., 5.]])
     >>> out = ivy.zeros_like(w)
@@ -784,8 +792,7 @@ def optimizer_update(
     >>> lr = ivy.array([3e-4, 1e-2])
     >>> ws_new = ivy.optimizer_update(w, effective_grad, lr, out=out)
     >>> print(out)
-    ivy.array([[0.999, 1.95],
-               [4., 4.92]])
+    ivy.array([[0.999, 1.95], [4.0, 4.92]])
 
     >>> w = ivy.array([1., 2., 3.])
     >>> out = ivy.zeros_like(w)
@@ -794,7 +801,7 @@ def optimizer_update(
     >>> ws_new = ivy.optimizer_update(w, effective_grad, lr,
     ...                               stop_gradients=False, out=out)
     >>> print(out)
-    ivy.array([0.999, 2.   , 3.   ])
+    ivy.array([0.999, 2.0, 3.0])
 
     With one :class:`ivy.Container` input:
 
@@ -805,8 +812,8 @@ def optimizer_update(
     >>> ws_new = ivy.optimizer_update(w, effective_grad, lr)
     >>> print(ws_new)
     {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., 5.])
+        a: ivy.array([0.0, 1.0, 2.0]),
+        b: ivy.array([3.0, 4.0, 5.0])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -819,8 +826,8 @@ def optimizer_update(
     >>> ws_new = ivy.optimizer_update(w, effective_grad, lr, out=w)
     >>> print(w)
     {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., 5.])
+        a: ivy.array([0.0, 1.0, 2.0]),
+        b: ivy.array([3.0, 4.0, 5.0])
     }
 
     >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),
@@ -832,8 +839,8 @@ def optimizer_update(
     ...                               stop_gradients=False)
     >>> print(ws_new)
     {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., 5.])
+        a: ivy.array([0.0, 1.0, 2.0]),
+        b: ivy.array([3.0, 4.0, 5.0])
     }
     """
     deltas = effective_grad * lr
@@ -894,9 +901,13 @@ def gradient_descent_update(
     >>> lr = ivy.array(0.1)
     >>> new_weights = ivy.gradient_descent_update(w, dcdw, lr, stop_gradients=True)
     >>> print(new_weights)
-    ivy.array([[ 0.95,  1.98,  2.99],
-    ...        [ 3.97,  5.94,  0.96],
-    ...        [ 0.96, -0.07,  6.98]])
+    ivy.array(
+        [
+            [0.95, 1.98, 2.99],
+            ...[3.97, 5.94, 0.96],
+            ...[0.96, -0.07, 6.98],
+        ]
+    )
 
     >>> w = ivy.array([1., 2., 3.])
     >>> dcdw = ivy.array([0.5, 0.2, 0.1])
@@ -1058,9 +1069,15 @@ def adam_update(
     >>> step = 1
     >>> updated_weights = ivy.adam_update(w, dcdw, lr, mw_tm1, vw_tm1, step)
     >>> print(updated_weights)
-    (ivy.array([0.90000075, 1.90000164, 2.9000032 ]),
+    (ivy.array([0.90000075, 1.90000164, 2.9000032]),
     ivy.array([0.05, 0.02, 0.01]),
-    ivy.array([2.50000012e-04, 4.00000063e-05, 1.00000016e-05]))
+    ivy.array(
+        [
+            2.50000012e-04,
+            4.00000063e-05,
+            1.00000016e-05,
+        ]
+    ))
 
     >>> w = ivy.array([[1., 2, 3],[4, 2, 4],[6, 4, 2]])
     >>> dcdw = ivy.array([[0.1, 0.2, 0.3],[0.4, 0.5, 0.1],[0.1, 0.5, 0.3]])
@@ -1079,15 +1096,39 @@ def adam_update(
     ...                               stop_gradients=stop_gradients)
     >>> print(updated_weights)
     (
-    ivy.array([[0.92558873, 1.92558754, 2.92558718],
-               [3.92558694, 1.92558682, 3.92558861],
-               [5.92558861, 3.92558694, 1.92558718]]),
-    ivy.array([[0.01, 0.02, 0.03],
-               [0.04, 0.05, 0.01],
-               [0.01, 0.05, 0.03]]),
-    ivy.array([[1.00000016e-05, 4.00000063e-05, 9.00000086e-05],
-               [1.60000025e-04, 2.50000012e-04, 1.00000016e-05],
-               [1.00000016e-05, 2.50000012e-04, 9.00000086e-05]])
+    ivy.array(
+        [
+            [0.92558873, 1.92558754, 2.92558718],
+            [3.92558694, 1.92558682, 3.92558861],
+            [5.92558861, 3.92558694, 1.92558718],
+        ]
+    ),
+    ivy.array(
+        [
+            [0.01, 0.02, 0.03],
+            [0.04, 0.05, 0.01],
+            [0.01, 0.05, 0.03],
+        ]
+    ),
+    ivy.array(
+        [
+            [
+                1.00000016e-05,
+                4.00000063e-05,
+                9.00000086e-05,
+            ],
+            [
+                1.60000025e-04,
+                2.50000012e-04,
+                1.00000016e-05,
+            ],
+            [
+                1.00000016e-05,
+                2.50000012e-04,
+                9.00000086e-05,
+            ],
+        ]
+    )
     )
 
     With one :class:`ivy.Container` input:
@@ -1101,8 +1142,8 @@ def adam_update(
     >>> updated_weights = ivy.adam_update(w, dcdw, mw_tm1, vw_tm1, lr, step)
     >>> print(updated_weights)
     ({
-        a: ivy.array([1., 2., 3.]),
-        b: ivy.array([4., 5., 6.])
+        a: ivy.array([1.0, 2.0, 3.0]),
+        b: ivy.array([4.0, 5.0, 6.0])
     }, ivy.array([0.05, 0.02, 0.04]), ivy.array([0.01024, 0.01003, 0.01015]))
 
     With multiple :class:`ivy.Container` inputs:
@@ -1133,8 +1174,20 @@ def adam_update(
         a: ivy.array([0.01, 0.03, 0.03]),
         b: ivy.array([0.03, 0.02, 0.02])
     }, {
-        a: ivy.array([1.00000016e-05, 9.00000086e-05, 9.00000086e-05]),
-        b: ivy.array([9.00000086e-05, 4.00000063e-05, 4.00000063e-05])
+        a: ivy.array(
+               [
+                   1.00000016e-05,
+                   9.00000086e-05,
+                   9.00000086e-05,
+               ]
+           ),
+        b: ivy.array(
+               [
+                   9.00000086e-05,
+                   4.00000063e-05,
+                   4.00000063e-05,
+               ]
+           )
     })
     """
     effective_grads, mw, vw = ivy.adam_step(
@@ -1226,7 +1279,7 @@ def lamb_update(
     >>> step = ivy.array(1)
     >>> new_weights = ivy.lamb_update(w, dcdw, lr, mw_tm1, vw_tm1, step)
     >>> print(new_weights)
-    (ivy.array([0.784, 1.78 , 2.78 ]),
+    (ivy.array([0.784, 1.78, 2.78]),
     ... ivy.array([0.05, 0.02, 0.01]),
     ... ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
 
@@ -1249,9 +1302,13 @@ def lamb_update(
     ...                               decay_lambda=decay_lambda, out=out,
     ...                               stop_gradients=stop_gradients)
     >>> print(out)
-    ivy.array([[ 0.639,  1.64 ,  2.64 ],
-    ...        [ 3.64 ,  5.64 ,  0.639],
-    ...        [ 0.639, -0.361,  6.64 ]])
+    ivy.array(
+        [
+            [0.639, 1.64, 2.64],
+            ...[3.64, 5.64, 0.639],
+            ...[0.639, -0.361, 6.64],
+        ]
+    )
 
     With one :class:`ivy.Container` inputs:
 
@@ -1264,8 +1321,8 @@ def lamb_update(
     >>> new_weights = ivy.lamb_update(w, dcdw, mw_tm1, vw_tm1, lr, step)
     >>> print(new_weights)
     ({
-        a: ivy.array([1., 2., 3.]),
-        b: ivy.array([4., 5., 6.])
+        a: ivy.array([1.0, 2.0, 3.0]),
+        b: ivy.array([4.0, 5.0, 6.0])
     }, ivy.array([0.3, 0.4, 0.5]), ivy.array([1.01, 1.01, 1.02]))
 
     With multiple :class:`ivy.Container` inputs:

@@ -34,7 +34,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = x.relu()
         >>> print(y)
-        ivy.array([0., 0., 1.])
+        ivy.array([0.0, 0.0, 1.0])
         """
         return ivy.relu(self._data, out=out)
 
@@ -70,7 +70,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> x = ivy.array([0.39, -0.85])
         >>> y = x.leaky_relu()
         >>> print(y)
-        ivy.array([ 0.39, -0.17])
+        ivy.array([0.39, -0.17])
         """
         return ivy.leaky_relu(self._data, alpha=alpha, out=out)
 
@@ -210,7 +210,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> x = ivy.array([-0.3461, -0.6491])
         >>> y = x.softplus()
         >>> print(y)
-        ivy.array([0.535,0.42])
+        ivy.array([0.535, 0.42])
 
         >>> x = ivy.array([-0.3461, -0.6491])
         >>> y = x.softplus(beta=0.5)
@@ -260,7 +260,7 @@ class _ArrayWithActivations(abc.ABC):
 
         >>> x = ivy.array([2.0, 3.4, -4.2])
         >>> y = x.log_softmax(x)
-        ivy.array([-1.62, -0.221, -7.82 ])
+        ivy.array([-1.62, -0.221, -7.82])
         """
         return ivy.log_softmax(self._data, axis=axis, out=out)
 
@@ -283,6 +283,6 @@ class _ArrayWithActivations(abc.ABC):
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = x.mish()
         >>> print(y)
-        ivy.array([-0.30340147,  0.        ,  0.86509842])
+        ivy.array([-0.30340147, 0.0, 0.86509842])
         """
         return ivy.mish(self._data, out=out)

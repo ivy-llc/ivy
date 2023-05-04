@@ -98,7 +98,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> x1 = ivy.array([-1.5, 0, 2.0])
         >>> x2 = ivy.array([1.2, -2.0, 3.5])
         >>> ivy.heaviside(x1, x2)
-        ivy.array([0., -2., 1.])
+        ivy.array([0.0, -2.0, 1.0])
         """
         return ivy.heaviside(self._data, x2, out=out)
 
@@ -132,9 +132,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         --------
         >>> m = ivy.diag([1, 2, 3])
         >>> m.flipud()
-        ivy.array([[ 0.,  0.,  3.],
-            [ 0.,  2.,  0.],
-            [ 1.,  0.,  0.]])
+        ivy.array(
+            [
+                [0.0, 0.0, 3.0],
+                [0.0, 2.0, 0.0],
+                [1.0, 0.0, 0.0],
+            ]
+        )
         """
         return ivy.flipud(self._data, copy=copy, out=out)
 
@@ -158,9 +162,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> x = ivy.array([[1, 2]])
         >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
         >>> print(x.vstack(y))
-            ivy.array([[1, 2],
-                       [5, 6],
-                       [7, 8]])
+            ivy.array([[1, 2], [5, 6], [7, 8]])
         """
         if not isinstance(arrays, (list, tuple)):
             arrays = [arrays]
@@ -237,22 +239,16 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         --------
         >>> m = ivy.array([[1,2], [3,4]])
         >>> m.rot90()
-        ivy.array([[2, 4],
-               [1, 3]])
+        ivy.array([[2, 4], [1, 3]])
         >>> m = ivy.array([[1,2], [3,4]])
         >>> m.rot90(k=2)
-        ivy.array([[4, 3],
-               [2, 1]])
+        ivy.array([[4, 3], [2, 1]])
         >>> m = ivy.array([[[0, 1],\
                             [2, 3]],\
                            [[4, 5],\
                             [6, 7]]])
         >>> m.rot90(k=2, axes=(1,2))
-        ivy.array([[[3, 2],
-                [1, 0]],
-
-               [[7, 6],
-                [5, 4]]])
+        ivy.array([[[3, 2], [1, 0]], [[7, 6], [5, 4]]])
         """
         return ivy.rot90(self._data, copy=copy, k=k, axes=axes, out=out)
 
@@ -296,7 +292,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> x = ivy.array([2., 1., -3., 5., 9., 0., -4])
         >>> y = x.top_k(2)
         >>> print(y)
-        top_k(values=ivy.array([9., 5.]), indices=ivy.array([4, 3]))
+        top_k(values=ivy.array([9.0, 5.0]), indices=ivy.array([4, 3]))
         """
         return ivy.top_k(self, k, axis=axis, largest=largest, out=out)
 
@@ -330,9 +326,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         --------
         >>> m = ivy.diag([1, 2, 3])
         >>> m.fliplr()
-        ivy.array([[0, 0, 1],
-               [0, 2, 0],
-               [3, 0, 0]])
+        ivy.array([[0, 0, 1], [0, 2, 0], [3, 0, 0]])
         """
         return ivy.fliplr(self._data, copy=copy, out=out)
 
@@ -363,7 +357,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         --------
         >>> x = ivy.array([[1, 2, 3]])
         >>> x.i0()
-        ivy.array([1.26606588, 2.2795853 , 4.88079259])
+        ivy.array([1.26606588, 2.2795853, 4.88079259])
         """
         return ivy.i0(self._data, out=out)
 
@@ -448,26 +442,33 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             )
         >>> x.flatten(start_dim = 1, end_dim = 2)
         ivy.array(
-            [[[ 5,  5,  0,  6],
-            [17, 15, 11, 16],
-            [ 6,  3, 13, 12],
-            [ 6, 18, 10,  4],
-            [ 5,  1, 17,  3],
-            [14, 14, 18,  6]],
-
-            [[12,  0,  1, 13],
-            [ 8,  7,  0,  3],
-            [19, 12,  6, 17],
-            [ 4, 15,  6, 15],
-            [ 0,  5, 17,  9],
-            [ 9,  3,  6, 19]],
-
-            [[17, 13, 11, 16],
-            [ 4, 18, 17,  4],
-            [10, 10,  9,  1],
-            [19, 17, 13, 10],
-            [ 4, 19, 16, 17],
-            [ 2, 12,  8, 14]]]))
+            [
+                [
+                    [5, 5, 0, 6],
+                    [17, 15, 11, 16],
+                    [6, 3, 13, 12],
+                    [6, 18, 10, 4],
+                    [5, 1, 17, 3],
+                    [14, 14, 18, 6],
+                ],
+                [
+                    [12, 0, 1, 13],
+                    [8, 7, 0, 3],
+                    [19, 12, 6, 17],
+                    [4, 15, 6, 15],
+                    [0, 5, 17, 9],
+                    [9, 3, 6, 19],
+                ],
+                [
+                    [17, 13, 11, 16],
+                    [4, 18, 17, 4],
+                    [10, 10, 9, 1],
+                    [19, 17, 13, 10],
+                    [4, 19, 16, 17],
+                    [2, 12, 8, 14],
+                ],
+            ]
+        ))
         """
         return ivy.flatten(
             self._data, copy=copy, start_dim=start_dim, end_dim=end_dim, out=out
@@ -556,7 +557,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
               [6.,  7.]]]
             )
         >>> ary.vsplit(2)
-        [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
+        [ivy.array([[[0.0, 1.0], [2.0, 3.0]]]), ivy.array([[[4.0, 5.0], [6.0, 7.0]]])])
         """
         return ivy.vsplit(self._data, indices_or_sections, copy=copy)
 
@@ -597,8 +598,18 @@ class _ArrayWithManipulationExperimental(abc.ABC):
               [12.,  13.,  14.,  15.]]]
         )
         >>> ary.dsplit(2)
-        [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
-        ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
+        [ivy.array(
+             [
+                 [[0.0, 1.0], [4.0, 5.0]],
+                 [[8.0, 9.0], [12.0, 13.0]],
+             ]
+         ),
+        ivy.array(
+            [
+                [[2.0, 3.0], [6.0, 7.0]],
+                [[10.0, 11.0], [14.0, 15.0]],
+            ]
+        )]
         """
         return ivy.dsplit(self._data, indices_or_sections, copy=copy)
 
@@ -655,9 +666,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([2, 3, 4])
         >>> x.dstack(y)
-        ivy.array([[[1, 2],
-                    [2, 3],
-                    [3, 4]]])
+        ivy.array([[[1, 2], [2, 3], [3, 4]]])
         """
         if not isinstance(arrays, (list, tuple)):
             arrays = [arrays]
@@ -731,10 +740,12 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> a1 = ivy.array([[1,2,3]])
         >>> a2 = ivy.array([4,8])
         >>> a1.atleast_3d(a2,5,6)
-        [ivy.array([[[1],
-                [2],
-                [3]]]), ivy.array([[[4],
-                [8]]]), ivy.array([[[5]]]), ivy.array([[[6]]])]
+        [
+            ivy.array([[[1], [2], [3]]]),
+            ivy.array([[[4], [8]]]),
+            ivy.array([[[5]]]),
+            ivy.array([[[6]]])
+        ]
         """
         return ivy.atleast_3d(self._data, *arys, copy=copy)
 
@@ -818,14 +829,22 @@ class _ArrayWithManipulationExperimental(abc.ABC):
              [12., 13., 14., 15.]]
             )
         >>> ary.hsplit(2)
-        [ivy.array([[ 0.,  1.],
-                    [ 4.,  5.],
-                    [ 8.,  9.],
-                    [12., 13.]]),
-         ivy.array([[ 2.,  3.],
-                    [ 6.,  7.],
-                    [10., 11.],
-                    [14., 15.]]))
+        [ivy.array(
+             [
+                 [0.0, 1.0],
+                 [4.0, 5.0],
+                 [8.0, 9.0],
+                 [12.0, 13.0],
+             ]
+         ),
+         ivy.array(
+             [
+                 [2.0, 3.0],
+                 [6.0, 7.0],
+                 [10.0, 11.0],
+                 [14.0, 15.0],
+             ]
+         ))
         """
         return ivy.hsplit(self._data, indices_or_sections, copy=copy)
 

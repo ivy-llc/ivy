@@ -81,11 +81,15 @@ def cholesky(
     ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
     >>> l = ivy.cholesky(x, upper='false')
     >>> print(l)
-    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+    ivy.array(
+        [
+            [2.0, 0.5, 1.0, 0.25, 1.0],
+            [0.0, 0.5, -1.0, -0.25, -1.0],
+            [0.0, 0.0, 1.0, -0.5, -2.0],
+            [0.0, 0.0, 0.0, 0.5, -3.0],
+            [0.0, 0.0, 0.0, 0.0, 1.0],
+        ]
+    )
 
     >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],
     ...                [1.0, 0.5, 0.0, 0.0, 0.0],
@@ -95,11 +99,15 @@ def cholesky(
     >>> y = ivy.zeros([5,5])
     >>> ivy.cholesky(x, upper='false', out=y)
     >>> print(y)
-    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+    ivy.array(
+        [
+            [2.0, 0.5, 1.0, 0.25, 1.0],
+            [0.0, 0.5, -1.0, -0.25, -1.0],
+            [0.0, 0.0, 1.0, -0.5, -2.0],
+            [0.0, 0.0, 0.0, 0.5, -3.0],
+            [0.0, 0.0, 0.0, 0.0, 1.0],
+        ]
+    )
 
     >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],
     ...                [1.0, 0.5, 0.0, 0.0, 0.0],
@@ -108,18 +116,21 @@ def cholesky(
     ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
     >>> ivy.cholesky(x, upper='false', out=x)
     >>> print(x)
-    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+    ivy.array(
+        [
+            [2.0, 0.5, 1.0, 0.25, 1.0],
+            [0.0, 0.5, -1.0, -0.25, -1.0],
+            [0.0, 0.0, 1.0, -0.5, -2.0],
+            [0.0, 0.0, 0.0, 0.5, -3.0],
+            [0.0, 0.0, 0.0, 0.0, 1.0],
+        ]
+    )
 
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> u = ivy.cholesky(x, upper='false')
     >>> print(u)
-    ivy.array([[ 1., -2.],
-               [ 0.,  1.]])
+    ivy.array([[1.0, -2.0], [0.0, 1.0]])
 
     With :class:`ivy.Container` input:
 
@@ -128,10 +139,8 @@ def cholesky(
     >>> y = ivy.cholesky(x, upper='false')
     >>> print(y)
     {
-        a: ivy.array([[1.73, -0.577],
-                      [0., 1.63]]),
-        b: ivy.array([[1.41, 0.707],
-                      [0., 0.707]])
+        a: ivy.array([[1.73, -0.577], [0.0, 1.63]]),
+        b: ivy.array([[1.41, 0.707], [0.0, 0.707]])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -142,10 +151,8 @@ def cholesky(
     >>> y = ivy.cholesky(x, upper='false')
     >>> print(y)
     {
-        a: ivy.array([[1.73, -0.577],
-                      [0., 1.63]]),
-        b: ivy.array([[1.41, 0.707],
-                      [0., 0.707]])
+        a: ivy.array([[1.73, -0.577], [0.0, 1.63]]),
+        b: ivy.array([[1.41, 0.707], [0.0, 0.707]])
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -154,8 +161,7 @@ def cholesky(
     >>> upper = ivy.Container(a=1, b=-1)
     >>> y = ivy.cholesky(x, upper='false')
     >>> print(y)
-    ivy.array([[ 1., -2.],
-               [ 0.,  1.]])
+    ivy.array([[1.0, -2.0], [0.0, 1.0]])
     """
     return current_backend(x).cholesky(x, upper=upper, out=out)
 
@@ -222,7 +228,7 @@ def cross(
     >>> y = ivy.array([0., 1., 0.])
     >>> z = ivy.cross(x, y)
     >>> print(z)
-    ivy.array([0., 0., 1.])
+    ivy.array([0.0, 0.0, 1.0])
 
     With :class:`ivy.Container` inputs:
 
@@ -233,8 +239,8 @@ def cross(
     >>> z = ivy.cross(x,y)
     >>> print(z)
     {
-        a: ivy.array([0., 0., 35.]),
-        b: ivy.array([0., 6., 0.])
+        a: ivy.array([0.0, 0.0, 35.0]),
+        b: ivy.array([0.0, 6.0, 0.0])
     }
 
     With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -245,8 +251,8 @@ def cross(
     >>> z = ivy.cross(x,y)
     >>> print(z)
     {
-        a: ivy.array([-3., 3., 9.]),
-        b: ivy.array([0., -6., 0.])
+        a: ivy.array([-3.0, 3.0, 9.0]),
+        b: ivy.array([0.0, -6.0, 0.0])
     }
     """
     return current_backend(x1).cross(
@@ -263,7 +269,8 @@ def cross(
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Return the determinant of a square matrix (or a stack of square matrices)``x``.
+    """
+    Return the determinant of a square matrix (or a stack of square matrices)``x``.
 
     Parameters
     ----------
@@ -339,7 +346,8 @@ def diagonal(
     axis2: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the specified diagonals of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -513,7 +521,8 @@ def eig(
     *,
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    """Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+    """
+    Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
     matrices) and ``L`` is a vector (or a stack of vectors).
 
@@ -557,7 +566,6 @@ def eig(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).eig(x, out=out)
 
@@ -575,7 +583,8 @@ def eigh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    """Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+    """
+    Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
     matrices) and ``L`` is a vector (or a stack of vectors).
 
@@ -622,7 +631,6 @@ def eigh(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
@@ -687,32 +695,44 @@ def eigvalsh(
     >>> x = ivy.array([[[1.0,2.0],[2.0,1.0]]])
     >>> y = ivy.eigvalsh(x)
     >>> print(y)
-    ivy.array([[-1.,  3.]])
+    ivy.array([[-1.0, 3.0]])
 
     >>> x = ivy.array([[[3.0,2.0],[2.0,3.0]]])
     >>> y = ivy.zeros([1,2])
     >>> ivy.eigvalsh(x, out=y)
     >>> print(y)
-    ivy.array([[1., 5.]])
+    ivy.array([[1.0, 5.0]])
 
     >>> x = ivy.array([[[3.0,2.0],[2.0,3.0]]])
     >>> ivy.eigvalsh(x, out=x)
     >>> print(x)
-    ivy.array([[1., 5.]])
+    ivy.array([[1.0, 5.0]])
 
     >>> x = ivy.array([[[2.0,3.0,6.0],[3.0,4.0,5.0],[6.0,5.0,9.0]],
     ... [[1.0,1.0,1.0],[1.0,2.0,2.0],[1.0,2.0,2.0]]])
     >>> y = ivy.eigvalsh(x, UPLO="U")
     >>> print(y)
-    ivy.array([[-1.45033181e+00,  1.02829754e+00,  1.54220343e+01],
-       [-1.12647155e-15,  4.38447177e-01,  4.56155300e+00]])
+    ivy.array(
+        [
+            [
+                -1.45033181e00,
+                1.02829754e00,
+                1.54220343e01,
+            ],
+            [
+                -1.12647155e-15,
+                4.38447177e-01,
+                4.56155300e00,
+            ],
+        ]
+    )
 
     With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[[1., 1., 2.], [1., 2., 1.], [1., 1., 2]]])
     >>> y = ivy.eigvalsh(x)
     >>> print(y)
-    ivy.array([[0.26794919, 1.        , 3.7320509 ]])
+    ivy.array([[0.26794919, 1.0, 3.7320509]])
 
     With :class:`ivy.Container` inputs:
 
@@ -723,8 +743,16 @@ def eigvalsh(
     >>> print(y)
     {
         a: ivy.array([[-0.51572949, 0.17091519, 11.3448143]]),
-        b: ivy.array([[-1., 1., 4.]]),
-        c: ivy.array([[-8.88178420e-16, 5.35898387e-01, 7.46410179e+00]])
+        b: ivy.array([[-1.0, 1.0, 4.0]]),
+        c: ivy.array(
+               [
+                   [
+                       -8.88178420e-16,
+                       5.35898387e-01,
+                       7.46410179e00,
+                   ]
+               ]
+           )
     }
     """
     return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
@@ -742,7 +770,8 @@ def inner(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the inner product of two vectors ``x1`` and ``x2``.
+    """
+    Return the inner product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
@@ -763,7 +792,6 @@ def inner(
     ret
         a two-dimensional array containing the inner product and whose shape is (N, M).
         The returned array must have a data type determined by Type Promotion Rules.
-
     """
     return current_backend(x1, x2).inner(x1, x2, out=out)
 
@@ -781,7 +809,8 @@ def inv(
     adjoint: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the multiplicative inverse of a square matrix (or a stack of square
+    """
+    Return the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
 
     Parameters
@@ -819,19 +848,23 @@ def inv(
     >>> y = ivy.zeros(3)
     >>> ivy.inv(x, out=y)
     >>> print(y)
-    ivy.array([[-2., 1.],[1.5, -0.5]])
+    ivy.array([[-2.0, 1.0], [1.5, -0.5]])
 
     >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
     >>> ivy.inv(x, out=x)
     >>> print(x)
-    ivy.array([[-1., 0.4],[1., -0.2]])
+    ivy.array([[-1.0, 0.4], [1.0, -0.2]])
 
     >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]],
     ...                [[1.0, 3.0], [3.0, 5.0]]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[[-2., 1.],[1.5, -0.5]],
-               [[-1.25, 0.75],[0.75, -0.25]]])
+    ivy.array(
+        [
+            [[-2.0, 1.0], [1.5, -0.5]],
+            [[-1.25, 0.75], [0.75, -0.25]],
+        ]
+    )
 
     With :class:`ivy.Container` inputs
 
@@ -843,18 +876,29 @@ def inv(
     >>> y = ivy.Container.static_inv(x)
     >>> print(y)
     {
-        a: ivy.array([[-0.0012, 0.00342, -0.000565],
-                      [0.0104, -0.0003, -0.000981],
-                      [-0.00282, -0.000766, 0.0104]]),
-        b: ivy.array([[-0.0322, 0.101, 0.00237],
-                      [0.000151, -0.00101, 0.00019],
-                      [0.0214, 0., -0.00171]]),
-        c: ivy.array([[0.0107, 0.03, -0.0167],
-                      [-0.0472, -0.0322, 0.0536],
-                      [0.0177, -0.000429, -0.00762]])
+        a: ivy.array(
+               [
+                   [-0.0012, 0.00342, -0.000565],
+                   [0.0104, -0.0003, -0.000981],
+                   [-0.00282, -0.000766, 0.0104],
+               ]
+           ),
+        b: ivy.array(
+               [
+                   [-0.0322, 0.101, 0.00237],
+                   [0.000151, -0.00101, 0.00019],
+                   [0.0214, 0.0, -0.00171],
+               ]
+           ),
+        c: ivy.array(
+               [
+                   [0.0107, 0.03, -0.0167],
+                   [-0.0472, -0.0322, 0.0536],
+                   [0.0177, -0.000429, -0.00762],
+               ]
+           )
 
     }
-
     """
     return current_backend(x).inv(x, adjoint=adjoint, out=out)
 
@@ -968,14 +1012,13 @@ def matmul(
     >>> y = ivy.array([4., 1., 8.])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
-    ivy.array(32.)
+    ivy.array(32.0)
 
     >>> x = ivy.array([[1., 2.], [0., 1.]])
     >>> y = ivy.array([[2., 0.], [0., 3.]])
     >>> z = ivy.matmul(x, y, transpose_b=True)
     >>> print(z)
-    ivy.array([[2., 6.],
-           [0., 3.]])
+    ivy.array([[2.0, 6.0], [0.0, 3.0]])
 
     With :class:`ivy.Container` inputs:
 
@@ -984,8 +1027,8 @@ def matmul(
     >>> z = ivy.matmul(x,y)
     >>> print(z)
     {
-        a: ivy.array(27.),
-        b: ivy.array(3.)
+        a: ivy.array(27.0),
+        b: ivy.array(3.0)
     }
 
     With a combination of :class:`ivy.Array`
@@ -996,16 +1039,15 @@ def matmul(
     >>> z = ivy.matmul(x, y)
     >>> print(z)
     {
-        a: ivy.array(18.),
-        b: ivy.array(9.)
+        a: ivy.array(18.0),
+        b: ivy.array(9.0)
     }
 
     >>> x = ivy.array([[1., 2.], [0., 3.]])
     >>> y = ivy.array([[1.], [3.]])
     >>> z = ivy.matmul(x, y, transpose_a=True)
     >>> print(z)
-    ivy.array([[ 1.],
-       [11.]])
+    ivy.array([[1.0], [11.0]])
     """
     return current_backend(x1).matmul(
         x1,
@@ -1070,13 +1112,13 @@ def matrix_norm(
         | -inf             | min(sum(abs(x), axis=1))        |
         +------------------+---------------------------------+
 
-        If ``ord=1``, the norm corresponds to the induced matrix norm where 
+        If ``ord=1``, the norm corresponds to the induced matrix norm where
         ``p=1`` (i.e., the maximum absolute value column sum).
 
-        If ``ord=2``, the norm corresponds to the induced matrix norm where 
+        If ``ord=2``, the norm corresponds to the induced matrix norm where
         ``p=inf`` (i.e., the maximum absolute value row sum).
 
-        If ``ord=inf``, the norm corresponds to the induced matrix norm where 
+        If ``ord=inf``, the norm corresponds to the induced matrix norm where
         ``p=2`` (i.e., the largest singular value).
 
         Default: "fro".
@@ -1108,7 +1150,7 @@ def matrix_norm(
     Examples
     --------
     With :class:`ivy.Array` inputs:
-    
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.matrix_norm(x)
     >>> print(y)
@@ -1118,30 +1160,29 @@ def matrix_norm(
     >>> y = ivy.zeros(2)
     >>> ivy.matrix_norm(x, ord=1, out=y)
     >>> print(y)
-    ivy.array([ 4., 12.])
+    ivy.array([4.0, 12.0])
 
     >>> x = ivy.arange(12, dtype=float).reshape((3, 2, 2))
     >>> ivy.matrix_norm(x, ord=ivy.inf, axis=(2, 1), out=x)
     >>> print(x)
-    ivy.array([ 4., 12., 20.])
+    ivy.array([4.0, 12.0, 20.0])
 
     >>> x = ivy.array([[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]])
     >>> y = ivy.matrix_norm(x, ord='nuc', keepdims=True)
     >>> print(y)
-    ivy.array([[11.]])
+    ivy.array([[11.0]])
 
     >>> x = ivy.array([[[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]], \
-                        [[1., 0., 1.1], [1., 1., 0.]]])   
+                        [[1., 0., 1.1], [1., 1., 0.]]])
     >>> ivy.matrix_norm(x, ord='fro', out=x)
     >>> print(x)
-    ivy.array([10.5 ,  2.05])
+    ivy.array([10.5, 2.05])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[0.666, 9.11], \
                                        [42.69, 9.23]]), \
-                          b=ivy.array([[1.1, 2.2, 3.3], \
-                                       [4.4, 5.5, 6.6]]))   
+                          b=ivy.array([[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]]))
     >>> y = ivy.matrix_norm(x, ord=-ivy.inf)
     >>> print(y)
     {
@@ -1150,18 +1191,17 @@ def matrix_norm(
     }
 
     With multiple :class:`ivy:Container` inputs:
-    
+
     >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
-                          b=ivy.arange(8, dtype=float).reshape((2, 2, 2))) 
+                          b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))
     >>> ord = ivy.Container(a=1, b=float('inf'))
     >>> axis = ivy.Container(a=(1, 2), b=(2, 1))
     >>> k = ivy.Container(a=False, b=True)
     >>> y = ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=k)
     >>> print(y)
     {
-        a: ivy.array([4., 12., 20.]),
-        b: ivy.array([[[4.]], 
-                      [[12.]]])
+        a: ivy.array([4.0, 12.0, 20.0]),
+        b: ivy.array([[[4.0]], [[12.0]]])
     }
     """
     return current_backend(x).matrix_norm(
@@ -1214,49 +1254,46 @@ def matrix_power(
 
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.matrix_power(x,1)
-    ivy.array([[1., 2.],
-               [3., 4.]])
+    ivy.array([[1.0, 2.0], [3.0, 4.0]])
 
     >>> x = ivy.array([[3., 2.], [-5., -3.]])
     >>> ivy.matrix_power(x,-1)
-    ivy.array([[-3., -2.],
-               [ 5.,  3.]])
+    ivy.array([[-3.0, -2.0], [5.0, 3.0]])
 
     >>> x = ivy.array([[4., -1.], [0., 2.]])
     >>> ivy.matrix_power(x,0)
-    ivy.array([[1., 0.],
-               [0., 1.]])
+    ivy.array([[1.0, 0.0], [0.0, 1.0]])
 
     >>> x = ivy.array([[1., 2.], [0., 1.]])
     >>> ivy.matrix_power(x,5)
-    ivy.array([[ 1., 10.],
-               [ 0.,  1.]])
+    ivy.array([[1.0, 10.0], [0.0, 1.0]])
 
     >>> x = ivy.array([[1/2, 0.], [0., -1/3]])
     >>> ivy.matrix_power(x,-2)
-    ivy.array([[4., 0.],
-               [0., 9.]])
+    ivy.array([[4.0, 0.0], [0.0, 9.0]])
 
 
     With :code: 'ivy.NativeArray' inputs:
 
     >>> x = ivy.native_array([[1., 2., 3.], [6., 5., 4.], [7., 8., 9.]])
     >>> ivy.matrix_power(x,2)
-    ivy.array([[ 34.,  36.,  38.],
-               [ 64.,  69.,  74.],
-               [118., 126., 134.]])
+    ivy.array(
+        [
+            [34.0, 36.0, 38.0],
+            [64.0, 69.0, 74.0],
+            [118.0, 126.0, 134.0],
+        ]
+    )
 
 
     With :code: 'ivy.Container' inputs:
 
     >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]),
-                          b = ivy.array([[1., 0.], [0., 0.]]))
+                          b = ivy.array([[1.0, 0.0], [0.0, 0.0]]))
     >>> ivy.matrix_power(x,3)
     {
-        a: ivy.array([[37., 54.],
-                      [81., 118.]]),
-        b: ivy.array([[1., 0.],
-                      [0., 0.]])
+        a: ivy.array([[37.0, 54.0], [81.0, 118.0]]),
+        b: ivy.array([[1.0, 0.0], [0.0, 0.0]])
     }
     """
     return current_backend(x).matrix_power(x, n, out=out)
@@ -1329,19 +1366,19 @@ def matrix_rank(
 
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.matrix_rank(x)
-    ivy.array(2.)
+    ivy.array(2.0)
 
     2. Rank Deficient Matrix
 
     >>> x = ivy.array([[1., 0.], [0., 0.]])
     >>> ivy.matrix_rank(x)
-    ivy.array(1.)
+    ivy.array(1.0)
 
     3. 1 Dimension - rank 1 unless all 0
 
     >>> x = ivy.array([[1., 1.])
     >>> ivy.matrix_rank(x)
-    ivy.array(1.)
+    ivy.array(1.0)
 
     >>> x = ivy.array([[0., 0.])
     >>> ivy.matrix_rank(x)
@@ -1351,15 +1388,15 @@ def matrix_rank(
 
     >>> x = ivy.native_array([[1., 2.], [3., 4.]], [[1., 0.], [0., 0.]])
     >>> ivy.matrix_rank(x)
-    ivy.array([2., 1.])
+    ivy.array([2.0, 1.0])
 
     With :code: 'ivy.Container' inputs:
     >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]), \
-                          b = ivy.array([[1., 0.], [0., 0.]]))
+                          b = ivy.array([[1.0, 0.0], [0.0, 0.0]]))
     >>> ivy.matrix_rank(x)
     {
-        a:ivy.array(2.),
-        b:ivy.array(1.)
+        a:ivy.array(2.0),
+        b:ivy.array(1.0)
     }
     """
     return current_backend(x).matrix_rank(x, atol=atol, rtol=rtol, out=out)
@@ -1416,38 +1453,31 @@ def matrix_transpose(
     >>> x = ivy.array([[0., 2.], [1., 3.]])
     >>> y = ivy.matrix_transpose(x)
     >>> print(y)
-    ivy.array([[0., 1.],
-               [2., 3.]])
+    ivy.array([[0.0, 1.0], [2.0, 3.0]])
 
     >>> x = ivy.array([[1., 4.], [2., 5.], [3., 1.]])
     >>> y = ivy.zeros((3, 2))
     >>> ivy.matrix_transpose(x, out=y)
-    ivy.array([[1., 2., 3.],
-               [4., 5., 1.]])
+    ivy.array([[1.0, 2.0, 3.0], [4.0, 5.0, 1.0]])
 
     >>> x = ivy.array([[2., 3.], [1., 2.]])
     >>> ivy.matrix_transpose(x, out=x)
-    ivy.array([[2., 1.],
-       [3., 2.]])
+    ivy.array([[2.0, 1.0], [3.0, 2.0]])
 
     >>> x = ivy.array([[0., 1., 2.], [1., 2., 3.]])
     >>> y = ivy.matrix_transpose(x)
     >>> print(y)
-    ivy.array([[0., 1.],
-               [1., 2.],
-               [2., 3.]])
+    ivy.array([[0.0, 1.0], [1.0, 2.0], [2.0, 3.0]])
 
     With :code: 'ivy.Container' inputs:
 
     >>> x = ivy.Container(a=ivy.array([[0., 1.], [0., 2.]]), \
-                          b=ivy.array([[3., 4.], [3., 5.]]))
+                          b=ivy.array([[3.0, 4.0], [3.0, 5.0]]))
     >>> y = ivy.matrix_transpose(x)
     >>> print(y)
     {
-        a: ivy.array([[0., 0.],
-                      [1., 2.]]),
-        b: ivy.array([[3., 3.],
-                      [4., 5.]])
+        a: ivy.array([[0.0, 0.0], [1.0, 2.0]]),
+        b: ivy.array([[3.0, 3.0], [4.0, 5.0]])
     }
     """
     return current_backend(x).matrix_transpose(x, conjugate=conjugate, out=out)
@@ -1465,7 +1495,8 @@ def outer(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the outer product of two vectors ``x1`` and ``x2``.
+    """
+    Return the outer product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
@@ -1503,17 +1534,18 @@ def outer(
     >>> y = ivy.array([[5., 6.],[7., 8.]])
     >>> d = ivy.outer(x,y)
     >>> print(d)
-    ivy.array([[ 5.,  6.,  7.,  8.],
-                [10., 12., 14., 16.],
-                [15., 18., 21., 24.],
-                [20., 24., 28., 32.]])
+    ivy.array(
+        [
+            [5.0, 6.0, 7.0, 8.0],
+            [10.0, 12.0, 14.0, 16.0],
+            [15.0, 18.0, 21.0, 24.0],
+            [20.0, 24.0, 28.0, 32.0],
+        ]
+    )
 
     >>> d = ivy.outer(x, 1)
     >>> print(d)
-    ivy.array([[1.],
-                [2.],
-                [3.],
-                [4.]])
+    ivy.array([[1.0], [2.0], [3.0], [4.0]])
 
     A 3-D Example
 
@@ -1527,15 +1559,90 @@ def outer(
                         [15., 16.]]])
     >>> d = ivy.outer(x, y)
     >>> print(d)
-    ivy.array([[  9.,  10.,  11.,  12.,  13.,  14.,  15.,  16.],
-                [ 18.,  20.,  22.,  24.,  26.,  28.,  30.,  32.],
-                [ 27.,  30.,  33.,  36.,  39.,  42.,  45.,  48.],
-                [ 36.,  40.,  44.,  48.,  52.,  56.,  60.,  64.],
-                [ 45.,  50.,  55.,  60.,  65.,  70.,  75.,  80.],
-                [ 54.,  60.,  66.,  72.,  78.,  84.,  90.,  96.],
-                [ 63.,  70.,  77.,  84.,  91.,  98., 105., 112.],
-                [ 72.,  80.,  88.,  96., 104., 112., 120., 128.]])
-
+    ivy.array(
+        [
+            [
+                9.0,
+                10.0,
+                11.0,
+                12.0,
+                13.0,
+                14.0,
+                15.0,
+                16.0,
+            ],
+            [
+                18.0,
+                20.0,
+                22.0,
+                24.0,
+                26.0,
+                28.0,
+                30.0,
+                32.0,
+            ],
+            [
+                27.0,
+                30.0,
+                33.0,
+                36.0,
+                39.0,
+                42.0,
+                45.0,
+                48.0,
+            ],
+            [
+                36.0,
+                40.0,
+                44.0,
+                48.0,
+                52.0,
+                56.0,
+                60.0,
+                64.0,
+            ],
+            [
+                45.0,
+                50.0,
+                55.0,
+                60.0,
+                65.0,
+                70.0,
+                75.0,
+                80.0,
+            ],
+            [
+                54.0,
+                60.0,
+                66.0,
+                72.0,
+                78.0,
+                84.0,
+                90.0,
+                96.0,
+            ],
+            [
+                63.0,
+                70.0,
+                77.0,
+                84.0,
+                91.0,
+                98.0,
+                105.0,
+                112.0,
+            ],
+            [
+                72.0,
+                80.0,
+                88.0,
+                96.0,
+                104.0,
+                112.0,
+                120.0,
+                128.0,
+            ],
+        ]
+    )
     """
     return current_backend(x1, x2).outer(x1, x2, out=out)
 
@@ -1553,7 +1660,8 @@ def pinv(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
+    """
+    Return the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
     ``x``.
 
     Parameters
@@ -1599,14 +1707,13 @@ def pinv(
     >>> x = ivy.array([[1., 2.],[3., 4.]])
     >>> y = ivy.pinv(x)
     >>> print(y)
-    ivy.array([[-2., 1.],[1.5, -0.5]])
+    ivy.array([[-2.0, 1.0], [1.5, -0.5]])
 
     >>> x = ivy.array([[1., 2.],[3., 4.]])
     >>> out = ivy.zeros(x.shape)
     >>> ivy.pinv(x, out=out)
     >>> print(out)
-    ivy.array([[-2., 1.],[1.5, -0.5]])
-
+    ivy.array([[-2.0, 1.0], [1.5, -0.5]])
     """
     return current_backend(x).pinv(x, rtol=rtol, out=out)
 
@@ -1670,7 +1777,6 @@ def qr(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).qr(x, mode=mode, out=out)
 
@@ -1688,12 +1794,12 @@ def slogdet(
     Return the sign and the natural logarithm of the absolute value of the determinant of a square matrix (or a stack of square matrices) ``x``.
     .. note::
        The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.
-    
+
     Parameters
     ----------
     x:
         input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Should have a real-valued floating-point data type.
-    
+
     Returns
     -------
     ret:
@@ -1751,7 +1857,6 @@ def slogdet(
             logabsdet = ivy.array(1.0986123)
         ]
     }
-
     """
     return current_backend(x).slogdet(x)
 
@@ -1805,7 +1910,6 @@ def solve(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x1, x2).solve(x1, x2, out=out)
 
@@ -1822,7 +1926,8 @@ def svd(
     compute_uv: bool = True,
     full_matrices: bool = True,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-    """Return a singular value decomposition A = USVh of a matrix (or a stack of
+    """
+    Return a singular value decomposition A = USVh of a matrix (or a stack of
     matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal
     columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh``
     is a matrix (or a stack of matrices) with orthonormal rows.
@@ -1942,7 +2047,8 @@ def svd(
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Return the singular values of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the singular values of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -2052,7 +2158,6 @@ def svdvals(
         a: ivy.array([13., 4.64, 2.55]),
         b: ivy.array([23.2, 10.4, 4.31, 1.36])
     }
-
     """
     return current_backend(x).svdvals(x, out=out)
 
@@ -2197,7 +2302,8 @@ def trace(
     axis2: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the sum along the specified diagonals of a matrix (or a stack of
+    """
+    Return the sum along the specified diagonals of a matrix (or a stack of
     matrices) ``x``.
 
     Parameters
@@ -2238,7 +2344,7 @@ def trace(
     ...                [3., 5., 6.]])
     >>> y = ivy.trace(x, offset=0)
     >>> print(y)
-    ivy.array(7.)
+    ivy.array(7.0)
 
     >>> x = ivy.array([[[1., 2.],
     ...                 [3., 4.]],
@@ -2246,14 +2352,14 @@ def trace(
     ...                 [7., 8.]]])
     >>> y = ivy.trace(x, offset=1)
     >>> print(y)
-    ivy.array([3., 4.])
+    ivy.array([3.0, 4.0])
 
     With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[2., 0., 3.],[3., 5., 6.]])
     >>> y = ivy.trace(x, offset=0)
     >>> print(y)
-    ivy.array(7.)
+    ivy.array(7.0)
 
     >>> x = ivy.native_array([[0, 1, 2],
     ...                       [3, 4, 5],
@@ -2379,7 +2485,8 @@ def vector_norm(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Compute the vector norm of a vector (or batch of vectors) ``x``.
+    r"""
+    Compute the vector norm of a vector (or batch of vectors) ``x``.
 
     Parameters
     ----------
@@ -2462,7 +2569,7 @@ def vector_norm(
     >>> x = ivy.array([[1, 2, 3], [1.3, 2.4, -1.2]])
     >>> y = ivy.vector_norm(x, axis = 1, ord = 1, dtype = ivy.float32)
     >>> print(y)
-    ivy.array([6., 4.9000001])
+    ivy.array([6.0, 4.9000001])
 
     >>> x = ivy.array([[1, 2, 3], [1.3, 2.4, -1.2]])
     >>> y = ivy.vector_norm(x, axis = 0, keepdims = True,  ord = float("inf"))
@@ -2479,12 +2586,12 @@ def vector_norm(
     >>> x = ivy.array([1,2,3,4], dtype = ivy.float16)
     >>> z = ivy.empty(shape = 1)
     >>> print(z)
-    ivy.array([0.  , 2.  , 0.  , 2.25])
+    ivy.array([0.0, 2.0, 0.0, 2.25])
     >>> y = ivy.vector_norm(x, ord = 0, out = z)
     >>> print(z)
-    ivy.array([4.])
+    ivy.array([4.0])
     >>> print(y)
-    ivy.array([4.])
+    ivy.array([4.0])
 
     >>> x = ivy.arange(8).reshape((2,2,2))
     >>> y = ivy.vector_norm(x, axis = (0,1), ord = float("-inf"))
@@ -2496,9 +2603,8 @@ def vector_norm(
     >>> print(y)
     {
         a: ivy.array([0.33333334]),
-        b: ivy.array([0.])
+        b: ivy.array([0.0])
     }
-
     """
     return current_backend(x).vector_norm(
         x, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
@@ -2636,29 +2742,25 @@ def vander(
     >>> x = ivy.array([1, 2, 3, 5])
     >>> ivy.vander(x)
     ivy.array(
-       [[  1,   1,   1,   1],
-        [  8,   4,   2,   1],
-        [ 27,   9,   3,   1],
-        [125,  25,   5,   1]]
-        )
+        [
+            [1, 1, 1, 1],
+            [8, 4, 2, 1],
+            [27, 9, 3, 1],
+            [125, 25, 5, 1],
+        ]
+    )
 
     >>> x = ivy.array([1, 2, 3, 5])
     >>> ivy.vander(x, N=3)
     ivy.array(
-       [[ 1,  1,  1],
-        [ 4,  2,  1],
-        [ 9,  3,  1],
-        [25,  5,  1]]
-        )
+        [[1, 1, 1], [4, 2, 1], [9, 3, 1], [25, 5, 1]]
+    )
 
     >>> x = ivy.array([1, 2, 3, 5])
     >>> ivy.vander(x, N=3, increasing=True)
     ivy.array(
-       [[ 1,  1,  1],
-        [ 1,  2,  4],
-        [ 1,  3,  9],
-        [ 1,  5, 25]]
-        )
+        [[1, 1, 1], [1, 2, 4], [1, 3, 9], [1, 5, 25]]
+    )
     """
     return current_backend().vander(x, N=N, increasing=increasing, out=out)
 

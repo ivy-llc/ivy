@@ -56,10 +56,15 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> x = ivy.Container({'a': a, 'b': b})
         >>> print(ivy.Container.static_max_pool1d(x,2, 2, "VALID"))
         {
-            a: ivy.array([[[3., 4., 5.]],
-                          [[9., 10., 11.]]]),
-            b: ivy.array([[[4., 5., 6., 7.]],
-                          [[16., 17., 18., 19.]]])
+            a: ivy.array(
+                   [[[3.0, 4.0, 5.0]], [[9.0, 10.0, 11.0]]]
+               ),
+            b: ivy.array(
+                   [
+                       [[4.0, 5.0, 6.0, 7.0]],
+                       [[16.0, 17.0, 18.0, 19.0]],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -124,10 +129,15 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> x = ivy.Container({'a': a, 'b': b})
         >>> print(x.max_pool1d(2, 2, "VALID"))
         {
-            a: ivy.array([[[3., 4., 5.]],
-                          [[9., 10., 11.]]]),
-            b: ivy.array([[[4., 5., 6., 7.]],
-                          [[16., 17., 18., 19.]]])
+            a: ivy.array(
+                   [[[3.0, 4.0, 5.0]], [[9.0, 10.0, 11.0]]]
+               ),
+            b: ivy.array(
+                   [
+                       [[4.0, 5.0, 6.0, 7.0]],
+                       [[16.0, 17.0, 18.0, 19.0]],
+                   ]
+               )
         }
         """
         return self.static_max_pool1d(
@@ -335,10 +345,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> print(ivy.Container.static_max_pool3d(x, 2, 1, "VALID"))
         {
             a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[20, 21],
-                             [22, 23]]]],
-                       [[[[44, 45],
-                             [46, 47]]]]])
+            b: ivy.array(
+                   [
+                       [[[[20, 21], [22, 23]]]],
+                       [[[[44, 45], [46, 47]]]],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -404,10 +416,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> print(x.max_pool3d(2, 1, "VALID"))
         {
             a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[20, 21],
-                             [22, 23]]]],
-                       [[[[44, 45],
-                             [46, 47]]]]])
+            b: ivy.array(
+                   [
+                       [[[[20, 21], [22, 23]]]],
+                       [[[[44, 45], [46, 47]]]],
+                   ]
+               )
         }
         """
         return self.static_max_pool3d(
@@ -478,10 +492,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> x = ivy.Container({'a': a, 'b': b})
         >>> print(ivy.Container.static_avg_pool1d(x,2, 2, "VALID"))
         {
-            a: ivy.array([[[1.5, 2.5, 3.5]],
-                          [[7.5, 8.5, 9.5]]]),
-            b: ivy.array([[[2., 3., 4., 5.]],
-                          [[14., 15., 16., 17.]]])
+            a: ivy.array([[[1.5, 2.5, 3.5]], [[7.5, 8.5, 9.5]]]),
+            b: ivy.array(
+                   [
+                       [[2.0, 3.0, 4.0, 5.0]],
+                       [[14.0, 15.0, 16.0, 17.0]],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -554,10 +571,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> x = ivy.Container({'a': a, 'b': b})
         >>> print(x.avg_pool1d(2, 2, "VALID"))
         {
-            a: ivy.array([[[1.5, 2.5, 3.5]],
-                          [[7.5, 8.5, 9.5]]]),
-            b: ivy.array([[[2., 3., 4., 5.]],
-                          [[14., 15., 16., 17.]]])
+            a: ivy.array([[[1.5, 2.5, 3.5]], [[7.5, 8.5, 9.5]]]),
+            b: ivy.array(
+                   [
+                       [[2.0, 3.0, 4.0, 5.0]],
+                       [[14.0, 15.0, 16.0, 17.0]],
+                   ]
+               )
         }
         """
         return self.static_avg_pool1d(
@@ -792,10 +812,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> print(ivy.Container.static_avg_pool3d(x, 2, 1, "VALID"))
         {
             a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[10., 11.],
-                             [12., 13.]]]],
-                       [[[[34., 35.],
-                             [36., 37.]]]]])
+            b: ivy.array(
+                   [
+                       [[[[10.0, 11.0], [12.0, 13.0]]]],
+                       [[[[34.0, 35.0], [36.0, 37.0]]]],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -873,10 +895,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> print(x.max_pool3d(2, 1, "VALID"))
         {
             a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[20, 21],
-                             [22, 23]]]],
-                       [[[[44, 45],
-                             [46, 47]]]]])
+            b: ivy.array(
+                   [
+                       [[[[20, 21], [22, 23]]]],
+                       [[[[44, 45], [46, 47]]]],
+                   ]
+               )
         }
         """
         return self.static_avg_pool3d(
@@ -942,10 +966,30 @@ class _ContainerWithLayersExperimental(ContainerBase):
         ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
         >>> ivy.Container.static_dct(x, type=2, norm='ortho')
         {
-            a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0.,
-                        -0.406]),
-            b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0.,
-                        -0.0507])
+            a: ivy.array(
+                   [
+                       102.0,
+                       -51.5,
+                       0.0,
+                       -5.39,
+                       0.0,
+                       -1.61,
+                       0.0,
+                       -0.406,
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       12.7,
+                       -6.44,
+                       0.0,
+                       -0.673,
+                       0.0,
+                       -0.201,
+                       0.0,
+                       -0.0507,
+                   ]
+               )
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -957,9 +1001,20 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> norm = ivy.Container(a="ortho", b=None)
         >>> ivy.Container.static_dct(x, type=type, n=n, norm=norm)
         {
-            a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9,
-                        -5.89]),
-            b: ivy.array([242., -253., 286., -515., 467.])
+            a: ivy.array(
+                   [
+                       96.0,
+                       -28.2,
+                       -31.9,
+                       22.9,
+                       -26.0,
+                       19.8,
+                       -17.0,
+                       10.9,
+                       -5.89,
+                   ]
+               ),
+            b: ivy.array([242.0, -253.0, 286.0, -515.0, 467.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1016,10 +1071,30 @@ class _ContainerWithLayersExperimental(ContainerBase):
         ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
         >>> x.dct(type=2, norm='ortho')
         {
-            a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0.,
-                        -0.406]),
-            b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0.,
-                        -0.0507])
+            a: ivy.array(
+                   [
+                       102.0,
+                       -51.5,
+                       0.0,
+                       -5.39,
+                       0.0,
+                       -1.61,
+                       0.0,
+                       -0.406,
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       12.7,
+                       -6.44,
+                       0.0,
+                       -0.673,
+                       0.0,
+                       -0.201,
+                       0.0,
+                       -0.0507,
+                   ]
+               )
         }
         """
         return self.static_dct(
@@ -1084,11 +1159,26 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> dims = ivy.Container(a=0, b=0)
         >>> ivy.Container.static_fft(c, dims)
         {
-        a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),
-        b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,
-                       2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,
-                       9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,
-                       1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
+        a: ivy.array(
+               [
+                   0.0 + 0.0j,
+                   12.0 + 0.0j,
+                   8.0 + 0.0j,
+                   4.0 + 0.0j,
+               ]
+           ),
+        b: ivy.array(
+               [
+                   -3.44509285e-16 + 1.14423775e-17j,
+                   8.00000000e00 - 8.11483250e-16j,
+                   2.33486982e-16 + 1.22464680e-16j,
+                   0.00000000e00 + 1.22464680e-16j,
+                   9.95799250e-17 + 2.33486982e-16j,
+                   0.00000000e00 + 7.66951701e-17j,
+                   1.14423775e-17 + 1.22464680e-16j,
+                   0.00000000e00 + 1.22464680e-16j,
+               ]
+           )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1152,11 +1242,26 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> dims = ivy.Container(a=0, b=0)
         >>> c.fft(dims)
         {
-        a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),
-        b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,
-                       2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,
-                       9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,
-                       1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
+        a: ivy.array(
+               [
+                   0.0 + 0.0j,
+                   12.0 + 0.0j,
+                   8.0 + 0.0j,
+                   4.0 + 0.0j,
+               ]
+           ),
+        b: ivy.array(
+               [
+                   -3.44509285e-16 + 1.14423775e-17j,
+                   8.00000000e00 - 8.11483250e-16j,
+                   2.33486982e-16 + 1.22464680e-16j,
+                   0.00000000e00 + 1.22464680e-16j,
+                   9.95799250e-17 + 2.33486982e-16j,
+                   0.00000000e00 + 7.66951701e-17j,
+                   1.14423775e-17 + 1.22464680e-16j,
+                   0.00000000e00 + 1.22464680e-16j,
+               ]
+           )
         }
         """
         return self.static_fft(
@@ -1219,11 +1324,26 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> dims = ivy.Container(a=0, b=0)
         >>> ivy.Container.static_ifft(c, dims)
         {
-        a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
-        b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
-                       1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
-                       1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
-                       2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
+        a: ivy.array(
+               [
+                   0.0 + 0.0j,
+                   1.0 + 0.0j,
+                   2.0 + 0.0j,
+                   3.0 + 0.0j,
+               ]
+           ),
+        b: ivy.array(
+               [
+                   -4.30636606e-17 + 1.43029718e-18j,
+                   0.00000000e00 + 1.53080850e-17j,
+                   1.43029718e-18 + 1.53080850e-17j,
+                   0.00000000e00 + 9.58689626e-18j,
+                   1.24474906e-17 + 2.91858728e-17j,
+                   0.00000000e00 + 1.53080850e-17j,
+                   2.91858728e-17 + 1.53080850e-17j,
+                   1.00000000e00 - 1.01435406e-16j,
+               ]
+           )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1286,11 +1406,26 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> dims = ivy.Container(a=0, b=0)
         >>> c.ifft(dims)
         {
-        a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
-        b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
-                       1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
-                       1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
-                       2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
+        a: ivy.array(
+               [
+                   0.0 + 0.0j,
+                   1.0 + 0.0j,
+                   2.0 + 0.0j,
+                   3.0 + 0.0j,
+               ]
+           ),
+        b: ivy.array(
+               [
+                   -4.30636606e-17 + 1.43029718e-18j,
+                   0.00000000e00 + 1.53080850e-17j,
+                   1.43029718e-18 + 1.53080850e-17j,
+                   0.00000000e00 + 9.58689626e-18j,
+                   1.24474906e-17 + 2.91858728e-17j,
+                   0.00000000e00 + 1.53080850e-17j,
+                   2.91858728e-17 + 1.53080850e-17j,
+                   1.00000000e00 - 1.01435406e-16j,
+               ]
+           )
         }
         """
         return self.static_ifft(
@@ -1366,7 +1501,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-
         Parameters
         ----------
         x
@@ -1380,7 +1514,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied
         map_sequences
         out
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "dft",
@@ -1413,7 +1546,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-
         Parameters
         ----------
         axis
@@ -1426,7 +1558,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied
         map_sequences
         out
-
         """
         return self.static_dft(
             self,

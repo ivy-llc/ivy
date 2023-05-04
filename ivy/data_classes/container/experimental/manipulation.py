@@ -159,7 +159,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> x2 = ivy.Container(a=0.5, b=[1.0, 2.0])
         >>> ivy.Container.static_heaviside(x1, x2)
         {
-            a: ivy.array([ 0. ,  0.5,  1. ])
+            a: ivy.array([0.0, 0.5, 1.0])
             b: ivy.array([1.0, 1.0])
         }
         """
@@ -207,7 +207,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> x2 = ivy.Container(a=0.5, b=[1.0, 2.0])
         >>> x1.heaviside(x2)
         {
-            a: ivy.array([ 0. ,  0.5,  1. ])
+            a: ivy.array([0.0, 0.5, 1.0])
             b: ivy.array([1.0, 1.0])
         }
         """
@@ -251,10 +251,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> ivy.Container.static_flipud(m)
         {
             a: ivy.array(
-                [[ 0.,  0.,  3.],
-                 [ 0.,  2.,  0.],
-                 [ 1.,  0.,  0.]]
-            )
+                   [
+                       [0.0, 0.0, 3.0],
+                       [0.0, 2.0, 0.0],
+                       [1.0, 0.0, 0.0],
+                   ]
+               )
             b: ivy.array([3, 2, 1, 0])
         }
         """
@@ -302,10 +304,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> m.flipud()
         {
             a: ivy.array(
-                [[ 0.,  0.,  3.],
-                 [ 0.,  2.,  0.],
-                 [ 1.,  0.,  0.]]
-            )
+                   [
+                       [0.0, 0.0, 3.0],
+                       [0.0, 2.0, 0.0],
+                       [1.0, 0.0, 0.0],
+                   ]
+               )
             b: ivy.array([3, 2, 1, 0])
         }
         """
@@ -336,12 +340,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> x.vstack([y])
         {
-            a: ivy.array([[[0, 1],
-                        [2, 3]],
-                        [[3, 2],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5]],
-                        [[1, 0]]])
+            a: ivy.array([[[0, 1], [2, 3]], [[3, 2], [1, 0]]]),
+            b: ivy.array([[[4, 5]], [[1, 0]]])
         }
         """
         new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
@@ -383,11 +383,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> y = ivy.Container.static_vstack(c)
         >>> print(y)
         {
-            a: ivy.array([[1, 2, 3],
-                          [0, 0, 0]]),
-            b: ivy.array([[0],
-                          [1],
-                          [2]])
+            a: ivy.array([[1, 2, 3], [0, 0, 0]]),
+            b: ivy.array([[0], [1], [2]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -426,8 +423,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> z = x.hstack([y])
         >>> print(z)
         {
-            a: ivy.array([[0, 1, 3, 2],
-                          [2, 3, 1, 0]]),
+            a: ivy.array([[0, 1, 3, 2], [2, 3, 1, 0]]),
             b: ivy.array([[4, 5, 1, 0]])
         }
         """
@@ -526,21 +522,16 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             Container with a rotated view of m.
-            
+
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
-                        b=ivy.array([[1,2,3,4],\
-                                    [7,8,9,10]]))
+                        b=ivy.array([[1, 2, 3, 4], [7, 8, 9, 10]]))
         >>> n = ivy.Container.static_rot90(m)
         >>> print(n)
         {
-            a: ivy.array([[2, 4],
-                          [1, 3]]),
-            b: ivy.array([[4, 10],
-                          [3, 9],
-                          [2, 8],
-                          [1, 7]])
+            a: ivy.array([[2, 4], [1, 3]]),
+            b: ivy.array([[4, 10], [3, 9], [2, 8], [1, 7]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -609,12 +600,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> n = m.rot90()
         >>> print(n)
         {
-            a: ivy.array([[2, 4],
-                          [1, 3]]),
-            b: ivy.array([[4, 10],
-                          [3, 9],
-                          [2, 8],
-                          [1, 7]])
+            a: ivy.array([[2, 4], [1, 3]]),
+            b: ivy.array([[4, 10], [3, 9], [2, 8], [1, 7]])
         }
         """
         return self.static_rot90(
@@ -687,11 +674,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> print(y)
         {
             a: [
-                values = ivy.array([ 2, -1]),
+                values = ivy.array([2, -1]),
                 indices = ivy.array([1, 0])
             ],
             b: [
-                values = ivy.array([5., 4.]),
+                values = ivy.array([5.0, 4.0]),
                 indices = ivy.array([1, 0])
             ]
         }
@@ -766,11 +753,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> print(y)
         {
             a: [
-                values = ivy.array([ 2, -1]),
+                values = ivy.array([2, -1]),
                 indices = ivy.array([1, 0])
             ],
             b: [
-                values = ivy.array([5., 4.]),
+                values = ivy.array([5.0, 4.0]),
                 indices = ivy.array([1, 0])
             ]
         }
@@ -835,11 +822,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ...                    b=ivy.array([[1, 2, 3],[4, 5, 6]]))
         >>> ivy.Container.static_fliplr(m)
         {
-            a: ivy.array([[0, 0, 1],
-                          [0, 2, 0],
-                          [3, 0, 0]]),
-            b: ivy.array([[3, 2, 1],
-                          [6, 5, 4]])
+            a: ivy.array([[0, 0, 1], [0, 2, 0], [3, 0, 0]]),
+            b: ivy.array([[3, 2, 1], [6, 5, 4]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -886,11 +870,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ...                    b=ivy.array([[1, 2, 3],[4, 5, 6]]))
         >>> m.fliplr()
         {
-            a: ivy.array([[0, 0, 1],
-                          [0, 2, 0],
-                          [3, 0, 0]]),
-            b: ivy.array([[3, 2, 1],
-                          [6, 5, 4]])
+            a: ivy.array([[0, 0, 1], [0, 2, 0], [3, 0, 0]]),
+            b: ivy.array([[3, 2, 1], [6, 5, 4]])
         }
         """
         return self.static_fliplr(self, copy=copy, out=out)
@@ -931,7 +912,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))
         >>> ivy.Container.static_i0(x)
         {
-            a: ivy.array([1.26606588, 2.2795853 , 4.88079259])
+            a: ivy.array([1.26606588, 2.2795853, 4.88079259])
             b: ivy.array(11.30192195)
         }
         """
@@ -976,7 +957,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))
         >>> x.i0()
         {
-            a: ivy.array([1.26606588, 2.2795853 , 4.88079259])
+            a: ivy.array([1.26606588, 2.2795853, 4.88079259])
             b: ivy.array(11.30192195)
         }
         """
@@ -1280,29 +1261,34 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         --------
         >>> ary = ivy.Container(
                 a = ivy.array(
-                        [[[0.,  1.],
-                          [2.,  3.]],
-                          [[4.,  5.],
-                          [6.,  7.]]]
+                        [
+                            [[0.0, 1.0], [2.0, 3.0]],
+                            [[4.0, 5.0], [6.0, 7.0]],
+                        ]
                     ),
                 b=ivy.array(
-                        [[ 0.,  1.,  2.,  3.],
-                         [ 4.,  5.,  6.,  7.],
-                         [ 8.,  9., 10., 11.],
-                         [12., 13., 14., 15.]]
-                    )
+                      [
+                          [0.0, 1.0, 2.0, 3.0],
+                          [4.0, 5.0, 6.0, 7.0],
+                          [8.0, 9.0, 10.0, 11.0],
+                          [12.0, 13.0, 14.0, 15.0],
+                      ]
+                  )
                 )
         >>> ivy.Container.static_vsplit(ary, 2)
         [{
-            a: ivy.array([[[0., 1.],
-                           [2., 3.]]]),
-            b: ivy.array([[0., 1., 2., 3.],
-                          [4., 5., 6., 7.]])
+            a: ivy.array([[[0.0, 1.0], [2.0, 3.0]]]),
+            b: ivy.array(
+                   [[0.0, 1.0, 2.0, 3.0], [4.0, 5.0, 6.0, 7.0]]
+               )
         }, {
-            a: ivy.array([[[4., 5.],
-                           [6., 7.]]]),
-            b: ivy.array([[8., 9., 10., 11.],
-                          [12., 13., 14., 15.]])
+            a: ivy.array([[[4.0, 5.0], [6.0, 7.0]]]),
+            b: ivy.array(
+                   [
+                       [8.0, 9.0, 10.0, 11.0],
+                       [12.0, 13.0, 14.0, 15.0],
+                   ]
+               )
         }]
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1346,29 +1332,34 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         --------
         >>> ary = ivy.Container(
                 a = ivy.array(
-                        [[[0.,  1.],
-                          [2.,  3.]],
-                          [[4.,  5.],
-                          [6.,  7.]]]
+                        [
+                            [[0.0, 1.0], [2.0, 3.0]],
+                            [[4.0, 5.0], [6.0, 7.0]],
+                        ]
                     ),
                 b=ivy.array(
-                        [[ 0.,  1.,  2.,  3.],
-                         [ 4.,  5.,  6.,  7.],
-                         [ 8.,  9., 10., 11.],
-                         [12., 13., 14., 15.]]
-                    )
+                      [
+                          [0.0, 1.0, 2.0, 3.0],
+                          [4.0, 5.0, 6.0, 7.0],
+                          [8.0, 9.0, 10.0, 11.0],
+                          [12.0, 13.0, 14.0, 15.0],
+                      ]
+                  )
                 )
         >>> ary.vsplit(2)
         [{
-            a: ivy.array([[[0., 1.],
-                           [2., 3.]]]),
-            b: ivy.array([[0., 1., 2., 3.],
-                          [4., 5., 6., 7.]])
+            a: ivy.array([[[0.0, 1.0], [2.0, 3.0]]]),
+            b: ivy.array(
+                   [[0.0, 1.0, 2.0, 3.0], [4.0, 5.0, 6.0, 7.0]]
+               )
         }, {
-            a: ivy.array([[[4., 5.],
-                           [6., 7.]]]),
-            b: ivy.array([[8., 9., 10., 11.],
-                          [12., 13., 14., 15.]])
+            a: ivy.array([[[4.0, 5.0], [6.0, 7.0]]]),
+            b: ivy.array(
+                   [
+                       [8.0, 9.0, 10.0, 11.0],
+                       [12.0, 13.0, 14.0, 15.0],
+                   ]
+               )
         }]
         """
         return self.static_vsplit(self, indices_or_sections, copy=copy)
@@ -1419,27 +1410,47 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         --------
         >>> ary = ivy.Container(
             a = ivy.array(
-                    [[[0.,  1.],
-                      [2.,  3.]],
-                      [[4.,  5.],
-                      [6.,  7.]]]
+                    [
+                        [[0.0, 1.0], [2.0, 3.0]],
+                        [[4.0, 5.0], [6.0, 7.0]],
+                    ]
                 ),
             b=ivy.array(
-                    [[[ 0.,  1.,  2.,  3.],
-                      [ 4.,  5.,  6.,  7.],
-                      [ 8.,  9., 10., 11.],
-                      [12., 13., 14., 15.]]]
-                )
+                  [
+                      [
+                          [0.0, 1.0, 2.0, 3.0],
+                          [4.0, 5.0, 6.0, 7.0],
+                          [8.0, 9.0, 10.0, 11.0],
+                          [12.0, 13.0, 14.0, 15.0],
+                      ]
+                  ]
+              )
             )
         >>> ivy.Container.static_dsplit(ary, 2)
         [{
-            a: ivy.array([[[0.], [2.]],
-                          [[4.], [6.]]]),
-            b: ivy.array([[[0., 1.], [4., 5.], [8., 9.], [12., 13.]]])
+            a: ivy.array([[[0.0], [2.0]], [[4.0], [6.0]]]),
+            b: ivy.array(
+                   [
+                       [
+                           [0.0, 1.0],
+                           [4.0, 5.0],
+                           [8.0, 9.0],
+                           [12.0, 13.0],
+                       ]
+                   ]
+               )
         }, {
-            a: ivy.array([[[1.], [3.]],
-                          [[5.], [7.]]]),
-            b: ivy.array([[[2., 3.], [6., 7.], [10., 11.], [14., 15.]]])
+            a: ivy.array([[[1.0], [3.0]], [[5.0], [7.0]]]),
+            b: ivy.array(
+                   [
+                       [
+                           [2.0, 3.0],
+                           [6.0, 7.0],
+                           [10.0, 11.0],
+                           [14.0, 15.0],
+                       ]
+                   ]
+               )
         }]
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1484,27 +1495,47 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         --------
         >>> ary = ivy.Container(
             a = ivy.array(
-                    [[[0.,  1.],
-                      [2.,  3.]],
-                      [[4.,  5.],
-                      [6.,  7.]]]
+                    [
+                        [[0.0, 1.0], [2.0, 3.0]],
+                        [[4.0, 5.0], [6.0, 7.0]],
+                    ]
                 ),
             b=ivy.array(
-                    [[[ 0.,  1.,  2.,  3.],
-                      [ 4.,  5.,  6.,  7.],
-                      [ 8.,  9., 10., 11.],
-                      [12., 13., 14., 15.]]]
-                )
+                  [
+                      [
+                          [0.0, 1.0, 2.0, 3.0],
+                          [4.0, 5.0, 6.0, 7.0],
+                          [8.0, 9.0, 10.0, 11.0],
+                          [12.0, 13.0, 14.0, 15.0],
+                      ]
+                  ]
+              )
             )
         >>> ary.dsplit(2)
         [{
-            a: ivy.array([[[0.], [2.]],
-                          [[4.], [6.]]]),
-            b: ivy.array([[[0., 1.], [4., 5.], [8., 9.], [12., 13.]]])
+            a: ivy.array([[[0.0], [2.0]], [[4.0], [6.0]]]),
+            b: ivy.array(
+                   [
+                       [
+                           [0.0, 1.0],
+                           [4.0, 5.0],
+                           [8.0, 9.0],
+                           [12.0, 13.0],
+                       ]
+                   ]
+               )
         }, {
-            a: ivy.array([[[1.], [3.]],
-                          [[5.], [7.]]]),
-            b: ivy.array([[[2., 3.], [6., 7.], [10., 11.], [14., 15.]]])
+            a: ivy.array([[[1.0], [3.0]], [[5.0], [7.0]]]),
+            b: ivy.array(
+                   [
+                       [
+                           [2.0, 3.0],
+                           [6.0, 7.0],
+                           [10.0, 11.0],
+                           [14.0, 15.0],
+                       ]
+                   ]
+               )
         }]
         """
         return self.static_dsplit(self, indices_or_sections, copy=copy)
@@ -1656,12 +1687,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> x.dstack([y])
         {
-            a: ivy.array([[[0, 3],
-                           [1, 2]],
-                          [[2, 1],
-                           [3, 0]]]),
-            b: ivy.array([[[4, 1]],
-                           [[5, 0]]])
+            a: ivy.array([[[0, 3], [1, 2]], [[2, 1], [3, 0]]]),
+            b: ivy.array([[[4, 1]], [[5, 0]]])
         }
         """
         new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
@@ -1701,10 +1728,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                               b=ivy.arange(3))
         >>> ivy.Container.static_dstack(c)
         {
-            a: ivy.array([[1, 0],
-                          [2, 0]
-                          [3,0]]),
-            b: ivy.array([[0, 1, 2])
+            a: ivy.array([[1, 0], [2, 0][3, 0]]),
+            b: ivy.array([0, 1, 2])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1884,9 +1909,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> ivy.Container.static_atleast_3d(ary)
         {
             a: ivy.array([[[1]]]),
-            b: ivy.array([[[3],
-                           [4],
-                           [5]]]),
+            b: ivy.array([[[3], [4], [5]]]),
             c: ivy.array([[[3]]])
         }
         """
@@ -1949,8 +1972,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> ary1.atleast_3d(ary2)
         [{
             a: ivy.array([[[1]]]),
-            b: ivy.array([[[3],
-                           [4]]]),
+            b: ivy.array([[[3], [4]]]),
             c: ivy.array([[[5]]])
         }, {
             a: ivy.array([[[9]]]),
@@ -2024,10 +2046,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                                     b=ivy.array([[1, 0], [1, 0]]))
         >>> ivy.Container.static_take_along_axis(arr, indices, axis=1)
         {
-            a: ivy.array([[1, 1],
-                          [4, 4]]),
-            b: ivy.array([[6, 5],
-                          [8, 7]])
+            a: ivy.array([[1, 1], [4, 4]]),
+            b: ivy.array([[6, 5], [8, 7]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2098,10 +2118,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                                     b=ivy.array([[1, 0], [1, 0]]))
         >>> arr.take_along_axis(indices, axis=1)
         [{
-            a: ivy.array([[1, 1],
-                          [4, 4]]),
-            b: ivy.array([[6, 5],
-                            [8, 7]])
+            a: ivy.array([[1, 1], [4, 4]]),
+            b: ivy.array([[6, 5], [8, 7]])
         }]
         """
         return self.static_take_along_axis(
@@ -2163,27 +2181,43 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         --------
         >>> ary = ivy.Container(
             a = ivy.array(
-                    [[[0.,  1.],
-                      [2.,  3.]],
-                      [[4.,  5.],
-                      [6.,  7.]]]
+                    [
+                        [[0.0, 1.0], [2.0, 3.0]],
+                        [[4.0, 5.0], [6.0, 7.0]],
+                    ]
                 ),
             b=ivy.array(
-                    [0.,  1.,  2.,  3.,
-                     4.,  5.,  6.,  7.,
-                     8.,  9.,  10., 11.,
-                     12., 13., 14., 15.]
-                )
+                  [
+                      0.0,
+                      1.0,
+                      2.0,
+                      3.0,
+                      4.0,
+                      5.0,
+                      6.0,
+                      7.0,
+                      8.0,
+                      9.0,
+                      10.0,
+                      11.0,
+                      12.0,
+                      13.0,
+                      14.0,
+                      15.0,
+                  ]
+              )
             )
         >>> ivy.Container.static_hsplit(ary, 2)
         [{
-            a: ivy.array([[[0., 1.]],
-                          [[4., 5.]]]),
-            b: ivy.array([0., 1., 2., 3., 4., 5., 6., 7.])
+            a: ivy.array([[[0.0, 1.0]], [[4.0, 5.0]]]),
+            b: ivy.array(
+                   [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+               )
         }, {
-            a: ivy.array([[[2., 3.]],
-                          [[6., 7.]]]),
-            b: ivy.array([8., 9., 10., 11., 12., 13., 14., 15.])
+            a: ivy.array([[[2.0, 3.0]], [[6.0, 7.0]]]),
+            b: ivy.array(
+                   [8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0]
+               )
         }]
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2227,27 +2261,43 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         --------
         >>> ary = ivy.Container(
             a = ivy.array(
-                    [[[0.,  1.],
-                      [2.,  3.]],
-                      [[4.,  5.],
-                      [6.,  7.]]]
+                    [
+                        [[0.0, 1.0], [2.0, 3.0]],
+                        [[4.0, 5.0], [6.0, 7.0]],
+                    ]
                 ),
             b=ivy.array(
-                    [0.,  1.,  2.,  3.,
-                     4.,  5.,  6.,  7.,
-                     8.,  9.,  10., 11.,
-                     12., 13., 14., 15.]
-                )
+                  [
+                      0.0,
+                      1.0,
+                      2.0,
+                      3.0,
+                      4.0,
+                      5.0,
+                      6.0,
+                      7.0,
+                      8.0,
+                      9.0,
+                      10.0,
+                      11.0,
+                      12.0,
+                      13.0,
+                      14.0,
+                      15.0,
+                  ]
+              )
             )
         >>> ary.hsplit(2)
         [{
-            a: ivy.array([[[0., 1.]],
-                          [[4., 5.]]]),
-            b: ivy.array([0., 1., 2., 3., 4., 5., 6., 7.])
+            a: ivy.array([[[0.0, 1.0]], [[4.0, 5.0]]]),
+            b: ivy.array(
+                   [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+               )
         }, {
-            a: ivy.array([[[2., 3.]],
-                          [[6., 7.]]]),
-            b: ivy.array([8., 9., 10., 11., 12., 13., 14., 15.])
+            a: ivy.array([[[2.0, 3.0]], [[6.0, 7.0]]]),
+            b: ivy.array(
+                   [8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0]
+               )
         }]
         """
         return self.static_hsplit(self, indices_or_sections, copy=copy)
@@ -2355,7 +2405,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-
         Parameters
         ----------
         x
@@ -2366,7 +2415,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         to_apply
         prune_unapplied
         map_sequences
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "expand",
@@ -2389,13 +2437,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-
         Parameters
         ----------
         shape
         device
         out
-
         """
         return self.static_expand(self, shape, copy=copy, out=out)
 
@@ -2539,10 +2585,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> z = ivy.Container.static_concat_from_sequence(x,new_axis = 1, axis = 1)
         >>> print(z)
         {
-            a: ivy.array([[0, 2],
-                        [1, 3]]),
-            b: ivy.array([[4],
-                        [5]])
+            a: ivy.array([[0, 2], [1, 3]]),
+            b: ivy.array([[4], [5]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
@@ -2550,12 +2594,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> z = ivy.Container.static_concat_from_sequence([x,y])
         >>> print(z)
         {
-            a: ivy.array([[0, 1],
-                          [2, 3],
-                          [3, 2],
-                          [1, 0]]),
-            b: ivy.array([[4, 5],
-                          [1, 0]])
+            a: ivy.array([[0, 1], [2, 3], [3, 2], [1, 0]]),
+            b: ivy.array([[4, 5], [1, 0]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
@@ -2563,12 +2603,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> z = ivy.Container.static_concat_from_sequence([x,y],new_axis=1, axis=1)
         >>> print(z)
         {
-            a: ivy.array([[[0, 1],
-                        [3, 2]],
-                        [[2, 3],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5],
-                        [1, 0]]])
+            a: ivy.array([[[0, 1], [3, 2]], [[2, 3], [1, 0]]]),
+            b: ivy.array([[[4, 5], [1, 0]]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2647,12 +2683,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> z = ivy.Container.static_concat_from_sequence([x,y],axis=1)
         >>> print(z)
         {
-            a: ivy.array([[[0, 1],
-                        [3, 2]],
-                        [[2, 3],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5],
-                        [1, 0]]])
+            a: ivy.array([[[0, 1], [3, 2]], [[2, 3], [1, 0]]]),
+            b: ivy.array([[[4, 5], [1, 0]]])
         }
         """
         new_input_sequence = (

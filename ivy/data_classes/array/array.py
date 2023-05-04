@@ -463,7 +463,7 @@ class Array(
         >>> x = ivy.array([1.2, 2.1, 3.5])
         >>> y = x ** 2.9
         >>> print(y)
-        ivy.array([ 1.69678056,  8.59876156, 37.82660675])
+        ivy.array([1.69678056, 8.59876156, 37.82660675])
         """
         return ivy.pow(self._data, power)
 
@@ -651,7 +651,7 @@ class Array(
         >>> y = ivy.array([4, 5, 6])
         >>> z = x / y
         >>> print(z)
-        ivy.array([0.25      , 0.40000001, 0.5       ])
+        ivy.array([0.25, 0.40000001, 0.5])
         """
         return ivy.divide(self._data, other)
 
@@ -761,7 +761,7 @@ class Array(
         >>> y = ivy.array([4, 5, 3])
         >>> z = x < y
         >>> print(z)
-        ivy.array([ False, True, False])
+        ivy.array([False, True, False])
         """
         return ivy.less(self._data, other)
 
@@ -791,7 +791,7 @@ class Array(
         >>> y = ivy.array([4, 5, 3])
         >>> z = x <= y
         >>> print(z)
-        ivy.array([ False, True, True])
+        ivy.array([False, True, True])
         """
         return ivy.less_equal(self._data, other)
 
@@ -899,7 +899,7 @@ class Array(
         >>> y = ivy.array([4, 5, 3])
         >>> z = x > y
         >>> print(z)
-        ivy.array([True,False,False])
+        ivy.array([True, False, False])
 
         With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
@@ -908,12 +908,20 @@ class Array(
         >>> z = x > y
         >>> print(z)
         {
-            a: ivy.array([[True, False, False],
-                          [False, False, False],
-                          [False, False, False]]),
-            b: ivy.array([[True, True, False],
-                          [False, False, False],
-                          [False, False, False]])
+            a: ivy.array(
+                   [
+                       [True, False, False],
+                       [False, False, False],
+                       [False, False, False],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [True, True, False],
+                       [False, False, False],
+                       [False, False, False],
+                   ]
+               )
         }
         """
         return ivy.greater(self._data, other)
@@ -946,7 +954,7 @@ class Array(
         >>> y = ivy.array([4, 5, 6])
         >>> z = x >= y
         >>> print(z)
-        ivy.array([True,False,False])
+        ivy.array([True, False, False])
 
         With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
@@ -955,12 +963,20 @@ class Array(
         >>> z = x >= y
         >>> print(z)
         {
-            a: ivy.array([[True, False, False],
-                          [True, False, False],
-                          [False, False, False]]),
-            b: ivy.array([[True, False, False],
-                          [False, False, False],
-                          [False, False, False]])
+            a: ivy.array(
+                   [
+                       [True, False, False],
+                       [True, False, False],
+                       [False, False, False],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [True, False, False],
+                       [False, False, False],
+                       [False, False, False],
+                   ]
+               )
         }
         """
         return ivy.greater_equal(self._data, other)
@@ -1017,7 +1033,7 @@ class Array(
         >>> b = ivy.array([3, 2, 1])
         >>> y = a ^ b
         >>> print(y)
-        ivy.array([2,0,2])
+        ivy.array([2, 0, 2])
 
         With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
@@ -1104,7 +1120,7 @@ class Array(
         >>> b = ivy.array([0, 1, 2])
         >>> y = a >> b
         >>> print(y)
-        ivy.array([32, 16,  8])
+        ivy.array([32, 16, 8])
         """
         return ivy.bitwise_right_shift(other, self._data)
 

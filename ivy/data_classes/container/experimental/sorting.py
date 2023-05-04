@@ -43,14 +43,8 @@ class _ContainerWithSortingExperimental(ContainerBase):
         ...                   y = ivy.asarray([[7, 2],[3, 4]])
         >>> ivy.Container.static_lexsort(a)
         {
-            x: ivy.array(
-                [[6, 2, 6],
-                 [8, 9, 6]]
-                ),
-            y: ivy.array(
-                [[3, 4],
-                 [7, 2]]
-                )
+            x: ivy.array([[6, 2, 6], [8, 9, 6]]),
+            y: ivy.array([[3, 4], [7, 2]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -96,14 +90,8 @@ class _ContainerWithSortingExperimental(ContainerBase):
         ...                   y = ivy.asarray([[7, 2],[3, 4]])
         >>> a.msort()
         {
-            x: ivy.array(
-                [[6, 2, 6],
-                 [8, 9, 6]]
-                ),
-            y: ivy.array(
-                [[3, 4],
-                 [7, 2]]
-                )
+            x: ivy.array([[6, 2, 6], [8, 9, 6]]),
+            y: ivy.array([[3, 4], [7, 2]])
         }
         """
         return self.static_msort(

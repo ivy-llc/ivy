@@ -260,7 +260,7 @@ def arange(
     >>> device = "cpu"
     >>> x = ivy.arange(start, stop, step, dtype=dtype, device=device)
     >>> print(x, x.dtype, x.device)
-    ivy.array([1., 3., 5., 7., 9.]) float64 cpu
+    ivy.array([1.0, 3.0, 5.0, 7.0, 9.0]) float64 cpu
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out
@@ -376,7 +376,8 @@ def zeros(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array having a specified ``shape`` and filled with zeros.
+    """
+    Return a new array having a specified ``shape`` and filled with zeros.
 
     Parameters
     ----------
@@ -412,13 +413,17 @@ def zeros(
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
     >>> print(x)
-    ivy.array([[0., 0., 0., 0., 0.],
-           [0., 0., 0., 0., 0.],
-           [0., 0., 0., 0., 0.]])
+    ivy.array(
+        [
+            [0.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0],
+        ]
+    )
 
     >>> x = ivy.zeros(5)
     >>> print(x)
-    ivy.array([0., 0., 0., 0., 0.])
+    ivy.array([0.0, 0.0, 0.0, 0.0, 0.0])
     """
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
@@ -438,7 +443,8 @@ def ones(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array having a specified ``shape`` and filled with ones.
+    """
+    Return a new array having a specified ``shape`` and filled with ones.
 
     Parameters
     ----------
@@ -475,8 +481,7 @@ def ones(
     >>> shape = (2,2)
     >>> x = ivy.ones(shape)
     >>> print(x)
-    ivy.array([[1., 1.],
-           [1., 1.]])
+    ivy.array([[1.0, 1.0], [1.0, 1.0]])
 
     With :class:`ivy.Dtype` input:
 
@@ -484,8 +489,7 @@ def ones(
     >>> d_type = object.__new__(Dtype, "int64")
     >>> y = ivy.ones(shape, dtype=d_type)
     >>> print(y)
-    ivy.array([[1, 1, 1],
-           [1, 1]])
+    ivy.array([[1, 1, 1], [1, 1]])
 
     With :class:`ivy.Device` input:
 
@@ -493,8 +497,7 @@ def ones(
     >>> dev = object.__new__(Device, "cpu")
     >>> y = ivy.ones(shape, device=dev)
     >>> print(y)
-    ivy.array([[1, 1, 1],
-           [1, 1]])
+    ivy.array([[1, 1, 1], [1, 1]])
 
     With :class:`ivy.Array` input:
 
@@ -502,8 +505,9 @@ def ones(
     >>> array = ivy.array(shape)
     >>> ivy.ones(shape, out=array)
     >>> print(array)
-    ivy.array([[1.],
-           [1., 1., 1., 1., 1.], [1., 1.]])
+    ivy.array(
+        [[1.0], [1.0, 1.0, 1.0, 1.0, 1.0], [1.0, 1.0]]
+    )
     """
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
@@ -524,7 +528,8 @@ def full_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array filled with ``fill_value`` and having the same ``shape`` as
+    """
+    Return a new array filled with ``fill_value`` and having the same ``shape`` as
     an input array ``x`` .
 
     Parameters
@@ -628,7 +633,8 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array filled with ones and having the same shape as an input
+    """
+    Return a new array filled with ones and having the same shape as an input
     array ``x``.
 
     Parameters
@@ -725,7 +731,6 @@ def ones_like(
         a: ivy.array([1., 1.]),
         b: ivy.array([1., 1.])
     }
-
     """
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
@@ -745,7 +750,8 @@ def zeros_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array filled with zeros and having the same ``shape`` as an input
+    """
+    Return a new array filled with zeros and having the same ``shape`` as an input
     array ``x``.
 
     Parameters
@@ -842,7 +848,6 @@ def zeros_like(
         a: ivy.array([0., 0.]),
         b: ivy.array([0., 0.])
     }
-
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
@@ -859,7 +864,8 @@ def tril(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -890,7 +896,6 @@ def tril(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).tril(x, k=k, out=out)
 
@@ -907,7 +912,8 @@ def triu(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -938,7 +944,6 @@ def triu(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).triu(x, k=k, out=out)
 
@@ -1431,7 +1436,8 @@ def full(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array having a specified ``shape`` and filled with ``fill_value``.
+    """
+    Return a new array having a specified ``shape`` and filled with ``fill_value``.
 
     Parameters
     ----------
@@ -1516,8 +1522,6 @@ def full(
         b: ivy.array([[[False, False]],
                       [[False, False]]])
     }
-
-
     """
     return current_backend().full(
         shape, fill_value, dtype=dtype, device=device, out=out
@@ -1532,7 +1536,8 @@ def full(
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Return a new array containing the data from another (array) object with a
+    """
+    Return a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
 
     Parameters
@@ -1563,7 +1568,6 @@ def from_dlpack(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).from_dlpack(x, out=out)
 
@@ -1788,7 +1792,7 @@ def one_hot(
     ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which
         overrides.
-    
+
     Examples
     --------
     With :class:`ivy.Array` inputs:
@@ -1797,20 +1801,24 @@ def one_hot(
     >>> y = 5
     >>> z = x.one_hot(5)
     >>> print(z)
-    ivy.array([[0., 0., 0., 1., 0.],
-    ...    [0., 1., 0., 0., 0.]])
+    ivy.array(
+        [
+            [0.0, 0.0, 0.0, 1.0, 0.0],
+            ...[0.0, 1.0, 0.0, 0.0, 0.0],
+        ]
+    )
 
     >>> x = ivy.array([0])
     >>> y = 5
     >>> ivy.one_hot(x, y)
-    ivy.array([[1., 0., 0., 0., 0.]])
+    ivy.array([[1.0, 0.0, 0.0, 0.0, 0.0]])
 
     >>> x = ivy.array([0])
     >>> y = 5
     >>> ivy.one_hot(x, 5, out=z)
-    ivy.array([[1., 0., 0., 0., 0.]])
+    ivy.array([[1.0, 0.0, 0.0, 0.0, 0.0]])
     >>> print(z)
-    ivy.array([[1., 0., 0., 0., 0.]])
+    ivy.array([[1.0, 0.0, 0.0, 0.0, 0.0]])
 
     With :class:`ivy.Container` input:
 
@@ -1820,12 +1828,24 @@ def one_hot(
     >>> z = x.one_hot(y)
     >>> print(z)
     {
-        a: ivy.array([[0., 1., 0., 0., 0.], 
-                    [0., 0., 1., 0., 0.]]),
-        b: ivy.array([[0., 0., 0., 1., 0.], 
-                    [0., 1., 0., 0., 0.]]),
-        c: ivy.array([[0., 0., 1., 0., 0.], 
-                    [0., 0., 0., 1., 0.]])
+        a: ivy.array(
+               [
+                   [0.0, 1.0, 0.0, 0.0, 0.0],
+                   [0.0, 0.0, 1.0, 0.0, 0.0],
+               ]
+           ),
+        b: ivy.array(
+               [
+                   [0.0, 0.0, 0.0, 1.0, 0.0],
+                   [0.0, 1.0, 0.0, 0.0, 0.0],
+               ]
+           ),
+        c: ivy.array(
+               [
+                   [0.0, 0.0, 1.0, 0.0, 0.0],
+                   [0.0, 0.0, 0.0, 1.0, 0.0],
+               ]
+           )
     }
 
     >>> x = ivy.Container(a=ivy.array([2]), \
@@ -1834,9 +1854,9 @@ def one_hot(
     >>> z = x.one_hot(y)
     >>> print(z)
     {
-        a: ivy.array([[0., 0., 1., 0., 0., 0., 0.]]),
+        a: ivy.array([[0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0]]),
         b: ivy.array([], shape=(0, 7)),
-        c: ivy.array([[0., 0., 0., 0., 1., 0., 0.]])
+        c: ivy.array([[0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]])
     }
     """
     return current_backend(indices).one_hot(

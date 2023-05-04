@@ -97,7 +97,7 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([-4.7, -2.3, 0.7]) #x.shape->(3,)
         >>> y = x.expand_dims() #y.shape->(1, 3)
         >>> print(y)
-        ivy.array([[-4.7, -2.3,  0.7]])
+        ivy.array([[-4.7, -2.3, 0.7]])
         """
         return ivy.expand_dims(self._data, copy=copy, axis=axis, out=out)
 
@@ -187,16 +187,12 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
         >>> y = x.permute_dims(axes=(1, 0))
         >>> print(y)
-        ivy.array([[1, 4],
-                   [2, 5],
-                   [3, 6]])
+        ivy.array([[1, 4], [2, 5], [3, 6]])
 
         >>> x = ivy.zeros((2, 3))
         >>> y = x.permute_dims(axes=(1, 0))
         >>> print(y)
-        ivy.array([[0., 0.],
-                   [0., 0.],
-                   [0., 0.]])
+        ivy.array([[0.0, 0.0], [0.0, 0.0], [0.0, 0.0]])
         """
         return ivy.permute_dims(self._data, axes, copy=copy, out=out)
 
@@ -257,16 +253,12 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
         >>> y = x.reshape((3,2))
         >>> print(y)
-        ivy.array([[0., 1.],
-                   [2., 3.],
-                   [4., 5.]])
+        ivy.array([[0.0, 1.0], [2.0, 3.0], [4.0, 5.0]])
 
         >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
         >>> y = x.reshape((3,2), order='F')
         >>> print(y)
-        ivy.array([[0., 4.],
-                   [3., 2.],
-                   [1., 5.]])
+        ivy.array([[0.0, 4.0], [3.0, 2.0], [1.0, 5.0]])
         """
         return ivy.reshape(
             self._data, shape, copy=copy, allowzero=allowzero, out=out, order=order
@@ -317,14 +309,13 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.roll(1)
         >>> print(y)
-        ivy.array([2., 0., 1.])
+        ivy.array([2.0, 0.0, 1.0])
 
         >>> x = ivy.array([[0., 1., 2.],
         ...                [3., 4., 5.]])
         >>> y = x.roll(2, axis=-1)
         >>> print(y)
-        ivy.array([[1., 2., 0.],
-                    [4., 5., 3.]])
+        ivy.array([[1.0, 2.0, 0.0], [4.0, 5.0, 3.0]])
         """
         return ivy.roll(self._data, shift=shift, axis=axis, out=out)
 
@@ -347,7 +338,7 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([[[0.],[ 1.]]])
         >>> y = x.squeeze(2)
         >>> print(y)
-        ivy.array([[0., 1.]])
+        ivy.array([[0.0, 1.0]])
         """
         return ivy.squeeze(self._data, axis=axis, copy=copy, out=out)
 
@@ -390,12 +381,10 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([1, 2])
         >>> y = ivy.array([5, 6])
         >>> print(x.stack(y, axis=1))
-        ivy.array([[1, 5],
-                [2, 6]])
+        ivy.array([[1, 5], [2, 6]])
 
         >>> x.stack([y],axis=0)
-        ivy.array([[[1, 2]],
-                [[5, 6]]])
+        ivy.array([[[1, 2]], [[5, 6]]])
         """
         if not isinstance(arrays, (tuple, list)):
             arrays = [arrays]
@@ -441,7 +430,20 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
         >>> y = x.clip(1., 5.)
         >>> print(y)
-        ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+        ivy.array(
+            [
+                1.0,
+                1.0,
+                2.0,
+                3.0,
+                4.0,
+                5.0,
+                5.0,
+                5.0,
+                5.0,
+                5.0,
+            ]
+        )
         """
         return ivy.clip(self._data, x_min, x_max, out=out)
 
@@ -483,7 +485,9 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([1., 2., 3.])
         >>> y = x.constant_pad(pad_width = [[2, 3]])
         >>> print(y)
-        ivy.array([0., 0., 1., 2., 3., 0., 0., 0.])
+        ivy.array(
+            [0.0, 0.0, 1.0, 2.0, 3.0, 0.0, 0.0, 0.0]
+        )
         """
         return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
 
@@ -524,7 +528,7 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([0., 1., 2.])
         >>> y= x.repeat(2)
         >>> print(y)
-        ivy.array([0., 0., 1., 1., 2., 2.])
+        ivy.array([0.0, 0.0, 1.0, 1.0, 2.0, 2.0])
         """
         return ivy.repeat(self._data, repeats=repeats, axis=axis, out=out)
 
@@ -615,17 +619,12 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([[0., 1., 2.]])
         >>> y = x.swapaxes(0, 1)
         >>> print(y)
-        ivy.array([[0.],
-                   [1.],
-                   [2.]])
+        ivy.array([[0.0], [1.0], [2.0]])
 
         >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
         >>> y = x.swapaxes(0, 2)
         >>> print(y)
-        ivy.array([[[0, 4],
-                    [2, 6]],
-                   [[1, 5],
-                    [3, 7]]])
+        ivy.array([[[0, 4], [2, 6]], [[1, 5], [3, 7]]])
         """
         return ivy.swapaxes(self._data, axis0, axis1, copy=copy, out=out)
 
@@ -661,15 +660,19 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([[0], [1], [2]])
         >>> y = x.tile((3,2))
         >>> print(y)
-        ivy.array([[0,0],
-                   [1,1],
-                   [2,2],
-                   [0,0],
-                   [1,1],
-                   [2,2],
-                   [0,0],
-                   [1,1],
-                   [2,2]])
+        ivy.array(
+            [
+                [0, 0],
+                [1, 1],
+                [2, 2],
+                [0, 0],
+                [1, 1],
+                [2, 2],
+                [0, 0],
+                [1, 1],
+                [2, 2],
+            ]
+        )
         """
         return ivy.tile(self._data, repeats=repeats, out=out)
 
@@ -711,9 +714,7 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([[1, 2], [3, 4]])
         >>> y = x.unstack(axis=1, keepdims=True)
         >>> print(y)
-        [ivy.array([[1],
-                [3]]), ivy.array([[2],
-                [4]])]
+        [ivy.array([[1], [3]]), ivy.array([[2], [4]])]
         """
         return ivy.unstack(self._data, copy=copy, axis=axis, keepdims=keepdims)
 
@@ -753,6 +754,20 @@ class _ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([1., 2., 3.,4, 5, 6])
         >>> y = x.zero_pad(pad_width = [[2, 3]])
         >>> print(y)
-        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
+        ivy.array(
+            [
+                0.0,
+                0.0,
+                1.0,
+                2.0,
+                3.0,
+                4.0,
+                5.0,
+                6.0,
+                0.0,
+                0.0,
+                0.0,
+            ]
+        )
         """
         return ivy.zero_pad(self._data, pad_width=pad_width, out=out)

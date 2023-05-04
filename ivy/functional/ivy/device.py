@@ -174,7 +174,7 @@ def get_all_ivy_arrays_on_dev(
     >>> y = ivy.dev(x)
     >>> z = ivy.get_all_ivy_arrays_on_dev(y)
     >>> print(z)
-    {139740789224448:ivy.array([1,0,2])},
+    {139740789224448:ivy.array([1, 0, 2])},
     """
     device = ivy.as_ivy_dev(device)
     all_arrays = list()

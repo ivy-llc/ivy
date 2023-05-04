@@ -67,10 +67,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.Container.static_matmul(x, x)
         >>> print(y)
         {
-            a: ivy.array([[10., -6.],
-                          [-6., 10.]]),
-            b: ivy.array([[5., 3.],
-                          [3., 2.]])
+            a: ivy.array([[10.0, -6.0], [-6.0, 10.0]]),
+            b: ivy.array([[5.0, 3.0], [3.0, 2.0]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -141,10 +139,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.matmul(x)
         >>> print(y)
         {
-            a: ivy.array([[10., -6.],
-                          [-6., 10.]]),
-            b: ivy.array([[5., 3.],
-                          [3., 2.]])
+            a: ivy.array([[10.0, -6.0], [-6.0, 10.0]]),
+            b: ivy.array([[5.0, 3.0], [3.0, 2.0]])
         }
         """
         return self._static_matmul(
@@ -220,10 +216,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.Container.static_cholesky(x, upper='false')
         >>> print(y)
         {
-            a: ivy.array([[1.73, -0.577],
-                            [0., 1.63]]),
-            b: ivy.array([[1.41, 0.707],
-                            [0., 0.707]])
+            a: ivy.array([[1.73, -0.577], [0.0, 1.63]]),
+            b: ivy.array([[1.41, 0.707], [0.0, 0.707]])
          }
         With multiple :class:`ivy.Container` inputs:
         >>> x = ivy.Container(a=ivy.array([[3., -1], [-1., 3.]]),
@@ -232,10 +226,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.Container.static_roll(x, upper=False)
         >>> print(y)
         {
-            a: ivy.array([[3., 3.],
-                         [-1., -1.]]),
-            b: ivy.array([[1., 1.],
-                          [1., 2.]])
+            a: ivy.array([[3.0, 3.0], [-1.0, -1.0]]),
+            b: ivy.array([[1.0, 1.0], [1.0, 2.0]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -306,10 +298,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.cholesky(upper='false')
         >>> print(y)
         {
-            a: ivy.array([[1.73, -0.577],
-                            [0., 1.63]]),
-            b: ivy.array([[1.41, 0.707],
-                            [0., 0.707]])
+            a: ivy.array([[1.73, -0.577], [0.0, 1.63]]),
+            b: ivy.array([[1.41, 0.707], [0.0, 0.707]])
         }
         """
         return self._static_cholesky(
@@ -382,8 +372,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> z = ivy.Container.static_cross(x, y)
         >>> print(z)
         {
-            a: ivy.array([-3., 3., 9.]),
-            b: ivy.array([0., -6., 0.])
+            a: ivy.array([-3.0, 3.0, 9.0]),
+            b: ivy.array([0.0, -6.0, 0.0])
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -393,8 +383,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> z = ivy.Container.static_cross(x, y)
         >>> print(z)
         {
-            a: ivy.array([0., 0., 35.]),
-            b: ivy.array([0., 6., 0.])
+            a: ivy.array([0.0, 0.0, 35.0]),
+            b: ivy.array([0.0, 6.0, 0.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -466,8 +456,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> z = x.cross(y)
         >>> print(z)
         {
-            a: ivy.array([0., 0., 35.]),
-            b: ivy.array([0., 6., 0.])
+            a: ivy.array([0.0, 0.0, 35.0]),
+            b: ivy.array([0.0, 6.0, 0.0])
         }
         """
         return self._static_cross(
@@ -519,7 +509,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         ...                   b = ivy.array([[2., 1.], [1., 1.]]))
         >>> y = x.det()
         >>> print(y)
-        {a:ivy.array(8.),b:ivy.array(1.)}
+        {a:ivy.array(8.0),b:ivy.array(1.0)}
         """
         return self._static_det(
             self,
@@ -586,8 +576,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> d = ivy.Container.static_diagonal(x)
         >>> print(d)
         {
-            a:ivy.array([1., 4.]),
-            b:ivy.array([5., 8.])
+            a:ivy.array([1.0, 4.0]),
+            b:ivy.array([5.0, 8.0])
         }
 
         >>> a = ivy.array([[0, 1, 2],
@@ -600,8 +590,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> d = ivy.Container.static_diagonal(offset=-1, axis1=0)
         >>> print(d)
         {
-            a:ivy.array([3., 7.]),
-            b:ivy.array([-3., 6.])
+            a:ivy.array([3.0, 7.0]),
+            b:ivy.array([-3.0, 6.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -672,8 +662,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> d = x.diagonal()
         >>> print(d)
         {
-            a:ivy.array([1., 4.]),
-            b:ivy.array([5., 8.])
+            a:ivy.array([1.0, 4.0]),
+            b:ivy.array([5.0, 8.0])
         }
 
         >>> a = ivy.array([[0, 1, 2],
@@ -686,8 +676,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> d = x.diagonal(offset=-1, axis1=0)
         >>> print(d)
         {
-            a:ivy.array([3., 7.]),
-            b:ivy.array([-3., 6.])
+            a:ivy.array([3.0, 7.0]),
+            b:ivy.array([-3.0, 6.0])
         }
         """
         return self._static_diagonal(
@@ -861,8 +851,16 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> print(e)
         {
             a: ivy.array([[-0.51572949, 0.17091519, 11.3448143]]),
-            b: ivy.array([[-1., 1., 4.]]),
-            c: ivy.array([[-8.88178420e-16, 5.35898387e-01, 7.46410179e+00]])
+            b: ivy.array([[-1.0, 1.0, 4.0]]),
+            c: ivy.array(
+                   [
+                       [
+                           -8.88178420e-16,
+                           5.35898387e-01,
+                           7.46410179e00,
+                       ]
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -929,8 +927,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.eigvalsh(x)
         >>> print(y)
         {
-            a: ivy.array([[-1., 3.]]),
-            b: ivy.array([[-2., 6.]])
+            a: ivy.array([[-1.0, 3.0]]),
+            b: ivy.array([[-2.0, 6.0]])
         }
         """
         return self._static_eigvalsh(
@@ -1042,8 +1040,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.Container.static_inv(x)
         >>> print(y)
         {
-            a: ivy.array([[-1, 0.25], [1., 0.]]),
-            b: ivy.array([-0.25, 1.], [0.5, -1.])
+            a: ivy.array([[-1, 0.25], [1.0, 0.0]]),
+            b: ivy.array([-0.25, 1.0], [0.5, -1.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1111,8 +1109,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.inv()
         >>> print(y)
         {
-            a: ivy.array([[-1, 0.25], [1., 0.]]),
-            b: ivy.array([-0.25, 1.], [0.5, -1.])
+            a: ivy.array([[-1, 0.25], [1.0, 0.0]]),
+            b: ivy.array([-0.25, 1.0], [0.5, -1.0])
         }
         """
         return self._static_inv(
@@ -1165,8 +1163,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.Container.static_pinv(x)
         >>> print(y)
         {
-            a: ivy.array([[-2., 1.],
-                          [1.5, -0.5]])
+            a: ivy.array([[-2.0, 1.0], [1.5, -0.5]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
@@ -1174,8 +1171,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> ivy.Container.static_pinv(x, rtol=1e-1, out=out)
         >>> print(out)
         {
-            a: ivy.array([[0.0426, 0.0964],
-                          [0.0605, 0.1368]])
+            a: ivy.array([[0.0426, 0.0964], [0.0605, 0.1368]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1225,8 +1221,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.pinv()
         >>> print(y)
         {
-            a: ivy.array([[-2., 1.],
-                          [1.5, -0.5]])
+            a: ivy.array([[-2.0, 1.0], [1.5, -0.5]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
@@ -1234,8 +1229,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> x.pinv(0., out=out)
         >>> print(out)
         {
-            a: ivy.array([[-1.99999988, 1.],
-                          [1.5, -0.5]])
+            a: ivy.array([[-1.99999988, 1.0], [1.5, -0.5]])
         }
         """
         return self._static_pinv(
@@ -1266,7 +1260,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-            Input array having shape (..., M, N) and whose innermost two deimensions 
+            Input array having shape (..., M, N) and whose innermost two deimensions
             form MxN matrices. Should have a floating-point data type.
         ord
             Order of the norm. Default is "fro".
@@ -1295,16 +1289,16 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             Matrix norm of the array at specified axes.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
-                              b=ivy.array([[1., 2.], [3., 4.]]))
+                              b=ivy.array([[1.0, 2.0], [3.0, 4.0]]))
         >>> y = ivy.Container.static_matrix_norm(x, ord=1)
         >>> print(y)
         {
             a: ivy.array(4.2),
-            b: ivy.array(6.)
+            b: ivy.array(6.0)
         }
 
         >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
@@ -1316,8 +1310,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([4.24, 11.4, 19.2]),
-            b: ivy.array([[[3.7]], 
-                          [[11.2]]])
+            b: ivy.array([[[3.7]], [[11.2]]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1354,7 +1347,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         self
-            Container having shape (..., M, N) and whose innermost two dimensions 
+            Container having shape (..., M, N) and whose innermost two dimensions
             form MxN matrices. Should have a floating-point data type.
         ord
             Order of the norm. Default is "fro".
@@ -1387,12 +1380,12 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
-                              b=ivy.array([[1., 2.], [3., 4.]]))
+                              b=ivy.array([[1.0, 2.0], [3.0, 4.0]]))
         >>> y = x.matrix_norm(ord=1)
         >>> print(y)
         {
             a: ivy.array(4.2),
-            b: ivy.array(6.)
+            b: ivy.array(6.0)
         }
 
         >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
@@ -1403,10 +1396,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.matrix_norm(ord=ord, axis=axis, keepdims=k)
         >>> print(y)
         {
-            a: ivy.array([[[4.24]], 
-                         [[11.4]], 
-                         [[19.2]]]),
-            b: ivy.array([4., 12.])
+            a: ivy.array([[[4.24]], [[11.4]], [[19.2]]]),
+            b: ivy.array([4.0, 12.0])
         }
         """
         return self._static_matrix_norm(
@@ -1536,8 +1527,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.Container.static_matrix_rank(x)
         >>> print(y)
         {
-            a: ivy.array(2.),
-            b: ivy.array(1.)
+            a: ivy.array(2.0),
+            b: ivy.array(1.0)
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1671,14 +1662,12 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         With :code:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
-                        b=ivy.array([[0., 4.], [3., 1.]]))
+                        b=ivy.array([[0.0, 4.0], [3.0, 1.0]]))
         >>> y = ivy.Container.static_matrix_transpose(x)
         >>> print(y)
         {
-            a: ivy.array([[1., 0.],
-                          [1., 3.]]),
-            b: ivy.array([[0., 3.],
-                          [4., 1.]])
+            a: ivy.array([[1.0, 0.0], [1.0, 3.0]]),
+            b: ivy.array([[0.0, 3.0], [4.0, 1.0]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1727,14 +1716,12 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         With :code:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
-                      b=ivy.array([[0., 4.], [3., 1.]]))
+                      b=ivy.array([[0.0, 4.0], [3.0, 1.0]]))
         >>> y = x.matrix_transpose()
         >>> print(y)
         {
-            a: ivy.array([[1., 0.],
-                          [1., 3.]]),
-            b: ivy.array([[0., 3.],
-                          [4., 1.]])
+            a: ivy.array([[1.0, 0.0], [1.0, 3.0]]),
+            b: ivy.array([[0.0, 3.0], [4.0, 1.0]])
         }
         """
         return self._static_matrix_transpose(
@@ -1805,12 +1792,20 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]))
         >>> y = ivy.Container.static_outer(x1, x2)
         >>> print(y)
-        ivy.array([[[ 1.,  2.,  3.],
-                    [ 2.,  4.,  6.],
-                    [ 3.,  6.,  9.]],
-                   [[ 4.,  8., 12.],
-                    [ 5., 10., 15.],
-                    [ 6., 12., 18.]]])
+        ivy.array(
+            [
+                [
+                    [1.0, 2.0, 3.0],
+                    [2.0, 4.0, 6.0],
+                    [3.0, 6.0, 9.0],
+                ],
+                [
+                    [4.0, 8.0, 12.0],
+                    [5.0, 10.0, 15.0],
+                    [6.0, 12.0, 18.0],
+                ],
+            ]
+        )
         """
         return ContainerBase.cont_multi_map_in_function(
             "outer",
@@ -1880,10 +1875,14 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.array([[5., 6.],[7., 8.]])
         >>> d = ivy.outer(x,y)
         >>> print(d)
-        ivy.array([[ 5.,  6.,  7.,  8.],
-                    [10., 12., 14., 16.],
-                    [15., 18., 21., 24.],
-                    [20., 24., 28., 32.]])
+        ivy.array(
+            [
+                [5.0, 6.0, 7.0, 8.0],
+                [10.0, 12.0, 14.0, 16.0],
+                [15.0, 18.0, 21.0, 24.0],
+                [20.0, 24.0, 28.0, 32.0],
+            ]
+        )
         """
         return self._static_outer(
             self,
@@ -2102,11 +2101,11 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> print(y)
         {
             a: [
-                sign = ivy.array(-1.),
+                sign = ivy.array(-1.0),
                 logabsdet = ivy.array(0.6931472)
             ],
             b: [
-                sign = ivy.array(-1.),
+                sign = ivy.array(-1.0),
                 logabsdet = ivy.array(1.0986123)
             ]
         }
@@ -2174,11 +2173,11 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> print(y)
         {
             a: [
-                sign = ivy.array(-1.),
+                sign = ivy.array(-1.0),
                 logabsdet = ivy.array(0.6931472)
             ],
             b: [
-                sign = ivy.array(-1.),
+                sign = ivy.array(-1.0),
                 logabsdet = ivy.array(1.0986123)
             ]
         }
@@ -3053,17 +3052,21 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> ivy.Container.static_vander(x)
         {
             a: ivy.array(
-                    [[  1,   1,   1,   1],
-                    [  8,   4,   2,   1],
-                    [ 27,   9,   3,   1],
-                    [125,  25,   5,   1]]
-                    ),
+                   [
+                       [1, 1, 1, 1],
+                       [8, 4, 2, 1],
+                       [27, 9, 3, 1],
+                       [125, 25, 5, 1],
+                   ]
+               ),
             b: ivy.array(
-                    [[216,  36,   6,   1],
-                    [343,  49,   7,   1],
-                    [512,  64,   8,   1],
-                    [729,  81,   9,   1]]
-                    )
+                   [
+                       [216, 36, 6, 1],
+                       [343, 49, 7, 1],
+                       [512, 64, 8, 1],
+                       [729, 81, 9, 1],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -3120,17 +3123,21 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> x.vander()
         {
             a: ivy.array(
-                    [[  1,   1,   1,   1],
-                    [  8,   4,   2,   1],
-                    [ 27,   9,   3,   1],
-                    [125,  25,   5,   1]]
-                    ),
+                   [
+                       [1, 1, 1, 1],
+                       [8, 4, 2, 1],
+                       [27, 9, 3, 1],
+                       [125, 25, 5, 1],
+                   ]
+               ),
             b: ivy.array(
-                    [[216,  36,   6,   1],
-                    [343,  49,   7,   1],
-                    [512,  64,   8,   1],
-                    [729,  81,   9,   1]]
-                    )
+                   [
+                       [216, 36, 6, 1],
+                       [343, 49, 7, 1],
+                       [512, 64, 8, 1],
+                       [729, 81, 9, 1],
+                   ]
+               )
         }
         """
         return self._static_vander(

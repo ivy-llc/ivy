@@ -67,7 +67,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         >>> beta = ivy.array([0., 1.])
         >>> y = alpha.eigh_tridiagonal(beta)
         >>> print(y)
-        ivy.array([0., 0.38196, 2.61803])
+        ivy.array([0.0, 0.38196, 2.61803])
         """
         return ivy.eigh_tridiagonal(
             self._data,
@@ -98,9 +98,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         --------
         >>> x = ivy.array([1,2])
         >>> x.diagflat(k=1)
-        ivy.array([[0, 1, 0],
-                   [0, 0, 2],
-                   [0, 0, 0]])
+        ivy.array([[0, 1, 0], [0, 0, 2], [0, 0, 0]])
         """
         return ivy.diagflat(
             self._data,
@@ -146,10 +144,12 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
                             [[2., 0.],
                             [0., 2.]]])
         >>> ivy.matrix_exp(x)
-        ivy.array([[[2.7183, 1.0000],
-                    [1.0000, 2.7183]],
-                    [[7.3891, 1.0000],
-                    [1.0000, 7.3891]]])
+        ivy.array(
+            [
+                [[2.7183, 1.0000], [1.0000, 2.7183]],
+                [[7.3891, 1.0000], [1.0000, 7.3891]],
+            ]
+        )
         """
         return ivy.matrix_exp(self._data, out=out)
 
@@ -167,9 +167,13 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         >>> x = ivy.array([[1,2], [3,4]])
         >>> x.eig()
         (
-        ivy.array([-0.37228132+0.j,  5.37228132+0.j]),
-        ivy.array([[-0.82456484+0.j, -0.41597356+0.j],
-                   [ 0.56576746+0.j, -0.90937671+0.j]])
+        ivy.array([-0.37228132 + 0.0j, 5.37228132 + 0.0j]),
+        ivy.array(
+            [
+                [-0.82456484 + 0.0j, -0.41597356 + 0.0j],
+                [0.56576746 + 0.0j, -0.90937671 + 0.0j],
+            ]
+        )
         )
         """
         return ivy.eig(self._data)
@@ -187,7 +191,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         --------
         >>> x = ivy.array([[1,2], [3,4]])
         >>> x.eigvals()
-        ivy.array([-0.37228132+0.j,  5.37228132+0.j])
+        ivy.array([-0.37228132 + 0.0j, 5.37228132 + 0.0j])
         """
         return ivy.eigvals(self._data)
 
@@ -208,8 +212,12 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
                           [3.+3.j, 4.-4.j]])
         >>> x = ivy.array(x)
         >>> x.adjoint()
-        ivy.array([[1.+1.j, 3.-3.j],
-                   [2.-2.j, 4.+4.j]])
+        ivy.array(
+            [
+                [1.0 + 1.0j, 3.0 - 3.0j],
+                [2.0 - 2.0j, 4.0 + 4.0j],
+            ]
+        )
         """
         return ivy.adjoint(
             self._data,
@@ -234,8 +242,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         >>> B = ivy.arange(3 * 2).reshape((3, 2))
         >>> C = ivy.arange(2 * 2).reshape((2, 2))
         >>> A.multi_dot((B, C))
-        ivy.array([[ 26,  49],
-                   [ 80, 148]])
+        ivy.array([[26, 49], [80, 148]])
         """
         return ivy.multi_dot((self._data, *x), out=out)
 
@@ -325,14 +332,12 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         ...                [4,5,6]])
         >>> y = x.cov()
         >>> print(y)
-        ivy.array([[ 1.,  1.  ],
-        ...        [ 1.,  1.  ],
+        ivy.array([[1.0, 1.0], [1.0, 1.0]])
         >>> x = ivy.array([1,2,3])
         >>> y = ivy.array([4,5,6])
         >>> z = x.cov(y)
         >>> print(z)
-        ivy.array([[ 1.,  1.  ],
-        ...        [ 1.,  1.  ])
+        ivy.array([[1.0, 1.0], [1.0, 1.0]])
         """
         return ivy.cov(
             self._data,

@@ -18,7 +18,8 @@ class _ArrayWithDataTypes(abc.ABC):
         copy: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Copy an array to a specified data type irrespective of
+        """
+        Copy an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
@@ -61,7 +62,7 @@ class _ArrayWithDataTypes(abc.ABC):
 
         >>> x = ivy.array([[-1, -2], [0, 2]])
         >>> print(x.astype(ivy.float64))
-        ivy.array([[-1., -2.],  [0.,  2.]])
+        ivy.array([[-1.0, -2.0], [0.0, 2.0]])
         """
         return ivy.astype(self._data, dtype, copy=copy, out=out)
 
@@ -97,7 +98,7 @@ class _ArrayWithDataTypes(abc.ABC):
         >>> x3 = ivy.zeros(2)
         >>> y = x1.broadcast_arrays(x2, x3)
         >>> print(y)
-        [ivy.array([1, 2]), ivy.array([0.2, 0. ]), ivy.array([0., 0.])]
+        [ivy.array([1, 2]), ivy.array([0.2, 0.0]), ivy.array([0.0, 0.0])]
 
         With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -105,7 +106,7 @@ class _ArrayWithDataTypes(abc.ABC):
         >>> x2 = ivy.native_array([2.4, 5.1])
         >>> y = x1.broadcast_arrays(x2)
         >>> print(y)
-        [ivy.array([-1., 3.4]), ivy.array([2.4, 5.1])]
+        [ivy.array([-1.0, 3.4]), ivy.array([2.4, 5.1])]
         """
         return ivy.broadcast_arrays(self._data, *arrays)
 
@@ -138,9 +139,7 @@ class _ArrayWithDataTypes(abc.ABC):
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.broadcast_to((3,3))
         >>> print(y)
-        ivy.array([[1, 2, 3],
-                   [1, 2, 3],
-                   [1, 2, 3]])
+        ivy.array([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
         """
         return ivy.broadcast_to(self._data, shape=shape, out=out)
 

@@ -57,9 +57,13 @@ class _ArrayWithNorms(abc.ABC):
         >>> norm = x.layer_norm([0, 1], eps=0.001,
         ...                     new_std=1.5, scale=0.5, offset=[0.5, 0.02, 0.1])
         >>> print(norm)
-        ivy.array([[ 0.826, -0.178, 0.981 ],
-                   [ 0.831,  0.421, 0.981 ],
-                   [ 1.26 , -1.05 , -1.28 ]])
+        ivy.array(
+            [
+                [0.826, -0.178, 0.981],
+                [0.831, 0.421, 0.981],
+                [1.26, -1.05, -1.28],
+            ]
+        )
         """
         return ivy.layer_norm(
             self,

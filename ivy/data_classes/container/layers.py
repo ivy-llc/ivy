@@ -65,8 +65,9 @@ class _ContainerWithLayers(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
                                            [11., 22., 33.]]), \
-                              b=ivy.array([[1.245, 0.278, 4.105], \
-                                           [7., 13., 17.]]))
+                              b=ivy.array(
+                                    [[1.245, 0.278, 4.105], [7.0, 13.0, 17.0]]
+                                ))
         >>> w = ivy.array([[1., 2., 3.], \
                            [4., 5., 6.], \
                            [7., 8., 9.]])
@@ -74,26 +75,27 @@ class _ContainerWithLayers(ContainerBase):
         >>> y = ivy.Container.static_linear(x, w, bias=b)
         >>> print(y)
         {
-            a: ivy.array([[16.4, 35.2, 54.],
-                          [155., 352., 549.]]),
-            b: ivy.array([[15.1, 31., 46.9],
-                          [85., 195., 305.]])
+            a: ivy.array(
+                   [[16.4, 35.2, 54.0], [155.0, 352.0, 549.0]]
+               ),
+            b: ivy.array(
+                   [[15.1, 31.0, 46.9], [85.0, 195.0, 305.0]]
+               )
         }
 
         >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
                                            [.0, .1, .2]]), \
-                              b=ivy.array([[1.245, 0.278, 4.105], \
-                                           [.7, .8, .9]]))
+                              b=ivy.array(
+                                    [[1.245, 0.278, 4.105], [0.7, 0.8, 0.9]]
+                                ))
         >>> w = ivy.Container(a=ivy.array([[1., 2., 3.]]), \
-                              b=ivy.array([[.1, .2, .3]]))
+                              b=ivy.array([[0.1, 0.2, 0.3]]))
         >>> b = ivy.Container(a=ivy.array([1.]), b=ivy.array([-1.]))
         >>> y = ivy.Container.static_linear(x, w, bias=b)
         >>> print(y)
         {
-            a: ivy.array([[16.4],
-                          [1.8]]),
-            b: ivy.array([[0.412],
-                          [-0.5]])
+            a: ivy.array([[16.4], [1.8]]),
+            b: ivy.array([[0.412], [-0.5]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -159,8 +161,9 @@ class _ContainerWithLayers(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
                                            [11., 22., 33.]]), \
-                              b=ivy.array([[1.245, 0.278, 4.105], \
-                                           [7., 13., 17.]]))
+                              b=ivy.array(
+                                    [[1.245, 0.278, 4.105], [7.0, 13.0, 17.0]]
+                                ))
         >>> w = ivy.array([[1., 2., 3.], \
                            [4., 5., 6.], \
                            [7., 8., 9.]])
@@ -168,10 +171,12 @@ class _ContainerWithLayers(ContainerBase):
         >>> y = x.linear(w, bias=b)
         >>> print(y)
         {
-            a: ivy.array([[16.4, 35.2, 54.], \
-                          [155., 352., 549.]]), \
-            b: ivy.array([[15.1, 31., 46.9], \
-                          [85., 195., 305.]])
+            a: ivy.array(
+                   [[16.4, 35.2, 54.0], [155.0, 352.0, 549.0]]
+               ), \
+            b: ivy.array(
+                   [[15.1, 31.0, 46.9], [85.0, 195.0, 305.0]]
+               )
         }
         """
         return self._static_linear(
@@ -253,9 +258,13 @@ class _ContainerWithLayers(ContainerBase):
         >>> y = ivy.Container.static_dropout(x, 0.3)
         >>> print(y)
         {
-            a: ivy.array([[0., 0., 4.28571415],
-                          [5.71428585, 7.14285755, 0.]]),
-            b: ivy.array([0., 11.4285717, 12.8571434])
+            a: ivy.array(
+                   [
+                       [0.0, 0.0, 4.28571415],
+                       [5.71428585, 7.14285755, 0.0],
+                   ]
+               ),
+            b: ivy.array([0.0, 11.4285717, 12.8571434])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -341,9 +350,13 @@ class _ContainerWithLayers(ContainerBase):
         >>> y = x.dropout(0.3)
         >>> print(y)
         {
-            a: ivy.array([[0., 0., 4.28571415],
-                          [5.71428585, 7.14285755, 0.]]),
-            b: ivy.array([0., 11.4285717, 12.8571434])
+            a: ivy.array(
+                   [
+                       [0.0, 0.0, 4.28571415],
+                       [5.71428585, 7.14285755, 0.0],
+                   ]
+               ),
+            b: ivy.array([0.0, 11.4285717, 12.8571434])
         }
         """
         return self._static_dropout(
@@ -417,8 +430,8 @@ class _ContainerWithLayers(ContainerBase):
         >>> y = ivy.Container.static_dropout1d(x, 0.5)
         >>> print(y)
         {
-            a: ivy.array([[[0., 4., 0.]]]),
-            b: ivy.array([[[0., 0., 12.]]])
+            a: ivy.array([[[0.0, 4.0, 0.0]]]),
+            b: ivy.array([[[0.0, 0.0, 12.0]]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -489,8 +502,8 @@ class _ContainerWithLayers(ContainerBase):
         >>> y = x.dropout1d(x, 0.5)
         >>> print(y)
         {
-            a: ivy.array([[[0., 4., 0.]]]),
-            b: ivy.array([[[0., 0., 12.]]])
+            a: ivy.array([[[0.0, 4.0, 0.0]]]),
+            b: ivy.array([[[0.0, 0.0, 12.0]]])
         }
         """
         return self._static_dropout1d(
@@ -716,12 +729,10 @@ class _ContainerWithLayers(ContainerBase):
                                                                        mask=mask)
         >>> print(result)
         {
-            a: ivy.array([[[4.27, 5.4],
-                        [4.4, 5.6],
-                        [4.4, 5.6]]]),
-            b: ivy.array([[[4.35, 5.54],
-                        [4.4, 5.6],
-                        [4.4, 5.6]]])
+            a: ivy.array([[[4.27, 5.4], [4.4, 5.6], [4.4, 5.6]]]),
+            b: ivy.array(
+                   [[[4.35, 5.54], [4.4, 5.6], [4.4, 5.6]]]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -825,12 +836,10 @@ class _ContainerWithLayers(ContainerBase):
                                                     mask=mask)
         >>> print(result)
         {
-            a: ivy.array([[[4.27, 5.4],
-                        [4.4, 5.6],
-                        [4.4, 5.6]]]),
-            b: ivy.array([[[4.35, 5.54],
-                        [4.4, 5.6],
-                        [4.4, 5.6]]])
+            a: ivy.array([[[4.27, 5.4], [4.4, 5.6], [4.4, 5.6]]]),
+            b: ivy.array(
+                   [[[4.35, 5.54], [4.4, 5.6], [4.4, 5.6]]]
+               )
         }
         """
         return self._static_scaled_dot_product_attention(
@@ -990,10 +999,12 @@ class _ContainerWithLayers(ContainerBase):
         >>> result= ivy.Container.static_conv1d(x,filters,(1,),'VALID')
         >>> print(result)
         {
-            ... a: ivy.array([[[-1.25, 2.5, 6.25],
-            ...                [-2., 5.5, 13.]]]),
-            ... b: ivy.array([[[-2.5, 7.5, 17.5],
-            ...                [-3.25, 10.5, 24.2]]])
+            ... a: ivy.array(
+                       [[[-1.25, 2.5, 6.25], ...[-2.0, 5.5, 13.0]]]
+                   ),
+            ... b: ivy.array(
+                       [[[-2.5, 7.5, 17.5], ...[-3.25, 10.5, 24.2]]]
+                   )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1074,10 +1085,12 @@ class _ContainerWithLayers(ContainerBase):
         >>> result= x.conv1d(filters, (1,), 'VALID')
         >>> print(result)
         {
-            ... a: ivy.array([[[-1.25, 2.5, 6.25],
-            ...                [-2., 5.5, 13.]]]),
-            ... b: ivy.array([[[-2.5, 7.5, 17.5],
-            ...                [-3.25, 10.5, 24.2]]])
+            ... a: ivy.array(
+                       [[[-1.25, 2.5, 6.25], ...[-2.0, 5.5, 13.0]]]
+                   ),
+            ... b: ivy.array(
+                       [[[-2.5, 7.5, 17.5], ...[-3.25, 10.5, 24.2]]]
+                   )
         }
         """
         return self._static_conv1d(
@@ -1160,8 +1173,16 @@ class _ContainerWithLayers(ContainerBase):
         >>> result = ivy.Container.static_conv2d(x, filters, (2,), 'SAME')
         >>> print(result)
         {
-            a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
-            b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
+            a:ivy.array([[[[4.0], [0.0]], [[1.0], [5.0]]]]),
+            b:ivy.array(
+                  [
+                      [
+                          [[4.0], [0.0], [0.0]],
+                          [[1.0], [6.0], [0.0]],
+                          [[0.0], [1.0], [5.0]],
+                      ]
+                  ]
+              )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1244,8 +1265,16 @@ class _ContainerWithLayers(ContainerBase):
         >>> result = x.conv2d(filters, 2, 'SAME')
         >>> print(result)
         {
-            a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
-            b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
+            a:ivy.array([[[[4.0], [0.0]], [[1.0], [5.0]]]]),
+            b:ivy.array(
+                  [
+                      [
+                          [[4.0], [0.0], [0.0]],
+                          [[1.0], [6.0], [0.0]],
+                          [[0.0], [1.0], [5.0]],
+                      ]
+                  ]
+              )
         }
         """
         return self._static_conv2d(
@@ -1827,8 +1856,18 @@ class _ContainerWithLayers(ContainerBase):
         >>> result = ivy.Container.static_conv3d(x, filters, 2, 'SAME')
         >>> print(result)
         {
-            a: ivy.array([[[[[4.],[4.]],[[4.],[4.]]]]]),
-            b: ivy.array([[[[[8.],[12.],[8.]],[[12.],[18.],[12.]],[[8.],[12.],[8.]]]]])
+            a: ivy.array([[[[[4.0], [4.0]], [[4.0], [4.0]]]]]),
+            b: ivy.array(
+                   [
+                       [
+                           [
+                               [[8.0], [12.0], [8.0]],
+                               [[12.0], [18.0], [12.0]],
+                               [[8.0], [12.0], [8.0]],
+                           ]
+                       ]
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1900,8 +1939,18 @@ class _ContainerWithLayers(ContainerBase):
         >>> result = x.conv3d(filters, 2, 'SAME')
         >>> print(result)
         {
-            a: ivy.array([[[[[4.],[4.]],[[4.],[4.]]]]]),
-            b: ivy.array([[[[[8.],[12.],[8.]],[[12.],[18.],[12.]],[[8.],[12.],[8.]]]]])
+            a: ivy.array([[[[[4.0], [4.0]], [[4.0], [4.0]]]]]),
+            b: ivy.array(
+                   [
+                       [
+                           [
+                               [[8.0], [12.0], [8.0]],
+                               [[12.0], [18.0], [12.0]],
+                               [[8.0], [12.0], [8.0]],
+                           ]
+                       ]
+                   ]
+               )
         }
         """
         return self._static_conv3d(

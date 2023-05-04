@@ -52,10 +52,18 @@ class _ContainerWithNormsExperimental(ContainerBase):
         >>> y = ivy.Container.static_l2_normalize(x, axis=1)
         >>> print(y)
         {
-            a: ivy.array([[0.16903085, 0.50709254, 0.84515423],
-                          [0.44183609, 0.56807494, 0.69431382]]),
-            b: ivy.array([[-0.70710677, -0.70710677],
-                          [-0.89442718, -0.44721359]])
+            a: ivy.array(
+                   [
+                       [0.16903085, 0.50709254, 0.84515423],
+                       [0.44183609, 0.56807494, 0.69431382],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-0.70710677, -0.70710677],
+                       [-0.89442718, -0.44721359],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -116,10 +124,18 @@ class _ContainerWithNormsExperimental(ContainerBase):
         >>> y = x.static_l2_normalize(axis=1)
         >>> print(y)
         {
-            a: ivy.array([[0.16903085, 0.50709254, 0.84515423],
-                          [0.44183609, 0.56807494, 0.69431382]]),
-            b: ivy.array([[-0.70710677, -0.70710677],
-                          [-0.89442718, -0.44721359]])
+            a: ivy.array(
+                   [
+                       [0.16903085, 0.50709254, 0.84515423],
+                       [0.44183609, 0.56807494, 0.69431382],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-0.70710677, -0.70710677],
+                       [-0.89442718, -0.44721359],
+                   ]
+               )
         }
         """
         return self.static_l2_normalize(
@@ -579,10 +595,18 @@ class _ContainerWithNormsExperimental(ContainerBase):
         >>> y = ivy.Container.static_lp_normalize(x, p=1, axis=1)
         >>> print(y)
         {
-            a: ivy.array([[0.12500000, 0.37500000, 0.62500000],
-                          [0.27500000, 0.35000000, 0.42500000]]),
-            b: ivy.array([[-1.0000000, -1.0000000],
-                          [-0.5000000, -0.2500000]])
+            a: ivy.array(
+                   [
+                       [0.12500000, 0.37500000, 0.62500000],
+                       [0.27500000, 0.35000000, 0.42500000],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-1.0000000, -1.0000000],
+                       [-0.5000000, -0.2500000],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -645,10 +669,18 @@ class _ContainerWithNormsExperimental(ContainerBase):
         >>> y = x.static_lp_normalize(axis=1)
         >>> print(y)
         {
-            a: ivy.array([[0.16903085, 0.50709254, 0.84515423],
-                          [0.44183609, 0.56807494, 0.69431382]]),
-            b: ivy.array([[-0.70710677, -0.70710677],
-                          [-0.89442718, -0.44721359]])
+            a: ivy.array(
+                   [
+                       [0.16903085, 0.50709254, 0.84515423],
+                       [0.44183609, 0.56807494, 0.69431382],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-0.70710677, -0.70710677],
+                       [-0.89442718, -0.44721359],
+                   ]
+               )
         }
         """
         return self.static_lp_normalize(

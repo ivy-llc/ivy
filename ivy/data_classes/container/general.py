@@ -421,7 +421,7 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_clip_vector_norm(x, 2.0)
         >>> print(y)
         {
-            a: ivy.array([0., 0.894, 1.79]),
+            a: ivy.array([0.0, 0.894, 1.79]),
             b: ivy.array([0.849, 1.13, 1.41])
         }
         """
@@ -494,7 +494,7 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.clip_vector_norm(2.0, p=1.0)
         >>> print(y)
         {
-            a: ivy.array([0., 0.667, 1.33]),
+            a: ivy.array([0.0, 0.667, 1.33]),
             b: ivy.array([0.5, 0.667, 0.833])
         }
         """
@@ -701,7 +701,7 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = ivy.inplace_decrement(x, 1.5)
         >>> print(y)
         {
-            a: ivy.array([-1., -6.5, 28.5]),
+            a: ivy.array([-1.0, -6.5, 28.5]),
             b: ivy.array([-1.5, -26.5, 48.5])
         }
 
@@ -711,8 +711,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = ivy.inplace_decrement(x, y)
         >>> print(z)
         {
-            a: ivy.array([0., 0., 0.]),
-            b: ivy.array([0., 0., 0.])
+            a: ivy.array([0.0, 0.0, 0.0]),
+            b: ivy.array([0.0, 0.0, 0.0])
         }
 
         >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
@@ -720,8 +720,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = ivy.inplace_decrement(x, y)
         >>> print(z)
         {
-            a: ivy.array([1., 1.5, 3.]),
-            b: ivy.array([0., 50., 3.5])
+            a: ivy.array([1.0, 1.5, 3.0]),
+            b: ivy.array([0.0, 50.0, 3.5])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -841,7 +841,7 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = ivy.inplace_increment(x, 1.5)
         >>> print(y)
         {
-            a: ivy.array([2., -3.5, 31.5]),
+            a: ivy.array([2.0, -3.5, 31.5]),
             b: ivy.array([1.5, -23.5, 51.5])
         }
 
@@ -851,8 +851,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = ivy.inplace_increment(x, y)
         >>> print(z)
         {
-            a: ivy.array([0., 30., 60.]),
-            b: ivy.array([0., 50., 100.])
+            a: ivy.array([0.0, 30.0, 60.0]),
+            b: ivy.array([0.0, 50.0, 100.0])
         }
 
         >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
@@ -860,8 +860,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = ivy.inplace_increment(x, y)
         >>> print(z)
         {
-            a: ivy.array([5., 12.5, 17.]),
-            b: ivy.array([0., 100., 7.5])
+            a: ivy.array([5.0, 12.5, 17.0]),
+            b: ivy.array([0.0, 100.0, 7.5])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -922,7 +922,7 @@ class _ContainerWithGeneral(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([-4.7, 4.4, -6.5]),
-            b: ivy.array([3.5, 1.7, 2.]),
+            b: ivy.array([3.5, 1.7, 2.0]),
             c: ivy.array([-2.7, -3.4, 9.5])
         }
         """
@@ -1288,14 +1288,50 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = ivy.Container.static_fourier_encode(x, y, num_bands=3)
         >>> print(z)
         {
-            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
-                    3.6739404e-16, -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
-                    [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15, -1.2246468e-15,
-                    1.0000000e+00,  1.0000000e+00,  1.0000000e+00]]),
-            b: ivy.array([[ 4.00000000e+00, -4.89858720e-16, -4.89858720e-16,
-                    -4.89858720e-16, 1.00000000e+00,  1.00000000e+00,  1.00000000e+00],
-                    [ 8.00000000e+00, -9.79717439e-16, -9.79717439e-16, -9.79717439e-16,
-                    1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
+            a: ivy.array(
+                   [
+                       [
+                           3.0000000e00,
+                           3.6739404e-16,
+                           3.6739404e-16,
+                           3.6739404e-16,
+                           -1.0000000e00,
+                           -1.0000000e00,
+                           -1.0000000e00,
+                       ],
+                       [
+                           1.0000000e01,
+                           -1.2246468e-15,
+                           -1.2246468e-15,
+                           -1.2246468e-15,
+                           1.0000000e00,
+                           1.0000000e00,
+                           1.0000000e00,
+                       ],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [
+                           4.00000000e00,
+                           -4.89858720e-16,
+                           -4.89858720e-16,
+                           -4.89858720e-16,
+                           1.00000000e00,
+                           1.00000000e00,
+                           1.00000000e00,
+                       ],
+                       [
+                           8.00000000e00,
+                           -9.79717439e-16,
+                           -9.79717439e-16,
+                           -9.79717439e-16,
+                           1.00000000e00,
+                           1.00000000e00,
+                           1.00000000e00,
+                       ],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1384,14 +1420,50 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.fourier_encode(y,num_bands=3)
         >>> print(z)
         {
-            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
-                    3.6739404e-16,-1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
-                    [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15,
-                    -1.2246468e-15, 1.0000000e+00,  1.0000000e+00,  1.0000000e+00]]),
-            b: ivy.array([[4.00000000e+00, -4.89858720e-16, -4.89858720e-16,
-                    -4.89858720e-16, 1.00000000e+00,  1.00000000e+00,  1.00000000e+00],
-                    [ 8.00000000e+00, -9.79717439e-16, -9.79717439e-16, -9.79717439e-16,
-                    1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
+            a: ivy.array(
+                   [
+                       [
+                           3.0000000e00,
+                           3.6739404e-16,
+                           3.6739404e-16,
+                           3.6739404e-16,
+                           -1.0000000e00,
+                           -1.0000000e00,
+                           -1.0000000e00,
+                       ],
+                       [
+                           1.0000000e01,
+                           -1.2246468e-15,
+                           -1.2246468e-15,
+                           -1.2246468e-15,
+                           1.0000000e00,
+                           1.0000000e00,
+                           1.0000000e00,
+                       ],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [
+                           4.00000000e00,
+                           -4.89858720e-16,
+                           -4.89858720e-16,
+                           -4.89858720e-16,
+                           1.00000000e00,
+                           1.00000000e00,
+                           1.00000000e00,
+                       ],
+                       [
+                           8.00000000e00,
+                           -9.79717439e-16,
+                           -9.79717439e-16,
+                           -9.79717439e-16,
+                           1.00000000e00,
+                           1.00000000e00,
+                           1.00000000e00,
+                       ],
+                   ]
+               )
         }
         """
         return self._static_fourier_encode(
@@ -1468,8 +1540,8 @@ class _ContainerWithGeneral(ContainerBase):
         ...                   b = ivy.array([1, 2]))
         >>> print(ivy.Container.static_gather(x, y))
         {
-            a: ivy.array([0., 1.]),
-            b: ivy.array([5., 6.])
+            a: ivy.array([0.0, 1.0]),
+            b: ivy.array([5.0, 6.0])
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -1480,8 +1552,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = ivy.Container.static_gather(x, y)
         >>> print(z)
         {
-            a: ivy.array([0., 1.]),
-            b: ivy.array([4., 5.])
+            a: ivy.array([0.0, 1.0]),
+            b: ivy.array([4.0, 5.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1556,8 +1628,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.gather(y)
         >>> print(z)
         {
-            a: ivy.array([0., 1.]),
-            b: ivy.array([5., 6.])
+            a: ivy.array([0.0, 1.0]),
+            b: ivy.array([5.0, 6.0])
         }
         """
         return self._static_gather(
@@ -2066,8 +2138,8 @@ class _ContainerWithGeneral(ContainerBase):
         ...                   b=ivy.array([0]))
         >>> print(ivy.Container.static_gather_nd(x, y))
         {
-            a: ivy.array(30.),
-            b: ivy.array([0., 100., 200.])
+            a: ivy.array(30.0),
+            b: ivy.array([0.0, 100.0, 200.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2138,9 +2210,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.gather_nd(y)
         >>> print(z)
         {
-            a: ivy.array([40., 50.]),
-            b: ivy.array([[0., 100.],
-                        [200., 300.]])
+            a: ivy.array([40.0, 50.0]),
+            b: ivy.array([[0.0, 100.0], [200.0, 300.0]])
         }
         """
         return self._static_gather_nd(
@@ -2291,11 +2362,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> reduced = x.einops_reduce('a b c -> a b', 'sum')
         >>> print(reduced)
         {
-            a: ivy.array([[12, 22],
-                        [15, 17]]),
-            b: ivy.array([[22, 8],
-                        [7, 11],
-                        [16, 3]])
+            a: ivy.array([[12, 22], [15, 17]]),
+            b: ivy.array([[22, 8], [7, 11], [16, 3]])
         }
         """
         return self._static_einops_reduce(
@@ -2359,14 +2427,10 @@ class _ContainerWithGeneral(ContainerBase):
         ...    x, 'h w -> (tile h) w', tile=2)
         >>> print(repeated)
         {
-            a: ivy.array([[30, 40],
-                        [50, 75],
-                        [30, 40],
-                        [50, 75]]),
-            b: ivy.array([[1, 2],
-                        [4, 5],
-                        [1, 2],
-                        [4, 5]])
+            a: ivy.array(
+                   [[30, 40], [50, 75], [30, 40], [50, 75]]
+               ),
+            b: ivy.array([[1, 2], [4, 5], [1, 2], [4, 5]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2433,10 +2497,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> repeated = x.einops_repeat('h w ->  h  (w tile)', tile=2)
         >>> print(repeated)
         {
-            a: ivy.array([[30, 30, 40, 40],
-                          [50, 50, 75, 75]]),
-            b: ivy.array([[1, 1, 2, 2],
-                          [4, 4, 5, 5]])
+            a: ivy.array([[30, 30, 40, 40], [50, 50, 75, 75]]),
+            b: ivy.array([[1, 1, 2, 2], [4, 4, 5, 5]])
         }
         """
         return self._static_einops_repeat(
@@ -3027,8 +3089,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.stable_divide(x, 0.5)
         >>> print(y)
         {
-            a: ivy.array([20., 30.]),
-            b: ivy.array([40., 50.])
+            a: ivy.array([20.0, 30.0]),
+            b: ivy.array([40.0, 50.0])
         }
 
         >>> x = ivy.Container(a=1, b=10)
@@ -3037,7 +3099,7 @@ class _ContainerWithGeneral(ContainerBase):
         >>> print(z)
         {
             a: ivy.array([0.25, 0.2]),
-            b: ivy.array([2.5, 2.])
+            b: ivy.array([2.5, 2.0])
         }
 
         >>> x = ivy.Container(a=1, b=10)
@@ -3055,8 +3117,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = ivy.Container.stable_divide(x, y)
         >>> print(z)
         {
-            a: ivy.array([2., 0.8]),
-            b: ivy.array([0.857, 10.])
+            a: ivy.array([2.0, 0.8]),
+            b: ivy.array([0.857, 10.0])
         }
 
         >>> x = ivy.Container(a=ivy.asarray([1., 2.], [3., 4.]),
@@ -3142,10 +3204,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.stable_divide(2, min_denominator=2)
         >>> print(z)
         {
-            a: ivy.array([[0.5, 1.],
-                  [1.5, 2.]]),
-            b: ivy.array([[2.5, 3.],
-                  [3.5, 4.]])
+            a: ivy.array([[0.5, 1.0], [1.5, 2.0]]),
+            b: ivy.array([[2.5, 3.0], [3.5, 4.0]])
         }
 
         >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
@@ -3325,12 +3385,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = ivy.static_einops_rearrange(x, "height width -> width height")
         >>> print(y)
         {
-            a: ivy.array([[1, -4],
-                        [2, -5],
-                        [3, -6]]),
-            b: ivy.array([[7, 10],
-                        [8, 11],
-                        [9, 12]])
+            a: ivy.array([[1, -4], [2, -5], [3, -6]]),
+            b: ivy.array([[7, 10], [8, 11], [9, 12]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[[ 1,  2,  3],
@@ -3412,12 +3468,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.einops_rearrange("height width -> width height")
         >>> print(y)
         {
-            a: ivy.array([[1, -4],
-                        [2, -5],
-                        [3, -6]]),
-            b: ivy.array([[7, 10],
-                        [8, 11],
-                        [9, 12]])
+            a: ivy.array([[1, -4], [2, -5], [3, -6]]),
+            b: ivy.array([[7, 10], [8, 11], [9, 12]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[[ 1,  2,  3],
@@ -3503,7 +3555,7 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_clip_matrix_norm(x, 2.0)
         >>> print(y)
         {
-            a: ivy.array([[0., 0.894, 1.79]]),
+            a: ivy.array([[0.0, 0.894, 1.79]]),
             b: ivy.array([[0.849, 1.13, 1.41]])
         }
         """
@@ -3573,8 +3625,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.clip_matrix_norm(2.0, p=1.0)
         >>> print(y)
         {
-            a: ivy.array([[0., 1., 2.]]),
-            b: ivy.array([[1.2, 1.6, 2.]])
+            a: ivy.array([[0.0, 1.0, 2.0]]),
+            b: ivy.array([[1.2, 1.6, 2.0]])
         }
         """
         return self._static_clip_matrix_norm(
@@ -4108,7 +4160,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1,2,3], dtype=ivy.float64),\
-                                b=ivy.array([1,2,3], dtype=ivy.complex128))
+                                b=ivy.array([1, 2, 3], dtype=ivy.complex128))
         >>> ivy.itemsize(x)
         ivy.Container(a=8, b=16)
         """

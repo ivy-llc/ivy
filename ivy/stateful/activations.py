@@ -58,7 +58,6 @@ class ReLU(Module):
 
     def _forward(self, x):
         """
-
         Parameters
         ----------
         x
@@ -87,7 +86,6 @@ class LeakyReLU(Module):
 
     def _forward(self, x, *, alpha=None):
         """
-
         Parameters
         ----------
         x
@@ -110,7 +108,6 @@ class LogSoftmax(Module):
 
     def _forward(self, x, *, axis=None):
         """
-
         Parameters
         ----------
         x
@@ -132,7 +129,6 @@ class Softmax(Module):
 
     def _forward(self, x, *, axis=None):
         """
-
         Parameters
         ----------
         x
@@ -144,7 +140,6 @@ class Softmax(Module):
         -------
           ret
             The outputs following the SOFTMAX activation *[batch_shape, d]*
-
         """
         return ivy.softmax(x, axis=axis)
 
@@ -156,7 +151,6 @@ class Softplus(Module):
 
     def _forward(self, x, *, beta=None, threshold=None):
         """
-
         Parameters
         ----------
         x
@@ -171,7 +165,6 @@ class Softplus(Module):
         -------
         ret
             The outputs following the SOFTPLUS activation *[batch_shape, d]*
-
         """
         return ivy.softplus(x, beta=beta, threshold=threshold)
 
@@ -183,7 +176,6 @@ class Mish(Module):
 
     def _forward(self, x):
         """
-
         Parameters
         ----------
         x

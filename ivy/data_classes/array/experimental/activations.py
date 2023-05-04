@@ -36,12 +36,12 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([1, 0, 0.9])
         >>> z = x.logit()
         >>> print(z)
-        ivy.array([       inf,       -inf, 2.19722438])
+        ivy.array([inf, -inf, 2.19722438])
 
         >>> x = ivy.array([1, 2, -0.9])
         >>> z = x.logit(eps=0.2)
         >>> print(z)
-        ivy.array([ 1.38629448,  1.38629448, -1.38629436])
+        ivy.array([1.38629448, 1.38629448, -1.38629436])
         """
         return ivy.logit(self, eps=eps, out=out)
 
@@ -78,7 +78,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-1., .2, 1.])
         >>> y = x.thresholded_relu(threshold=0.5)
         >>> print(y)
-        ivy.array([0., 0., 1.])
+        ivy.array([0.0, 0.0, 1.0])
         """
         return ivy.thresholded_relu(self._data, threshold=threshold, out=out)
 
@@ -140,25 +140,47 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
         >>> y = ivy.relu6(x)
         >>> print(y)
-        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
+        ivy.array(
+            [0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 6.0]
+        )
 
         >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
         >>> y = ivy.zeros(9)
         >>> ivy.relu6(x, out = y)
         >>> print(y)
-        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
+        ivy.array(
+            [0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 6.0]
+        )
 
         With :class:`ivy.Container` input:
 
         >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+                    a: ivy.array(
+                           [
+                               -3.0,
+                               -2.0,
+                               -1.0,
+                               0.0,
+                               1.0,
+                               2.0,
+                               3.0,
+                               4.0,
+                               5.0,
+                           ]
+                       ),
+                    b: ivy.array(
+                           [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]
+                       )
                 }
         >>> x = ivy.relu6(x, out=x)
         >>> print(x)
         {
-        a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-        b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+        a: ivy.array(
+               [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+           ),
+        b: ivy.array(
+               [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 6.0, 6.0, 6.0]
+           )
         }
         """
         return ivy.relu6(self._data, out=out)
@@ -185,12 +207,26 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-1., 2., 4., -10.])
         >>> z = x.logsigmoid()
         >>> print(z)
-        ivy.array([ -1.31326175,  -0.126928  ,  -0.01814993, -10.00004578])
+        ivy.array(
+            [
+                -1.31326175,
+                -0.126928,
+                -0.01814993,
+                -10.00004578,
+            ]
+        )
 
         >>> x = ivy.array([-2.5, 1., 0, 4.5])
         >>> z = x.logsigmoid())
         >>> print(z)
-        ivy.array([-2.57888985, -0.31326169, -0.69314718, -0.01104775])
+        ivy.array(
+            [
+                -2.57888985,
+                -0.31326169,
+                -0.69314718,
+                -0.01104775,
+            ]
+        )
         """
         return ivy.logsigmoid(self._data)
 
@@ -219,14 +255,36 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
         >>> y = x.selu()
         >>> print(y)
-        ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
-                    4.20280409,  5.25350523,  6.30420589,  7.35490704])
+        ivy.array(
+            [
+                -1.11133075,
+                0.0,
+                1.05070102,
+                2.10140204,
+                3.15210295,
+                4.20280409,
+                5.25350523,
+                6.30420589,
+                7.35490704,
+            ]
+        )
 
         >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
         >>> y = ivy.zeros(9)
         >>> x.selu(out = y)
         >>> print(y)
-        ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
-                    4.20280409,  5.25350523,  6.30420589,  7.35490704])
+        ivy.array(
+            [
+                -1.11133075,
+                0.0,
+                1.05070102,
+                2.10140204,
+                3.15210295,
+                4.20280409,
+                5.25350523,
+                6.30420589,
+                7.35490704,
+            ]
+        )
         """
         return ivy.selu(self._data, out=out)

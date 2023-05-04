@@ -19,6 +19,10 @@ repos:
     rev: v1.6.3
     hooks:
       - id: docformatter
+  - repo: https://github.com/unifyai/lint-hook
+    rev: 1dfcb2415af979ccac11042b357842878ea3dddb
+    hooks:
+      - id: ivy-lint
   - repo: https://github.com/pycqa/pydocstyle
     rev: 6.3.0
     hooks:

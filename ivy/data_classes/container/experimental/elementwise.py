@@ -120,8 +120,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x.sinc()
         >>> print(y)
         {
-            a: ivy.array([0.637,-0.212,0.127]),
-            b: ivy.array([-0.0909,0.0707,-0.0579])
+            a: ivy.array([0.637, -0.212, 0.127]),
+            b: ivy.array([-0.0909, 0.0707, -0.0579])
         }
         """
         return self.static_sinc(
@@ -279,8 +279,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=ivy.array([0, ivy.nan, ivy.nan]))
         >>> ivy.Container.static_fmod(x1, x2)
         {
-            a: ivy.array([ 0,  3,  0])
-            b: ivy.array([ nan,  nan,  nan])
+            a: ivy.array([0, 3, 0])
+            b: ivy.array([nan, nan, nan])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -328,8 +328,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=ivy.array([0, ivy.nan, ivy.nan]))
         >>> x1.fmod(x2)
         {
-            a: ivy.array([ 0,  3,  0])
-            b: ivy.array([ nan,  nan,  nan])
+            a: ivy.array([0, 3, 0])
+            b: ivy.array([nan, nan, nan])
         }
         """
         return self.static_fmod(self, x2, out=out)
@@ -373,8 +373,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=ivy.array([0, ivy.nan, ivy.nan]))
         >>> ivy.Container.static_fmax(x1, x2)
         {
-            a: ivy.array([ 2.,  5.,  4.])
-            b: ivy.array([ 0,  0,  nan])
+            a: ivy.array([2.0, 5.0, 4.0])
+            b: ivy.array([0, 0, nan])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -422,8 +422,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=ivy.array([0, ivy.nan, ivy.nan]))
         >>> x1.fmax(x2)
         {
-            a: ivy.array([ 2.,  5.,  4.])
-            b: ivy.array([ 0,  0,  nan])
+            a: ivy.array([2.0, 5.0, 4.0])
+            b: ivy.array([0, 0, nan])
         }
         """
         return self.static_fmax(self, x2, out=out)
@@ -468,7 +468,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> ivy.Container.static_fmin(x1, x2)
         {
             a: ivy.array([1, 3, 2]),
-            b: ivy.array([0., 0., nan])
+            b: ivy.array([0.0, 0.0, nan])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -517,7 +517,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> x1.fmin(x2)
         {
             a: ivy.array([1, 3, 2]),
-            b: ivy.array([0., 0., nan])
+            b: ivy.array([0.0, 0.0, nan])
         }
         """
         return self.static_fmin(self, x2, out=out)
@@ -561,7 +561,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> x2 = ivy.Container(a=ivy.array([1, 3, 1]), b=0)
         >>> ivy.Container.static_float_power(x1, x2)
         {
-            a: ivy.array([1,  8,  3])
+            a: ivy.array([1, 8, 3])
             b: ivy.array([1, 1])
         }
         """
@@ -610,7 +610,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> x2 = ivy.Container(a=ivy.array([1, 3, 1]), b=0)
         >>> x1.float_power(x2)
         {
-            a: ivy.array([1,  8,  3])
+            a: ivy.array([1, 8, 3])
             b: ivy.array([1, 1])
         }
         """
@@ -651,8 +651,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=[5, 6, 7])
         >>> ivy.Container.static_exp2(x)
         {
-            a: ivy.array([2.,  4.,  8.])
-            b: ivy.array([32., 64., 128.])
+            a: ivy.array([2.0, 4.0, 8.0])
+            b: ivy.array([32.0, 64.0, 128.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -695,8 +695,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=[5, 6, 7])
         >>> x.exp2()
         {
-            a: ivy.array([2.,  4.,  8.])
-            b: ivy.array([32., 64., 128.])
+            a: ivy.array([2.0, 4.0, 8.0])
+            b: ivy.array([32.0, 64.0, 128.0])
         }
         """
         return self.static_exp2(self, out=out)
@@ -740,13 +740,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
         >>> ivy.Container.static_copysign(x1, x2)
         {
-            a: ivy.array([-0., -1., -2.]),
-            b: ivy.array(1.)
+            a: ivy.array([-0.0, -1.0, -2.0]),
+            b: ivy.array(1.0)
         }
         >>> ivy.Container.static_copysign(23, x1)
         {
-            a: ivy.array([23., 23., 23.]),
-            b: ivy.array(-23.)
+            a: ivy.array([23.0, 23.0, 23.0]),
+            b: ivy.array(-23.0)
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -794,13 +794,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
         >>> x1.copysign(x2)
         {
-            a: ivy.array([-0., -1., -2.]),
-            b: ivy.array(1.)
+            a: ivy.array([-0.0, -1.0, -2.0]),
+            b: ivy.array(1.0)
         }
         >>> x1.copysign(-1)
         {
-            a: ivy.array([-0., -1., -2.]),
-            b: ivy.array(-1.)
+            a: ivy.array([-0.0, -1.0, -2.0]),
+            b: ivy.array(-1.0)
         }
         """
         return self.static_copysign(self, x2, out=out)
@@ -861,22 +861,21 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
-                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+                        b=ivy.array([[[0, 1], [2, 3]], [[4, 5], [6, 7]]]))
         >>> ivy.Container.static_count_nonzero(x)
         {
             a: ivy.array(7),
             b: ivy.array(7)
         }
         >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
-                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+                        b=ivy.array([[[0, 1], [2, 3]], [[4, 5], [6, 7]]]))
         >>> ivy.Container.static_count_nonzero(x, axis=0)
         {
             a: ivy.array([1, 2, 2, 2]),
-            b: ivy.array([[1, 2],
-                          [2, 2]])
+            b: ivy.array([[1, 2], [2, 2]])
         }
         >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
-                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+                        b=ivy.array([[[0, 1], [2, 3]], [[4, 5], [6, 7]]]))
         >>> ivy.Container.static_count_nonzero(x, axis=(0,1), keepdims=True)
         {
             a: ivy.array([[7]]),
@@ -952,22 +951,21 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
-                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+                        b=ivy.array([[[0, 1], [2, 3]], [[4, 5], [6, 7]]]))
         >>> x.count_nonzero()
         {
             a: ivy.array(7),
             b: ivy.array(7)
         }
         >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
-                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+                        b=ivy.array([[[0, 1], [2, 3]], [[4, 5], [6, 7]]]))
         >>> x.count_nonzero(axis=0)
         {
             a: ivy.array([1, 2, 2, 2]),
-            b: ivy.array([[1, 2],
-                          [2, 2]])
+            b: ivy.array([[1, 2], [2, 2]])
         }
         >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
-                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+                        b=ivy.array([[[0, 1], [2, 3]], [[4, 5], [6, 7]]]))
         >>> x.count_nonzero(axis=(0,1), keepdims=True)
         {
             a: ivy.array([[7]]),
@@ -1041,12 +1039,12 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> ivy.Container.static_nansum(x, axis=0)
         {
             a: ivy.array([13, 9, 5]),
-            b: ivy.array([1., 4., 2.])
+            b: ivy.array([1.0, 4.0, 2.0])
         }
         >>> ivy.Container.static_nansum(x, axis=1)
         {
             a: ivy.array([21, 6]),
-            b: ivy.array([7., 0.])
+            b: ivy.array([7.0, 0.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1107,12 +1105,12 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> x.nansum(axis=0)
         {
             a: ivy.array([13, 9, 5]),
-            b: ivy.array([1., 4., 2.])
+            b: ivy.array([1.0, 4.0, 2.0])
         }
         >>> x.nansum(axis=1)
         {
             a: ivy.array([21, 6]),
-            b: ivy.array([7., 0.])
+            b: ivy.array([7.0, 0.0])
         }
         """
         return self.static_nansum(
@@ -1158,8 +1156,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=10)
         >>> ivy.Container.static_gcd(x1, x2)
         {
-            a: ivy.array([1.,  1.,  3.])
-            b: ivy.array([1., 2., 1.])
+            a: ivy.array([1.0, 1.0, 3.0])
+            b: ivy.array([1.0, 2.0, 1.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1207,8 +1205,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=10)
         >>> x1.gcd(x2)
         {
-            a: ivy.array([1.,  1.,  3.])
-            b: ivy.array([1., 2., 1.])
+            a: ivy.array([1.0, 1.0, 3.0])
+            b: ivy.array([1.0, 2.0, 1.0])
         }
         """
         return self.static_gcd(self, x2, out=out)
@@ -1451,8 +1449,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                 b=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]))
         >>> x
         {
-            a: ivy.array([-2.25+4.75j, 3.25+5.75j]),
-            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+            a: ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]),
+            b: ivy.array([-2.25 + 4.75j, 3.25 + 5.75j])
         }
         >>> ivy.Container.static_angle(x)
         {
@@ -1512,8 +1510,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                 b=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]))
         >>> x
         {
-            a: ivy.array([-2.25+4.75j, 3.25+5.75j]),
-            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+            a: ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]),
+            b: ivy.array([-2.25 + 4.75j, 3.25 + 5.75j])
         }
         >>> x.angle()
         {
@@ -1564,12 +1562,12 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                 b=ivy.array(np.array([-2.25 + 4.75j, 3.25 + 5.75j])))
         >>> x
         {
-            a: ivy.array([1.+2.j, 3.+4.j, 5.+6.j]),
-            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+            a: ivy.array([1.0 + 2.0j, 3.0 + 4.0j, 5.0 + 6.0j]),
+            b: ivy.array([-2.25 + 4.75j, 3.25 + 5.75j])
         }
         >>> ivy.Container.static_imag(x)
         {
-            a: ivy.array([2., 4., 6.]),
+            a: ivy.array([2.0, 4.0, 6.0]),
             b: ivy.array([4.75, 5.75])
         }
         """
@@ -1613,12 +1611,12 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                 b=ivy.array(np.array([-2.25 + 4.75j, 3.25 + 5.75j])))
         >>> x
         {
-            a: ivy.array([1.+2.j, 3.+4.j, 5.+6.j]),
-            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+            a: ivy.array([1.0 + 2.0j, 3.0 + 4.0j, 5.0 + 6.0j]),
+            b: ivy.array([-2.25 + 4.75j, 3.25 + 5.75j])
         }
         >>> x.imag()
         {
-            a: ivy.array([2., 4., 6.]),
+            a: ivy.array([2.0, 4.0, 6.0]),
             b: ivy.array([4.75, 5.75])
         }
         """
@@ -1676,8 +1674,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=ivy.array([1, 2, 3, inf]))
         >>> ivy.Container.static_nan_to_num(x, posinf=5e+100)
         {
-            a: ivy.array([1.,  1.,  3.,  0.0])
-            b: ivy.array([1., 2., 1.,  5e+100])
+            a: ivy.array([1.0, 1.0, 3.0, 0.0])
+            b: ivy.array([1.0, 2.0, 1.0, 5e100])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1743,8 +1741,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> ret = x.nan_to_num(posinf=5e+100)
         >>> print(ret)
         {
-            a: ivy.array([1., 2., 3., 0.]),
-            b: ivy.array([1.e+000, 2.e+000, 3.e+000, 5.e+100])
+            a: ivy.array([1.0, 2.0, 3.0, 0.0]),
+            b: ivy.array([1.0e000, 2.0e000, 3.0e000, 5.0e100])
         }
         """
         return self.static_nan_to_num(
@@ -1791,7 +1789,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> ivy.Container.static_logaddexp2(x1, x2)
         {
             a: ivy.array([4.169925, 5.169925, 6.169925])
-            b: ivy.array([5.08746284, 5.169925  , 5.32192809])
+            b: ivy.array([5.08746284, 5.169925, 5.32192809])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1840,7 +1838,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> x1.logaddexp2(x2)
         {
             a: ivy.array([4.169925, 5.169925, 6.169925])
-            b: ivy.array([5.08746284, 5.169925  , 5.32192809])
+            b: ivy.array([5.08746284, 5.169925, 5.32192809])
         }
         """
         return self.static_logaddexp2(self, x2, out=out)
@@ -1980,7 +1978,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> ivy.Container.static_hypot(x, y)
         {
             a: ivy.array([3.6055]),
-            b: ivy.array([5.])
+            b: ivy.array([5.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2045,7 +2043,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> x.hypot(y)
         {
             a: ivy.array([3.6055]),
-            b: ivy.array([5.])
+            b: ivy.array([5.0])
         }
         """
         return self.static_hypot(
@@ -2298,8 +2296,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                               b=ivy.array([1, 2, 4, 7, 0]))
         >>> ivy.Container.static_diff(x)
         {
-            a: ivy.array([ 1,  2,  3, -7]),
-            b: ivy.array([ 1,  2,  3, -7])
+            a: ivy.array([1, 2, 3, -7]),
+            b: ivy.array([1, 2, 3, -7])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2403,8 +2401,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=ivy.array([3.14]))
         >>> ivy.Container.static_fix(x)
         {
-            a: ivy.array([ 2.,  2., -2.])
-            b: ivy.array([ 3.0 ])
+            a: ivy.array([2.0, 2.0, -2.0])
+            b: ivy.array([3.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2447,8 +2445,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
                                b=ivy.array([3.14]))
         >>> x.fix()
         {
-            a: ivy.array([ 2.,  2., -2.])
-            b: ivy.array([ 3.0 ])
+            a: ivy.array([2.0, 2.0, -2.0])
+            b: ivy.array([3.0])
         }
         """
         return self.static_fix(self, out=out)
@@ -2505,7 +2503,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         ...                         b=ivy.array([-2.0]))
         >>> ivy.Container.static_nextafter(x1, x2)
         {
-            a: ivy.array([1.4013e-45., 3.4028e+38]),
+            a: ivy.array([1.4013e-45, 3.4028e38]),
             b: ivy.array([5.5e-30])
         }
         """
@@ -2571,7 +2569,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         ...                         b=ivy.array([-2.0]))
         >>> x1.nextafter(x2)
         {
-            a: ivy.array([1.4013e-45., 3.4028e+38]),
+            a: ivy.array([1.4013e-45, 3.4028e38]),
             b: ivy.array([5.5e-30])
         }
         """
@@ -2785,8 +2783,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> )
         >>> ivy.gradient(values, spacing=coordinates)
         {
-            a: ivy.array([-3., -2., 2., 5.]),
-            b: ivy.array([3., 2., -2., -5.])
+            a: ivy.array([-3.0, -2.0, 2.0, 5.0]),
+            b: ivy.array([3.0, 2.0, -2.0, -5.0])
         }
 
         >>> values = ivy.Container(
@@ -2795,15 +2793,31 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> )
         >>> ivy.gradient(values)
         [{
-            a: ivy.array([[9., 18., 36., 72.],
-                          [9., 18., 36., 72.]]),
-            b: ivy.array([[-9., -18., -36., -72.],
-                          [-9., -18., -36., -72.]])
+            a: ivy.array(
+                   [
+                       [9.0, 18.0, 36.0, 72.0],
+                       [9.0, 18.0, 36.0, 72.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-9.0, -18.0, -36.0, -72.0],
+                       [-9.0, -18.0, -36.0, -72.0],
+                   ]
+               )
         }, {
-            a: ivy.array([[1., 1.5, 3., 4.],
-                          [10., 15., 30., 40.]]),
-            b: ivy.array([[-1., -1.5, -3., -4.],
-                          [-10., -15., -30., -40.]])
+            a: ivy.array(
+                   [
+                       [1.0, 1.5, 3.0, 4.0],
+                       [10.0, 15.0, 30.0, 40.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-1.0, -1.5, -3.0, -4.0],
+                       [-10.0, -15.0, -30.0, -40.0],
+                   ]
+               )
         }]
 
         >>> values = ivy.Container(
@@ -2812,15 +2826,31 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> )
         >>> ivy.gradient(values, spacing=2.0)
         [{
-            a: ivy.array([[4.5, 9., 18., 36.],
-                          [4.5, 9., 18., 36.]]),
-            b: ivy.array([[-4.5, -9., -18., -36.],
-                          [-4.5, -9., -18., -36.]])
+            a: ivy.array(
+                   [
+                       [4.5, 9.0, 18.0, 36.0],
+                       [4.5, 9.0, 18.0, 36.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-4.5, -9.0, -18.0, -36.0],
+                       [-4.5, -9.0, -18.0, -36.0],
+                   ]
+               )
         }, {
-            a: ivy.array([[0.5, 0.75, 1.5, 2.],
-                          [5., 7.5, 15., 20.]]),
-            b: ivy.array([[-0.5, -0.75, -1.5, -2.],
-                          [-5., -7.5, -15., -20.]])
+            a: ivy.array(
+                   [
+                       [0.5, 0.75, 1.5, 2.0],
+                       [5.0, 7.5, 15.0, 20.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-0.5, -0.75, -1.5, -2.0],
+                       [-5.0, -7.5, -15.0, -20.0],
+                   ]
+               )
         }]
 
         >>> values = ivy.Container(
@@ -2829,10 +2859,18 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> )
         >>> ivy.gradient(values, axis=1)
         {
-            a: ivy.array([[1., 1.5, 3., 4.],
-                          [10., 15., 30., 40.]]),
-            b: ivy.array([[-1., -1.5, -3., -4.],
-                          [-10., -15., -30., -40.]])
+            a: ivy.array(
+                   [
+                       [1.0, 1.5, 3.0, 4.0],
+                       [10.0, 15.0, 30.0, 40.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-1.0, -1.5, -3.0, -4.0],
+                       [-10.0, -15.0, -30.0, -40.0],
+                   ]
+               )
         }
 
         >>> values = ivy.Container(
@@ -2841,15 +2879,31 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> )
         >>> ivy.gradient(values, spacing = [3., 2.])
         [{
-            a: ivy.array([[3., 6., 12., 24.],
-                          [3., 6., 12., 24.]]),
-            b: ivy.array([[-3., -6., -12., -24.],
-                          [-3., -6., -12., -24.]])
+            a: ivy.array(
+                   [
+                       [3.0, 6.0, 12.0, 24.0],
+                       [3.0, 6.0, 12.0, 24.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-3.0, -6.0, -12.0, -24.0],
+                       [-3.0, -6.0, -12.0, -24.0],
+                   ]
+               )
         }, {
-            a: ivy.array([[0.5, 0.75, 1.5, 2.],
-                          [5., 7.5, 15., 20.]]),
-            b: ivy.array([[-0.5, -0.75, -1.5, -2.],
-                          [-5., -7.5, -15., -20.]])
+            a: ivy.array(
+                   [
+                       [0.5, 0.75, 1.5, 2.0],
+                       [5.0, 7.5, 15.0, 20.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [-0.5, -0.75, -1.5, -2.0],
+                       [-5.0, -7.5, -15.0, -20.0],
+                   ]
+               )
         }]
 
         >>> coords = ivy.Container(
@@ -2862,15 +2916,31 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>>)
         >>> ivy.gradient(values, spacing = coords)
         [{
-            a: ivy.array([[4.5, 9., 18., 36.],
-                          [4.5, 9., 18., 36.]]),
-            b: ivy.array([[4.5, 9., 18., 36.],
-                          [4.5, 9., 18., 36.]])
+            a: ivy.array(
+                   [
+                       [4.5, 9.0, 18.0, 36.0],
+                       [4.5, 9.0, 18.0, 36.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [4.5, 9.0, 18.0, 36.0],
+                       [4.5, 9.0, 18.0, 36.0],
+                   ]
+               )
         }, {
-            a: ivy.array([[0.33333333, 0.5, 1., 1.33333333],
-                          [3.33333333, 5., 10., 13.33333333]]),
-            b: ivy.array([[0.33333333, 0.5, 1., 1.33333333],
-                          [3.33333333, 5., 10., 13.33333333]])
+            a: ivy.array(
+                   [
+                       [0.33333333, 0.5, 1.0, 1.33333333],
+                       [3.33333333, 5.0, 10.0, 13.33333333],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [0.33333333, 0.5, 1.0, 1.33333333],
+                       [3.33333333, 5.0, 10.0, 13.33333333],
+                   ]
+               )
         }]
         """
         return self.static_gradient(
@@ -3059,7 +3129,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> z = ivy.Container.static_real(x)
         >>> print(z)
         {
-            a: ivy.array([-1., 0., 0.]),
+            a: ivy.array([-1.0, 0.0, 0.0]),
             b: ivy.array([7.9, 0.31, -4.2])
         }
         """
@@ -3109,7 +3179,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            a container containing the test result. 
+            a container containing the test result.
             An element ``out_i`` is ``self_i`` if ``self_i`` is real number
             else ``took real number part only`` if ``self_i``
             contains real number and complex number both.
@@ -3118,11 +3188,11 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([-1j, 0.335+2.345j, 1.23+7j]),\
-                          b=ivy.array([0.0, 1.2+3.3j, 1+0j]))
+                          b=ivy.array([0.0, 1.2 + 3.3j, 1 + 0j]))
         >>> x.real()
         {
-            a: ivy.array([0., 0.335, 1.23]),
-            b: ivy.array([0.0, 1.2, 1.])
+            a: ivy.array([0.0, 0.335, 1.23]),
+            b: ivy.array([0.0, 1.2, 1.0])
         }
         """
         return self.static_real(
@@ -3288,8 +3358,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> z = ivy.Container.static_conj(x)
         >>> print(z)
         {
-            a: ivy.array([-1-5j, 0+0j, -1.23j]),
-            b: ivy.array([7.9, 0.31-3.3j, -4.2+5.9j])
+            a: ivy.array([-1 - 5j, 0 + 0j, -1.23j]),
+            b: ivy.array([7.9, 0.31 - 3.3j, -4.2 + 5.9j])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -3347,11 +3417,11 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([-1j, 0.335+2.345j, 1.23+7j]),\
-                          b=ivy.array([0.0, 1.2+3.3j, 1+0j]))
+                          b=ivy.array([0.0, 1.2 + 3.3j, 1 + 0j]))
         >>> x.conj()
         {
-            a: ivy.array([1j, 0.335-2345j, 1.23-7j]),
-            b: ivy.array([0.0, 1.2-3.3j, 1-0j])
+            a: ivy.array([1j, 0.335 - 2345j, 1.23 - 7j]),
+            b: ivy.array([0.0, 1.2 - 3.3j, 1 - 0j])
         }
         """
         return self.static_conj(
@@ -3521,7 +3591,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = ivy.Container.static_lerp(input, end, weight)
         >>> print(y)
         {
-            a: ivy.array([11., 10.90000057, 10.80000019]),
+            a: ivy.array([11.0, 10.90000057, 10.80000019]),
             b: ivy.array([10.70000076, 10.60000038, 10.5])
         }
         >>> input = ivy.Container(a=ivy.array([10.1, 11.1]), b=ivy.array([10, 11]))
@@ -3532,7 +3602,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         {
             a: ivy.array([7.55000019, 8.05000019]),
             b: {
-                a: ivy.array([7.5, 8.])
+                a: ivy.array([7.5, 8.0])
             }
         }
         """
@@ -3585,8 +3655,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         >>> weight = ivy.Container(a=ivy.array(0.5), b=ivy.array([0.4, 0.5, 0.6]))
         >>> input.lerp(end, weight)
         {
-            a: ivy.array([5.5, 6., 6.5]),
-            b: ivy.array([8.60000038, 12.5, 16.])
+            a: ivy.array([5.5, 6.0, 6.5]),
+            b: ivy.array([8.60000038, 12.5, 16.0])
         }
         """
         return self.static_lerp(self, end, weight, out=out)

@@ -74,7 +74,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
         >>> z = ivy.histogram(x, bins=y)
         >>> print(z)
-        (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+        (ivy.array([1, 0, 1, 1]), ivy.array([0.0, 0.5, 1.0, 1.5, 2.0]))
         """
         return ivy.histogram(
             self._data,
@@ -174,7 +174,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         >>> a.nanmean()
         2.6666666666666665
         >>> a.nanmean(axis=0)
-        ivy.array([2.,  4.])
+        ivy.array([2.0, 4.0])
         """
         return ivy.nanmean(
             self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
@@ -247,15 +247,15 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         ivy.array([6.5, 4.5, 2.5])
 
         >>> a.quantile(q, axis=1)
-        ivy.array([7.,  2.])
+        ivy.array([7.0, 2.0])
 
         >>> a.quantile(q, axis=1, keepdims=True)
-        ivy.array([[7.],[2.]])
+        ivy.array([[7.0], [2.0]])
 
         >>> a = ivy.array([1., 2., 3., 4.])
         >>> q = ivy.array([0.3, 0.7])
         >>> a.quantile(q, interpolation='lower')
-        ivy.array([1., 3.])
+        ivy.array([1.0, 3.0])
         """
         return ivy.quantile(
             self._data,
@@ -300,12 +300,15 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         --------
         >>> a = ivy.array([[0., 1., 2.], [2., 1., 0.]])
         >>> a.corrcoef()
-            ivy.array([[ 1., -1.],
-                       [-1.,  1.]])
+            ivy.array([[1.0, -1.0], [-1.0, 1.0]])
         >>> a.corrcoef(rowvar=False)
-            ivy.array([[ 1., nan, -1.],
-                       [nan, nan, nan],
-                       [-1., nan,  1.]])
+            ivy.array(
+                [
+                    [1.0, nan, -1.0],
+                    [nan, nan, nan],
+                    [-1.0, nan, 1.0],
+                ]
+            )
         """
         return ivy.corrcoef(self._data, y=y, rowvar=rowvar, out=out)
 
@@ -409,7 +412,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         >>> a.bincount(minlength=10)
             ivy.array([1, 3, 1, 1, 0, 0, 0, 1, 0, 0])
         >>> a.bincount(weights=ivy.array([0.3, 0.5, 0.2, 0.7, 1., 0.6, 1.]))
-            ivy.array([0.3, 1.3, 1. , 0.7, 0. , 0. , 0. , 1. ])
+            ivy.array(
+                [0.3, 1.3, 1.0, 0.7, 0.0, 0.0, 0.0, 1.0]
+            )
         """
         return ivy.bincount(
             self._data,

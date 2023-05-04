@@ -32,7 +32,8 @@ def argsort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the indices that sort an array ``x`` along a specified axis.
+    """
+    Return the indices that sort an array ``x`` along a specified axis.
 
     Parameters
     ----------
@@ -78,12 +79,12 @@ def argsort(
     >>> x = ivy.array([3,1,2])
     >>> y = ivy.argsort(x)
     >>> print(y)
-    ivy.array([1,2,0])
+    ivy.array([1, 2, 0])
 
     >>> x = ivy.array([4,3,8])
     >>> y = ivy.argsort(x, descending=True)
     >>> print(y)
-    ivy.array([2,0,1])
+    ivy.array([2, 0, 1])
 
     >>> x = ivy.array([[1.5, 3.2], [2.3, 2.3]])
     >>> ivy.argsort(x, axis=0, descending=True, stable=False, out=x)
@@ -109,7 +110,7 @@ def argsort(
     >>> y = ivy.argsort(x)
     >>> print(y)
     {
-        a: ivy.array([[0,1],[1,0]])
+        a: ivy.array([[0, 1], [1, 0]])
     }
 
     >>> x = ivy.Container(a=ivy.array([4,3,6]), b=ivy.array([[4, 5], [2, 4]]))
@@ -124,8 +125,8 @@ def argsort(
     >>> y = x.argsort(axis=-1, descending=True, stable=False)
     >>> print(y)
     {
-        a: ivy.array([[1,0],[1,0]]),
-        b: ivy.array([[[1,0],[0, 1],[0, 1]]])
+        a: ivy.array([[1, 0], [1, 0]]),
+        b: ivy.array([[[1, 0], [0, 1], [0, 1]]])
     }
     """
     return ivy.current_backend(x).argsort(
@@ -200,7 +201,12 @@ def sort(
     >>> x = ivy.array([[[8.9,0], [19,5]],[[6,0.3], [19,0.5]]])
     >>> y = ivy.sort(x, axis=1, descending=True, stable=False)
     >>> print(y)
-    ivy.array([[[19. ,  5. ],[ 8.9,  0. ]],[[19. ,  0.5],[ 6. ,  0.3]]])
+    ivy.array(
+        [
+            [[19.0, 5.0], [8.9, 0.0]],
+            [[19.0, 0.5], [6.0, 0.3]],
+        ]
+    )
 
     >>> x = ivy.array([1.5, 3.2, 0.7, 2.5])
     >>> y = ivy.zeros(5)
@@ -211,8 +217,7 @@ def sort(
     >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
     >>> ivy.sort(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.1,  2.2,  3.3],
-        [-6.6, -5.5, -4.4]])
+    ivy.array([[1.1, 2.2, 3.3], [-6.6, -5.5, -4.4]])
 
     With :class:`ivy.Container` input:
 
@@ -221,15 +226,15 @@ def sort(
     >>> print(y)
     {
         a: ivy.array([8, 6, 6]),
-        b: ivy.array([[9., 0.7], [0.4, 0.]])
+        b: ivy.array([[9.0, 0.7], [0.4, 0.0]])
     }
 
     >>> x = ivy.Container(a=ivy.array([3, 0.7, 1]),b=ivy.array([[4, 0.9], [0.6, 0.2]]))
     >>> y = ivy.sort(x, descending=False, stable=False)
     >>> print(y)
     {
-        a: ivy.array([0.7, 1., 3.]),
-        b: ivy.array([[0.9, 4.], [0.2, 0.6]])
+        a: ivy.array([0.7, 1.0, 3.0]),
+        b: ivy.array([[0.9, 4.0], [0.2, 0.6]])
     }
     """
     return ivy.current_backend(x).sort(
@@ -306,9 +311,7 @@ def searchsorted(
     >>> v = ivy.array([[3, 1], [10, 3], [-2, -1]])
     >>> y  = ivy.searchsorted(x, v)
     >>> print(y)
-    ivy.array([[3, 1],
-       [6, 3],
-       [0, 0]])
+    ivy.array([[3, 1], [6, 3], [0, 0]])
     """
     return ivy.current_backend(x, v).searchsorted(
         x,

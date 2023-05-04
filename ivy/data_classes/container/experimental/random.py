@@ -30,10 +30,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Parameters
         ----------
         alpha
-            Sequence of floats of length k 
+            Sequence of floats of length k
         size
-            optional container including ints or tuple of ints, 
-            Output shape for the arrays in the input container. 
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
@@ -50,22 +50,26 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Examples
         --------
         >>> alpha = ivy.Container(a=ivy.array([7,6,5]), \
-                                  b=ivy.array([8,9,4]))
+                                  b=ivy.array([8, 9, 4]))
         >>> size = ivy.Container(a=3, b=5)
         >>> ivy.Container.static_dirichlet(alpha, size)
         {
             a: ivy.array(
-                [[0.43643127, 0.32325703, 0.24031169],
-                 [0.34251311, 0.31692529, 0.3405616 ],
-                 [0.5319725 , 0.22458365, 0.24344385]]
-                ),
+                   [
+                       [0.43643127, 0.32325703, 0.24031169],
+                       [0.34251311, 0.31692529, 0.3405616],
+                       [0.5319725, 0.22458365, 0.24344385],
+                   ]
+               ),
             b: ivy.array(
-                [[0.26588406, 0.61075421, 0.12336174],
-                 [0.51142915, 0.25041268, 0.23815817],
-                 [0.64042903, 0.25763214, 0.10193883],
-                 [0.31624692, 0.46567987, 0.21807321],
-                 [0.37677699, 0.39914594, 0.22407707]]
-                )
+                   [
+                       [0.26588406, 0.61075421, 0.12336174],
+                       [0.51142915, 0.25041268, 0.23815817],
+                       [0.64042903, 0.25763214, 0.10193883],
+                       [0.31624692, 0.46567987, 0.21807321],
+                       [0.37677699, 0.39914594, 0.22407707],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -97,10 +101,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Parameters
         ----------
         self
-            Sequence of floats of length k 
+            Sequence of floats of length k
         size
-            optional container including ints or tuple of ints, 
-            Output shape for the arrays in the input container. 
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
@@ -117,22 +121,26 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Examples
         --------
         >>> alpha = ivy.Container(a=ivy.array([7,6,5]), \
-                                  b=ivy.array([8,9,4]))
+                                  b=ivy.array([8, 9, 4]))
         >>> size = ivy.Container(a=3, b=5)
         >>> alpha.dirichlet(size)
         {
             a: ivy.array(
-                [[0.43643127, 0.32325703, 0.24031169],
-                 [0.34251311, 0.31692529, 0.3405616 ],
-                 [0.5319725 , 0.22458365, 0.24344385]]
-                ),
+                   [
+                       [0.43643127, 0.32325703, 0.24031169],
+                       [0.34251311, 0.31692529, 0.3405616],
+                       [0.5319725, 0.22458365, 0.24344385],
+                   ]
+               ),
             b: ivy.array(
-                [[0.26588406, 0.61075421, 0.12336174],
-                 [0.51142915, 0.25041268, 0.23815817],
-                 [0.64042903, 0.25763214, 0.10193883],
-                 [0.31624692, 0.46567987, 0.21807321],
-                 [0.37677699, 0.39914594, 0.22407707]]
-                )
+                   [
+                       [0.26588406, 0.61075421, 0.12336174],
+                       [0.51142915, 0.25041268, 0.23815817],
+                       [0.64042903, 0.25763214, 0.10193883],
+                       [0.31624692, 0.46567987, 0.21807321],
+                       [0.37677699, 0.39914594, 0.22407707],
+                   ]
+               )
         }
         """
         return self.static_dirichlet(
@@ -332,12 +340,11 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Examples
         --------
         >>> lam = ivy.Container(a=ivy.array([7,6,5]), \
-                                b=ivy.array([8,9,4]))
+                                b=ivy.array([8, 9, 4]))
         >>> shape = ivy.Container(a=(2,3), b=(1,1,3))
         >>> ivy.Container.static_poisson(lam, shape=shape)
         {
-            a: ivy.array([[5, 4, 6],
-                          [12, 4, 5]]),
+            a: ivy.array([[5, 4, 6], [12, 4, 5]]),
             b: ivy.array([[[8, 13, 3]]])
         }
         """
@@ -396,12 +403,11 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Examples
         --------
         >>> lam = ivy.Container(a=ivy.array([7,6,5]), \
-                                b=ivy.array([8,9,4]))
+                                b=ivy.array([8, 9, 4]))
         >>> shape = ivy.Container(a=(2,3), b=(1,1,3))
         >>> lam.poisson(shape=shape)
         {
-            a: ivy.array([[5, 4, 6],
-                          [12, 4, 5]]),
+            a: ivy.array([[5, 4, 6], [12, 4, 5]]),
             b: ivy.array([[[8, 13, 3]]])
         }
         """
@@ -430,7 +436,6 @@ class _ContainerWithRandomExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-
         Parameters
         ----------
         probs
@@ -470,7 +475,6 @@ class _ContainerWithRandomExperimental(ContainerBase):
         -------
         ret
             Drawn samples from the Bernoulli distribution
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "bernoulli",
@@ -499,7 +503,6 @@ class _ContainerWithRandomExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-
         Parameters
         ----------
         self
@@ -534,7 +537,6 @@ class _ContainerWithRandomExperimental(ContainerBase):
         -------
         ret
             Drawn samples from the Bernoulli distribution
-
         """
         return self.static_bernoulli(
             self,

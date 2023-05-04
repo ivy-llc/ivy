@@ -44,10 +44,7 @@ def msort(
     --------
     >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
     >>> ivy.msort(a)
-    ivy.array(
-        [[6, 2, 6],
-         [8, 9, 6]]
-        )
+    ivy.array([[6, 2, 6], [8, 9, 6]])
     """
     return ivy.current_backend().msort(a, out=out)
 

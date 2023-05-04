@@ -139,12 +139,9 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_expand_dims(x, axis=1)
         >>> print(y)
         {
-            a: ivy.array([[0.],
-                          [1.]]),
-            b: ivy.array([[3.],
-                          [4.]]),
-            c: ivy.array([[6.],
-                          [7.]])
+            a: ivy.array([[0.0], [1.0]]),
+            b: ivy.array([[3.0], [4.0]]),
+            c: ivy.array([[6.0], [7.0]])
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -156,11 +153,9 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_expand_dims(x, axis=container_axis)
         >>> print(y)
         {
-            a: ivy.array([[0., 1., 2.]]),
-            b: ivy.array([[3.],
-                          [4.],
-                          [5.]]),
-            c: ivy.array([[[6., 7., 8.]]])
+            a: ivy.array([[0.0, 1.0, 2.0]]),
+            b: ivy.array([[3.0], [4.0], [5.0]]),
+            c: ivy.array([[[6.0, 7.0, 8.0]]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -219,10 +214,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.expand_dims(axis=1)
         >>> print(y)
         {
-            a: ivy.array([[[0., 1.]],
-                          [[2., 3.]]]),
-            b: ivy.array([[[4., 5.]],
-                          [[6., 7.]]])
+            a: ivy.array([[[0.0, 1.0]], [[2.0, 3.0]]]),
+            b: ivy.array([[[4.0, 5.0]], [[6.0, 7.0]]])
         }
         """
         return self._static_expand_dims(
@@ -422,8 +415,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_permute_dims(x, axes=(1, 0))
         >>> print(y)
         {
-            a:ivy.array([[0.],[1.],[2.]]),
-            b:ivy.array([[3.],[4.],[5.]])
+            a:ivy.array([[0.0], [1.0], [2.0]]),
+            b:ivy.array([[3.0], [4.0], [5.0]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -477,8 +470,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.permute_dims(axes=(1, 0))
         >>> print(y)
         {
-            a:ivy.array([[0.],[1.],[2.]]),
-            b:ivy.array([[3.],[4.],[5.]])
+            a:ivy.array([[0.0], [1.0], [2.0]]),
+            b:ivy.array([[3.0], [4.0], [5.0]])
         }
         """
         return self._static_permute_dims(
@@ -729,12 +722,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_reshape(x, (3,2))
         >>> print(y)
         {
-            a: ivy.array([[0, 1],
-                          [2, 3],
-                          [4, 5]]),
-            b: ivy.array([[0, 1],
-                          [2, 3],
-                          [4, 5]])
+            a: ivy.array([[0, 1], [2, 3], [4, 5]]),
+            b: ivy.array([[0, 1], [2, 3], [4, 5]])
         }
 
         >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
@@ -742,12 +731,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_reshape(x, (3,2), order='F')
         >>> print(y)
         {
-            a: ivy.array([[0, 3],
-                          [1, 4],
-                          [2, 5]]),
-            b: ivy.array([[0, 3],
-                          [1, 4],
-                          [2, 5]])
+            a: ivy.array([[0, 3], [1, 4], [2, 5]]),
+            b: ivy.array([[0, 3], [1, 4], [2, 5]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -837,10 +822,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.reshape((2,3))
         >>> print(y)
         {
-            a: ivy.array([[0, 1, 2],
-                          [3, 4, 5]]),
-            b: ivy.array([[0, 1, 2],
-                          [3, 4, 5]])
+            a: ivy.array([[0, 1, 2], [3, 4, 5]]),
+            b: ivy.array([[0, 1, 2], [3, 4, 5]])
         }
 
         >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
@@ -848,10 +831,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.reshape((2,3), order='F')
         >>> print(y)
         {
-            a: ivy.array([[0, 2, 4],
-                          [1, 3, 5]]),
-            b: ivy.array([[0, 2, 4],
-                          [1, 3, 5]])
+            a: ivy.array([[0, 2, 4], [1, 3, 5]]),
+            b: ivy.array([[0, 2, 4], [1, 3, 5]])
         }
         """
         return self._static_reshape(
@@ -932,8 +913,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_roll(x, 1)
         >>> print(y)
         {
-            a: ivy.array([2., 0., 1.]),
-            b: ivy.array([5., 3., 4.])
+            a: ivy.array([2.0, 0.0, 1.0]),
+            b: ivy.array([5.0, 3.0, 4.0])
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -944,8 +925,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_roll(x, shift)
         >>> print(y)
         {
-            a: ivy.array([2., 0., 1.]),
-            b: ivy.array([4., 5., 3.])
+            a: ivy.array([2.0, 0.0, 1.0]),
+            b: ivy.array([4.0, 5.0, 3.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1021,8 +1002,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.roll(1)
         >>> print(y)
         {
-            a: ivy.array([2., 0., 1.]),
-            b: ivy.array([5., 3., 4.])
+            a: ivy.array([2.0, 0.0, 1.0]),
+            b: ivy.array([5.0, 3.0, 4.0])
         }
         """
         return self._static_roll(
@@ -1087,8 +1068,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_squeeze(x, 0)
         >>> print(y)
         {
-            a: ivy.array([[10., 11.]]),
-            b: ivy.array([[11., 12.]])
+            a: ivy.array([[10.0, 11.0]]),
+            b: ivy.array([[11.0, 12.0]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
@@ -1096,8 +1077,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_squeeze(x, [0, 2])
         >>> print(y)
         {
-            a: ivy.array([[10.], [11.]]),
-            b: ivy.array([[11.], [12.]])
+            a: ivy.array([[10.0], [11.0]]),
+            b: ivy.array([[11.0], [12.0]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1162,8 +1143,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.squeeze(2)
         >>> print(y)
         {
-            a: ivy.array([[10., 11.]]),
-            b: ivy.array([[11., 12.]])
+            a: ivy.array([[10.0, 11.0]]),
+            b: ivy.array([[11.0, 12.0]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
@@ -1171,8 +1152,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.squeeze(0)
         >>> print(y)
         {
-            a: ivy.array([[10.], [11.]]),
-            b: ivy.array([[11.], [12.]])
+            a: ivy.array([[10.0], [11.0]]),
+            b: ivy.array([[11.0], [12.0]])
         }
         """
         return self._static_squeeze(
@@ -1240,10 +1221,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> z = ivy.Container.static_stack(x,axis = 1)
         >>> print(z)
         {
-            a: ivy.array([[0, 2],
-                        [1, 3]]),
-            b: ivy.array([[4],
-                        [5]])
+            a: ivy.array([[0, 2], [1, 3]]),
+            b: ivy.array([[4], [5]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
@@ -1251,12 +1230,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> z = ivy.Container.static_stack([x,y])
         >>> print(z)
         {
-            a: ivy.array([[[0, 1],
-                        [2, 3]],
-                        [[3, 2],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5]],
-                        [[1, 0]]])
+            a: ivy.array([[[0, 1], [2, 3]], [[3, 2], [1, 0]]]),
+            b: ivy.array([[[4, 5]], [[1, 0]]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
@@ -1264,12 +1239,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> z = ivy.Container.static_stack([x,y],axis=1)
         >>> print(z)
         {
-            a: ivy.array([[[0, 1],
-                        [3, 2]],
-                        [[2, 3],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5],
-                        [1, 0]]])
+            a: ivy.array([[[0, 1], [3, 2]], [[2, 3], [1, 0]]]),
+            b: ivy.array([[[4, 5], [1, 0]]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1340,12 +1311,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> x.stack([y])
         {
-            a: ivy.array([[[0, 1],
-                        [2, 3]],
-                        [[3, 2],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5]],
-                        [[1, 0]]])
+            a: ivy.array([[[0, 1], [2, 3]], [[3, 2], [1, 0]]]),
+            b: ivy.array([[[4, 5]], [[1, 0]]])
         }
         """
         new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
@@ -1384,8 +1351,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_repeat(2)
         >>> print(y)
         {
-            a: ivy.array([0., 0., 1., 1., 2., 2.]),
-            b: ivy.array([3., 3., 4., 4., 5., 5.])
+            a: ivy.array([0.0, 0.0, 1.0, 1.0, 2.0, 2.0]),
+            b: ivy.array([3.0, 3.0, 4.0, 4.0, 5.0, 5.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1442,8 +1409,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.repeat(2)
         >>> print(y)
         {
-            a: ivy.array([0., 0., 1., 1., 2., 2.]),
-            b: ivy.array([3., 3., 4., 4., 5., 5.])
+            a: ivy.array([0.0, 0.0, 1.0, 1.0, 2.0, 2.0]),
+            b: ivy.array([3.0, 3.0, 4.0, 4.0, 5.0, 5.0])
         }
         """
         return self._static_repeat(
@@ -1495,12 +1462,17 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_tile((2,3))
         >>> print(y)
         {
-            a: ivy.array([[0,1,0,1,0,1],
-                          [2,3,2,3,2,3],
-                          [0,1,0,1,0,1],
-                          [2,3,2,3,2,3]]),
-            b: ivy.array([[4,5,4,5,4,5],
-                          [4,5,4,5,4,5]])
+            a: ivy.array(
+                   [
+                       [0, 1, 0, 1, 0, 1],
+                       [2, 3, 2, 3, 2, 3],
+                       [0, 1, 0, 1, 0, 1],
+                       [2, 3, 2, 3, 2, 3],
+                   ]
+               ),
+            b: ivy.array(
+                   [[4, 5, 4, 5, 4, 5], [4, 5, 4, 5, 4, 5]]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1736,8 +1708,12 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
         >>> print(y)
         {
-            a: ivy.array([0., 0., 1., 2., 3., 0., 0., 0.]),
-            b: ivy.array([0., 0., 3., 4., 5., 0., 0., 0.])
+            a: ivy.array(
+                   [0.0, 0.0, 1.0, 2.0, 3.0, 0.0, 0.0, 0.0]
+               ),
+            b: ivy.array(
+                   [0.0, 0.0, 3.0, 4.0, 5.0, 0.0, 0.0, 0.0]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1803,8 +1779,12 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.zero_pad(pad_width = [[2, 3]])
         >>> print(y)
         {
-            a: ivy.array([0., 0., 1., 2., 3., 0., 0., 0.]),
-            b: ivy.array([0., 0., 3., 4., 5., 0., 0., 0.])
+            a: ivy.array(
+                   [0.0, 0.0, 1.0, 2.0, 3.0, 0.0, 0.0, 0.0]
+               ),
+            b: ivy.array(
+                   [0.0, 0.0, 3.0, 4.0, 5.0, 0.0, 0.0, 0.0]
+               )
         }
         """
         return self._static_zero_pad(
@@ -1923,12 +1903,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.swapaxes(0, 1)
         >>> print(y)
         {
-            a: ivy.array([[1, 4],
-                          [2, 5],
-                          [3, 6]]),
-            b: ivy.array([[7, 10],
-                          [8, 11],
-                          [9, 12]])
+            a: ivy.array([[1, 4], [2, 5], [3, 6]]),
+            b: ivy.array([[7, 10], [8, 11], [9, 12]])
         }
         """
         return self._static_swapaxes(
@@ -1992,35 +1968,31 @@ class _ContainerWithManipulation(ContainerBase):
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+                            b=ivy.array(
+                                  [[[9, 10], [11, 12]], [[13, 14], [15, 16]]]
+                              ))
         >>> y = ivy.Container.static_unstack(x, axis=0)
         >>> print(y)
         [{
-            a: ivy.array([[1, 2],
-                         [3, 4]]),
-            b: ivy.array([[9, 10],
-                         [11, 12]])
+            a: ivy.array([[1, 2], [3, 4]]),
+            b: ivy.array([[9, 10], [11, 12]])
         }, {
-            a: ivy.array([[5, 6],
-                         [7, 8]]),
-             b: ivy.array([[13, 14],
-                          [15, 16]])
+            a: ivy.array([[5, 6], [7, 8]]),
+             b: ivy.array([[13, 14], [15, 16]])
         }]
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+                            b=ivy.array(
+                                  [[[9, 10], [11, 12]], [[13, 14], [15, 16]]]
+                              ))
         >>> y = ivy.Container.static_unstack(x, axis=1, keepdims=True)
         >>> print(y)
         [{
-            a: ivy.array([[[1, 2]],
-                         [[5, 6]]]),
-            b: ivy.array([[[9, 10]],
-                         [[13, 14]]])
+            a: ivy.array([[[1, 2]], [[5, 6]]]),
+            b: ivy.array([[[9, 10]], [[13, 14]]])
         }, {
-            a: ivy.array([[[3, 4]],
-                         [[7, 8]]]),
-            b: ivy.array([[[11, 12]],
-                         [[15, 16]]])
+            a: ivy.array([[[3, 4]], [[7, 8]]]),
+            b: ivy.array([[[11, 12]], [[15, 16]]])
         }]
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2082,18 +2054,16 @@ class _ContainerWithManipulation(ContainerBase):
         With one :class:`ivy.Container` instances:
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+                            b=ivy.array(
+                                  [[[9, 10], [11, 12]], [[13, 14], [15, 16]]]
+                              ))
         >>> x.unstack(axis=0)
         [{
-            a: ivy.array([[1, 2],
-                         [3, 4]]),
-            b: ivy.array([[9, 10],
-                          [11, 12]])
+            a: ivy.array([[1, 2], [3, 4]]),
+            b: ivy.array([[9, 10], [11, 12]])
         }, {
-            a: ivy.array([[5, 6],
-                          [7, 8]]),
-            b: ivy.array([[13, 14],
-                          [15, 16]])
+            a: ivy.array([[5, 6], [7, 8]]),
+            b: ivy.array([[13, 14], [15, 16]])
         }]
         """
         return self._static_unstack(
@@ -2163,8 +2133,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_clip(x, 1., 5.)
         >>> print(y)
         {
-            a: ivy.array([1., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([1.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, 5.0])
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -2176,8 +2146,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = ivy.Container.static_clip(x, x_min, x_max)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 1.]),
-            b: ivy.array([1., 1., 1.])
+            a: ivy.array([0.0, 1.0, 1.0]),
+            b: ivy.array([1.0, 1.0, 1.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2244,8 +2214,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.clip(1,2)
         >>> print(y)
         {
-            a: ivy.array([1., 1., 2.]),
-            b: ivy.array([2., 2., 2.])
+            a: ivy.array([1.0, 1.0, 2.0]),
+            b: ivy.array([2.0, 2.0, 2.0])
         }
         """
         return self._static_clip(

@@ -131,7 +131,6 @@ def fn_name_from_version_specific_fn_name(name, version):
     -------
         the name of the original function which will then point to the version
         specific function
-
     """
     # TODO: add tests
     version = str(version)

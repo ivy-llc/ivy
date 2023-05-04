@@ -22,7 +22,8 @@ class _ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copy an array to a specified data type irrespective of
+        """
+        Copy an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
@@ -92,7 +93,8 @@ class _ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copy an array to a specified data type irrespective of
+        """
+        Copy an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
@@ -140,7 +142,6 @@ class _ContainerWithDataTypes(ContainerBase):
             a: ivy.array([0, 1, 1]),
             b: ivy.array([3, 2, 1])
         }
-
         """
         return self._static_astype(
             self,
@@ -216,8 +217,8 @@ class _ContainerWithDataTypes(ContainerBase):
             a: ivy.array([4, 5]),
             b: ivy.array([2, -1])
         }, {
-            a: ivy.array([0.2, 3.]),
-            b: ivy.array([0.2, 3.])
+            a: ivy.array([0.2, 3.0]),
+            b: ivy.array([0.2, 3.0])
         }]
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -289,8 +290,8 @@ class _ContainerWithDataTypes(ContainerBase):
             a: ivy.array([4, 5]),
             b: ivy.array([2, -1])
         }, {
-            a: ivy.array([0., 0.]),
-            b: ivy.array([0., 0.])
+            a: ivy.array([0.0, 0.0]),
+            b: ivy.array([0.0, 0.0])
         }]
         """
         return self._static_broadcast_arrays(
@@ -342,12 +343,8 @@ class _ContainerWithDataTypes(ContainerBase):
         >>> y = ivy.Container.static_broadcast_to(x,(3, 1))
         >>> print(y)
         {
-            a: ivy.array([1],
-                         [1],
-                         [1]),
-            b: ivy.array([2],
-                         [2],
-                         [2])
+            a: ivy.array([1], [1], [1]),
+            b: ivy.array([2], [2], [2])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -400,12 +397,8 @@ class _ContainerWithDataTypes(ContainerBase):
         >>> y = x.broadcast_to((3,2))
         >>> print(y)
         {
-            a: ivy.array([[0., 0.5],
-                          [0., 0.5],
-                          [0., 0.5]]),
-            b: ivy.array([[4, 5],
-                          [4, 5],
-                          [4, 5]])
+            a: ivy.array([[0.0, 0.5], [0.0, 0.5], [0.0, 0.5]]),
+            b: ivy.array([[4, 5], [4, 5], [4, 5]])
         }
         """
         return self._static_broadcast_to(

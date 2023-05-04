@@ -87,7 +87,7 @@ def histogram(
     >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
     >>> z = ivy.histogram(x, bins=y)
     >>> print(z)
-    (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+    (ivy.array([1, 0, 1, 1]), ivy.array([0.0, 0.5, 1.0, 1.5, 2.0]))
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [4.4, 5.5, .6]])
@@ -96,7 +96,7 @@ def histogram(
     >>> dtype = ivy.int32
     >>> y = ivy.histogram(x, bins=bins, range=range, dtype=dtype)
     >>> print(y)
-    (ivy.array([0, 0, 0, 0]), ivy.array([0.   , 0.125, 0.25 , 0.375, 0.5  ]))
+    (ivy.array([0, 0, 0, 0]), ivy.array([0.0, 0.125, 0.25, 0.375, 0.5]))
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
@@ -115,11 +115,15 @@ def histogram(
     >>>                     dtype=dtype,
     >>>                     weights=weights)
     >>> print(z)
-    (ivy.array([[0., 3.],
-    [1., 0.],
-    [1., 0.],
-    [1., 0.],
-    [0., 0.]]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    (ivy.array(
+         [
+             [0.0, 3.0],
+             [1.0, 0.0],
+             [1.0, 0.0],
+             [1.0, 0.0],
+             [0.0, 0.0],
+         ]
+     ), ivy.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0]))
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
@@ -127,8 +131,8 @@ def histogram(
     >>> z = ivy.histogram(x, bins=y, dtype=dtype)
     >>> print(z.a)
     >>> print(z.b)
-    (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
-    (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    (ivy.array([1, 1, 1, 0, 0]), ivy.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0]))
+    (ivy.array([0, 0, 0, 1, 2]), ivy.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0]))
     """
     return ivy.current_backend(a).histogram(
         a,
@@ -310,15 +314,15 @@ def quantile(
     ivy.array([6.5, 4.5, 2.5])
 
     >>> ivy.quantile(a, q, axis=1)
-    ivy.array([7.,  2.])
+    ivy.array([7.0, 2.0])
 
     >>> ivy.quantile(a, q, axis=1, keepdims=True)
-    ivy.array([[7.],[2.]])
+    ivy.array([[7.0], [2.0]])
 
     >>> a = ivy.array([1., 2., 3., 4.])
     >>> q = ivy.array([0.3, 0.7])
     >>> ivy.quantile(a, q, interpolation='lower')
-    ivy.array([1., 3.])
+    ivy.array([1.0, 3.0])
     """
     return ivy.current_backend(a).quantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out

@@ -35,7 +35,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
         >>> y = x.sinc()
         >>> print(y)
-        ivy.array([0.637,-0.212,0.127,-0.0909])
+        ivy.array([0.637, -0.212, 0.127, -0.0909])
         """
         return ivy.sinc(self._data, out=out)
 
@@ -102,12 +102,12 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> x1 = ivy.array([2, 3, 4])
         >>> x2 = ivy.array([1, 5, 2])
         >>> x1.fmod(x2)
-        ivy.array([ 0,  3,  0])
+        ivy.array([0, 3, 0])
 
         >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
         >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
         >>> x1.fmod(x2)
-        ivy.array([ nan,  nan,  nan])
+        ivy.array([nan, nan, nan])
         """
         return ivy.fmod(self._data, x2, out=out)
 
@@ -142,12 +142,12 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> x1 = ivy.array([2, 3, 4])
         >>> x2 = ivy.array([1, 5, 2])
         >>> ivy.fmax(x1, x2)
-        ivy.array([ 2.,  5.,  4.])
+        ivy.array([2.0, 5.0, 4.0])
 
         >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
         >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
         >>> x1.fmax(x2)
-        ivy.array([ 0,  0,  nan])
+        ivy.array([0, 0, nan])
         """
         return ivy.fmax(self._data, x2, out=out)
 
@@ -187,7 +187,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
         >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
         >>> x1.fmin(x2)
-        ivy.array([ 0.,  0., nan])
+        ivy.array([0.0, 0.0, nan])
         """
         return ivy.fmin(self._data, x2, out=out)
 
@@ -276,11 +276,11 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         --------
         >>> x1 = ivy.array([1, 2, 3, 4, 5])
         >>> x1.float_power(3)
-        ivy.array([1.,    8.,   27.,   64.,  125.])
+        ivy.array([1.0, 8.0, 27.0, 64.0, 125.0])
         >>> x1 = ivy.array([1, 2, 3, 4, 5])
         >>> x2 = ivy.array([2, 3, 3, 2, 1])
         >>> x1.float_power(x2)
-        ivy.array([1.,   8.,  27.,  16.,   5.])
+        ivy.array([1.0, 8.0, 27.0, 16.0, 5.0])
         """
         return ivy.float_power(self._data, x2, out=out)
 
@@ -311,10 +311,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         --------
         >>> x = ivy.array([1, 2, 3])
         >>> x.exp2()
-        ivy.array([2.,    4.,   8.])
+        ivy.array([2.0, 4.0, 8.0])
         >>> x = [5, 6, 7]
         >>> x.exp2()
-        ivy.array([32.,   64.,  128.])
+        ivy.array([32.0, 64.0, 128.0])
         """
         return ivy.exp2(self._data, out=out)
 
@@ -351,9 +351,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> x1 = ivy.array([0, 1, 2, 3])
         >>> x2 = ivy.array([-1, 1, -2, 2])
         >>> x1.copysign(x2)
-        ivy.array([-0.,  1., -2.,  3.])
+        ivy.array([-0.0, 1.0, -2.0, 3.0])
         >>> x2.copysign(-1)
-        ivy.array([-1., -1., -2., -2.])
+        ivy.array([-1.0, -1.0, -2.0, -2.0])
         """
         return ivy.copysign(self._data, x2, out=out)
 
@@ -401,8 +401,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array(3)
         >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
         >>> x.count_nonzero(axis=0)
-        ivy.array([[1, 2],
-               [2, 2]])
+        ivy.array([[1, 2], [2, 2]])
         >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
         >>> x.count_nonzero(axis=(0,1), keepdims=True)
         ivy.array([[[3, 4]]])
@@ -493,10 +492,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> x1 = ivy.array([1, 2, 3])
         >>> x2 = ivy.array([4, 5, 6])
         >>> x1.gcd(x2)
-        ivy.array([1.,    1.,   3.])
+        ivy.array([1.0, 1.0, 3.0])
         >>> x1 = ivy.array([1, 2, 3])
         >>> x1.gcd(10)
-        ivy.array([1.,   2.,  1.])
+        ivy.array([1.0, 2.0, 1.0])
         """
         return ivy.gcd(self._data, x2, out=out)
 
@@ -543,11 +542,13 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
         >>> b = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
         >>> a.isclose(b)
-        ivy.array([[True, True, False],
-               [False, True, True]])
+        ivy.array(
+            [[True, True, False], [False, True, True]]
+        )
         >>> a.isclose(b, equal_nan=True)
-        ivy.array([[True, True, True],
-               [True, True, True]])
+        ivy.array(
+            [[True, True, True], [True, True, True]]
+        )
         >>> a=ivy.array([1.0, 2.0])
         >>> b=ivy.array([1.0, 2.001])
         >>> a.isclose(b, atol=0.0)
@@ -592,12 +593,12 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> ivy.set_backend('tensorflow')
         >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
         >>> z
-        ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+        ivy.array([-1.0 + 1.0j, -2.0 + 2.0j, 3.0 - 3.0j])
         >>> ivy.angle(z)
-        ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+        ivy.array([2.35619449, 2.35619449, -0.78539816])
         >>> ivy.set_backend('numpy')
         >>> ivy.angle(z,deg=True)
-        ivy.array([135., 135., -45.])
+        ivy.array([135.0, 135.0, -45.0])
         """
         return ivy.angle(self._data, deg=deg, out=out)
 
@@ -628,11 +629,11 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         --------
         >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
         >>> b
-        ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+        ivy.array([1.0 + 2.0j, 3.0 + 4.0j, 5.0 + 6.0j])
         >>> ivy.imag(b)
-        ivy.array([2., 4., 6.])
+        ivy.array([2.0, 4.0, 6.0])
         >>> b.imag()
-        ivy.array([2., 4., 6.])
+        ivy.array([2.0, 4.0, 6.0])
         """
         return ivy.imag(self._data, out=out)
 
@@ -682,10 +683,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         --------
         >>> x = ivy.array([1, 2, 3, nan])
         >>> x.nan_to_num()
-        ivy.array([1.,    1.,   3.,   0.0])
+        ivy.array([1.0, 1.0, 3.0, 0.0])
         >>> x = ivy.array([1, 2, 3, inf])
         >>> x.nan_to_num(posinf=5e+100)
-        ivy.array([1.,   2.,   3.,   5e+100])
+        ivy.array([1.0, 2.0, 3.0, 5e100])
         """
         return ivy.nan_to_num(
             self._data, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
@@ -897,7 +898,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         --------
         >>> x = ivy.array([1, 2, 4, 7, 0])
         >>> x.diff()
-        ivy.array([ 1,  2,  3, -7])
+        ivy.array([1, 2, 3, -7])
         """
         return ivy.diff(
             self._data, n=n, axis=axis, prepend=prepend, append=append, out=out
@@ -931,7 +932,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         --------
         >>> x = ivy.array([2.1, 2.9, -2.1])
         >>> x.fix()
-        ivy.array([ 2.,  2., -2.])
+        ivy.array([2.0, 2.0, -2.0])
         """
         return ivy.fix(self._data, out=out)
 
@@ -967,7 +968,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> x1 = ivy.array([1.0e-50, 2.0e+50])
         >>> x2 = ivy.array([2.0, 1.0])
         >>> x1.nextafter(x2)
-        ivy.array([1.4013e-45., 3.4028e+38])
+        ivy.array([1.4013e-45, 3.4028e38])
         """
         return ivy.nextafter(self._data, x2, out=out)
 
@@ -1047,36 +1048,72 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> spacing = (ivy.array([-2., -1., 1., 4.]),)
         >>> x = ivy.array([4., 1., 1., 16.], )
         >>> ivy.gradient(x, spacing=spacing)
-        ivy.array([-3., -2.,  2.,  5.])
+        ivy.array([-3.0, -2.0, 2.0, 5.0])
 
         >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
         >>> ivy.gradient(x)
-        [ivy.array([[ 9., 18., 36., 72.],
-           [ 9., 18., 36., 72.]]), ivy.array([[ 1. ,  1.5,  3. ,  4. ],
-           [10. , 15. , 30. , 40. ]])]
+        [ivy.array(
+             [
+                 [9.0, 18.0, 36.0, 72.0],
+                 [9.0, 18.0, 36.0, 72.0],
+             ]
+         ), ivy.array(
+                [
+                    [1.0, 1.5, 3.0, 4.0],
+                    [10.0, 15.0, 30.0, 40.0],
+                ]
+            )]
 
         >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
         >>> ivy.gradient(x, spacing=2.0)
-        [ivy.array([[ 4.5,  9. , 18. , 36. ],
-           [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
-           [ 5.  ,  7.5 , 15.  , 20.  ]])]
+        [ivy.array(
+             [
+                 [4.5, 9.0, 18.0, 36.0],
+                 [4.5, 9.0, 18.0, 36.0],
+             ]
+         ), ivy.array(
+                [
+                    [0.5, 0.75, 1.5, 2.0],
+                    [5.0, 7.5, 15.0, 20.0],
+                ]
+            )]
 
         >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
         >>> ivy.gradient(x, axis=1)
-        ivy.array([[ 1. ,  1.5,  3. ,  4. ],
-           [10. , 15. , 30. , 40. ]])
+        ivy.array(
+            [
+                [1.0, 1.5, 3.0, 4.0],
+                [10.0, 15.0, 30.0, 40.0],
+            ]
+        )
 
         >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
         >>> ivy.gradient(x, spacing=[3., 2.])
-        [ivy.array([[ 3.,  6., 12., 24.],
-           [ 3.,  6., 12., 24.]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
-           [ 5.  ,  7.5 , 15.  , 20.  ]])]
+        [ivy.array(
+             [
+                 [3.0, 6.0, 12.0, 24.0],
+                 [3.0, 6.0, 12.0, 24.0],
+             ]
+         ), ivy.array(
+                [
+                    [0.5, 0.75, 1.5, 2.0],
+                    [5.0, 7.5, 15.0, 20.0],
+                ]
+            )]
 
         >>> spacing = (ivy.array([0, 2]), ivy.array([0, 3, 6, 9]))
         >>> ivy.gradient(x, spacing=spacing)
-        [ivy.array([[ 4.5,  9. , 18. , 36. ],
-           [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.33333333,  0.5,  1., 1.33333333],
-           [ 3.33333333,  5.        , 10.        , 13.33333333]])]
+        [ivy.array(
+             [
+                 [4.5, 9.0, 18.0, 36.0],
+                 [4.5, 9.0, 18.0, 36.0],
+             ]
+         ), ivy.array(
+                [
+                    [0.33333333, 0.5, 1.0, 1.33333333],
+                    [3.33333333, 5.0, 10.0, 13.33333333],
+                ]
+            )]
         """
         return ivy.gradient(
             self._data, spacing=spacing, axis=axis, edge_order=edge_order
@@ -1148,7 +1185,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         --------
         >>> x = ivy.array([4+3j, 6+2j, 1-6j])
         >>> x.real()
-        ivy.array([4., 6., 1.])
+        ivy.array([4.0, 6.0, 1.0])
         """
         return ivy.real(self._data, out=out)
 
@@ -1201,7 +1238,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         --------
         >>> x = ivy.array([4+3j, 6+2j, 1-6j])
         >>> x.conj()
-        ivy.array([4-3j, 6-2j, 1+6j])
+        ivy.array([4 - 3j, 6 - 2j, 1 + 6j])
         """
         return ivy.conj(self._data, out=out)
 
@@ -1243,7 +1280,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         >>> end = ivy.array([10.0, 10.0, 10.0, 10.0])
         >>> weight = 0.5
         >>> x.lerp(end, weight)
-        ivy.array([5.5, 6. , 6.5, 7. ])
+        ivy.array([5.5, 6.0, 6.5, 7.0])
         """
         return ivy.lerp(self, end, weight, out=out)
 

@@ -277,7 +277,7 @@ def astype(
     >>> y = ivy.zeros_like(x)
     >>> y = ivy.astype(x, ivy.float64)
     >>> print(y)
-    ivy.array([1., 2.])
+    ivy.array([1.0, 2.0])
 
     >>> x = ivy.array([3.141, 2.718, 1.618])
     >>> ivy.astype(x, ivy.int32, out=y)
@@ -287,7 +287,7 @@ def astype(
     >>> x = ivy.array([[-1, -2], [0, 2]])
     >>> ivy.astype(x, ivy.float64, out=x)
     >>> print(x)
-    ivy.array([[-1., -2.],  [0.,  2.]])
+    ivy.array([[-1.0, -2.0], [0.0, 2.0]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -309,7 +309,7 @@ def astype(
 
     >>> x = ivy.array([[-1, -2], [0, 2]])
     >>> print(x.astype(ivy.float64))
-    ivy.array([[-1., -2.],  [0.,  2.]])
+    ivy.array([[-1.0, -2.0], [0.0, 2.0]])
 
     Using :class:`ivy.Container` instance method:
 
@@ -360,7 +360,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     >>> x2 = ivy.native_array([3.1, 5])
     >>> x3 = ivy.native_array([2, 0])
     >>> y = ivy.broadcast_arrays(x1, x2, x3)
-    [ivy.array([0.3, 4.3]), ivy.array([3.1, 5.]), ivy.array([2, 0])]
+    [ivy.array([0.3, 4.3]), ivy.array([3.1, 5.0]), ivy.array([2, 0])]
 
     With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -378,7 +378,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     >>> print(y)
     [{
         a: ivy.array([3, 1]),
-        b: ivy.array([0., 0.])
+        b: ivy.array([0.0, 0.0])
     }, {
         a: ivy.array([4, 5]),
         b: ivy.array([2, -1])
@@ -391,8 +391,8 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     >>> y = ivy.broadcast_arrays(x1, x2)
     >>> print(y)
     [{
-        a: ivy.array([0., 0.]),
-        b: ivy.array([0., 0.])
+        a: ivy.array([0.0, 0.0]),
+        b: ivy.array([0.0, 0.0])
     }, {
         a: ivy.array([4, 5]),
         b: ivy.array([2, -1])
@@ -442,18 +442,14 @@ def broadcast_to(
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.broadcast_to(x, (3, 3))
     >>> print(y)
-    ivy.array([[1, 2, 3],
-               [1, 2, 3],
-               [1, 2, 3]])
+    ivy.array([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
 
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0.1 , 0.3])
     >>> y = ivy.broadcast_to(x, (3, 2))
     >>> print(y)
-    ivy.array([[0.1, 0.3],
-               [0.1, 0.3],
-               [0.1, 0.3]])
+    ivy.array([[0.1, 0.3], [0.1, 0.3], [0.1, 0.3]])
 
     With :class:`ivy.Container` input:
 
@@ -462,12 +458,8 @@ def broadcast_to(
     >>> y = ivy.broadcast_to(x, (3, 3))
     >>> print(y)
     {
-        a: ivy.array([[1, 2, 3],
-                      [1, 2, 3],
-                      [1, 2, 3]]),
-        b: ivy.array([[4, 5, 6],
-                      [4, 5, 6],
-                      [4, 5, 6]])
+        a: ivy.array([[1, 2, 3], [1, 2, 3], [1, 2, 3]]),
+        b: ivy.array([[4, 5, 6], [4, 5, 6], [4, 5, 6]])
     }
     """
     return current_backend(x).broadcast_to(x, shape, out=out)

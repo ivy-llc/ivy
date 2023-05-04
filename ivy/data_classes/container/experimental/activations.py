@@ -167,8 +167,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = ivy.Container.static_thresholded_relu(x, threshold=0.5)
         >>> print(y)
         {
-            a: ivy.array([1., 0.]),
-            b: ivy.array([0., 0.])
+            a: ivy.array([1.0, 0.0]),
+            b: ivy.array([0.0, 0.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -231,8 +231,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = x.thresholded_relu(threshold=0.5)
         >>> print(y)
         {
-            a: ivy.array([1., 0.]),
-            b: ivy.array([0., 0.])
+            a: ivy.array([1.0, 0.0]),
+            b: ivy.array([0.0, 0.0])
         }
         """
         return self.static_thresholded_relu(
@@ -258,7 +258,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-
         Parameters
         ----------
         x
@@ -291,7 +290,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-
         Parameters
         ----------
         slope
@@ -355,14 +353,32 @@ class _ContainerWithActivationExperimental(ContainerBase):
         Examples
         --------
         >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+                    a: ivy.array(
+                           [
+                               -3.0,
+                               -2.0,
+                               -1.0,
+                               0.0,
+                               1.0,
+                               2.0,
+                               3.0,
+                               4.0,
+                               5.0,
+                           ]
+                       ),
+                    b: ivy.array(
+                           [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]
+                       )
                 }
         >>> y = ivy.Container.static_relu6(x)
         >>> print(y)
         {
-            a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-            b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+            a: ivy.array(
+                   [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+               ),
+            b: ivy.array(
+                   [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 6.0, 6.0, 6.0]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -418,14 +434,32 @@ class _ContainerWithActivationExperimental(ContainerBase):
         Examples
         --------
         >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+                    a: ivy.array(
+                           [
+                               -3.0,
+                               -2.0,
+                               -1.0,
+                               0.0,
+                               1.0,
+                               2.0,
+                               3.0,
+                               4.0,
+                               5.0,
+                           ]
+                       ),
+                    b: ivy.array(
+                           [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]
+                       )
                 }
         >>> y = x.relu()
         >>> print(y)
         {
-            a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-            b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+            a: ivy.array(
+                   [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+               ),
+            b: ivy.array(
+                   [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 6.0, 6.0, 6.0]
+               )
         }
         """
         return self.static_relu6(

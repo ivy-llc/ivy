@@ -56,19 +56,18 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x = ivy.array([3., 4., 5.])
         >>> y = x.min()
         >>> print(y)
-        ivy.array(3.)
+        ivy.array(3.0)
 
         >>> x = ivy.array([[-1, 0, 1], [2, 3, 4]])
         >>> y = x.min(axis=1)
         >>> print(y)
-        ivy.array([-1,  2])
+        ivy.array([-1, 2])
 
         >>> x = ivy.array([0.1, 1.1, 2.1])
         >>> y = ivy.array(0.)
         >>> x.min(out=y)
         >>> print(y)
         ivy.array(0.1)
-
         """
         return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
 
@@ -189,12 +188,12 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x = ivy.array([3., 4., 5.])
         >>> y = x.mean()
         >>> print(y)
-        ivy.array(4.)
+        ivy.array(4.0)
 
         >>> x = ivy.array([-1, 0, 1])
         >>> y = ivy.mean(x)
         >>> print(y)
-        ivy.array(0.)
+        ivy.array(0.0)
 
         >>> x = ivy.array([0.1, 1.1, 2.1])
         >>> y = ivy.array(0.)
@@ -206,19 +205,19 @@ class _ArrayWithStatistical(abc.ABC):
         >>> y = ivy.array(0.)
         >>> ivy.mean(x, out=y)
         >>> print(y)
-        ivy.array(1.)
+        ivy.array(1.0)
 
         >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
         >>> y = ivy.array([0., 0., 0.])
         >>> x.mean(axis=0, keepdims=True, out=y)
         >>> print(y)
-        ivy.array([[-0.25      ,  1.04999995,  2.0999999 ]])
+        ivy.array([[-0.25, 1.04999995, 2.0999999]])
 
         >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
         >>> y = ivy.array([0., 0.])
         >>> ivy.mean(x, axis=1, out=y)
         >>> print(y)
-        ivy.array([1., 4.])
+        ivy.array([1.0, 4.0])
         """
         return ivy.mean(self._data, axis=axis, keepdims=keepdims, out=out)
 
@@ -294,7 +293,7 @@ class _ArrayWithStatistical(abc.ABC):
         ...                [6.0, 7.0, .08]])
         >>> y = x.var(axis=0)
         >>> print(y)
-        ivy.array([6., 6., 4.1])
+        ivy.array([6.0, 6.0, 4.1])
 
         >>> x = ivy.array([[0.0, 1.0, 2.0],
         ...                [3.0, 4.0, 5.0],
@@ -302,7 +301,7 @@ class _ArrayWithStatistical(abc.ABC):
         >>> y = ivy.array([0., 0., 0.])
         >>> x.var(axis=1, out=y)
         >>> print(y)
-        ivy.array([0.667, 0.667, 9.33 ])
+        ivy.array([0.667, 0.667, 9.33])
         """
         return ivy.var(
             self._data, axis=axis, correction=correction, keepdims=keepdims, out=out
@@ -368,18 +367,18 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x = ivy.array([[3., 4., 5.]])
         >>> y = x.prod(axis=1)
         >>> print(y)
-        ivy.array([60.])
+        ivy.array([60.0])
 
         >>> x = ivy.array([2., 1.])
         >>> y = ivy.array(0.)
         >>> x.prod(out=y)
         >>> print(y)
-        ivy.array(2.)
+        ivy.array(2.0)
 
         >>> x = ivy.array([[-1., -2.], [3., 3.]])
         >>> y = x.prod(axis=1)
         >>> print(y)
-        ivy.array([2., 9.])
+        ivy.array([2.0, 9.0])
         """
         return ivy.prod(self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
@@ -464,12 +463,12 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x = ivy.array([-1., 0., 1.])
         >>> z = x.std(correction=1)
         >>> print(z)
-        ivy.array(1.)
+        ivy.array(1.0)
 
         >>> x = ivy.array([[0., 4.]])
         >>> y = x.std(keepdims=True)
         >>> print(y)
-        ivy.array([[2.]])
+        ivy.array([[2.0]])
 
         >>> x = ivy.array([2., 1.])
         >>> y = ivy.array(0.)
@@ -480,7 +479,7 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x = ivy.array([[-1., -2.], [3., 3.]])
         >>> y = x.std(axis=1)
         >>> print(y)
-        ivy.array([1.5, 1. ])
+        ivy.array([1.5, 1.0])
         """
         return ivy.std(
             self, axis=axis, correction=correction, keepdims=keepdims, out=out
@@ -530,36 +529,30 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x = ivy.array([1, 2, 3, 4, 5])
         >>> y = x.cumsum()
         >>> print(y)
-        ivy.array([ 1,  3,  6, 10, 15])
+        ivy.array([1, 3, 6, 10, 15])
 
         >>> x = ivy.array([2, 6, 4, 10])
         >>> y = x.cumsum(axis=0, exclusive=False, reverse=True, dtype='float64')
         >>> print(y)
-        ivy.array([22., 20., 14., 10.])
+        ivy.array([22.0, 20.0, 14.0, 10.0])
 
         >>> x = ivy.array([[2, 3], [4, 6], [8, 12]])
         >>> y = ivy.zeros((3, 2))
         >>> x.cumsum(axis=1, exclusive=True, reverse=False, out=y)
         >>> print(y)
-        ivy.array([[0, 2],
-                   [0, 4],
-                   [0, 8]])
+        ivy.array([[0, 2], [0, 4], [0, 8]])
 
         >>> x = ivy.array([[1, 5, 2],
         ...                [4, 3, 0],
         ...                [4, 8, 2]])
         >>> y = x.cumsum(axis=1, exclusive=True, reverse=True)
         >>> print(y)
-        ivy.array([[ 7,  2,  0],
-                   [ 3,  0,  0],
-                   [10,  2,  0]])
+        ivy.array([[7, 2, 0], [3, 0, 0], [10, 2, 0]])
 
         >>> x = ivy.array([[1, 5, 10], [4, 8, 10], [2, 3, 5]])
         >>> x.cumsum(axis=0, out=x)
         >>> print(x)
-        ivy.array([[ 1,  5, 10],
-                   [ 5, 13, 20],
-                   [ 7, 16, 25]])
+        ivy.array([[1, 5, 10], [5, 13, 20], [7, 16, 25]])
         """
         return ivy.cumsum(self._data, axis, exclusive, reverse, dtype=dtype, out=out)
 
@@ -625,9 +618,7 @@ class _ArrayWithStatistical(abc.ABC):
         >>> y = ivy.zeros((3, 2), dtype="int32")
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
-        ivy.array([[0, 0],
-                   [0, 0],
-                   [0, 0]])
+        ivy.array([[0, 0], [0, 0], [0, 0]])
         """
         return ivy.cumprod(
             self._data,
@@ -674,7 +665,7 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
         >>> z = x.einsum('ij -> j')
         >>> print(z)
-        ivy.array([ 9, 12, 15])
+        ivy.array([9, 12, 15])
 
         >>> A = ivy.array([0, 1, 2])
         >>> B = ivy.array([[ 0,  1,  2,  3],
@@ -682,7 +673,7 @@ class _ArrayWithStatistical(abc.ABC):
         ...                [ 8,  9, 10, 11]])
         >>> C = A.einsum('i,ij->i', B)
         >>> print(C)
-        ivy.array([ 0, 22, 76])
+        ivy.array([0, 22, 76])
 
         >>> A = ivy.array([[1, 1, 1],
         ...                [2, 2, 2],
@@ -692,9 +683,7 @@ class _ArrayWithStatistical(abc.ABC):
         ...                [1, 1, 1]])
         >>> C = A.einsum('ij,jk->ik', B)
         >>> print(C)
-        ivy.array([[ 2,  3,  1],
-               [ 4,  6,  2],
-               [10, 15,  5]])
+        ivy.array([[2, 3, 1], [4, 6, 2], [10, 15, 5]])
 
         >>> A = ivy.arange(10)
         >>> B = A.einsum('i->')
@@ -705,7 +694,9 @@ class _ArrayWithStatistical(abc.ABC):
         >>> B = ivy.arange(5, 15)
         >>> C = A.einsum('i,i->i', B)
         >>> print(C)
-        ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126])
+        ivy.array(
+            [0, 6, 14, 24, 36, 50, 66, 84, 104, 126]
+        )
 
         >>> A = ivy.arange(10)
         >>> B = ivy.arange(5, 15)

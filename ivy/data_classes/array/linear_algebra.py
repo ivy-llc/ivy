@@ -62,7 +62,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> y = ivy.array([3., 2.])
         >>> z = x.matmul(y)
         >>> print(z)
-        ivy.array(11.)
+        ivy.array(11.0)
         """
         return ivy.matmul(
             self._data,
@@ -118,11 +118,15 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         ...               [2.0, 0.0, 0.0, 0.0, 16.0]])
         >>> y = x.cholesky(upper='false')
         >>> print(y)
-        ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-        ...        [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-        ...        [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-        ...        [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-        ...        [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+        ivy.array(
+            [
+                [2.0, 0.5, 1.0, 0.25, 1.0],
+                ...[0.0, 0.5, -1.0, -0.25, -1.0],
+                ...[0.0, 0.0, 1.0, -0.5, -2.0],
+                ...[0.0, 0.0, 0.0, 0.5, -3.0],
+                ...[0.0, 0.0, 0.0, 0.0, 1.0],
+            ]
+        )
         """
         return ivy.cholesky(self._data, upper=upper, out=out)
 
@@ -169,7 +173,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> y = ivy.array([0., 1., 0.])
         >>> z = x.cross(y)
         >>> print(z)
-        ivy.array([0., 0., 1.])
+        ivy.array([0.0, 0.0, 1.0])
         """
         return ivy.cross(self._data, x2, axis=axis, out=out)
 
@@ -180,7 +184,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> x = ivy.array([[2.,4.],[6.,7.]])
         >>> y = x.det()
         >>> print(y)
-        ivy.array(-10.)
+        ivy.array(-10.0)
         """
         return ivy.det(self._data, out=out)
 
@@ -237,7 +241,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         >>> d = x.diagonal()
         >>> print(d)
-        ivy.array([1., 4.])
+        ivy.array([1.0, 4.0])
 
         >>> x = ivy.array([[[1., 2.],
         ...                 [3., 4.]],
@@ -245,15 +249,14 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         ...                 [7., 8.]]])
         >>> d = x.diagonal()
         >>> print(d)
-        ivy.array([[1., 4.],
-                   [5., 8.]])
+        ivy.array([[1.0, 4.0], [5.0, 8.0]])
 
         >>> x = ivy.array([[1., 2.],
         ...                [3., 4.]])
 
         >>> d = x.diagonal(offset=1)
         >>> print(d)
-        ivy.array([2.])
+        ivy.array([2.0])
 
         >>> x = ivy.array([[0, 1, 2],
         ...                [3, 4, 5],
@@ -349,7 +352,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> x = ivy.array([[[1.0,2.0],[2.0,1.0]]])
         >>> y = ivy.eigvalsh(x)
         >>> print(y)
-        ivy.array([[-1.,  3.]])
+        ivy.array([[-1.0, 3.0]])
         """
         return ivy.eigvalsh(self._data, UPLO=UPLO, out=out)
 
@@ -394,7 +397,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
         >>> y = x.inv()
         >>> print(y)
-        ivy.array([[-2., 1.],[1.5, -0.5]])
+        ivy.array([[-2.0, 1.0], [1.5, -0.5]])
         """
         return ivy.inv(self._data, adjoint=adjoint, out=out)
 
@@ -444,8 +447,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> x = ivy.arange(8, dtype=float).reshape((2, 2, 2))
         >>> y = x.matrix_norm(ord="nuc", axis=(2, 1), keepdims=True)
         >>> print(y)
-        ivy.array([[[ 4.24]],
-                [[11.4 ]]])
+        ivy.array([[[4.24]], [[11.4]]])
         """
         return ivy.matrix_norm(
             self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
@@ -511,17 +513,17 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         1. Full Matrix
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> ivy.matrix_rank(x)
-        ivy.array(2.)
+        ivy.array(2.0)
 
         2. Rank Deficient Matrix
         >>> x = ivy.array([[1., 0.], [0., 0.]])
         >>> ivy.matrix_rank(x)
-        ivy.array(1.)
+        ivy.array(1.0)
 
         3. 1 Dimension - rank 1 unless all 0
         >>> x = ivy.array([[1., 1.])
         >>> ivy.matrix_rank(x)
-        ivy.array(1.)
+        ivy.array(1.0)
 
         >>> x = ivy.array([[0., 0.])
         >>> ivy.matrix_rank(x)
@@ -558,8 +560,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> x = ivy.array([[1., 2.], [0., 3.]])
         >>> y = x.matrix_transpose()
         >>> print(y)
-        ivy.array([[1., 0.],
-                   [2., 3.]])
+        ivy.array([[1.0, 0.0], [2.0, 3.0]])
         """
         return ivy.matrix_transpose(self._data, conjugate=conjugate, out=out)
 
@@ -594,9 +595,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> y = ivy.array([4, 5])
         >>> z = x.outer(y)
         >>> print(z)
-        ivy.array([[ 4,  5],
-                   [ 8, 10],
-                   [12, 15]])
+        ivy.array([[4, 5], [8, 10], [12, 15]])
         """
         return ivy.outer(self._data, x2, out=out)
 
@@ -633,15 +632,13 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> y = x.pinv()
         >>> print(y)
-        ivy.array([[-2., 1.],
-                   [1.5, -0.5]])
+        ivy.array([[-2.0, 1.0], [1.5, -0.5]])
 
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> z = ivy.zeros((2,2))
         >>> x.pinv(rtol=0, out=z)
         >>> print(z)
-        ivy.array([[0.0426, 0.0964],
-                   [0.0605, 0.1368]])
+        ivy.array([[0.0426, 0.0964], [0.0605, 0.1368]])
         """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
@@ -728,14 +725,14 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         ...                [3.0, 4.0]])
         >>> y = x.slogdet()
         >>> print(y)
-        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
+        slogdet(sign=ivy.array(-1.0), logabsdet=ivy.array(0.6931472))
 
         >>> x = ivy.array([[1.2, 2.0, 3.1],
         ...                [6.0, 5.2, 4.0],
         ...                [9.0, 8.0, 7.0]])
         >>> y = x.slogdet()
         >>> print(y)
-        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))
+        slogdet(sign=ivy.array(-1.0), logabsdet=ivy.array(1.098611))
         """
         return ivy.slogdet(self._data)
 
@@ -879,12 +876,12 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> y = x.trace()
         >>> print(y)
-        ivy.array(5.)
+        ivy.array(5.0)
 
         >>> x = ivy.array([[1., 2., 4.], [6., 5., 3.]])
         >>> y = ivy.Array.trace(x)
         >>> print(y)
-        ivy.array(6.)
+        ivy.array(6.0)
         """
         return ivy.trace(self._data, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
@@ -1028,28 +1025,24 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> x = ivy.array([1, 2, 3, 5])
         >>> ivy.vander(x)
         ivy.array(
-        [[  1,   1,   1,   1],
-            [  8,   4,   2,   1],
-            [ 27,   9,   3,   1],
-            [125,  25,   5,   1]]
-            )
+            [
+                [1, 1, 1, 1],
+                [8, 4, 2, 1],
+                [27, 9, 3, 1],
+                [125, 25, 5, 1],
+            ]
+        )
 
         >>> x = ivy.array([1, 2, 3, 5])
         >>> ivy.vander(x, N=3)
         ivy.array(
-        [[ 1,  1,  1],
-            [ 4,  2,  1],
-            [ 9,  3,  1],
-            [25,  5,  1]]
-            )
+            [[1, 1, 1], [4, 2, 1], [9, 3, 1], [25, 5, 1]]
+        )
 
         >>> x = ivy.array([1, 2, 3, 5])
         >>> ivy.vander(x, N=3, increasing=True)
         ivy.array(
-        [[ 1,  1,  1],
-            [ 1,  2,  4],
-            [ 1,  3,  9],
-            [ 1,  5, 25]]
-            )
+            [[1, 1, 1], [1, 2, 4], [1, 3, 9], [1, 5, 25]]
+        )
         """
         return ivy.vander(self._data, N=N, increasing=increasing, out=out)

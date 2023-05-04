@@ -53,7 +53,7 @@ def index_nest(
     >>> y = [1]
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    ivy.array([3., 4.])
+    ivy.array([3.0, 4.0])
 
     With :class:`ivy.Container` inputs:
 
@@ -64,7 +64,7 @@ def index_nest(
     >>> print(z)
     >>> z
     {
-        a: ivy.array([3., 4.]),
+        a: ivy.array([3.0, 4.0]),
         b: 60
     }
 
@@ -150,14 +150,14 @@ def set_nest_at_index(
     >>> z = 5.
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
-    ivy.array([[1., 2.], [3., 5.]])
+    ivy.array([[1.0, 2.0], [3.0, 5.0]])
 
     >>> x = ivy.array([1., 2., 3., 4.])
     >>> y = [1]
     >>> z = 5.
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
-    ivy.array([1., 5., 3., 4.])
+    ivy.array([1.0, 5.0, 3.0, 4.0])
 
     With :code:`Dict` input:
 
@@ -187,8 +187,8 @@ def set_nest_at_index(
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
     {
-        a: ivy.array([1., 2.]),
-        b: ivy.array([3., 4.])
+        a: ivy.array([1.0, 2.0]),
+        b: ivy.array([3.0, 4.0])
     }
     """
     is_tuple = isinstance(nest, tuple)
@@ -269,14 +269,14 @@ def map_nest_at_index(
     >>> z = lambda a: a + 1.
     >>> ivy.map_nest_at_index(x, y, z)
     >>> print(x)
-    ivy.array([[1., 2.], [3., 5.]])
+    ivy.array([[1.0, 2.0], [3.0, 5.0]])
 
     >>> x = ivy.array([1., 2., 3., 4.])
     >>> y = [1]
     >>> z = lambda a: a + 3.
     >>> ivy.map_nest_at_index(x, y, z)
     >>> print(x)
-    ivy.array([1., 5., 3., 4.])
+    ivy.array([1.0, 5.0, 3.0, 4.0])
 
     With :code:`Dict` input:
 
@@ -306,8 +306,8 @@ def map_nest_at_index(
     >>> ivy.map_nest_at_index(x, y, z)
     >>> print(x)
     {
-        a: ivy.array([1., 2.]),
-        b: ivy.array([3., 4.])
+        a: ivy.array([1.0, 2.0]),
+        b: ivy.array([3.0, 4.0])
     }
     """
     is_tuple = isinstance(nest, tuple)
@@ -376,7 +376,7 @@ def multi_index_nest(
     >>> y = [[0],[1]]
     >>> z = ivy.multi_index_nest(x, y)
     >>> print(z)
-    [ivy.array([1., 2.], ivy.array([3., 4.])]
+    [ivy.array([1.0, 2.0]), ivy.array([3.0, 4.0])]
 
     With :class:`ivy.Container` input:
 
@@ -487,7 +487,7 @@ def set_nest_at_indices(
     >>> values = (11., 22.)
     >>> ivy.set_nest_at_indices(nest, indices, values)
     >>> print(nest)
-    ivy.array([[1., 11., 3.], [4., 5., 22.]])
+    ivy.array([[1.0, 11.0, 3.0], [4.0, 5.0, 22.0]])
     """
     is_tuple = isinstance(nest, tuple)
     nest_type = type(nest) if is_tuple else lambda x: x
@@ -594,7 +594,7 @@ def map_nest_at_indices(
     >>> function = lambda x : x ** 2
     >>> ivy.map_nest_at_indices(nest, indices, function)
     >>> print(nest)
-    ivy.array([[-9., 8., -17.], [11., -3., 5.]])
+    ivy.array([[-9.0, 8.0, -17.0], [11.0, -3.0, 5.0]])
     """
     is_tuple = isinstance(nest, tuple)
     nest_type = type(nest) if is_tuple else lambda x: x
@@ -973,15 +973,15 @@ def map(
     ...    unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]},
     ...    mean = False)
     >>> print(results)
-    [ivy.array([0., 10., 100.]),
-    ivy.array([1., 10., 101.])]
+    [ivy.array([0.0, 10.0, 100.0]),
+    ivy.array([1.0, 10.0, 101.0])]
 
     >>> results = ivy.map(fn = linear_model,
     ...    constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])},
     ...    unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]},
     ...    mean = True)
     >>> print(results)
-    ivy.array([  0.5,  10. , 100. ])
+    ivy.array([0.5, 10.0, 100.0])
     """
     c = ivy.default(constant, {})
     u = ivy.default(unique, {})
@@ -1270,8 +1270,7 @@ def copy_nest(
     >>> nest = ivy.array([[1.,2.,3.],[7.,8.,9.]])
     >>> copied_nest = ivy.copy_nest(nest)
     >>> print(copied_nest)
-    ivy.array([[1., 2., 3.],
-            [7., 8., 9.]])
+    ivy.array([[1.0, 2.0, 3.0], [7.0, 8.0, 9.0]])
 
     With :code:`Iterable` input:
 

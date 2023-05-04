@@ -55,7 +55,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_abs(x)
         >>> print(y)
         {
-            a: ivy.array([0., 2.6, 3.5]),
+            a: ivy.array([0.0, 2.6, 3.5]),
             b: ivy.array([4.5, 5.3, 0, 2.3])
         }
         """
@@ -178,8 +178,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_acosh(x)
         >>> print(y)
         {
-            a: ivy.array([0., 1.32, 1.76, 2.06]),
-            b: ivy.array([0., 1.76, 2.99, 2.48])
+            a: ivy.array([0.0, 1.32, 1.76, 2.06]),
+            b: ivy.array([0.0, 1.76, 2.99, 2.48])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -240,8 +240,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.acosh()
         >>> print(y)
         {
-            a: ivy.array([0., 1.32, 1.76, 2.06]),
-            b: ivy.array([0., 1.76, 2.99, 2.48])
+            a: ivy.array([0.0, 1.32, 1.76, 2.06]),
+            b: ivy.array([0.0, 1.76, 2.99, 2.48])
         }
         """
         return self._static_acosh(
@@ -301,8 +301,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_acos(x)
         >>> print(y)
         {
-            a: ivy.array([1.57, 3.14, 0.]),
-            b: ivy.array([0., 1.57, 3.14])
+            a: ivy.array([1.57, 3.14, 0.0]),
+            b: ivy.array([0.0, 1.57, 3.14])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -374,12 +374,20 @@ class _ContainerWithElementwise(ContainerBase):
         >>> z = ivy.Container.static_add(x, y)
         >>> print(z)
         {
-            a: ivy.array([[5.1, 6.3, 0.4],
-                          [6.1, 7.3, 1.4],
-                          [7.1, 8.3, 2.4]]),
-            b: ivy.array([[6.1, 7.3, 1.4],
-                          [7.1, 8.3, 2.4],
-                          [8.1, 9.3, 3.4]])
+            a: ivy.array(
+                   [
+                       [5.1, 6.3, 0.4],
+                       [6.1, 7.3, 1.4],
+                       [7.1, 8.3, 2.4],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [6.1, 7.3, 1.4],
+                       [7.1, 8.3, 2.4],
+                       [8.1, 9.3, 3.4],
+                   ]
+               )
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -464,8 +472,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.acos()
         >>> print(y)
         {
-            a: ivy.array([1.57, 3.14, 0.]),
-            b: ivy.array([0., 1.57, 3.14])
+            a: ivy.array([1.57, 3.14, 0.0]),
+            b: ivy.array([0.0, 1.57, 3.14])
         }
         """
         return self._static_acos(
@@ -606,7 +614,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_asin()
         >>> print(y)
         {
-            a: ivy.array([0., -0.524, -1.57]),
+            a: ivy.array([0.0, -0.524, -1.57]),
             b: ivy.array([0.1, 0.927, nan])
         }
 
@@ -677,7 +685,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.asin()
         >>> print(y)
         {
-            a: ivy.array([0., 0.524, 1.57]),
+            a: ivy.array([0.0, 0.524, 1.57]),
             b: ivy.array([nan, 0.927, nan])
         }
 
@@ -687,7 +695,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> x.asin(out=y)
         >>> print(y)
         {
-            a: ivy.array([nan, nan, 0.]),
+            a: ivy.array([nan, nan, 0.0]),
             b: ivy.array([-1.02, 0.644, 0.305])
         }
         """
@@ -750,8 +758,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_asinh(x)
         >>> print(y)
         {
-            a: ivy.array([1.19, 0., -1.97]),
-            b: ivy.array([1.94, -2.37, 0., -1.75])
+            a: ivy.array([1.19, 0.0, -1.97]),
+            b: ivy.array([1.94, -2.37, 0.0, -1.75])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -873,8 +881,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_atan(x)
         >>> print(y)
         {
-            a: ivy.array([0., -0.785, 0.785]),
-            b: ivy.array([0.785, 0., -1.41])
+            a: ivy.array([0.0, -0.785, 0.785]),
+            b: ivy.array([0.785, 0.0, -1.41])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -933,8 +941,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.atan()
         >>> print(y)
         {
-            a: ivy.array([0., -0.785, 0.785]),
-            b: ivy.array([0.785, 0., -1.41])
+            a: ivy.array([0.0, -0.785, 0.785]),
+            b: ivy.array([0.785, 0.0, -1.41])
         }
         """
         return self._static_atan(
@@ -1002,8 +1010,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.array([3.0, 2.0, 1.0])
         >>> ivy.Container.static_atan2(x, y)
         {
-            a: ivy.array([0., 0.915, -1.29]),
-            b: ivy.array([0.983, -1.21, 0.])
+            a: ivy.array([0.0, 0.915, -1.29]),
+            b: ivy.array([0.983, -1.21, 0.0])
         }
 
         >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
@@ -1014,7 +1022,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> print(z)
         {
             a: ivy.array([3.14, 0.978, -0.785]),
-            b: ivy.array([1.07, -0.696, 0., -0.993])
+            b: ivy.array([1.07, -0.696, 0.0, -0.993])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1082,8 +1090,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.array([3.0, 2.0, 1.0])
         >>> x.atan2(y)
         {
-            a: ivy.array([0., 0.915, -1.29]),
-            b: ivy.array([0.983, -1.21, 0.])
+            a: ivy.array([0.0, 0.915, -1.29]),
+            b: ivy.array([0.983, -1.21, 0.0])
         }
 
         >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
@@ -1094,7 +1102,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> print(z)
         {
             a: ivy.array([3.14, 0.978, -0.785]),
-            b: ivy.array([1.07, -0.696, 0., -0.993])
+            b: ivy.array([1.07, -0.696, 0.0, -0.993])
         }
         """
         return self._static_atan2(
@@ -1156,8 +1164,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_atanh(x)
         >>> print(y)
         {
-            a: ivy.array([0., 0.549, -0.549]),
-            b: ivy.array([0., 0.203, 1.47])
+            a: ivy.array([0.0, 0.549, -0.549]),
+            b: ivy.array([0.0, 0.203, 1.47])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1217,8 +1225,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.atanh()
         >>> print(y)
         {
-            a: ivy.array([0., 0.549, -0.549]),
-            b: ivy.array([0., 0.203, 1.47])
+            a: ivy.array([0.0, 0.549, -0.549]),
+            b: ivy.array([0.0, 0.203, 1.47])
         }
         """
         return self._static_atanh(
@@ -1686,8 +1694,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_cos(x)
         >>> print(y)
         {
-            a: ivy.array([1., 0.54, 0.54]),
-            b: ivy.array([0.54, 1., 0.96])
+            a: ivy.array([1.0, 0.54, 0.54]),
+            b: ivy.array([0.54, 1.0, 0.96])
         }
         """
         return ivy.ContainerBase.cont_multi_map_in_function(
@@ -1749,8 +1757,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.cos()
         >>> print(y)
         {
-            a: ivy.array([1., 0.54, 0.54]),
-            b: ivy.array([0.54, 1., 0.96])
+            a: ivy.array([1.0, 0.54, 0.54]),
+            b: ivy.array([0.54, 1.0, 0.96])
         }
         """
         return self._static_cos(
@@ -2240,8 +2248,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_ceil(x)
         >>> print(y)
         {
-            a: ivy.array([3., 1., -1.]),
-            b: ivy.array([6., -3., 6.])
+            a: ivy.array([3.0, 1.0, -1.0]),
+            b: ivy.array([6.0, -3.0, 6.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2300,8 +2308,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.ceil()
         >>> print(y)
         {
-            a: ivy.array([3., 1., -1.]),
-            b: ivy.array([6., -3., 6.])
+            a: ivy.array([3.0, 1.0, -1.0]),
+            b: ivy.array([6.0, -3.0, 6.0])
         }
         """
         return self._static_ceil(
@@ -2516,7 +2524,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_divide(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([12., 1.52, 2.1]),
+            a: ivy.array([12.0, 1.52, 2.1]),
             b: ivy.array([1.25, 0.333, 0.45])
         }
         """
@@ -2587,7 +2595,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x1.divide(x2)
         >>> print(y)
         {
-            a: ivy.array([12., 1.52, 2.1]),
+            a: ivy.array([12.0, 1.52, 2.1]),
             b: ivy.array([1.25, 0.333, 0.45])
         }
 
@@ -2991,7 +2999,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([11.2, 0.649]),
-            b: ivy.array([220., -0.959])
+            b: ivy.array([220.0, -0.959])
         }
 
         >>> y = ivy.Container(a=ivy.array([0., 0.]))
@@ -3059,8 +3067,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_floor(x)
         >>> print(y)
         {
-            a: ivy.array([2., 0., -2.]),
-            b: ivy.array([5., -4., 5.])
+            a: ivy.array([2.0, 0.0, -2.0]),
+            b: ivy.array([5.0, -4.0, 5.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -3119,8 +3127,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.floor()
         >>> print(y)
         {
-            a: ivy.array([2., 0., -2.]),
-            b: ivy.array([5., -4., 5.])
+            a: ivy.array([2.0, 0.0, -2.0]),
+            b: ivy.array([5.0, -4.0, 5.0])
         }
         """
         return self._static_floor(
@@ -3188,8 +3196,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_floor_divide(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 2., 1.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 2.0, 1.0])
         }
 
         With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
@@ -3199,8 +3207,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_floor_divide(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([2., 1., 1.]),
-            b: ivy.array([3., 2., 2.])
+            a: ivy.array([2.0, 1.0, 1.0]),
+            b: ivy.array([3.0, 2.0, 2.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -3270,8 +3278,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x1.floor_divide(x2)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 2., 1.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 2.0, 1.0])
         }
 
         With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
@@ -3281,8 +3289,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x1.floor_divide(x2)
         >>> print(y)
         {
-            a: ivy.array([2., 1., 1.]),
-            b: ivy.array([3., 2., 2.])
+            a: ivy.array([2.0, 1.0, 1.0]),
+            b: ivy.array([3.0, 2.0, 2.0])
         }
         """
         return self._static_floor_divide(
@@ -3488,8 +3496,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> z = ivy.Container.static_greater_equal(y)
         >>> print(z)
         {
-            a:ivy.array([True,True,True]),
-            b:ivy.array([False,False,False])
+            a:ivy.array([True, True, True]),
+            b:ivy.array([False, False, False])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -3557,8 +3565,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> z = x.greater_equal(y)
         >>> print(z)
         {
-            a:ivy.array([True,True,True]),
-            b:ivy.array([False,False,False])
+            a:ivy.array([True, True, True]),
+            b:ivy.array([False, False, False])
         }
         """
         return self._static_greater_equal(
@@ -4303,7 +4311,7 @@ class _ContainerWithElementwise(ContainerBase):
         {
             a: ivy.array([-inf, nan]),
             b: ivy.array([-inf, nan, inf]),
-            c: ivy.array([2.07, 0.0953, 0.])
+            c: ivy.array([2.07, 0.0953, 0.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -4368,7 +4376,7 @@ class _ContainerWithElementwise(ContainerBase):
         {
             a: ivy.array([-inf, nan]),
             b: ivy.array([-inf, nan, inf]),
-            c: ivy.array([2.07, 0.0953, 0.])
+            c: ivy.array([2.07, 0.0953, 0.0])
         }
         """
         return self._static_log(
@@ -4428,7 +4436,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_log1p(x)
         >>> print(y)
         {
-            a: ivy.array([0., 0.693, 1.1]),
+            a: ivy.array([0.0, 0.693, 1.1]),
             b: ivy.array([1.39, 1.61, 1.81])
         }
 
@@ -4436,7 +4444,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> ivy.Container.static_log1p(x, out = x)
         >>> print(y)
         {
-            a: ivy.array([0., 0.693, 1.1]),
+            a: ivy.array([0.0, 0.693, 1.1]),
             b: ivy.array([1.39, 1.61, 1.81])
         }
         """
@@ -4665,7 +4673,7 @@ class _ContainerWithElementwise(ContainerBase):
         {
             a: ivy.array([-inf, nan]),
             b: ivy.array([-inf, nan, inf]),
-            c: ivy.array([0.898, 0.0414, 0.])
+            c: ivy.array([0.898, 0.0414, 0.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -4730,7 +4738,7 @@ class _ContainerWithElementwise(ContainerBase):
         {
             a: ivy.array([-inf, nan]),
             b: ivy.array([-inf, nan, inf]),
-            c: ivy.array([0.898, 0.0414, 0.])
+            c: ivy.array([0.898, 0.0414, 0.0])
         }
         """
         return self._static_log10(
@@ -4941,7 +4949,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> w = ivy.Container.static_logical_and(a, b)
         >>> print(w)
         {
-            a:ivy.array([True,False,False,False])
+            a:ivy.array([True, False, False, False])
         }
 
         >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
@@ -4949,7 +4957,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> x = ivy.Container.static_logical_and(j, m)
         >>> print(x)
         {
-            a:ivy.array([False,True,False,False])
+            a:ivy.array([False, True, False, False])
         }
 
 
@@ -4960,8 +4968,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> z = ivy.Container.static_logical_and(k, l)
         >>> print(z)
         {
-            a:ivy.array([True,False,True]),
-            b:ivy.array([False,False,False])
+            a:ivy.array([True, False, True]),
+            b:ivy.array([False, False, False])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -5029,7 +5037,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> w = a.logical_and(b)
         >>> print(w)
         {
-            a:ivy.array([True,False,False,False])
+            a:ivy.array([True, False, False, False])
         }
 
         >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
@@ -5037,7 +5045,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> x = j.logical_and(m)
         >>> print(x)
         {
-            a:ivy.array([False,True,False,False])
+            a:ivy.array([False, True, False, False])
         }
 
         >>> k = ivy.Container(a=ivy.array([True, False, True]),
@@ -5047,8 +5055,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> z = k.logical_and(l)
         >>> print(z)
         {
-            a:ivy.array([True,False,True]),
-            b:ivy.array([False,False,False])
+            a:ivy.array([True, False, True]),
+            b:ivy.array([False, False, False])
         }
         """
         return self._static_logical_and(
@@ -5531,20 +5539,20 @@ class _ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
-        
+
         Examples
         --------
         With :code:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([15., 4.5, 6.5]),\
-                               b=ivy.array([3.2, 5., 7.5]))
+                               b=ivy.array([3.2, 5.0, 7.5]))
         >>> x2 = ivy.Container(a=ivy.array([1.7, 2.8, 3.]),\
                                b=ivy.array([5.6, 1.2, 4.2]))
         >>> y =ivy.Container.static_multiply(x1, x2)
         >>> print(y)
         {
             a: ivy.array([25.5, 12.6, 19.5]),
-            b: ivy.array([17.9, 6., 31.5])
+            b: ivy.array([17.9, 6.0, 31.5])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -5609,20 +5617,20 @@ class _ContainerWithElementwise(ContainerBase):
         With :code:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([15., 4.5, 6.5]),\
-                               b=ivy.array([3.2, 5., 7.5]))
+                               b=ivy.array([3.2, 5.0, 7.5]))
         >>> x2 = ivy.Container(a=ivy.array([1.7, 2.8, 3.]),\
                                b=ivy.array([5.6, 1.2, 4.2]))
         >>> y = ivy.Container.multiply(x1, x2)
         >>> print(y)
         {
             a: ivy.array([25.5, 12.6, 19.5]),
-            b: ivy.array([17.9, 6., 31.5])
+            b: ivy.array([17.9, 6.0, 31.5])
         }
 
         With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([6.2, 4.8, 2.3]),\
-                               b=ivy.array([5., 1.7, 0.1]))
+                               b=ivy.array([5.0, 1.7, 0.1]))
         >>> x2 = ivy.array([8.3, 3.2, 6.5])
         >>> y = ivy.Container.multiply(x1, x2)
         >>> print(y)
@@ -5691,8 +5699,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_negative(x)
         >>> print(y)
         {
-            a: ivy.array([-0., -1., -2.]),
-            b: ivy.array([-3., -4., 5.])
+            a: ivy.array([-0.0, -1.0, -2.0]),
+            b: ivy.array([-3.0, -4.0, 5.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -5753,8 +5761,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.negative()
         >>> print(y)
         {
-            a: ivy.array([-0., -1., -2.]),
-            b: ivy.array([-3., -4., 5.])
+            a: ivy.array([-0.0, -1.0, -2.0]),
+            b: ivy.array([-3.0, -4.0, 5.0])
         }
         """
         return self._static_negative(
@@ -5965,8 +5973,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_positive(x)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., -5.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, -5.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -6027,8 +6035,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.positive(x)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., -5.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, -5.0])
         }
         """
         return self._static_positive(
@@ -6162,8 +6170,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.pow(3)
         >>> print(y)
         {
-            a:ivy.array([0,1]),
-            b:ivy.array([8,27])
+            a:ivy.array([0, 1]),
+            b:ivy.array([8, 27])
         }
         """
         return self._static_pow(
@@ -6235,8 +6243,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_remainder(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([0., 0., 1.]),
-            b: ivy.array([0., 2., 1.])
+            a: ivy.array([0.0, 0.0, 1.0]),
+            b: ivy.array([0.0, 2.0, 1.0])
         }
 
         With mixed :class:`ivy.Container` and `ivy.Array` inputs:
@@ -6246,8 +6254,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_remainder(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([0., 0., 1.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([0.0, 0.0, 1.0])
         }
 
         With mixed :class:`ivy.Container` and `ivy.NativeArray` inputs:
@@ -6257,8 +6265,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_remainder(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([0., 0., 1.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([0.0, 0.0, 1.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -6331,8 +6339,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x1.remainder(x2)
         >>> print(y)
         {
-            a: ivy.array([0., 0., 1.]),
-            b: ivy.array([0., 2., 1.])
+            a: ivy.array([0.0, 0.0, 1.0]),
+            b: ivy.array([0.0, 2.0, 1.0])
         }
 
         With mixed :class:`ivy.Container` and `ivy.Array` inputs:
@@ -6342,8 +6350,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x1.remainder(x2)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([0., 0., 1.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([0.0, 0.0, 1.0])
         }
 
         With mixed :class:`ivy.Container` and `ivy.NativeArray` inputs:
@@ -6353,8 +6361,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x1.remainder(x2)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([0., 0., 1.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([0.0, 0.0, 1.0])
         }
         """
         return self._static_remainder(
@@ -6421,8 +6429,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_round(x)
         >>> print(y)
         {
-            a: ivy.array([4., 9., 7., 0.]),
-            b: ivy.array([-301., -527., 4.])
+            a: ivy.array([4.0, 9.0, 7.0, 0.0]),
+            b: ivy.array([-301.0, -527.0, 4.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -6487,8 +6495,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.round()
         >>> print(y)
         {
-            a: ivy.array([4., 9., 7., 0.]),
-            b: ivy.array([-301., -527., 4.])
+            a: ivy.array([4.0, 9.0, 7.0, 0.0]),
+            b: ivy.array([-301.0, -527.0, 4.0])
         }
         """
         return self._static_round(
@@ -6549,8 +6557,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_sign(x)
         >>> print(y)
         {
-            a: ivy.array([0., -1., 1.]),
-            b: ivy.array([-1., 1., 1., 0.])
+            a: ivy.array([0.0, -1.0, 1.0]),
+            b: ivy.array([-1.0, 1.0, 1.0, 0.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -6610,9 +6618,9 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.sign()
         >>> print(y)
         {
-            a: ivy.array([-1., 1., -1.]),
-            b: ivy.array([1., -1., 0.]),
-            c: ivy.array([-1., -1., 1.])
+            a: ivy.array([-1.0, 1.0, -1.0]),
+            b: ivy.array([1.0, -1.0, 0.0]),
+            c: ivy.array([-1.0, -1.0, 1.0])
         }
         """
         return self._static_sign(
@@ -6808,8 +6816,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> ivy.Container.static_sinh(x, out=y)
         >>> print(y)
         {
-            a: ivy.array([-10., 0.347, 3.63]),
-            b: ivy.array([0.721, -1.14, -10.])
+            a: ivy.array([-10.0, 0.347, 3.63]),
+            b: ivy.array([0.721, -1.14, -10.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -6879,8 +6887,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> x.sinh(out=y)
         >>> print(y)
         {
-            a: ivy.array([-10., 0.347, 3.63]),
-            b: ivy.array([0.721, -1.14, -10.])
+            a: ivy.array([-10.0, 0.347, 3.63]),
+            b: ivy.array([0.721, -1.14, -10.0])
         }
         """
         return self._static_sinh(
@@ -6940,8 +6948,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_square(x)
         >>> print(y)
         {
-            a:ivy.array([0,1]),
-            b:ivy.array([4,9])
+            a:ivy.array([0, 1]),
+            b:ivy.array([4, 9])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -7000,8 +7008,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.square()
         >>> print(y)
         {
-            a:ivy.array([0,1]),
-            b:ivy.array([4,9])
+            a:ivy.array([0, 1]),
+            b:ivy.array([4, 9])
         }
         """
         return self._static_square(
@@ -7064,8 +7072,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_sqrt(x)
         >>> print(y)
         {
-            a: ivy.array([0., 10., 5.2]),
-            b: ivy.array([9.64, 7.35, 5.])
+            a: ivy.array([0.0, 10.0, 5.2]),
+            b: ivy.array([9.64, 7.35, 5.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -7127,8 +7135,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.sqrt()
         >>> print(y)
         {
-            a: ivy.array([0., 10., 5.2]),
-            b: ivy.array([9.64, 7.35, 5.])
+            a: ivy.array([0.0, 10.0, 5.2]),
+            b: ivy.array([9.64, 7.35, 5.0])
         }
         """
         return self._static_sqrt(
@@ -7349,7 +7357,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_tan(x)
         >>> print(y)
         {
-            a: ivy.array([0., 1.56, -2.19]),
+            a: ivy.array([0.0, 1.56, -2.19]),
             b: ivy.array([-0.143, 1.16, -3.38])
         }
         """
@@ -7410,7 +7418,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.tan()
         >>> print(y)
         {
-            a:ivy.array([0., 1.56, -2.19]),
+            a:ivy.array([0.0, 1.56, -2.19]),
             b:ivy.array([-0.143, 1.16, -3.38])
         }
         """
@@ -7472,7 +7480,7 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_tanh(x)
         >>> print(y)
         {
-            a: ivy.array([0., 0.76, 0.96]),
+            a: ivy.array([0.0, 0.76, 0.96]),
             b: ivy.array([0.995, 0.999, 0.9999])
         }
         """
@@ -7534,8 +7542,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.tanh()
         >>> print(y)
         {
-            a:ivy.array([0., 0.762, 0.964]),
-            b:ivy.array([0.995, 0.999, 1.])
+            a:ivy.array([0.0, 0.762, 0.964]),
+            b:ivy.array([0.995, 0.999, 1.0])
         }
         """
         return self._static_tanh(
@@ -7597,8 +7605,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_trunc(x)
         >>> print(y)
         {
-            a: ivy.array([-0., 4., 1.]),
-            b: ivy.array([12., -3., 1.])
+            a: ivy.array([-0.0, 4.0, 1.0]),
+            b: ivy.array([12.0, -3.0, 1.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -7657,8 +7665,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.trunc()
         >>> print(y)
         {
-            a: ivy.array([-0., 4., 1.]),
-            b: ivy.array([12., -3., 1.])
+            a: ivy.array([-0.0, 4.0, 1.0]),
+            b: ivy.array([12.0, -3.0, 1.0])
         }
         """
         return self._static_trunc(
@@ -7717,8 +7725,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_erf(x)
         >>> print(y)
         {
-            a: ivy.array([-0.27632612, 1., 0.934008]),
-            b: ivy.array([1., -0.99999928, 0.91903949])
+            a: ivy.array([-0.27632612, 1.0, 0.934008]),
+            b: ivy.array([1.0, -0.99999928, 0.91903949])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -7776,8 +7784,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x.erf()
         >>> print(y)
         {
-            a: ivy.array([-0.27632612, 1., 0.934008]),
-            b: ivy.array([1., -0.99999928, 0.91903949])
+            a: ivy.array([-0.27632612, 1.0, 0.934008]),
+            b: ivy.array([1.0, -0.99999928, 0.91903949])
         }
         """
         return self._static_erf(
@@ -7994,12 +8002,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> z = ivy.Container.static_maximum(x, y)
         >>> print(z)
         {
-            a: ivy.array([[1, 3],
-                          [2, 4],
-                          [3, 7]]),
-            b: ivy.array([[1, 9],
-                          [2, 9],
-                          [3, 9]])
+            a: ivy.array([[1, 3], [2, 4], [3, 7]]),
+            b: ivy.array([[1, 9], [2, 9], [3, 9]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -8072,12 +8076,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> z = x.maximum(y)
         >>> print(z)
         {
-            a: ivy.array([[1, 3],
-                          [2, 4],
-                          [3, 7]]),
-            b: ivy.array([[1, 9],
-                          [2, 9],
-                          [3, 9]])
+            a: ivy.array([[1, 3], [2, 4], [3, 7]]),
+            b: ivy.array([[1, 9], [2, 9], [3, 9]])
         }
         """
         return self._static_maximum(
@@ -8255,8 +8255,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y=ivy.Container.static_deg2rad(x)
         >>> print(y)
         {
-            a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
-            b: ivy.array([0., -0.0262, -0.873, nan])
+            a: ivy.array([0.0, 1.57, 3.14, 4.71, 6.28]),
+            b: ivy.array([0.0, -0.0262, -0.873, nan])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -8316,8 +8316,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y=x.deg2rad()
         >>> print(y)
         {
-            a: ivy.array([0., 0.00613, -0.0154, nan]),
-            b: ivy.array([0., -0.0262, -0.873, nan])
+            a: ivy.array([0.0, 0.00613, -0.0154, nan]),
+            b: ivy.array([0.0, -0.0262, -0.873, nan])
         }
         """
         return self._static_deg2rad(
@@ -8376,8 +8376,10 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y=ivy.Container.static_rad2deg(x)
         >>> print(y)
         {
-            a: ivy.array([0., 5160., 10300., 15500., 20600.]),
-            b: ivy.array([0., -85.9, -2860., nan])
+            a: ivy.array(
+                   [0.0, 5160.0, 10300.0, 15500.0, 20600.0]
+               ),
+            b: ivy.array([0.0, -85.9, -2860.0, nan])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -8437,8 +8439,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y=x.rad2deg()
         >>> print(y)
         {
-            a: ivy.array([0., 20.1, -50.5, nan]),
-            b: ivy.array([0., -85.9, -2860., 413.])
+            a: ivy.array([0.0, 20.1, -50.5, nan]),
+            b: ivy.array([0.0, -85.9, -2860.0, 413.0])
         }
         """
         return self._static_rad2deg(
@@ -8506,8 +8508,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_divide(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([12., 1., -2.]),
-            b: ivy.array([1., 0., -4.])
+            a: ivy.array([12.0, 1.0, -2.0]),
+            b: ivy.array([1.0, 0.0, -4.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -8577,8 +8579,8 @@ class _ContainerWithElementwise(ContainerBase):
         >>> y = x1.trunc_divide(x2)
         >>> print(y)
         {
-            a: ivy.array([12., 1., -2.]),
-            b: ivy.array([1., 0., -4.])
+            a: ivy.array([12.0, 1.0, -2.0]),
+            b: ivy.array([1.0, 0.0, -4.0])
         }
         """
         return self._static_trunc_divide(
@@ -8697,7 +8699,7 @@ class _ContainerWithElementwise(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([-1j, -np.inf, 1.23+7j]),\
-                          b=ivy.array([0.0, 3.3j, 1+0j]))
+                          b=ivy.array([0.0, 3.3j, 1 + 0j]))
         >>> y = x.isreal()
         >>> print(y)
         {

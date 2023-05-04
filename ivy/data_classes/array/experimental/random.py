@@ -50,13 +50,20 @@ class _ArrayWithRandomExperimental(abc.ABC):
 
         >>> alpha = ivy.array([1.0, 2.0, 3.0])
         >>> alpha.dirichlet(size = (2,3))
-        ivy.array([[[0.48006698, 0.07472073, 0.44521229],
-            [0.55479872, 0.05426367, 0.39093761],
-            [0.19531053, 0.51675832, 0.28793114]],
-
-        [[0.12315625, 0.29823365, 0.5786101 ],
-            [0.15564976, 0.50542368, 0.33892656],
-            [0.1325352 , 0.44439589, 0.42306891]]])
+        ivy.array(
+            [
+                [
+                    [0.48006698, 0.07472073, 0.44521229],
+                    [0.55479872, 0.05426367, 0.39093761],
+                    [0.19531053, 0.51675832, 0.28793114],
+                ],
+                [
+                    [0.12315625, 0.29823365, 0.5786101],
+                    [0.15564976, 0.50542368, 0.33892656],
+                    [0.1325352, 0.44439589, 0.42306891],
+                ],
+            ]
+        )
         """
         return ivy.dirichlet(self, size=size, dtype=dtype, seed=seed, out=out)
 
@@ -201,12 +208,11 @@ class _ArrayWithRandomExperimental(abc.ABC):
         --------
         >>> lam = ivy.array([1.0, 2.0, 3.0])
         >>> lam.poisson()
-        ivy.array([1., 4., 4.])
+        ivy.array([1.0, 4.0, 4.0])
 
         >>> lam = ivy.array([1.0, 2.0, 3.0])
         >>> lam.poisson(shape=(2,3))
-        ivy.array([[0., 2., 2.],
-                   [1., 2., 3.]])
+        ivy.array([[0.0, 2.0, 2.0], [1.0, 2.0, 3.0]])
         """
         return ivy.poisson(
             self,
@@ -228,7 +234,6 @@ class _ArrayWithRandomExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ):
         """
-
         Parameters
         ----------
         self

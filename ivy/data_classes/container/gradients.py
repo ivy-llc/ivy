@@ -60,8 +60,8 @@ class _ContainerWithGradients(ContainerBase):
         >>> y = ivy.Container.static_stop_gradient(x, preserve_type=False)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, 5.0])
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -71,8 +71,8 @@ class _ContainerWithGradients(ContainerBase):
         >>> ivy.Container.static_stop_gradient(x, preserve_type=True, out=x)
         >>> print(x)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, 5.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -138,8 +138,8 @@ class _ContainerWithGradients(ContainerBase):
         >>> y = x.stop_gradient(preserve_type=False)
         >>> print(y)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, 5.0])
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -149,8 +149,8 @@ class _ContainerWithGradients(ContainerBase):
         >>> x.stop_gradient(preserve_type=True, out=x)
         >>> print(x)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, 5.0])
         }
         """
         return self._static_stop_gradient(
@@ -222,13 +222,13 @@ class _ContainerWithGradients(ContainerBase):
         ...                                     epsilon=epsilon)
         >>> print(adam_step_delta)
         ({
-            a: ivy.array([6.49e+04, 1.74e+01, 1.95e+01]),
+            a: ivy.array([6.49e04, 1.74e01, 1.95e01]),
             b: ivy.array([2.02, 4.82, 8.17])
         }, {
             a: ivy.array([0.87, 3.61, 8.09]),
-            b: ivy.array([1.26, 4., 8.48])
+            b: ivy.array([1.26, 4.0, 8.48])
         }, {
-            a: ivy.array([0., 0.024, 0.096]),
+            a: ivy.array([0.0, 0.024, 0.096]),
             b: ivy.array([0.216, 0.384, 0.6])
         })
 
@@ -248,13 +248,13 @@ class _ContainerWithGradients(ContainerBase):
         ...                                     epsilon=epsilon)
         >>> print(adam_step_delta)
         ({
-            a: ivy.array([0., 0.626, 0.626]),
+            a: ivy.array([0.0, 0.626, 0.626]),
             b: ivy.array([0.626, 0.626, 0.626])
         }, {
-            a: ivy.array([0., 0.13, 0.26]),
+            a: ivy.array([0.0, 0.13, 0.26]),
             b: ivy.array([0.39, 0.52, 0.65])
         }, {
-            a: ivy.array([0., 0.024, 0.096]),
+            a: ivy.array([0.0, 0.024, 0.096]),
             b: ivy.array([0.216, 0.384, 0.6])
         })
         """
@@ -308,8 +308,8 @@ class _ContainerWithGradients(ContainerBase):
         >>> ws_new = w.optimizer_update(effective_grad, lr)
         >>> print(ws_new)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, 5.0])
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -322,8 +322,8 @@ class _ContainerWithGradients(ContainerBase):
         >>> ws_new = w.optimizer_update(effective_grad, lr, out=w)
         >>> print(w)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, 5.0])
         }
 
         >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),
@@ -334,8 +334,8 @@ class _ContainerWithGradients(ContainerBase):
         >>> ws_new = w.optimizer_update(effective_grad, lr, stop_gradients=False)
         >>> print(ws_new)
         {
-            a: ivy.array([0., 1., 2.]),
-            b: ivy.array([3., 4., 5.])
+            a: ivy.array([0.0, 1.0, 2.0]),
+            b: ivy.array([3.0, 4.0, 5.0])
         }
         """
         return ivy.optimizer_update(
@@ -542,9 +542,9 @@ class _ContainerWithGradients(ContainerBase):
         >>> updated_weights = w.adam_update(dcdw, mw_tm1, vw_tm1, lr, step)
         >>> print(updated_weights)
         ({
-            a: ivy.array([1., 2., 3.]),
-            b: ivy.array([4., 5., 6.])
-        }, ivy.array([0.1 , 0.02, 0.04]), ivy.array([0.01099, 0.01003, 0.01015]))
+            a: ivy.array([1.0, 2.0, 3.0]),
+            b: ivy.array([4.0, 5.0, 6.0])
+        }, ivy.array([0.1, 0.02, 0.04]), ivy.array([0.01099, 0.01003, 0.01015]))
 
         With multiple :class:`ivy.Container` inputs:
 
@@ -573,8 +573,20 @@ class _ContainerWithGradients(ContainerBase):
             a: ivy.array([0.01, 0.03, 0.03]),
             b: ivy.array([0.03, 0.02, 0.02])
         }, {
-            a: ivy.array([1.00000016e-05, 9.00000086e-05, 9.00000086e-05]),
-            b: ivy.array([9.00000086e-05, 4.00000063e-05, 4.00000063e-05])
+            a: ivy.array(
+                   [
+                       1.00000016e-05,
+                       9.00000086e-05,
+                       9.00000086e-05,
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       9.00000086e-05,
+                       4.00000063e-05,
+                       4.00000063e-05,
+                   ]
+               )
         })
         """
         return ivy.adam_update(
@@ -664,8 +676,8 @@ class _ContainerWithGradients(ContainerBase):
         >>> new_weights = w.lamb_update(dcdw, mw_tm1, vw_tm1, lr, step)
         >>> print(new_weights)
         ({
-            a: ivy.array([1., 2., 3.]),
-            b: ivy.array([4., 5., 6.])
+            a: ivy.array([1.0, 2.0, 3.0]),
+            b: ivy.array([4.0, 5.0, 6.0])
         }, ivy.array([0.3, 0.4, 0.5]), ivy.array([1.01, 1.01, 1.02]))
 
         With multiple :class:`ivy.Container` inputs:

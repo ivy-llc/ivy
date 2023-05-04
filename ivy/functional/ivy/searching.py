@@ -111,7 +111,7 @@ def argmax(
     >>> z = ivy.zeros((1,3), dtype=ivy.int64)
     >>> y = ivy.argmax(x, axis=1, keepdims=True, out=z)
     >>> print(z)
-    ivy.array([[0],[2],[2]])
+    ivy.array([[0], [2], [2]])
     """
     return current_backend(x).argmax(
         x,
@@ -197,16 +197,13 @@ def argmin(
     >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.]])
     >>> y = ivy.argmin(x, axis=1, keepdims=True)
     >>> print(y)
-    ivy.array([[2],
-              [0]])
+    ivy.array([[2], [0]])
 
     >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
     >>> y= ivy.zeros((1,3), dtype=ivy.int64)
     >>> ivy.argmin(x, axis=1, keepdims=True, out=y)
     >>> print(y)
-    ivy.array([[2],
-               [0],
-               [1]])
+    ivy.array([[2], [0], [1]])
 
     With :class:`ivy.Container` input:
 
@@ -420,13 +417,15 @@ def where(
     >>> x2 = ivy.array([[5, 6], [7, 8]])
     >>> res = ivy.where(condition, x1, x2)
     >>> print(res)
-    ivy.array([[1,6],[3,4]])
+    ivy.array([[1, 6], [3, 4]])
 
     >>> x1 = ivy.array([[6, 13, 22, 7, 12], [7, 11, 16, 32, 9]])
     >>> x2 = ivy.array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])
     >>> res = ivy.where(((x1 % 2 == 0) & (x2 % 2 == 1)), x1, x2)
     >>> print(res)
-    ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]])
+    ivy.array(
+        [[44, 20, 8, 35, 12], [98, 23, 16, 6, 13]]
+    )
 
     With :class:`ivy.Container` input:
 

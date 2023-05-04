@@ -55,10 +55,8 @@ class _ContainerWithSearching(ContainerBase):
         >>> y = ivy.Container.static_argmax(x, axis=1, keepdims=True)
         >>> print(y)
         {
-            a: ivy.array([[0],
-                          [2]]),
-            b: ivy.array([[2],
-                          [0]])
+            a: ivy.array([[0], [2]]),
+            b: ivy.array([[2], [0]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -117,10 +115,8 @@ class _ContainerWithSearching(ContainerBase):
         >>> y = x.argmax(axis=1, keepdims=True)
         >>> print(y)
         {
-            a: ivy.array([[0],
-                          [2]]),
-            b: ivy.array([[2],
-                          [0]])
+            a: ivy.array([[0], [2]]),
+            b: ivy.array([[2], [0]])
         }
         """
         return self._static_argmax(
@@ -179,10 +175,8 @@ class _ContainerWithSearching(ContainerBase):
         >>> y = ivy.Container.static_argmin(axis=1, keepdims=True)
         >>> print(y)
         {
-            a: ivy.array([[2],
-                          [1]]),
-            b: ivy.array([[0],
-                          [0]])
+            a: ivy.array([[2], [1]]),
+            b: ivy.array([[0], [0]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -251,10 +245,8 @@ class _ContainerWithSearching(ContainerBase):
         >>> y = x.argmin(axis=1, keepdims=True)
         >>> print(y)
         {
-            a: ivy.array([[2],
-                          [1]]),
-            b: ivy.array([[0],
-                          [0]])
+            a: ivy.array([[2], [1]]),
+            b: ivy.array([[0], [0]])
         }
         """
         return self._static_argmin(

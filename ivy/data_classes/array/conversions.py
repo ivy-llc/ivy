@@ -119,7 +119,8 @@ def to_native(
     cont_inplace: bool = False,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
-    """Return the input item in its native backend framework form if it is an
+    """
+    Return the input item in its native backend framework form if it is an
     ivy.Array instance, otherwise the input is returned unchanged. If nested is set,
     the check is applied to all nested leaves of tuples, lists and dicts contained
     within ``x``.

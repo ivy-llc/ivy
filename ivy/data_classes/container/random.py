@@ -81,10 +81,8 @@ class _ContainerWithRandom(ContainerBase):
         >>> ivy.Container.static_random_uniform(low=x, high=y, device='cpu',
         ...                                     dtype='float64')
         {
-            a: ivy.array([[10.8, 23.7],
-                          [17., 16.6]]),
-            b: ivy.array([[2.35, 3.69],
-                          [17.4, 48.]])
+            a: ivy.array([[10.8, 23.7], [17.0, 16.6]]),
+            b: ivy.array([[2.35, 3.69], [17.4, 48.0]])
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -246,43 +244,33 @@ class _ContainerWithRandom(ContainerBase):
         ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))
         >>> x.random_uniform(high=y)
         {
-            a: ivy.array([[10.4, 17.],
-                          [9.81, 10.9]]),
-            b: ivy.array([[3.6, 4.31],
-                          [18.8, 54.2]])
+            a: ivy.array([[10.4, 17.0], [9.81, 10.9]]),
+            b: ivy.array([[3.6, 4.31], [18.8, 54.2]])
         }
 
         >>> x.random_uniform(high=y, device='cpu')
         {
-            a: ivy.array([[10.1, 7.93],
-                          [7.98, 6.]]),
-            b: ivy.array([[4.28, 4.65],
-                          [13.9, 28.9]])
+            a: ivy.array([[10.1, 7.93], [7.98, 6.0]]),
+            b: ivy.array([[4.28, 4.65], [13.9, 28.9]])
         }
 
         >>> x.random_uniform(high=y, dtype='float16')
         {
-            a: ivy.array([[10.6, 28.],
-                          [16.4, 4.92]]),
-            b: ivy.array([[3.61, 4.82],
-                          [12.6, 10.2]])
+            a: ivy.array([[10.6, 28.0], [16.4, 4.92]]),
+            b: ivy.array([[3.61, 4.82], [12.6, 10.2]])
         }
 
         >>> x.random_uniform(high=y, device='cpu', dtype='float64')
         {
-            a: ivy.array([[10.7, 28.4],
-                          [9.29, 17.4]]),
-            b: ivy.array([[1.88, 4.94],
-                          [17., 9.68]])
+            a: ivy.array([[10.7, 28.4], [9.29, 17.4]]),
+            b: ivy.array([[1.88, 4.94], [17.0, 9.68]])
         }
 
         >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
         >>> x.random_uniform(high=y, device='cpu', dtype='float64', out=z)
         {
-            a: ivy.array([[10.4, 29.8],
-                          [12.1, 3.9]]),
-            b: ivy.array([[3.79, 5.4],
-                          [16.2, 31.7]])
+            a: ivy.array([[10.4, 29.8], [12.1, 3.9]]),
+            b: ivy.array([[3.79, 5.4], [16.2, 31.7]])
         }
         """
         return self._static_random_uniform(
@@ -370,10 +358,8 @@ class _ContainerWithRandom(ContainerBase):
         >>> ivy.Container.static_random_normal(mean=x, std=y, device='cpu',
         ...                                       dtype='float64')
         {
-            a: ivy.array([[-4.11, 0.651],
-                          [19.3, -30.4]]),
-            b: ivy.array([[1.15, 3.39],
-                          [-9.35, -13.9]])
+            a: ivy.array([[-4.11, 0.651], [19.3, -30.4]]),
+            b: ivy.array([[1.15, 3.39], [-9.35, -13.9]])
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -493,14 +479,14 @@ class _ContainerWithRandom(ContainerBase):
         >>> x.random_normal(std=11.2, device='cpu', dtype='float64', out=z)
         {
             a: ivy.array([-6.84, 0.274, 14.2]),
-            b: ivy.array([29.1, 7.19, 3.])
+            b: ivy.array([29.1, 7.19, 3.0])
         }
 
         >>> y = ivy.Container(a=10.4, b=17.4)
         >>> x.random_normal(std=y)
         {
             a: ivy.array([-9.5, 8.54, -9.13]),
-            b: ivy.array([-24.5, 18.9, 11.])
+            b: ivy.array([-24.5, 18.9, 11.0])
         }
 
         >>> x.random_normal(std=y, device='cpu')
@@ -534,43 +520,33 @@ class _ContainerWithRandom(ContainerBase):
         ...                   b=ivy.array([[4.3,5.6],[23.4,54.3]]))
         >>> x.random_normal(std=y)
         {
-            a: ivy.array([[10.6, 7.89],
-                          [9.39, 19.4]]),
-            b: ivy.array([[3.76, 4.68],
-                          [17.7, 24.]])
+            a: ivy.array([[10.6, 7.89], [9.39, 19.4]]),
+            b: ivy.array([[3.76, 4.68], [17.7, 24.0]])
         }
 
         >>> x.random_normal(std=y, device='cpu')
         {
-            a: ivy.array([[30.9, 24.6],
-                          [29.9, -25.3]]),
-            b: ivy.array([[8.02, 1.92],
-                          [-5.34, -54.1]])
+            a: ivy.array([[30.9, 24.6], [29.9, -25.3]]),
+            b: ivy.array([[8.02, 1.92], [-5.34, -54.1]])
         }
 
         >>> x.random_normal(std=y, dtype='float16')
         {
-            a: ivy.array([[7.82, -35.],
-                          [11.7, 0.696]]),
-            b: ivy.array([[-4.07, -2.91],
-                          [19.2, 46.8]])
+            a: ivy.array([[7.82, -35.0], [11.7, 0.696]]),
+            b: ivy.array([[-4.07, -2.91], [19.2, 46.8]])
         }
 
         >>> x.random_normal(std=y, device='cpu', dtype='float64')
         {
-            a: ivy.array([[25.4, 28.3],
-                          [19.6, -9.83]]),
-            b: ivy.array([[2.95, 2.48],
-                          [-30.8, -40.1]])
+            a: ivy.array([[25.4, 28.3], [19.6, -9.83]]),
+            b: ivy.array([[2.95, 2.48], [-30.8, -40.1]])
         }
 
         >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
         >>> x.random_normal(std=y, device='cpu', dtype='float64', out=z)
         {
-            a: ivy.array([[2.8, -45.6],
-                          [-10.4, 0.65]]),
-            b: ivy.array([[3.8, 1.43],
-                          [23., 29.4]])
+            a: ivy.array([[2.8, -45.6], [-10.4, 0.65]]),
+            b: ivy.array([[3.8, 1.43], [23.0, 29.4]])
         }
         """
         return self._static_random_normal(
@@ -808,10 +784,8 @@ class _ContainerWithRandom(ContainerBase):
         ...                   b=ivy.array([[44,5],[23,54]]))
         >>> ivy.Container.static_randint(x, y, device='cpu', dtype='int32')
         {
-            a: ivy.array([[9, 27],
-                          [16, 17]]),
-            b: ivy.array([[13, 3],
-                          [16, 19]])
+            a: ivy.array([[9, 27], [16, 17]]),
+            b: ivy.array([[13, 3], [16, 19]])
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -972,43 +946,33 @@ class _ContainerWithRandom(ContainerBase):
         ...                   b=ivy.array([[44,5],[23,54]]))
         >>> x.randint(y)
         {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
+            a: ivy.array([[9, 7], [6, 2]]),
+            b: ivy.array([[0, 2], [10, 6]])
         }
 
         >>> x.randint(y, device='cpu')
         {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
+            a: ivy.array([[9, 7], [6, 2]]),
+            b: ivy.array([[0, 2], [10, 6]])
         }
 
         >>> x.randint(y, dtype='int64')
         {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
+            a: ivy.array([[9, 7], [6, 2]]),
+            b: ivy.array([[0, 2], [10, 6]])
         }
 
         >>> x.randint(y, device='cpu', dtype='int32')
         {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
+            a: ivy.array([[9, 7], [6, 2]]),
+            b: ivy.array([[0, 2], [10, 6]])
         }
 
         >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
         >>> x.randint(y, device='cpu', dtype='int16', out=z)
         {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
+            a: ivy.array([[9, 7], [6, 2]]),
+            b: ivy.array([[0, 2], [10, 6]])
         }
         """
         return self._static_randint(

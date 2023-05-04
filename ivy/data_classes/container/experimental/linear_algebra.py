@@ -75,8 +75,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> y = ivy.Container.static_eigh_tridiagonal(alpha, beta)
         >>> print(y)
         {
-            a: ivy.array([-0.56155, 0., 3.56155]),
-            b: ivy.array([0., 2., 4.])
+            a: ivy.array([-0.56155, 0.0, 3.56155]),
+            b: ivy.array([0.0, 2.0, 4.0])
         }
 
         >>> alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))
@@ -84,8 +84,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> y = ivy.Container.static_eigh_tridiagonal(alpha, beta)
         >>> print(y)
         {
-            a: ivy.array([-0.56155, 0., 3.56155]),
-            b: ivy.array([-0.82842, 2., 4.82842])
+            a: ivy.array([-0.56155, 0.0, 3.56155]),
+            b: ivy.array([-0.82842, 2.0, 4.82842])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -164,8 +164,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> y = alpha.eigh_tridiagonal(beta)
         >>> print(y)
         {
-            a: ivy.array([-0.56155, 0., 3.56155]),
-            b: ivy.array([0., 2., 4.])
+            a: ivy.array([-0.56155, 0.0, 3.56155]),
+            b: ivy.array([0.0, 2.0, 4.0])
         }
 
         >>> alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))
@@ -173,8 +173,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> y = alpha.eigh_tridiagonal(beta)
         >>> print(y)
         {
-            a: ivy.array([-0.56155, 0., 3.56155]),
-            b: ivy.array([-0.82842, 2., 4.82842])
+            a: ivy.array([-0.56155, 0.0, 3.56155]),
+            b: ivy.array([-0.82842, 2.0, 4.82842])
         }
         """
         return self.static_eigh_tridiagonal(
@@ -246,9 +246,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> x = ivy.Container(a=[1,2])
         >>> ivy.diagflat(x, k=1)
         {
-            a: ivy.array([[0, 1, 0],
-                          [0, 0, 2],
-                          [0, 0, 0]])
+            a: ivy.array([[0, 1, 0], [0, 0, 2], [0, 0, 0]])
         }
         """
         return self.static_diagflat(
@@ -391,10 +389,12 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
                             [[2., 0.],
                             [0., 2.]]])
         >>> ivy.matrix_exp(x)
-        ivy.array([[[2.7183, 1.0000],
-                    [1.0000, 2.7183]],
-                    [[7.3891, 1.0000],
-                    [1.0000, 7.3891]]])
+        ivy.array(
+            [
+                [[2.7183, 1.0000], [1.0000, 2.7183]],
+                [[7.3891, 1.0000], [1.0000, 7.3891]],
+            ]
+        )
         """
         return self.static_matrix_exp(
             self,
@@ -441,11 +441,13 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         }
         >>> ivy.Container.eig(c)['x']['xx']
         (
-            ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),
-            ivy.array([
-                    [-0.8245648 +0.j, -0.41597357+0.j],
-                    [0.56576747+0.j, -0.9093767 +0.j]
-                ])
+            ivy.array([-0.37228107 + 0.0j, 5.3722816 + 0.0j]),
+            ivy.array(
+                [
+                    [-0.8245648 + 0.0j, -0.41597357 + 0.0j],
+                    [0.56576747 + 0.0j, -0.9093767 + 0.0j],
+                ]
+            )
         )
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -494,11 +496,13 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         }
         >>>c.eig()['x']['xx']
         (
-            ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),
-            ivy.array([
-                    [-0.8245648 +0.j, -0.41597357+0.j],
-                    [0.56576747+0.j, -0.9093767 +0.j]
-                ])
+            ivy.array([-0.37228107 + 0.0j, 5.3722816 + 0.0j]),
+            ivy.array(
+                [
+                    [-0.8245648 + 0.0j, -0.41597357 + 0.0j],
+                    [0.56576747 + 0.0j, -0.9093767 + 0.0j],
+                ]
+            )
         )
         """
         return self.static_eig(
@@ -542,11 +546,11 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> ivy.Container.eigvals(c)
         {
             x: {
-                xx: ivy.array([-0.37228132+0.j, 5.37228132+0.j])
+                xx: ivy.array([-0.37228132 + 0.0j, 5.37228132 + 0.0j])
             }
         }
         >>> ivy.Container.eigvals(c)['x']['xx']
-        ivy.array([-0.37228132+0.j,  5.37228132+0.j])
+        ivy.array([-0.37228132 + 0.0j, 5.37228132 + 0.0j])
         """
         return ContainerBase.cont_multi_map_in_function(
             "eigvals",
@@ -589,11 +593,11 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> c.eigvals()
         {
             x: {
-                xx: ivy.array([-0.37228132+0.j, 5.37228132+0.j])
+                xx: ivy.array([-0.37228132 + 0.0j, 5.37228132 + 0.0j])
             }
         }
         >>> c.eigvals()['x']['xx']
-        ivy.array([-0.37228132+0.j,  5.37228132+0.j])
+        ivy.array([-0.37228132 + 0.0j, 5.37228132 + 0.0j])
         """
         return self.static_eigvals(
             self,
@@ -639,10 +643,18 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> c = ivy.Container(a=ivy.array(x), b=ivy.array(y))
         >>> ivy.Container.static_adjoint(c)
         {
-            a: ivy.array([[1.+1.j, 3.-3.j],
-                          [2.-2.j, 4.+4.j]]),
-            b: ivy.array([[1.+2.j, 1.-0.j],
-                          [3.-4.j, 2.-6.j]])
+            a: ivy.array(
+                   [
+                       [1.0 + 1.0j, 3.0 - 3.0j],
+                       [2.0 - 2.0j, 4.0 + 4.0j],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [1.0 + 2.0j, 1.0 - 0.0j],
+                       [3.0 - 4.0j, 2.0 - 6.0j],
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -673,8 +685,12 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> c = ivy.Container(a=ivy.array(x))
         >>> c.adjoint()
         {
-            a: ivy.array([[1.+1.j, 3.-3.j],
-                          [2.-2.j, 4.+4.j]])
+            a: ivy.array(
+                   [
+                       [1.0 + 1.0j, 3.0 - 3.0j],
+                       [2.0 - 2.0j, 4.0 + 4.0j],
+                   ]
+               )
         }
         """
         return self.static_adjoint(
@@ -723,10 +739,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
         >>> ivy.Container.static_multi_dot((a, b, c))
         {
-            x: ivy.array([[26, 49],
-                          [80, 148]]),
-            y: ivy.array([[26, 49],
-                          [80, 148]])
+            x: ivy.array([[26, 49], [80, 148]]),
+            y: ivy.array([[26, 49], [80, 148]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -765,10 +779,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
         >>> a.multi_dot((b, c))
         {
-            x: ivy.array([[26, 49],
-                          [80, 148]]),
-            y: ivy.array([[26, 49],
-                          [80, 148]])
+            x: ivy.array([[26, 49], [80, 148]]),
+            y: ivy.array([[26, 49], [80, 148]])
         }
         """
         return self.static_multi_dot(
@@ -970,10 +982,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> z = ivy.Container.static_cov(x, y)
         >>> print(z)
         {
-            a: ivy.array([ 1., -1.]
-                         [-1.,  1.]),
-            b: ivy.array([ 1., -1.]
-                         [-1.,  1.])
+            a: ivy.array([1.0, -1.0][-1.0, 1.0]),
+            b: ivy.array([1.0, -1.0][-1.0, 1.0])
         }
         With multiple :class:`ivy.Container` inputs:
         >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))

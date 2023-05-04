@@ -60,8 +60,12 @@ class _ContainerWithNorms(ContainerBase):
         >>> print(norm)
         {
             a: ivy.array([-0.342, 0.0427, 0.299]),
-            b: ivy.array([[-0.241, -0.241, -0.241,
-                          [0.241, 0.241, 0.241]])
+            b: ivy.array(
+                   [
+                       [-0.241, -0.241, -0.241],
+                       [0.241, 0.241, 0.241],
+                   ]
+               )
         }
         With multiple :class:`ivy.Container` inputs:
         >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
@@ -73,8 +77,9 @@ class _ContainerWithNorms(ContainerBase):
         >>> print(norm)
         {
             a: ivy.array([-1.62, 0.203, 1.42]),
-            b: ivy.array([[-1.84, 0., 1.84],
-                          [-1.84, 0., 1.84]])
+            b: ivy.array(
+                   [[-1.84, 0.0, 1.84], [-1.84, 0.0, 1.84]]
+               )
         }
         """
         return ivy.layer_norm(

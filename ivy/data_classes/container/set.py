@@ -58,7 +58,7 @@ class _ContainerWithSet(ContainerBase):
         >>> print(y)
         {
             a: [
-                values = ivy.array([0., 1., 2., 3.]),
+                values = ivy.array([0.0, 1.0, 2.0, 3.0]),
                 indices = ivy.array([0, 1, 3, 2]),
                 inverse_indices = ivy.array([0, 1, 3, 2, 1, 0]),
                 counts = ivy.array([2, 2, 1, 1])
@@ -131,7 +131,7 @@ class _ContainerWithSet(ContainerBase):
         >>> print(y)
         {
             a: [
-                values = ivy.array([0., 1., 2., 3.]),
+                values = ivy.array([0.0, 1.0, 2.0, 3.0]),
                 indices = ivy.array([0, 1, 3, 2]),
                 inverse_indices = ivy.array([0, 1, 3, 2, 1, 0]),
                 counts = ivy.array([2, 2, 1, 1])
@@ -205,8 +205,8 @@ class _ContainerWithSet(ContainerBase):
         >>> y = ivy.Container.static_unique_counts(x)
         >>> print(y)
         {
-            a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],
-            b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]
+            a:[values=ivy.array([0.0, 1.0, 2.0, 3.0]),counts=ivy.array([2, 2, 1, 1])],
+            b:[values=ivy.array([1, 2, 3, 4]),counts=ivy.array([3, 1, 2, 1])]
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -271,8 +271,8 @@ class _ContainerWithSet(ContainerBase):
         >>> y = x.unique_counts()
         >>> print(y)
         {
-            a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],
-            b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]}
+            a:[values=ivy.array([0.0, 1.0, 2.0, 3.0]),counts=ivy.array([2, 2, 1, 1])],
+            b:[values=ivy.array([1, 2, 3, 4]),counts=ivy.array([3, 1, 2, 1])]}
         """
         return self._static_unique_counts(
             self,
@@ -440,8 +440,14 @@ class _ContainerWithSet(ContainerBase):
         >>> y = ivy.Container.static_unique_inverse(x)
         >>> print(y)
         {
-            a:[values=ivy.array([3.,4.,5.,8.,9.]),inverse_indices=ivy.array([1,3,0,2,4,1])],
-            b:[values=ivy.array([2,3,4,5,6,7]),inverse_indices=ivy.array([5,4,2,3,4,1,0])]
+            a:[
+                values=ivy.array([3.0, 4.0, 5.0, 8.0, 9.0]),
+                inverse_indices=ivy.array([1, 3, 0, 2, 4, 1])
+            ],
+            b:[
+                values=ivy.array([2, 3, 4, 5, 6, 7]),
+                inverse_indices=ivy.array([5, 4, 2, 3, 4, 1, 0])
+            ]
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -505,8 +511,14 @@ class _ContainerWithSet(ContainerBase):
         >>> y = x.unique_inverse()
         >>> print(y)
         {
-            a:[values=ivy.array([3.,4.,5.,8.,9.]),inverse_indices=ivy.array([1,3,0,2,4,1])],
-            b:[values=ivy.array([2,3,4,5,6,7]),inverse_indices=ivy.array([5,4,2,3,4,1,0])]
+            a:[
+                values=ivy.array([3.0, 4.0, 5.0, 8.0, 9.0]),
+                inverse_indices=ivy.array([1, 3, 0, 2, 4, 1])
+            ],
+            b:[
+                values=ivy.array([2, 3, 4, 5, 6, 7]),
+                inverse_indices=ivy.array([5, 4, 2, 3, 4, 1, 0])
+            ]
         }
         """
         return self._static_unique_inverse(

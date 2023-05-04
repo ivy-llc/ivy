@@ -245,20 +245,19 @@ def leaky_relu(
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.leaky_relu(x)
     >>> print(y)
-    ivy.array([ 0.39, -0.17])
+    ivy.array([0.39, -0.17])
 
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.leaky_relu(x, out=y)
     >>> print(y)
-    ivy.array([ 1.5 ,  0.7 , -0.48])
+    ivy.array([1.5, 0.7, -0.48])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
     >>> ivy.leaky_relu(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
-       [-0.88, -1.1 , -1.32]])
+    ivy.array([[1.1, 2.2, 3.3], [-0.88, -1.1, -1.32]])
 
     With :class:`ivy.Container` input:
 
@@ -266,7 +265,7 @@ def leaky_relu(
     >>> x = ivy.leaky_relu(x, out=x)
     >>> print(x)
     {
-        a: ivy.array([0., -0.24000001]),
+        a: ivy.array([0.0, -0.24000001]),
         b: ivy.array([0.40000001, -0.04])
     }
     """
@@ -378,13 +377,13 @@ def relu(
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.relu(x)
     >>> print(y)
-    ivy.array([0., 0., 1.])
+    ivy.array([0.0, 0.0, 1.0])
 
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.relu(x, out = y)
     >>> print(y)
-    ivy.array([1.5, 0.7, 0.])
+    ivy.array([1.5, 0.7, 0.0])
 
     With :class:`ivy.Container` input:
 
@@ -392,8 +391,8 @@ def relu(
     >>> x = ivy.relu(x, out=x)
     >>> print(x)
     {
-        a: ivy.array([1., 0.]),
-        b: ivy.array([0.40000001, 0.])
+        a: ivy.array([1.0, 0.0]),
+        b: ivy.array([0.40000001, 0.0])
     }
     """
     return current_backend(x).relu(x, out=out)
@@ -444,7 +443,9 @@ def sigmoid(
     >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
+    ivy.array(
+        [[0.214, 0.978, 0.891], [0.846, 0.985, 0.001]]
+    )
     """
     return current_backend(x).sigmoid(x, out=out)
 
@@ -493,8 +494,12 @@ def softmax(
     ...                [4.4, 5.5, 6.6]])
     >>> y = ivy.softmax(x, axis = 1)
     >>> print(y)
-    ivy.array([[0.0768, 0.231 , 0.693 ],
-               [0.0768, 0.231 , 0.693 ]])
+    ivy.array(
+        [
+            [0.0768, 0.231, 0.693],
+            [0.0768, 0.231, 0.693],
+        ]
+    )
     """
     return current_backend(x).softmax(x, axis=axis, out=out)
 
@@ -589,13 +594,13 @@ def mish(
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.mish(x)
     >>> print(y)
-    ivy.array([-0.30340147,  0.        ,  0.86509842])
+    ivy.array([-0.30340147, 0.0, 0.86509842])
 
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.mish(x, out = y)
     >>> print(y)
-    ivy.array([ 1.40337825,  0.56114835, -0.20788449])
+    ivy.array([1.40337825, 0.56114835, -0.20788449])
 
     With :class:`ivy.Container` input:
 

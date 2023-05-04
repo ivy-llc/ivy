@@ -17,7 +17,6 @@ from . import scipy
 
 def fn_name_from_version_specific_fn_name(name, version):
     """
-
     Parameters
     ----------
     name
@@ -32,7 +31,6 @@ def fn_name_from_version_specific_fn_name(name, version):
     -------
         the name of the original function which will then point to the version specific
         function
-
     """
     version = str(version)
     if version.find("+") != -1:
@@ -68,7 +66,6 @@ def fn_name_from_version_specific_fn_name(name, version):
 
 def set_frontend_to_specific_version(frontend):
     """
-
     Parameters
     ----------
     frontend

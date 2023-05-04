@@ -31,7 +31,8 @@ def triu_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array]:
-    """Return the indices of the upper triangular part of a row by col matrix in a
+    """
+    Return the indices of the upper triangular part of a row by col matrix in a
     2-by-N shape (tuple of two N dimensional arrays), where the first row contains
     row coordinates of all indices and the second row contains column coordinates.
     Indices are ordered based on rows and then columns.  The upper triangular part
@@ -86,8 +87,12 @@ def triu_indices(
 
     >>> x = ivy.triu_indices(4,4,-2)
     >>> print(x)
-    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3]),
-    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3]))
+    (ivy.array(
+         [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3]
+     ),
+    ivy.array(
+        [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3]
+    ))
 
     >>> x = ivy.triu_indices(4,2,0)
     >>> print(x)
@@ -110,7 +115,6 @@ def triu_indices(
     >>> x = ivy.triu_indices(2,4,-100)
     >>> print(x)
     (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))
-
     """
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)
 
@@ -147,10 +151,18 @@ def vorbis_window(
     Examples
     --------
     >>> ivy.vorbis_window(3)
-    ivy.array([0.38268346, 1. , 0.38268352])
+    ivy.array([0.38268346, 1.0, 0.38268352])
 
     >>> ivy.vorbis_window(5)
-    ivy.array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])
+    ivy.array(
+        [
+            0.14943586,
+            0.8563191,
+            1.0,
+            0.8563191,
+            0.14943568,
+        ]
+    )
     """
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
 
@@ -240,11 +252,23 @@ def kaiser_window(
     Examples
     --------
     >>> ivy.kaiser_window(5)
-    ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])
+    ivy.array(
+        [
+            5.2773e-05,
+            1.0172e-01,
+            7.9294e-01,
+            7.9294e-01,
+            1.0172e-01,
+        ]
+    )
     >>> ivy.kaiser_window(5, True, 5)
-    ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])
+    ivy.array(
+        [0.0367, 0.4149, 0.9138, 0.9138, 0.4149]
+    )
     >>> ivy.kaiser_window(5, False, 5)
-    ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])
+    ivy.array(
+        [0.0367, 0.5529, 1.0000, 0.5529, 0.0367]
+    )
     """
     return ivy.current_backend().kaiser_window(
         window_length, periodic, beta, dtype=dtype, out=out
@@ -361,11 +385,17 @@ def hamming_window(
     Examples
     --------
     >>> ivy.hamming_window(5)
-    ivy.array([0.0800, 0.3979, 0.9121, 0.9121, 0.3979])
+    ivy.array(
+        [0.0800, 0.3979, 0.9121, 0.9121, 0.3979]
+    )
     >>> ivy.hamming_window(5, periodic=False)
-    ivy.array([0.0800, 0.5400, 1.0000, 0.5400, 0.0800])
+    ivy.array(
+        [0.0800, 0.5400, 1.0000, 0.5400, 0.0800]
+    )
     >>> ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)
-    ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])
+    ivy.array(
+        [-1.8000, 0.2000, 2.2000, 0.2000, -1.8000]
+    )
     """
     if window_length == 0:
         return ivy.array([])
@@ -408,7 +438,8 @@ def tril_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
-    """Return the indices of the lower triangular part of a row by col matrix in a
+    """
+    Return the indices of the lower triangular part of a row by col matrix in a
     2-by-N shape (tuple of two N dimensional arrays), where the first row contains
     row coordinates of all indices and the second row contains column coordinates.
     Indices are ordered based on rows and then columns.  The lower triangular part
@@ -480,13 +511,50 @@ def tril_indices(
 
     >>> x = ivy.tril_indices(4,4,100)
     >>> print(x)
-    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]),
-    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3]))
+    (ivy.array(
+         [
+             0,
+             0,
+             0,
+             0,
+             1,
+             1,
+             1,
+             1,
+             2,
+             2,
+             2,
+             2,
+             3,
+             3,
+             3,
+             3,
+         ]
+     ),
+    ivy.array(
+        [
+            0,
+            1,
+            2,
+            3,
+            0,
+            1,
+            2,
+            3,
+            0,
+            1,
+            2,
+            3,
+            0,
+            1,
+            2,
+            3,
+        ]
+    ))
 
     >>> x = ivy.tril_indices(2,4,-100)
     >>> print(x)
     (ivy.array([]), ivy.array([]))
-
     """
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
@@ -507,7 +575,8 @@ def eye_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having
+    """
+    Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having
     the same ``shape`` as the first and last dim of input array ``x``. input array ``x``
     should to be 2D.
 
@@ -568,7 +637,6 @@ def eye_like(
         b: ivy.array([[1., 0.],
                       [0., 1.]])
     }
-
     """
     shape = ivy.shape(x, as_array=True)
     dim = len(shape)
@@ -629,7 +697,7 @@ def frombuffer(
     >>> x = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
     >>> y = ivy.frombuffer(x)
     >>> print(y)
-    (ivy.array([1., 2.]))
+    (ivy.array([1.0, 2.0]))
 
     >>> x = b'\x01\x02\x03\x04'
     >>> y = ivy.frombuffer(x, dtype='int8', count=-2, offset=1)
@@ -639,7 +707,7 @@ def frombuffer(
     >>> x = b'\x00<\x00@\x00B\x00D\x00E'
     >>> y = ivy.frombuffer(x, dtype='float16', count=4, offset=2)
     >>> print(y)
-    (ivy.array([2., 3., 4., 5.]))
+    (ivy.array([2.0, 3.0, 4.0, 5.0]))
     """
     return current_backend().frombuffer(
         buffer,

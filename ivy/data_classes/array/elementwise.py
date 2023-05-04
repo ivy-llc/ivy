@@ -33,7 +33,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([2.6, -6.6, 1.6, -0])
         >>> y = x.abs()
         >>> print(y)
-        ivy.array([ 2.6, 6.6, 1.6, 0.])
+        ivy.array([2.6, 6.6, 1.6, 0.0])
         """
         return ivy.abs(self, out=out)
 
@@ -64,7 +64,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([2., 10.0, 1.0])
         >>> y = x.acosh()
         >>> print(y)
-        ivy.array([1.32, 2.99, 0.  ])
+        ivy.array([1.32, 2.99, 0.0])
         """
         return ivy.acosh(self._data, out=out)
 
@@ -93,7 +93,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([1.0, 0.0, -0.9])
         >>> y = x.acos()
         >>> print(y)
-        ivy.array([0.  , 1.57, 2.69])
+        ivy.array([0.0, 1.57, 2.69])
         """
         return ivy.acos(self._data, out=out)
 
@@ -209,7 +209,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([-1., 0., 3.])
         >>> y = x.asinh()
         >>> print(y)
-        ivy.array([-0.881,  0.   ,  1.82 ])
+        ivy.array([-0.881, 0.0, 1.82])
         """
         return ivy.asinh(self._data, out=out)
 
@@ -238,7 +238,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([1.0, 0.5, -0.5])
         >>> y = x.atan()
         >>> print(y)
-        ivy.array([ 0.785,  0.464, -0.464])
+        ivy.array([0.785, 0.464, -0.464])
         """
         return ivy.atan(self._data, out=out)
 
@@ -280,46 +280,53 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([1.0, 2.0, -1.5, 0, 1.0])
         >>> z = x.atan2(y)
         >>> print(z)
-        ivy.array([ 0.785,  0.245,  3.14 , -1.57 ,  0.   ])
+        ivy.array([0.785, 0.245, 3.14, -1.57, 0.0])
 
         >>> x = ivy.array([1.0, 2.0])
         >>> y = ivy.array([-2.0, 3.0])
         >>> z = ivy.zeros(2)
         >>> x.atan2(y, out=z)
         >>> print(z)
-        ivy.array([2.68 , 0.588])
+        ivy.array([2.68, 0.588])
 
         >>> nan = float("nan")
         >>> x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])
         >>> y = ivy.array([1.0, +0, -0, +0, -0])
         >>> x.atan2(y)
-        ivy.array([  nan,  1.57,  1.57, -1.57, -1.57])
+        ivy.array([nan, 1.57, 1.57, -1.57, -1.57])
 
         >>> x = ivy.array([+0, +0, +0, +0, -0, -0, -0, -0])
         >>> y = ivy.array([1.0, +0, -0, -1.0, 1.0, +0, -0, -1.0])
         >>> x.atan2(y)
-        ivy.array([0.  , 0.  , 0.  , 3.14, 0.  , 0.  , 0.  , 3.14])
+        ivy.array(
+            [0.0, 0.0, 0.0, 3.14, 0.0, 0.0, 0.0, 3.14]
+        )
         >>> y.atan2(x)
-        ivy.array([ 1.57,  0.  ,  0.  , -1.57,  1.57,  0.  ,  0.  , -1.57])
+        ivy.array(
+            [1.57, 0.0, 0.0, -1.57, 1.57, 0.0, 0.0, -1.57]
+        )
 
         >>> inf = float("infinity")
         >>> x = ivy.array([inf, -inf, inf, inf, -inf, -inf])
         >>> y = ivy.array([1.0, 1.0, inf, -inf, inf, -inf])
         >>> z = x.atan2(y)
         >>> print(z)
-        ivy.array([ 1.57 , -1.57 ,  0.785,  2.36 , -0.785, -2.36 ])
+        ivy.array(
+            [1.57, -1.57, 0.785, 2.36, -0.785, -2.36]
+        )
 
         >>> x = ivy.array([2.5, -1.75, 3.2, 0, -1.0])
         >>> y = ivy.array([-3.5, 2, 0, 0, 5])
         >>> z = x.atan2(y)
         >>> print(z)
-        ivy.array([ 2.52 , -0.719,  1.57 ,  0.   , -0.197])
+        ivy.array([2.52, -0.719, 1.57, 0.0, -0.197])
 
         >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
         >>> y = x.atan2(x)
         >>> print(y)
-        ivy.array([[ 0.785,  0.785,  0.785],
-            [-2.36 , -2.36 , -2.36 ]])
+        ivy.array(
+            [[0.785, 0.785, 0.785], [-2.36, -2.36, -2.36]]
+        )
         """
         return ivy.atan2(self._data, x2, out=out)
 
@@ -350,7 +357,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([0.0, 0.5, -0.9])
         >>> y = x.atanh()
         >>> print(y)
-        ivy.array([ 0.   ,  0.549, -1.47 ])
+        ivy.array([0.0, 0.549, -1.47])
         """
         return ivy.atanh(self._data, out=out)
 
@@ -390,13 +397,13 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([True, True])
         >>> x.bitwise_and(y, out=y)
         >>> print(y)
-        ivy.array([ True, False])
+        ivy.array([True, False])
 
         >>> x = ivy.array([[7],[8],[9]])
         >>> y = ivy.native_array([[10],[11],[12]])
         >>> z = x.bitwise_and(y)
         >>> print(z)
-        ivy.array([[2],[8],[8]])
+        ivy.array([[2], [8], [8]])
         """
         return ivy.bitwise_and(self._data, x2, out=out)
 
@@ -545,8 +552,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> b = ivy.array([0, 1, 2])
         >>> y = a.bitwise_right_shift(b)
         >>> print(y)
-        ivy.array([[ 2,  1,  1],
-                    [ 5,  5, 16]])
+        ivy.array([[2, 1, 1], [5, 5, 16]])
         """
         return ivy.bitwise_right_shift(self._data, x2, out=out)
 
@@ -587,7 +593,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
         >>> y = a.bitwise_xor(b)
         >>> print(y)
-        ivy.array([[[74,41,59],[24,5,7]]])
+        ivy.array([[[74, 41, 59], [24, 5, 7]]])
         """
         return ivy.bitwise_xor(self._data, x2, out=out)
 
@@ -616,7 +622,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([5.5, -2.5, 1.5, -0])
         >>> y = x.ceil()
         >>> print(y)
-        ivy.array([ 6., -2.,  2.,  0.])
+        ivy.array([6.0, -2.0, 2.0, 0.0])
         """
         return ivy.ceil(self._data, out=out)
 
@@ -649,18 +655,18 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([1., 0., 2.,])
         >>> y = x.cos()
         >>> print(y)
-        ivy.array([0.54, 1., -0.416])
+        ivy.array([0.54, 1.0, -0.416])
 
         >>> x = ivy.array([-3., 0., 3.])
         >>> y = ivy.zeros(3)
         >>> x.cos(out=y)
         >>> print(y)
-        ivy.array([-0.99,  1.  , -0.99])
+        ivy.array([-0.99, 1.0, -0.99])
 
         >>> x = ivy.array([[0., 1.,], [2., 3.]])
         >>> y = x.cos()
         >>> print(y)
-        ivy.array([[1., 0.540], [-0.416, -0.990]])
+        ivy.array([[1.0, 0.540], [-0.416, -0.990]])
         """
         return ivy.cos(self._data, out=out)
 
@@ -738,7 +744,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.array([2., 2., 2.])
         >>> y = x1.divide(x2)
         >>> print(y)
-        ivy.array([1., 3.5, 4.5])
+        ivy.array([1.0, 3.5, 4.5])
 
         With mixed :class:`ivy.Array` and `ivy.NativeArray` inputs:
 
@@ -746,7 +752,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.native_array([2., 2., 2.])
         >>> y = x1.divide(x2)
         >>> print(y)
-        ivy.array([1., 3.5, 4.5])
+        ivy.array([1.0, 3.5, 4.5])
         """
         return ivy.divide(self._data, x2, out=out)
 
@@ -796,7 +802,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
         >>> y = x1.equal(x2)
         >>> print(y)
-        ivy.array([True, False,  True])
+        ivy.array([True, False, True])
 
         With mixed :class:`ivy.Array` and `float` inputs:
 
@@ -844,7 +850,7 @@ class _ArrayWithElementwise(abc.ABC):
         --------
         >>> x = ivy.array([1., 2., 3.])
         >>> print(x.exp())
-        ivy.array([ 2.71828198,  7.38905573, 20.08553696])
+        ivy.array([2.71828198, 7.38905573, 20.08553696])
         """
         return ivy.exp(self._data, out=out)
 
@@ -874,13 +880,13 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([5.5, -2.5, 1.5, -0])
         >>> y = x.expm1()
         >>> print(y)
-        ivy.array([244.   ,  -0.918,   3.48 ,   0.   ])
+        ivy.array([244.0, -0.918, 3.48, 0.0])
 
         >>> y = ivy.array([0., 0.])
         >>> x = ivy.array([5., 0.])
         >>> _ = x.expm1(out=y)
         >>> print(y)
-        ivy.array([147.,   0.])
+        ivy.array([147.0, 0.0])
         """
         return ivy.expm1(self._data, out=out)
 
@@ -909,7 +915,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([5.5, -2.5, 1.5, -0])
         >>> y = x.floor()
         >>> print(y)
-        ivy.array([ 5., -3.,  1.,  0.])
+        ivy.array([5.0, -3.0, 1.0, 0.0])
         """
         return ivy.floor(self._data, out=out)
 
@@ -952,7 +958,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.array([3., 2., 7.])
         >>> y = x1.floor_divide(x2)
         >>> print(y)
-        ivy.array([4., 3., 1.])
+        ivy.array([4.0, 3.0, 1.0])
 
         With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -960,7 +966,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.native_array([3., 2., 7.])
         >>> y = x1.floor_divide(x2)
         >>> print(y)
-        ivy.array([4., 3., 1.])
+        ivy.array([4.0, 3.0, 1.0])
         """
         return ivy.floor_divide(self._data, x2, out=out)
 
@@ -1000,7 +1006,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.array([3., 2., 4.])
         >>> y = x1.greater(x2)
         >>> print(y)
-        ivy.array([False,  True,  True])
+        ivy.array([False, True, True])
         """
         return ivy.greater(self._data, x2, out=out)
 
@@ -1040,7 +1046,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([4, 5, 6])
         >>> z = x.greater_equal(y)
         >>> print(z)
-        ivy.array([False,False,False])
+        ivy.array([False, False, False])
         """
         return ivy.greater_equal(self._data, x2, out=out)
 
@@ -1070,7 +1076,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
         >>> y = x.isfinite()
         >>> print(y)
-        ivy.array([ True, False, False, False])
+        ivy.array([True, False, False, False])
         """
         return ivy.isfinite(self._data, out=out)
 
@@ -1119,17 +1125,21 @@ class _ArrayWithElementwise(abc.ABC):
 
         >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
         >>> x.isinf()
-        ivy.array([[[False],[True],[False]]])
+        ivy.array([[[False], [True], [False]]])
 
         >>> x = ivy.array([[-float('inf'), float('inf'), 0.0]])
         >>> x.isinf()
-        ivy.array([[ True, True, False]])
+        ivy.array([[True, True, False]])
 
         >>> x = ivy.zeros((3, 3))
         >>> x.isinf()
-        ivy.array([[False, False, False],
-            [False, False, False],
-            [False, False, False]])
+        ivy.array(
+            [
+                [False, False, False],
+                [False, False, False],
+                [False, False, False],
+            ]
+        )
         """
         return ivy.isinf(
             self._data,
@@ -1173,23 +1183,25 @@ class _ArrayWithElementwise(abc.ABC):
 
         >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
         >>> x.isnan()
-        ivy.array([[[False],
-                [False],
-                [False]]])
+        ivy.array([[[False], [False], [False]]])
 
         >>> x = ivy.array([[-float('nan'), float('nan'), 0.0]])
         >>> x.isnan()
-        ivy.array([[ True, True, False]])
+        ivy.array([[True, True, False]])
 
         >>> x = ivy.array([[-float('nan'), float('inf'), float('nan'), 0.0]])
         >>> x.isnan()
-        ivy.array([[ True, False,  True, False]])
+        ivy.array([[True, False, True, False]])
 
         >>> x = ivy.zeros((3, 3))
         >>> x.isnan()
-        ivy.array([[False, False, False],
-            [False, False, False],
-            [False, False, False]])
+        ivy.array(
+            [
+                [False, False, False],
+                [False, False, False],
+                [False, False, False],
+            ]
+        )
         """
         return ivy.isnan(self._data, out=out)
 
@@ -1229,7 +1241,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.array([3., 2., 4.])
         >>> y = x1.less(x2)
         >>> print(y)
-        ivy.array([ True, False, False])
+        ivy.array([True, False, False])
         """
         return ivy.less(self._data, x2, out=out)
 
@@ -1322,19 +1334,20 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([4.0, 1, -0.0, -5.0])
         >>> y = x.log()
         >>> print(y)
-        ivy.array([1.39, 0., -inf, nan])
+        ivy.array([1.39, 0.0, -inf, nan])
 
         >>> x = ivy.array([float('nan'), -5.0, -0.0, 1.0, 5.0, float('+inf')])
         >>> y = x.log()
         >>> print(y)
-        ivy.array([nan, nan, -inf, 0., 1.61, inf])
+        ivy.array([nan, nan, -inf, 0.0, 1.61, inf])
 
         >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
         ...                [+0, -1.0, -5, float('-inf')]])
         >>> y = x.log()
         >>> print(y)
-        ivy.array([[nan, 0., 1.61, inf],
-                   [-inf, nan, nan, nan]])
+        ivy.array(
+            [[nan, 0.0, 1.61, inf], [-inf, nan, nan, nan]]
+        )
         """
         return ivy.log(self._data, out=out)
 
@@ -1364,12 +1377,12 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([1 , 2 ,3 ])
         >>> y = x.log1p()
         >>> print(y)
-        ivy.array([0.693, 1.1  , 1.39 ])
+        ivy.array([0.693, 1.1, 1.39])
 
         >>> x = ivy.array([0.1 , .001 ])
         >>> x.log1p(out = x)
         >>> print(x)
-        ivy.array([0.0953, 0.001 ])
+        ivy.array([0.0953, 0.001])
         """
         return ivy.log1p(self._data, out=out)
 
@@ -1424,19 +1437,23 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([4.0, 1, -0.0, -5.0])
         >>> y = x.log10()
         >>> print(y)
-        ivy.array([0.602, 0., -inf, nan])
+        ivy.array([0.602, 0.0, -inf, nan])
 
         >>> x = ivy.array([float('nan'), -5.0, -0.0, 1.0, 5.0, float('+inf')])
         >>> y = x.log10()
         >>> print(y)
-        ivy.array([nan, nan, -inf, 0., 0.699, inf])
+        ivy.array([nan, nan, -inf, 0.0, 0.699, inf])
 
         >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
         ...                [+0, -1.0, -5, float('-inf')]])
         >>> y = x.log10()
         >>> print(y)
-        ivy.array([[nan, 0., 0.699, inf],
-                   [-inf, nan, nan, nan]])
+        ivy.array(
+            [
+                [nan, 0.0, 0.699, inf],
+                [-inf, nan, nan, nan],
+            ]
+        )
         """
         return ivy.log10(self._data, out=out)
 
@@ -1477,7 +1494,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([3., 2., 4.])
         >>> z = x.logaddexp(y)
         >>> print(z)
-        ivy.array([ 3.31,  5.05, 15.  ])
+        ivy.array([3.31, 5.05, 15.0])
         """
         return ivy.logaddexp(self._data, x2, out=out)
 
@@ -1548,11 +1565,11 @@ class _ArrayWithElementwise(abc.ABC):
 
         >>> x=ivy.array([0,1,1,0])
         >>> x.logical_not()
-        ivy.array([ True, False, False,  True])
+        ivy.array([True, False, False, True])
 
         >>> x=ivy.array([2,0,3,9])
         >>> x.logical_not()
-        ivy.array([False,  True, False, False])
+        ivy.array([False, True, False, False])
         """
         return ivy.logical_not(self._data, out=out)
 
@@ -1603,7 +1620,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([2, True, False])
         >>> z = x.logical_or(y)
         >>> print(z)
-        ivy.array([ True,  True, False])
+        ivy.array([True, True, False])
         """
         return ivy.logical_or(self._data, x2, out=out)
 
@@ -1643,7 +1660,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([True, True, False, False])
         >>> z = x.logical_xor(y)
         >>> print(z)
-        ivy.array([False,  True,  True, False])
+        ivy.array([False, True, True, False])
         """
         return ivy.logical_xor(self._data, x2, out=out)
 
@@ -1686,7 +1703,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.array([4., 6., 8.])
         >>> y = x1.multiply(x2)
         >>> print(y)
-        ivy.array([12., 30., 56.])
+        ivy.array([12.0, 30.0, 56.0])
 
         With mixed :code:`ivy.Array` and `ivy.NativeArray` inputs:
 
@@ -1694,7 +1711,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.native_array([1., 2., 3.])
         >>> y = x1.multiply(x2)
         >>> print(y)
-        ivy.array([ 8., 12., 21.])
+        ivy.array([8.0, 12.0, 21.0])
         """
         return ivy.multiply(self._data, x2, out=out)
 
@@ -1745,9 +1762,13 @@ class _ArrayWithElementwise(abc.ABC):
         >>> z = ivy.zeros((3, 6))
         >>> x.maximum(y, out=z)
         >>> print(z)
-        ivy.array([[9.,9.,9.,9.,9.,9.],
-                   [3.,5.,9.,8.,3.,7.],
-                   [2.,5.,9.,8.,3.,7.]])
+        ivy.array(
+            [
+                [9.0, 9.0, 9.0, 9.0, 9.0, 9.0],
+                [3.0, 5.0, 9.0, 8.0, 3.0, 7.0],
+                [2.0, 5.0, 9.0, 8.0, 3.0, 7.0],
+            ]
+        )
 
         >>> x = ivy.array([[7, 3]])
         >>> y = ivy.array([0, 7])
@@ -1804,9 +1825,13 @@ class _ArrayWithElementwise(abc.ABC):
         >>> z = ivy.zeros((3, 6))
         >>> x.minimum(y, out=z)
         >>> print(z)
-        ivy.array([[1.,5.,9.,8.,3.,7.],
-                   [1.,3.,3.,3.,3.,3.],
-                   [1.,2.,2.,2.,2.,2.]])
+        ivy.array(
+            [
+                [1.0, 5.0, 9.0, 8.0, 3.0, 7.0],
+                [1.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                [1.0, 2.0, 2.0, 2.0, 2.0, 2.0],
+            ]
+        )
 
         >>> x = ivy.array([[7, 3]])
         >>> y = ivy.array([0, 7])
@@ -1849,14 +1874,13 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.zeros(5)
         >>> x.negative(out=y)
         >>> print(y)
-        ivy.array([-0. ,  1. ,  0.5, -2. , -3. ])
+        ivy.array([-0.0, 1.0, 0.5, -2.0, -3.0])
 
         >>> x = ivy.array([[1.1, 2.2, 3.3],
         ...                [-4.4, -5.5, -6.6]])
         >>> x.negative(out=x)
         >>> print(x)
-        ivy.array([[ -1.1, -2.2, -3.3],
-        [4.4, 5.5, 6.6]])
+        ivy.array([[-1.1, -2.2, -3.3], [4.4, 5.5, 6.6]])
         """
         return ivy.negative(self._data, out=out)
 
@@ -1905,7 +1929,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
         >>> y = x1.not_equal(x2)
         >>> print(y)
-        ivy.array([False, True,  False])
+        ivy.array([False, True, False])
 
         With mixed :class:`ivy.Array` and `float` inputs:
 
@@ -1961,14 +1985,13 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.zeros(5)
         >>> x.positive(out=y)
         >>> print(y)
-        ivy.array([0., -1., -0.5,  2.,  3.])
+        ivy.array([0.0, -1.0, -0.5, 2.0, 3.0])
 
         >>> x = ivy.array([[1.1, 2.2, 3.3],
         ...                [-4.4, -5.5, -6.6]])
         >>> x.positive(out=x)
         >>> print(x)
-        ivy.array([[ 1.1,  2.2,  3.3],
-        [-4.4, -5.5, -6.6]])
+        ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
         """
         return ivy.positive(self._data, out=out)
 
@@ -2065,7 +2088,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.array([3., 2., 4.])
         >>> y = x1.remainder(x2)
         >>> print(y)
-        ivy.array([2., 1., 3.])
+        ivy.array([2.0, 1.0, 3.0])
 
         With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -2073,7 +2096,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.native_array([2., 5., 8.])
         >>> y = x1.remainder(x2)
         >>> print(y)
-        ivy.array([1., 4., 2.])
+        ivy.array([1.0, 4.0, 2.0])
         """
         return ivy.remainder(self._data, x2, modulus=modulus, out=out)
 
@@ -2108,24 +2131,28 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([6.3, -8.1, 0.5, -4.2, 6.8])
         >>> y = x.round()
         >>> print(y)
-        ivy.array([ 6., -8.,  0., -4.,  7.])
+        ivy.array([6.0, -8.0, 0.0, -4.0, 7.0])
 
         >>> x = ivy.array([-94.2, 256.0, 0.0001, -5.5, 36.6])
         >>> y = x.round()
         >>> print(y)
-        ivy.array([-94., 256., 0., -6., 37.])
+        ivy.array([-94.0, 256.0, 0.0, -6.0, 37.0])
 
         >>> x = ivy.array([0.23, 3., -1.2])
         >>> y = ivy.zeros(3)
         >>> x.round(out=y)
         >>> print(y)
-        ivy.array([ 0.,  3., -1.])
+        ivy.array([0.0, 3.0, -1.0])
 
         >>> x = ivy.array([[ -1., -67.,  0.,  15.5,  1.], [3, -45, 24.7, -678.5, 32.8]])
         >>> y = x.round()
         >>> print(y)
-        ivy.array([[-1., -67., 0., 16., 1.],
-        [3., -45., 25., -678., 33.]])
+        ivy.array(
+            [
+                [-1.0, -67.0, 0.0, 16.0, 1.0],
+                [3.0, -45.0, 25.0, -678.0, 33.0],
+            ]
+        )
         """
         return ivy.round(self._data, decimals=decimals, out=out)
 
@@ -2154,18 +2181,22 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([5.7, -7.1, 0, -0, 6.8])
         >>> y = x.sign()
         >>> print(y)
-        ivy.array([ 1., -1.,  0.,  0.,  1.])
+        ivy.array([1.0, -1.0, 0.0, 0.0, 1.0])
 
         >>> x = ivy.array([-94.2, 256.0, 0.0001, -0.0001, 36.6])
         >>> y = x.sign()
         >>> print(y)
-        ivy.array([-1.,  1.,  1., -1.,  1.])
+        ivy.array([-1.0, 1.0, 1.0, -1.0, 1.0])
 
         >>> x = ivy.array([[ -1., -67.,  0.,  15.5,  1.], [3, -45, 24.7, -678.5, 32.8]])
         >>> y = x.sign()
         >>> print(y)
-        ivy.array([[-1., -1.,  0.,  1.,  1.],
-        [ 1., -1.,  1., -1.,  1.]])
+        ivy.array(
+            [
+                [-1.0, -1.0, 0.0, 1.0, 1.0],
+                [1.0, -1.0, 1.0, -1.0, 1.0],
+            ]
+        )
         """
         return ivy.sign(self._data, out=out)
 
@@ -2196,7 +2227,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([0., 1., 2., 3.])
         >>> y = x.sin()
         >>> print(y)
-        ivy.array([0., 0.841, 0.909, 0.141])
+        ivy.array([0.0, 0.841, 0.909, 0.141])
         """
         return ivy.sin(self._data, out=out)
 
@@ -2226,12 +2257,12 @@ class _ArrayWithElementwise(abc.ABC):
         --------
         >>> x = ivy.array([1., 2., 3.])
         >>> print(x.sinh())
-            ivy.array([1.18, 3.63, 10.])
+            ivy.array([1.18, 3.63, 10.0])
 
         >>> x = ivy.array([0.23, 3., -1.2])
         >>> y = ivy.zeros(3)
         >>> print(x.sinh(out=y))
-            ivy.array([0.232, 10., -1.51])
+            ivy.array([0.232, 10.0, -1.51])
         """
         return ivy.sinh(self._data, out=out)
 
@@ -2268,7 +2299,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([[1.2, 2, 3.1], [-1, -2.5, -9]])
         >>> x.square(out=x)
         >>> print(x)
-        ivy.array([[1.44,4.,9.61],[1.,6.25,81.]])
+        ivy.array([[1.44, 4.0, 9.61], [1.0, 6.25, 81.0]])
         """
         return ivy.square(self._data, out=out)
 
@@ -2300,8 +2331,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([[1., 2.],  [3., 4.]])
         >>> y = x.sqrt()
         >>> print(y)
-        ivy.array([[1.  , 1.41],
-                   [1.73, 2.  ]])
+        ivy.array([[1.0, 1.41], [1.73, 2.0]])
         """
         return ivy.sqrt(self._data, out=out)
 
@@ -2350,7 +2380,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([4, 5, 6])
         >>> z = x.subtract(y, alpha=2)
         >>> print(z)
-        ivy.array([-3., -5., -9.])
+        ivy.array([-3.0, -5.0, -9.0])
         """
         return ivy.subtract(self._data, x2, alpha=alpha, out=out)
 
@@ -2381,7 +2411,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.tan()
         >>> print(y)
-        ivy.array([0., 1.56, -2.19])
+        ivy.array([0.0, 1.56, -2.19])
         """
         return ivy.tan(self._data, out=out)
 
@@ -2412,7 +2442,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.tanh()
         >>> print(y)
-        ivy.array([0., 0.762, 0.964])
+        ivy.array([0.0, 0.762, 0.964])
         """
         return ivy.tanh(self._data, out=out)
 
@@ -2441,7 +2471,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([-1, 0.54, 3.67, -0.025])
         >>> y = x.trunc()
         >>> print(y)
-        ivy.array([-1.,  0.,  3., -0.])
+        ivy.array([-1.0, 0.0, 3.0, -0.0])
         """
         return ivy.trunc(self._data, out=out)
 
@@ -2468,7 +2498,7 @@ class _ArrayWithElementwise(abc.ABC):
         --------
         >>> x = ivy.array([0, 0.3, 0.7, 1.0])
         >>> x.erf()
-        ivy.array([0., 0.328, 0.677, 0.842])
+        ivy.array([0.0, 0.328, 0.677, 0.842])
         """
         return ivy.erf(self._data, out=out)
 
@@ -2501,7 +2531,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.reciprocal()
         >>> print(y)
-        ivy.array([1., 0.5, 0.333])
+        ivy.array([1.0, 0.5, 0.333])
         """
         return ivy.reciprocal(self._data, out=out)
 
@@ -2561,7 +2591,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x=ivy.array([1,5,8,10])
         >>> y=x.rad2deg()
         >>> print(y)
-        ivy.array([ 57.3, 286. , 458. , 573. ])
+        ivy.array([57.3, 286.0, 458.0, 573.0])
         """
         return ivy.rad2deg(self._data, out=out)
 
@@ -2604,7 +2634,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> x2 = ivy.array([2., -2., 2.])
         >>> y = x1.trunc_divide(x2)
         >>> print(y)
-        ivy.array([ 1., -3.,  4.])
+        ivy.array([1.0, -3.0, 4.0])
         """
         return ivy.trunc_divide(self._data, x2, out=out)
 

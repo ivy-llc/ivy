@@ -51,13 +51,16 @@ class _ArrayWithCreation(abc.ABC):
         --------
         With list of lists as input:
         >>> ivy.asarray([[1,2],[3,4]])
-        ivy.array([[1, 2],
-               [3, 4]])
+        ivy.array([[1, 2], [3, 4]])
 
         With tuple of lists as input:
         >>> ivy.asarray(([1.4,5.6,5.5],[3.1,9.1,7.5]))
-        ivy.array([[1.39999998, 5.5999999 , 5.5       ],
-               [3.0999999 , 9.10000038, 7.5       ]])
+        ivy.array(
+            [
+                [1.39999998, 5.5999999, 5.5],
+                [3.0999999, 9.10000038, 7.5],
+            ]
+        )
 
         With ndarray as input:
         >>> x = ivy.np.ndarray(shape=(2,2), order='C')
@@ -65,8 +68,12 @@ class _ArrayWithCreation(abc.ABC):
         array([[6.90786433e-310, 6.90786433e-310],
                [6.90786433e-310, 6.90786433e-310]])
         >>> ivy.asarray(x)
-        ivy.array([[6.90786433e-310, 6.90786433e-310],
-               [6.90786433e-310, 6.90786433e-310]])
+        ivy.array(
+            [
+                [6.90786433e-310, 6.90786433e-310],
+                [6.90786433e-310, 6.90786433e-310],
+            ]
+        )
         """
         return ivy.asarray(self._data, copy=copy, dtype=dtype, device=device, out=out)
 
@@ -121,7 +128,15 @@ class _ArrayWithCreation(abc.ABC):
         >>> x = ivy.array(ivy.ones(5))
         >>> y = x.full_like(fill_value)
         >>> print(y)
-        ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
+        ivy.array(
+            [
+                0.000123,
+                0.000123,
+                0.000123,
+                0.000123,
+                0.000123,
+            ]
+        )
 
         With :class:`ivy.Array` input:
 
@@ -479,20 +494,24 @@ class _ArrayWithCreation(abc.ABC):
         >>> y = 5
         >>> z = x.one_hot(5)
         >>> print(z)
-        ivy.array([[0., 0., 0., 1., 0.],
-        ...    [0., 1., 0., 0., 0.]])
+        ivy.array(
+            [
+                [0.0, 0.0, 0.0, 1.0, 0.0],
+                ...[0.0, 1.0, 0.0, 0.0, 0.0],
+            ]
+        )
 
         >>> x = ivy.array([0])
         >>> y = 5
         >>> ivy.one_hot(x, y)
-        ivy.array([[1., 0., 0., 0., 0.]])
+        ivy.array([[1.0, 0.0, 0.0, 0.0, 0.0]])
 
         >>> x = ivy.array([0])
         >>> y = 5
         >>> ivy.one_hot(x, 5, out=z)
-        ivy.array([[1., 0., 0., 0., 0.]])
+        ivy.array([[1.0, 0.0, 0.0, 0.0, 0.0]])
         >>> print(z)
-        ivy.array([[1., 0., 0., 0., 0.]])
+        ivy.array([[1.0, 0.0, 0.0, 0.0, 0.0]])
         """
         return ivy.one_hot(
             self,

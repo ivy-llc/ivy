@@ -23,7 +23,8 @@ def l2_normalize(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Normalize the input array along the given axis to have L2 norm equal to
+    """
+    Normalize the input array along the given axis to have L2 norm equal to
     1.
 
     Parameters
@@ -45,8 +46,7 @@ def l2_normalize(
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.l2_normalize(x, axis=1)
-    ivy.array([[0.4472, 0.8944],
-               [0.6, 0.8]])
+    ivy.array([[0.4472, 0.8944], [0.6, 0.8]])
     """
     return current_backend(x).l2_normalize(x, axis=axis, out=out)
 
@@ -270,7 +270,8 @@ def lp_normalize(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Normalize the input array along the given axis to have Lp norm equal to
+    """
+    Normalize the input array along the given axis to have Lp norm equal to
     1.
 
     Parameters
@@ -294,7 +295,6 @@ def lp_normalize(
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.lp_normalize(x, p=1, axis=1)
-    ivy.array([[0.3333, 0.6666],
-               [0.75, 1.]])
+    ivy.array([[0.3333, 0.6666], [0.75, 1.0]])
     """
     return current_backend(x).lp_normalize(x, p=p, axis=axis, out=out)

@@ -37,14 +37,15 @@ class _ArrayWithSet(abc.ABC):
         >>> x = ivy.array([0., 1., 2. , 1. , 0.])
         >>> y = x.unique_counts()
         >>> print(y)
-        Results(values=ivy.array([0.,1.,2.]),counts=ivy.array([2,2,1]))
+        Results(values=ivy.array([0.0, 1.0, 2.0]),counts=ivy.array([2, 2, 1]))
         """
         return ivy.unique_counts(self._data)
 
     def unique_values(
         self: ivy.Array, /, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
-        """Return the unique elements of an input array `x`.
+        """
+        Return the unique elements of an input array `x`.
         .. admonition:: Data-dependent output shape
             :class: important
             The shapes of two of the output arrays for this function depend on the

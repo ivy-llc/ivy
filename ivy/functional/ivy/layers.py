@@ -39,7 +39,8 @@ def linear(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply a linear transformation to the incoming data: y = x * t(weight) + bias.
+    """
+    Apply a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
     batch of different network parameters are to be represented.
 
@@ -61,7 +62,7 @@ def linear(
     ret
         Result array of the linear transformation.
         *[outer_batch_shape,inner_batch_shape,out_features]*
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
@@ -74,27 +75,27 @@ def linear(
     >>> w = ivy.array([[1., 0., 0.]])
     >>> y = ivy.linear(x, w)
     >>> print(y)
-    ivy.array([1])  
-    
+    ivy.array([1])
+
     >>> x = ivy.array([[0.666, -0.4269, 1.911]])
     >>> w = ivy.array([[1., 0., 0.], [0., 0., 1.]])
     >>> y = ivy.zeros(2)
     >>> ivy.linear(x, w, out=y)
     >>> print(y)
-    ivy.array([[0.666, 1.91 ]])
+    ivy.array([[0.666, 1.91]])
 
     >>> x = ivy.array([[1.546, 5.234, 6.487], \
                        [0.157, 5.753, 4.52], \
                        [5.165, 3.159, 7.101]])
     >>> w = ivy.array([[1.545, 2.547, 3.124], \
-                       [5.852, 8.753, 6.963]])   
+                       [5.852, 8.753, 6.963]])
     >>> b = ivy.array([-1., 1.])
     >>> ivy.linear(x, w, bias=b, out=x)
     >>> print(x)
-    ivy.array([[ 35. , 101. ],
-               [ 28. ,  83.7],
-               [ 37.2, 108. ]])
-        
+    ivy.array(
+        [[35.0, 101.0], [28.0, 83.7], [37.2, 108.0]]
+    )
+
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], \
@@ -102,14 +103,12 @@ def linear(
                           b=ivy.array([1.1, 2.2, 3.3]))
     >>> w = ivy.Container(a=ivy.array([[1., 2., 3.], \
                                        [-1., 1., 2.]]), \
-                          b=ivy.array([[0., -1., 1.], \
-                                       [0., 1., 1.]]))
+                          b=ivy.array([[0.0, -1.0, 1.0], [0.0, 1.0, 1.0]]))
     >>> b = ivy.Container(a=ivy.array([1., -1.]), b=ivy.array([1., 1.]))
     >>> y = ivy.linear(x, w, bias=b)
     >>> print(y)
     {
-        a: ivy.array([[15., 6.],
-                      [33., 12.]]),
+        a: ivy.array([[15.0, 6.0], [33.0, 12.0]]),
         b: ivy.array([2.1, 6.5])
     }
 
@@ -117,22 +116,24 @@ def linear(
 
     >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
                                        [11., 22., 33.]]), \
-                          b=ivy.array([[1.245, 0.278, 4.105], \
-                                       [7., 13., 17.]]))
+                          b=ivy.array(
+                                [[1.245, 0.278, 4.105], [7.0, 13.0, 17.0]]
+                            ))
     >>> w = ivy.array([[1., 2., 3.], \
                        [4., 5., 6.], \
                        [7., 8., 9.]])
     >>> b = ivy.Container(a=ivy.array([1., 0., -1.]), \
-                          b=ivy.array([1., 1., 0.]))
+                          b=ivy.array([1.0, 1.0, 0.0]))
     >>> ivy.linear(x, w, bias=b, out=x)
     >>> print(x)
     {
-        a: ivy.array([[16.4, 35.2, 54.],
-                      [155., 352., 549.]]),
-        b: ivy.array([[15.1, 32., 47.9],
-                      [85., 196., 306.]])
+        a: ivy.array(
+               [[16.4, 35.2, 54.0], [155.0, 352.0, 549.0]]
+           ),
+        b: ivy.array(
+               [[15.1, 32.0, 47.9], [85.0, 196.0, 306.0]]
+           )
     }
-    
     """
     outer_batch_shape = list(weight.shape[:-2])
     num_outer_batch_dims = len(outer_batch_shape)
@@ -244,10 +245,14 @@ def dropout(
     ...                [10., 11., 12.]])
     >>> y = ivy.dropout(x,0.3)
     >>> print(y)
-    ivy.array([[ 1.42857146,  2.85714293,  4.28571415],
-           [ 0.        ,  7.14285755,  8.5714283 ],
-           [10.        , 11.4285717 ,  0.        ],
-           [14.2857151 ,  0.        , 17.1428566 ]])
+    ivy.array(
+        [
+            [1.42857146, 2.85714293, 4.28571415],
+            [0.0, 7.14285755, 8.5714283],
+            [10.0, 11.4285717, 0.0],
+            [14.2857151, 0.0, 17.1428566],
+        ]
+    )
 
 
     >>> x = ivy.array([[1.5, 2.6],
@@ -255,9 +260,13 @@ def dropout(
     ...                [7.2, 8.7]])
     >>> y = ivy.dropout(x,0.5)
     >>> print(y)
-    ivy.array([[ 0.        ,  5.19999981],
-               [ 0.        ,  0.        ],
-               [ 0.        , 17.39999962]])
+    ivy.array(
+        [
+            [0.0, 5.19999981],
+            [0.0, 0.0],
+            [0.0, 17.39999962],
+        ]
+    )
 
     >>> x = ivy.array([[1., 2., 3.],
     ...                [4., 5., 6.],
@@ -265,19 +274,21 @@ def dropout(
     ...                [10., 11., 12.]])
     >>> y = ivy.dropout(x,0.3,scale=False)
     >>> print(y)
-    ivy.array([[ 1.,  2., 3.],
-               [ 4.,  5., 0.],
-               [ 7.,  0., 9.],
-               [10., 11., 0.]])
+    ivy.array(
+        [
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 0.0],
+            [7.0, 0.0, 9.0],
+            [10.0, 11.0, 0.0],
+        ]
+    )
 
     >>> x = ivy.array([[1.5, 2.6],
     ...                [4.9, 6.6],
     ...                [7.2, 8.7]])
     >>> y = ivy.dropout(x,0.5,scale=False)
     >>> print(y)
-    ivy.array([[0., 2.6],
-               [0., 0. ],
-               [0., 8.7]])
+    ivy.array([[0.0, 2.6], [0.0, 0.0], [0.0, 8.7]])
 
     With :class:`ivy.Container` input:
 
@@ -286,9 +297,13 @@ def dropout(
     >>> y = ivy.dropout(x,0.3)
     >>> print(y)
     {
-    a: ivy.array([[0., 0., 4.28571415],
-                  [5.71428585, 7.14285755, 0.]]),
-    b: ivy.array([0., 11.4285717, 12.8571434])
+    a: ivy.array(
+           [
+               [0.0, 0.0, 4.28571415],
+               [5.71428585, 7.14285755, 0.0],
+           ]
+       ),
+    b: ivy.array([0.0, 11.4285717, 12.8571434])
     }
 
     >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], [11., 22., 33.]]),
@@ -296,10 +311,18 @@ def dropout(
     >>> y = ivy.dropout(x,0.5)
     >>> print(y)
     {
-        a: ivy.array([[0., 4.4000001, 6.5999999],
-                      [22., 44., 0.]]),
-        b: ivy.array([[2.49000001, 0.55599999, 8.21000004],
-                      [14., 0., 0.]])
+        a: ivy.array(
+               [
+                   [0.0, 4.4000001, 6.5999999],
+                   [22.0, 44.0, 0.0],
+               ]
+           ),
+        b: ivy.array(
+               [
+                   [2.49000001, 0.55599999, 8.21000004],
+                   [14.0, 0.0, 0.0],
+               ]
+           )
     }
 
     >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], [4., 5., 6.]]),
@@ -307,9 +330,8 @@ def dropout(
     >>> y = ivy.dropout(x,0.3)
     >>> print(y)
     {
-        a: ivy.array([[0., 0., 3.],
-                      [4., 5., 0.]]),
-        b: ivy.array([0., 8., 9.])
+        a: ivy.array([[0.0, 0.0, 3.0], [4.0, 5.0, 0.0]]),
+        b: ivy.array([0.0, 8.0, 9.0])
     }
 
     >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], [11., 22., 33.]]),
@@ -317,10 +339,10 @@ def dropout(
     >>> y = ivy.dropout(x,0.5)
     >>> print(y)
     {
-        a: ivy.array([[0., 2.2, 3.3],
-                      [11., 22., 0.]]),
-        b: ivy.array([[1.245, 0.278, 4.105],
-                      [7., 0., 0.]])
+        a: ivy.array([[0.0, 2.2, 3.3], [11.0, 22.0, 0.0]]),
+        b: ivy.array(
+               [[1.245, 0.278, 4.105], [7.0, 0.0, 0.0]]
+           )
     }
     """
     if prob == 0 or not training:
@@ -409,7 +431,9 @@ def scaled_dot_product_attention(
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
     >>> print(result)
-    ivy.array([[[4.04,5.03],[4.3,5.3],[4.3,5.3]]])
+    ivy.array(
+        [[[4.04, 5.03], [4.3, 5.3], [4.3, 5.3]]]
+    )
 
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
@@ -418,7 +442,9 @@ def scaled_dot_product_attention(
     >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
-    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+    ivy.array(
+        [[[2.3, 3.23], [2.3, 3.23], [2.3, 3.23]]]
+    )
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -426,7 +452,9 @@ def scaled_dot_product_attention(
     >>> out = ivy.zeros(shape=(1, 3, 2))
     >>> ivy.scaled_dot_product_attention(q, k, v, 1, out=out)
     >>> print(out)
-    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
+    ivy.array(
+        [[[4.04, 5.03], [4.3, 5.3], [4.3, 5.3]]]
+    )
 
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
@@ -434,7 +462,9 @@ def scaled_dot_product_attention(
     >>> mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
-    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+    ivy.array(
+        [[[2.3, 3.23], [2.3, 3.23], [2.3, 3.23]]]
+    )
 
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -442,7 +472,9 @@ def scaled_dot_product_attention(
     >>> out = ivy.zeros(shape=(1, 3, 2))
     >>> ivy.scaled_dot_product_attention(q, k, v, 1, out=out)
     >>> print(out)
-    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
+    ivy.array(
+        [[[4.04, 5.03], [4.3, 5.3], [4.3, 5.3]]]
+    )
 
 
     With :class:`ivy.Container` input:
@@ -456,8 +488,10 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
     >>> print(result)
     {
-        a:ivy.array([[[4.27, 5.4],[4.4, 5.6],[4.4, 5.6]]]),
-        b:ivy.array([[[4.35, 5.54],[4.4, 5.6],[4.4, 5.6]]])
+        a:ivy.array([[[4.27, 5.4], [4.4, 5.6], [4.4, 5.6]]]),
+        b:ivy.array(
+              [[[4.35, 5.54], [4.4, 5.6], [4.4, 5.6]]]
+          )
     }
 
 
@@ -473,12 +507,10 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
     {
-        a: ivy.array([[[4.27, 5.4],
-                       [4.4, 5.6],
-                       [4.4, 5.6]]]),
-        b: ivy.array([[[4.35, 5.54],
-                       [4.4, 5.6],
-                       [4.4, 5.6]]])
+        a: ivy.array([[[4.27, 5.4], [4.4, 5.6], [4.4, 5.6]]]),
+        b: ivy.array(
+               [[[4.35, 5.54], [4.4, 5.6], [4.4, 5.6]]]
+           )
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
@@ -488,11 +520,9 @@ def scaled_dot_product_attention(
     >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
     >>> print(result)
-    ivy.array([[
-            [4.04, 5.03],
-            [4.3 , 5.3 ],
-            [4.3 , 5.3 ]
-        ]])
+    ivy.array(
+        [[[4.04, 5.03], [4.3, 5.3], [4.3, 5.3]]]
+    )
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -500,7 +530,9 @@ def scaled_dot_product_attention(
     >>> out = ivy.zeros(shape=(1, 3, 2))
     >>> ivy.scaled_dot_product_attention(q, k, v, 1, out=out)
     >>> print(out)
-    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
+    ivy.array(
+        [[[4.04, 5.03], [4.3, 5.3], [4.3, 5.3]]]
+    )
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -511,12 +543,12 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
     >>> print(result)
     {
-        a: ivy.array([[[4.14, 5.13],
-                       [4.3, 5.3],
-                       [4.3, 5.3]]]),
-        b: ivy.array([[[4.09, 5.08],
-                       [4.3, 5.3],
-                       [4.3, 5.3]]])
+        a: ivy.array(
+               [[[4.14, 5.13], [4.3, 5.3], [4.3, 5.3]]]
+           ),
+        b: ivy.array(
+               [[[4.09, 5.08], [4.3, 5.3], [4.3, 5.3]]]
+           )
     }
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -528,12 +560,12 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
     >>> print(result)
     {
-        a: ivy.array([[[4.14, 5.13],
-                    [4.3, 5.3],
-                    [4.3, 5.3]]]),
-        b: ivy.array([[[4.09, 5.08],
-                    [4.3, 5.3],
-                    [4.3, 5.3]]])
+        a: ivy.array(
+               [[[4.14, 5.13], [4.3, 5.3], [4.3, 5.3]]]
+           ),
+        b: ivy.array(
+               [[[4.09, 5.08], [4.3, 5.3], [4.3, 5.3]]]
+           )
     }
     """
     # BS x Q x K
@@ -634,9 +666,15 @@ def multi_head_attention(
     ...                       [4.4, 5.6, 2.2, 0.4]]])
     >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
     >>> print(result)
-    ivy.array([[[1.5678761 , 0.65441847],
-    ...         [2.18969631, 0.40131447],
-    ...         [2.19991851, 0.40000153]]])
+    ivy.array(
+        [
+            [
+                [1.5678761, 0.65441847],
+                ...[2.18969631, 0.40131447],
+                ...[2.19991851, 0.40000153],
+            ]
+        ]
+    )
 
     With :class:`ivy.NativeArray` input:
 
@@ -648,9 +686,15 @@ def multi_head_attention(
     ...                              [4.4, 5.6, 2.2, 0.4]]])
     >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
     >>> print(result)
-    ivy.array([[[1.5678761 , 0.65441847],
-    ...         [2.18969631, 0.40131447],
-    ...         [2.19991851, 0.40000153]]])
+    ivy.array(
+        [
+            [
+                [1.5678761, 0.65441847],
+                ...[2.18969631, 0.40131447],
+                ...[2.19991851, 0.40000153],
+            ]
+        ]
+    )
 
     With :class:`ivy.Container` input:
 
@@ -665,12 +709,24 @@ def multi_head_attention(
     >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
     >>> print(result)
     {
-        a: ivy.array([[[1.5678761, 0.68589532],
+        a: ivy.array(
+               [
+                   [
+                       [1.5678761, 0.68589532],
                        [2.18969631, 0.40129396],
-                       [2.19991851, 0.40000817]]]),
-        b: ivy.array([[[4.31219625, 5.25698996],
+                       [2.19991851, 0.40000817],
+                   ]
+               ]
+           ),
+        b: ivy.array(
+               [
+                   [
+                       [4.31219625, 5.25698996],
                        [4.31022024, 5.16286421],
-                       [4.30296469, 5.16460133]]])
+                       [4.30296469, 5.16460133],
+                   ]
+               ]
+           )
     }
 
     With a mix of :class:`ivy.Container` and :class:`ivy.Array` inputs:
@@ -683,12 +739,24 @@ def multi_head_attention(
     >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
     >>> print(result)
     {
-        a: ivy.array([[[1.5678761, 0.59497029],
+        a: ivy.array(
+               [
+                   [
+                       [1.5678761, 0.59497029],
                        [2.18969631, 0.40046397],
-                       [2.19991851, 0.40000153]]]),
-        b: ivy.array([[[2.14009905, 1.81691194],
+                       [2.19991851, 0.40000153],
+                   ]
+               ]
+           ),
+        b: ivy.array(
+               [
+                   [
+                       [2.14009905, 1.81691194],
                        [2.10732293, 0.40012637],
-                       [1.73519301, 0.40021262]]])
+                       [1.73519301, 0.40021262],
+                   ]
+               ]
+           )
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -705,12 +773,24 @@ def multi_head_attention(
     >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
     >>> print(result)
     {
-        a: ivy.array([[[1.5678761, 0.7615059],
+        a: ivy.array(
+               [
+                   [
+                       [1.5678761, 0.7615059],
                        [2.18969631, 0.40326414],
-                       [2.19991851, 0.40000817]]]),
-        b: ivy.array([[[4.30141067, 5.19610119],
+                       [2.19991851, 0.40000817],
+                   ]
+               ]
+           ),
+        b: ivy.array(
+               [
+                   [
+                       [4.30141067, 5.19610119],
                        [4.32028484, 5.1708746],
-                       [4.34100914, 5.14920235]]])
+                       [4.34100914, 5.14920235],
+                   ]
+               ]
+           )
     }
 
     With :class:`ivy.Array` inputs and :class:`ivy.Array` mask:
@@ -724,9 +804,15 @@ def multi_head_attention(
     >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
     >>> result = ivy.multi_head_attention(x, 1, 2, context=context, mask=mask)
     >>> print(result)
-    ivy.array([[[1.40000009, 2.73333335],
-    ...         [1.40000009, 2.73333335],
-    ...         [1.40000009, 2.73333335]]])
+    ivy.array(
+        [
+            [
+                [1.40000009, 2.73333335],
+                ...[1.40000009, 2.73333335],
+                ...[1.40000009, 2.73333335],
+            ]
+        ]
+    )
 
     With :class:`ivy.Array` inputs and lambda to_q_fn and to_kv_fn functions specified:
 
@@ -741,9 +827,15 @@ def multi_head_attention(
     >>> result = layers.multi_head_attention(x, 1, 2, context=context,
     ...                                      to_q_fn=to_q_fn, to_kv_fn=to_kv_fn)
     >>> print(result)
-    ivy.array([[[1.5678761 , 0.65441847],
-    ...         [2.18969631, 0.40131447],
-    ...         [2.19991851, 0.40000153]]])
+    ivy.array(
+        [
+            [
+                [1.5678761, 0.65441847],
+                ...[2.18969631, 0.40131447],
+                ...[2.19991851, 0.40000153],
+            ]
+        ]
+    )
     """
     # BS x Q x (HxF)
     q = to_q_fn(x, v=to_q_v) if ivy.exists(to_q_fn) else x
@@ -849,7 +941,7 @@ def conv1d(
     >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
     >>> result = ivy.conv1d(x, filters, (1,), 'SAME', data_format='NWC',dilations= (1,))
     >>> print(result)
-    ivy.array([[[0.], [3.], [0.]]])
+    ivy.array([[[0.0], [3.0], [0.0]]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -857,8 +949,7 @@ def conv1d(
     >>> filters = ivy.native_array([[[0., 1.], [1., 0.]]])
     >>> result = ivy.conv1d(x, filters, (2,),'VALID')
     >>> print(result)
-    ivy.array([[[3., 1.],
-    ...         [7., 5.]]])
+    ivy.array([[[3.0, 1.0], ...[7.0, 5.0]]])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -869,8 +960,9 @@ def conv1d(
     >>> result  = ivy.conv1d(x, filters, 3, 'VALID')
     >>> print(result)
     {
-            a: ivy.array([[[6., 7.9, 1.2],
-    ...                    [15.6, 11.7, 6.1]]]),
+            a: ivy.array(
+                   [[[6.0, 7.9, 1.2], ...[15.6, 11.7, 6.1]]]
+               ),
     ...     b: ivy.array([[[15.4, 14.3, 8.8]]])
     }
     """
@@ -1084,11 +1176,15 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, (1,), 'SAME', data_format='NHWC',
     ... dilations= (1,))
     >>> print(result)
-    ivy.array([[
-              [[2.],[4.],[6.]],
-              [[3.],[6.],[9.]],
-              [[2.],[4.],[6.]]
-              ]])
+    ivy.array(
+        [
+            [
+                [[2.0], [4.0], [6.0]],
+                [[3.0], [6.0], [9.0]],
+                [[2.0], [4.0], [6.0]],
+            ]
+        ]
+    )
 
     With one :class:`ivy.Container` input:
 
@@ -1100,7 +1196,7 @@ def conv2d(
     ...    dilations= (1,))
     >>> print(result)
     {
-        a:ivy.array([[[[3.], [3.]], [[1.], [5.]]]])
+        a:ivy.array([[[[3.0], [3.0]], [[1.0], [5.0]]]])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -1114,12 +1210,17 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
     >>> print(result)
     {
-        a:ivy.array([[[[2.], [0.]], [[1.], [2.]]]]),
-        b:ivy.array([[[[3.], [0.]], [[1.], [2.]]]]),
-        c:ivy.array([[[[2.], [0.], [0.]],
-                      [[1.], [3.], [0.]],
-                      [[0.], [1.], [2.]]
-                    ]])
+        a:ivy.array([[[[2.0], [0.0]], [[1.0], [2.0]]]]),
+        b:ivy.array([[[[3.0], [0.0]], [[1.0], [2.0]]]]),
+        c:ivy.array(
+              [
+                  [
+                      [[2.0], [0.0], [0.0]],
+                      [[1.0], [3.0], [0.0]],
+                      [[0.0], [1.0], [2.0]],
+                  ]
+              ]
+          )
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -1132,8 +1233,16 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
     >>> print(result)
     {
-        a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
-        b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
+        a:ivy.array([[[[4.0], [0.0]], [[1.0], [5.0]]]]),
+        b:ivy.array(
+              [
+                  [
+                      [[4.0], [0.0], [0.0]],
+                      [[1.0], [6.0], [0.0]],
+                      [[0.0], [1.0], [5.0]],
+                  ]
+              ]
+          )
     }
     """
     return current_backend(x).conv2d(
@@ -1364,14 +1473,8 @@ def depthwise_conv2d(
     >>> y = ivy.depthwise_conv2d(x, filters, 1, 'VALID', dilations=2)
     >>> print(y)
     {
-        a: ivy.array([[[[-6.],
-                        [0.]],
-                       [[0.],
-                        [-6.]]]]),
-        b: ivy.array([[[[0.333],
-                        [0.]],
-                       [[0.],
-                        [0.333]]]])
+        a: ivy.array([[[[-6.0], [0.0]], [[0.0], [-6.0]]]]),
+        b: ivy.array([[[[0.333], [0.0]], [[0.0], [0.333]]]])
     }
 
     With a mix of :class:`ivy.Array`, code:`ivy.NativeArray`
@@ -1386,13 +1489,9 @@ def depthwise_conv2d(
     >>> y = ivy.depthwise_conv2d(inp, filter, 1, 'VALID', dilations=2)
     >>> print(y)
     {
-        x: ivy.array([[[[-6.],
-                        [0.]],
-                       [[0.],
-                        [-6.]]]]),
-        y: ivy.array([[[[-6.],[0.]],[[0.],[-6.]]]])
+        x: ivy.array([[[[-6.0], [0.0]], [[0.0], [-6.0]]]]),
+        y: ivy.array([[[[-6.0], [0.0]], [[0.0], [-6.0]]]])
     }
-
     """
     return current_backend(x).depthwise_conv2d(
         x,
@@ -1475,9 +1574,27 @@ def conv3d(
                             dilations = (1,1,1))
 
     >>> print(result)
-    ivy.array([[[[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]],
-                [[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]],
-                [[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]]]])
+    ivy.array(
+        [
+            [
+                [
+                    [[2.0], [4.0], [2.0]],
+                    [[3.0], [6.0], [3.0]],
+                    [[2.0], [4.0], [2.0]],
+                ],
+                [
+                    [[2.0], [4.0], [2.0]],
+                    [[3.0], [6.0], [3.0]],
+                    [[2.0], [4.0], [2.0]],
+                ],
+                [
+                    [[2.0], [4.0], [2.0]],
+                    [[3.0], [6.0], [3.0]],
+                    [[2.0], [4.0], [2.0]],
+                ],
+            ]
+        ]
+    )
 
     With one :class:`ivy.Container` input:
 
@@ -1488,7 +1605,14 @@ def conv3d(
     >>> result = ivy.conv3d(x, filters, 2, 'SAME')
     >>> print(result)
     {
-        a: ivy.array([[[[[8.],[8.]],[[8.],[8.]]],[[[8.],[8.]],[[8.],[8.]]]]])
+        a: ivy.array(
+               [
+                   [
+                       [[[8.0], [8.0]], [[8.0], [8.0]]],
+                       [[[8.0], [8.0]], [[8.0], [8.0]]],
+                   ]
+               ]
+           )
     }
 
     With multiple :class:`ivy.Container` input:

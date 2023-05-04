@@ -89,7 +89,7 @@ def eigh_tridiagonal(
     >>> beta = ivy.array([0., 1.])
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
-    ivy.array([0., 0.38196, 2.61803])
+    ivy.array([0.0, 0.38196, 2.61803])
 
     >>> alpha = ivy.array([0., 1., 2.])
     >>> beta = ivy.array([0., 1.])
@@ -109,10 +109,14 @@ def eigh_tridiagonal(
     ...     select_range=[1,2]
     ...     tol=1.)
     >>> print(y)
-    (ivy.array([0.18749806, 2.81250191]), ivy.array([[ 0.350609  , -0.56713122],
-        [ 0.06563006, -0.74146169],
-        [-0.74215561, -0.0636413 ],
-        [ 0.56742489,  0.35291126]]))
+    (ivy.array([0.18749806, 2.81250191]), ivy.array(
+                                              [
+                                                  [0.350609, -0.56713122],
+                                                  [0.06563006, -0.74146169],
+                                                  [-0.74215561, -0.0636413],
+                                                  [0.56742489, 0.35291126],
+                                              ]
+                                          ))
 
     With :class:`ivy.Container` input:
 
@@ -121,8 +125,8 @@ def eigh_tridiagonal(
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
     {
-        a: ivy.array([-0.56155, 0., 3.56155]),
-        b: ivy.array([0., 2., 4.])
+        a: ivy.array([-0.56155, 0.0, 3.56155]),
+        b: ivy.array([0.0, 2.0, 4.0])
     }
 
     >>> alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))
@@ -130,8 +134,8 @@ def eigh_tridiagonal(
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
     {
-        a: ivy.array([-0.56155, 0., 3.56155]),
-        b: ivy.array([-0.82842, 2., 4.82842])
+        a: ivy.array([-0.56155, 0.0, 3.56155]),
+        b: ivy.array([-0.82842, 2.0, 4.82842])
     }
     """
     x = ivy.diag(alpha)
@@ -319,7 +323,8 @@ def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[ivy.Array]:
-    """Compute eigenvalies and eigenvectors of x. Returns a tuple with two
+    """
+    Compute eigenvalies and eigenvectors of x. Returns a tuple with two
     elements: first is the set of eigenvalues, second is the set of
     eigenvectors.
 
@@ -490,8 +495,7 @@ def multi_dot(
     >>> B = ivy.arange(3 * 2).reshape((3, 2))
     >>> C = ivy.arange(2 * 2).reshape((2, 2))
     >>> ivy.multi_dot((A, B, C))
-    ivy.array([[ 26,  49],
-               [ 80, 148]])
+    ivy.array([[26, 49], [80, 148]])
 
     >>> A = ivy.arange(2 * 3).reshape((2, 3))
     >>> B = ivy.arange(3 * 2).reshape((3, 2))
@@ -499,8 +503,7 @@ def multi_dot(
     >>> D = ivy.zeros((2, 2))
     >>> ivy.multi_dot((A, B, C), out=D)
     >>> print(D)
-    ivy.array([[ 26,  49],
-               [ 80, 148]])
+    ivy.array([[26, 49], [80, 148]])
     """
     return current_backend(x).multi_dot(x, out=out)
 
@@ -628,45 +631,51 @@ def cov(
     ...                [4,5,6]])
     >>> y = x.cov()
     >>> print(y)
-    ivy.array([[ 1.,  1.  ],
-    ...        [ 1.,  1.  ]]
+    ivy.array([[1.0, 1.0], [1.0, 1.0]])
     With :class:`ivy.Container` inputs:
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
     >>> y = ivy.Container(a=ivy.array([3., 2., 1.]), b=ivy.array([3., 2., 1.]))
     >>> z = ivy.Container.static_cov(x, y)
     >>> print(z)
     {
-        a: ivy.array([ 1., -1., -1., -1.]
-                     [ 1.,  1., -1., -1.]),
-        b: ivy.array([-1., -1.,  1.,  1.]
-                     [-1.,  1.,  1.,  1.])
+        a: ivy.array(
+               [1.0, -1.0, -1.0, -1.0][1.0, 1.0, -1.0, -1.0]
+           ),
+        b: ivy.array(
+               [-1.0, -1.0, 1.0, 1.0][-1.0, 1.0, 1.0, 1.0]
+           )
     }
+
     With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.Container(a=ivy.array([3. ,2. ,1.]), b=ivy.array([-1., -2., -3.]))
     >>> z = ivy.cov(x, y)
     >>> print(z)
     {
-        a: ivy.array([ 1., -1.]
-                     [-1.,  1.]),
-        b: ivy.array([ 1., -1.]
-                     [-1.,  1.])
+        a: ivy.array([1.0, -1.0][-1.0, 1.0]),
+        b: ivy.array([1.0, -1.0][-1.0, 1.0])
     }
+
     With :class:`ivy.Array` input and rowVar flag set to False (True by default):
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
     >>> y = x.cov(rowVar=False)
     >>> print(y)
-    ivy.array([[ 4.5,  4.5, 4.5 ],
-    ...        [ 4.5,  4.5, 4.5 ],
-    ...        [ 4.5,  4.5, 4.5 ]])
+    ivy.array(
+        [
+            [4.5, 4.5, 4.5],
+            [4.5, 4.5, 4.5],
+            [4.5, 4.5, 4.5],
+        ]
+    )
+
     With :class:`ivy.Array` input and bias flag set to True (False by default):
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
     >>> y = x.cov(bias=True)
     >>> print(y)
-    ivy.array([[ 0.6667,  0.6667  ],
-    ...        [ 0.6667,  0.6667  ]]
+    ivy.array([[0.6667, 0.6667], [0.6667, 0.6667]])
+
     With :class:`ivy.Array` input with both fweights and aweights given:
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
@@ -674,8 +683,12 @@ def cov(
     >>> aw = ivy.array([ 1.2, 2.3, 3.4 ])
     >>> y = x.cov(fweights=fw, aweights=aw)
     >>> print(y)
-    ivy.array([[ 0.48447205,  0.48447205  ],
-    ...        [ 0.48447205,  0.48447205  ]]
+    ivy.array(
+        [
+            [0.48447205, 0.48447205],
+            [0.48447205, 0.48447205],
+        ]
+    )
     With :class:`ivy.Array` input with both fweights and aweights given,
     and rowVar set to False:
     >>> x = ivy.array([[1,2,3],
@@ -684,9 +697,13 @@ def cov(
     >>> aw = ivy.array([ 1.5, 4 ])
     >>> y = x.cov(fweights=fw, aweights=aw, rowVar=False)
     >>> print(y)
-    ivy.array([[ 1.22727273,  1.22727273, 1.22727273 ],
-    ...        [ 1.22727273,  1.22727273, 1.22727273 ],
-    ...        [ 1.22727273,  1.22727273, 1.22727273 ]])
+    ivy.array(
+        [
+            [1.22727273, 1.22727273, 1.22727273],
+            [1.22727273, 1.22727273, 1.22727273],
+            [1.22727273, 1.22727273, 1.22727273],
+        ]
+    )
     """
     return current_backend(x1).cov(
         x1,

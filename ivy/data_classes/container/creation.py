@@ -91,11 +91,8 @@ class _ContainerWithCreation(ContainerBase):
         >>> x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))
         >>> ivy.asarray(x)
         {
-            a: ivy.array([[1, 2],
-                          [3, 4],
-                          [5, 6]]),
-            b: ivy.array([[1, 2, 3],
-                          [4, 5, 6]])
+            a: ivy.array([[1, 2], [3, 4], [5, 6]]),
+            b: ivy.array([[1, 2, 3], [4, 5, 6]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -308,8 +305,8 @@ class _ContainerWithCreation(ContainerBase):
         >>> y = ivy.Container.static_full_like(fill_value)
         >>> print(y)
         {
-            a: ivy.array([15., 15., 15.]),
-            b: ivy.array([15., 15., 15.])
+            a: ivy.array([15.0, 15.0, 15.0]),
+            b: ivy.array([15.0, 15.0, 15.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -394,8 +391,8 @@ class _ContainerWithCreation(ContainerBase):
         >>> y = x.full_like(fill_value)
         >>> print(y)
         {
-            a: ivy.array([15., 15., 15.]),
-            b: ivy.array([15., 15., 15.])
+            a: ivy.array([15.0, 15.0, 15.0]),
+            b: ivy.array([15.0, 15.0, 15.0])
         }
         """
         return self._static_full_like(
@@ -1117,8 +1114,8 @@ class _ContainerWithCreation(ContainerBase):
         >>> y = ivy.Container(a = 4, b = 1)
         >>> z = static_logspace(x, y, 4)
         {
-            a: ivy.array([10.,  100.,  1000., 10000.]),
-            b: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
+            a: ivy.array([10.0, 100.0, 1000.0, 10000.0]),
+            b: ivy.array([1.0, 2.15443469, 4.64158883, 10.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1199,16 +1196,16 @@ class _ContainerWithCreation(ContainerBase):
         >>> y = ivy.Container(a = 4, b = 1)
         >>> z = x.logspace(y, 4)
         {
-            a: ivy.array([10.,  100.,  1000., 10000.]),
-            b: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
+            a: ivy.array([10.0, 100.0, 1000.0, 10000.0]),
+            b: ivy.array([1.0, 2.15443469, 4.64158883, 10.0])
         }
 
         >>> x = ivy.Container(a = 1, b = 0)
         >>> y = ivy.Container(a = 4, b = 1)
         >>> z = ivy.logspace(x, y, 4)
         {
-            a: ivy.array([10.,  100.,  1000., 10000.]),
-            b: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
+            a: ivy.array([10.0, 100.0, 1000.0, 10000.0]),
+            b: ivy.array([1.0, 2.15443469, 4.64158883, 10.0])
         }
 
         >>> u = ivy.Container(c = 0, d = 0)
@@ -1217,10 +1214,10 @@ class _ContainerWithCreation(ContainerBase):
         >>> y = ivy.Container(a = 4, b = v)
         >>> z = x.logspace(y, 4)
         {
-            a: ivy.array([10.,  100.,  1000., 10000.]),
+            a: ivy.array([10.0, 100.0, 1000.0, 10000.0]),
             b:  {
-                    c: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
-                    d: ivy.array([ 1., 4.64158883, 21.5443469, 100.])
+                    c: ivy.array([1.0, 2.15443469, 4.64158883, 10.0])
+                    d: ivy.array([1.0, 4.64158883, 21.5443469, 100.0])
                 }
         }
         """
@@ -1294,7 +1291,7 @@ class _ContainerWithCreation(ContainerBase):
         ret
             container with tensors of zeros with the same shape and type as the inputs,
             unless dtype provided which overrides.
-        
+
         Examples
         --------
         With :class:`ivy.Container` inputs:
@@ -1305,12 +1302,24 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = ivy.Container.static_one_hot(x, y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
-                        [0., 0., 1., 0., 0.]]),
-            b: ivy.array([[0., 0., 0., 1., 0.], 
-                        [0., 1., 0., 0., 0.]]),
-            c: ivy.array([[0., 0., 1., 0., 0.], 
-                        [0., 0., 0., 1., 0.]])
+            a: ivy.array(
+                   [
+                       [0.0, 1.0, 0.0, 0.0, 0.0],
+                       [0.0, 0.0, 1.0, 0.0, 0.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [0.0, 0.0, 0.0, 1.0, 0.0],
+                       [0.0, 1.0, 0.0, 0.0, 0.0],
+                   ]
+               ),
+            c: ivy.array(
+                   [
+                       [0.0, 0.0, 1.0, 0.0, 0.0],
+                       [0.0, 0.0, 0.0, 1.0, 0.0],
+                   ]
+               )
         }
 
         >>> x = ivy.Container(a=ivy.array([1, 2]), \
@@ -1319,10 +1328,14 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = ivy.Container.static_one_hot(x, y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
-                        [0., 0., 1., 0., 0.]]),
+            a: ivy.array(
+                   [
+                       [0.0, 1.0, 0.0, 0.0, 0.0],
+                       [0.0, 0.0, 1.0, 0.0, 0.0],
+                   ]
+               ),
             b: ivy.array([], shape=(0, 5)),
-            c: ivy.array([[0., 0., 0., 0., 1.]])
+            c: ivy.array([[0.0, 0.0, 0.0, 0.0, 1.0]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1408,12 +1421,24 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = x.one_hot(y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
-                        [0., 0., 1., 0., 0.]]),
-            b: ivy.array([[0., 0., 0., 1., 0.], 
-                        [0., 1., 0., 0., 0.]]),
-            c: ivy.array([[0., 0., 1., 0., 0.], 
-                        [0., 0., 0., 1., 0.]])
+            a: ivy.array(
+                   [
+                       [0.0, 1.0, 0.0, 0.0, 0.0],
+                       [0.0, 0.0, 1.0, 0.0, 0.0],
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       [0.0, 0.0, 0.0, 1.0, 0.0],
+                       [0.0, 1.0, 0.0, 0.0, 0.0],
+                   ]
+               ),
+            c: ivy.array(
+                   [
+                       [0.0, 0.0, 1.0, 0.0, 0.0],
+                       [0.0, 0.0, 0.0, 1.0, 0.0],
+                   ]
+               )
         }
 
         >>> x = ivy.Container(a=ivy.array([1, 2]), \
@@ -1422,10 +1447,14 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = x.one_hot(y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
-                        [0., 0., 1., 0., 0.]]),
+            a: ivy.array(
+                   [
+                       [0.0, 1.0, 0.0, 0.0, 0.0],
+                       [0.0, 0.0, 1.0, 0.0, 0.0],
+                   ]
+               ),
             b: ivy.array([], shape=(0, 5)),
-            c: ivy.array([[0., 0., 0., 0., 1.]])
+            c: ivy.array([[0.0, 0.0, 0.0, 0.0, 1.0]])
         }
         """
         return self._static_one_hot(

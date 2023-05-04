@@ -103,7 +103,9 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> ivy.Container.static_hann(x)
         {
             a: ivy.array([0.0000, 0.7500, 0.7500])
-            b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455])
+            b: ivy.array(
+                   [0.0000, 0.3455, 0.9045, 0.9045, 0.3455]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -155,7 +157,9 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> ivy.hann_window(x)
         {
             a: ivy.array([0.0000, 0.7500, 0.7500])
-            b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455])
+            b: ivy.array(
+                   [0.0000, 0.3455, 0.9045, 0.9045, 0.3455]
+               )
         }
         """
         return self.static_hann_window(self, periodic, dtype, out=out)
@@ -320,7 +324,9 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> ivy.Container.static_kaiser_bessel_derived_window(x, True, 5)
         {
             a: ivy.array([0.70710677, 0.70710677]),
-            b: ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208]),
+            b: ivy.array(
+                   [0.18493208, 0.9827513, 0.9827513, 0.18493208]
+               ),
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -379,7 +385,9 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> x.kaiser_bessel_derived_window(True, 5)
         {
             a: ivy.array([0.70710677, 0.70710677]),
-            b: ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208]),
+            b: ivy.array(
+                   [0.18493208, 0.9827513, 0.9827513, 0.18493208]
+               ),
         }
         """
         return self.static_kaiser_bessel_derived_window(
@@ -440,8 +448,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.Container.static_hamming_window(x, periodic=True, alpha=0.2, beta=2)
         {
-            a: ivy.array([-1.8000,  1.2000,  1.2000]),
-            b: ivy.array([-1.8000, -0.4180,  1.8180,  1.8180, -0.4180])
+            a: ivy.array([-1.8000, 1.2000, 1.2000]),
+            b: ivy.array(
+                   [-1.8000, -0.4180, 1.8180, 1.8180, -0.4180]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -502,8 +512,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> x = ivy.Container(a=3, b=5))
         >>> x.hamming_window(periodic=True, alpha=0.2, beta=2)
         {
-            a: ivy.array([-1.8000,  1.2000,  1.2000]),
-            b: ivy.array([-1.8000, -0.4180,  1.8180,  1.8180, -0.4180])
+            a: ivy.array([-1.8000, 1.2000, 1.2000]),
+            b: ivy.array(
+                   [-1.8000, -0.4180, 1.8180, 1.8180, -0.4180]
+               )
         }
         """
         return self.static_hamming_window(
@@ -547,10 +559,30 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.Container.static_vorbis_window(x)
         {
-            a: ivy.array([0., 0.38268343, 0.92387953, 1., 0.92387953,
-                          0.38268343]),
-            b: ivy.array([0., 0.14943586, 0.51644717, 0.85631905, 0.98877142,
-                          1., 0.98877142, 0.85631905, 0.51644717, 0.14943586])
+            a: ivy.array(
+                   [
+                       0.0,
+                       0.38268343,
+                       0.92387953,
+                       1.0,
+                       0.92387953,
+                       0.38268343,
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       0.0,
+                       0.14943586,
+                       0.51644717,
+                       0.85631905,
+                       0.98877142,
+                       1.0,
+                       0.98877142,
+                       0.85631905,
+                       0.51644717,
+                       0.14943586,
+                   ]
+               )
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -598,10 +630,30 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> x = ivy.Container(a=3, b=5))
         >>> x.vorbis_window()
         {
-            a: ivy.array([0., 0.38268343, 0.92387953, 1., 0.92387953,
-                          0.38268343]),
-            b: ivy.array([0., 0.14943586, 0.51644717, 0.85631905, 0.98877142,
-                          1., 0.98877142, 0.85631905, 0.51644717, 0.14943586])
+            a: ivy.array(
+                   [
+                       0.0,
+                       0.38268343,
+                       0.92387953,
+                       1.0,
+                       0.92387953,
+                       0.38268343,
+                   ]
+               ),
+            b: ivy.array(
+                   [
+                       0.0,
+                       0.14943586,
+                       0.51644717,
+                       0.85631905,
+                       0.98877142,
+                       1.0,
+                       0.98877142,
+                       0.85631905,
+                       0.51644717,
+                       0.14943586,
+                   ]
+               )
         }
         """
         return self.static_vorbis_window(
@@ -725,8 +777,8 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> y = ivy.Container.static_eye_like(x)
         >>> print(y)
         {
-            a: ivy.array([[1.]]),
-            b: ivy.array([[1.]])
+            a: ivy.array([[1.0]]),
+            b: ivy.array([[1.0]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -801,8 +853,8 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> y = x.eye_like()
         >>> print(y)
         {
-            a: ivy.array([[1.]]),
-            b: ivy.array([[1.]])
+            a: ivy.array([[1.0]]),
+            b: ivy.array([[1.0]])
         }
         """
         return self.static_eye_like(
@@ -871,8 +923,8 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> y = ivy.Container.static_frombuffer(x)
         >>> print(y)
         {
-            a: ivy.array([1.]),
-            b: ivy.array([1., 2.])
+            a: ivy.array([1.0]),
+            b: ivy.array([1.0, 2.0])
         }
 
         >>> x = ivy.Container(
@@ -951,8 +1003,8 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> y = ivy.Container.static_frombuffer(x)
         >>> print(y)
         {
-            a: ivy.array([1.]),
-            b: ivy.array([1., 2.])
+            a: ivy.array([1.0]),
+            b: ivy.array([1.0, 2.0])
         }
 
         >>> x = ivy.Container(

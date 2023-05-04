@@ -56,8 +56,8 @@ class _ContainerWithActivations(ContainerBase):
         >>> y = ivy.Container.static_relu(x)
         >>> print(y)
         {
-            a: ivy.array([1., 0.]),
-            b: ivy.array([0.40000001, 0.])
+            a: ivy.array([1.0, 0.0]),
+            b: ivy.array([0.40000001, 0.0])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -116,8 +116,8 @@ class _ContainerWithActivations(ContainerBase):
         >>> y = x.relu()
         >>> print(y)
         {
-            a: ivy.array([1., 0.]),
-            b: ivy.array([0.40000001, 0.])
+            a: ivy.array([1.0, 0.0]),
+            b: ivy.array([0.40000001, 0.0])
         }
         """
         return self._static_relu(
@@ -179,7 +179,7 @@ class _ContainerWithActivations(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([0.38999999, -0.17]),
-            b: ivy.array([1., -0.04])
+            b: ivy.array([1.0, -0.04])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -242,7 +242,7 @@ class _ContainerWithActivations(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([0.38999999, -0.17]),
-            b: ivy.array([1., -0.04])
+            b: ivy.array([1.0, -0.04])
         }
         """
         return self._static_leaky_relu(

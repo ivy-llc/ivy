@@ -61,20 +61,20 @@ def sinc(
     >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
     >>> y = x.sinc()
     >>> print(y)
-    ivy.array([0.637,-0.212,0.127,-0.0909])
+    ivy.array([0.637, -0.212, 0.127, -0.0909])
 
     >>> x = ivy.array([1.5, 0.5, -1.5])
     >>> y = ivy.zeros(3)
     >>> ivy.sinc(x, out=y)
     >>> print(y)
-    ivy.array([-0.212,0.637,-0.212])
+    ivy.array([-0.212, 0.637, -0.212])
 
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
     >>> y = ivy.sinc(x)
     >>> print(y)
-    ivy.array([0.637,-0.212,0.127,-0.0909])
+    ivy.array([0.637, -0.212, 0.127, -0.0909])
 
     With :class:`ivy.Container` input:
 
@@ -83,8 +83,8 @@ def sinc(
     >>> y = x.sinc()
     >>> print(y)
     {
-        a: ivy.array([0.637,-0.212,0.127]),
-        b: ivy.array([-0.0909,0.0707,-0.0579])
+        a: ivy.array([0.637, -0.212, 0.127]),
+        b: ivy.array([-0.0909, 0.0707, -0.0579])
     }
     """
     return ivy.current_backend(x).sinc(x, out=out)
@@ -163,12 +163,12 @@ def fmax(
     >>> x1 = ivy.array([2, 3, 4])
     >>> x2 = ivy.array([1, 5, 2])
     >>> ivy.fmax(x1, x2)
-    ivy.array([ 2.,  5.,  4.])
+    ivy.array([2.0, 5.0, 4.0])
 
     >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
     >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
     >>> ivy.fmax(x1, x2)
-    ivy.array([ 0.,  0.,  nan])
+    ivy.array([0.0, 0.0, nan])
     """
     return ivy.current_backend().fmax(x1, x2, out=out)
 
@@ -212,7 +212,7 @@ def fmin(
     >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
     >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
     >>> ivy.fmin(x1, x2)
-    ivy.array([ 0.,  0., nan])
+    ivy.array([0.0, 0.0, nan])
     """
     return ivy.current_backend().fmin(x1, x2, out=out)
 
@@ -311,11 +311,11 @@ def float_power(
     --------
     >>> x1 = ivy.array([1, 2, 3, 4, 5])
     >>> ivy.float_power(x1, 3)
-    ivy.array([1.,    8.,   27.,   64.,  125.])
+    ivy.array([1.0, 8.0, 27.0, 64.0, 125.0])
     >>> x1 = ivy.array([1, 2, 3, 4, 5])
     >>> x2 = ivy.array([2, 3, 3, 2, 1])
     >>> ivy.float_power(x1, x2)
-    ivy.array([1.,   8.,  27.,  16.,   5.])
+    ivy.array([1.0, 8.0, 27.0, 16.0, 5.0])
     """
     return ivy.current_backend().float_power(x1, x2, out=out)
 
@@ -349,10 +349,10 @@ def exp2(
     --------
     >>> x = ivy.array([1, 2, 3])
     >>> ivy.exp2(x)
-    ivy.array([2.,    4.,   8.])
+    ivy.array([2.0, 4.0, 8.0])
     >>> x = [5, 6, 7]
     >>> ivy.exp2(x)
-    ivy.array([32.,   64.,  128.])
+    ivy.array([32.0, 64.0, 128.0])
     """
     return ivy.current_backend().exp2(x, out=out)
 
@@ -393,11 +393,11 @@ def copysign(
     >>> x1 = ivy.array([-1, 0, 23, 2])
     >>> x2 = ivy.array([1, -1, -10, 44])
     >>> ivy.copysign(x1, x2)
-    ivy.array([  1.,  -0., -23.,   2.])
+    ivy.array([1.0, -0.0, -23.0, 2.0])
     >>> ivy.copysign(x1, -1)
-    ivy.array([ -1.,  -0., -23.,  -2.])
+    ivy.array([-1.0, -0.0, -23.0, -2.0])
     >>> ivy.copysign(-10, 1)
-    ivy.array(10.)
+    ivy.array(10.0)
     """
     return ivy.current_backend().copysign(x1, x2, out=out)
 
@@ -546,10 +546,10 @@ def gcd(
     >>> x1 = ivy.array([1, 2, 3])
     >>> x2 = ivy.array([4, 5, 6])
     >>> ivy.gcd(x1, x2)
-    ivy.array([1.,    1.,   3.])
+    ivy.array([1.0, 1.0, 3.0])
     >>> x1 = ivy.array([1, 2, 3])
     >>> ivy.gcd(x1, 10)
-    ivy.array([1.,   2.,  1.])
+    ivy.array([1.0, 2.0, 1.0])
     """
     return ivy.current_backend().gcd(x1, x2, out=out)
 
@@ -653,12 +653,12 @@ def angle(
     >>> ivy.set_backend('tensorflow')
     >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
     >>> z
-    ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+    ivy.array([-1.0 + 1.0j, -2.0 + 2.0j, 3.0 - 3.0j])
     >>> ivy.angle(z)
-    ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+    ivy.array([2.35619449, 2.35619449, -0.78539816])
     >>> ivy.set_backend('numpy')
     >>> ivy.angle(z,deg=True)
-    ivy.array([135., 135., -45.])
+    ivy.array([135.0, 135.0, -45.0])
     """
     return ivy.current_backend(z).angle(z, deg=deg, out=out)
 
@@ -692,9 +692,9 @@ def imag(
     --------
     >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
     >>> b
-    ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+    ivy.array([1.0 + 2.0j, 3.0 + 4.0j, 5.0 + 6.0j])
     >>> ivy.imag(b)
-    ivy.array([2., 4., 6.])
+    ivy.array([2.0, 4.0, 6.0])
     """
     return ivy.current_backend(val).imag(val, out=out)
 
@@ -748,10 +748,10 @@ def nan_to_num(
     --------
     >>> x = ivy.array([1, 2, 3, nan])
     >>> ivy.nan_to_num(x)
-    ivy.array([1.,    1.,   3.,   0.0])
+    ivy.array([1.0, 1.0, 3.0, 0.0])
     >>> x = ivy.array([1, 2, 3, inf])
     >>> ivy.nan_to_num(x, posinf=5e+100)
-    ivy.array([1.,   2.,   3.,   5e+100])
+    ivy.array([1.0, 2.0, 3.0, 5e100])
     """
     return ivy.current_backend(x).nan_to_num(
         x, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
@@ -912,7 +912,7 @@ def diff(
     --------
     >>> x = ivy.array([1, 2, 4, 7, 0])
     >>> ivy.diff(x)
-    ivy.array([ 1,  2,  3, -7])
+    ivy.array([1, 2, 3, -7])
     """
     return ivy.current_backend().diff(
         x, n=n, axis=axis, prepend=prepend, append=append, out=out
@@ -1023,7 +1023,7 @@ def fix(
     --------
     >>> x = ivy.array([2.1, 2.9, -2.1])
     >>> ivy.fix(x)
-    ivy.array([ 2.,  2., -2.])
+    ivy.array([2.0, 2.0, -2.0])
     """
     return ivy.current_backend(x).fix(x, out=out)
 
@@ -1063,7 +1063,7 @@ def nextafter(
     >>> x1 = ivy.array([1.0e-50, 2.0e+50])
     >>> x2 = ivy.array([2.0, 1.0])
     >>> ivy.nextafter(x1, x2)
-    ivy.array([1.4013e-45., 3.4028e+38])
+    ivy.array([1.4013e-45, 3.4028e38])
     """
     return ivy.current_backend(x1, x2).nextafter(x1, x2, out=out)
 
@@ -1152,36 +1152,72 @@ def gradient(
     >>> spacing = (ivy.array([-2., -1., 1., 4.]),)
     >>> x = ivy.array([4., 1., 1., 16.], )
     >>> ivy.gradient(x, spacing=spacing)
-    ivy.array([-3., -2.,  2.,  5.])
+    ivy.array([-3.0, -2.0, 2.0, 5.0])
 
     >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
     >>> ivy.gradient(x)
-    [ivy.array([[ 9., 18., 36., 72.],
-       [ 9., 18., 36., 72.]]), ivy.array([[ 1. ,  1.5,  3. ,  4. ],
-       [10. , 15. , 30. , 40. ]])]
+    [ivy.array(
+         [
+             [9.0, 18.0, 36.0, 72.0],
+             [9.0, 18.0, 36.0, 72.0],
+         ]
+     ), ivy.array(
+            [
+                [1.0, 1.5, 3.0, 4.0],
+                [10.0, 15.0, 30.0, 40.0],
+            ]
+        )]
 
     >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
     >>> ivy.gradient(x, spacing=2.0)
-    [ivy.array([[ 4.5,  9. , 18. , 36. ],
-       [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
-       [ 5.  ,  7.5 , 15.  , 20.  ]])]
+    [ivy.array(
+         [
+             [4.5, 9.0, 18.0, 36.0],
+             [4.5, 9.0, 18.0, 36.0],
+         ]
+     ), ivy.array(
+            [
+                [0.5, 0.75, 1.5, 2.0],
+                [5.0, 7.5, 15.0, 20.0],
+            ]
+        )]
 
     >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
     >>> ivy.gradient(x, axis=1)
-    ivy.array([[ 1. ,  1.5,  3. ,  4. ],
-       [10. , 15. , 30. , 40. ]])
+    ivy.array(
+        [
+            [1.0, 1.5, 3.0, 4.0],
+            [10.0, 15.0, 30.0, 40.0],
+        ]
+    )
 
     >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
     >>> ivy.gradient(x, spacing=[3., 2.])
-    [ivy.array([[ 3.,  6., 12., 24.],
-       [ 3.,  6., 12., 24.]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
-       [ 5.  ,  7.5 , 15.  , 20.  ]])]
+    [ivy.array(
+         [
+             [3.0, 6.0, 12.0, 24.0],
+             [3.0, 6.0, 12.0, 24.0],
+         ]
+     ), ivy.array(
+            [
+                [0.5, 0.75, 1.5, 2.0],
+                [5.0, 7.5, 15.0, 20.0],
+            ]
+        )]
 
     >>> spacing = (ivy.array([0, 2]), ivy.array([0, 3, 6, 9]))
     >>> ivy.gradient(x, spacing=spacing)
-    [ivy.array([[ 4.5,  9. , 18. , 36. ],
-       [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.33333333, 0.5,  1., 1.33333333],
-       [ 3.33333333,  5.        , 10.        , 13.33333333]])]
+    [ivy.array(
+         [
+             [4.5, 9.0, 18.0, 36.0],
+             [4.5, 9.0, 18.0, 36.0],
+         ]
+     ), ivy.array(
+            [
+                [0.33333333, 0.5, 1.0, 1.33333333],
+                [3.33333333, 5.0, 10.0, 13.33333333],
+            ]
+        )]
     """
     return ivy.current_backend(x).gradient(
         x, spacing=spacing, edge_order=edge_order, axis=axis
@@ -1243,7 +1279,8 @@ def real(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Test each element ``x_i`` of the input array ``x`` to
+    """
+    Test each element ``x_i`` of the input array ``x`` to
     take only real part from it.
     Returns a float array, where it only contains .
     If element has complex type with zero complex part, the return value
@@ -1277,21 +1314,21 @@ def real(
     >>> x = ivy.array([[[1.1], [2], [-6.3]]])
     >>> z = ivy.real(x)
     >>> print(z)
-    ivy.array([[[1.1], [2.], [-6.3]]])
+    ivy.array([[[1.1], [2.0], [-6.3]]])
 
     >>> x = ivy.array([4.2-0j, 3j, 7+5j])
     >>> z = ivy.real(x)
     >>> print(z)
-    ivy.array([4.2, 0., 7.])
+    ivy.array([4.2, 0.0, 7.0])
 
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
-                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
+                          b=ivy.array([5j, 5.32 - 6.55j, 3.001]))
     >>> z = ivy.real(x)
     >>> print(z)
     {
         a: ivy.array([-6.7, 0.314, 1.23]),
-        b: ivy.array([0., 5.32, 3.001])
+        b: ivy.array([0.0, 5.32, 3.001])
     }
     """
     return ivy.current_backend(x).real(x, out=out)
@@ -1380,16 +1417,16 @@ def conj(
     >>> x = ivy.array([4.2-0j, 3j, 7+5j])
     >>> z = ivy.conj(x)
     >>> print(z)
-    ivy.array([4.2+0j, -3j, 7+5j])
+    ivy.array([4.2 + 0j, -3j, 7 + 5j])
 
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
-                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
+                          b=ivy.array([5j, 5.32 - 6.55j, 3.001]))
     >>> z = ivy.conj(x)
     >>> print(z)
     {
-        a: ivy.array([-6.7+7j, 0.314-0.355j, 1.23]),
-        b: ivy.array([-5j, 5.32+6.55j, 3.001])
+        a: ivy.array([-6.7 + 7j, 0.314 - 0.355j, 1.23]),
+        b: ivy.array([-5j, 5.32 + 6.55j, 3.001])
     }
     """
     return ivy.current_backend(x).conj(x, out=out)
@@ -1478,19 +1515,23 @@ def lerp(
     >>> end = ivy.array([10, 10, 10])
     >>> weight = 0.5
     >>> ivy.lerp(input, end, weight)
-    ivy.array([5.5, 6. , 6.5])
+    ivy.array([5.5, 6.0, 6.5])
     >>> input = ivy.array([1.1, 1.2, 1.3])
     >>> end = ivy.array([20])
     >>> weight = ivy.array([0.4, 0.5, 0.6])
     >>> y = ivy.zeros(3)
     >>> ivy.lerp(input, end, weight, out=y)
-    ivy.array([ 8.65999985, 10.59999943, 12.52000141])
+    ivy.array([8.65999985, 10.59999943, 12.52000141])
     >>> input = ivy.array([[4, 5, 6],[4.1, 4.2, 4.3]])
     >>> end = ivy.array([10])
     >>> weight = ivy.array([0.5])
     >>> ivy.lerp(input, end, weight, out=input)
-    ivy.array([[7.        , 7.5       , 8.        ],
-    ...       [7.05000019, 7.0999999 , 7.1500001 ]])
+    ivy.array(
+        [
+            [7.0, 7.5, 8.0],
+            ...[7.05000019, 7.0999999, 7.1500001],
+        ]
+    )
     With :class:`ivy.Container` input:
     >>> input = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> end = ivy.array([10.])
@@ -1498,7 +1539,7 @@ def lerp(
     >>> y = input.lerp(end, weight)
     >>> print(y)
     {
-        a: ivy.array([11., 10.90000057, 10.80000019]),
+        a: ivy.array([11.0, 10.90000057, 10.80000019]),
         b: ivy.array([10.70000076, 10.60000038, 10.5])
     }
     >>> input = ivy.Container(a=ivy.array([10.1, 11.1]), b=ivy.array([10, 11]))
@@ -1509,7 +1550,7 @@ def lerp(
     {
         a: ivy.array([7.55000019, 8.05000019]),
         b: {
-            a: ivy.array([5., 5.5])
+            a: ivy.array([5.0, 5.5])
         }
     }
     """

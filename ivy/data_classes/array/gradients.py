@@ -42,7 +42,7 @@ class _ArrayWithGradients(abc.ABC):
         >>> x = ivy.array([1., 2., 3.])
         >>> y = x.stop_gradient(preserve_type=True)
         >>> print(y)
-        ivy.array([1., 2., 3.])
+        ivy.array([1.0, 2.0, 3.0])
         """
         return ivy.stop_gradient(self, preserve_type=preserve_type, out=out)
 
@@ -99,9 +99,9 @@ class _ArrayWithGradients(abc.ABC):
         >>> step = ivy.array(3)
         >>> adam_step_delta = dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
-        (ivy.array([0.2020105,0.22187898,0.24144873]),
-            ivy.array([1.,1.10000002,1.20000005]),
-            ivy.array([1.,1.00300002,1.00800002]))
+        (ivy.array([0.2020105, 0.22187898, 0.24144873]),
+            ivy.array([1.0, 1.10000002, 1.20000005]),
+            ivy.array([1.0, 1.00300002, 1.00800002]))
         """
         return ivy.adam_step(
             self, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon, out=out
@@ -150,7 +150,7 @@ class _ArrayWithGradients(abc.ABC):
         >>> lr = 3e-4
         >>> ws_new = w.optimizer_update(effective_grad, lr)
         >>> print(ws_new)
-        ivy.array([1., 2., 3.])
+        ivy.array([1.0, 2.0, 3.0])
         """
         return ivy.optimizer_update(
             self, effective_grad, lr, stop_gradients=stop_gradients, out=out
@@ -204,9 +204,13 @@ class _ArrayWithGradients(abc.ABC):
         >>> lr = ivy.array(0.1)
         >>> new_weights = w.gradient_descent_update(dcdw, lr, stop_gradients = True)
         >>> print(new_weights)
-        ivy.array([[ 0.95,  1.98,  2.99],
-        ...        [ 3.97,  5.94,  0.96],
-        ...        [ 0.96, -0.07,  6.98]])
+        ivy.array(
+            [
+                [0.95, 1.98, 2.99],
+                ...[3.97, 5.94, 0.96],
+                ...[0.96, -0.07, 6.98],
+            ]
+        )
         """
         return ivy.gradient_descent_update(
             self, dcdw, lr, stop_gradients=stop_gradients, out=out
@@ -329,7 +333,13 @@ class _ArrayWithGradients(abc.ABC):
         >>> print(updated_weights)
         (ivy.array([0.92558753, 1.92558873, 2.92558718]),
         ivy.array([0.02, 0.01, 0.03]),
-        ivy.array([4.00000063e-05, 1.00000016e-05, 9.00000086e-05]))
+        ivy.array(
+            [
+                4.00000063e-05,
+                1.00000016e-05,
+                9.00000086e-05,
+            ]
+        ))
         """
         return ivy.adam_update(
             self,
@@ -418,7 +428,7 @@ class _ArrayWithGradients(abc.ABC):
         >>> step = ivy.array(1)
         >>> new_weights = w.lamb_update(dcdw, lr, mw_tm1, vw_tm1, step)
         >>> print(new_weights)
-        (ivy.array([0.784, 1.78 , 2.78 ]),
+        (ivy.array([0.784, 1.78, 2.78]),
         ivy.array([0.05, 0.02, 0.01]),
         ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
         """

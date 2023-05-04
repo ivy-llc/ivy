@@ -55,9 +55,13 @@ class _ArrayWithLayers(abc.ABC):
         >>> b = ivy.array([1., 0., -1.])
         >>> y = x.linear(w, bias=b)
         >>> print(y)
-        ivy.array([[ 16.4,  35.2,  54. ],
-                   [ 36.2,  84.7, 133. ],
-                   [ 56. , 134. , 212. ]])
+        ivy.array(
+            [
+                [16.4, 35.2, 54.0],
+                [36.2, 84.7, 133.0],
+                [56.0, 134.0, 212.0],
+            ]
+        )
         """
         return ivy.linear(
             self._data,
@@ -121,10 +125,14 @@ class _ArrayWithLayers(abc.ABC):
         ...                [10., 11., 12.]])
         >>> y = x.dropout(0.3)
         >>> print(y)
-        ivy.array([[ 1.42857146,  2.85714293,  4.28571415],
-                   [ 5.71428585,  7.14285755,  8.5714283 ],
-                   [ 0.        , 11.4285717 , 12.8571434 ],
-                   [14.2857151 ,  0.        ,  0.        ]])
+        ivy.array(
+            [
+                [1.42857146, 2.85714293, 4.28571415],
+                [5.71428585, 7.14285755, 8.5714283],
+                [0.0, 11.4285717, 12.8571434],
+                [14.2857151, 0.0, 0.0],
+            ]
+        )
 
         >>> x = ivy.array([[1., 2., 3.],
         ...                [4., 5., 6.],
@@ -132,10 +140,14 @@ class _ArrayWithLayers(abc.ABC):
         ...                [10., 11., 12.]])
         >>> y = x.dropout(0.3, scale=False)
         >>> print(y)
-        ivy.array([[ 1.,  2., 3.],
-                   [ 4.,  5., 0.],
-                   [ 7.,  0., 9.],
-                   [10., 11., 0.]])
+        ivy.array(
+            [
+                [1.0, 2.0, 3.0],
+                [4.0, 5.0, 0.0],
+                [7.0, 0.0, 9.0],
+                [10.0, 11.0, 0.0],
+            ]
+        )
         """
         return ivy.dropout(
             self._data,
@@ -186,7 +198,7 @@ class _ArrayWithLayers(abc.ABC):
         >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
         >>> y = x.dropout1d(0.5)
         >>> print(y)
-        ivy.array([[[2., 0, 2.]]])
+        ivy.array([[[2.0, 0, 2.0]]])
         """
         return ivy.dropout1d(
             self._data,
@@ -296,7 +308,9 @@ class _ArrayWithLayers(abc.ABC):
         >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
         >>> result = q.scaled_dot_product_attention(k, v, 1, mask=mask)
         >>> print(result)
-        ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+        ivy.array(
+            [[[2.3, 3.23], [2.3, 3.23], [2.3, 3.23]]]
+        )
 
         >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
         >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -305,7 +319,9 @@ class _ArrayWithLayers(abc.ABC):
         >>> out = ivy.zeros(shape=(1, 3, 2))
         >>> q.scaled_dot_product_attention(k, v, 1, mask=mask, out=out)
         >>> print(out)
-        ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+        ivy.array(
+            [[[2.3, 3.23], [2.3, 3.23], [2.3, 3.23]]]
+        )
         """
         return ivy.scaled_dot_product_attention(
             self._data,
@@ -393,10 +409,16 @@ class _ArrayWithLayers(abc.ABC):
         >>> filters = ivy.array([[[0., 1.], [1., 1.]]])  # WIO (I == C)
         >>> result = x.conv1d(filters, (1,), 'VALID')
         >>> print(result)
-        ivy.array([[[ 2.,  3.],
-        ...         [ 4.,  7.],
-        ...         [ 7., 13.],
-        ...         [11., 20.]]])
+        ivy.array(
+            [
+                [
+                    [2.0, 3.0],
+                    ...[4.0, 7.0],
+                    ...[7.0, 13.0],
+                    ...[11.0, 20.0],
+                ]
+            ]
+        )
         """
         return ivy.conv1d(
             self._data,
@@ -460,10 +482,16 @@ class _ArrayWithLayers(abc.ABC):
         >>> filters = ivy.array([[[0., 1.], [1., 1.]]])  # WIO (I == C)
         >>> result = x.conv1d_transpose(filters, (1,), 'VALID')
         >>> print(result)
-        ivy.array([[[ 2.,  3.],
-        ...         [ 4.,  7.],
-        ...         [ 7., 13.],
-        ...         [11., 20.]]])
+        ivy.array(
+            [
+                [
+                    [2.0, 3.0],
+                    ...[4.0, 7.0],
+                    ...[7.0, 13.0],
+                    ...[11.0, 20.0],
+                ]
+            ]
+        )
         """
         return ivy.conv1d_transpose(
             self._data,
@@ -585,11 +613,15 @@ class _ArrayWithLayers(abc.ABC):
         >>> result = x.conv2d(filters, 1, 'SAME', data_format='NHWC',
         ...    dilations= 1)
         >>> print(result)
-        ivy.array([[
-                  [[2.],[4.],[6.]],
-                  [[3.],[6.],[9.]],
-                  [[2.],[4.],[6.]]
-                  ]])
+        ivy.array(
+            [
+                [
+                    [[2.0], [4.0], [6.0]],
+                    [[3.0], [6.0], [9.0]],
+                    [[2.0], [4.0], [6.0]],
+                ]
+            ]
+        )
         """
         return ivy.conv2d(
             self,
@@ -714,7 +746,14 @@ class _ArrayWithLayers(abc.ABC):
 
         >>> result = x.conv3d(filters, 2, 'SAME')
         >>> print(result)
-        ivy.array([[[[[4.],[4.]],[[4.],[4.]]],[[[4.],[4.]],[[4.],[4.]]]]])
+        ivy.array(
+            [
+                [
+                    [[[4.0], [4.0]], [[4.0], [4.0]]],
+                    [[[4.0], [4.0]], [[4.0], [4.0]]],
+                ]
+            ]
+        )
         """
         return ivy.conv3d(
             self._data,
