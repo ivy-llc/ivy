@@ -2541,13 +2541,7 @@ def test_tensorflow_in_top_k(
     test_with_out=st.just(False)
 )
 def test_tensorflow_top_k(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    k
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, k
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
