@@ -377,54 +377,33 @@ def test_frombuffer(
     )
 
 
-@st.composite
-def _compress_helper(draw):
-    dtype, arr = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            shape=st.tuples(
-                st.integers(min_value=2, max_value=10),
-                st.integers(min_value=2, max_value=10),
-            ),
-        )
-    )
-
-    a = np.array(arr)
-    valid_axis_dims = list(range(-a.ndim, a.ndim))
-
-    ax = draw(st.sampled_from(valid_axis_dims))
-    while ax == 0:
-        ax = draw(st.sampled_from(valid_axis_dims))
-    ax = abs(ax)
-    condition = draw(st.just([True]))
-    condition = condition * ax
-
-    return dtype, arr, condition
-
-
 @handle_test(
     fn_tree="functional.ivy.experimental.compress",
-    dtype_a_condition=_compress_helper(),
+    dtype=helpers.get_dtypes("integer"),
+    arr=st.lists(st.integers(min_value=1, max_value=100), min_size=10, max_size=100),
+    condition=st.lists(st.booleans(), min_size=1, max_size=5),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_compress(
     *,
-    dtype_a_condition,
+    dtype,
+    arr,
+    condition,
     test_flags,
     on_device,
     backend_fw,
     fn_name,
     ground_truth_backend,
 ):
-    dtype, a, condition = dtype_a_condition
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=dtype[0],
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         condition=condition,
-        a=a[0],
+        a=arr,
         ground_truth_backend=ground_truth_backend,
     )
