@@ -1195,7 +1195,7 @@ def cummax(
     >>> y = ivy.cummax(x, exclusive=False, reverse=False)
     >>> print(y)
     [ivy.array([-86, -19, 41, 88, 88, 88, 88, 88, 88, 88]),
-    ivy.array([0, 1, 2, 3, 3, 3, 3, 3, 3, 3])]
+      ivy.array([0, 1, 2, 3, 3, 3, 3, 3, 3, 3])]
 
     >>> x = ivy.array([ 14,  15,  49, -24, -39])
     >>> y = ivy.cummax(x, axis=0, exclusive=False, reverse=False)
