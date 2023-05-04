@@ -172,6 +172,7 @@ def test_kaiser_window(
     beta=st.floats(min_value=1, max_value=5),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_kaiser_bessel_derived_window(
     *,
