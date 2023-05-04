@@ -267,6 +267,7 @@ This provides the flexibility to add any custom logic based on the use-case for 
 
 
 **Note**
+
 Even though we are always striving to adhere to the superset, there might be cases where a feature has slipped under the radar.
 In case you stumble upon an Ivy function that you think has not included all native framework functionalities in the optimal way, you are invited to let us know in the comment section of `this <https://github.com/unifyai/ivy/issues/6406>`_ dedicated issue.
 
