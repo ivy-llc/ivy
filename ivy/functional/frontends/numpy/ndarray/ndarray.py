@@ -490,10 +490,10 @@ class ndarray:
         return np_frontend.mod(self, value, out=self)
     
     def ptp(self, *, axis=None, out=None, keepdims=False):
-        xmax = ivy.max(self.ivy_array, axis=None, out=None, keepdims=False, initial=None, where=True)
-        xmin = ivy.min(self.ivy_array, axis=None, out=None, keepdims=False, initial=None, where=True)
-        ret = np_frontend.subtract(xmax, xmin)
         if isinstance(self.ivy_array, int):
             return ivy.flatten(self.ivy_array, order="C")
         else:
+            xmax = ivy.max(self.ivy_array, axis=None, out=None, keepdims=False, initial=None, where=True)
+            xmin = ivy.min(self.ivy_array, axis=None, out=None, keepdims=False, initial=None, where=True)
+            ret = np_frontend.subtract(xmax, xmin)
             return np_frontend.ndarray(ret, _init_overload=True)
