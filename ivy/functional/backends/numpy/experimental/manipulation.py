@@ -361,3 +361,22 @@ def expand(
 
 
 expand.support_native_out = False
+
+
+def concat_from_sequence(
+    input_sequence: Union[Tuple[np.ndarray], List[np.ndarray]],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    is_tuple = type(input_sequence) is tuple
+    if is_tuple:
+        input_sequence = list(input_sequence)
+    if new_axis == 0:
+        ret = np.concatenate(input_sequence, axis=axis)
+        return ret
+    elif new_axis == 1:
+        ret = np.stack(input_sequence, axis=axis)
+        return ret

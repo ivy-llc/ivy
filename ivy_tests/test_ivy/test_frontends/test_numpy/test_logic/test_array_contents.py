@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="numpy.isneginf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         min_value=-np.inf,
         max_value=np.inf,
     ),
@@ -38,7 +38,7 @@ def test_numpy_isneginf(
 @handle_frontend_test(
     fn_tree="numpy.isposinf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         min_value=-np.inf,
         max_value=np.inf,
     ),

@@ -853,10 +853,8 @@ def test_tensorflow_Sign(  # NOQA
 
 @st.composite
 def _get_splits(draw, as_list=False):
-    """
-    Generate valid splits, either by generating an integer that evenly divides the axis
-    or a list of splits that sum to the length of the axis being split.
-    """
+    """Generate valid splits, either by generating an integer that evenly divides the
+    axis or a list of splits that sum to the length of the axis being split."""
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
     axis = draw(
         st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
@@ -1327,6 +1325,37 @@ def test_tensorflow_FloorMod(  # NOQA
     )
 
 
+# FFT
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FFT",
+    dtype_and_x=helpers.dtype_and_values(
+        min_num_dims=1,
+        min_dim_size=2,
+        small_abs_safety_factor=3,
+        safety_factor_scale="log",
+        available_dtypes=helpers.get_dtypes("complex"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_FFT(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 # Exp
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Exp",
@@ -1413,6 +1442,7 @@ def test_tensorflow_Log(  # NOQA
     fn_tree="tensorflow.raw_ops.Log1p",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1523,6 +1553,53 @@ def test_tensorflow_Reshape(  # NOQA
         on_device=on_device,
         tensor=x,
         shape=shape,
+    )
+
+
+# Reverse
+@st.composite
+def reverse_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            max_num_dims=8,
+            ret_shape=True,
+        )
+    )
+    axis_dtype, axis = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["bool"],
+            min_num_dims=1,
+            max_num_dims=1,
+            num_arrays=1,
+            shape=(len(shape),),
+        )
+    )
+    return dtype, x, axis_dtype, axis
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Reverse",
+    dtype_x_axis=reverse_helper(),
+)
+def test_tensorflow_Reverse(
+    *,
+    dtype_x_axis,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    dtype, x, axis_dtype, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype + axis_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        dims=axis[0],
     )
 
 
@@ -3749,4 +3826,36 @@ def test_tensorflow_LeakyReLU(
         on_device=on_device,
         features=x[0],
         alpha=alpha,
+    )
+
+
+# Zeta
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Zeta",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Zeta(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        q=x[1],
     )

@@ -1,5 +1,6 @@
 # global
 import numpy as np
+import jax.numpy as jnp
 from hypothesis import assume, strategies as st
 import random
 from jax.lax import ConvDimensionNumbers
@@ -1825,9 +1826,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         dimension_numbers = (
             ("NCH", "OIH", "NCH")
             if dim == 1
-            else ("NCHW", "OIHW", "NCHW")
-            if dim == 2
-            else ("NCDHW", "OIDHW", "NCDHW")
+            else ("NCHW", "OIHW", "NCHW") if dim == 2 else ("NCDHW", "OIDHW", "NCDHW")
         )
     dim_nums = _dimension_numbers(dimension_numbers, dim + 2, transp=transpose)
     if not transpose:
@@ -2443,6 +2442,98 @@ def test_jax_lax_top_k(
     )
 
 
+@st.composite
+def _reduce_window_helper(draw):
+    dtype = draw(
+        helpers.get_dtypes("numeric", full=False).filter(
+            lambda x: x[0] not in ("bfloat16", "uint64", "uint32")
+        )
+    )
+    init_value = draw(helpers.array_values(dtype=dtype[0], shape=()))
+
+    def py_func(accumulator, window):
+        if not len(window.shape):
+            window = jnp.expand_dims(window, 0)
+        sum = 0
+        for w in window:
+            sum += w
+        return accumulator + sum
+
+    ndim = draw(st.integers(min_value=1, max_value=4))
+
+    _, others = draw(
+        helpers.dtype_and_values(
+            num_arrays=4,
+            dtype=["int64"] * 4,
+            shape=(ndim,),
+            min_value=1,
+            max_value=3,
+            small_abs_safety_factor=1,
+            large_abs_safety_factor=1,
+        )
+    )
+    others = [other.tolist() for other in others]
+
+    window, dilation = others[0], others[2]
+    op_shape = []
+    for i in range(ndim):
+        min_x = window[i] + (window[i] - 1) * (dilation[i] - 1)
+        op_shape.append(draw(st.integers(min_x, min_x + 1)))
+    dtype, operand = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=op_shape,
+        )
+    )
+
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=ndim,
+                max_size=ndim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
+
+    return dtype * 2, operand, init_value, py_func, others, padding
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.reduce_window",
+    all_args=_reduce_window_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_reduce_window(
+    *,
+    all_args,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtypes, operand, init_value, computation, others, padding = all_args
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=operand[0],
+        init_value=init_value,
+        computation=computation,
+        window_dimensions=others[0],
+        window_strides=others[1],
+        padding=padding,
+        base_dilation=others[2],
+        window_dilation=None,
+    )
+
+
 # real
 @handle_frontend_test(
     fn_tree="jax.lax.real",
@@ -2544,3 +2635,38 @@ def test_jax_lax_squeeze(
      )
 
 
+
+# nextafter
+@handle_frontend_test(
+    fn_tree="jax.lax.nextafter",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_nextafter(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[0],
+    )

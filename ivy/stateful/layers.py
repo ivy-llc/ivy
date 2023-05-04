@@ -29,10 +29,10 @@ class Linear(Module):
         dtype=None,
     ):
         """
-        Linear layer, also referred to as dense or fully connected. The layer
-        receives tensors with input_channels last dimension and returns a new tensor
-        with output_channels last dimension, following matrix multiplication with the
-        weight matrix and addition with the bias vector.
+        Linear layer, also referred to as dense or fully connected. The layer receives
+        tensors with input_channels last dimension and returns a new tensor with
+        output_channels last dimension, following matrix multiplication with the weight
+        matrix and addition with the bias vector.
 
         Parameters
         ----------
@@ -55,8 +55,6 @@ class Linear(Module):
         dtype
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
-
-
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -69,7 +67,7 @@ class Linear(Module):
 
     def _create_variables(self, device, dtype=None):
         """
-        Create internal variables for the layer
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -79,9 +77,6 @@ class Linear(Module):
         dtype
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
-
-
-
         """
         v = {
             "w": self._w_init.create_variables(
@@ -152,7 +147,7 @@ class Dropout(Module):
 
     def _create_variables(self, device, dtype=None):
         """
-        Create internal variables for the layer
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -162,8 +157,6 @@ class Dropout(Module):
         dtype
             the desired data type of the internal variables to be created .
             Default is ``None``.
-
-
         """
         return {}
 
@@ -255,7 +248,6 @@ class MultiHeadAttention(Module):
         dtype
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
-
         """
         v_exists = ivy.exists(v)
         self._query_dim = query_dim
@@ -431,7 +423,7 @@ class Conv1D(Module):
 
     def _create_variables(self, device, dtype=None):
         """
-        Create internal variables for the layer
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -441,7 +433,6 @@ class Conv1D(Module):
         dtype
             the desired data type of the internal variables to be created.
              Default is ``None``.
-
         """
         return {
             "w": self._w_init.create_variables(
@@ -473,7 +464,6 @@ class Conv1D(Module):
         -------
         ret
             The outputs following the conv1d layer *[batch_size,new_w,d_out]*
-
         """
         return (
             ivy.conv1d(
@@ -560,7 +550,8 @@ class Conv1DTranspose(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """Create internal variables for the layer
+        """
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -589,7 +580,8 @@ class Conv1DTranspose(Module):
         }
 
     def _forward(self, inputs):
-        """Perform forward pass of the Conv1DTranspose layer.
+        """
+        Perform forward pass of the Conv1DTranspose layer.
 
         Parameters
         ----------
@@ -600,7 +592,6 @@ class Conv1DTranspose(Module):
         -------
         ret
             The outputs following the conv1d layer *[batch_size,new_w,d_out]*
-
         """
         return (
             ivy.conv1d_transpose(
@@ -634,7 +625,8 @@ class Conv2D(Module):
         v=None,
         dtype=None,
     ):
-        """2D convolutional layer.
+        """
+        2D convolutional layer.
 
         Parameters
         ----------
@@ -685,7 +677,8 @@ class Conv2D(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """Create internal variables for the layer
+        """
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -695,7 +688,6 @@ class Conv2D(Module):
         dtype
             the desired data type of the internal variables to be created.
             Default is ``None``.
-
         """
         return {
             "w": self._w_init.create_variables(
@@ -715,7 +707,8 @@ class Conv2D(Module):
         }
 
     def _forward(self, inputs):
-        """Perform forward pass of the Conv2D layer.
+        """
+        Perform forward pass of the Conv2D layer.
 
         Parameters
         ----------
@@ -726,7 +719,6 @@ class Conv2D(Module):
         -------
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
-
         """
         return (
             ivy.conv2d(
@@ -760,7 +752,8 @@ class Conv2DTranspose(Module):
         v=None,
         dtype=None,
     ):
-        """2D convolutional transpose layer.
+        """
+        2D convolutional transpose layer.
 
         Parameters
         ----------
@@ -814,7 +807,8 @@ class Conv2DTranspose(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """Create internal variables for the layer
+        """
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -824,7 +818,6 @@ class Conv2DTranspose(Module):
         dtype
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
-
         """
         return {
             "w": self._w_init.create_variables(
@@ -844,7 +837,8 @@ class Conv2DTranspose(Module):
         }
 
     def _forward(self, inputs):
-        """Perform forward pass of the Conv2DTranspose layer.
+        """
+        Perform forward pass of the Conv2DTranspose layer.
 
         Parameters
         ----------
@@ -855,7 +849,6 @@ class Conv2DTranspose(Module):
         -------
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
-
         """
         return (
             ivy.conv2d_transpose(
@@ -937,7 +930,8 @@ class DepthwiseConv2D(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype):
-        """Create internal variables for the layer
+        """
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -947,7 +941,6 @@ class DepthwiseConv2D(Module):
         dtype
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
-
         """
         return {
             "w": self._w_init.create_variables(
@@ -967,7 +960,8 @@ class DepthwiseConv2D(Module):
         }
 
     def _forward(self, inputs):
-        """Perform forward pass of the DepthwiseConv2D layer.
+        """
+        Perform forward pass of the DepthwiseConv2D layer.
 
         Parameters
         ----------
@@ -978,7 +972,6 @@ class DepthwiseConv2D(Module):
         -------
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
-
         """
         return (
             ivy.depthwise_conv2d(
@@ -1011,7 +1004,8 @@ class Conv3D(Module):
         v=None,
         dtype=None,
     ):
-        """3D convolutional layer.
+        """
+        3D convolutional layer.
 
         Parameters
         ----------
@@ -1062,7 +1056,8 @@ class Conv3D(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """Create internal variables for the layer
+        """
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -1072,7 +1067,6 @@ class Conv3D(Module):
         dtype
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
-
         """
         return {
             "w": self._w_init.create_variables(
@@ -1092,7 +1086,8 @@ class Conv3D(Module):
         }
 
     def _forward(self, inputs):
-        """Perform forward pass of the Conv3D layer.
+        """
+        Perform forward pass of the Conv3D layer.
 
         Parameters
         ----------
@@ -1137,7 +1132,8 @@ class Conv3DTranspose(Module):
         v=None,
         dtype=None,
     ):
-        """3D convolutional transpose layer.
+        """
+        3D convolutional transpose layer.
 
         Parameters
         ----------
@@ -1192,7 +1188,8 @@ class Conv3DTranspose(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """Create internal variables for the layer
+        """
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -1202,7 +1199,6 @@ class Conv3DTranspose(Module):
         dtype
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
-
         """
         return {
             "w": self._w_init.create_variables(
@@ -1222,7 +1218,8 @@ class Conv3DTranspose(Module):
         }
 
     def _forward(self, inputs):
-        """Perform forward pass of the Conv3DTranspose layer.
+        """
+        Perform forward pass of the Conv3DTranspose layer.
 
         Parameters
         ----------
@@ -1268,7 +1265,8 @@ class LSTM(Module):
         v=None,
         dtype=None,
     ):
-        """LSTM layer, which is a set of stacked lstm cells.
+        """
+        LSTM layer, which is a set of stacked lstm cells.
 
         Parameters
         ----------
@@ -1308,8 +1306,8 @@ class LSTM(Module):
     # Public #
 
     def get_initial_state(self, batch_shape, dtype=None):
-        """Get the initial state of the hidden and cell states, if not provided
-        explicitly
+        """
+        Get the initial state of the hidden and cell states, if not provided explicitly.
 
         Parameters
         ----------
@@ -1317,7 +1315,6 @@ class LSTM(Module):
         dtype
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
-
         """
         batch_shape = list(batch_shape)
         return (
@@ -1334,7 +1331,8 @@ class LSTM(Module):
     # Overridden
 
     def _create_variables(self, device, dtype=None):
-        """Create internal variables for the layer
+        """
+        Create internal variables for the layer.
 
         Parameters
         ----------
@@ -1344,7 +1342,6 @@ class LSTM(Module):
         dtype
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
-
         """
         input_weights = dict(
             zip(
@@ -1353,9 +1350,11 @@ class LSTM(Module):
                     {
                         "w": self._w_init.create_variables(
                             (
-                                self._input_channels
-                                if i == 0
-                                else self._output_channels,
+                                (
+                                    self._input_channels
+                                    if i == 0
+                                    else self._output_channels
+                                ),
                                 4 * self._output_channels,
                             ),
                             device,
@@ -1389,7 +1388,8 @@ class LSTM(Module):
 
     @handle_nestable
     def _forward(self, inputs, initial_state=None):
-        """Perform forward pass of the LSTM layer.
+        """
+        Perform forward pass of the LSTM layer.
 
         Parameters
         ----------
@@ -1405,7 +1405,6 @@ class LSTM(Module):
         ret
             The outputs of the final lstm layer *[batch_shape, t, out]* and the hidden
             state tuple of lists, each of dimension *[batch_shape, out]*
-
         """
         if initial_state is None:
             initial_state = self.get_initial_state(
@@ -1430,3 +1429,101 @@ class LSTM(Module):
         if not self._return_state:
             return h_t
         return h_t, (h_n_list, c_n_list)
+
+
+# Pooling #
+# --------#
+
+
+class MaxPool2D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        device=None,
+        v=None,
+        dtype=None,
+    ):
+        """
+        Class for applying Max Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.max_pool2d(inputs, self._kernel_size, self._stride, self._padding)
+
+
+class AvgPool2D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        device=None,
+        v=None,
+        dtype=None,
+    ):
+        """
+        Class for applying Average Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.avg_pool2d(inputs, self._kernel_size, self._stride, self._padding)

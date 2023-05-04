@@ -21,6 +21,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         small_abs_safety_factor=4,
     ),
     test_gradients=st.just(False),
+    ground_truth_backend=st.just("jax"),
 )
 def test_sinc(
     *,
@@ -29,13 +30,14 @@ def test_sinc(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=1e-02,
-        ground_truth_backend="jax",
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -57,6 +59,7 @@ def test_sinc(
         allow_nan=False,
     ),
     test_gradients=st.just(False),
+    ground_truth_backend=st.just("numpy"),
 )
 def test_lcm(
     dtype_and_x,
@@ -64,13 +67,14 @@ def test_lcm(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="numpy",
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
@@ -94,6 +98,7 @@ def test_lcm(
         allow_nan=True,
     ),
     test_gradients=st.just(False),
+    ground_truth_backend=st.just("jax"),
 )
 def test_fmax(
     dtype_and_x,
@@ -109,7 +114,7 @@ def test_fmax(
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
-        ground_truth_backend="jax",
+        ground_truth_backend=ground_truth_backend,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -333,6 +338,7 @@ def test_exp2(
         shared_dtype=False,
     ),
     test_gradients=st.just(False),
+    ground_truth_backend=st.just("torch"),
 )
 def test_copysign(
     dtype_x1_x2,
@@ -340,13 +346,14 @@ def test_copysign(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     (x1_dtype, x2_dtype), (x1, x2) = dtype_x1_x2
     helpers.test_function(
         input_dtypes=[x1_dtype, x2_dtype],
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="torch",
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
         x1=x1,
@@ -532,6 +539,7 @@ def test_gcd(
     atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True),
     equal_nan=st.booleans(),
     test_gradients=st.just(False),
+    ground_truth_backend=st.just("numpy"),
 )
 def test_isclose(
     *,
@@ -844,7 +852,6 @@ def test_nextafter(
         valid_axis=True,
         force_int_axis=True,
     ),
-    n=st.integers(min_value=0, max_value=5),
     dtype_prepend=helpers.dtype_and_values(
         available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
         min_num_dims=1,
@@ -855,6 +862,7 @@ def test_nextafter(
         min_num_dims=1,
         max_num_dims=1,
     ),
+    n=st.integers(min_value=0, max_value=5),
     test_gradients=st.just(False),
 )
 def test_diff(
@@ -1112,7 +1120,6 @@ def test_conj(
     on_device,
     ground_truth_backend,
 ):
-
     input_dtype, x = dtype_and_x
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,

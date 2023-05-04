@@ -1,5 +1,8 @@
-"""Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax and
-signature.
+"""
+Tensorflow gradient functions.
+
+Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax
+and signature.
 """
 
 # global
@@ -8,6 +11,7 @@ from typing import Sequence, Union, Optional, Callable
 
 # local
 import ivy
+from ivy.func_wrapper import outputs_to_ivy_arrays, inputs_to_native_arrays
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -168,14 +172,53 @@ def jac(func: Callable):
     return callback_fn
 
 
-def grad(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+def grad(f, argnums=0):
+    if grad.nth == 0:
+        grad.f_original = f
 
-    def callback_fn(x_in):
-        with tf.GradientTape() as tape:
-            x_in = ivy.to_native(ivy.array(x_in))
-            tape.watch(x_in)
-            y = grad_fn(x_in)
-        return ivy.to_ivy(tape.gradient(y, x_in))
+    def _nth_derivative(n):
+        @outputs_to_ivy_arrays
+        @inputs_to_native_arrays
+        def _inner(*args, **kwargs):
+            max_argnum = argnums if isinstance(argnums, int) else max(argnums)
+            if max_argnum >= len(args):
+                raise TypeError(
+                    f"differentiating with respect to {argnums=} requires at least "
+                    f"{max_argnum + 1} positional arguments to be passed by the "
+                    f"caller, but got only {len(args)} positional arguments."
+                )
+            if isinstance(argnums, int):
+                x = args[argnums]
+            elif isinstance(argnums, (tuple, list)):
+                x = []
+                for i in argnums:
+                    x.append(args[i])
+            else:
+                raise TypeError(
+                    "argnums should be passed as int or a list/tuple of ints."
+                    f" Found {type(argnums)}"
+                )
+            if n == 0:
+                ret = (
+                    grad.f_original(*args, **kwargs)
+                    if grad.f_original is not None
+                    else f(*args, **kwargs)
+                )
+                grad.nth = 0
+                return ret
+            else:
+                with tf.GradientTape() as tape:
+                    tape.watch(x)
+                    y = _nth_derivative(n - 1)(*args, *kwargs)
+                    ret = tape.gradient(y, x)
+                return ret
 
-    return callback_fn
+        return _inner
+
+    grad.nth += 1
+
+    return _nth_derivative(grad.nth)
+
+
+grad.f_original = None
+grad.nth = 0
