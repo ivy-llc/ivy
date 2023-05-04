@@ -173,7 +173,9 @@ def as_native_dtype(dtype_in: Union[(None, str, bool, int, float, np.dtype)]) ->
 def dtype(
     x: Union[(None, mx.ndarray.NDArray, np.ndarray)], *, as_native: bool = False
 ) -> ivy.Dtype:
-    raise NotImplementedError("mxnet.dtype Not Implemented")
+    if as_native:
+        return ivy.as_native_dtype(x.dtype)
+    return as_ivy_dtype(x.dtype)
 
 
 def dtype_bits(dtype_in: Union[(None, str, np.dtype)], /) -> int:
