@@ -156,8 +156,6 @@ def as_native_dtype(dtype_in: Union[(None, str, bool, int, float, np.dtype)]) ->
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
         return ivy.default_float_dtype(as_native=True)
-    if dtype_in is complex:
-        return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return np.dtype("bool")
     if not isinstance(dtype_in, str):
@@ -168,7 +166,7 @@ def as_native_dtype(dtype_in: Union[(None, str, bool, int, float, np.dtype)]) ->
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(
-            f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
+            f"Cannot convert to MXNet dtype. {dtype_in} is not supported by MXNet."
         )
 
 
