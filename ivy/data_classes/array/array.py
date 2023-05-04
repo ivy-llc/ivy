@@ -384,8 +384,10 @@ class Array(
         try:
             if ivy.current_backend_str() == "torch":
                 self._data = self._data.detach()
+            if ivy.is_ivy_array(val):
+                val = val.data
             self._data.__setitem__(query, val)
-        except (AttributeError, TypeError, ValueError):
+        except:
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
             self._dtype = ivy.dtype(self._data)
 
@@ -409,9 +411,11 @@ class Array(
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        ivy.set_backend(state["backend"]) if state["backend"] is not None and len(
-            state["backend"]
-        ) > 0 else ivy.current_backend(state["data"])
+        (
+            ivy.set_backend(state["backend"])
+            if state["backend"] is not None and len(state["backend"]) > 0
+            else ivy.current_backend(state["data"])
+        )
         ivy_array = ivy.array(state["data"])
         ivy.previous_backend()
 

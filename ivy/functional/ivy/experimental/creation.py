@@ -587,9 +587,6 @@ def eye_like(
     )
 
 
-eye_like.mixed_function = True
-
-
 @outputs_to_ivy_arrays
 @handle_nestable
 def frombuffer(

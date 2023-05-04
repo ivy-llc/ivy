@@ -53,7 +53,7 @@ jobs:
           mkdir -p examples
         continue-on-error: true
 
-      - name: Run Array Api Tests
+      - name: Run Array API Tests
         id: tests
         run: |
           cd ivy
