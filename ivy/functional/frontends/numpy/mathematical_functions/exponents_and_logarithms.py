@@ -224,7 +224,8 @@ def i0(x):
 def _frexp(
     x,
     /,
-    out=None,
+    out1_2=(None, None),
+    out=(None, None),
     *,
     where=True,
     casting="same_kind",

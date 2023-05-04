@@ -11,7 +11,7 @@ except ImportError:
 
 
 def seed() -> int:
-    """Returns a 64 bit number used to seed the RNG"""
+    """Return a 64 bit number used to seed the RNG."""
     return int(ivy.randint(-(2**63), 2**63 - 1))
 
 
@@ -54,6 +54,29 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
 @to_ivy_arrays_and_back
 def poisson(input, generator=None):
     return ivy.poisson(input, shape=None)
+
+
+@to_ivy_arrays_and_back
+def randint(
+    low,
+    high,
+    size,
+    *,
+    generator=None,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    return ivy.randint(
+        low,
+        high,
+        shape=size,
+        out=out,
+        dtype=dtype,
+        device=device,
+    )
 
 
 @to_ivy_arrays_and_back
@@ -164,3 +187,21 @@ def randn_like(
 @to_ivy_arrays_and_back
 def bernoulli(input, *, generator=None, out=None):
     return ivy.bernoulli(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def randperm(
+    n,
+    *,
+    generator=None,
+    out=None,
+    dtype=ivy.int64,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False
+):
+    arr = ivy.arange(n, device=device, dtype=dtype)
+    ret = ivy.shuffle(arr, out=out)
+
+    return ret

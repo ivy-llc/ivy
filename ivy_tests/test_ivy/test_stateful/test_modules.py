@@ -480,7 +480,6 @@ def test_top_variables(batch_shape, input_channels, output_channels, on_device):
         "dl1/l1/b",
         "dl1/l1/w",
     ]:
-
         # depth 1
         assert key_chain in module._dl0.top_v()
         assert key_chain in module._dl1.top_v()

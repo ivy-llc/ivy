@@ -115,6 +115,8 @@ def identity(n, dtype=None):
 
 @to_ivy_arrays_and_back
 def ndim(a):
+    if not isinstance(a, ivy.Array):
+        return 0
     return ivy.astype(ivy.array(a.ndim), ivy.int64)
 
 
@@ -185,6 +187,11 @@ def single(x):
 
 
 @to_ivy_arrays_and_back
+def double(x):
+    return ivy.astype(x, ivy.float64)
+
+
+@to_ivy_arrays_and_back
 def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
     x = ivy.linspace(
@@ -196,3 +203,13 @@ def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     if endpoint:
         x[-1] = stop
     return x.asarray(dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def csingle(x):
+    return ivy.astype(x, ivy.complex64)
+
+
+@to_ivy_arrays_and_back
+def cdouble(x):
+    return ivy.astype(x, ivy.complex128)

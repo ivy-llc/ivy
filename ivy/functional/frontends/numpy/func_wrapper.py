@@ -6,12 +6,12 @@ import platform
 
 # local
 import ivy
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 import ivy.functional.frontends.numpy as np_frontend
 
 
 # Helpers #
 # ------- #
+
 
 # general casting
 def _assert_array(args, dtype, scalar_check=False, casting="safe"):
@@ -35,10 +35,12 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
             if assert_fn:
                 ivy.utils.assertions.check_all_or_any_fn(
                     *args,
-                    fn=lambda x: assert_fn(x)
-                    if ivy.shape(x) == ()
-                    else np_frontend.can_cast(
-                        x, ivy.as_ivy_dtype(dtype), casting=casting
+                    fn=lambda x: (
+                        assert_fn(x)
+                        if ivy.shape(x) == ()
+                        else np_frontend.can_cast(
+                            x, ivy.as_ivy_dtype(dtype), casting=casting
+                        )
                     ),
                     type="all",
                     message="type of input is incompatible with dtype: {}".format(
@@ -71,8 +73,8 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
         fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
         assert_fn = lambda x: ivy.dtype(x) == fn_func
         if scalar_check:
-            assert_fn = (
-                lambda x: ivy.dtype(x) == fn_func
+            assert_fn = lambda x: (
+                ivy.dtype(x) == fn_func
                 if ivy.shape(x) != ()
                 else _casting_no_special_case(ivy.dtype(x), fn_func, none)
             )
@@ -131,7 +133,7 @@ def _assert_no_scalar(args, dtype, none=False):
 
 def handle_numpy_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, dtype=None, **kwargs):
+    def _handle_numpy_dtype(*args, dtype=None, **kwargs):
         if len(args) > (dtype_pos + 1):
             dtype = args[dtype_pos]
             kwargs = {
@@ -152,13 +154,13 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
-    new_fn.handle_numpy_dtype = True
-    return new_fn
+    _handle_numpy_dtype.handle_numpy_dtype = True
+    return _handle_numpy_dtype
 
 
 def handle_numpy_casting(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, casting="same_kind", dtype=None, **kwargs):
+    def _handle_numpy_casting(*args, casting="same_kind", dtype=None, **kwargs):
         """
         Check numpy casting type.
 
@@ -214,13 +216,13 @@ def handle_numpy_casting(fn: Callable) -> Callable:
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_numpy_casting = True
-    return new_fn
+    _handle_numpy_casting.handle_numpy_casting = True
+    return _handle_numpy_casting
 
 
 def handle_numpy_casting_special(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, casting="same_kind", dtype=None, **kwargs):
+    def _handle_numpy_casting_special(*args, casting="same_kind", dtype=None, **kwargs):
         """
         Check numpy casting type for special cases where output must be type bool.
 
@@ -250,8 +252,8 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_numpy_casting_special = True
-    return new_fn
+    _handle_numpy_casting_special.handle_numpy_casting_special = True
+    return _handle_numpy_casting_special
 
 
 def _numpy_frontend_to_ivy(x: Any) -> Any:
@@ -263,7 +265,7 @@ def _numpy_frontend_to_ivy(x: Any) -> Any:
 
 def _ivy_to_numpy(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = ndarray(x, _init_overload=True)
+        a = np_frontend.ndarray(x, _init_overload=True)
         return a
     else:
         return x
@@ -271,7 +273,9 @@ def _ivy_to_numpy(x: Any) -> Any:
 
 def _ivy_to_numpy_order_F(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = ndarray(0, order="F")  # TODO Find better initialisation workaround
+        a = np_frontend.ndarray(
+            0, order="F"
+        )  # TODO Find better initialisation workaround
         a.ivy_array = x
         return a
     else:
@@ -291,7 +295,7 @@ def _to_ivy_array(x):
 def _check_C_order(x):
     if isinstance(x, ivy.Array):
         return True
-    elif isinstance(x, ndarray):
+    elif isinstance(x, np_frontend.ndarray):
         if x._f_contiguous:
             return False
         else:
@@ -321,11 +325,13 @@ def _set_order(args, order):
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_ivy_arrays_np(*args, **kwargs):
         """
-        Converts all `ndarray` instances in both the positional and keyword
-        arguments into `ivy.Array` instances, and then calls the function with the
-        updated arguments.
+        Convert `ndarray` into `ivy.Array` instances.
+
+        Convert all `ndarray` instances in both the positional and keyword arguments
+        into `ivy.Array` instances, and then calls the function with the updated
+        arguments.
 
         Parameters
         ----------
@@ -345,17 +351,20 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         return fn(*ivy_args, **ivy_kwargs)
 
-    new_fn.inputs_to_ivy_arrays = True
-    return new_fn
+    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays = True
+    return _inputs_to_ivy_arrays_np
 
 
 def outputs_to_numpy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, order="K", **kwargs):
+    def _outputs_to_numpy_arrays(*args, order="K", **kwargs):
         """
-        Calls the function, and then converts all `ivy.Array` instances returned
-        by the function into `ndarray` instances.
-           The return of the function, with ivy arrays as numpy arrays.
+        Convert `ivy.Array` into `ndarray` instances.
+
+        Call the function, and then converts all `ivy.Array` instances
+        returned by the function into `ndarray` instances.
+
+        The return of the function, with ivy arrays as numpy arrays.
         """
         # handle order and call unmodified function
         # ToDo: Remove this default dtype setting
@@ -364,9 +373,11 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
-            ivy.set_default_int_dtype(
-                "int64"
-            ) if platform.system() != "Windows" else ivy.set_default_int_dtype("int32")
+            (
+                ivy.set_default_int_dtype("int64")
+                if platform.system() != "Windows"
+                else ivy.set_default_int_dtype("int32")
+            )
             ivy.set_default_float_dtype("float64")
             set_default_dtype = True
         if contains_order:
@@ -402,24 +413,29 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
-    new_fn.outputs_to_numpy_arrays = True
-    return new_fn
+    _outputs_to_numpy_arrays.outputs_to_numpy_arrays = True
+    return _outputs_to_numpy_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     """
-    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
-    and return arrays are all converted to `ndarray` instances.
+    Wrap `fn` so it receives and returns `ivy.Array` instances.
+
+    Wrap `fn` so that input arrays are all converted to `ivy.Array`
+    instances and return arrays are all converted to `ndarray`
+    instances.
     """
     return outputs_to_numpy_arrays(inputs_to_ivy_arrays(fn))
 
 
 def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _from_zero_dim_arrays_to_scalar(*args, **kwargs):
         """
-        Calls the function, and then converts all 0 dimensional array instances in
-        the function to float numbers if out argument is not provided.
+        Convert 0 dimensional arrays to float numbers.
+
+        Call the function, and then converts all 0 dimensional array instances in the
+        function to float numbers if out argument is not provided.
 
         Parameters
         ----------
@@ -465,13 +481,13 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                         )
         return ret
 
-    new_fn.from_zero_dim_arrays_to_scalar = True
-    return new_fn
+    _from_zero_dim_arrays_to_scalar.from_zero_dim_arrays_to_scalar = True
+    return _from_zero_dim_arrays_to_scalar
 
 
 def handle_numpy_out(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, out=None, **kwargs):
+    def _handle_numpy_out(*args, out=None, **kwargs):
         if len(args) > (out_pos + 1):
             out = args[out_pos]
             kwargs = {
@@ -490,7 +506,7 @@ def handle_numpy_out(fn: Callable) -> Callable:
             out = args[out_pos]
             args = args[:-1]
         if ivy.exists(out):
-            if not ivy.nested_any(out, lambda x: isinstance(x, ndarray)):
+            if not ivy.nested_any(out, lambda x: isinstance(x, np_frontend.ndarray)):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
                 )
@@ -498,5 +514,5 @@ def handle_numpy_out(fn: Callable) -> Callable:
         return fn(*args, **kwargs)
 
     out_pos = list(inspect.signature(fn).parameters).index("out")
-    new_fn.handle_numpy_out = True
-    return new_fn
+    _handle_numpy_out.handle_numpy_out = True
+    return _handle_numpy_out

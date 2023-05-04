@@ -1,4 +1,7 @@
-"""Collection of Paddle activation functions, wrapped to fit Ivy syntax and
+"""
+Paddle activation functions.
+
+Collection of Paddle activation functions, wrapped to fit Ivy syntax and
 signature.
 """
 from typing import Optional, Union
@@ -145,18 +148,17 @@ def log_softmax(
     axis: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ):
-    x = ivy.array(x)
-    x_max = ivy.max(x, axis=axis, keepdims=True)
-    if x_max.ndim > 0:
-        x_max[~ivy.isfinite(x_max)] = 0
-    elif not ivy.isfinite(x_max):
-        x_max = 0
-    exp_tmp = ivy.exp(x - x_max)
+    if axis is None:
+        axis = -1
+    with ivy.ArrayMode(False):
+        x_max = ivy.max(x, axis=axis, keepdims=True)
+        x_max = ivy.where(ivy.isfinite(x_max), x_max, ivy.zeros_like(x_max))
+        exp_tmp = ivy.exp(ivy.subtract(x, x_max))
 
-    s = ivy.sum(exp_tmp, axis=axis, keepdims=True)
-    ret = ivy.log(s)
-    ret = x - x_max - ret
-    return ret
+        s = ivy.sum(exp_tmp, axis=axis, keepdims=True)
+        ret = ivy.log(s)
+        ret = ivy.subtract(ivy.subtract(x, x_max), ret)
+        return ret
 
 
 @with_unsupported_device_and_dtypes(

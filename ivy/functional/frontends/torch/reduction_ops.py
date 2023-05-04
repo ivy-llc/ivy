@@ -95,7 +95,7 @@ def median(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def std(input, dim, unbiased, keepdim=False, *, out=None):
+def std(input, dim=None, unbiased=True, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 
 
@@ -109,13 +109,10 @@ def std(input, dim, unbiased, keepdim=False, *, out=None):
     },
     "torch",
 )
-# TODO: the original torch.prod places * right before `dtype`
-def prod(input, dim, *, keepdim=False, dtype=None):
+def prod(input, dim=None, keepdim=False, *, dtype=None):
     if not dtype:
         if "int" in input.dtype:
             dtype = ivy.int64
-        elif "float" in input.dtype:
-            dtype = ivy.float32
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
 
@@ -230,3 +227,24 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
         c = ivy.squeeze(c, axis=dim)
     ret = ivy.add(ret, c, out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
+    results = ivy.unique_all(input, axis=dim)
+
+    fields = ["values"]
+    if return_inverse:
+        fields.append("inverse_indices")
+    if return_counts:
+        fields.append("counts")
+
+    Results = namedtuple("Results", fields)
+
+    values = [results.values]
+    if return_inverse:
+        values.append(results.inverse_indices)
+    if return_counts:
+        values.append(results.counts)
+
+    return Results(*values)

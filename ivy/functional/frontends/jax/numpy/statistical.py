@@ -153,7 +153,6 @@ amax = max
 
 @to_ivy_arrays_and_back
 def average(a, axis=None, weights=None, returned=False, keepdims=False):
-
     # canonicalize_axis to ensure axis or the values in axis > 0
     if isinstance(axis, tuple) or isinstance(axis, list):
         a_ndim = len(ivy.shape(a))
@@ -161,8 +160,7 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
         for i, v in enumerate(axis):
             if not -a_ndim <= v < a_ndim:
                 raise ValueError(
-                    f"axis {v} is out of bounds for array of \
-                    dimension {a_ndim}"
+                    f"axis {v} is out of bounds for array of dimension {a_ndim}"
                 )
             if v < 0:
                 new_axis[i] = v + a_ndim
@@ -198,23 +196,19 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
         if a_shape != weights_shape:
             if len(weights_shape) != 1:
                 raise ValueError(
-                    "1D weights expected when shapes of a and \
-                    weights differ."
+                    "1D weights expected when shapes of a and weights differ."
                 )
             if axis is None:
                 raise ValueError(
-                    "Axis must be specified when shapes of a and \
-                    weights differ."
+                    "Axis must be specified when shapes of a and weights differ."
                 )
             elif isinstance(axis, tuple):
                 raise ValueError(
-                    "Single axis expected when shapes of a and \
-                    weights differ"
+                    "Single axis expected when shapes of a and weights differ"
                 )
             elif not weights.shape[0] == a.shape[axis]:
                 raise ValueError(
-                    "Length of weights not compatible with \
-                    specified axis."
+                    "Length of weights not compatible with specified axis."
                 )
 
             weights = ivy.broadcast_to(
@@ -402,7 +396,7 @@ def nancumprod(a, axis=None, dtype=None, out=None):
 
 
 @handle_jax_dtype
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "jax")
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis

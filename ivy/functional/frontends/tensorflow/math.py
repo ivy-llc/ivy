@@ -9,6 +9,15 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def imag(input, name=None):
+    return ivy.imag(input)
+
+
 @to_ivy_arrays_and_back
 def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
     return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
@@ -23,6 +32,11 @@ def add(x, y, name=None):
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     return ivy.exp(x)
+
+
+@to_ivy_arrays_and_back
+def expm1(x, name=None):
+    return ivy.expm1(x)
 
 
 @to_ivy_arrays_and_back
@@ -182,6 +196,16 @@ def is_strictly_increasing(x, name="is_strictly_increasing"):
 @to_ivy_arrays_and_back
 def log_sigmoid(x, name=None):
     return -ivy.softplus(-x)
+
+
+@to_ivy_arrays_and_back
+def logical_not(x, name="logical_not"):
+    return ivy.logical_not(x)
+
+
+@to_ivy_arrays_and_back
+def log1p(x, name=None):
+    return ivy.log1p(x)
 
 
 @to_ivy_arrays_and_back
@@ -449,6 +473,11 @@ def floor(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def floordiv(x, y, name=None):
+    return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
 
@@ -490,7 +519,7 @@ def nextafter(x1, x2, name=None):
 @with_unsupported_dtypes(
     {
         "1.2.0": ("float16", "complex64", "complex128"),
-        "1.8.0 and below": ("float16"),
+        "1.8.0 and below": ("float16",),
         "2.9.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
     },
     "tensorflow",
@@ -594,7 +623,7 @@ def sinh(x, name=None):
 
 
 @to_ivy_arrays_and_back
-def softmax(logits, axis=-1):
+def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
@@ -611,3 +640,31 @@ def xlogy(x, y, name=None):
 @to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
+
+
+@to_ivy_arrays_and_back
+def angle(input, name=None):
+    return ivy.angle(input)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": ("float32", "float64"),
+    },
+    "tensorflow",
+)
+def zeta(x, q, name=None):
+    return ivy.zeta(x, q)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater_equal(x, y)
+
+
+@to_ivy_arrays_and_back
+def in_top_k(target, pred, k, name=None):
+    top_k = ivy.top_k(target, k)
+    return ivy.array([val in top_k.values for val in target])

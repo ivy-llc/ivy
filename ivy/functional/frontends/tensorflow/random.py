@@ -37,3 +37,11 @@ def stateless_uniform(
     return ivy.random_uniform(
         shape=shape, seed=seed[0] + seed[1], low=minval, high=maxval, dtype=dtype
     )
+
+
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
+    return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed)
