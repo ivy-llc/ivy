@@ -1468,7 +1468,7 @@ def test_tensorflow_pool(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, strides, padding = x_k_s_p_df
+    input_dtype, x, ksize, strides, padding = x_k_s_p_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
