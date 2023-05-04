@@ -314,6 +314,29 @@ class Shape:
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
 
+    def __delattr__(self, item):
+        return super().__delattr__(item)
+
+    def __hash__(self):
+        return hash(self._shape)
+
+    def __setattr__(self, item):
+        return super().__setattr__(item)
+
+    def __str__(self):
+        return "?" if self._shape is None else str(self._shape)
+
+    def __sizeof__(self):
+        return len(self._shape) if self._shape is not None else 0
+
+    def __iter__(self):
+        if self._dims is None:
+            raise ValueError("Cannot iterate over a shape")
+        return iter(d for d in self._shape)
+
+    def __dir__(self):
+        return self._shape.__dir__()
+
     @property
     def shape(self):
         return self._shape
