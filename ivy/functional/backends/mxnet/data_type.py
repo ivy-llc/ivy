@@ -5,7 +5,21 @@ import ivy
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 ivy_dtype_dict = {
-    None: "bool",
+    np.dtype("int8"): "int8",
+    np.dtype("int32"): "int32",
+    np.dtype("int64"): "int64",
+    np.dtype("uint8"): "uint8",
+    np.dtype("float16"): "float16",
+    np.dtype("float32"): "float32",
+    np.dtype("float64"): "float64",
+    np.dtype("bool"): "bool",
+    np.int8: "int8",
+    np.int32: "int32",
+    np.int64: "int64",
+    np.uint8: "uint8",
+    np.float16: "float16",
+    np.float32: "float32",
+    np.float64: "float64",
 }
 native_dtype_dict = {
     "int8": np.int8,
