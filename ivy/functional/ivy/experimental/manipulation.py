@@ -1630,12 +1630,11 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-def _check_bounds(shape0, strides0, shape1, strides1, itemsize):
-    ndim0 = len(shape0)
+def _check_bounds(shape0, shape1, strides1, itemsize):
+    numel0 = math.prod(shape0)
     ndim1 = len(shape1)
-    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + sum(
-        strides1[i] - strides0[i] for i in range(min(ndim0, ndim1))
-    ) <= sum((shape0[i] - 1) * itemsize for i in range(ndim0))
+    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + itemsize <= \
+        numel0 * itemsize
 
 
 @inputs_to_native_shapes
@@ -1676,7 +1675,7 @@ def as_strided(
        [4, 5, 6]])
     """
     itemsize = x.itemsize
-    if not _check_bounds(x.shape, x.strides, shape, strides, itemsize):
+    if not _check_bounds(x.shape, shape, strides, itemsize):
         raise ivy.exceptions.IvyException("attempted unsafe memory access")
     if any(strides[i] % itemsize != 0 for i in range(len(strides))):
         raise ivy.exceptions.IvyException("strides must be multiple of itemsize")
