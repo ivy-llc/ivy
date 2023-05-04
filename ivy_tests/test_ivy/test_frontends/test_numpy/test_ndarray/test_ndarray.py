@@ -2915,21 +2915,19 @@ def test_numpy_instance_mod__(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="ptp",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_axis=-1,
-        max_axis=0,
+    ret_np_flat=np_frontend_helpers._flatten_frontend_return(
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_numpy_instance_ptp(
-    dtype_x_axis,
+    ret_np_flat,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, x, axis = ret_np_flat
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         method_input_dtypes=input_dtypes,
@@ -2944,4 +2942,4 @@ def test_numpy_instance_ptp(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
-    )        
+    )
