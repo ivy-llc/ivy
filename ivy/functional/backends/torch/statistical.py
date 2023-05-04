@@ -280,7 +280,6 @@ def cummin(
     /,
     *,
     axis: int = 0,
-    exclusive: bool = False,
     reverse: bool = False,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
@@ -289,19 +288,8 @@ def cummin(
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
 
-    if not (exclusive or reverse):
+    if not (reverse):
         return torch.cummin(x, axis, out=out)
-    elif exclusive and reverse:
-        x = torch.cummin(torch.flip(x, dims=(axis,)), axis, out=out)
-        x = torch.transpose(x, axis, -1)
-        x = torch.concat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        x = torch.transpose(x, axis, -1)
-        ret = torch.flip(x, dims=(axis,))
-    elif exclusive:
-        x = torch.transpose(x, axis, -1)
-        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        x = torch.cummin(x, -1, out=out)
-        ret = torch.transpose(x, axis, -1)
     else:
         x = torch.cummin(torch.flip(x, dims=(axis,)), axis, out=out)
         ret = torch.flip(x, dims=(axis,))

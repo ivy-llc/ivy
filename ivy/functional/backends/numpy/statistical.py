@@ -214,7 +214,6 @@ def cummin(
     /,
     *,
     axis: int = 0,
-    exclusive: bool = False,
     reverse: bool = False,
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
@@ -224,19 +223,8 @@ def cummin(
             dtype = ivy.default_int_dtype(as_native=True)
         else:
             dtype = _infer_dtype(x.dtype)
-    if not (exclusive or reverse):
+    if not (reverse):
         return np.minimum.accumulate(x, axis, dtype=dtype, out=out)
-    elif exclusive and reverse:
-        x = np.minimum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=dtype)
-        x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        x = np.swapaxes(x, axis, -1)
-        return np.flip(x, axis=axis)
-    elif exclusive:
-        x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        x = np.minimum.accumulate(x, -1, dtype=dtype)
-        return np.swapaxes(x, axis, -1)
     elif reverse:
         x = np.minimum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=dtype)
         return np.flip(x, axis=axis)

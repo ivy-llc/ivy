@@ -183,7 +183,6 @@ def cummin(
     /,
     *,
     axis: int = 0,
-    exclusive: bool = False,
     reverse: bool = False,
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
@@ -194,13 +193,8 @@ def cummin(
             dtype = ivy.default_int_dtype(as_native=True)
         else:
             dtype = _infer_dtype(x.dtype)
-    if exclusive:
-        x = jnp.swapaxes(x, axis, -1)
-        x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        x = jlax.cummin(x, -1, dtype=dtype, reverse=reverse)
-        return jnp.swapaxes(x, axis, -1)
-    else:
-        return jlax.cummin(x, axis, reverse=reverse)
+
+    return jlax.cummin(x, axis, reverse=reverse).astype(dtype)
 
 
 def cumsum(

@@ -397,13 +397,11 @@ def test_cumprod(
 @handle_test(
     fn_tree="functional.ivy.cummin",
     dtype_x_axis_castable=_get_castable_dtype(),
-    exclusive=st.booleans(),
     reverse=st.booleans(),
 )
 def test_cummin(
     *,
     dtype_x_axis_castable,
-    exclusive,
     reverse,
     test_flags,
     backend_fw,
@@ -433,7 +431,6 @@ def test_cummin(
         on_device=on_device,
         x=x[0],
         axis=axis,
-        exclusive=exclusive,
         reverse=reverse,
         dtype=castable_dtype,
         rtol_=1e-1,
