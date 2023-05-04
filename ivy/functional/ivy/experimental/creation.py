@@ -570,12 +570,10 @@ def eye_like(
     }
 
     """
-    shape = ivy.Shape(x)
+    shape = ivy.shape(x, as_array=True)
     dim = len(shape)
-    if dim == 1:
-        cols = 1
-    elif dim < 1:
-        cols = 0
+    if dim <= 1:
+        cols = dim
     else:
         cols = shape[-1]
     rows = 0 if dim < 1 else shape[0]
@@ -587,9 +585,6 @@ def eye_like(
         device=device,
         out=out,
     )
-
-
-eye_like.mixed_function = True
 
 
 @outputs_to_ivy_arrays

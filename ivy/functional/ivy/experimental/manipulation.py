@@ -145,13 +145,13 @@ def flatten(
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
-            f"Dimension out of range (expected to be in range of\
-                {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
+            "Dimension out of range (expected to be in range of"
+            f" {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
         )
     if end_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
-            f"Dimension out of range (expected to be in range of\
-                {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
+            "Dimension out of range (expected to be in range of"
+            f" {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
         )
     if start_dim < 0:
         start_dim = len(x.shape) + start_dim
@@ -881,9 +881,11 @@ def _to_pairs(x, n):
         ivy.utils.assertions.check_equal(
             ivy.asarray(list(x)).shape,
             (n, 2),
-            message="tuple argument should contain "
-            "ndim pairs where ndim is the number of "
-            "the input's dimensions",
+            message=(
+                "tuple argument should contain "
+                "ndim pairs where ndim is the number of "
+                "the input's dimensions"
+            ),
         )
     return x
 
@@ -964,6 +966,7 @@ def _check_arguments(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@to_native_arrays_and_back
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
@@ -1184,6 +1187,7 @@ def pad(
             )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
+            stat_pair = ivy.to_numpy(stat_pair)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
@@ -1379,7 +1383,6 @@ def dstack(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1627,6 +1630,13 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
+def _check_bounds(shape0, shape1, strides1, itemsize):
+    numel0 = math.prod(shape0)
+    ndim1 = len(shape1)
+    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + itemsize <= \
+        numel0 * itemsize
+
+
 @inputs_to_native_shapes
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
@@ -1664,23 +1674,26 @@ def as_strided(
        [3, 4, 5],
        [4, 5, 6]])
     """
-    size = math.prod(shape)
     itemsize = x.itemsize
-    buffer_size = size * itemsize
+    if not _check_bounds(x.shape, shape, strides, itemsize):
+        raise ivy.exceptions.IvyException("attempted unsafe memory access")
+    if any(strides[i] % itemsize != 0 for i in range(len(strides))):
+        raise ivy.exceptions.IvyException("strides must be multiple of itemsize")
 
+    numel = math.prod(shape)
+    buffer_size = numel * itemsize
     src = memoryview(ivy.to_numpy(x)).cast("b")
     buffer = bytearray(buffer_size)
     dst = memoryview(buffer).cast("b")
 
+    dst_index = 0
     for index in ivy.ndindex(shape):
-        src_index = sum(index[i] * min(strides[i], itemsize) for i in range(len(shape)))
-        dst_index = sum(
-            index[i] * math.prod(shape[i + 1 :]) * itemsize for i in range(len(shape))
-        )
+        src_index = sum(index[i] * strides[i] for i in range(len(shape)))
         dst[dst_index : dst_index + itemsize] = src[src_index : src_index + itemsize]
+        dst_index += itemsize
 
     return ivy.reshape(
-        ivy.frombuffer(buffer, dtype=x.dtype, count=size),
+        ivy.frombuffer(buffer, dtype=x.dtype, count=numel),
         shape,
     )
 

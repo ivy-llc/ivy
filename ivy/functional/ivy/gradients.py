@@ -84,9 +84,11 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     xs = (
         xs
         if ivy.is_array(xs)
-        else xs.cont_prune_empty()
-        if isinstance(xs, ivy.Container)
-        else ivy.prune_empty(xs)
+        else (
+            xs.cont_prune_empty()
+            if isinstance(xs, ivy.Container)
+            else ivy.prune_empty(xs)
+        )
     )
 
     # return a single array instead of a list if possible, otherwise return the nest
@@ -247,7 +249,7 @@ _to_ivy = lambda xs: ivy.nested_map(
 
 _non_finite_to_zero = lambda xs: ivy.nested_map(
     xs,
-    lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
+    lambda x: ivy.where(ivy.isfinite(x), x, 0.0) if ivy.is_array(x) else x,
     include_derived=True,
     shallow=False,
 )
@@ -266,7 +268,7 @@ def _variable(x):
 
 
 def _is_variable(x, exclusive=False, to_ignore=None) -> bool:
-    x = ivy.to_native(x, nested=True)
+    x = ivy.to_native(x, nested=True, to_ignore=to_ignore)
     return ivy.nested_map(
         x,
         lambda x: current_backend(x).is_variable(x, exclusive=exclusive),

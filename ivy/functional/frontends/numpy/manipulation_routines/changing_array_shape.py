@@ -34,7 +34,5 @@ def moveaxis(a, source, destination):
 def asarray_chkfinite(a, dtype=None, order=None):
     a = ivy.asarray(a, dtype=dtype)
     if not ivy.all(ivy.isfinite(a)):
-        raise ValueError(
-            "array must not contain infs or NaNs"
-        )
+        raise ValueError("array must not contain infs or NaNs")
     return a
