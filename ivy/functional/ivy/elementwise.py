@@ -102,6 +102,7 @@ def abs(
     }
 
     """
+    x = x + 1
     return ivy.current_backend(x).abs(x, out=out)
 
 
