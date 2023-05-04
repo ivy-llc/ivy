@@ -139,7 +139,7 @@ def test_random_normal(
 
 # jax_multivariate_normal
 @handle_test(
-    fn_tree="functional.jax.multivariate_normal",
+    fn_tree="functional.ivy.multivariate_normal",
     mean_cov=st.tuples(
         st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10),
         st.lists(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10), min_size=2, max_size=10)
