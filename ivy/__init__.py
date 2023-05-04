@@ -212,6 +212,15 @@ class Shape:
         else:
             self._shape = None
 
+    @staticmethod
+    def _shape_casting_helper(ivy_shape, other):
+        if isinstance(other, tuple) and not isinstance(ivy_shape, tuple):
+            return tuple(ivy_shape)
+        elif isinstance(other, list) and not isinstance(ivy_shape, list):
+            return list(ivy_shape)
+        else:
+            return ivy_shape
+
     def __repr__(self):
         pattern = r"\d+(?:,\s*\d+)*"
         shape_repr = re.findall(pattern, self._shape.__str__())
@@ -220,6 +229,9 @@ class Shape:
         return (
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
+
+    def __iter__(self):
+        return iter(self._shape)
 
     def __add__(self, other):
         try:
@@ -240,18 +252,23 @@ class Shape:
         return self
 
     def __eq__(self, other):
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape == other
 
     def __ge__(self, other):
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape >= other
 
     def __gt__(self, other):
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape > other
 
     def __le__(self, other):
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape <= other
 
     def __lt__(self, other):
+        self._shape = _shape_casting_helper(self._shape, other)
         return self._shape < other
 
     def __getattribute__(self, item):
@@ -582,6 +599,10 @@ array_api_promotion_table = {
     (bool, bool): bool,
 }
 locks = {"backend_setter": threading.Lock()}
+
+# the extra promotion table follows numpy safe casting convention
+# the following link discusses the different approaches to dtype promotions
+# https://jax.readthedocs.io/en/latest/jep/9407-type-promotion.html
 extra_promotion_table = {
     (bool, uint16): uint16,
     (bool, int32): int32,
@@ -625,22 +646,22 @@ extra_promotion_table = {
     (float32, int8): float32,
     (int8, float64): float64,
     (float64, int8): float64,
-    (int16, float16): float16,
-    (float16, int16): float16,
+    (int16, float16): float32,
+    (float16, int16): float32,
     (int16, float32): float32,
     (float32, int16): float32,
     (int16, float64): float64,
     (float64, int16): float64,
-    (int32, float16): float16,
-    (float16, int32): float16,
-    (int32, float32): float32,
-    (float32, int32): float32,
+    (int32, float16): float64,
+    (float16, int32): float64,
+    (int32, float32): float64,
+    (float32, int32): float64,
     (int32, float64): float64,
     (float64, int32): float64,
-    (int64, float16): float16,
-    (float16, int64): float16,
-    (int64, float32): float32,
-    (float32, int64): float32,
+    (int64, float16): float64,
+    (float16, int64): float64,
+    (int64, float32): float64,
+    (float32, int64): float64,
     (int64, float64): float64,
     (float64, int64): float64,
     (uint8, float16): float16,
@@ -649,41 +670,41 @@ extra_promotion_table = {
     (float32, uint8): float32,
     (uint8, float64): float64,
     (float64, uint8): float64,
-    (uint16, float16): float16,
-    (float16, uint16): float16,
+    (uint16, float16): float32,
+    (float16, uint16): float32,
     (uint16, float32): float32,
     (float32, uint16): float32,
     (uint16, float64): float64,
     (float64, uint16): float64,
-    (uint32, float16): float16,
-    (float16, uint32): float16,
-    (uint32, float32): float32,
-    (float32, uint32): float32,
+    (uint32, float16): float64,
+    (float16, uint32): float64,
+    (uint32, float32): float64,
+    (float32, uint32): float64,
     (uint32, float64): float64,
     (float64, uint32): float64,
-    (uint64, float16): float16,
-    (float16, uint64): float16,
-    (uint64, float32): float32,
-    (float32, uint64): float32,
+    (uint64, float16): float64,
+    (float16, uint64): float64,
+    (uint64, float32): float64,
+    (float32, uint64): float64,
     (uint64, float64): float64,
     (float64, uint64): float64,
     (bfloat16, bfloat16): bfloat16,
     (bfloat16, uint8): bfloat16,
     (uint8, bfloat16): bfloat16,
-    (bfloat16, uint16): bfloat16,
-    (uint16, bfloat16): bfloat16,
-    (bfloat16, uint32): bfloat16,
-    (uint32, bfloat16): bfloat16,
-    (bfloat16, uint64): bfloat16,
-    (uint64, bfloat16): bfloat16,
+    (bfloat16, uint16): float32,
+    (uint16, bfloat16): float32,
+    (bfloat16, uint32): float64,
+    (uint32, bfloat16): float64,
+    (bfloat16, uint64): float64,
+    (uint64, bfloat16): float64,
     (bfloat16, int8): bfloat16,
     (int8, bfloat16): bfloat16,
-    (bfloat16, int16): bfloat16,
-    (int16, bfloat16): bfloat16,
-    (bfloat16, int32): bfloat16,
-    (int32, bfloat16): bfloat16,
-    (bfloat16, int64): bfloat16,
-    (int64, bfloat16): bfloat16,
+    (bfloat16, int16): float32,
+    (int16, bfloat16): float32,
+    (bfloat16, int32): float64,
+    (int32, bfloat16): float64,
+    (bfloat16, int64): float64,
+    (int64, bfloat16): float64,
     (bfloat16, float16): float32,
     (float16, bfloat16): float32,
     (bfloat16, float32): float32,
@@ -694,18 +715,18 @@ extra_promotion_table = {
     (int8, complex64): complex64,
     (complex64, int16): complex64,
     (int16, complex64): complex64,
-    (complex64, int32): complex64,
-    (int32, complex64): complex64,
-    (complex64, int64): complex64,
-    (int64, complex64): complex64,
+    (complex64, int32): complex128,
+    (int32, complex64): complex128,
+    (complex64, int64): complex128,
+    (int64, complex64): complex128,
     (complex64, uint8): complex64,
     (uint8, complex64): complex64,
     (complex64, uint16): complex64,
     (uint16, complex64): complex64,
-    (complex64, uint32): complex64,
-    (uint32, complex64): complex64,
-    (complex64, uint64): complex64,
-    (uint64, complex64): complex64,
+    (complex64, uint32): complex128,
+    (uint32, complex64): complex128,
+    (complex64, uint64): complex128,
+    (uint64, complex64): complex128,
     (complex64, float16): complex64,
     (float16, complex64): complex64,
     (complex64, float32): complex64,
@@ -767,6 +788,8 @@ from ivy.utils.backend import (
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
+    set_paddle_backend,
+    set_mxnet_backend,
     previous_backend,
     backend_stack,
     choose_random_backend,
@@ -967,8 +990,6 @@ native_inplace_support = None
 
 supports_gradients = None
 
-if "IVY_BACKEND" in os.environ:
-    ivy.set_backend(os.environ["IVY_BACKEND"])
 
 # Array Significant Figures #
 

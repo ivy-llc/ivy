@@ -11,6 +11,7 @@
   overview/extensions.rst
   overview/contributing.rst
   overview/deep_dive.rst
+  Examples <https://unify.ai/demos/>
   overview/faq.rst
   overview/glossary.rst
 

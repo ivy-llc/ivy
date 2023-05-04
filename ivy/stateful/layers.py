@@ -1350,9 +1350,11 @@ class LSTM(Module):
                     {
                         "w": self._w_init.create_variables(
                             (
-                                self._input_channels
-                                if i == 0
-                                else self._output_channels,
+                                (
+                                    self._input_channels
+                                    if i == 0
+                                    else self._output_channels
+                                ),
                                 4 * self._output_channels,
                             ),
                             device,
@@ -1446,7 +1448,7 @@ class MaxPool2D(Module):
         dtype=None,
     ):
         """
-        Class for applying Max Pooling over a mini-batch of inputs
+        Class for applying Max Pooling over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -1493,7 +1495,7 @@ class AvgPool2D(Module):
         dtype=None,
     ):
         """
-        Class for applying Average Pooling over a mini-batch of inputs
+        Class for applying Average Pooling over a mini-batch of inputs.
 
         Parameters
         ----------

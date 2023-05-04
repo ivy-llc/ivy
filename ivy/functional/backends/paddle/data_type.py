@@ -263,7 +263,7 @@ def as_native_dtype(
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(
-            "Cannot convert to Paddle dtype." f" {dtype_in} is not supported by Paddle."
+            f"Cannot convert to Paddle dtype. {dtype_in} is not supported by Paddle."
         )
 
 
@@ -294,6 +294,8 @@ def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
 
 
 def is_native_dtype(dtype_in: Union[paddle.dtype, str], /) -> bool:
+    if dtype_in.__hash__ is None:
+        return False
     if dtype_in in ivy_dtype_dict:
         return True
     else:

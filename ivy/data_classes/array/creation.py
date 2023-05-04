@@ -132,7 +132,7 @@ class _ArrayWithCreation(abc.ABC):
         ivy.array([1, 1, 1, 1, 1, 1])
         """
         return ivy.full_like(
-            self._data, fill_value, dtype=dtype, device=device, out=out
+            self._data, fill_value=fill_value, dtype=dtype, device=device, out=out
         )
 
     def ones_like(
@@ -204,7 +204,7 @@ class _ArrayWithCreation(abc.ABC):
         return ivy.zeros_like(self._data, dtype=dtype, device=device, out=out)
 
     def tril(
-        self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, k: int = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tril. This method simply wraps the
@@ -235,7 +235,7 @@ class _ArrayWithCreation(abc.ABC):
         return ivy.tril(self._data, k=k, out=out)
 
     def triu(
-        self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, k: int = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.triu. This method simply wraps the
@@ -335,11 +335,12 @@ class _ArrayWithCreation(abc.ABC):
             input arrays. Each returned array must have rank ``N``. For ``N``
             one-dimensional arrays having lengths ``Ni = len(xi)``.
         """
-        return ivy.meshgrid(*tuple([self] + arrays), sparse=sparse, indexing=indexing)
+        return ivy.meshgrid(self, *arrays, sparse=sparse, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
         /,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -367,6 +368,7 @@ class _ArrayWithCreation(abc.ABC):
 
     def copy_array(
         self: ivy.Array,
+        /,
         *,
         to_ivy_array: bool = True,
         out: Optional[ivy.Array] = None,
@@ -511,19 +513,19 @@ class _ArrayWithCreation(abc.ABC):
         *,
         axis: Optional[int] = None,
         endpoint: bool = True,
-        out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Array:
         return ivy.linspace(
             self,
             stop,
-            num,
+            num=num,
             axis=axis,
             endpoint=endpoint,
-            out=out,
             dtype=dtype,
             device=device,
+            out=out,
         )
 
     def logspace(
@@ -609,7 +611,7 @@ class _ArrayWithCreation(abc.ABC):
         return ivy.logspace(
             self,
             stop,
-            num,
+            num=num,
             base=base,
             axis=axis,
             endpoint=endpoint,
