@@ -166,7 +166,7 @@ def test_multivariate_normal(
     def call():
         return helpers.test_function(
             ground_truth_backend=ground_truth_backend,
-            input_dtypes= mean_dtype + cov_dtype,
+            input_dtypes= mean_dtype,
             test_flags=test_flags,
             on_device=on_device,
             fw=backend_fw,
