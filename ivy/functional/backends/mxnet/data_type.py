@@ -8,58 +8,64 @@ ivy_dtype_dict = {
     None: "bool",
 }
 native_dtype_dict = {
-    "int8": None,
-    "int16": None,
-    "int32": None,
-    "int64": None,
-    "uint8": None,
-    "uint16": None,
-    "uint32": None,
-    "uint64": None,
-    "bfloat16": None,
-    "float16": None,
-    "float32": None,
-    "float64": None,
-    "complex64": None,
-    "complex128": None,
-    "bool": None,
+    "int8": np.int8,
+    "int32": np.int32,
+    "int64": np.int64,
+    "uint8": np.uint8,
+    "float16": np.float16,
+    "float32": np.float32,
+    "float64": np.float64,
+    "bool": np.bool_,
+}
+
+char_rep_dtype_dict = {
+    "?": "bool",
+    "i": int,
+    "i1": "int8",
+    "i4": "int32",
+    "i8": "int64",
+    "f": float,
+    "f2": "float16",
+    "f4": "float32",
+    "f8": "float64",
+    "u1": "uint8",
 }
 
 
 class Finfo:
-    def __init__(self, mx_finfo: np.finfo):
-        raise NotImplementedError("mxnet.__init__ Not Implemented")
+    def __init__(self, mx_finfo: mx.np.finfo):
+        self._mx_finfo = mx_finfo
 
     def __repr__(self):
-        raise NotImplementedError("mxnet.__repr__ Not Implemented")
+        return repr(self._mx_finfo)
 
     @property
     def bits(self):
-        raise NotImplementedError("mxnet.bits Not Implemented")
+        return self._mx_finfo.bits
 
     @property
     def eps(self):
-        raise NotImplementedError("mxnet.eps Not Implemented")
+        return float(self._mx_finfo.eps)
 
     @property
     def max(self):
-        raise NotImplementedError("mxnet.max Not Implemented")
+        return float(self._mx_finfo.max)
 
     @property
     def min(self):
-        raise NotImplementedError("mxnet.min Not Implemented")
+        return float(self._mx_finfo.min)
 
     @property
     def smallest_normal(self):
-        raise NotImplementedError("mxnet.smallest_normal Not Implemented")
+        return float(self._mx_finfo.tiny)
 
 
 class Bfloat16Finfo:
-    def __init__(self):
-        raise NotImplementedError("mxnet.__init__ Not Implemented")
+    def __init__(self, mx_finfo: mx.np.finfo):
+        self._mx_finfo = mx_finfo
 
     def __repr__(self):
-        raise NotImplementedError("mxnet.__repr__ Not Implemented")
+        return repr(self._mx_finfo)
 
 
 def astype(
@@ -90,15 +96,18 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[(None, str, None, mx.ndarray.NDArray, np.ndarray)], /) -> Finfo:
-    raise NotImplementedError("mxnet.finfo Not Implemented")
+def finfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> Finfo:
+    if isinstance(type, mx.ndarray.NDArray):
+        type = type.dtype
+    return Finfo(mx.np.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(
-    type: Union[(None, str, None, mx.ndarray.NDArray, np.ndarray)], /
-) -> np.iinfo:
-    raise NotImplementedError("mxnet.iinfo Not Implemented")
+def iinfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> np.iinfo:
+    # using np.iinfo as mx use np dtypes and mxnet iinfo not provided
+    if isinstance(type, mx.ndarray.NDArray):
+        type = type.asnumpy().dtype
+    return np.iinfo(ivy.as_native_dtype(type))
 
 
 def result_type(
@@ -114,7 +123,24 @@ def as_ivy_dtype(
 
 
 def as_native_dtype(dtype_in: Union[(None, str, bool, int, float, np.dtype)]) -> None:
-    raise NotImplementedError("mxnet.as_native_dtype Not Implemented")
+    if dtype_in is int:
+        return ivy.default_int_dtype(as_native=True)
+    if dtype_in is float:
+        return ivy.default_float_dtype(as_native=True)
+    if dtype_in is complex:
+        return ivy.default_complex_dtype(as_native=True)
+    if dtype_in is bool:
+        return np.dtype("bool")
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    if dtype_in in char_rep_dtype_dict:
+        return as_native_dtype(char_rep_dtype_dict[dtype_in])
+    if dtype_in in native_dtype_dict:
+        return native_dtype_dict[ivy.Dtype(dtype_in)]
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
+        )
 
 
 def dtype(

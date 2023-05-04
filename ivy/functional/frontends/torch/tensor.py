@@ -1036,7 +1036,11 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
-   
+
+    def short(self, memory_format=None):
+        self.ivy_array = ivy.astype(self.ivy_array, ivy.int16, copy=False)
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def prod(self, dim=None, keepdim=False, *, dtype=None):
         return torch_frontend.prod(self, dim=dim, keepdim=keepdim, dtype=dtype)
@@ -1053,7 +1057,12 @@ class Tensor:
             mean=mean, std=std, shape=self.shape, dtype=self.dtype, device=self.device
         )
         return self
-      
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def addcdiv(self, tensor1, tensor2, *, value=1):
+        return torch_frontend.addcdiv(self, tensor1, tensor2, value=value)
+        
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def logdet(self):
         return torch_frontend.log(torch_frontend.det(self))
+

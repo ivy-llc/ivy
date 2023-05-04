@@ -43,6 +43,14 @@ jobs:
       - run_tests_30
       - run_tests_31
       - run_tests_32
+      - run_tests_33
+      - run_tests_34
+      - run_tests_35
+      - run_tests_36
+      - run_tests_37
+      - run_tests_38
+      - run_tests_39
+      - run_tests_40
 
     steps:
       - name: Download all test results
@@ -1404,6 +1412,342 @@ jobs:
         with:
           name: new_failures_32
           path: ivy/new_failures_32.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_33:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master33 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_33.txt | tee test_results_33.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_33
+          path: ivy/test_results_33.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_33
+          path: ivy/new_failures_33.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_34:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master34 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_34.txt | tee test_results_34.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_34
+          path: ivy/test_results_34.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_34
+          path: ivy/new_failures_34.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_35:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master35 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_35.txt | tee test_results_35.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_35
+          path: ivy/test_results_35.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_35
+          path: ivy/new_failures_35.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_36:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master36 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_36.txt | tee test_results_36.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_36
+          path: ivy/test_results_36.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_36
+          path: ivy/new_failures_36.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_37:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master37 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_37.txt | tee test_results_37.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_37
+          path: ivy/test_results_37.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_37
+          path: ivy/new_failures_37.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_38:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master38 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_38.txt | tee test_results_38.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_38
+          path: ivy/test_results_38.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_38
+          path: ivy/new_failures_38.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_39:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master39 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_39.txt | tee test_results_39.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_39
+          path: ivy/test_results_39.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_39
+          path: ivy/new_failures_39.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_40:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master40 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_40.txt | tee test_results_40.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_40
+          path: ivy/test_results_40.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_40
+          path: ivy/new_failures_40.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
