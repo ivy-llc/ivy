@@ -122,38 +122,9 @@ def arange(
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-def range(
-    *args,
-    dtype=None,
-    layout=None,
-    device=None,
-    requires_grad=False,
-):
-    if len(args) == 1:
-        end = args[0]
-        start = 0
-        step = 1
-    elif len(args) == 3:
-        start, end, step = args
-    else:
-        ivy.utils.assertions.check_true(
-            len(args) == 1 or len(args) == 3,
-            "only 1 or 3 positional arguments are supported",
-        )
-    range_vec = []
-    elem = start
-    while 1:
-        range_vec = range_vec + [elem]
-        elem += step
-        if start == end:
-            break
-        if start < end:
-            if elem > end:
-                break
-        else:
-            if elem < end:
-                break
-    return ivy.array(range_vec, dtype=dtype, device=device)
+def range(*args, **kwargs):
+    return ivy.array(range(*args), **kwargs)
+
 
 
 @to_ivy_arrays_and_back
