@@ -1812,6 +1812,57 @@ def solve(
 
 @handle_array_function
 @to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def lu_solve(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Solve an equation system given its LU decomposition.
+
+    Parameters
+    ----------
+    x1
+        A square matrix or batch of matrices. Must have shape (..., M, M).
+    x2
+        A vector or batch of vectors representing the right-hand side of the equation system.
+        If x2 has shape (M,), x2 is equivalent to an array having shape (..., M, 1).
+        If x2 has shape (..., M, K), each column k defines a set of ordinate values for which
+        to compute a solution, and shape(x2)[:-1] must be compatible with shape(x1)[:-1].
+    out
+        Optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
+
+    Returns
+    -------
+    ret
+        An array containing the solution(s) to the equation system. The returned array has
+        the same shape as x2 and must have a floating-point data type determined by Type Promotion
+        Rules.
+
+    Examples
+    --------
+    >>> import ivy
+    >>> A = ivy.array([[2, -1, 0], [-1, 2, -1], [0, -1, 2]])
+    >>> b = ivy.array([1, 0, 1])
+    >>> lu, piv = ivy.linalg.lu_factor(A)
+    >>> ivy.linalg.lu_solve(lu, piv, b)
+    array([1.1666667, 0.3333333, 1.1666667], dtype=float32)
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+    """
+    return current_backend(x1, x2).lu_solve(x1, x2, out=out)
+
+
+@handle_array_function
+@to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
