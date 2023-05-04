@@ -252,23 +252,23 @@ class Shape:
         return self
 
     def __eq__(self, other):
-        self._shape = _shape_casting_helper(self._shape, other)
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
 
     def __ge__(self, other):
-        self._shape = _shape_casting_helper(self._shape, other)
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape >= other
 
     def __gt__(self, other):
-        self._shape = _shape_casting_helper(self._shape, other)
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape > other
 
     def __le__(self, other):
-        self._shape = _shape_casting_helper(self._shape, other)
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape <= other
 
     def __lt__(self, other):
-        self._shape = _shape_casting_helper(self._shape, other)
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape < other
 
     def __getattribute__(self, item):

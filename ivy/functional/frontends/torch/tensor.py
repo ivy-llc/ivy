@@ -1037,6 +1037,10 @@ class Tensor:
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
 
+    def short(self, memory_format=None):
+        self.ivy_array = ivy.astype(self.ivy_array, ivy.int16, copy=False)
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def prod(self, dim=None, keepdim=False, *, dtype=None):
         return torch_frontend.prod(self, dim=dim, keepdim=keepdim, dtype=dtype)

@@ -2446,7 +2446,8 @@ def test_jax_lax_top_k(
 def _reduce_window_helper(draw):
     dtype = draw(
         helpers.get_dtypes("numeric", full=False).filter(
-            lambda x: x[0] not in ("bfloat16", "uint64", "uint32"))
+            lambda x: x[0] not in ("bfloat16", "uint64", "uint32")
+        )
     )
     init_value = draw(helpers.array_values(dtype=dtype[0], shape=()))
 

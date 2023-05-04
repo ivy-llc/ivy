@@ -113,7 +113,7 @@ Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/i
 
 The general workflow for this task is:
 
-#. Find the correct location for the function by following the *Where to place a frontend function* subsection below
+#. Find the correct location for the function by following the :ref:`Where to place a frontend function` subsection below
 #. Implement the function by following the :ref:`Ivy Frontends` guide
 #. Write tests for your function by following the :ref:`Ivy Frontend Tests` guide
 #. Verify that the tests for your function are passing
@@ -238,28 +238,22 @@ A few points to keep in mind while doing this:
 
 If you’re stuck on a function which requires complex compositions, feel free to reselect a function 🙂.
 
-Creating an Issue on Ivy's GitHub using the Template
+Creating an Issue on Ivy's GitHub using a Template
 ----------------------------------------------------
 
-#. Go to the `GitHub Ivy <https://github.com/unifyai/ivy>`_ page, select the Issues tab, click on the green button :code:`New issue` at the centre-right of the screen.
-#. You will have 5 options, each of the option has a form, you have to complete the requirements in the form and click on the green button at the right bottom :code:`Submit new issue`.
-#. To start filling the form, click on the green button at the right which says :code:`Get started`. The options are explained as follows:
-
-   #. Bug Report:
-   
-      Incase you find a bug in our API, you have to provide details in the form and the issue will be assigned to one of our team members to look into.
-   #. Feature request:
-   
+#. Go to the `GitHub Ivy <https://github.com/unifyai/ivy>`_ page, select the Issues tab, and click on the green button :code:`New issue` at the centre-right of the screen.
+#. You will see 5 options. Each option has a predetermined form. To start filling in the form, click on the green button at the right which says :code:`Get started`. The options are explained as follows:
+   * Bug Report:
+      In case you find a bug in our API, you have to provide details in the form and the issue will be assigned to one of our team members to look into.
+   * Feature request:
       If you want to suggest an idea for our project, our team is always open for suggestions.
-   #. Missing Function Suggestion:
-   
-      Incase you find a function which the other frameworks have and is missing in our API or we have some functionality missing which the other frameworks support(superset behavior).
-   #. Sub-Task:
-   
-      Reserve a sub-task from a ToDo list issue. 
-   #. Questions:
-   
-      If you want to interact with the Ivy community to ask for any type of help, discussing and more! 
+   * Missing Function Suggestion:
+      In case you find a function which the other frameworks have and is missing in our API or we have some functionality missing which the other frameworks support(superset behavior).
+   * Sub-Task:
+      Reserve a sub-task from a ToDo list issue.
+   * Questions:
+      If you want to interact with the Ivy community to ask for any type of help, discussing and more!
+#. To submit your issue, you will have to complete the requirements in the form and click on the green button :code:`Submit new issue` at the right-bottom of the screen.
 
 
 **Round Up**
