@@ -325,3 +325,11 @@ def to_numpy(x: mx.ndarray.NDArray, /, *, copy: bool = True) -> np.ndarray:
         return x.copy().asnumpy()
     else:
         return x.asnumpy()
+
+
+def itemsize(x: mx.ndarray.NDArray, /) -> int:
+    return x.asnumpy().itemsize
+
+
+def strides(x: mx.ndarray.NDArray, /) -> Tuple[int]:
+    return x.asnumpy().strides
