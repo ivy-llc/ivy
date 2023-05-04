@@ -147,7 +147,7 @@ def test_random_normal(
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
 )
-def test_jax_multivariate_normal(
+def test_multivariate_normal(
     mean_cov,
     dtype,
     seed,
