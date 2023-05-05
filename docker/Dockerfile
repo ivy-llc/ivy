@@ -25,7 +25,7 @@ RUN conda create --name multienv python==$pycon
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
 RUN apt-get update && \
-#    apt-get install -y python3-pip python3-tk && \
+    apt-get install -y python3-pip python3-tk && \
     apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
     apt-get install -y python-opengl && \
     apt-get install -y git && \
@@ -37,9 +37,9 @@ RUN apt-get update && \
     pip3 install pip-autoremove &&\
     pip3 install setuptools==58.5.3
 
-RUN pip3 install --no-cache-dir torch --target '/opt/fw/torch' torch --extra-index-url https://download.pytorch.org/whl/cpu &&\
-    export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
-    pip3 install --no-cache-dir  --target '/opt/fw/torch' torch-scatter
+RUN pip3 install --no-cache-dir torch --target '/opt/fw/torch' --extra-index-url https://download.pytorch.org/whl/cpu
+RUN export ver=$(pip show torch --path '/opt/fw/torch' | grep Version | cut -d ' ' -f2) && \
+    pip3 install --target '/opt/fw/torch' --no-cache-dir --upgrade torch-scatter -f https://data.pyg.org/whl/torch-$ver.html
 
 # Install Ivy Upstream
 RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
@@ -56,8 +56,7 @@ ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
 
 COPY /docker/requirement_mappings.json .
 SHELL ["/bin/bash", "-c"]
-RUN pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
-    jq -r 'to_entries[] | select(.value | length > 0) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --target $1 $2' sh {}
+RUN jq -r 'to_entries[] | select(.value | length > 0) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2' sh {}
 
 
 RUN pip install -r requirements.txt &&\
