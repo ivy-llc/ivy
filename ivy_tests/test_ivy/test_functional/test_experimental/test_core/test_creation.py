@@ -398,7 +398,7 @@ def test_compress(
     ground_truth_backend,
 ):
     helpers.test_function(
-        input_dtypes=dtype[0],
+        input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
