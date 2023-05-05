@@ -59,7 +59,7 @@ def searchsorted(
         x = jnp.take_along_axis(x, sorter, axis=-1)
     if x.ndim != 1:
         assert x.shape[:-1] == v.shape[:-1], RuntimeError(
-            f"the first N-1 dimensions of x array and v array "
+            "the first N-1 dimensions of x array and v array "
             f"must match, got {x.shape} and {v.shape}"
         )
         original_shape = v.shape

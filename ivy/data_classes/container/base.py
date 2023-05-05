@@ -1120,8 +1120,10 @@ class ContainerBase(dict, abc.ABC):
         """
         ivy.utils.assertions.check_exists(
             h5py,
-            message="You must install python package h5py in order to load hdf5 \
-            files from disk into a container.",
+            message=(
+                "You must install python package h5py in order to load hdf5 "
+                "files from disk into a container."
+            ),
         )
         container_dict = dict()
         if type(h5_obj_or_filepath) is str:
@@ -1204,8 +1206,10 @@ class ContainerBase(dict, abc.ABC):
         """
         ivy.utils.assertions.check_exists(
             h5py,
-            message="You must install python package h5py in order to determine \
-            the size of hdf5 files.",
+            message=(
+                "You must install python package h5py in order to determine "
+                "the size of hdf5 files."
+            ),
         )
         if type(h5_obj_or_filepath) is str:
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
@@ -1243,8 +1247,10 @@ class ContainerBase(dict, abc.ABC):
         """
         ivy.utils.assertions.check_exists(
             h5py,
-            message="You must install python package h5py in order to shuffle \
-            hdf5 files on disk.",
+            message=(
+                "You must install python package h5py in order to shuffle "
+                "hdf5 files on disk."
+            ),
         )
         if seed_value is None:
             seed_value = random.randint(0, 1000)
@@ -1450,9 +1456,11 @@ class ContainerBase(dict, abc.ABC):
         sub_shapes = [
             v
             for k, v in self.cont_map(
-                lambda x, kc: list(x.shape)
-                if self._cont_ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else ([len(x)] if isinstance(x, (list, tuple)) else None)
+                lambda x, kc: (
+                    list(x.shape)
+                    if self._cont_ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                    else ([len(x)] if isinstance(x, (list, tuple)) else None)
+                )
             ).cont_to_iterator()
             if v
         ]
@@ -1479,9 +1487,11 @@ class ContainerBase(dict, abc.ABC):
         sub_devs = [
             v
             for k, v in self.cont_map(
-                lambda x, kc: self._cont_ivy.dev(x, as_native=as_native)
-                if self._cont_ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else None
+                lambda x, kc: (
+                    self._cont_ivy.dev(x, as_native=as_native)
+                    if self._cont_ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                    else None
+                )
             ).cont_to_iterator()
             if v
         ]
@@ -1815,9 +1825,13 @@ class ContainerBase(dict, abc.ABC):
             # noinspection PyTypeChecker
             return [
                 self[
-                    slice(i, i + 1, 1)
-                    if axis == 0
-                    else tuple([slice(None, None, None)] * axis + [slice(i, i + 1, 1)])
+                    (
+                        slice(i, i + 1, 1)
+                        if axis == 0
+                        else tuple(
+                            [slice(None, None, None)] * axis + [slice(i, i + 1, 1)]
+                        )
+                    )
                 ]
                 for i in range(dim_size)
             ]
@@ -1876,14 +1890,16 @@ class ContainerBase(dict, abc.ABC):
         )
         # noinspection PyTypeChecker
         return self.cont_map(
-            lambda x, kc: self._cont_ivy.split(
-                x,
-                num_or_size_splits=num_or_size_splits,
-                axis=axis,
-                with_remainder=with_remainder,
-            )
-            if self._cont_ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
+            lambda x, kc: (
+                self._cont_ivy.split(
+                    x,
+                    num_or_size_splits=num_or_size_splits,
+                    axis=axis,
+                    with_remainder=with_remainder,
+                )
+                if self._cont_ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x
+            ),
             key_chains,
             to_apply,
             prune_unapplied,
@@ -1954,8 +1970,10 @@ class ContainerBase(dict, abc.ABC):
         """
         ivy.utils.assertions.check_exists(
             h5py,
-            message="You must install python package h5py in order to save \
-            containers to disk as hdf5 files.",
+            message=(
+                "You must install python package h5py in order to save "
+                "containers to disk as hdf5 files."
+            ),
         )
         if type(h5_obj_or_filepath) is str:
             h5_obj = h5py.File(h5_obj_or_filepath, mode)
@@ -1984,9 +2002,9 @@ class ContainerBase(dict, abc.ABC):
                     )
                 space_left = max_batch_size - starting_index
                 amount_to_write = min(this_batch_size, space_left)
-                h5_obj[key][
-                    starting_index : starting_index + amount_to_write
-                ] = value_as_np[0:amount_to_write]
+                h5_obj[key][starting_index : starting_index + amount_to_write] = (
+                    value_as_np[0:amount_to_write]
+                )
 
     def cont_to_disk_as_pickled(self, pickle_filepath):
         """
@@ -2665,15 +2683,19 @@ class ContainerBase(dict, abc.ABC):
             ivy.utils.assertions.check_elem_in_list(
                 key,
                 sub_cont,
-                message="key chain must already exist in container in order to \
-                call cont_overwrite_at_key_chain",
+                message=(
+                    "key chain must already exist in container in order to "
+                    "call cont_overwrite_at_key_chain"
+                ),
             )
             sub_cont = sub_cont[key]
         ivy.utils.assertions.check_elem_in_list(
             keys[-1],
             sub_cont,
-            message="key chain must already exist in container in order to \
-            call cont_overwrite_at_key_chain",
+            message=(
+                "key chain must already exist in container in order to call "
+                "cont_overwrite_at_key_chain"
+            ),
         )
         sub_cont[keys[-1]] = val
         return cont
@@ -2738,8 +2760,10 @@ class ContainerBase(dict, abc.ABC):
             ivy.utils.assertions.check_elem_in_list(
                 k,
                 return_dict,
-                message="key chain must already exist in container in order to \
-                call cont_overwrite_at_key_chain",
+                message=(
+                    "key chain must already exist in container in order to "
+                    "call cont_overwrite_at_key_chain"
+                ),
             )
             if isinstance(v, dict):
                 return_dict[k] = self.cont_overwrite_at_key_chains(
@@ -3101,9 +3125,9 @@ class ContainerBase(dict, abc.ABC):
         return: A deep copy of the container
         """
         return self.cont_map(
-            lambda x, kc: ivy.copy_array(x)
-            if ivy.is_array(x) and not isinstance(x, str)
-            else x
+            lambda x, kc: (
+                ivy.copy_array(x) if ivy.is_array(x) and not isinstance(x, str) else x
+            )
         )
 
     def __deepcopy__(self, memo):
@@ -3681,6 +3705,7 @@ class ContainerBase(dict, abc.ABC):
                 "tensorflow": "([",
                 "torch": "([",
                 "paddle": "])",
+                "mxnet": "])",
             }
             split_phrase = split_phrase_dict[self._cont_ivy.current_backend_str()]
             array_str_in_split = array_str_in.split(split_phrase)
@@ -3718,17 +3743,19 @@ class ContainerBase(dict, abc.ABC):
             )
             uniform_indent = "\n".join(
                 [
-                    local_indent_str + extra_indent + " " + s
-                    if (
-                        s[0].isnumeric()
-                        or s[0] == "-"
-                        or s[0:3] == "..."
-                        or max([ss in s[0:6] for ss in ["nan, ", "inf, "]])
-                    )
-                    else (
-                        indent_str + indented_key_str + s
-                        if (not s[0].isspace() and s[0] != '"')
-                        else s
+                    (
+                        local_indent_str + extra_indent + " " + s
+                        if (
+                            s[0].isnumeric()
+                            or s[0] == "-"
+                            or s[0:3] == "..."
+                            or max([ss in s[0:6] for ss in ["nan, ", "inf, "]])
+                        )
+                        else (
+                            indent_str + indented_key_str + s
+                            if (not s[0].isspace() and s[0] != '"')
+                            else s
+                        )
                     )
                     for s in uniform_indent_wo_overflow_list
                 ]
@@ -3782,10 +3809,12 @@ class ContainerBase(dict, abc.ABC):
                         if len(v) <= self._print_limit:
                             rep = tuple(
                                 [
-                                    "{} = {}".format(name, v[i])
-                                    if v[i].size < self._print_limit
-                                    else "{} = {}, shape={}".format(
-                                        name, type(v[i]), list(v[i].shape)
+                                    (
+                                        "{} = {}".format(name, v[i])
+                                        if v[i].size < self._print_limit
+                                        else "{} = {}, shape={}".format(
+                                            name, type(v[i]), list(v[i].shape)
+                                        )
                                     )
                                     for i, name in enumerate(v._fields)
                                 ],
@@ -3818,9 +3847,11 @@ class ContainerBase(dict, abc.ABC):
                 json.dumps(
                     ivy.Container(new_dict, **self._config)
                     .cont_map(
-                        lambda x, kc: x
-                        if _is_jsonable(x)
-                        else _repr(x).replace(" ", "").replace(",", ", ")
+                        lambda x, kc: (
+                            x
+                            if _is_jsonable(x)
+                            else _repr(x).replace(" ", "").replace(",", ", ")
+                        )
                     )
                     .cont_to_dict(),
                     indent=self._print_indent,
@@ -3835,9 +3866,11 @@ class ContainerBase(dict, abc.ABC):
                 str_split_size = len(str_in_split)
                 return "\n".join(
                     [
-                        ("\n" * self._print_line_spacing + ss)
-                        if i == (str_split_size - 1)
-                        else ss
+                        (
+                            ("\n" * self._print_line_spacing + ss)
+                            if i == (str_split_size - 1)
+                            else ss
+                        )
                         for i, ss in enumerate(str_in_split)
                     ]
                 )
@@ -3869,19 +3902,21 @@ class ContainerBase(dict, abc.ABC):
             split_size = len(json_dumped_str_split)
             json_dumped_str = '":'.join(
                 [
-                    ' "'.join(
-                        sub_str.split(' "')[:-1]
-                        + [
-                            termcolor.colored(
-                                ivy.Container.cont_trim_key(
-                                    sub_str.split(' "')[-1], self._key_length_limit
-                                ),
-                                self._default_key_color,
-                            )
-                        ]
+                    (
+                        ' "'.join(
+                            sub_str.split(' "')[:-1]
+                            + [
+                                termcolor.colored(
+                                    ivy.Container.cont_trim_key(
+                                        sub_str.split(' "')[-1], self._key_length_limit
+                                    ),
+                                    self._default_key_color,
+                                )
+                            ]
+                        )
+                        if i < split_size - 1
+                        else sub_str
                     )
-                    if i < split_size - 1
-                    else sub_str
                     for i, sub_str in enumerate(json_dumped_str_split)
                 ]
             )

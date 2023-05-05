@@ -167,7 +167,8 @@ def _should_install_backend(package_name):
             ) from e
     elif ret.lower() == "n":
         print(
-            Fore.YELLOW + "Will continue without backend installed, "
+            Fore.YELLOW
+            + "Will continue without backend installed, "
             "type checking won't be available.\n"
         )
     else:
@@ -220,7 +221,7 @@ def _get_backend():
         _get_user_input(_import_name)
 
         global _imported_backend
-        print(Style.BRIGHT + f"Importing {backend['name']} " "for type checking...")
+        print(Style.BRIGHT + f"Importing {backend['name']} for type checking...")
         try:
             _imported_backend = import_module(backend["name"])
             return True

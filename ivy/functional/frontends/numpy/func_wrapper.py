@@ -35,10 +35,12 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
             if assert_fn:
                 ivy.utils.assertions.check_all_or_any_fn(
                     *args,
-                    fn=lambda x: assert_fn(x)
-                    if ivy.shape(x) == ()
-                    else np_frontend.can_cast(
-                        x, ivy.as_ivy_dtype(dtype), casting=casting
+                    fn=lambda x: (
+                        assert_fn(x)
+                        if ivy.shape(x) == ()
+                        else np_frontend.can_cast(
+                            x, ivy.as_ivy_dtype(dtype), casting=casting
+                        )
                     ),
                     type="all",
                     message="type of input is incompatible with dtype: {}".format(
@@ -71,8 +73,8 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
         fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
         assert_fn = lambda x: ivy.dtype(x) == fn_func
         if scalar_check:
-            assert_fn = (
-                lambda x: ivy.dtype(x) == fn_func
+            assert_fn = lambda x: (
+                ivy.dtype(x) == fn_func
                 if ivy.shape(x) != ()
                 else _casting_no_special_case(ivy.dtype(x), fn_func, none)
             )
@@ -371,9 +373,11 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
-            ivy.set_default_int_dtype(
-                "int64"
-            ) if platform.system() != "Windows" else ivy.set_default_int_dtype("int32")
+            (
+                ivy.set_default_int_dtype("int64")
+                if platform.system() != "Windows"
+                else ivy.set_default_int_dtype("int32")
+            )
             ivy.set_default_float_dtype("float64")
             set_default_dtype = True
         if contains_order:

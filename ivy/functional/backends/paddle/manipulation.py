@@ -283,7 +283,7 @@ def split(
             num_or_size_splits + type(num_or_size_splits)([-1])
         elif sum(num_or_size_splits) > x.shape[axis]:
             raise ivy.utils.exceptions.IvyException(
-                f"total split size is not compatible with input shape,"
+                "total split size is not compatible with input shape,"
                 f" got {sum(num_or_size_splits)} which is more than x.shape[axis]"
             )
 
@@ -357,7 +357,7 @@ def tile(
                 shape = repeats
                 shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
             else:
-                shape = ivy.multiply(x.shape, repeats).to_list()
+                shape = ivy.multiply(x.shape, repeats).tolist()
             return ivy.zeros(shape).cast(x.dtype)
 
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
