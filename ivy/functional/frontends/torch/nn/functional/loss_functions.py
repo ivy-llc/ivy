@@ -137,28 +137,14 @@ def cosine_embedding_loss(
         return ivy.sqrt(ivy.sum(ivy.square(input), axis=axis))
 
     def cosine_similarity(x1, x2):
-        axis = None
-        if len(x1.shape) == len(x2.shape) and len(x2.shape) == 2:
-            axis = 1
-        input1_norm = norm(x1, axis=axis)
-        input2_norm = norm(x2, axis=axis)
-        norm_mm = input1_norm * input2_norm
-        norm_mm, eps = torch_frontend.promote_types_of_torch_inputs(norm_mm, 1e-08)
-        return ivy.sum(x1 * x2, axis=axis) / ivy.maximum(norm_mm, eps)
+        axis = 1 if len(x1.shape) == len(x2.shape) == 2 else None
+        return ivy.sum(x1 * x2, axis=axis) / ivy.maximum(norm(x1, axis), 1e-08) / ivy.maximum(norm(x2, axis), 1e-08)
 
     def calculate_loss(x1, x2, target):
         cos = cosine_similarity(x1, x2)
-        if target == ivy.array(1.0):
-            loss = 1.0 - cos
-        elif target == ivy.array(-1.0):
-            loss = ivy.maximum(ivy.array(0.0), cos - ivy.array(margin))
-        else:
-            _, zero = torch_frontend.promote_types_of_torch_inputs(
-                input1, ivy.array(0.0)
-            )
-            return zero
-
+        loss = ivy.where(target == 1.0, 1.0 - cos, ivy.where(target == -1.0, ivy.maximum(ivy.array(0.0), cos - ivy.array(margin)), ivy.array(0.0)))
         return loss
+
 
     ivy.utils.assertions.check_true(
         target.ndim + 1 == input1.ndim and target.ndim + 1 == input2.ndim,
