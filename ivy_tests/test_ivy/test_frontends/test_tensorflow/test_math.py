@@ -2531,7 +2531,7 @@ def test_tensorflow_in_top_k(
 
 # top_k
 @handle_frontend_test(
-    fn_tree="tensorflow.math.in_top_k",
+    fn_tree="tensorflow.math.top_k",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
