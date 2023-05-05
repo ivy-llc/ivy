@@ -12,8 +12,8 @@ ENV CONDA_DIR /opt/miniconda/
 RUN apt clean && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get update && \
-    apt-get install -y wget && \
-    apt-get install git -y && \
+    apt-get install -y wget  \
+    git -y && \
     wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
      /bin/bash ~/miniconda.sh -b -p /opt/miniconda
 
@@ -52,15 +52,21 @@ COPY requirements/optional.txt .
 COPY requirements/requirements.txt .
 ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
 
-# currently uninstalling the installed frameworks, and re-installing latest ones in specific directories
-RUN pip install numpy --target '/opt/fw/numpy' --no-cache-dir &&\
-    pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
-    pip install tensorflow-cpu --target '/opt/fw/tensorflow' --no-cache-dir &&\
-    pip install jax[cpu] --target '/opt/fw/jax' --no-cache-dir &&\
-    pip install jaxlib --target '/opt/fw/jax' --no-cache-dir &&\
-    pip install paddlepaddle --target '/opt/fw/paddle' --no-cache-dir &&\
-    pip3 install --no-cache-dir -r optional.txt && \
-    pip3 install  --no-cache-dir -r requirements.txt \
+
+COPY requirement_mappings.json .
+
+RUN jq -r '.[] | to_entries[] | .key + "/" + .value' requirement_mappings.json | xargs -n 1 sh -c 'mkdir -p "/opt/fw/$1" && pip install --target "/opt/fw/$1" "$1"' &&\
+    pip install $(grep -v -f <(cat requirement_mappings.json | jq -r 'to_entries | map(.value[] as $v | .key + "/" + $v) | .[]') requirements.txt)
+
+## currently uninstalling the installed frameworks, and re-installing latest ones in specific directories
+#RUN pip install numpy --target '/opt/fw/numpy' --no-cache-dir &&\
+#    pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
+#    pip install tensorflow-cpu --target '/opt/fw/tensorflow' --no-cache-dir &&\
+#    pip install jax[cpu] --target '/opt/fw/jax' --no-cache-dir &&\
+#    pip install jaxlib --target '/opt/fw/jax' --no-cache-dir &&\
+#    pip install paddlepaddle --target '/opt/fw/paddle' --no-cache-dir &&\
+#    pip3 install --no-cache-dir -r optional.txt && \
+#    pip3 install  --no-cache-dir -r requirements.txt \
 
 ENV PYTHONPATH "/opt/fw/numpy:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
 
