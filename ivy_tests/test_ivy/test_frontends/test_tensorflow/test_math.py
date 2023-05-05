@@ -2534,7 +2534,7 @@ def test_tensorflow_in_top_k(
     fn_tree="tensorflow.math.top_k",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        # num_arrays=1,
+        num_arrays=2,
         shared_dtype=True,
     ),
     k=st.integers(min_value=0, max_value=5),
