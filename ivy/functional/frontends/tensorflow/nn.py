@@ -443,11 +443,14 @@ def convolution(
     filters_depth = filters_shape[-2]
 
     # Inconsistent input and filter depths
+    feature_group_count = 1
     if input_depth != filters_depth:
-        raise ValueError(
-            "`input` and `filter` must have the same depth: "
-            f"{input_depth} vs {filters_depth}."
-        )
+        if input_depth % filters_depth != 0:
+            raise ValueError(
+                "input depth must be evenly divisible by filter depth: "
+                f"{input_depth} vs {filters_depth}"
+            )
+        feature_group_count = input_depth // filters_depth
 
     if data_format.startswith("NC"):
         data_format = "channel_first"
@@ -462,6 +465,7 @@ def convolution(
         dims=num_spatial_dims,
         data_format=data_format,
         dilations=dilations,
+        feature_group_count=feature_group_count,
     )
 
     return output
