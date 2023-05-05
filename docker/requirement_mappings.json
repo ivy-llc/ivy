@@ -1,0 +1,5 @@
+{
+  "tensorflow": ["tensorflow-addons", "tensorflow-probability"],
+  "jax": ["dm-haiku", "flax", "jaxlib"],
+  "torch": ["torch-scatter"]
+}
