@@ -138,22 +138,20 @@ class _ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def _static_zeros(
-        *size: Union[int, Sequence[int]],
         shape: Union[int, Sequence[int]],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        if len(size) != 0:
-            size = size[0] if isinstance(size[0], (tuple, list)) else size
         return ContainerBase.cont_multi_map_in_function(
             "zeros",
-            size,
-            shape=shape,
+            shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -165,22 +163,20 @@ class _ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def _static_ones(
-        *size: Union[int, Sequence[int]],
         shape: Union[int, Sequence[int]],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        if len(size) != 0:
-            size = size[0] if isinstance(size[0], (tuple, list)) else size
         return ContainerBase.cont_multi_map_in_function(
             "ones",
-            size,
-            shape=shape,
+            shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -192,22 +188,20 @@ class _ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def _static_empty(
-        *size: Union[int, Sequence[int]],
         shape: Union[int, Sequence[int]],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        if len(size) != 0:
-            size = size[0] if isinstance(size[0], (tuple, list)) else size
         return ContainerBase.cont_multi_map_in_function(
             "empty",
-            size,
-            shape=shape,
+            shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

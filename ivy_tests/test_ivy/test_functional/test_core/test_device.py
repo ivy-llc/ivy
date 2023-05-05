@@ -17,9 +17,9 @@ try:
     import pynvml
 except ImportError:
     warnings.warn(
-        "pynvml installation was not found in the environment,\
-         functionalities of the Ivy's device module will be limited.\
-         Please install pynvml if you wish to use GPUs with Ivy."
+        "pynvml installation was not found in the environment, functionalities"
+        " of the Ivy's device module will be limited. Please install pynvml if"
+        " you wish to use GPUs with Ivy."
     )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
@@ -485,8 +485,9 @@ def test_print_all_ivy_arrays_on_dev(
     assert len(written) == num
 
     if attr_only:
-        # Check that the attribute are printed are in the format of ((dim,...), type)
-        regex = r"^\(\((\d+,(\d,\d*)*)\), \'\w*\'\)$"
+        # Check that the attribute are printed are in the format of
+        # (ivy.Shape(dim,...), type)
+        regex = r"^\(ivy.Shape\((\d+,(\d,\d*)*)\), \'\w*\'\)$"
     else:
         # Check that the arrays are printed are in the format of ivy.array(...)
         regex = r"^ivy\.array\(\[.*\]\)$"

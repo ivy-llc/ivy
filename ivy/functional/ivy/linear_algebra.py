@@ -2170,8 +2170,8 @@ def tensorsolve(
 
     if ivy.shape(ivy.flatten(x1))[0] != prod**2:
         raise ivy.utils.exceptions.IvyException(
-            "Input arrays must satisfy the requirement \
-            prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
+            "Input arrays must satisfy the requirement "
+            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
         )
 
     x1 = ivy.reshape(x1, (prod, prod))
