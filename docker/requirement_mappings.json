@@ -1,4 +1,5 @@
 {
   "tensorflow": ["tensorflow-cpu","tensorflow-addons", "tensorflow-probability"],
-  "jax": ["jax[cpu]","dm-haiku", "flax", "jaxlib"]
+  "jax": ["jax[cpu]","dm-haiku", "flax", "jaxlib"],
+  "numpy": ["numpy"]
 }
