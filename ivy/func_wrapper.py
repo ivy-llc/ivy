@@ -617,8 +617,8 @@ def infer_device(fn: Callable) -> Callable:
 
 
 def handle_out_argument(fn: Callable) -> Callable:
-    if fn.__name__ == "linear":
-        pass
+    handle_out_in_backend = hasattr(fn, "support_native_out")
+    handle_out_in_ivy = hasattr(fn, "mixed_function")
 
     @functools.wraps(fn)
     def _handle_out_argument(*args, out=None, **kwargs):
@@ -642,8 +642,6 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
-        handle_out_in_backend = hasattr(fn, "support_native_out")
-        handle_out_in_ivy = hasattr(fn, "mixed_function")
         if out is None or handle_out_in_ivy:
             return fn(*args, out=out, **kwargs)
         if handle_out_in_backend:
@@ -802,13 +800,9 @@ def _wrap_function(
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
-        if original.__name__ == "linear":
-            pass
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
-            # do not copy the mixed_function attribute
-            # for partial mixed functions
             if (
                 attr.startswith("_")
                 or hasattr(ivy, attr)
@@ -835,18 +829,16 @@ def _wrap_function(
             # for the handle_mixed_function decorator
             if to_wrap != original:
                 to_wrap.compos = original
-
             for attr in to_replace[compositional]:
                 setattr(original, attr, True)
-
-        handle_mixed_fn = hasattr(to_wrap, "handle_mixed_function")
 
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)
-        if handle_mixed_fn:
-            to_wrap = handle_mixed_function(to_wrap.handle_mixed_function)(to_wrap)
-
+        if hasattr(to_wrap, "partial_mixed_handler"):
+            to_wrap = handle_mixed_function(getattr(to_wrap, "partial_mixed_handler"))(
+                to_wrap
+            )
     return to_wrap
 
 
