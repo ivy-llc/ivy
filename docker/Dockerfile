@@ -32,6 +32,7 @@ RUN apt-get update && \
     apt-get install -y rsync && \
     apt-get install -y libusb-1.0-0 && \
     apt-get install -y libglib2.0-0 && \
+    apt-get install -y jq && \
     pip3 install --upgrade pip && \
     pip3 install pip-autoremove &&\
     pip3 install setuptools==58.5.3
