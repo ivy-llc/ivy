@@ -401,6 +401,18 @@ def convolution(
         data_format = "channel_last"
     else:
         data_format = "channel_first"
+
+    channel_index = -1 if data_format == "channel_last" else 1
+    input_depth = ivy.shape(input)[channel_index]
+    filters_depth = ivy.shape(filters)[-2]
+
+    if input_depth != filters_depth:
+        if input_depth % filters_depth != 0:
+            raise ValueError(
+                "input depth must be evenly divisible by filter depth: "
+                f"{input_depth} vs {filters_depth}"
+            )
+        feature_group_count = input_depth // filters_depth
     return ivy.conv_general_dilated(
         input,
         filters,
@@ -409,6 +421,7 @@ def convolution(
         dims=num_spatial_dims,
         data_format=data_format,
         dilations=dilations,
+        feature_group_count=feature_group_count,
     )
 
 
