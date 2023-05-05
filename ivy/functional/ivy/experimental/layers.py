@@ -162,6 +162,7 @@ def max_pool2d(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def pool(
         x: Union[ivy.Array, ivy.NativeArray],
@@ -171,9 +172,10 @@ def pool(
         padding=Union[str, int, Tuple[int], Tuple[int, int]],
         data_format: str = "",
         dilations=None,
-        name=None):
+        name=None,
+        out: Optional[ivy.Array] = None):
     
-        # pylint: disable=line-too-long
+    # pylint: disable=line-too-long
     """Performs an N-D pooling operation.
 
     In the case that `data_format` does not start with "NC", computes for
@@ -259,7 +261,8 @@ def pool(
                                        padding=padding,
                                        data_format=data_format,
                                        dilations=dilations,
-                                       name=name)
+                                       name=name,
+                                       out=out)
 
 
 @to_native_arrays_and_back
