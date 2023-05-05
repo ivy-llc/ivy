@@ -2,7 +2,7 @@
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow import math
+from ivy.functional.frontends.tensorflow import math, reverse
 
 
 def _reduce_strides_dilations(dim, stride, dilations):
@@ -34,7 +34,7 @@ def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
 
 @to_ivy_arrays_and_back
 def conv1d(
-    input, filters, stride, padding, data_format="NWC", dilations=None, name=None
+        input, filters, stride, padding, data_format="NWC", dilations=None, name=None
 ):
     dilations = 1 if dilations is None else dilations
     stride, dilations = _reduce_strides_dilations(1, stride, dilations)
@@ -45,14 +45,14 @@ def conv1d(
 
 @to_ivy_arrays_and_back
 def conv1d_transpose(
-    input,
-    filters,
-    output_shape,
-    strides,
-    padding="SAME",
-    data_format="NWC",
-    dilations=None,
-    name=None,
+        input,
+        filters,
+        output_shape,
+        strides,
+        padding="SAME",
+        data_format="NWC",
+        dilations=None,
+        name=None,
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(1, strides, dilations)
@@ -75,7 +75,7 @@ def gelu(features, approximate=False, name=None):
 
 @to_ivy_arrays_and_back
 def conv2d(
-    input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
+        input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
@@ -86,14 +86,14 @@ def conv2d(
 
 @to_ivy_arrays_and_back
 def conv2d_transpose(
-    input,
-    filters,
-    output_shape,
-    strides,
-    padding="SAME",
-    data_format="NHWC",
-    dilations=None,
-    name=None,
+        input,
+        filters,
+        output_shape,
+        strides,
+        padding="SAME",
+        data_format="NHWC",
+        dilations=None,
+        name=None,
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
@@ -111,7 +111,7 @@ def conv2d_transpose(
 
 @to_ivy_arrays_and_back
 def conv3d(
-    input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
+        input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(3, strides, dilations)
@@ -123,14 +123,14 @@ def conv3d(
 @with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
-    input,
-    filters,
-    output_shape,
-    strides,
-    padding="SAME",
-    data_format="NDHWC",
-    dilations=None,
-    name=None,
+        input,
+        filters,
+        output_shape,
+        strides,
+        padding="SAME",
+        data_format="NDHWC",
+        dilations=None,
+        name=None,
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(3, strides, dilations)
@@ -149,13 +149,13 @@ def conv3d_transpose(
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def depthwise_conv2d(
-    input,
-    filter,
-    strides,
-    padding="SAME",
-    data_format="NHWC",
-    dilations=None,
-    name=None,
+        input,
+        filter,
+        strides,
+        padding="SAME",
+        data_format="NHWC",
+        dilations=None,
+        name=None,
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
@@ -177,14 +177,14 @@ def depthwise_conv2d(
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def separable_conv2d(
-    input,
-    depthwise_filter,
-    pointwise_filter,
-    strides,
-    padding,
-    data_format=None,
-    dilations=None,
-    name=None,
+        input,
+        depthwise_filter,
+        pointwise_filter,
+        strides,
+        padding,
+        data_format=None,
+        dilations=None,
+        name=None,
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
@@ -197,6 +197,25 @@ def separable_conv2d(
         data_format=data_format,
     )
     return conv2d(ret, pointwise_filter, 1, "SAME", data_format=data_format)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def erosion2d(value, filters, strides, padding, data_format, dilations, name='erosion2d'):
+    if data_format != "NHWC":
+        raise ValueError("`data_format` values other  than 'NHWC' are not "
+                         f"supported. Received: data_format={data_format}")
+
+    return ivy.negative(
+        ivy.conv2d(
+            x=ivy.negative(value),
+            filters=reverse(filters, [0, 1]),
+            strides=strides,
+            padding=padding,
+            data_format=data_format,
+            dilations=dilations,
+            name=name
+        ))
 
 
 @to_ivy_arrays_and_back
@@ -220,12 +239,12 @@ def dropout(x, rate, noise_shape=None, seed=None, name=None):
 @with_unsupported_dtypes(
     {
         "2.9.1": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-            "bfloat16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "bool",
+                "bfloat16",
         )
     },
     "tensorflow",
@@ -239,11 +258,11 @@ def silu(features, beta: float = 1.0):
 @with_unsupported_dtypes(
     {
         "2.9.1": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "bool",
         )
     },
     "tensorflow",
@@ -262,18 +281,18 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
 @with_unsupported_dtypes(
     {
         "2.9.1": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "bool",
         )
     },
     "tensorflow",
 )
 @to_ivy_arrays_and_back
 def weighted_cross_entropy_with_logits(
-    labels=None, logits=None, pos_weight=1.0, name=None
+        labels=None, logits=None, pos_weight=1.0, name=None
 ):
     ivy.utils.assertions.check_shape(labels, logits)
     ones = ivy.ones_like(labels)
@@ -296,7 +315,7 @@ def weighted_cross_entropy_with_logits(
 )
 @to_ivy_arrays_and_back
 def local_response_normalization(
-    input, /, *, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
+        input, /, *, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
 ):
     input_shape = ivy.shape(input)
     ivy.utils.assertions.check_equal(
@@ -313,7 +332,7 @@ def local_response_normalization(
         sqr_sum[p] = [
             sum(
                 ivy.pow(
-                    input_perm[p][max(c - depth_radius, 0) : c + depth_radius + 1], 2.0
+                    input_perm[p][max(c - depth_radius, 0): c + depth_radius + 1], 2.0
                 )
             )
             for c in range(input_shape[3])
@@ -354,7 +373,7 @@ def bias_add(value, bias, data_format=None, name=None):
 
 
 def _convolution_broadcast_helper(
-    arg, num_spatial_dims, channel_index, name="dilations"
+        arg, num_spatial_dims, channel_index, name="dilations"
 ):
     # Helper to broadcast dilations and strides to correct dims
     if arg is None:
@@ -388,13 +407,13 @@ def _convolution_broadcast_helper(
 
 @to_ivy_arrays_and_back
 def convolution(
-    input,
-    filters,
-    strides=None,
-    padding="VALID",
-    data_format=None,
-    dilations=None,
-    name=None,
+        input,
+        filters,
+        strides=None,
+        padding="VALID",
+        data_format=None,
+        dilations=None,
+        name=None,
 ):
     # Tensorflow backend doesn't support NCW, NCHW or NCDHW on CPU
     DATA_FORMATS = ["NWC", "NHWC", "NDHWC"]
