@@ -17,42 +17,48 @@ from . import backend_version
 def unique_all(
     x: torch.Tensor,
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     Results = namedtuple(
         "Results",
         ["values", "indices", "inverse_indices", "counts"],
     )
 
-    outputs, inverse_indices, counts = torch.unique(
-        x, sorted=True, return_inverse=True, return_counts=True, dim=None
+    if axis is None:
+        x = torch.flatten(x)
+        axis = 0
+
+    values, inverse_indices, counts = torch.unique(
+        x,
+        sorted=True,
+        return_inverse=True,
+        return_counts=True,
+        dim=axis,
     )
 
-    flat_tensor = x.flatten()
-    unique_nan = torch.isnan(outputs)
+    unique_nan = torch.isnan(values)
     idx_dtype = inverse_indices.dtype
-
     if torch.any(unique_nan):
-        nan_index = torch.where(torch.isnan(flat_tensor))
+        nan_index = torch.where(torch.isnan(x))
         non_nan_index = [
-            flat_tensor.tolist().index(val) for val in outputs if not torch.isnan(val)
+            x.tolist().index(val) for val in values if not torch.isnan(val)
         ]
-
-        indices = outputs.clone().to(idx_dtype)
-
+        indices = values.clone().to(idx_dtype)
         indices[unique_nan] = nan_index[0]
         inverse_indices[torch.isnan(x)] = torch.where(unique_nan)[0][0]
         counts[unique_nan] = 1
         indices[~unique_nan] = torch.tensor(non_nan_index, dtype=idx_dtype)
-
     else:
-        indices = torch.tensor(
-            [torch.where(flat_tensor == val)[0][0] for val in outputs], dtype=idx_dtype
-        )
+        decimals = torch.arange(inverse_indices.numel()) / inverse_indices.numel()
+        inv_sorted = (inverse_indices + decimals).argsort()
+        tot_counts = torch.cat((counts.new_zeros(1), counts.cumsum(dim=0)))[:-1]
+        indices = inv_sorted[tot_counts].to(idx_dtype)
 
     return Results(
-        outputs.to(x.dtype),
-        indices.view(outputs.shape),
-        inverse_indices.reshape(x.shape),
+        values.to(x.dtype),
+        indices,
+        inverse_indices,
         counts,
     )
 

@@ -61,21 +61,24 @@ def matmul(
     output_type=None,
     name=None,
 ):
-    if adjoint_a:
-        if transpose_a:
-            raise ivy.utils.exceptions.IvyException(
-                "Only one of `transpose_a` and `adjoint_a` can be True. "
-                "Received `transpose_a`=True, `adjoint_a`=True."
-            )
-        a = ivy.adjoint(a)
-    if adjoint_b:
-        if transpose_b:
-            raise ivy.utils.exceptions.IvyException(
-                "Only one of `transpose_b` and `adjoint_b` can be True. "
-                "Received `transpose_b`=True, `adjoint_b`=True."
-            )
-        b = ivy.adjoint(b)
-    return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
+    if transpose_a and adjoint_a:
+        raise ivy.utils.exceptions.IvyException(
+            "Only one of `transpose_a` and `adjoint_a` can be True. "
+            "Received `transpose_a`=True, `adjoint_a`=True."
+        )
+    if transpose_b and adjoint_b:
+        raise ivy.utils.exceptions.IvyException(
+            "Only one of `transpose_b` and `adjoint_b` can be True. "
+            "Received `transpose_b`=True, `adjoint_b`=True."
+        )
+    return ivy.matmul(
+        a,
+        b,
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
+        adjoint_a=adjoint_a,
+        adjoint_b=adjoint_b,
+    )
 
 
 @to_ivy_arrays_and_back

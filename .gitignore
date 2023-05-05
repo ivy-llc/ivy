@@ -30,3 +30,4 @@ internal_automation_tools/
 .idea/*
 .ivy/*
 .DS_Store*
+fn_path_cache

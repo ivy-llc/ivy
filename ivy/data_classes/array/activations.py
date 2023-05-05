@@ -13,8 +13,8 @@ class _ArrayWithActivations(abc.ABC):
     def relu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
-        function, and so the docstring for ivy.relu also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.relu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -83,8 +83,8 @@ class _ArrayWithActivations(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.gelu. This method simply wraps the
-        function, and so the docstring for ivy.gelu also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.gelu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -149,8 +149,8 @@ class _ArrayWithActivations(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softmax. This method simply wraps the
-        function, and so the docstring for ivy.softmax also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.softmax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -186,8 +186,8 @@ class _ArrayWithActivations(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
-        function, and so the docstring for ivy.softplus also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.softplus also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -232,10 +232,9 @@ class _ArrayWithActivations(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.log_softmax.
-        This method simply wraps the function,
-        and so the docstring for ivy.log_softmax also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.log_softmax. This method simply wraps
+        the function, and so the docstring for ivy.log_softmax also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -268,8 +267,8 @@ class _ArrayWithActivations(abc.ABC):
     def mish(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.mish. This method simply wraps the
-        function, and so the docstring for ivy.mish also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.mish also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

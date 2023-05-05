@@ -46,7 +46,9 @@ def arange(
 @asarray_infer_device
 @asarray_handle_nestable
 def asarray(
-    obj: Union[np.ndarray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    obj: Union[
+        np.ndarray, bool, int, float, tuple, NestedSequence, SupportsBufferProtocol
+    ],
     /,
     *,
     copy: Optional[bool] = None,
@@ -170,6 +172,7 @@ def meshgrid(
     *arrays: np.ndarray,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[np.ndarray] = None,
 ) -> List[np.ndarray]:
     return np.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
@@ -210,9 +213,6 @@ def zeros(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.zeros(shape, dtype), device=device)
-
-
-zeros.support_native_out = True
 
 
 def zeros_like(

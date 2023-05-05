@@ -11,9 +11,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         self, /, *, eps: Optional[float] = None, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logit. This method
-        simply wraps the function, and so the docstring for ivy.logit
-        also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.logit. This method simply wraps the
+        function, and so the docstring for ivy.logit also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -42,7 +42,6 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> z = x.logit(eps=0.2)
         >>> print(z)
         ivy.array([ 1.38629448,  1.38629448, -1.38629436])
-
         """
         return ivy.logit(self, eps=eps, out=out)
 
@@ -54,9 +53,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.thresholded_relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.thresholded_relu also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.thresholded_relu. This method simply
+        wraps the function, and so the docstring for ivy.thresholded_relu also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -92,6 +91,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
     ) -> ivy.Array:
         """
         Prelu takes input data (Array) and slope array as input,
+
         and produces one output data (array) where the function
         f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
         to the data array elementwise. This operator supports unidirectional
@@ -116,7 +116,8 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         return ivy.prelu(self._data, slope, out=out)
 
     def relu6(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """Applies the rectified linear unit 6 function element-wise.
+        """
+        Apply the rectified linear unit 6 function element-wise.
 
         Parameters
         ----------
@@ -162,63 +163,13 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         """
         return ivy.relu6(self._data, out=out)
 
-    def batch_norm(
-        self,
-        mean: Union[ivy.NativeArray, ivy.Array],
-        variance: Union[ivy.NativeArray, ivy.Array],
-        /,
-        *,
-        offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-        scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-        training: bool = False,
-        eps: float = 1e-5,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.batch_norm. This method
-        simply wraps the function, and so the docstring for ivy.batch_norm
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input array of shape (N,C,S), where N is the batch dimension, C is the
-            feature dimension and S corresponds to the following spatial dimensions.
-        mean
-            A mean array for the input's normalization.
-        variance
-            A variance array for the input's normalization.
-        offset
-            An offset array. If present, will be added to the normalized input.
-        scale
-            A scale array. If present, the scale is applied to the normalized input.
-        training
-            If true, calculate and use the mean and variance of `x`. Otherwise, use the
-            provided `mean` and `variance`.
-        eps
-            A small float number to avoid dividing by 0.
-
-        Returns
-        -------
-        ret
-             Array containing the normalized, scaled, offset values.
-        """
-        return ivy.batch_norm(
-            self._data,
-            mean,
-            variance,
-            scale=scale,
-            offset=offset,
-            training=training,
-            eps=eps,
-        )
-
     def logsigmoid(
         self: ivy.Array,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logsigmoid. This method
-        simply wraps the function, and so the docstring for ivy.logsigmoid
-        also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.logsigmoid. This method simply wraps
+        the function, and so the docstring for ivy.logsigmoid also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -240,12 +191,12 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> z = x.logsigmoid())
         >>> print(z)
         ivy.array([-2.57888985, -0.31326169, -0.69314718, -0.01104775])
-
         """
         return ivy.logsigmoid(self._data)
 
     def selu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """Applies the scaled exponential linear unit function element-wise.
+        """
+        Apply the scaled exponential linear unit function element-wise.
 
         Parameters
         ----------
@@ -277,6 +228,5 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> print(y)
         ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
                     4.20280409,  5.25350523,  6.30420589,  7.35490704])
-
         """
         return ivy.selu(self._data, out=out)

@@ -174,6 +174,21 @@ def shape_n(input, out_type=ivy.int32, name=None):
         return [ivy.array(ivy.shape(i), dtype="int64") for i in input]
 
 
+@to_ivy_arrays_and_back
+def size(input, out_type=ivy.int32, name=None):
+    out_type = to_ivy_dtype(out_type)
+    shape = ivy.shape(input, as_array=True)
+    return ivy.astype(ivy.prod(shape), out_type, copy=False)
+
+
+@to_ivy_arrays_and_back
+def ensure_shape(x, shape, name=None):
+    x = EagerTensor(x)
+    x.set_shape(shape)
+
+    return x
+
+
 @with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
@@ -208,6 +223,11 @@ def identity(input, name=None):
     return ivy.copy_array(input)
 
 
+@to_ivy_arrays_and_back
+def identity_n(input, name=None):
+    return [ivy.copy_array(x) for x in input]
+
+
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
 
@@ -219,6 +239,12 @@ def is_tensor(x, name=None):
 
 @to_ivy_arrays_and_back
 def gather(params, indices, axis=None, batch_dims=0, name=None):
+    if axis is None:
+        axis = batch_dims
+    else:
+        axis = axis % len(params.shape)
+    if axis < batch_dims:
+        axis = batch_dims
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -240,8 +266,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
             k + axis,
             n,
             allow_equal=True,
-            message="Value of axis must be \
-                                           such that axis + dim(mask) <= dim(tensor)",
+            message="Value of axis must be such that axis + dim(mask) <= dim(tensor)",
         )
         tensor_shape = ivy.shape(tensor)
         for i in range(axis - 1, -1, -1):
@@ -399,7 +424,7 @@ def tile(input, multiples, name=None):
 
 @to_ivy_arrays_and_back
 def one_hot(
-    indices: ivy.array,
+    indices: ivy.Array,
     depth: int,
     on_value=None,
     off_value=None,
@@ -412,13 +437,14 @@ def one_hot(
 
 
 @to_ivy_arrays_and_back
-def where(condition: ivy.array, x=None, y=None, name=None):
+def where(condition: ivy.Array, x=None, y=None, name=None):
     if x is None and y is None:
         return ivy.argwhere(condition)
     else:
         return ivy.where(condition, x, y)
 
 
+@to_ivy_arrays_and_back
 def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
 
@@ -441,10 +467,23 @@ def repeat(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def unstack(value: ivy.array, axis=0, num=None, name=None):
+def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
 
 
 @to_ivy_arrays_and_back
 def reverse(tensor, axis, name=None):
     return ivy.flip(tensor, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
+    return tf_frontend.linalg.norm(
+        tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
+    )
+
+
+norm.supported_dtypes = (
+    "float32",
+    "float64",
+)

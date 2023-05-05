@@ -1,20 +1,17 @@
 name: test-array-api
 on:
-  push:
-  pull_request:
-    types: [labeled, opened, synchronize, reopened, review_requested]
   workflow_dispatch:
 
 jobs:
   run-array-api-tests:
-    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
+    if: contains(github.event.pull_request.labels.*.name, 'Array API')
     strategy:
       matrix:
         backends: [numpy, torch, jax, tensorflow]
         submodules: [array_object, constants, creation_functions, data_type_functions,
                     has_names, linalg, manipulation_functions, operators_and_elementwise_functions,
                     searching_functions, set_functions, signatures, sorting_functions,
-                    special_cases, statistical_functions, type_promotion, utility_functions]
+                    special_cases, statistical_functions, utility_functions]
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
@@ -54,7 +51,7 @@ jobs:
           mkdir -p examples
         continue-on-error: true
 
-      - name: Run Array Api Tests
+      - name: Run Array API Tests
         id: tests
         run: |
           cd ivy
@@ -77,20 +74,6 @@ jobs:
             ivy/.hypothesis/examples.zip
         continue-on-error: true
 
-      - name: Install Mongo Python Client
-        if: (github.event_name == 'push')
-        uses: BSFishy/pip-action@v1
-        with:
-            packages: |
-                pymongo[srv]
-
-      - name: Update Database
-        if: (github.event_name == 'push')
-        env:
-            MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-        run: |
-            cd ivy/automation_tools/dashboard_automation/
-            python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} "${{ matrix.backends }}-${{ matrix.submodules }}" ${{ steps.tests.outcome }} ${{ github.run_id }}
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'

@@ -493,12 +493,14 @@ pow.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
-def round(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def round(
+    x: torch.Tensor, /, *, decimals: int = 0, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
         return x
-    return torch.round(x, out=out)
+    return torch.round(x, decimals=decimals, out=out)
 
 
 round.support_native_out = True

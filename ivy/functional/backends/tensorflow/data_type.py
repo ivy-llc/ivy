@@ -218,7 +218,7 @@ def as_ivy_dtype(
 
 
 def as_native_dtype(
-    dtype_in: Union[tf.DType, str, bool, int, float, np.dtype], /
+    dtype_in: Union[tf.DType, str, bool, int, float, np.dtype],
 ) -> tf.DType:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
@@ -264,6 +264,8 @@ def dtype_bits(dtype_in: Union[tf.DType, str, np.dtype], /) -> int:
 
 
 def is_native_dtype(dtype_in: Union[tf.DType, str], /) -> bool:
+    if dtype_in.__hash__ is None:
+        return False
     if dtype_in in ivy_dtype_dict:
         return True
     else:

@@ -1,5 +1,8 @@
-"""Collection of TensorFlow activation functions, wrapped to fit Ivy syntax and
-signature.
+"""
+TensorFlow activation functions.
+
+Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
+and signature.
 """
 
 from typing import Optional, Union
@@ -55,7 +58,6 @@ def softplus(
     threshold: Optional[Union[int, float]] = None,
     out: Optional[Tensor] = None,
 ) -> Tensor:
-
     if beta is not None and beta != 1:
         x_beta = x * beta
         res = (tf.nn.softplus(x_beta)) / beta
@@ -86,7 +88,6 @@ def get(
     *,
     custom_objects: Optional[ivy.Dict] = None,
 ) -> Union[ivy.Callable, None]:
-
     if identifier is None:
         return tf.keras.activations.linear
 

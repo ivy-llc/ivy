@@ -100,6 +100,7 @@ def asarray(
         bool,
         int,
         float,
+        list,
         NestedSequence,
         SupportsBufferProtocol,
     ],
@@ -241,6 +242,8 @@ def full(
 ) -> paddle.Tensor:
     if dtype is None:
         dtype = ivy.default_dtype(item=fill_value)
+    if not isinstance(shape, Sequence):
+        shape = [shape]
     return to_device(
         paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
     )
@@ -434,12 +437,17 @@ def meshgrid(
     *arrays: paddle.Tensor,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[paddle.Tensor] = None,
 ) -> List[paddle.Tensor]:
     if not sparse:
         if indexing == "ij":
             return paddle.meshgrid(*arrays)
         elif indexing == "xy":
-            return paddle.meshgrid(*arrays[::-1])[::-1]
+            with ivy.ArrayMode(False):
+                index_switch = lambda x: ivy.swapaxes(x, 0, 1) if x.ndim > 1 else x
+                arrays = list(map(index_switch, arrays))
+                ret = paddle.meshgrid(*arrays)
+                return list(map(index_switch, ret))
         else:
             raise ValueError(f"indexing must be either 'ij' or 'xy', got {indexing}")
 
@@ -448,7 +456,6 @@ def meshgrid(
         paddle.reshape(paddle.to_tensor(a), (sd[:i] + (-1,) + sd[i + 1 :]))
         for i, a in enumerate(arrays)
     ]
-
     if indexing == "xy" and len(arrays) > 1:
         res[0] = paddle.reshape(res[0], (1, -1) + sd[2:])
         res[1] = paddle.reshape(res[1], (-1, 1) + sd[2:])

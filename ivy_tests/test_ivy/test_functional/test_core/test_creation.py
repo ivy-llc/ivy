@@ -1,7 +1,7 @@
 """Collection of tests for creation functions."""
 
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy
@@ -11,12 +11,10 @@ from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helpe
 
 
 # native_array
-# TODO: Fix container method
 @handle_test(
     fn_tree="functional.ivy.native_array",
     dtype_and_x_and_cast_dtype=astype_helper(),
     test_with_out=st.just(False),
-    container_flags=st.just([False]),
     test_gradients=st.just(False),
 )
 def test_native_array(
@@ -43,7 +41,6 @@ def test_native_array(
 
 
 # linspace
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.linspace",
     dtype_and_start_stop=helpers.dtype_and_values(
@@ -63,9 +60,6 @@ def test_native_array(
     ),
     num=helpers.ints(min_value=1, max_value=5),
     axis=st.none(),
-    container_flags=st.just([False]),
-    test_instance_method=st.just(False),
-    test_gradients=st.just(False),
 )
 def test_linspace(
     *,
@@ -98,7 +92,6 @@ def test_linspace(
 
 
 # logspace
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.logspace",
     dtype_and_start_stop=helpers.dtype_and_values(
@@ -118,9 +111,6 @@ def test_linspace(
     num=helpers.ints(min_value=1, max_value=5),
     base=helpers.floats(min_value=0.1, max_value=3.0),
     axis=st.none(),
-    container_flags=st.just([False]),
-    test_instance_method=st.just(False),
-    test_gradients=st.just(False),
 )
 def test_logspace(
     *,
@@ -154,7 +144,6 @@ def test_logspace(
 
 
 # arange
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.arange",
     start=helpers.ints(min_value=0, max_value=50),
@@ -163,9 +152,6 @@ def test_logspace(
         lambda x: True if x != 0 else False
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
-    container_flags=st.just([False]),
-    as_variable_flags=st.just([False]),
-    native_array_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -210,9 +196,6 @@ def test_arange(
         shared_dtype=True,
     ),
     as_list=st.booleans(),
-    test_with_out=st.just(False),
-    container_flags=st.just([False]),
-    test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_asarray(
@@ -229,12 +212,38 @@ def test_asarray(
 
     if as_list:
         if isinstance(x, list):
-            x = [list(i) if len(i.shape) > 0 else [float(i)] for i in x]
+            x = [
+                (
+                    list(i)
+                    if len(i.shape) > 0
+                    else [complex(i) if "complex" in dtype[0] else float(i)]
+                )
+                for i in x
+            ]
         else:
             x = list(x)
+        # ToDo: remove this once the tests are able to generate a container of lists
+        # than a list of containers
+        assume(
+            not (
+                test_flags.container[0]
+                or test_flags.instance_method
+                or test_flags.with_out
+            )
+        )
     else:
         if len(x) == 1:
             x = x[0]
+        else:
+            # ToDo: remove this once the tests are able to generate a container of lists
+            # than a list of containers
+            assume(
+                not (
+                    test_flags.container[0]
+                    or test_flags.instance_method
+                    or test_flags.with_out
+                )
+            )
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -250,7 +259,6 @@ def test_asarray(
 
 
 # empty
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.empty",
     shape=helpers.get_shape(
@@ -261,7 +269,6 @@ def test_asarray(
         max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -286,28 +293,17 @@ def test_empty(
         device=on_device,
         test_values=False,
         ground_truth_backend=ground_truth_backend,
+        return_flat_np_arrays=True,
     )
-    if not ivy.exists(ret):
-        return
-    res, res_np = ret
-    ivy.set_backend("tensorflow")
-    assert res.shape == res_np.shape
-    assert res.dtype == res_np.dtype
-    ivy.previous_backend()
+    helpers.assert_same_type_and_shape(ret)
 
 
 # empty_like
-# TODO: Fix container method
 @handle_test(
     fn_tree="functional.ivy.empty_like",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
     ),
-    container_flags=st.just([False]),
     test_gradients=st.just(False),
 )
 def test_empty_like(
@@ -331,18 +327,12 @@ def test_empty_like(
         device=on_device,
         test_values=False,
         ground_truth_backend=ground_truth_backend,
+        return_flat_np_arrays=True,
     )
-    if not ivy.exists(ret):
-        return
-    res, res_np = ret
-    ivy.set_backend("tensorflow")
-    assert res.shape == res_np.shape
-    assert res.dtype == res_np.dtype
-    ivy.previous_backend()
+    helpers.assert_same_type_and_shape(ret)
 
 
 # eye
-# TODO: Fix instance method
 @handle_test(
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
@@ -352,7 +342,6 @@ def test_empty_like(
     ),
     dtype=helpers.get_dtypes("valid", full=False),
     fn_tree="functional.ivy.eye",
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -386,7 +375,6 @@ def test_eye(
 
 
 # from_dlpack
-# TODO: Fix container flag
 @handle_test(
     fn_tree="functional.ivy.from_dlpack",
     dtype_and_x=helpers.dtype_and_values(
@@ -396,8 +384,6 @@ def test_eye(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    container_flags=st.just([False]),
-    as_variable_flags=st.just([False]),  # can't convert variables
     test_gradients=st.just(False),
 )
 def test_from_dlpack(
@@ -432,7 +418,6 @@ def _fill_value(draw):
 
 
 # full
-# TODO: Fix container and instance method
 @handle_test(
     fn_tree="functional.ivy.full",
     shape=helpers.get_shape(
@@ -444,7 +429,6 @@ def _fill_value(draw):
     ),
     fill_value=_fill_value(),
     dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -491,7 +475,6 @@ def _dtype_and_values(draw):
     fn_tree="functional.ivy.full_like",
     dtype_and_x=_dtype_and_values(),
     fill_value=_fill_value(),
-    test_gradients=st.just(False),
 )
 def test_full_like(
     *,
@@ -530,10 +513,7 @@ def test_full_like(
     ),
     sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
-    container_flags=st.just([False]),
-    test_instance_method=st.just(False),
     test_with_out=st.just(False),
-    test_gradients=st.just(False),
 )
 def test_meshgrid(
     *,
@@ -567,7 +547,6 @@ def test_meshgrid(
 
 
 # ones
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.ones",
     shape=helpers.get_shape(
@@ -578,7 +557,6 @@ def test_meshgrid(
         max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -606,7 +584,6 @@ def test_ones(
 
 
 # ones_like
-# TODO: fix instance method
 @handle_test(
     fn_tree="functional.ivy.ones_like",
     dtype_and_x=helpers.dtype_and_values(
@@ -616,7 +593,6 @@ def test_ones(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    test_gradients=st.just(False),
 )
 def test_ones_like(
     *,
@@ -642,7 +618,6 @@ def test_ones_like(
 
 
 # tril
-# TODO: fix container method
 @handle_test(
     fn_tree="functional.ivy.tril",
     dtype_and_x=helpers.dtype_and_values(
@@ -653,8 +628,6 @@ def test_ones_like(
         max_dim_size=5,
     ),
     k=helpers.ints(min_value=-10, max_value=10),
-    container_flags=st.just([False]),
-    test_gradients=st.just(False),
 )
 def test_tril(
     *,
@@ -691,8 +664,6 @@ def test_tril(
         max_dim_size=5,
     ),
     k=helpers.ints(min_value=-10, max_value=10),
-    container_flags=st.just([False]),
-    test_gradients=st.just(False),
 )
 def test_triu(
     *,
@@ -719,7 +690,6 @@ def test_triu(
 
 
 # zeros
-# TODO: fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.zeros",
     shape=helpers.get_shape(
@@ -730,7 +700,6 @@ def test_triu(
         max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -758,7 +727,6 @@ def test_zeros(
 
 
 # zeros_like
-# TODO: fix container and instance method
 @handle_test(
     fn_tree="functional.ivy.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
@@ -768,9 +736,6 @@ def test_zeros(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    container_flags=st.just([False]),
-    test_instance_method=st.just(False),
-    test_gradients=st.just(False),
 )
 def test_zeros_like(
     *,
@@ -796,7 +761,6 @@ def test_zeros_like(
 
 
 # copy array
-# TODO: possible refactor to use the helpers.test_function method
 @handle_test(
     fn_tree="functional.ivy.copy_array",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
@@ -804,24 +768,38 @@ def test_zeros_like(
 )
 def test_copy_array(
     *,
+    test_flags,
     dtype_and_x,
     to_ivy_array_bool,
     on_device,
 ):
     dtype, x = dtype_and_x
-    to_ivy_array_bool = to_ivy_array_bool
     # smoke test
-    x = ivy.array(x[0], dtype=dtype[0], device=on_device)
-    ret = ivy.copy_array(x, to_ivy_array=to_ivy_array_bool)
-    # type test
-    if to_ivy_array_bool:
-        assert ivy.is_ivy_array(ret)
+    x = test_flags.apply_flags(x, dtype, on_device, 0)[0]
+    test_flags.instance_method = (
+        test_flags.instance_method if not test_flags.native_arrays[0] else False
+    )
+    if test_flags.instance_method:
+        ret = x.copy_array(to_ivy_array=to_ivy_array_bool)
     else:
-        assert ivy.is_native_array(ret)
+        ret = ivy.copy_array(x, to_ivy_array=to_ivy_array_bool)
+    # type test
+    test_ret = ret
+    test_x = x
+    if test_flags.container[0]:
+        assert ivy.is_ivy_container(ret)
+        test_ret = ret["a"]
+        test_x = x["a"]
+    if to_ivy_array_bool:
+        assert ivy.is_ivy_array(test_ret)
+    else:
+        assert ivy.is_native_array(test_ret)
     # cardinality test
-    assert list(ret.shape) == list(x.shape)
+    assert test_ret.shape == test_x.shape
     # value test
-    helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
+    x, ret = ivy.to_ivy(x), ivy.to_ivy(ret)
+    x_np, ret_np = helpers.flatten_and_to_np(ret=x), helpers.flatten_and_to_np(ret=ret)
+    helpers.value_test(ret_np_flat=ret_np, ret_np_from_gt_flat=x_np)
     assert id(x) != id(ret)
 
 
@@ -846,7 +824,9 @@ def _dtype_indices_depth_axis(draw):
 def _on_off_dtype(draw):
     dtype, value = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"), shape=(2,)
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=(2,),
+            safety_factor_scale="log",
         )
     )
     [on_value, off_value] = value[0]

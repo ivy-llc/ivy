@@ -77,6 +77,7 @@ def asarray(
     obj: Union[
         tf.Tensor,
         tf.Variable,
+        tf.TensorShape,
         bool,
         int,
         float,
@@ -92,6 +93,12 @@ def asarray(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
+        if isinstance(obj, tf.TensorShape):
+            if dtype is None:
+                return tf.convert_to_tensor(obj.as_list())
+            else:
+                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+                return tf.convert_to_tensor(obj.as_list(), dtype=dtype)
         if copy:
             if dtype is None and isinstance(obj, tf.Tensor):
                 return tf.identity(obj)
@@ -222,6 +229,8 @@ def from_dlpack(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x, tf.Variable):
+        x = x.read_value()
     dlcapsule = tf.experimental.dlpack.to_dlpack(x)
     return tf.experimental.dlpack.from_dlpack(dlcapsule)
 
@@ -297,6 +306,7 @@ def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if not sparse:
         return tf.meshgrid(*arrays, indexing=indexing)

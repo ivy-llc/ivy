@@ -8,6 +8,8 @@ from packaging import version
 def unique_all(
     x: np.ndarray,
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     Results = namedtuple(
         "Results",
@@ -15,10 +17,14 @@ def unique_all(
     )
 
     values, indices, inverse_indices, counts = np.unique(
-        x, return_index=True, return_counts=True, return_inverse=True
+        x,
+        return_index=True,
+        return_counts=True,
+        return_inverse=True,
+        axis=axis,
     )
-    nan_count = np.sum(np.isnan(x)).item()
 
+    nan_count = np.sum(np.isnan(x)).item()
     if (nan_count > 1) & (np.sum(np.isnan(values)).item() == 1):
         counts[np.where(np.isnan(values))[0]] = 1
         counts = np.append(counts, np.full(fill_value=1, shape=(nan_count - 1,)))
@@ -26,17 +32,13 @@ def unique_all(
         values = np.append(
             values, np.full(fill_value=np.nan, shape=(nan_count - 1,)), axis=0
         )
-
         nan_idx = np.where(np.isnan(x.flatten()))[0]
-
         indices = np.concatenate((indices[:-1], nan_idx), axis=0)
-    else:
-        pass
 
     return Results(
         values.astype(x.dtype),
         indices,
-        np.reshape(inverse_indices, x.shape),
+        inverse_indices,
         counts,
     )
 

@@ -455,6 +455,7 @@ def test_tensorflow_tensordot(
 # norm
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.norm",
+    aliases=["tensorflow.norm"],
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=3,

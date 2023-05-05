@@ -34,3 +34,15 @@ def switch(index, branches, *operands, operand=None):
     index = max(index, 0)
     index = min(len(branches) - 1, index)
     return branches[index](*operands)
+
+
+@to_ivy_arrays_and_back
+def fori_loop(lower, upper, body_fun, init_val):
+    if not (callable(body_fun)):
+        raise ivy.exceptions.IvyException(
+            "jax.lax.fori_loop: Argument body_fun should be callable."
+        )
+    val = init_val
+    for i in range(lower, upper):
+        val = body_fun(i, val)
+    return val
