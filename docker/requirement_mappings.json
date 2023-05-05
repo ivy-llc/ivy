@@ -2,5 +2,6 @@
   "tensorflow": ["tensorflow-cpu","tensorflow-addons", "tensorflow-probability"],
   "jax": ["jax[cpu]","dm-haiku", "flax", "jaxlib"],
   "numpy": ["numpy"],
-  "paddle": ["paddlepaddle"]
+  "paddle": ["paddlepaddle"],
+  "mxnet": ["mxnet"]
 }

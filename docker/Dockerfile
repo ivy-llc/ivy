@@ -64,20 +64,6 @@ RUN pip install --upgrade -r  requirements.txt &&\
     jq -r 'to_entries[] | .value[]' requirement_mappings.json | sort -u | xargs -I {} sed -i '/{}/d;/torch/d;/torch-scatter/d;/jax\[.*\]/d' optional.txt && pip install -r optional.txt
 
 
-
-
-
-
-## currently uninstalling the installed frameworks, and re-installing latest ones in specific directories
-#RUN pip install numpy --target '/opt/fw/numpy' --no-cache-dir &&\
-#    pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
-#    pip install tensorflow-cpu --target '/opt/fw/tensorflow' --no-cache-dir &&\
-#    pip install jax[cpu] --target '/opt/fw/jax' --no-cache-dir &&\
-#    pip install jaxlib --target '/opt/fw/jax' --no-cache-dir &&\
-#    pip install paddlepaddle --target '/opt/fw/paddle' --no-cache-dir &&\
-#    pip3 install --no-cache-dir -r optional.txt && \
-#    pip3 install  --no-cache-dir -r requirements.txt \
-
 ENV PYTHONPATH "/opt/fw/numpy:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
 
 COPY run_tests_CLI/test_dependencies.py .
