@@ -60,7 +60,8 @@ RUN jq -r 'to_entries[] | select(.value | length > 0) | .key as $dir | .value[] 
 
 
 RUN pip install -r requirements.txt &&\
-    jq -r '.[] | .[]' requirement_mappings.json | sort | uniq | xargs -I {} sed -i '/{}/d' optional.txt && pip install -r optional.txt
+    grep -vFf <(jq -r '.[] | .[]' requirement_mappings.json | sort | uniq | sed 's/^/-e /') optional.txt | pip install -r /dev/stdin
+
 
 
 
