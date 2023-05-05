@@ -7,13 +7,15 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @to_ivy_arrays_and_back
 def put(a, ind, v, mode="raise"):
     shape = a.shape
+    ind_flat = ivy.flatten(ind)
+    flat = ivy.flatten(a)
+    length = len(flat)
 
     if mode == "raise":
-        ind_flat = ivy.flatten(ind)
-        flat = ivy.flatten(a)
-        length = len(flat)
-
         if not ivy.all(ind_flat < length):
+            raise ValueError("indices out of bounds")
+
+        if not ivy.all(v < length):
             raise ValueError("values out of bounds")
 
     elif mode == "wrap":
@@ -22,7 +24,13 @@ def put(a, ind, v, mode="raise"):
     elif mode == "clip":
         ind_flat = ivy.clip(ind_flat, 0, length - 1)
 
-    flat = ivy.take_along_axis(flat, ind_flat)
+    # repeats v if size mismatch
+    length_v = len(v)
+    length_ind_flat = len(ind_flat)
+    repeats = -(-length_v // length_ind_flat)  # ceil division
+    v = ivy.concat(ivy.flatten(v) * repeats)[:length_v]
+
+    flat[ind_flat] = v
 
     return ivy.reshape(flat, shape)
 
