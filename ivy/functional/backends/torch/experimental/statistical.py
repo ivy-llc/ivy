@@ -260,6 +260,42 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if overwrite_input:
+        copied_input = input.clone()
+        dtype = copied_input.dtype
+        result = input.double()
+        if axis is not None:
+            if isinstance(axis, int):
+                axis = (axis,)
+            axis = list(axis)
+            for i in axis:
+                if result.dim() == 1:
+                    result = torch.quantile(
+                        result,
+                        0.5,
+                        interpolation="midpoint",
+                        keepdim=keepdims,
+                    )
+                    break
+                else:
+                    result = torch.quantile(
+                        result,
+                        0.5,
+                        dim=i,
+                        interpolation="midpoint",
+                        keepdim=keepdims,
+                    )
+        else:
+            result = torch.quantile(
+                input.double(),
+                0.5,
+                interpolation="midpoint",
+                keepdim=keepdims,
+            )
+
+        result = result.to(dtype)
+
+        return result
     dtype = input.dtype
     result = input.double()
     if axis is not None:
@@ -292,8 +328,7 @@ def nanmedian(
         )
 
     result = result.to(dtype)
-    if overwrite_input:
-        input = result.clone()
+
     return result
 
 

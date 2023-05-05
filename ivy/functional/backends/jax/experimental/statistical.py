@@ -197,12 +197,14 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    result = jnp.nanmedian(
+    if overwrite_input:
+        copied_input = input.copy()
+        return jnp.nanmedian(
+            copied_input, axis=axis, keepdims=keepdims, overwrite_input=False, out=None
+        )
+    return jnp.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=False, out=None
     )
-    if overwrite_input:
-        input = result.copy()
-    return result
 
 
 def bincount(
