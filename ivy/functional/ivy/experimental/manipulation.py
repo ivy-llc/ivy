@@ -1633,8 +1633,10 @@ def expand(
 def _check_bounds(shape0, shape1, strides1, itemsize):
     numel0 = math.prod(shape0)
     ndim1 = len(shape1)
-    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + itemsize <= \
-        numel0 * itemsize
+    return (
+        sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + itemsize
+        <= numel0 * itemsize
+    )
 
 
 @inputs_to_native_shapes
