@@ -37,7 +37,7 @@ RUN apt-get update && \
     pip3 install pip-autoremove &&\
     pip3 install setuptools==58.5.3
 
-#RUN pip3 install --no-cache-dir torch --extra-index-url https://download.pytorch.org/whl/cpu
+RUN pip3 install --no-cache-dir torch --target '/opt/fw/torch' --extra-index-url https://download.pytorch.org/whl/cpu
 #RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
 #    pip3 install --no-cache-dir --upgrade torch-scatter -f https://data.pyg.org/whl/torch-$ver.html
 
@@ -59,9 +59,8 @@ SHELL ["/bin/bash", "-c"]
 RUN jq -r 'to_entries[] | select(.value | length > 0) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --target $1 $2' sh {}
 
 
-RUN grep -v -f <(jq -r 'to_entries[] | [.value[]] | select(length > 0) | join("/")' requirement_mappings.json) requirements.txt > temp.txt &&\
-    cat temp.txt &&\
-    pip install -r temp.txt && rm temp.txt
+RUN jq -r '.[] | .[]' requirement_mappings.json | sort | uniq | sed 's/^/-e /g' | xargs -I {} grep -vF {} requirements.txt > requirements_clean.txt && pip install -r requirements_clean.txt
+
 
 
 
