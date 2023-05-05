@@ -56,7 +56,8 @@ ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
 
 COPY /docker/requirement_mappings.json .
 SHELL ["/bin/bash", "-c"]
-RUN jq -r 'to_entries[] | select(.value | length > 0) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --target $1 $2' sh {}
+RUN pip install torch --target '/opt/fw/torch' --no-cache-dir  --extra-index-url https://download.pytorch.org/whl/cpu &&\
+    jq -r 'to_entries[] | select(.value | length > 0) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --target $1 $2' sh {}
 
 
 RUN pip install -r requirements.txt &&\
