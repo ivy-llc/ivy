@@ -4,7 +4,7 @@
 import os
 import abc
 import copy
-from typing import Optional, List, Tuple, Dict
+from typing import Optional, Tuple, Dict
 
 # local
 import ivy

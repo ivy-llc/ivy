@@ -29,7 +29,7 @@ def while_loop(test_fn, body_fn, vars):
 
 
 def for_loop(
-    iterable, 
+    iterable,
     body_fn,
     vars,
 ):
@@ -48,9 +48,8 @@ def for_loop(
 
         for k in range(len(vars_tuple)):
             vars_dict[k] = vars_tuple[k]
-            
-        return True
 
+        return True
 
     def empty_function(*args):
         return (0,)
@@ -61,7 +60,7 @@ def for_loop(
 
 
 def _tuple_to_dict(t):
-    return {k:t[k] for k in range(len(t))}
+    return {k: t[k] for k in range(len(t))}
 
 
 def _dict_to_tuple(d):
