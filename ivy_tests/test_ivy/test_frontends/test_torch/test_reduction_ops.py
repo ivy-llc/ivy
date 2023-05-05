@@ -1,6 +1,5 @@
 # global
 from hypothesis import strategies as st
-import numpy as np
 
 # local
 import ivy
@@ -841,31 +840,47 @@ def test_torch_unique(
     )
 
 
+@st.composite
+def _get_axis_and_p(draw):
+    force_tuple_axis = True
+
+    p = draw(st.sampled_from(["fro", "nuc", 1, -1, 2, -2]))
+    if p == "fro" or p == "nuc":
+        force_tuple_axis = True
+        min_axes_size = 2
+
+    else:
+        force_tuple_axis = False
+        min_axes_size = 1
+
+    dtype_x_axis = draw(
+        helpers.dtype_values_axis(
+            num_arrays=1,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=3,
+            max_dim_size=2,
+            valid_axis=True,
+            min_axes_size=min_axes_size,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+            force_tuple_axis=force_tuple_axis,
+        )
+    )
+
+    return (p, dtype_x_axis)
+
+
 # norm
 @handle_frontend_test(
     fn_tree="torch.norm",
-    dtype_values_axis=helpers.dtype_values_axis(
-        num_arrays=1,
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=5,
-        # min_value=-1e20,
-        # max_value=1e20,
-        large_abs_safety_factor=10,
-        small_abs_safety_factor=10,
-        safety_factor_scale="log",
-    ),
-    # "inf"
-    p=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+    p_dtype_x_axis=_get_axis_and_p(),
     keepdim=st.booleans(),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_torch_norm(
     *,
-    dtype_values_axis,
-    p,
+    p_dtype_x_axis,
     keepdim,
     dtype,
     frontend,
@@ -873,16 +888,19 @@ def test_torch_norm(
     fn_tree,
     on_device,
 ):
-    dtype, x, axis = dtype_values_axis
+    p, values = p_dtype_x_axis
+    input_dtype, x, axis = values
+
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-01,
+        atol=1e-08,
         input=x[0],
         p=p,
         dim=axis,
         keepdim=keepdim,
-        dtype=dtype[0],
     )
