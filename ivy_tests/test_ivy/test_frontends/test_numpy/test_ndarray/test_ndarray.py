@@ -2915,19 +2915,24 @@ def test_numpy_instance_mod__(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="ptp",
-    ret_np_flat=np_frontend_helpers._flatten_frontend_return(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=None,
+        max_axis=None,
+        allow_neg_axes=True,
+        min_axes_size=1,
+        max_axes_size=None,
     ),
 )
 def test_numpy_instance_ptp(
-    ret_np_flat,
+    dtype_x_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = ret_np_flat
+    input_dtypes, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         method_input_dtypes=input_dtypes,
