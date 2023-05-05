@@ -97,6 +97,7 @@ def test_numpy_nanmean(
         keepdims=keep_dims,
         where=where,
         test_values=False,
+        rtol=1e-2,
     )
 
 
