@@ -25,12 +25,18 @@ from ivy.utils.exceptions import handle_exceptions
 # Linear #
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
+def mixed_function(fn: Callable):
+    fn.mixed_function = True
+    return fn
+
+
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_ivy_arrays
+@handle_array_function
+@mixed_function
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -167,9 +173,6 @@ def linear(
     if ivy.exists(out):
         return ivy.inplace_update(out, y)
     return y
-
-
-linear.mixed_function = True
 
 
 # Dropout #
