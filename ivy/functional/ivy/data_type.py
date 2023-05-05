@@ -152,6 +152,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
+            out = merge_fn(f_supported, out)
             continue
         elif "frontend" in fn.__module__ or (
             hasattr(fn, "__name__") and "einops" in fn.__name__
