@@ -485,34 +485,36 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     return _from_zero_dim_arrays_to_scalar
 
 
+def _count_operands(subscript):
+    if '->' in subscript:
+        input_subscript, output_index = subscript.split('->')
+    else:
+        input_subscript = subscript
+    return len(input_subscript.split(','))
+
+
 def handle_numpy_out(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _handle_numpy_out(*args, out=None, **kwargs):
-        if len(args) > (out_pos + 1):
-            out = args[out_pos]
+    def _handle_numpy_out(*args, **kwargs):
+        if 'out' not in kwargs:
+            keys = list(inspect.signature(fn).parameters.keys())
+            if fn.__name__ == 'einsum':
+                out_pos = 1 + _count_operands(args[0])
+            else:
+                out_pos = keys.index("out")
             kwargs = {
-                **dict(
-                    zip(
-                        list(inspect.signature(fn).parameters.keys())[
-                            out_pos + 1 : len(args)
-                        ],
-                        args[out_pos + 1 :],
-                    )
-                ),
+                **dict(zip(keys[keys.index("out"):], args[out_pos:],)),
                 **kwargs,
             }
             args = args[:out_pos]
-        elif len(args) == (out_pos + 1):
-            out = args[out_pos]
-            args = args[:-1]
-        if ivy.exists(out):
-            if not ivy.nested_any(out, lambda x: isinstance(x, np_frontend.ndarray)):
+        if 'out' in kwargs:
+            out = kwargs['out']
+            if ivy.exists(out) and not \
+                    ivy.nested_any(out, lambda x: isinstance(x, np_frontend.ndarray)):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
                 )
-            return fn(*args, out=out, **kwargs)
         return fn(*args, **kwargs)
 
-    out_pos = list(inspect.signature(fn).parameters).index("out")
     _handle_numpy_out.handle_numpy_out = True
     return _handle_numpy_out
