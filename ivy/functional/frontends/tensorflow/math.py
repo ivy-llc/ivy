@@ -671,5 +671,6 @@ def in_top_k(target, pred, k, name=None):
 
 
 @to_ivy_arrays_and_back
-def top_k(input, k=1, name=None):
+def top_k(input, k=1, sorted=True, name=None):
+    input, k = check_tensorflow_casting(input, k)
     return ivy.top_k(input, k)
