@@ -53,8 +53,8 @@ ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
 
 RUN pip3 install --no-cache-dir torch --target '/opt/fw/torch' --extra-index-url https://download.pytorch.org/whl/cpu
 RUN export ver=$(pip show torch --path '/opt/fw/torch' | grep Version | cut -d ' ' -f2) && \
-    pip3 install --target '/opt/fw/torch' --no-cache-dir --upgrade torch-scatter -f https://data.pyg.org/whl/torch-$ver.html \
-    
+    pip3 install --target '/opt/fw/torch' --no-cache-dir --upgrade torch-scatter -f https://data.pyg.org/whl/torch-$ver.html 
+
 COPY /docker/requirement_mappings.json .
 SHELL ["/bin/bash", "-c"]
 RUN jq -r 'to_entries[] | select(.value | length > 0) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2' sh {}
