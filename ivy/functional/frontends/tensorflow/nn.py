@@ -406,6 +406,7 @@ def convolution(
     input_depth = ivy.shape(input)[channel_index]
     filters_depth = ivy.shape(filters)[-2]
 
+    feature_group_count = 1
     if input_depth != filters_depth:
         if input_depth % filters_depth != 0:
             raise ValueError(
