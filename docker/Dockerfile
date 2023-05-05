@@ -38,7 +38,7 @@ RUN apt-get update && \
     pip3 install setuptools==58.5.3
 
 RUN pip3 install --no-cache-dir torch --target '/opt/fw/torch' torch --extra-index-url https://download.pytorch.org/whl/cpu
-RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
+    export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
     pip3 install --no-cache-dir  --target '/opt/fw/torch' torch-scatter
 
 # Install Ivy Upstream
