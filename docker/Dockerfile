@@ -53,7 +53,7 @@ COPY requirements/requirements.txt .
 ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
 
 
-COPY requirement_mappings.json .
+COPY /docker/requirement_mappings.json .
 
 RUN jq -r '.[] | to_entries[] | .key + "/" + .value' requirement_mappings.json | xargs -n 1 sh -c 'mkdir -p "/opt/fw/$1" && pip install --target "/opt/fw/$1" "$1"' &&\
     pip install $(grep -v -f <(cat requirement_mappings.json | jq -r 'to_entries | map(.value[] as $v | .key + "/" + $v) | .[]') requirements.txt)
