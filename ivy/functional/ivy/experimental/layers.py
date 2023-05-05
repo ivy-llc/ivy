@@ -162,7 +162,6 @@ def max_pool2d(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def pool(
         x: Union[ivy.Array, ivy.NativeArray],
@@ -256,8 +255,8 @@ def pool(
     return ivy.current_backend(x).pool(x,
                                        window_shape,
                                        pooling_type,
-                                       strides = strides,
-                                       padding = padding,
+                                       strides=strides,
+                                       padding=padding,
                                        data_format=data_format,
                                        dilations=dilations,
                                        name=name)
