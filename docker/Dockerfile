@@ -25,7 +25,7 @@ RUN conda create --name multienv python==$pycon
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
 RUN apt-get update && \
-    apt-get install -y python3-pip python3-tk && \
+#    apt-get install -y python3-pip python3-tk && \
     apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
     apt-get install -y python-opengl && \
     apt-get install -y git && \
