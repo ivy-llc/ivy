@@ -44,6 +44,9 @@ def _determine_depth_max_pooling(x, kernel, strides, dims):
             x = tf.transpose(x, (0, dims + 1, *range(1, dims + 1)))
             kernel = [kernel[-1], *[1] * (dims - 1)]
             strides = [strides[-1], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            strides = strides[1:-1]
     return x, kernel, strides, depth_pooling
 
 
