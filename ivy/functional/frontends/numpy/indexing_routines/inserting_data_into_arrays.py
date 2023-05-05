@@ -5,6 +5,30 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 
 @to_ivy_arrays_and_back
+def put(a, ind, v, mode="raise"):
+    shape = a.shape
+    if mode == "raise":
+        if ind.ndim > 1:
+            raise ValueError("indices must be 1-d")
+
+        flat = ivy.flatten(a)
+        length = len(flat)
+
+        if not ivy.all(ind < len(flat)):
+            raise ValueError("values out of bounds")
+
+    elif mode == "wrap":
+        ind = ind % length
+
+    elif mode == "clip":
+        ind = ivy.clip(ind, 0, length - 1)
+
+    flat[ind] = v
+
+    return ivy.reshape(flat, shape)
+
+
+@to_ivy_arrays_and_back
 def fill_diagonal(a, val, wrap=False):
     if a.ndim < 2:
         raise ValueError("array must be at least 2-d")
