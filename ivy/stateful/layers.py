@@ -1441,6 +1441,7 @@ class MaxPool2D(Module):
         padding,
         /,
         *,
+        data_format="NHWC",
         device=None,
         v=None,
         dtype=None,
@@ -1462,6 +1463,7 @@ class MaxPool2D(Module):
         self._kernel_size = kernel_size
         self._stride = stride
         self._padding = padding
+        self._data_format = data_format
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
@@ -1477,7 +1479,13 @@ class MaxPool2D(Module):
         -------
         The output of the layer.
         """
-        return ivy.max_pool2d(inputs, self._kernel_size, self._stride, self._padding)
+        return ivy.max_pool2d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format
+        )
 
 
 class AvgPool2D(Module):
@@ -1488,6 +1496,7 @@ class AvgPool2D(Module):
         padding,
         /,
         *,
+        data_format='NHWC',
         device=None,
         v=None,
         dtype=None,
@@ -1509,6 +1518,7 @@ class AvgPool2D(Module):
         self._kernel_size = kernel_size
         self._stride = stride
         self._padding = padding
+        self._data_format = data_format
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
@@ -1524,4 +1534,10 @@ class AvgPool2D(Module):
         -------
         The output of the layer.
         """
-        return ivy.avg_pool2d(inputs, self._kernel_size, self._stride, self._padding)
+        return ivy.avg_pool2d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format = self._data_format
+        )
