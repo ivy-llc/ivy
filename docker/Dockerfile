@@ -64,7 +64,7 @@ RUN pip install --upgrade -r  requirements.txt &&\
     jq -r 'to_entries[] | .value[]' requirement_mappings.json | sort -u | xargs -I {} sed -i '/{}/d;/torch/d;/torch-scatter/d;/jax\[.*\]/d' optional.txt && pip install -r optional.txt
 
 
-ENV PYTHONPATH "/opt/fw/numpy:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
+ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
