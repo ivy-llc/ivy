@@ -1,5 +1,5 @@
 {
   "tensorflow": ["tensorflow-cpu","tensorflow-addons", "tensorflow-probability"],
-  "jax": ["jax","dm-haiku", "flax", "jaxlib"],
-  "torch": [torch-scatter"]
+  "jax": ["jax[cpu]","dm-haiku", "flax", "jaxlib"],
+  "torch": ["torch-scatter"]
 }
