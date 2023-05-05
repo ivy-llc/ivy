@@ -29,7 +29,6 @@ def test_numpy_mean(
     fn_tree,
     on_device,
     keep_dims,
-    rtol=1e-2,
 ):
     input_dtypes, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -54,6 +53,7 @@ def test_numpy_mean(
         keepdims=keep_dims,
         where=where,
         test_values=False,
+        rtol=1e-2,
     )
 
 
