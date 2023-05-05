@@ -2550,6 +2550,6 @@ def test_tensorflow_top_k(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
+        input=x[0],
         k=k,
     )
