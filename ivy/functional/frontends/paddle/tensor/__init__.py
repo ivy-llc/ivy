@@ -1,3 +1,4 @@
+from .attribute import *
 from .creation import *
 from .einsum import *
 from .linalg import *
