@@ -137,33 +137,23 @@ def test_random_normal(
         assert u.dtype == v.dtype
 
 
+# multivariate_normal
 @handle_test(
     fn_tree="functional.ivy.multivariate_normal",
-    mean=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1000,
-        max_value=1000,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=1,
-    ),
-    cov=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1000,
-        max_value=1000,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=2,
+    mean_cov=st.tuples(
+        st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=2),
+        st.lists(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=2), min_size=2, max_size=2),
     ),
     dtype=helpers.get_dtypes("float", full=False),
+    mean_dtype=helpers.get_dtypes("float", full=False),
+    cov_dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
 )
 def test_multivariate_normal(
-    mean,
-    cov,
+    mean_cov,
+    mean_dtype,
+    cov_dtype,
     dtype,
     seed,
     test_flags,
@@ -172,8 +162,7 @@ def test_multivariate_normal(
     on_device,
     ground_truth_backend,
 ):
-    mean_dtype, mean_values = mean
-    cov_dtype, cov_values = cov
+    mean, cov = mean_cov
 
     def call():
         return helpers.test_function(
@@ -184,8 +173,8 @@ def test_multivariate_normal(
             fw=backend_fw,
             fn_name=fn_name,
             test_values=False,
-            mean=mean_values,
-            cov=cov_values,
+            mean=mean,
+            cov=cov,
             shape=None,
             dtype=dtype[0],
             seed=seed,
