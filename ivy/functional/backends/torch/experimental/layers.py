@@ -167,8 +167,7 @@ def max_pool3d(
     )
     if padding != "VALID" and padding != "SAME":
         raise ivy.utils.exceptions.IvyException(
-            "Invalid padding arg {}\n"
-            'Must be one of: "VALID" or "SAME"'.format(padding)
+            'Invalid padding arg {}\nMust be one of: "VALID" or "SAME"'.format(padding)
         )
     res = torch.nn.functional.max_pool3d(x, kernel, strides, 0)
     if data_format == "NDHWC":

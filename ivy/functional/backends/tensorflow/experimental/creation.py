@@ -6,7 +6,7 @@ import tensorflow as tf
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 # Array API Standard #
@@ -93,7 +93,7 @@ def hann_window(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.signal.hann_window(size, periodic=periodic, dtype=dtype, name=None)
+    return tf.signal.hann_window(size, periodic=periodic, dtype=dtype)
 
 
 def tril_indices(
