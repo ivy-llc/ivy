@@ -1,11 +1,11 @@
 # global
-import numpy as np
-from hypothesis import strategies as st, assume
-import math 
+from hypothesis import strategies as st
+import math
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+
 
 # reshape
 @st.composite
@@ -29,7 +29,7 @@ def dtypes_x_reshape(draw):
     fn_tree="paddle.reshape",
     dtypes_x_reshape=dtypes_x_reshape(),
 )
-def test_torch_reshape(
+def test_paddle_reshape(
     *,
     dtypes_x_reshape,
     on_device,
@@ -44,6 +44,6 @@ def test_torch_reshape(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        x=x[0],
         shape=shape,
     )

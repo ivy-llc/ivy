@@ -41,7 +41,7 @@ class Tensor:
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
 
-     # Instance Methods #
+    # Instance Methods #
     # ---------------- #
     def reshape(self, *args, shape=None):
         if args and shape:
@@ -55,7 +55,6 @@ class Tensor:
             else:
                 return paddle_frontend.reshape(self._ivy_array, args)
         return paddle_frontend.reshape(self._ivy_array)
-
 
     # Implement methods
 

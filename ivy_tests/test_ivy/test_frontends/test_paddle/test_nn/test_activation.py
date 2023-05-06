@@ -1,20 +1,18 @@
 # global
-import numpy as np
-from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# sin
+# tanh
 @handle_frontend_test(
-    fn_tree="paddle.sin",
+    fn_tree="paddle.nn.functional.tanh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_sin(
+def test_paddle_tanh(
     *,
     dtype_and_x,
     on_device,
@@ -29,5 +27,6 @@ def test_paddle_sin(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        atol=1e-2,
+        x=x[0],
     )
