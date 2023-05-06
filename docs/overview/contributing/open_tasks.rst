@@ -243,6 +243,7 @@ Creating an Issue on Ivy's GitHub using a Template
 
 #. Go to the `GitHub Ivy <https://github.com/unifyai/ivy>`_ page, select the Issues tab, and click on the green button :code:`New issue` at the centre-right of the screen.
 #. You will see 5 options. Each option has a predetermined form. To start filling in the form, click on the green button at the right which says :code:`Get started`. The options are explained as follows:
+
    * Bug Report:
       In case you find a bug in our API, you have to provide details in the form and the issue will be assigned to one of our team members to look into.
    * Feature request:

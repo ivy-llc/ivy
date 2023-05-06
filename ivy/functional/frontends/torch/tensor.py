@@ -1061,8 +1061,13 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def addcdiv(self, tensor1, tensor2, *, value=1):
         return torch_frontend.addcdiv(self, tensor1, tensor2, value=value)
-        
+
+    sign_decorator_dtypes = ("float16", "complex", "bool")
+
+    @with_unsupported_dtypes({"1.11.0 and below": sign_decorator_dtypes}, "torch")
+    def sign(self):
+        return torch_frontend.sign(self._ivy_array)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def logdet(self):
         return torch_frontend.log(torch_frontend.det(self))
-

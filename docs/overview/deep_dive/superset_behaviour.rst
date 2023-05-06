@@ -266,10 +266,10 @@ The input function is expected to be a boolean function where we'd use the backe
 This provides the flexibility to add any custom logic based on the use-case for maximal use of framework-specific implementations while achieving superset generalization.
 
 
-Missing Feature
----------------
+**Note**
 
-Even though we are always striving to adhere to the superset, there might be cases where a feature has slipped under the radar. In case you stumble upon an Ivy function that you think has not included all native framework functionalities in the optimal way, you are invited to let us know in the comment section of `this <https://github.com/unifyai/ivy/issues/6406>`_ dedicated issue.
+Even though we are always striving to adhere to the superset, there might be cases where a feature has slipped under the radar.
+In case you stumble upon an Ivy function that you think has not included all native framework functionalities in the optimal way, you are invited to let us know in the comment section of `this <https://github.com/unifyai/ivy/issues/6406>`_ dedicated issue.
 
 
 **Round Up**
