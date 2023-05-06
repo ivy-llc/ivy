@@ -69,7 +69,7 @@ RUN jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh
 
 # install the requirements.txt, optional.txt with the mapped dependencies filtered out
 RUN pip install --upgrade -r  requirements.txt &&\
-    jq -r 'to_entries[] | .value[]' requirement_mappings.json | sort -u | xargs -I {} sed -i '/{}/d;/torch/d;/torch-scatter/d;/jax\[.*\]/d' optional.txt && pip install -r optional.txt
+    jq -r 'to_entries[] | .value[]? | select(length > 0)' requirement_mappings.json | sort -u | xargs -I {} sed -i '/{}/d;/torch/d;/torch-scatter/d;/jax\[.*\]/d' optional.txt && pip install -r optional.txt
 
 # add all the directories to environment path so that python knows where to find them
 ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
