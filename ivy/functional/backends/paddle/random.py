@@ -75,6 +75,17 @@ def random_normal(
     std = std.cast(mean.dtype)
     return paddle.normal(mean, std).cast(dtype)
 
+def multivariate_normal(
+    *,
+    mean: Union[float, paddle.Tensor] = [0.0, 0.0],
+    cov: Union[float, paddle.Tensor] = [[1.0,0.0],[0.0,1.0]],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: paddle.dtype,
+    seed: Optional[int] = None,
+    device: Place,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise NotImplementedError("paddle.multivariate_normal not implemented")
 
 def multinomial(
     population_size: int,
