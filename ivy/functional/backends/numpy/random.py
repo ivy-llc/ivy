@@ -50,6 +50,22 @@ def random_normal(
         np.random.seed(seed)
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
+def multivariate_normal(
+    *,
+    mean: Union[float, np.ndarray] = [0.0, 0.0],
+    cov: Union[float, np.ndarray] = [[1.0,0.0],[0.0,1.0]],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
+    check_valid: Optional[str]='warn',
+    tol: Optional[np.float]=1e-8,
+    device: str,
+    dtype: np.dtype,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if seed:
+        np.random.seed(seed)
+    return np.asarray(np.random.multivariate_normal(mean, cov, shape, check_valid, tol), dtype=dtype)
+
 
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
