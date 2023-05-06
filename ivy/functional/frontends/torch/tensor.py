@@ -360,7 +360,7 @@ class Tensor:
                         "Argument 'dtype' is not supported for array inputs."
                     )
                 dtype = ivy.dtype(args[0])
-                device = ivy.dev(args[0])
+                device = ivy.dev(args[0], as_native=True)  # don't limit to cpu/gpu/tpu
                 if len(args) > 2:
                     if isinstance(args[2], bool):
                         if "copy" in kwargs:
@@ -391,7 +391,7 @@ class Tensor:
                         "Argument 'device' cannot be defined with dtype as "
                         "positional argument."
                     )
-                dtype = ivy.as_ivy_dtype(args[0])
+                dtype = args[0]
                 if len(args) > 2:
                     if isinstance(args[2], bool):
                         if "copy" in kwargs:
@@ -413,7 +413,7 @@ class Tensor:
                         "Argument 'device' is defined both as positional "
                         "and keyword argument."
                     )
-                device = ivy.as_ivy_dev(args[0])
+                device = args[0]
                 if len(args) > 1:
                     if (
                         isinstance(args[1], (ivy.Dtype, ivy.NativeDtype))
@@ -425,7 +425,7 @@ class Tensor:
                                 "Argument 'dtype' is defined both as positional "
                                 "and keyword argument."
                             )
-                        dtype = ivy.as_ivy_dtype(args[1])
+                        dtype = args[1]
                     if len(args) > 3:
                         if isinstance(args[3], bool):
                             if "copy" in kwargs:
@@ -448,10 +448,6 @@ class Tensor:
             ret = self.clone()
         else:
             ret = self
-
-        # might not be required
-        if ret.dtype == dtype and ret.device == device:
-            return ret
 
         ret.ivy_array = ivy.asarray(
             ret.ivy_array,
