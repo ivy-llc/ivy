@@ -103,14 +103,15 @@ def multivariate_normal(
     method: Optional[str] = 'cholesky',
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    _check_valid_scale(cov)
-    shape = _check_bounds_and_get_shape(mean, cov, shape)
-
     if seed:
         rng_input = jax.random.PRNGKey(seed)
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
+    if mean:
+        mean = jnp.array(mean, dtype)
+    if cov:
+        cov = jnp.array(cov, dtype)
     return (
         to_device(
             jax.random.multivariate_normal(

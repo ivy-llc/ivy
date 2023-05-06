@@ -53,8 +53,8 @@ def random_normal(
 
 def multivariate_normal(
     *,
-    mean: Union[float, np.ndarray] = [0.0, 0.0],
-    cov: Union[float, np.ndarray] = [[1.0,0.0],[0.0,1.0]],
+    mean: Union[np.float32, np.ndarray] = [0.0, 0.0],
+    cov: Union[np.float32, np.ndarray] = [[1.0,0.0],[0.0,1.0]],
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
     check_valid: Optional[str]='warn',
     tol: Optional[np.float64]=1e-8,
@@ -65,6 +65,10 @@ def multivariate_normal(
 ) -> np.ndarray:
     if seed:
         np.random.seed(seed)
+    if mean:
+        mean = np.array(mean, dtype)
+    if cov:
+        cov = np.array(cov, dtype)
     return np.asarray(np.random.multivariate_normal(mean, cov, shape, check_valid, tol), dtype=dtype)
 
 

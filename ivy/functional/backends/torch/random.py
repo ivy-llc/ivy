@@ -76,6 +76,10 @@ def multivariate_normal(
     dtype = ivy.as_native_dtype(dtype)
     if seed:
         torch.manual_seed(seed)
+    if mean:
+        mean = torch.tensor(mean)
+    if cov:
+        cov = torch.tensor(cov)
     return torch_dis.multivariate_normal.MultivariateNormal(loc=mean, covariance_matrix=cov)
 
 

@@ -58,6 +58,10 @@ def multivariate_normal(
      with tf.device(device):
         if seed is not None:
             tf.random.set_seed(seed)
+        if mean:
+            mean = tf.constant(mean, dtype)
+        if cov:
+            cov = tf.constant(cov, dtype)
         return tfp.distributions.MultivariateNormalFullCovariance(
             loc=mean, covariance_matrix=cov, dtype=dtype, allow_nan_stats=True
         )
