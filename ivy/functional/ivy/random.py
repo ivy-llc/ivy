@@ -370,7 +370,7 @@ def multivariate_normal(
         ``broadcast_shapes(mean.shape[:-1], cov.shape[:-2]) + mean.shape[-1:]``.
     """
     return ivy.current_backend().multivariate_normal(
-        mean = mean, cov=cov, shape=shape, dtype=dtype, seed=seed, method=method, device=device, out=out
+        mean=mean, cov=cov, shape=shape, dtype=dtype, seed=seed, method=method, device=device, out=out
     )
 
 
