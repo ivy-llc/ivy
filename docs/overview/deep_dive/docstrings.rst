@@ -22,7 +22,7 @@ If you copy directly from the file preview on GitHub before clicking **raw**, th
 
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
-.. code-block:: python
+.. parsed-literal::
 
     Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
 
@@ -95,7 +95,7 @@ Finally, **if** the function is *nestable*, then we add a simple explanation for
 
 Following these changes, the new docstring is as follows:
 
-.. code-block:: python
+.. parsed-literal::
 
     Calculates an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
@@ -162,7 +162,7 @@ which should instead use the following text, as these do not *directly* wrap a f
 in Ivy's functional API, but rather wrap the pure operator functions themselves,
 which can be called on any types that support the corresponding special methods:
 
-.. code-block:: python
+.. parsed-literal::
 
     ivy.Container <special|reverse special> method for the <operator_name> operator,
     calling :code:`operator.<operator_name>` for each of the corresponding leaves of
