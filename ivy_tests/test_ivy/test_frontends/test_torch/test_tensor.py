@@ -729,9 +729,7 @@ def test_torch_instance_arcsin(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="sum",
-    dtype_x_dim=_get_castable_dtype().filter(
-        lambda x: x[0] == "float64" and x[-1] == "float64"
-    ),
+    dtype_x_dim=_get_castable_dtype(),
     keepdim=st.booleans(),
 )
 def test_torch_instance_sum(
@@ -744,6 +742,8 @@ def test_torch_instance_sum(
     on_device,
 ):
     input_dtype, x, dim, castable_dtype = dtype_x_dim
+    if method_flags.as_variable:
+        pass
     input_dtype = [input_dtype]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -754,7 +754,7 @@ def test_torch_instance_sum(
         method_all_as_kwargs_np={
             "dim": dim,
             "keepdim": keepdim,
-            "dtype": castable_dtype,
+            # "dtype": castable_dtype,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

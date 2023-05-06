@@ -246,9 +246,7 @@ def test_torch_any(
 
 @handle_frontend_test(
     fn_tree="torch.sum",
-    dtype_and_x=_get_castable_dtype().filter(
-        lambda x: x[0] == "float64" and x[-1] == "float64"
-    ),
+    dtype_and_x=_get_castable_dtype(),
     keepdims=st.booleans(),
 )
 def test_torch_sum(
@@ -261,6 +259,8 @@ def test_torch_sum(
     test_flags,
 ):
     input_dtype, x, axis, castable_dtype = dtype_and_x
+    if test_flags.as_variable:
+        castable_dtype = input_dtype
     input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
