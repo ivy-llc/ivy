@@ -67,7 +67,7 @@ RUN python3 multicuda_framework_directory.py $fw &&\
 
 RUN sed -i '/numpy/d' requirements.txt &&\
     pip install -r  requirements.txt &&\
-    jq -r 'to_entries[] | .value[] | select(length > 0 or (. == ""))' requirement_mappings_gpu.json | sort -u | xargs -I {} sh -c 'sed -i "/{}/d;/jax\[.*\]/d;/tensorflow-cpu/d" optional.txt && echo "Removed {} from optional.txt"' && pip install -r optional.txt
+    jq -r 'to_entries[] | .value[] | select(length > 0 or (. == ""))' requirement_mappings_gpu.json | sort -u | xargs -I {} bash -c 'sed -i "/{}/d;/jax\[.*\]/d;/tensorflow-cpu/d" optional.txt && echo "Removed {} from optional.txt"' && pip install -r optional.txt
 
 
 
