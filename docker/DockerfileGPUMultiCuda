@@ -67,7 +67,7 @@ RUN python3 multicuda_framework_directory.py $fw &&\
 
 RUN sed -i '/numpy/d' requirements.txt &&\
     pip install -r  requirements.txt &&\
-    jq -r 'to_entries[] | select(.value | length > 0 or .value == "") | [.key, .value[]] | @sh' requirement_mappings_gpu.json | xargs -I {} sh -c 'sed -i "/^$1\[/{N;/\n.*$2.*$/d}" optional.txt && echo "Removed $1 -> $2 from optional.txt"' sh {} && pip install -r optional.txt
+    jq -r 'to_entries[] | select(.value | length > 0 or .value == "") | [.key, .value[]] | @sh' requirement_mappings_gpu.json | xargs -I {} sh -c 'sed -i "/^$1\[/{N;/\n.*$2.*$/d};/jax\[.*\]/d" optional.txt && echo "Removed $1 -> $2 from optional.txt"' sh {} && pip install -r optional.txt
 
 
 
