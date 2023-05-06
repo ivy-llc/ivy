@@ -471,6 +471,7 @@ def test_torch_initial_seed(
     output = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         num_positional_args=0,  # Pass 0 as the number of positional arguments
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
