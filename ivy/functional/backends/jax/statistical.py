@@ -135,6 +135,29 @@ def var(
     )
 
 
+def cov(
+    x: JaxArray,
+    /,
+    *,
+    y: Optional[JaxArray],
+    rowvar: Optional[bool] = True,
+    bias: Optional[bool] = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[Union[int, Sequence[int]]],
+    aweights: Union[Sequence[int], Sequence[float]],
+) -> JaxArray:
+    ret = jnp.cov(
+        x,
+        y=y,
+        rowvar=rowvar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+    )
+    return ivy.astype(ret, x.dtype, copy=False)
+
+
 # Extra #
 # ------#
 
