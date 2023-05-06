@@ -249,7 +249,7 @@ _to_ivy = lambda xs: ivy.nested_map(
 
 _non_finite_to_zero = lambda xs: ivy.nested_map(
     xs,
-    lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
+    lambda x: ivy.where(ivy.isfinite(x), x, 0.0) if ivy.is_array(x) else x,
     include_derived=True,
     shallow=False,
 )

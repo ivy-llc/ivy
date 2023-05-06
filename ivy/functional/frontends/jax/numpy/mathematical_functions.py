@@ -596,6 +596,34 @@ def polyder(p, m=1):
     return result
 
 
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("float16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def polyint(p, m=1, k=None):
+    p = ivy.asarray(p)
+    m = int(m)
+    if m == 0:
+        return p
+    if k is None:
+        k_arr = ivy.zeros((m,), dtype=p.dtype)
+    elif isinstance(k, (int, float)):
+        k_arr = ivy.full((m,), k, dtype=p.dtype)
+    elif ivy.asarray(k).shape == (1,):
+        k_arr = ivy.full((m,), ivy.asarray(k)[0], dtype=p.dtype)
+    elif ivy.asarray(k).shape == (m,):
+        k_arr = ivy.asarray(k, dtype=p.dtype)
+    else:
+        raise ValueError("k must be a scalar or a rank-1 array of length 1 or m.")
+    grid = (
+        ivy.arange(p.size + m, dtype=p.dtype)[ivy.newaxis]
+        - ivy.arange(m, dtype=p.dtype)[:, ivy.newaxis]
+    )
+    coeff = ivy.maximum(1, grid).prod(axis=0)[::-1]
+    return ivy.divide(ivy.concat((p, k_arr)), coeff).astype(p.dtype)
+
+
 @to_ivy_arrays_and_back
 def polysub(a1, a2):
     n = max(a1.size, a2.size) - 1
@@ -648,3 +676,8 @@ def product(
         else:
             a[0] *= initial
     return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
+def round(x, decimals=0, /):
+    return ivy.round(x, decimals)
