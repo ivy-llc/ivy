@@ -3,6 +3,18 @@ from typing import Union, Optional, Tuple
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
+def l1_normalize(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    denorm = tf.norm(x, ord=1, axis=axis, keepdims=True)
+    denorm = tf.math.maximum(denorm, 1e-12)
+    return tf.math.divide(x, denorm)
+
+
 def l2_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,

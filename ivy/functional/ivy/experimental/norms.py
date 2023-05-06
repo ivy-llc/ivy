@@ -12,11 +12,15 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def l1_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Normalize the input array along the given axis to have L1 norm equal to
@@ -27,9 +31,9 @@ def l1_normalize(
     x
         Input array.
     axis
-        Axis along which to normalize. If ``None``, the whole array is normalized.
+        Axis or axes along which to normalize. If ``None``, the whole array is normalized.
     out
-        optional output array, for writing the result to. It must have a shape that the
+        Optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -44,23 +48,7 @@ def l1_normalize(
     ivy.array([[0.3333, 0.6667],
                [0.4286, 0.5714]])
     """
-    if axis is None:
-        axis = tuple(range(x.ndim))
-    elif isinstance(axis, int):
-        axis = (axis,)
-    else:
-        axis = tuple(axis)
-
-    # Compute the L1 norm along the given axis
-    norm = ivy.reduce_sum(ivy.abs(x), axis=axis, keepdims=True)
-
-    # Divide x by the L1 norm to obtain the normalized array
-    norm = ivy.where(norm == 0, ivy.array(1, like=x), norm)
-    if out is None:
-        return x / norm
-    else:
-        ivy.np.copyto(out, x / norm)
-        return out
+    return current_backend(x).l1_normalize(x, axis=axis, out=out)
 
 
 

@@ -6,6 +6,24 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, backend_version)
+def l1_normalize(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if axis is None:
+        norm = jnp.sum(jnp.abs(x.flatten()))
+        denorm = norm * jnp.ones_like(x)
+    else:
+        norm = jnp.sum(jnp.abs(x), axis=axis, keepdims=True)
+        denorm = jnp.divide(norm, jnp.abs(x) + 1e-12)
+    return jnp.divide(x, denorm)
+
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, backend_version)
 def l2_normalize(
     x: JaxArray,
     /,
