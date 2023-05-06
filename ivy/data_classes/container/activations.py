@@ -21,9 +21,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.relu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.relu. This method simply wraps the
+        function, and so the docstring for ivy.relu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -59,7 +59,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([1., 0.]),
             b: ivy.array([0.40000001, 0.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "relu",
@@ -82,9 +81,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.relu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.relu. This method simply wraps the
+        function, and so the docstring for ivy.relu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -120,7 +119,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([1., 0.]),
             b: ivy.array([0.40000001, 0.])
         }
-
         """
         return self._static_relu(
             self,
@@ -144,9 +142,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.leaky_relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.leaky_relu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.leaky_relu. This method simply wraps
+        the function, and so the docstring for ivy.leaky_relu also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -183,7 +181,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.38999999, -0.17]),
             b: ivy.array([1., -0.04])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "leaky_relu",
@@ -208,9 +205,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.leaky_relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.leaky_relu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.leaky_relu. This method simply
+        wraps the function, and so the docstring for ivy.leaky_relu also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -247,7 +244,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.38999999, -0.17]),
             b: ivy.array([1., -0.04])
         }
-
         """
         return self._static_leaky_relu(
             self,
@@ -272,9 +268,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.gelu.
-        This method simply wraps the function, and so the docstring
-        for ivy.gelu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.gelu. This method simply wraps the
+        function, and so the docstring for ivy.gelu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -334,9 +330,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gelu.
-        This method simply wraps the function, and so the docstring
-        for ivy.gelu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.gelu. This method simply wraps the
+        function, and so the docstring for ivy.gelu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -373,7 +369,6 @@ class _ContainerWithActivations(ContainerBase):
                  a: ivy.array([0.841, 1.95]),
                  b: ivy.array([-0.166, -0.159])
             }
-
         """
         return self._static_gelu(
             self,
@@ -397,9 +392,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.sigmoid.
-        This method simply wraps the function, and so the docstring
-        for ivy.sigmoid also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.sigmoid. This method simply wraps the
+        function, and so the docstring for ivy.sigmoid also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -434,7 +429,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
             b: ivy.array([0.62245935, 0.5, 0.4750208])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "sigmoid",
@@ -457,9 +451,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sigmoid.
-        This method simply wraps the function, and so the docstring
-        for ivy.sigmoid also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.sigmoid. This method simply wraps
+        the function, and so the docstring for ivy.sigmoid also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -517,9 +511,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.softmax.
-        This method simply wraps the function, and so the docstring
-        for ivy.softmax also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.softmax. This method simply wraps the
+        function, and so the docstring for ivy.softmax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -556,7 +550,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.7310586, 0.2689414]),
             b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "softmax",
@@ -581,9 +574,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.softmax.
-        This method simply wraps the function, and so the docstring
-        for ivy.softmax also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.softmax. This method simply wraps
+        the function, and so the docstring for ivy.softmax also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -620,7 +613,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.7310586, 0.2689414]),
             b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
-
         """
         return self._static_softmax(
             self,
@@ -646,9 +638,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.softplus.
-        This method simply wraps the function, and so the docstring
-        for ivy.softplus also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.softplus. This method simply wraps
+        the function, and so the docstring for ivy.softplus also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -720,9 +712,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.softplus.
-        This method simply wraps the function, and so the docstring
-        for ivy.softplus also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.softplus. This method simply wraps
+        the function, and so the docstring for ivy.softplus also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -792,9 +784,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.log_softmax.
-        This method simply wraps the function, and so the docstring
-        for ivy.log_softmax also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.log_softmax. This method simply wraps
+        the function, and so the docstring for ivy.log_softmax also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -862,9 +854,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container instance method variant of ivy.log_softmax.
-        This method simply wraps the function, and so the docstring
-        for ivy.log_softmax also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.log_softmax. This method simply
+        wraps the function, and so the docstring for ivy.log_softmax also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -931,9 +923,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.mish.
-        This method simply wraps the function, and so the docstring
-        for ivy.mish also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.mish. This method simply wraps the
+        function, and so the docstring for ivy.mish also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -969,7 +961,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.86509842, -0.30883577]),
             b: ivy.array([0.28903052, -0.10714479])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "mish",
@@ -992,9 +983,9 @@ class _ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.mish.
-        This method simply wraps the function, and so the docstring
-        for ivy.mish also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.mish. This method simply wraps the
+        function, and so the docstring for ivy.mish also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1030,7 +1021,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.86509842, -0.30883577]),
             b: ivy.array([0.28903052, -0.10714479])
         }
-
         """
         return self._static_mish(
             self,

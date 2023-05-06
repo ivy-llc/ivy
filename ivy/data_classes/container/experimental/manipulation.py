@@ -87,9 +87,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.moveaxis. This method simply
-        wraps the function, and so the docstring for ivy.flatten also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.moveaxis. This method simply wraps
+        the function, and so the docstring for ivy.flatten also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -180,9 +181,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.heaviside. This method simply
-        wraps the function, and so the docstring for ivy.heaviside also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.heaviside. This method simply wraps
+        the function, and so the docstring for ivy.heaviside also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -224,9 +226,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.flipud. This method simply wraps
-        the function, and so the docstring for ivy.flipud also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.flipud. This method simply wraps the
+        function, and so the docstring for ivy.flipud also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -274,9 +276,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.flipud. This method simply
-        wraps the function, and so the docstring for ivy.flipud also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.flipud. This method simply wraps
+        the function, and so the docstring for ivy.flipud also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -323,9 +326,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.stack. This method
-        simply wraps the function, and so the docstring for ivy.stack
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.stack. This method simply wraps the
+        function, and so the docstring for ivy.stack also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -368,8 +371,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.stack. This method simply wraps the
-        function, and so the docstring for ivy.vstack also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.vstack also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -412,9 +415,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.hstack. This method
-        simply wraps the function, and so the docstring for ivy.hstack
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.hstack. This method simply wraps
+        the function, and so the docstring for ivy.hstack also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -455,8 +458,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.hstack. This method simply wraps the
-        function, and so the docstring for ivy.hstack also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.hstack also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -492,9 +495,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.rot90.
-        This method simply wraps the function, and so the docstring for
-        ivy.rot90 also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.rot90. This method simply wraps the
+        function, and so the docstring for ivy.rot90 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -567,9 +570,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.rot90.
-        This method simply wraps the function, and so the docstring for
-        ivy.rot90 also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.rot90. This method simply wraps the
+        function, and so the docstring for ivy.rot90 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -640,9 +643,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """ivy.Container static method variant of ivy.top_k. This method simply wraps
-        the function, and so the docstring for ivy.top_k also applies to this method
-        with minimal changes.
+        """
+        ivy.Container static method variant of ivy.top_k. This method simply wraps the
+        function, and so the docstring for ivy.top_k also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -718,9 +722,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """ivy.Container instance method variant of ivy.top_k. This method
-        simply wraps the function, and so the docstring for ivy.top_k
-        also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.top_k. This method simply wraps the
+        function, and so the docstring for ivy.top_k also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -795,9 +800,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.fliplr. This method simply wraps
-        the function, and so the docstring for ivy.fliplr also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.fliplr. This method simply wraps the
+        function, and so the docstring for ivy.fliplr also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -855,9 +860,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.fliplr. This method simply
-        wraps the function, and so the docstring for ivy.fliplr also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.fliplr. This method simply wraps
+        the function, and so the docstring for ivy.fliplr also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -901,9 +907,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.i0. This method simply wraps
-        the function, and so the docstring for ivy.i0 also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.i0. This method simply wraps the
+        function, and so the docstring for ivy.i0 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -945,9 +951,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.i0. This method simply
-        wraps the function, and so the docstring for ivy.i0 also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.i0. This method simply wraps the
+        function, and so the docstring for ivy.i0 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -992,8 +999,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.flatten. This method simply wraps the
-        function, and so the docstring for ivy.flatten also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.flatten also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1063,9 +1070,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         order: str = "C",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.flatten. This method simply
-        wraps the function, and so the docstring for ivy.flatten also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.flatten. This method simply wraps
+        the function, and so the docstring for ivy.flatten also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1150,9 +1158,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         **kwargs: Optional[Any],
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.pad. This method simply
-        wraps the function, and so the docstring for ivy.pad also applies to
-        this method with minimal changes.
+        ivy.Container static method variant of ivy.pad.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.pad also applies to this method with minimal changes.
         """
         return ContainerBase.cont_multi_map_in_function(
             "pad",
@@ -1204,9 +1213,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         **kwargs: Optional[Any],
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.pad. This method simply
-        wraps the function, and so the docstring for ivy.pad also applies to
-        this method with minimal changes.
+        ivy.Container instance method variant of ivy.pad.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.pad also applies to this method with minimal changes.
         """
         return self.static_pad(
             self,
@@ -1237,9 +1247,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> List[ivy.Container]:
         """
-        ivy.Container static method variant of ivy.vsplit. This method simply wraps
-        the function, and so the docstring for ivy.vsplit also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.vsplit. This method simply wraps the
+        function, and so the docstring for ivy.vsplit also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1313,9 +1323,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         copy: Optional[bool] = None,
     ) -> List[ivy.Container]:
-        """ivy.Container instance method variant of ivy.vsplit. This method simply
-        wraps the function, and so the docstring for ivy.vsplit also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.vsplit. This method simply wraps
+        the function, and so the docstring for ivy.vsplit also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1375,9 +1386,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> List[ivy.Container]:
         """
-        ivy.Container static method variant of ivy.dsplit. This method simply wraps
-        the function, and so the docstring for ivy.dsplit also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.dsplit. This method simply wraps the
+        function, and so the docstring for ivy.dsplit also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1449,9 +1460,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         copy: Optional[bool] = None,
     ) -> List[ivy.Container]:
-        """ivy.Container instance method variant of ivy.dsplit. This method simply
-        wraps the function, and so the docstring for ivy.dsplit also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.dsplit. This method simply wraps
+        the function, and so the docstring for ivy.dsplit also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1564,9 +1576,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> List[ivy.Container]:
         """
-        ivy.Container instance method variant of ivy.atleast_1d. This method simply 
-        wraps the function, and so the docstring for ivy.atleast_1d also applies to 
-        this method with minimal changes.
+        ivy.Container instance method variant of ivy.atleast_1d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_1d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1634,9 +1646,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.stack. This method
-        simply wraps the function, and so the docstring for ivy.stack
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.stack. This method simply wraps the
+        function, and so the docstring for ivy.stack also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -1679,8 +1691,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.stack. This method simply wraps the
-        function, and so the docstring for ivy.dstack also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.dstack also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -1771,7 +1783,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> List[ivy.Container]:
-        """ivy.Container instance method variant of ivy.atleast_2d. This method simply
+        """
+        ivy.Container instance method variant of ivy.atleast_2d. This method simply
         wraps the function, and so the docstring for ivy.atleast_2d also applies to this
         method with minimal changes.
 
@@ -1896,7 +1909,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> List[ivy.Container]:
-        """ivy.Container instance method variant of ivy.atleast_3d. This method simply
+        """
+        ivy.Container instance method variant of ivy.atleast_3d. This method simply
         wraps the function, and so the docstring for ivy.atleast_3d also applies to this
         method with minimal changes.
 
@@ -2040,9 +2054,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.take_along_axis.
-        This method simply wraps the function, and so the docstring for
-        ivy.take_along_axis also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.take_along_axis. This method simply
+        wraps the function, and so the docstring for ivy.take_along_axis also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2114,9 +2129,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> List[ivy.Container]:
         """
-        ivy.Container static method variant of ivy.hsplit. This method simply wraps
-        the function, and so the docstring for ivy.hsplit also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.hsplit. This method simply wraps the
+        function, and so the docstring for ivy.hsplit also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2188,9 +2203,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         copy: Optional[bool] = None,
         /,
     ) -> List[ivy.Container]:
-        """ivy.Container instance method variant of ivy.hsplit. This method simply
-        wraps the function, and so the docstring for ivy.hsplit also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.hsplit. This method simply wraps
+        the function, and so the docstring for ivy.hsplit also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -2248,10 +2264,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.broadcast_shapes.
-        This method simply wraps the function, and so the docstring for
-        ivy.hsplit also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.broadcast_shapes. This method simply
+        wraps the function, and so the docstring for ivy.hsplit also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -2294,10 +2309,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.broadcast_shapes.
-         This method simply wraps the function, and so the docstring for
-         ivy.broadcast_shapes also applies to this method with minimal
-         changes.
+        """
+        ivy.Container instance method variant of ivy.broadcast_shapes. This method
+        simply wraps the function, and so the docstring for ivy.broadcast_shapes also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2323,7 +2338,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             c: (2, 3),
             d: (2, 3)
         }
-
         """
         return self.static_broadcast_shapes(self, out=out)
 
@@ -2397,10 +2411,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.as_strided.
-         This method simply wraps the function, and so the docstring for
-         ivy.as_strided also applies to this method with minimal
-         changes.
+        """
+        ivy.Container instance method variant of ivy.as_strided. This method simply
+        wraps the function, and so the docstring for ivy.as_strided also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -2444,10 +2458,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         strides: Sequence[int],
         /,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.as_strided.
-         This method simply wraps the function, and so the docstring for
-         ivy.as_strided also applies to this method with minimal
-         changes.
+        """
+        ivy.Container instance method variant of ivy.as_strided. This method simply
+        wraps the function, and so the docstring for ivy.as_strided also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -2586,9 +2600,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.stack. This method
-        simply wraps the function, and so the docstring for ivy.stack
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.stack. This method simply wraps the
+        function, and so the docstring for ivy.stack also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2667,10 +2681,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         axis: int = 0,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.associative_scan.
-        This method simply wraps the function, and so the docstring for
-        ivy.associative_scan also applies to this method with minimal
-        changes.
+        ivy.Container instance method variant of ivy.associative_scan. This method
+        simply wraps the function, and so the docstring for ivy.associative_scan also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

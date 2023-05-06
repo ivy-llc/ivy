@@ -1,5 +1,6 @@
 import tensorflow as tf
 from typing import Union, Optional, Tuple
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 def l2_normalize(
@@ -9,12 +10,12 @@ def l2_normalize(
     axis: Optional[int] = None,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
-
     denorm = tf.norm(x, axis=axis, keepdims=True)
     denorm = tf.math.maximum(denorm, 1e-12)
     return tf.math.divide(x, denorm)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, "tensorflow")
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
     mean: Union[tf.Tensor, tf.Variable],

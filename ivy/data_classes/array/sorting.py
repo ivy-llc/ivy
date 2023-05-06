@@ -19,8 +19,8 @@ class _ArrayWithSorting(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.argsort. This method simply wraps the
-        function, and so the docstring for ivy.argsort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.argsort also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -62,7 +62,6 @@ class _ArrayWithSorting(abc.ABC):
         >>> y = x.argsort(axis=-1, descending=True, stable=False)
         >>> print(y)
         ivy.array([0, 2, 1])
-
         """
         return ivy.argsort(
             self._data, axis=axis, descending=descending, stable=stable, out=out
@@ -79,8 +78,8 @@ class _ArrayWithSorting(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.sort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sort also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -93,7 +92,6 @@ class _ArrayWithSorting(abc.ABC):
         >>> y = x.sort(axis=-1, descending=True, stable=False)
         >>> print(y)
         ivy.array([8.5, 8.2, 7.6])
-
         """
         return ivy.sort(
             self._data, axis=axis, descending=descending, stable=stable, out=out
@@ -111,9 +109,10 @@ class _ArrayWithSorting(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.searchsorted.
-        This method simply wraps the function, and so the docstring for
-        ivy.searchsorted also applies to this method with minimal changes.
 
+        This method simply wraps the function, and so the docstring for
+        ivy.searchsorted also applies to this method with minimal
+        changes.
         """
         return ivy.searchsorted(
             self.data, v, side=side, sorter=sorter, ret_dtype=ret_dtype, out=out

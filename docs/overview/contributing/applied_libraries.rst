@@ -1,9 +1,9 @@
 Applied Libraries
 =================
 
-.. _`Ivy Robot`: https://lets-unify.ai/docs/robot/
-.. _`Mech`: https://lets-unify.ai/docs/mech/
-.. _`Vision`: https://lets-unify.ai/docs/vision/
+.. _`Ivy Robot`: https://unify.ai/docs/robot/
+.. _`Mech`: https://unify.ai/docs/mech/
+.. _`Vision`: https://unify.ai/docs/vision/
 .. _`Demo Utils`: https://github.com/unifyai/demo-utils
 .. _`Ivy`: https://github.com/unifyai/ivy
 .. _`Docker Desktop`: https://www.docker.com/products/docker-desktop/

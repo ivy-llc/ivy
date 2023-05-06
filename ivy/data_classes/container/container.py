@@ -197,9 +197,9 @@ class Container(
         return self.cont_map(lambda x, _: operator.ipow(x, power), map_sequences=True)
 
     def __add__(self, other):
-        """
-        ivy.Container special method for the add operator, calling :code:`operator.add`
-        for each of the corresponding leaves of the two containers.
+        """ivy.Container special method for the add operator, calling
+        :code:`operator.add` for each of the corresponding leaves of the two
+        containers.
 
         Parameters
         ----------

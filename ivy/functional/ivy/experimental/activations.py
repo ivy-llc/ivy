@@ -28,7 +28,9 @@ def logit(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the logit of x, i.e. logit(x) = log(x / (1 - x)).
+    Compute the logit of x.
+
+    logit(x) = log(x / (1 - x)).
 
     Parameters
     ----------
@@ -57,7 +59,6 @@ def logit(
     >>> z = ivy.logit(x, eps=0.2)
     >>> print(z)
     ivy.array([ 1.38629448,  1.38629448, -1.38629436])
-
     """
     return current_backend(x).logit(x, eps=eps, out=out)
 
@@ -150,6 +151,7 @@ def prelu(
 ) -> ivy.Array:
     """
     Prelu takes input data (Array) and slope array as input,
+
     and produces one output data (array) where the function
     f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
     to the data array elementwise. This operator supports unidirectional
@@ -175,7 +177,7 @@ def prelu(
         return ivy.where(x > 0, x, x * slope, out=out)
     except ivy.utils.exceptions.IvyError(
         f"The shape {slope.shape} is not Unidirectional Broadcastable\n"
-        f"as per ONNX standards"
+        "as per ONNX standards"
     ) as IvyException:
         if len(slope.shape) == 1:
             dim = slope.shape[0]
@@ -205,7 +207,8 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the rectified linear unit function with custom threshold.
+    """
+    Apply the rectified linear unit function with custom threshold.
 
     Parameters
     ----------
@@ -260,7 +263,8 @@ def thresholded_relu(
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the rectified linear unit 6 function element-wise.
+    """
+    Apply the rectified linear unit 6 function element-wise.
 
     Parameters
     ----------
@@ -316,7 +320,9 @@ def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array],
 ) -> ivy.Array:
     """
-    Applies element-wise Log-sigmoid of x i.e. logsigmoid(x) = log(1 / (1 + exp(-x)).
+    Apply element-wise Log-sigmoid of x.
+
+    logsigmoid(x) = log(1 / (1 + exp(-x)).
 
     Parameters
     ----------
@@ -363,7 +369,8 @@ def logsigmoid(
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the scaled exponential linear unit function element-wise.
+    """
+    Apply the scaled exponential linear unit function element-wise.
 
     Parameters
     ----------

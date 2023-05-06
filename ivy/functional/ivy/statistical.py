@@ -47,7 +47,7 @@ def min(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the minimum value of the input array ``x``.
+    """Calculate the minimum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
@@ -149,7 +149,7 @@ def max(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the maximum value of the input array ``x``.
+    """Calculate the maximum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the maximum value is zero, the
@@ -257,7 +257,7 @@ def mean(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the arithmetic mean of the input array ``x``.
+    """Calculate the arithmetic mean of the input array ``x``.
 
     **Special Cases**
 
@@ -366,7 +366,8 @@ def prod(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the product of input array x elements.
+    """
+    Calculate the product of input array x elements.
 
     Parameters
     ----------
@@ -488,7 +489,7 @@ def std(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the standard deviation of the input array ``x``.
+    """Calculate the standard deviation of the input array ``x``.
 
     **Special Cases**
 
@@ -621,7 +622,7 @@ def sum(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the sum of the input array ``x``.
+    """Calculate the sum of the input array ``x``.
 
     **Special Cases**
 
@@ -755,7 +756,7 @@ def var(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates the variance of the input array x.
+    Calculate the variance of the input array x.
 
     **Special Cases**
 
@@ -843,7 +844,6 @@ def var(
         a: ivy.array(0.12666667),
         b: ivy.array(0.11555555)
     }
-
     """
     return current_backend(x).var(
         x, axis=axis, correction=correction, keepdims=keepdims, out=out
@@ -869,7 +869,8 @@ def cumsum(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the cumulative sum of the elements along a given axis.
+    """
+    Return the cumulative sum of the elements along a given axis.
 
     Parameters
     ----------
@@ -1012,7 +1013,8 @@ def cumprod(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the cumulative product of the elements along a given axis.
+    """
+    Return the cumulative product of the elements along a given axis.
 
     Parameters
     ----------
@@ -1157,7 +1159,8 @@ def einsum(
     *operands: Union[ivy.Array, ivy.NativeArray],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Sums the product of the elements of the input operands along dimensions specified
+    """
+    Sum the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
     Parameters
@@ -1269,7 +1272,5 @@ def einsum(
         a: ivy.array(2),
         b: ivy.array(15)
     }
-
-
     """
     return current_backend(operands[0]).einsum(equation, *operands, out=out)
