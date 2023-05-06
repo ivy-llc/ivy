@@ -50,13 +50,14 @@ def random_normal(
         np.random.seed(seed)
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
+
 def multivariate_normal(
     *,
     mean: Union[float, np.ndarray] = [0.0, 0.0],
     cov: Union[float, np.ndarray] = [[1.0,0.0],[0.0,1.0]],
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
     check_valid: Optional[str]='warn',
-    tol: Optional[np.float]=1e-8,
+    tol: Optional[np.float64]=1e-8,
     device: str,
     dtype: np.dtype,
     seed: Optional[int] = None,
