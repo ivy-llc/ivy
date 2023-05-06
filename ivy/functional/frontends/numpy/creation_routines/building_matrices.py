@@ -40,4 +40,4 @@ def vander(x, N=None, increasing=False):
 
 # diagflat
 def diagflat(v, k=0):
-    return ivy.diagflat(v, k=k)
+    return ivy.diagflat(v, offset=k)
