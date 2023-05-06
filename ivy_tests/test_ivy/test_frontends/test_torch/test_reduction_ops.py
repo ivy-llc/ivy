@@ -7,6 +7,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
+    _get_castable_dtype,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
     statistical_dtype_values as statistical_dtype_values_experimental,
@@ -245,10 +246,8 @@ def test_torch_any(
 
 @handle_frontend_test(
     fn_tree="torch.sum",
-    dtype_and_x=statistical_dtype_values(
-        function="sum",
-        min_value=-1e04,
-        max_value=1e04,
+    dtype_and_x=_get_castable_dtype().filter(
+        lambda x: x[0] == "float64" and x[-1] == "float64"
     ),
     keepdims=st.booleans(),
 )
@@ -261,7 +260,8 @@ def test_torch_sum(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, castable_dtype = dtype_and_x
+    input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -271,6 +271,7 @@ def test_torch_sum(
         input=x[0],
         dim=axis,
         keepdim=keepdims,
+        dtype=castable_dtype,
     )
 
 
