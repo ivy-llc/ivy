@@ -80,6 +80,8 @@ class DeviceArray:
         )
     
     def cumprod(self, axis=None, dtype=None, out=None):
+        if dtype is None:
+            dtype = ivy.as_ivy_dtype(self.dtype)
         return jax_frontend.numpy.cumsum(
             self._ivy_array,
             axis=axis,

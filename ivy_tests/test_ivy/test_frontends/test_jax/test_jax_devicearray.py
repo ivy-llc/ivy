@@ -245,9 +245,15 @@ def test_jax_devicearray_mean(
     init_tree="jax.numpy.array",
     method_name="cumprod",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
-        force_int_axis=True,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_value=-100,
+        max_value=100,
         valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
 )
 def test_jax_devicearray_cumprod(
