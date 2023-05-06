@@ -76,3 +76,81 @@ def test_binary_cross_entropy_with_logits(
         pos_weight=pos_weight[0],
         reduction=reduction,
     )
+
+#mse
+@handle_test(
+    fn_tree="mse_loss",
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+)
+def test_mse_loss(
+    dtype_and_true,
+    dtype_and_pred,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    pred_dtype, pred = dtype_and_pred
+    true_dtype, true = dtype_and_true
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=true_dtype + pred_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        true=true[0],
+        pred=pred[0],
+        reduction=reduction,
+    )
+
+#mae
+@handle_test(
+    fn_tree="mae_loss",
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+)
+def test_mae_loss(
+    dtype_and_true,
+    dtype_and_pred,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    pred_dtype, pred = dtype_and_pred
+    true_dtype, true = dtype_and_true
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=true_dtype + pred_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        true=true[0],
+        pred=pred[0],
+        reduction=reduction,
+    )
