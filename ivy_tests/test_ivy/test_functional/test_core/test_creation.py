@@ -268,7 +268,6 @@ def test_asarray(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    unpack=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
@@ -276,7 +275,6 @@ def test_asarray(
 def test_empty(
     *,
     shape,
-    unpack,
     dtype,
     test_flags,
     backend_fw,
@@ -284,21 +282,12 @@ def test_empty(
     on_device,
     ground_truth_backend,
 ):
-    dims = {}
-    if unpack:
-        i = 0
-        for x_ in shape:
-            dims[f"x{i}"] = x_
-            i += 1
-        shape = None
-        test_flags.num_positional_args = len(dims)
     ret = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        **dims,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
@@ -567,7 +556,6 @@ def test_meshgrid(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    unpack=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
@@ -575,7 +563,6 @@ def test_meshgrid(
 def test_ones(
     *,
     shape,
-    unpack,
     dtype,
     test_flags,
     backend_fw,
@@ -583,21 +570,12 @@ def test_ones(
     on_device,
     ground_truth_backend,
 ):
-    dims = {}
-    if unpack:
-        i = 0
-        for x_ in shape:
-            dims[f"x{i}"] = x_
-            i += 1
-        shape = None
-        test_flags.num_positional_args = len(dims)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        **dims,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
@@ -721,7 +699,6 @@ def test_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    unpack=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
@@ -729,7 +706,6 @@ def test_triu(
 def test_zeros(
     *,
     shape,
-    unpack,
     dtype,
     test_flags,
     backend_fw,
@@ -737,21 +713,12 @@ def test_zeros(
     on_device,
     ground_truth_backend,
 ):
-    dims = {}
-    if unpack:
-        i = 0
-        for x_ in shape:
-            dims[f"x{i}"] = x_
-            i += 1
-        shape = None
-        test_flags.num_positional_args = len(dims)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        **dims,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
