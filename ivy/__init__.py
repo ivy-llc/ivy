@@ -76,7 +76,7 @@ class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
             ivy.utils.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
-            if dev_str != "cpu":
+            if len(dev_str) > 3:
                 ivy.assertions.check_equal(
                     dev_str[3],
                     ":",
@@ -87,6 +87,9 @@ class Device(str):
                     dev_str[4:].isnumeric(),
                     message="{} must be numeric".format(dev_str[4:]),
                 )
+            elif len(dev_str) == 3:
+                if dev_str != "cpu":
+                    dev_str += ":0"
         return str.__new__(cls, dev_str)
 
 
