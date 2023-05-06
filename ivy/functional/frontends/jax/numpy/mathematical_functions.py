@@ -624,6 +624,27 @@ def polyint(p, m=1, k=None):
     return ivy.divide(ivy.concat((p, k_arr)), coeff).astype(p.dtype)
 
 
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("float16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def polydiv(u, v, *, trim_leading_zeros=False):
+    u = ivy.asarray(u)
+    v = ivy.asarray(v)
+    m = u.size - 1
+    n = v.size - 1
+    scale = 1. / v[0]
+    q = ivy.zeros(max(m - n + 1, 1), dtype=u.dtype)
+    for k in range(0, m - n + 1):
+        d = scale * u[k]
+        q[k] = d
+        u[k:k+n+1] += (-d * v)
+    if trim_leading_zeros:
+        u = trim_zeros(u, trim='f')
+    return q, u
+
+
 @to_ivy_arrays_and_back
 def polysub(a1, a2):
     n = max(a1.size, a2.size) - 1
