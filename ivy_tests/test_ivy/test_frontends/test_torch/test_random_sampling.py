@@ -452,17 +452,16 @@ def test_torch_randperm(
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
+
 @handle_frontend_test(
     fn_tree="torch.initial_seed",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
     ),
 )
 def test_torch_initial_seed(
     *,
     dtype_and_x,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -471,8 +470,7 @@ def test_torch_initial_seed(
     # Call the test_frontend_function and capture the output.
     output = helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        num_positional_args=0,  # Pass 0 as the number of positional arguments
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
