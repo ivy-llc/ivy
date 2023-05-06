@@ -3,6 +3,7 @@
 # global
 import torch
 from typing import Optional, Union, Sequence
+import torch.distributions as torch_dis
 
 # local
 import ivy
@@ -60,6 +61,22 @@ def random_normal(
 
 
 random_normal.support_native_out = True
+
+
+def multivariate_normal(
+    *,
+    mean: Union[float, torch.Tensor] = [0.0,0.0],
+    cov: Union[float, torch.Tensor] = [[1.0,0.0],[0.0,1.0]],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: torch.dtype,
+    seed: Optional[int] = None,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+)-> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if seed:
+        torch.manual_seed(seed)
+    return torch_dis.multivariate_normal.MultivariateNormal(loc=mean, covariance_matrix=cov)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
