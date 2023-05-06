@@ -40,12 +40,35 @@ RUN apt-get update && \
     pip3 install setuptools==58.5.3
 
 
-RUN pip3 install --upgrade pip && \
-    pip3 install --upgrade pip-autoremove && \
-    pip3 install --upgrade --no-cache-dir -r multicuda_requirements.txt && \
-    pip uninstall torch -y &&\
-    pip uninstall tensorflow -y &&\
-    pip uninstall jax -y &&\
-    pip uninstall jaxlib -y &&\
-    python3 multicuda_framework_directory.py $fw
+# Install Ivy Upstream
+RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
+    cd ivy && \
+    cd ivy_tests/array_api_testing/test_array_api && \
+    pip3 install --no-cache-dir -r requirements.txt
 
+# Install local optional
+COPY requirements/optional.txt .
+COPY requirements/requirements.txt .
+#setting torch path early on because torch-scatter needs it
+ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
+
+# requirement mappings directs which dependency to be installed and where
+COPY /docker/requirement_mappings_gpu.json .
+SHELL ["/bin/bash", "-c"]
+
+RUN python3 multicuda_framework_directory.py $fw &&\
+    jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings_gpu.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2' sh {} &&\
+    sed -i '/numpy/d' requirements.txt && \
+    pip install -r  requirements.txt &&\
+    jq -r 'to_entries[] | .value[]' requirement_mappings_gpu.json | sort -u | xargs -I {}  optional.txt && pip install -r optional.txt
+
+
+# add all the directories to environment path so that python knows where to find them
+ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
+
+COPY run_tests_CLI/test_dependencies.py .
+RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
+    rm -rf requirements.txt && \
+    rm -rf optional.txt && \
+    rm -rf optional_gpu.txt && \
+    rm -rf test_dependencies.py

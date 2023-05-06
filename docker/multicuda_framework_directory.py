@@ -46,8 +46,5 @@ if __name__ == "__main__":
     if len(arg_lis) > 1:  # we have specified what frameworks to install
         directory_generator(arg_lis[1:], "")
     else:
-        install_pkg(None, "torch")
-        install_pkg(None, "tensorflow")
-        install_pkg(None, "jax")
-        install_pkg('/opt/fw/jax', "jaxlib")
-        install_pkg(None, "numpy")
+        directory_generator(['tensorflow','jax','jaxlib','torch'])
+

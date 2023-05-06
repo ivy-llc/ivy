@@ -1,0 +1,9 @@
+{
+  "tensorflow": ["tensorflow-addons", "tensorflow-probability"],
+  "jax": ["dm-haiku", "flax"],
+  "numpy": ["numpy"],
+  "paddle": ["paddlepaddle"],
+  "mxnet": ["mxnet"],
+  "jaxlib": [""],
+  "torch": ["torch-scatter"]
+}
