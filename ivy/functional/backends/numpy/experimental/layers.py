@@ -21,7 +21,6 @@ def max_pool1d(
     data_format: str = "NWC",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel]
     elif len(kernel) == 1:
@@ -79,7 +78,6 @@ def max_pool2d(
     ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel] * 2
     elif len(kernel) == 1:
@@ -176,7 +174,6 @@ def max_pool3d(
     data_format: str = "NDHWC",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel] * 3
     elif len(kernel) == 1:
@@ -270,7 +267,6 @@ def avg_pool1d(
     ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel]
     elif len(kernel) == 1:
@@ -461,7 +457,6 @@ def avg_pool3d(
     divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel] * 3
     elif len(kernel) == 1:

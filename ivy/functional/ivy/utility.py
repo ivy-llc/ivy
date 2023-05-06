@@ -31,7 +31,7 @@ def all(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests whether all input array elements evaluate to ``True`` along a specified
+    """Test whether all input array elements evaluate to ``True`` along a specified
     axis.
 
     .. note::
@@ -142,7 +142,7 @@ def any(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests whether any input array element evaluates to ``True`` along a specified
+    """Test whether any input array element evaluates to ``True`` along a specified
     axis.
 
     .. note::

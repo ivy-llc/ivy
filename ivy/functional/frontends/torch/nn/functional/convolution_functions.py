@@ -8,7 +8,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False):
-
     in_channels = input.shape[1]
     out_channels = weight.shape[0] if not transpose else weight.shape[1] * groups
 

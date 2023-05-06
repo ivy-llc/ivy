@@ -339,9 +339,9 @@ def isinf(
         if detect_negative and detect_positive:
             return tf.math.is_inf(x)
         elif detect_negative:
-            return tf.experimental.numpy.isposinf(x)
-        elif detect_positive:
             return tf.experimental.numpy.isneginf(x)
+        elif detect_positive:
+            return tf.experimental.numpy.isposinf(x)
         return tf.zeros_like(x, tf.bool)
 
 

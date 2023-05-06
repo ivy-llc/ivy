@@ -23,9 +23,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.random_uniform. This method
-        simply wraps the function, and so the docstring for ivy.random_uniform also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.random_uniform. This method simply
+        wraps the function, and so the docstring for ivy.random_uniform also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -126,9 +127,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.random_uniform. This method
-        simply wraps the function, and so the docstring for ivy.random_uniform also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.random_uniform. This method simply
+        wraps the function, and so the docstring for ivy.random_uniform also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -312,9 +314,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.random_normal. This method
-        simply wraps the function, and so the docstring for ivy.random_normal
-        also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.random_normal. This method simply
+        wraps the function, and so the docstring for ivy.random_normal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -413,9 +416,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.random_normal. This method
-        simply wraps the function, and so the docstring for ivy.random_normal also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.random_normal. This method simply
+        wraps the function, and so the docstring for ivy.random_normal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -600,9 +604,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.multinomial. This method
-        simply wraps the function, and so the docstring for ivy.multinomial also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.multinomial. This method simply wraps
+        the function, and so the docstring for ivy.multinomial also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -674,9 +679,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.multinomial. This method
-        simply wraps the function, and so the docstring for ivy.multinomial also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.multinomial. This method simply
+        wraps the function, and so the docstring for ivy.multinomial also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -747,9 +753,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.randint. This method
-        simply wraps the function, and so the docstring for ivy.randint also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.randint. This method simply wraps the
+        function, and so the docstring for ivy.randint also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -847,9 +854,10 @@ class _ContainerWithRandom(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.randint. This method
-        simply wraps the function, and so the docstring for ivy.randint also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.randint. This method simply wraps
+        the function, and so the docstring for ivy.randint also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1029,9 +1037,10 @@ class _ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.shuffle. This method
-        simply wraps the function, and so the docstring for ivy.shuffle also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.shuffle. This method simply wraps the
+        function, and so the docstring for ivy.shuffle also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1091,9 +1100,10 @@ class _ContainerWithRandom(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.shuffle. This method
-        simply wraps the function, and so the docstring for ivy.shuffle also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.shuffle. This method simply wraps
+        the function, and so the docstring for ivy.shuffle also applies to this method
+        with minimal changes.
 
         Parameters
         ----------

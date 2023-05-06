@@ -457,7 +457,7 @@ def diag(
     return np.diag(x, k=k)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex")}, backend_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def vander(
     x: np.ndarray,
     /,
@@ -469,7 +469,7 @@ def vander(
     return np.vander(x, N=N, increasing=increasing).astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex")}, backend_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def vector_to_skew_symmetric_matrix(
     vector: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:

@@ -181,8 +181,24 @@ def test_array_property_itemsize(
     dtype_x,
 ):
     dtype, data = dtype_x
-    x = data[0]
+    data = ivy.native_array(data[0])
+    x = Array(data)
     ivy.utils.assertions.check_equal(x.itemsize, ivy.to_numpy(x).itemsize)
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_array_property_strides(
+    dtype_x,
+):
+    dtype, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ivy.utils.assertions.check_equal(x.strides, ivy.to_numpy(x).strides)
 
 
 @handle_test(

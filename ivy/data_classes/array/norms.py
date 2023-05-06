@@ -60,7 +60,6 @@ class _ArrayWithNorms(abc.ABC):
         ivy.array([[ 0.826, -0.178, 0.981 ],
                    [ 0.831,  0.421, 0.981 ],
                    [ 1.26 , -1.05 , -1.28 ]])
-
         """
         return ivy.layer_norm(
             self,
