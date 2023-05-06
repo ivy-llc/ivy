@@ -103,7 +103,7 @@ def prelu(
         return ivy.where(x > 0, x, x * slope, out=out)
     except ivy.utils.exceptions.IvyError(
         f"The shape {slope.shape} is not Unidirectional Broadcastable\n"
-        f"as per ONNX standards"
+        "as per ONNX standards"
     ) as IvyException:
         if len(slope.shape) == 1:
             dim = slope.shape[0]
