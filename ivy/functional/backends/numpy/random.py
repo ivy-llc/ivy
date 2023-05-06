@@ -69,7 +69,7 @@ def multivariate_normal(
         mean = np.array(mean, dtype)
     if cov:
         cov = np.array(cov, dtype)
-    return np.asarray(np.random.multivariate_normal(mean, cov, shape, check_valid, tol), dtype=dtype)
+    return np.asarray(np.random.multivariate_normal(mean=mean, cov=cov, size=shape, check_valid=check_valid, tol=tol), dtype=dtype)
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
