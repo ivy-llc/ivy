@@ -763,3 +763,12 @@ You can also run the tests locally before making a PR. See the relevant `setting
 This should have hopefully given you a good understanding of Ivy Frontend Tests!
 
 If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_ or in the `ivy frontends tests forum`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/iS7QFsQa9bI" class="video">
+    </iframe>
