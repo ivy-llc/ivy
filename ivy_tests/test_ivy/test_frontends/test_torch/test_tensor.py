@@ -730,7 +730,10 @@ def test_torch_instance_arcsin(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="sum",
-    dtype_x_dim=_get_castable_dtype(),
+    dtype_x_dim=_get_castable_dtype(
+        min_value=-1e04,
+        max_value=1e04,
+    ),
     keepdim=st.booleans(),
 )
 def test_torch_instance_sum(

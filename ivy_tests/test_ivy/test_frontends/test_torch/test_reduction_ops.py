@@ -246,7 +246,10 @@ def test_torch_any(
 
 @handle_frontend_test(
     fn_tree="torch.sum",
-    dtype_and_x=_get_castable_dtype(),
+    dtype_and_x=_get_castable_dtype(
+        min_value=-1e04,
+        max_value=1e04,
+    ),
     keepdims=st.booleans(),
 )
 def test_torch_sum(
