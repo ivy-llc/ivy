@@ -137,19 +137,33 @@ def test_random_normal(
         assert u.dtype == v.dtype
 
 
-# jax_multivariate_normal
 @handle_test(
     fn_tree="functional.ivy.multivariate_normal",
-    mean_cov=st.tuples(
-        st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10),
-        st.lists(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=2, max_size=10), min_size=2, max_size=10)
+    mean=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1000,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=10,
     ),
+    cov=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1000,
+        max_value=1000,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
-    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_multivariate_normal(
-    mean_cov,
+    mean,
+    cov,
     dtype,
     seed,
     test_flags,
@@ -158,24 +172,22 @@ def test_multivariate_normal(
     on_device,
     ground_truth_backend,
 ):
-    mean, cov = mean_cov
-
-    mean_dtype = type(mean[0])
-    cov_dtype = type(cov[0][0])
+    mean_dtype, mean_values = mean
+    cov_dtype, cov_values = cov
 
     def call():
         return helpers.test_function(
             ground_truth_backend=ground_truth_backend,
-            input_dtypes=st.tuples(mean_dtype, cov_dtype),
+            input_dtypes=mean_dtype + cov_dtype,
             test_flags=test_flags,
             on_device=on_device,
             fw=backend_fw,
             fn_name=fn_name,
             test_values=False,
-            mean=mean,
-            cov=cov,
+            mean=mean_values,
+            cov=cov_values,
             shape=None,
-            dtype=dtype,
+            dtype=dtype[0],
             seed=seed,
         )
 
