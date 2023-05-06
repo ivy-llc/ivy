@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 import jax.numpy as jnp
+import jax.lax as jlax
 from numbers import Number
 
 # local
@@ -148,6 +149,7 @@ def pad(
     mode: Union[
         Literal[
             "constant",
+            "dilated",
             "edge",
             "linear_ramp",
             "maximum",
@@ -174,6 +176,13 @@ def pad(
     input_dtype = input.dtype
     if jnp.issubdtype(input_dtype, jnp.integer) and mode in ["mean", "median"]:
         input = input.astype(jnp.float64)
+
+    if mode == "dilated":
+        padding_value = ivy.native_array(constant_values)
+        operand = _flat_array_to_1_dim_array(input).astype(padding_value.dtype)
+        padded = jlax.pad(operand, padding_value, pad_width)
+        return padded
+
     if callable(mode):
         ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
