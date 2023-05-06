@@ -20,9 +20,9 @@ try:
         pass
 except ImportError:
     warnings.warn(
-        "pynvml installation was not found in the environment,\
-         functionalities of the Ivy's device module will be limited.\
-         Please install pynvml if you wish to use GPUs with Ivy."
+        "pynvml installation was not found in the environment, functionalities"
+        " of the Ivy's device module will be limited. Please install pynvml if"
+        " you wish to use GPUs with Ivy."
     )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
@@ -179,12 +179,13 @@ def get_all_ivy_arrays_on_dev(
     device = ivy.as_ivy_dev(device)
     all_arrays = list()
     for obj in gc.get_objects():
-        # noinspection PyBroadException
-        try:
-            if ivy.is_ivy_array(obj) and ivy.dev(obj) == device:
-                all_arrays.append(obj)
-        except Exception:
-            pass
+        if (
+            type(obj) == ivy.data_classes.array.array.Array
+            and ivy.is_ivy_array(obj)
+            and ivy.dev(obj) == device
+        ):
+            all_arrays.append(obj)
+
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
@@ -1035,12 +1036,17 @@ def split_func_call(
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
     inputs_split = [
-        ivy.split(
-            inp, num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
-        )
-        if ivy.is_array(inp)
-        else inp.split(
-            num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+        (
+            ivy.split(
+                inp,
+                num_or_size_splits=chunk_sizes,
+                axis=input_axes[i],
+                with_remainder=True,
+            )
+            if ivy.is_array(inp)
+            else inp.split(
+                num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+            )
         )
         for i, inp in enumerate(inputs)
     ]
@@ -1163,8 +1169,10 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        "supported_devices and unsupported_devices attributes cannot both \
-        exist in a particular backend",
+        (
+            "supported_devices and unsupported_devices attributes cannot both "
+            "exist in a particular backend"
+        ),
     )
     supported_devices = set(_get_devices(fn, complement=False))
 
@@ -1202,8 +1210,10 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        "supported_devices and unsupported_devices attributes cannot both \
-        exist in a particular backend",
+        (
+            "supported_devices and unsupported_devices attributes cannot both "
+            "exist in a particular backend"
+        ),
     )
     unsupported_devices = set(_get_devices(fn, complement=True))
 

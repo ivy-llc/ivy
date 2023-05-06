@@ -643,22 +643,20 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[
-        Literal[
-            "linear",
-            "bilinear",
-            "trilinear",
-            "nearest",
-            "area",
-            "nearest-exact",
-            "tf_area",
-            "bicubic",
-            "bicubic_tensorflow",
-            "mitchellcubic",
-            "lanczos3",
-            "lanczos5",
-            "gaussian",
-        ]
+    mode: Literal[
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "area",
+        "nearest-exact",
+        "tf_area",
+        "bicubic",
+        "bicubic_tensorflow",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
@@ -678,11 +676,11 @@ def interpolate(
         mode = (
             "bilinear"
             if mode == "linear"
-            else "area"
-            if mode == "tf_area"
-            else "nearest"
-            if mode == "nearest-exact"
-            else mode
+            else (
+                "area"
+                if mode == "tf_area"
+                else "nearest" if mode == "nearest-exact" else mode
+            )
         )
     if mode == "bicubic_tensorflow":
         mode = "bicubic"

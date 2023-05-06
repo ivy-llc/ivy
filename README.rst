@@ -1,6 +1,6 @@
 
-.. _`Backend Handler`: https://lets-unify.ai/docs/ivy/overview/design/building_blocks.html#backend-handler
-.. _`Backend Functional APIs`: https://lets-unify.ai/docs/ivy/overview/design/building_blocks.html#backend-functional-apis
+.. _`Backend Handler`: https://unify.ai/docs/ivy/overview/design/building_blocks.html#backend-handler
+.. _`Backend Functional APIs`: https://unify.ai/docs/ivy/overview/design/building_blocks.html#backend-functional-apis
 
 .. _`Mechanics`: https://github.com/unifyai/mech
 .. _`Computer Vision`: https://github.com/unifyai/vision
@@ -10,8 +10,8 @@
 .. _`Builder tools`: https://github.com/unifyai/builder
 .. _`Models`: https://github.com/unifyai/models
 
-.. _`Examples page`: https://lets-unify.ai/demos/
-.. _`open tasks`: https://lets-unify.ai/docs/ivy/overview/contributing/open_tasks.html
+.. _`Examples page`: https://unify.ai/demos/
+.. _`open tasks`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html
 
 .. _`Discord`: https://discord.gg/sXyFF8tDtm
 .. _`Twitter`: https://twitter.com/letsunifyai
@@ -63,7 +63,7 @@
 .. raw:: html
 
     <div style="display: block;" align="center">
-    <b><a href="https://lets-unify.ai/">Website</a></b> | <b><a href="https://lets-unify.ai/docs/ivy/">Docs</a></b> | <b><a href="https://lets-unify.ai/demos/">Examples</a></b> | <b><a href="https://lets-unify.ai/docs/ivy/overview/design.html">Design</a></b> | <b><a href="https://lets-unify.ai/docs/ivy/overview/faq.html">FAQ</a></b><br><br>
+    <b><a href="https://unify.ai/">Website</a></b> | <b><a href="https://unify.ai/docs/ivy/">Docs</a></b> | <b><a href="https://unify.ai/demos/">Examples</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/design.html">Design</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/faq.html">FAQ</a></b><br><br>
     
     <b>All of AI, at your fingertips</b>
     
@@ -106,7 +106,7 @@ straight away going through the `Setting up Ivy`_ section, or dive deep into Ivy
 If you would like to contribute, you can join our growing `Community`_ 🌍, check out our `Contributing`_ guide,
 and take a look at the `open tasks`_ if you'd like to dive straight in 🧑‍💻 
 
-`lets-unify.ai <https://lets-unify.ai>`_ **together 🦾**
+`unify.ai <https://unify.ai>`_ **together 🦾**
 
 
 Contents
@@ -172,7 +172,7 @@ These functions can be used eagerly or lazily. If you pass the necessary argumen
     # lazy_graph is now torch code and runs efficiently
     ret = lazy_graph(x1)
 
-If you want to learn more, you can find more information in the `Ivy as a transpiler section of the docs! <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html>`_
+If you want to learn more, you can find more information in the `Ivy as a transpiler section of the docs! <https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html>`_
 
 When should I use Ivy as a transpiler?
 ######################################
@@ -182,9 +182,9 @@ If you want to use building blocks published in other frameworks (neural network
 Ivy as a framework
 -------------------
 
-The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html>`_). 
+The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html>`_). 
 
-All of the functionalities in Ivy are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://lets-unify.ai/docs/ivy/overview/design/building_blocks.html#ivy-functional-api>`_ are **Framework Agnostic Functions**, which mean that we can use them like this:
+All of the functionalities in Ivy are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://unify.ai/docs/ivy/overview/design/building_blocks.html#ivy-functional-api>`_ are **Framework Agnostic Functions**, which mean that we can use them like this:
 
 .. code-block:: python
 
@@ -205,7 +205,7 @@ All of the functionalities in Ivy are exposed through the :code:`Ivy functional 
 In the example above we show how Ivy's functions are compatible with tensors from different frameworks.
 This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.
 
-The `Ivy Stateful API <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html>`_, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!
+The `Ivy Stateful API <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html>`_, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!
 
 .. code-block:: python
 
@@ -309,7 +309,7 @@ covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforce
     </div>
     <br clear="all" />
 
-As always, you can find more information about `Ivy as a framework in the docs! <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html>`_
+As always, you can find more information about `Ivy as a framework in the docs! <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html>`_
 
 When should I use Ivy as a framework?
 ######################################
@@ -369,7 +369,7 @@ or alternatively, for the last step:
 
     python3 -m pip install --user -e .
 
-If you want to set up testing and various frameworks it's probably best to check out the `Contributing - Setting Up <https://lets-unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up>`_ page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!
+If you want to set up testing and various frameworks it's probably best to check out the `Contributing - Setting Up <https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up>`_ page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!
 
 
 Using Ivy
@@ -423,13 +423,13 @@ You can find quite a lot more examples in the corresponding section below, but u
 Documentation
 -------------
 
-The `Ivy Docs page <https://lets-unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
+The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
 
-There, you will find the `Design <https://lets-unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://lets-unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
+There, you will find the `Design <https://unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
-Another important sections of the docs is `Background <https://lets-unify.ai/docs/ivy/overview/background.html>`_, which contextualises the problem Ivy is trying to solve and the current `ML Explosion <https://lets-unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion>`_, explaining both (1) why is important `to solve this problem <https://lets-unify.ai/docs/ivy/overview/background/why_unify.html#why-unify>`_ and (2) how we are adhering to existing `standards <https://lets-unify.ai/docs/ivy/overview/background/standardization.html#standardization>`_ to make this happen.
+Another important sections of the docs is `Background <https://unify.ai/docs/ivy/overview/background.html>`_, which contextualises the problem Ivy is trying to solve and the current `ML Explosion <https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion>`_, explaining both (1) why is important `to solve this problem <https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify>`_ and (2) how we are adhering to existing `standards <https://unify.ai/docs/ivy/overview/background/standardization.html#standardization>`_ to make this happen.
 
-Lastly, you can also find there the `Related Work <https://lets-unify.ai/docs/ivy/overview/related_work.html>`_ section, which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
+Lastly, you can also find there the `Related Work <https://unify.ai/docs/ivy/overview/related_work.html>`_ section, which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
 
 
 Examples
@@ -491,7 +491,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     import torch
 
     # Get a pretrained haiku model
-    # https://lets-unify.ai/demos/scripts/deepmind_perceiver_io.py
+    # https://unify.ai/demos/scripts/deepmind_perceiver_io.py
     from deepmind_perceiver_io import key, perceiver_backbone
 
     # Transpile it into a torch.nn.Module with the corresponding parameters
@@ -734,7 +734,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     import tensorflow as tf
 
     # Get a pretrained haiku model
-    # https://lets-unify.ai/demos/scripts/deepmind_perceiver_io.py
+    # https://unify.ai/demos/scripts/deepmind_perceiver_io.py
     from deepmind_perceiver_io import key, perceiver_backbone
 
     # Transpile it into a tf.keras.Model with the corresponding parameters
@@ -1583,7 +1583,7 @@ Contributing
 We believe that everyone can contribute and make a difference. Whether it's writing code 💻, fixing bugs 🐛, 
 or simply sharing feedback 💬, your contributions are definitely welcome and appreciated 🙌 
 
-Check out all of our open tasks, and find out more info in our `Contributing guide <https://lets-unify.ai/docs/ivy/overview/contributing.html>`_ in the docs!
+Check out all of our open tasks, and find out more info in our `Contributing guide <https://unify.ai/docs/ivy/overview/contributing.html>`_ in the docs!
 
 Join our amazing community as a code contributor, and help accelerate our journey to unify all ML frameworks!
 

@@ -329,9 +329,9 @@ class Module(ModuleConverters, ModuleHelpers):
 
         created_ids.cont_map(lambda x, kc: unique_callback(x, kc))
         vs_ids.cont_map(
-            lambda x, kc: unique_callback(x, kc)
-            if x not in ids
-            else found_dup_callback(x, kc)
+            lambda x, kc: (
+                unique_callback(x, kc) if x not in ids else found_dup_callback(x, kc)
+            )
         )
         for dup_kc in duplicate_keychains:
             vs = vs.cont_prune_key_chain(dup_kc)
