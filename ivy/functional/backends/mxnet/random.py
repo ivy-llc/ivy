@@ -35,6 +35,19 @@ def random_normal(
     raise NotImplementedError("mxnet.random_normal Not Implemented")
 
 
+def multivariate_normal(
+    *,
+    mean: Union[(float, None, mx.ndarray.NDArray)] = [0.0, 0.0],
+    cov: Union[(float, None, mx.ndarray.NDArray)] = [[1.0, 0.0], [0.0, 1.0]],
+    shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
+    device: str,
+    dtype: None,
+    seed: Optional[int] = None,
+    method: Optional[str] = 'cholesky',
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise NotImplementedError("mxnet.multivariate_normal Not Implemented")
+
 def multinomial(
     population_size: int,
     num_samples: int,
