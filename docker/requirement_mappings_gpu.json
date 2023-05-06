@@ -4,6 +4,6 @@
   "numpy": ["numpy"],
   "paddle": ["paddlepaddle"],
   "mxnet": ["mxnet"],
-  "jaxlib": ["NUll"],
+  "jaxlib": [""],
   "torch": ["torch-scatter"]
 }
