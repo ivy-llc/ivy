@@ -3,7 +3,7 @@
 FROM unifyai/multicuda:base
 WORKDIR /ivy
 ARG fw
-COPY /docker/multicuda_framework_directory.py .
+
 
 
 
@@ -48,6 +48,7 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
     pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
+COPY /docker/multicuda_framework_directory.py .
 COPY requirements/optional.txt .
 COPY requirements/requirements.txt .
 
