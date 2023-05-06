@@ -10,6 +10,7 @@ from typing import Optional, Union, Sequence
 # global
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
+import tensorflow_probability as tfp
 
 # local
 import ivy
@@ -43,6 +44,23 @@ def random_uniform(
         if seed:
             tf.random.set_seed(seed)
         return tf.random.uniform(shape, low, high, dtype=dtype, seed=seed)
+
+
+def multivariate_normal(
+    *,
+    mean: Union[float, tf.Tensor, tf.Variable] = [0.0,0.0],
+    cov: Union[float, tf.Tensor, tf.Variable] = [[1.0,0.0],[0.0,1.0]],
+    device: str,
+    dtype: DType,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+     with tf.device(device):
+        if seed is not None:
+            tf.random.set_seed(seed)
+        return tfp.distributions.MultivariateNormalFullCovariance(
+            loc=mean, covariance_matrix=cov, dtype=dtype, allow_nan_stats=True
+        )
 
 
 def random_normal(
