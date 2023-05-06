@@ -36,7 +36,7 @@ def install_pkg(path, pkg, base="fw/"):
         )
     else:
         subprocess.run(
-            f"pip3 install --upgrade {pkg} --target--default-timeout=100   --no-cache-dir",
+            f"pip3 install --upgrade {pkg} --target {path} --default-timeout=100   --no-cache-dir",
             shell=True,
         )
 
