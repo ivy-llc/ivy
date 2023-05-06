@@ -175,7 +175,6 @@ def test_multivariate_normal(
             test_values=False,
             mean=mean,
             cov=cov,
-            shape=None,
             dtype=dtype[0],
             seed=seed,
         )
