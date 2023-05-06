@@ -97,6 +97,9 @@ def test_dev(*, dtype_and_x, test_flags):
             x = _variable(x)
 
         ret = ivy.dev(x)
+        nat_ret = ivy.dev(x, as_native=True)
+        # native test
+        assert ivy.is_native_dev(nat_ret)
         # type test
         assert isinstance(ret, str)
         # value test
@@ -150,11 +153,11 @@ def test_as_native_dev(*, dtype_and_x, test_flags):
 
     for on_device in _get_possible_devices():
         x = ivy.asarray(x, device=on_device)
-        if test_flags.as_variable:
+        if test_flags.as_variable and ivy.is_float_dtype(dtype):
             x = _variable(x)
 
         device = ivy.as_native_dev(on_device)
-        ret = ivy.as_native_dev(ivy.dev(x))
+        ret = ivy.dev(x, as_native=True)
         # value test
         if ivy.current_backend_str() == "tensorflow":
             assert "/" + ":".join(ret[1:].split(":")[-2:]) == "/" + ":".join(
@@ -180,7 +183,7 @@ def test_is_native_dev(*, dtype_and_x, test_flags):
 
     for on_device in _get_possible_devices():
         x = ivy.asarray(x, device=on_device)
-        if test_flags.as_variable:
+        if test_flags.as_variable and ivy.is_float_dtype(dtype):
             x = _variable(x)
         native_dev = ivy.dev(x, as_native=True)
         assert ivy.is_native_dev(native_dev)
