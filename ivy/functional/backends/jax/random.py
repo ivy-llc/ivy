@@ -114,12 +114,12 @@ def multivariate_normal(
     return (
         to_device(
             jax.random.multivariate_normal(
-                key = rng_input, 
-                mean = mean, 
-                cov = cov, 
-                shape = shape, 
-                method =method, 
-                dtype = dtype
+                key=rng_input, 
+                mean=mean, 
+                cov=cov, 
+                shape=shape, 
+                method=method, 
+                dtype=dtype
             ),
             device,
         )
