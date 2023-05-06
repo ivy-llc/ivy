@@ -61,20 +61,16 @@ def to_device(
     stream: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ):
-    if device is not None:
-        device = as_native_dev(device)
-        cur_dev = dev(x, as_native=True)
-        if cur_dev != device:
-            x = jax.device_put(x, device)
-    return x
+    # TODO: implement stream and out
+    return _to_device(x, device=device)
 
 
 # this is a non-wrapped function used to place JAX arrays on respective devices,
 # since if we use to_device, it will return ivy.array which is not desirable
 def _to_device(x, device=None):
     if device is not None:
-        cur_dev = dev(x, as_native=True)
         device = as_native_dev(device)
+        cur_dev = dev(x, as_native=True)
         if cur_dev != device:
             # Uses async dispatch, data commited only when required
             x = jax.device_put(x, device)
@@ -110,9 +106,9 @@ def as_native_dev(device, /):
             idx = 0
         return jax.devices(device)[idx]
     else:
-        raise ivy.utils.exceptions.IvyException(
-            f"Cannot convert {device} to an ivy device. Expected a "
-            f"jaxlib.xla_extension.Device or str, got {type(device)}"
+        raise ivy.utils.exceptions.IvyError(
+            f"Cannot convert {device} to a JaX device. Expected a "
+            f"jaxlib.xla_extension.Device or ivy.Device, got {type(device)}"
         )
 
 

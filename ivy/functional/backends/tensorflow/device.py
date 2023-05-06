@@ -15,14 +15,6 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def _same_device(dev_a, dev_b):
-    if dev_a is None or dev_b is None:
-        return False
-    return "/" + ":".join(dev_a[1:].split(":")[-2:]) == "/" + ":".join(
-        dev_b[1:].split(":")[-2:]
-    )
-
-
 def dev(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -78,7 +70,7 @@ def as_native_dev(device: str, /):
             ret += ":0"
         return ret
     else:
-        raise ivy.utils.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyError(
             f"Cannot convert {device} to an ivy device. Expected a "
             f"str, got {type(device)}"
         )
@@ -95,6 +87,12 @@ def is_native_dev(device: str, /):
 
 def _shorten_device(device: str):
     return "/" + ":".join(device[1:].split(":")[-2:])
+
+
+def _same_device(dev_a, dev_b):
+    if dev_a is None or dev_b is None:
+        return False
+    return _shorten_device(dev_a) == _shorten_device(dev_b)
 
 
 def clear_cached_mem_on_dev(device: str, /):

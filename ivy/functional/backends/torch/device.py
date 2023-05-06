@@ -48,8 +48,6 @@ def to_device(
 
 def as_ivy_dev(device, /):
     if isinstance(device, str):
-        if device.startswith("cpu"):
-            return ivy.Device("cpu")
         return ivy.Device(device)
     if is_native_dev(device):
         dev_type, dev_idx = (device.type, device.index)
@@ -66,19 +64,18 @@ def as_ivy_dev(device, /):
 
 
 def as_native_dev(
-    device: Optional[Union[ivy.Device, torch.device]],
+    device: Union[ivy.Device, str, torch.device],
     /,
 ) -> torch.device:
     if is_native_dev(device):
-        return device
+        return device  # type: ignore
     if isinstance(device, str):
-        if device.startswith("cpu"):
-            return torch.device("cpu")
-        return torch.device(ivy.Device(device).replace("gpu", "cuda"))
+        device = device.lower().replace("gpu", "cuda")
+        return torch.device(device)
     else:
         raise ivy.utils.exceptions.IvyError(
             f"{device} couldn't be converted to torch.device. "
-            "Expcted a torch.device or a string of value type '(cpu|cuda|gpu)[:<index>]"
+            "Expcted a torch.device or a valid torch device string or ivy.Device."
         )
 
 
