@@ -63,7 +63,7 @@ RUN python3 multicuda_framework_directory.py $fw &&\
     jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings_gpu.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2' sh {} &&\
     sed -i '/numpy/d' requirements.txt && \
     pip install -r  requirements.txt &&\
-    jq -r 'to_entries[] | .value[]' requirement_mappings_gpu.json | sort -u | xargs -I {} sed -I '/jax\[.*\]/d' optional.txt && pip install -r optional.txt
+    jq -r 'to_entries[] | .value[]' requirement_mappings_gpu.json | sort -u | xargs -i {} sed -I '/jax\[.*\]/d' optional.txt && pip install -r optional.txt
 
 
 # add all the directories to environment path so that python knows where to find them
