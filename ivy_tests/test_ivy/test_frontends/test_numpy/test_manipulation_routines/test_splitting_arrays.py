@@ -5,8 +5,8 @@ from hypothesis import strategies as st, assume
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
-    _get_split_locations,
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
+    _get_splits,
 )
 
 
@@ -17,7 +17,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1),
+    indices_or_sections=_get_splits(min_num_dims=1),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -57,7 +57,7 @@ def test_numpy_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1),
+    indices_or_sections=_get_splits(min_num_dims=1),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -97,7 +97,7 @@ def test_numpy_array_split(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
+    indices_or_sections=_get_splits(min_num_dims=3, axis=2),
     test_with_out=st.just(False),
 )
 def test_numpy_dsplit(
@@ -128,7 +128,7 @@ def test_numpy_dsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
+    indices_or_sections=_get_splits(min_num_dims=2, axis=0),
     test_with_out=st.just(False),
 )
 def test_numpy_vsplit(
@@ -159,7 +159,7 @@ def test_numpy_vsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
+    indices_or_sections=_get_splits(min_num_dims=1, axis=1),
     test_with_out=st.just(False),
 )
 def test_numpy_hsplit(

@@ -16,9 +16,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logit.
-        This method simply wraps the function, and so the
-        docstring for ivy.logit  also applies to this method with
+        ivy.Container static method variant of ivy.logit. This method simply wraps the
+        function, and so the docstring for ivy.logit  also applies to this method with
         minimal changes.
 
         Parameters
@@ -74,9 +73,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.logit.
-        This method simply wraps the function, and so the
-        docstring for ivy.logit  also applies to this method with
+        ivy.Container instance method variant of ivy.logit. This method simply wraps the
+        function, and so the docstring for ivy.logit  also applies to this method with
         minimal changes.
 
         Parameters
@@ -116,7 +114,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([-0.84729779, 1.38629448, 1.38629448]),
             b: ivy.array([-1.38629436, 1.38629448, -1.38629436])
         }
-
         """
         return self.static_logit(self, eps=eps, out=out)
 
@@ -133,9 +130,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.thresholded_relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.thresholded_relu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.thresholded_relu. This method simply
+        wraps the function, and so the docstring for ivy.thresholded_relu also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -173,7 +170,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([1., 0.]),
             b: ivy.array([0., 0.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "thresholded_relu",
@@ -198,9 +194,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.thresholded_relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.thresholded_relu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.thresholded_relu. This method
+        simply wraps the function, and so the docstring for ivy.thresholded_relu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -238,7 +234,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([1., 0.]),
             b: ivy.array([0., 0.])
         }
-
         """
         return self.static_thresholded_relu(
             self,
@@ -328,9 +323,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.relu6.
-        This method simply wraps the function, and so the docstring
-        for ivy.relu6 also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.relu6. This method simply wraps the
+        function, and so the docstring for ivy.relu6 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -369,7 +364,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
             b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "relu6",
@@ -392,9 +386,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.relu6.
-        This method simply wraps the function, and so the docstring
-        for ivy.relu6 also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.relu6. This method simply wraps the
+        function, and so the docstring for ivy.relu6 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -433,7 +427,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
             b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
         }
-
         """
         return self.static_relu6(
             self,
@@ -455,10 +448,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logsigmoid.
-        This method simply wraps the function, and so the
-        docstring for ivy.logsigmoid also applies to this method with
-        minimal changes.
+        ivy.Container static method variant of ivy.logsigmoid. This method simply wraps
+        the function, and so the docstring for ivy.logsigmoid also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -521,7 +513,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Applies element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
+        Apply element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
 
         Parameters
         ----------
@@ -542,7 +534,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([-0.31326163, -1.46328258]),
             b: ivy.array([-0.51301527, -0.79813886])
         }
-
         """
         return self.static_logsigmoid(
             self,
@@ -564,9 +555,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.selu.
-        This method simply wraps the function, and so the docstring
-        for ivy.selu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.selu. This method simply wraps the
+        function, and so the docstring for ivy.selu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -602,7 +593,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([1.05070102, -1.22856998]),
             b: ivy.array([0.42028043, -0.31868932])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "selu",
@@ -625,9 +615,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.selu.
-        This method simply wraps the function, and so the docstring
-        for ivy.selu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.selu. This method simply wraps the
+        function, and so the docstring for ivy.selu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -663,7 +653,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([1.05070102, -1.22856998]),
             b: ivy.array([0.42028043, -0.31868932])
         }
-
         """
         return self.static_selu(
             self,

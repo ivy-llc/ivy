@@ -1,8 +1,6 @@
 import os
 import subprocess
-import sys
 from pydriller import Repository
-import pickle
 from tqdm import tqdm
 import bz2
 import _pickle as cPickle
@@ -38,7 +36,7 @@ def main():
                         and not (framework in s.lower())
                         and any(f in s.lower() for f in framework_tests_to_run)
                     ):
-                        submod = f"ivy_tests/array_api_testing/test_array_api/array_api_tests/test_{fname.replace('.txt', '.py')}"
+                        submod = f"ivy_tests/array_api_testing/test_array_api/array_api_tests/test_{fname.replace('.txt', '.py')}"  # noqa
 
                         test_name = (
                             submod
@@ -50,9 +48,6 @@ def main():
 
     for backend, tests in framework_tests_to_run.items():
         test_names += [test + "," + backend for test in set(tests)]
-
-    # for test_name in test_names:
-    #     print(test_name)
 
     # Create a Dictionary of Test Names to Index
     tests = {"index_mapping": test_names, "tests_mapping": {}}
@@ -84,11 +79,8 @@ def main():
     directories = set(directories_filtered)
     for test_backend in tqdm(test_names):
         test_name, backend = test_backend.split(",")
-        print("Test:", test_backend)
-        command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy unifyai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,ivy_tests -m pytest {test_name} -k \\"{k_flag[backend]}\\" --disable-warnings --tb=short -vv > coverage_output;coverage annotate > coverage_output" '
-        print("Running OS Command")
+        command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy unifyai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,ivy_tests -m pytest {test_name} -k \\"{k_flag[backend]}\\" --disable-warnings --tb=short -vv > coverage_output;coverage annotate > coverage_output" '  # noqa
         os.system(command)
-        print("Going through Directories:")
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
@@ -106,7 +98,6 @@ def main():
                                     tests["tests_mapping"][test_backend]
                                 )
                             i += 1
-        print("Done with Directories, Cleaning Files")
         os.system("find . -name \\*cover -type f -delete")
 
     commit_hash = ""

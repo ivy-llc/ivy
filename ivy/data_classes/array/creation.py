@@ -23,8 +23,8 @@ class _ArrayWithCreation(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.asarray. This method simply wraps the
-        function, and so the docstring for ivy.asarray also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.asarray also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -132,7 +132,7 @@ class _ArrayWithCreation(abc.ABC):
         ivy.array([1, 1, 1, 1, 1, 1])
         """
         return ivy.full_like(
-            self._data, fill_value, dtype=dtype, device=device, out=out
+            self._data, fill_value=fill_value, dtype=dtype, device=device, out=out
         )
 
     def ones_like(
@@ -166,7 +166,6 @@ class _ArrayWithCreation(abc.ABC):
         -------
         ret
             an array having the same shape as ``self`` and filled with ones.
-
         """
         return ivy.ones_like(self._data, dtype=dtype, device=device, out=out)
 
@@ -201,17 +200,16 @@ class _ArrayWithCreation(abc.ABC):
         -------
         ret
             an array having the same shape as ``self`` and filled with ``zeros``.
-
         """
         return ivy.zeros_like(self._data, dtype=dtype, device=device, out=out)
 
     def tril(
-        self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, k: int = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tril. This method simply wraps the
-        function, and so the docstring for ivy.tril also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.tril also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -233,17 +231,16 @@ class _ArrayWithCreation(abc.ABC):
             have the same shape and data type as ``self``. All elements above the
             specified diagonal k must be zeroed. The returned array should be allocated
             on the same device as ``self``.
-
         """
         return ivy.tril(self._data, k=k, out=out)
 
     def triu(
-        self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, k: int = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.triu. This method simply wraps the
-        function, and so the docstring for ivy.triu also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.triu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -265,7 +262,6 @@ class _ArrayWithCreation(abc.ABC):
             have the same shape and data type as ``self``. All elements below the
             specified diagonal k must be zeroed. The returned array should be allocated
             on the same device as ``self``.
-
         """
         return ivy.triu(self._data, k=k, out=out)
 
@@ -301,7 +297,6 @@ class _ArrayWithCreation(abc.ABC):
         ret
             an array having the same shape as ``self`` and containing uninitialized
             data.
-
         """
         return ivy.empty_like(self._data, dtype=dtype, device=device, out=out)
 
@@ -314,8 +309,8 @@ class _ArrayWithCreation(abc.ABC):
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.meshgrid. This method simply wraps the
-        function, and so the docstring for ivy.meshgrid also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.meshgrid also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -339,13 +334,13 @@ class _ArrayWithCreation(abc.ABC):
             list of N arrays, where ``N`` is the number of provided one-dimensional
             input arrays. Each returned array must have rank ``N``. For ``N``
             one-dimensional arrays having lengths ``Ni = len(xi)``.
-
         """
-        return ivy.meshgrid(*tuple([self] + arrays), sparse=sparse, indexing=indexing)
+        return ivy.meshgrid(self, *arrays, sparse=sparse, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
         /,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -365,7 +360,6 @@ class _ArrayWithCreation(abc.ABC):
         -------
         ret
             an array containing the data in ``self``.
-
         """
         return ivy.from_dlpack(self._data, out=out)
 
@@ -374,6 +368,7 @@ class _ArrayWithCreation(abc.ABC):
 
     def copy_array(
         self: ivy.Array,
+        /,
         *,
         to_ivy_array: bool = True,
         out: Optional[ivy.Array] = None,
@@ -399,7 +394,6 @@ class _ArrayWithCreation(abc.ABC):
         -------
         ret
             a copy of the input array ``x``.
-
         """
         return ivy.copy_array(self, to_ivy_array=to_ivy_array, out=out)
 
@@ -428,7 +422,6 @@ class _ArrayWithCreation(abc.ABC):
         -------
         ret
             A native array interpretation of ``self``.
-
         """
         return ivy.native_array(self._data, dtype=dtype, device=device)
 
@@ -446,8 +439,8 @@ class _ArrayWithCreation(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.one_hot. This method simply wraps the
-        function, and so the docstring for ivy.one_hot also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.one_hot also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -520,19 +513,19 @@ class _ArrayWithCreation(abc.ABC):
         *,
         axis: Optional[int] = None,
         endpoint: bool = True,
-        out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Array:
         return ivy.linspace(
             self,
             stop,
-            num,
+            num=num,
             axis=axis,
             endpoint=endpoint,
-            out=out,
             dtype=dtype,
             device=device,
+            out=out,
         )
 
     def logspace(
@@ -550,8 +543,8 @@ class _ArrayWithCreation(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.logspace. This method simply wraps the
-        function, and so the docstring for ivy.logspace also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.logspace also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -614,12 +607,11 @@ class _ArrayWithCreation(abc.ABC):
                    [100., 464.15888336]
                    [1000., 2154.43469003]
                    [10000., 10000.]])
-
         """
         return ivy.logspace(
             self,
             stop,
-            num,
+            num=num,
             base=base,
             axis=axis,
             endpoint=endpoint,

@@ -21,9 +21,9 @@ class _ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.argmax. This method simply
-        wraps the function, and so the docstring for ivy.argmax also applies
-        to this method with minimal changes.
+        ivy.Container static method variant of ivy.argmax. This method simply wraps the
+        function, and so the docstring for ivy.argmax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -82,9 +82,9 @@ class _ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.argmax. This method simply
-        wraps the function, and so the docstring for ivy.argmax also applies
-        to this method with minimal changes.
+        ivy.Container instance method variant of ivy.argmax. This method simply wraps
+        the function, and so the docstring for ivy.argmax also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -144,9 +144,9 @@ class _ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.argmin. This method simply
-        wraps the function, and so the docstring for ivy.argmin also applies
-        to this method with minimal changes.
+        ivy.Container static method variant of ivy.argmin. This method simply wraps the
+        function, and so the docstring for ivy.argmin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -206,9 +206,9 @@ class _ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.argmin. This method simply
-        wraps the function, and so the docstring for ivy.argmin also applies
-        to this method with minimal changes.
+        ivy.Container instance method variant of ivy.argmin. This method simply wraps
+        the function, and so the docstring for ivy.argmin also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -276,9 +276,9 @@ class _ContainerWithSearching(ContainerBase):
         fill_value: Number = 0,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.nonzero. This method simply
-        wraps the function, and so the docstring for ivy.nonzero also applies
-        to this method with minimal changes.
+        ivy.Container static method variant of ivy.nonzero. This method simply wraps the
+        function, and so the docstring for ivy.nonzero also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -302,7 +302,6 @@ class _ContainerWithSearching(ContainerBase):
         -------
         ret
             a container containing the indices of the nonzero values.
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "nonzero", x, as_tuple=as_tuple, size=size, fill_value=fill_value
@@ -317,9 +316,9 @@ class _ContainerWithSearching(ContainerBase):
         fill_value: Number = 0,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.nonzero. This method simply
-        wraps the function, and so the docstring for ivy.nonzero also applies
-        to this method with minimal changes.
+        ivy.Container instance method variant of ivy.nonzero. This method simply wraps
+        the function, and so the docstring for ivy.nonzero also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -343,7 +342,6 @@ class _ContainerWithSearching(ContainerBase):
         -------
         ret
             a container containing the indices of the nonzero values.
-
         """
         return self._static_nonzero(
             self, as_tuple=as_tuple, size=size, fill_value=fill_value
@@ -359,9 +357,9 @@ class _ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.where. This method simply
-        wraps the function, and so the docstring for ivy.where also applies
-        to this method with minimal changes.
+        ivy.Container static method variant of ivy.where. This method simply wraps the
+        function, and so the docstring for ivy.where also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -405,9 +403,9 @@ class _ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.where. This method simply
-        wraps the function, and so the docstring for ivy.where also applies
-        to this method with minimal changes.
+        ivy.Container instance method variant of ivy.where. This method simply wraps the
+        function, and so the docstring for ivy.where also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -455,9 +453,9 @@ class _ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.argwhere. This method
-        simply wraps the function, and so the docstring for ivy.argwhere
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.argwhere. This method simply wraps
+        the function, and so the docstring for ivy.argwhere also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -521,9 +519,9 @@ class _ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container instance method variant of ivy.argwhere. This method
-        simply wraps the function, and so the docstring for ivy.argwhere
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.argwhere. This method simply wraps
+        the function, and so the docstring for ivy.argwhere also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -565,7 +563,6 @@ class _ContainerWithSearching(ContainerBase):
             a: ivy.array([[0]]),
             b: ivy.array([[0], [1]])
         }
-
         """
         return self._static_argwhere(
             self,

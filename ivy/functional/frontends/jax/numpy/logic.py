@@ -37,13 +37,13 @@ def array_equiv(a1, a2) -> bool:
 
 
 @to_ivy_arrays_and_back
-def isneginf(x, out=None):
-    return ivy.isneginf(x, out=out)
+def isneginf(x, /, out=None):
+    return ivy.isinf(x, detect_positive=False, out=out)
 
 
 @to_ivy_arrays_and_back
-def isposinf(x, out=None):
-    return ivy.isposinf(x, out=out)
+def isposinf(x, /, out=None):
+    return ivy.isinf(x, detect_negative=False, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -129,12 +129,14 @@ alltrue = all
 
 
 sometrue = any
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
 # known issue in jnp's documentation of arguments
 # https://github.com/google/jax/issues/9119
 def logical_and(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     if x1.dtype == "complex128" or x2.dtype == "complex128":
         x1 = ivy.astype(x1, ivy.complex128)
         x2 = ivy.astype(x2, ivy.complex128)

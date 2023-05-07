@@ -1,4 +1,4 @@
-"""Converters from Native Modules to Ivy Modules"""
+"""Converters from Native Modules to Ivy Modules."""
 # global
 from typing import Optional, Dict, List
 import re  # noqa
@@ -22,8 +22,8 @@ def to_ivy_module(
     inplace_update=False,
 ):
     """
-    Convert an instance of a trainable module from a native framework into a
-    trainable ivy.Module instance.
+    Convert an instance of a trainable module from a native framework into a trainable
+    ivy.Module instance.
 
     Parameters
     ----------
@@ -50,7 +50,6 @@ def to_ivy_module(
     -------
     ret
         The new trainable ivy.Module instance.
-
     """
     return current_backend().to_ivy_module(
         native_module,
@@ -78,7 +77,7 @@ class ModuleConverters:
         devices=None,
     ):
         """
-        Converts a Haiku module instance to an Ivy module instance.
+        Convert a Haiku module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -111,7 +110,6 @@ class ModuleConverters:
         -------
         ret
             The new trainable torch module instance.
-
         """
         hk_spec = importlib.util.find_spec("hk")
         flat_mapping_spec = importlib.util.find_spec(
@@ -229,7 +227,7 @@ class ModuleConverters:
         devices=None,
     ):
         """
-        Converts a Flax module instance to an Ivy module instance.
+        Convert a Flax module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -262,7 +260,6 @@ class ModuleConverters:
         -------
         ret
             The new trainable ivy.Module instance.
-
         """
         flax_spec = importlib.util.find_spec("flax")
         if not flax_spec:
@@ -354,7 +351,7 @@ class ModuleConverters:
         devices=None,
     ):
         """
-        Converts a Keras module instance to an Ivy module instance.
+        Convert a Keras module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -450,7 +447,7 @@ class ModuleConverters:
         devices=None,
     ):
         """
-        Converts a Paddle layer instance to an Ivy module instance.
+        Convert a Paddle layer instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -542,7 +539,7 @@ class ModuleConverters:
         inplace_update=False,
     ):
         """
-        Converts a Torch module instance to an Ivy module instance.
+        Convert a Torch module instance to an Ivy module instance.
 
         Parameters
         ----------
