@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @st.composite
 def _broadcastable_trio(draw):
-    dtype = draw(helpers.get_dtypes("valid", full=False))
+    dtype = draw(helpers.get_dtypes("valid", full= False))
     shapes_st = draw(
         hnp.mutually_broadcastable_shapes(num_shapes=3, min_dims=1, min_side=1)
     )
@@ -343,3 +343,39 @@ def test_numpy_nanargmin(
         axis=axis,
         keepdims=keep_dims,
     )
+
+
+@st.composite
+def _extract_strategy(draw):
+    dtype_and_cond = draw(helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid",full = False),))
+    dtype_and_arr = draw(helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full= False),))
+    return dtype_and_cond, dtype_and_arr
+
+
+# extract
+@handle_frontend_test(
+    fn_tree="numpy.extract",
+    dtype_and_x = _extract_strategy(),
+    test_with_out=st.just(False),
+)
+def test_numpy_extract(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype_cond, cond = dtype_and_x[0]
+    dtype_arr, arr = dtype_and_x[1]
+
+    helpers.test_frontend_function(
+            input_dtypes=dtype_cond + dtype_arr,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            cond = cond[0],
+            arr = arr[0],
+        )
