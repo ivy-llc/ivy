@@ -196,7 +196,7 @@ def matrix_norm(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(axis, tuple):
-        axis = tuple(axis)
+        axis = (axis, )
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
