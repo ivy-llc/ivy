@@ -133,7 +133,7 @@ def test_tensorflow_stft(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        signals=x[0],
         frame_length=frame_length,
         frame_step=frame_step,
         window_fn=window_fn,
