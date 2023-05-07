@@ -7,7 +7,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# reshape
+# Helpers #
+# ------ #
+
+
 @st.composite
 def dtypes_x_reshape(draw):
     shape = draw(helpers.get_shape(min_num_dims=1))
@@ -25,6 +28,11 @@ def dtypes_x_reshape(draw):
     return dtypes, x, shape
 
 
+# Tests #
+# ----- #
+
+
+# reshape
 @handle_frontend_test(
     fn_tree="paddle.reshape",
     dtypes_x_reshape=dtypes_x_reshape(),
