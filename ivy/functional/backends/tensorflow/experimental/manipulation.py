@@ -1,11 +1,11 @@
-from typing import Union, Optional, Sequence, Tuple, NamedTuple, List, Literal
+from typing import Union, Optional, Sequence, Tuple, NamedTuple, List
 from numbers import Number
-
-import numpy as np
 from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 import tensorflow as tf
 import ivy
+
+from ivy.functional.backends.torch.experimental.manipulation import _check_tuple
 
 
 def moveaxis(
@@ -273,23 +273,6 @@ def concat_from_sequence(
     elif new_axis == 1:
         ret = tf.stack(input_sequence, axis=axis)
         return ret
-        
-
-def _check_tuple(t):
-    if isinstance(t, tuple):
-        if len(t) == 1 and not isinstance(t[0], tuple):
-            return t[0], True
-        else:
-            has_multiple_values = False
-            size = 0
-            for elem in t:
-                elem_val, elem_has_multiple_values = _check_tuple(elem)
-                if elem_has_multiple_values:
-                    has_multiple_values = True
-                size += elem_val
-            return size, has_multiple_values
-    else:
-        return 1, False
 
 
 def _check_dimension(tensor, padding, mode):
@@ -309,17 +292,16 @@ def _check_dimension(tensor, padding, mode):
 
 
 def _check(*args, **kwargs):
-
     mode = kwargs['mode']
     if mode in ["linear_ramp",
-                    "maximum",
-                    "mean",
-                    "median",
-                    "minimum",
-                    "edge",
-                    "wrap",
-                    "empty",
-    ]:
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "edge",
+                "wrap",
+                "empty",
+                ]:
         return False
     else:
         if mode == 'constant':
@@ -343,19 +325,18 @@ def _check(*args, **kwargs):
 
 
 @handle_mixed_function(lambda *args, **kwargs: _check(*args, **kwargs))
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16", "complex64", "complex128")}, backend_version)
 def pad(
-    input: tf.Tensor,
-    /,
-    pad_width: Union[Sequence[Sequence[int]], tf.Tensor, int],
-    *,
-    mode: Optional[Literal["constant", "reflect", "symmetric"]] = "constant",
-    stat_length: Optional[Union[tf.Tensor, int]] = None,
-    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
-    end_values: Optional[Number] = 0,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        input: tf.Tensor,
+        /,
+        pad_width: Union[Sequence[Sequence[int]], tf.Tensor, int],
+        *,
+        mode: Optional[Literal["constant", "reflect", "symmetric"]] = "constant",
+        stat_length: Optional[Union[tf.Tensor, int]] = None,
+        constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
+        end_values: Optional[Number] = 0,
+        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-
     return tf.pad(input, pad_width, mode=mode,
                   constant_values=constant_values)
-                  

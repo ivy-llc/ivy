@@ -551,7 +551,7 @@ def _pad_helper(draw):
             min_num_dims=1,
             min_value=-100,
             max_value=100,
-        ).filter(lambda x: x[0][0] not in ["float16", "bfloat16", "complex64", "complex128"])
+        )
     )
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim))

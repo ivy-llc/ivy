@@ -709,7 +709,6 @@ def _slice_at_axis(sl, axis):
 def _set_pad_area(padded, axis, width_pair, value_pair):
     if width_pair[0] > 0:
         left_slice = _slice_at_axis(slice(None, width_pair[0]), axis)
-        padded[left_slice] = value_pair[0]
         if isinstance(value_pair[0], ivy.Array):
             padded[left_slice] = value_pair[0].data
         else:
@@ -718,7 +717,6 @@ def _set_pad_area(padded, axis, width_pair, value_pair):
         right_slice = _slice_at_axis(
             slice(padded.shape[axis] - width_pair[1], None), axis
         )
-        padded[right_slice] = value_pair[1]
         if isinstance(value_pair[1], ivy.Array):
             padded[right_slice] = value_pair[1].data
         else:
@@ -947,11 +945,6 @@ def _check_arguments(
         ],
         message="the provided mode is not supported",
     )
-
-    if type(pad_width) == int:
-        pad_width = (pad_width,)
-    if type(pad_width) != tuple:
-        pad_width = tuple(pad_width)
 
     _check_tuple_arg(pad_width, "pad_width")
     ivy.utils.assertions.check_true(

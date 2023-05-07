@@ -404,6 +404,7 @@ def _check(*args, **kwargs):
 
 
 @handle_mixed_function(lambda *args, **kwargs: _check(*args, **kwargs))
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16", "complex64", "complex128")}, backend_version)
 def pad(
     input: torch.Tensor,
     pad_width: Union[Sequence[Sequence[int]], torch.Tensor, int],
