@@ -69,7 +69,7 @@ RUN python3 multicuda_framework_directory.py $fw &&\
 
 RUN sed -i '/numpy/d' requirements.txt &&\
     pip install -r  requirements.txt &&\
-    jq -r 'to_entries[] | [.key] + .value | select(length > 0 or (. == "")) | .[]' requirement_mappings_gpu.json | sort -u | xargs -I {} sed  '/{}/d;/jaxlib/d' optional_gpu.txt > tmp.txt &&\
+    jq -r 'to_entries[] | [.key] + .value | select(length > 0 or (. == "")) | .[]' requirement_mappings_gpu.json | sort -u | xargs -I {} sed  '/{}/d;/jaxlib/d' optional_gpu.txt && > tmp.txt &&\
     pip install -r tmp.txt
 
 
