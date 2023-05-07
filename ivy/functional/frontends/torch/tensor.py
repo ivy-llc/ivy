@@ -49,6 +49,10 @@ class Tensor:
         return self.ivy_array.shape
 
     @property
+    def real(self):
+        return self.ivy_array.real()
+
+    @property
     def imag(self):
         return self.ivy_array.imag()
 
@@ -766,9 +770,6 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
         return torch_frontend.acosh(self)
-
-    def real(self):
-        return torch_frontend.real(self)
 
     def masked_fill(self, mask, value):
         # TODO: replace with torch_frontend.where when it's added
