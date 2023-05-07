@@ -74,6 +74,15 @@ def cauchy(key, shape=(), dtype="float64"):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
+def maxwell(key, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    shape = shape + (3,)
+    random_normal = ivy.random_normal(seed=seed, shape=shape, dtype=dtype)
+    return ivy.linalg.vector_norm(random_normal, axis=-1)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"0.3.14 and below": ("unsigned", "int8", "int16")},
     "jax",
