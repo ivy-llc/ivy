@@ -207,7 +207,7 @@ def hann_window(
 @handle_nestable
 @handle_exceptions
 def stft(signals, frame_length, frame_step, fft_length=None,
-         window_fn=ivy.hann_window,
+         window_fn=hann_window,
          pad_end=False, name=None, 
          out: Optional[ivy.Array] = None,):
   """Computes the [Short-time Fourier Transform][stft] of `signals`.
