@@ -60,8 +60,7 @@ ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
 COPY /docker/requirement_mappings_gpu.json .
 SHELL ["/bin/bash", "-c"]
 
-# add all the directories to environment path so that python knows where to find them
-ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
+
 
 RUN python3 multicuda_framework_directory.py $fw &&\
     jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings_gpu.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2' sh {}
@@ -73,7 +72,8 @@ RUN sed -i '/numpy/d' requirements.txt &&\
     jq -r 'to_entries[] | [.key] + .value | select(length > 0 or (. == "")) | @sh' requirement_mappings_gpu.json | xargs -I {} sh -c 'sed "/{}/d;/jax\[.*\]/d;/tensorflow-cpu/d" optional_gpu.txt > tmp.txt && echo "Removed {} from optional_gpu.txt"' && pip install -r tmp.txt
 
 
-
+# add all the directories to environment path so that python knows where to find them
+ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
 
 
 
