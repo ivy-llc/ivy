@@ -320,9 +320,6 @@ class Shape:
     def __hash__(self):
         return hash(self._shape)
 
-    def __setattr__(self, item):
-        return super().__setattr__(item)
-
     def __str__(self):
         return "?" if self._shape is None else str(self._shape)
 
