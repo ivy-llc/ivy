@@ -25,7 +25,6 @@ def install_pkg(path, pkg, base="fw/"):
             shell=True,
         )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "jax":
-        path='/opt/fw/jax'
         subprocess.run(
             (
                 f"pip install --upgrade --target {path} 'jax[cuda11_local]' -f"
