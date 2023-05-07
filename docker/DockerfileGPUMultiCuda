@@ -49,7 +49,7 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 
 # Install local optional
 COPY /docker/multicuda_framework_directory.py .
-COPY requirements/optional.txt .
+COPY requirements/optional_gpu.txt .
 COPY requirements/requirements.txt .
 
 
@@ -67,7 +67,7 @@ RUN python3 multicuda_framework_directory.py $fw &&\
 
 RUN sed -i '/numpy/d' requirements.txt &&\
     pip install -r  requirements.txt &&\
-    jq -r 'to_entries[] | [.key] + .value | select(length > 0 or (. == "")) | .[]' requirement_mappings_gpu.json | sort -u | xargs -I {} sed -i '/{}/d;/jax\[.*\]/d;/tensorflow-cpu/d' optional.txt && pip install -r optional.txt
+    jq -r 'to_entries[] | [.key] + .value | select(length > 0 or (. == "")) | .[]' requirement_mappings_gpu.json | sort -u | xargs -I {} sed -i '/{}/d;/jaxlib/d' optional_gpu.txt && pip install -r optional_gpu.txt
 
 
 
@@ -77,7 +77,7 @@ ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/torch:/opt/fw/tensorflow:/op
 
 
 COPY run_tests_CLI/test_dependencies.py .
-RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
+RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
     rm -rf requirements.txt && \
     rm -rf optional.txt && \
     rm -rf optional_gpu.txt && \
