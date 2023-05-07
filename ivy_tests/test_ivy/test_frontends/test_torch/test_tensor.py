@@ -7667,6 +7667,5 @@ def test_torch_instance_logdet(
         frontend=frontend,
         on_device=on_device,
         rtol_=1e-2,
-        atol_=1e-2,
     )
 
