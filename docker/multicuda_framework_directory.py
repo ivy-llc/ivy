@@ -24,7 +24,7 @@ def install_pkg(path, pkg, base="fw/"):
             ),
             shell=True,
         )
-    elif pkg.split("==")[0] if "==" in pkg else pkg == "jaxlib":
+    elif pkg.split("==")[0] if "==" in pkg else pkg == "jax":
         path='/opt/fw/jax'
         subprocess.run(
             (
@@ -46,5 +46,5 @@ if __name__ == "__main__":
     if len(arg_lis) > 1:  # we have specified what frameworks to install
         directory_generator(arg_lis[1:], "")
     else:
-        directory_generator(['tensorflow','jax','jaxlib','torch'])
+        directory_generator(['tensorflow','jax','torch'])
 
