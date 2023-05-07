@@ -640,13 +640,11 @@ class _ArrayWithStatistical(abc.ABC):
             out=out,
         )
 
-    # my implementation of cummin
     def cummin(
         self: ivy.Array,
         /,
         *,
         axis: int = 0,
-        exclusive: bool = False,
         reverse: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -710,7 +708,6 @@ class _ArrayWithStatistical(abc.ABC):
         return ivy.cummin(
             self._data,
             axis=axis,
-            exclusive=exclusive,
             reverse=reverse,
             dtype=dtype,
             out=out,

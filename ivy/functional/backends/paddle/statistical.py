@@ -240,7 +240,7 @@ def cumprod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int16")}},
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int8", "int16")}},
     backend_version,
 )
 def cummin(
@@ -248,25 +248,23 @@ def cummin(
     /,
     *,
     axis: int = 0,
-    exclusive: bool = False,
     reverse: bool = False,
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if axis is None:
-        return paddle.cumprod(x, axis=axis)
-    else:
-        if not (reverse):
-            return paddle.minimum(
-                paddle.cumsum(x, axis=axis), paddle.min(x, axis=axis, keepdim=True)
-            )
-        else:
-            x_flipped = paddle.flip(x, dims=[axis])
-            cumsum_flipped = paddle.cumsum(x_flipped, axis=axis)
-            cumsum_flipped = paddle.flip(cumsum_flipped, dims=[axis])
-            return paddle.minimum(
-                cumsum_flipped, paddle.min(x, axis=axis, keepdim=True)
-            )
+    dtype = dtype if dtype is not None else x.dtype
+    if reverse:
+        x = paddle.flip(x, axis=[axis])
+    x_unstacked = paddle.unbind(x, axis=axis)
+    cummin_x_unstacked = []
+    cummin_x_unstacked.append(x_unstacked[0])
+    for i, x_sub in enumerate(x_unstacked[1:]):
+        cummin_x_sub = paddle.minimum(cummin_x_unstacked[i], x_sub)
+        cummin_x_unstacked.append(cummin_x_sub)
+    cummin_x = paddle.stack(cummin_x_unstacked, axis=axis)
+    if reverse:
+        cummin_x = paddle.flip(cummin_x, axis=[axis])
+    return cummin_x.cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(

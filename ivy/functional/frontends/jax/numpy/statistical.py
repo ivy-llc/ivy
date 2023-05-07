@@ -402,9 +402,6 @@ def nancumprod(a, axis=None, dtype=None, out=None):
     return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
 
 
-# TODO: confirm whether to add nancummin here or not
-
-
 @handle_jax_dtype
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "jax")
 @to_ivy_arrays_and_back

@@ -176,7 +176,6 @@ def cumprod(
         return jnp.flip(x, axis=axis)
 
 
-# my implementation of cummin
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def cummin(
     x: JaxArray,
@@ -187,13 +186,14 @@ def cummin(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if axis < 0:
+        axis = axis + len(x.shape)
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         if dtype is jnp.bool_:
             dtype = ivy.default_int_dtype(as_native=True)
         else:
             dtype = _infer_dtype(x.dtype)
-
     return jlax.cummin(x, axis, reverse=reverse).astype(dtype)
 
 

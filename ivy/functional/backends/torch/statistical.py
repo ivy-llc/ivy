@@ -287,15 +287,14 @@ def cummin(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-
     if not (reverse):
-        return torch.cummin(x, axis, out=out)
+        ret = torch.cummin(x, axis)[0]
     else:
-        x = torch.cummin(torch.flip(x, dims=(axis,)), axis, out=out)
-        ret = torch.flip(x, dims=(axis,))
+        ret = torch.cummin(torch.flip(x, dims=(axis,)), axis)[0]
+        ret = torch.flip(ret, (axis,))
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return ivy.inplace_update(out, ret.to(dtype))
+    return ret.to(dtype)
 
 
 cummin.support_native_out = True

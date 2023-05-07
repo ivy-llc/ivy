@@ -76,11 +76,6 @@ def tril_indices(row, col, offset=0, *, dtype=ivy.int64, device="cpu", layout=No
 
 
 @to_ivy_arrays_and_back
-def cummin(input, dim, *, dtype=None, out=None):
-    return ivy.cummin(input, axis=dim, dtype=dtype, out=out)
-
-
-@to_ivy_arrays_and_back
 def cumprod(input, dim, *, dtype=None, out=None):
     if not dtype and "int" in input.dtype:
         dtype = ivy.int64

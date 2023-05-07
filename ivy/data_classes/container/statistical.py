@@ -1367,14 +1367,12 @@ class _ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
-    # my implementation of _static_cummin
     @staticmethod
     def _static_cummin(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: int = 0,
-        exclusive: bool = False,
         reverse: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1451,7 +1449,6 @@ class _ContainerWithStatistical(ContainerBase):
             "cummin",
             x,
             axis=axis,
-            exclusive=exclusive,
             reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1549,13 +1546,11 @@ class _ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
-    # my implementation of cummin
     def cummin(
         self: ivy.Container,
         /,
         *,
         axis: int = 0,
-        exclusive: bool = False,
         reverse: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1627,7 +1622,6 @@ class _ContainerWithStatistical(ContainerBase):
         return self._static_cummin(
             self,
             axis=axis,
-            exclusive=exclusive,
             reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,
