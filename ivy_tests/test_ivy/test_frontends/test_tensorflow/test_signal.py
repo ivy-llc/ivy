@@ -138,5 +138,6 @@ def test_tensorflow_stft(
         frame_step=frame_step,
         window_fn=window_fn,
         fft_length=fft_length,
+        pad_end = True,
+        name=None,
     )
-
