@@ -1,5 +1,7 @@
-from typing import Union, Optional, Sequence, Tuple, NamedTuple, List
+from typing import Optional, Union, Sequence, Tuple, NamedTuple, List, Literal, Callable, Any
 from numbers import Number
+
+import numpy as np
 from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 import tensorflow as tf
