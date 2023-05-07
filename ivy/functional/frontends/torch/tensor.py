@@ -1067,3 +1067,9 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": sign_decorator_dtypes}, "torch")
     def sign(self):
         return torch_frontend.sign(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def std(self, dim=None, unbiased=True, keepdim=False, *, out=None):
+        return torch_frontend.std(
+            self, dim=dim, unbiased=unbiased, keepdim=keepdim, out=out
+        )
