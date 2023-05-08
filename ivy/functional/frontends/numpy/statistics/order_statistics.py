@@ -4,7 +4,6 @@ from typing import Optional, Sequence, Union
 import ivy
 
 
-"""
 def _quantile_is_valid(q):
     # avoid expensive reductions, relevant for arrays with < O(1000) elements
     if q.ndim == 1 and q.size < 10:
@@ -15,7 +14,7 @@ def _quantile_is_valid(q):
         if not (ivy.all(0 <= q) and ivy.all(q <= 1)):
             return False
     return True
-"""
+
 
 
 def cpercentile(N, percent, key=lambda x: x):
@@ -55,8 +54,8 @@ def nanpercentile(
     q = ivy.divide(q, 100.0)
     q = ivy.array(q)
     # print(q)
-    # if not _quantile_is_valid(q):
-        # raise ValueError("percentile s must be in the range [0, 100]")
+    if not _quantile_is_valid(q):
+        raise ValueError("percentile s must be in the range [0, 100]")
     if axis is None:
         resultarray = []
         nanlessarray = []
