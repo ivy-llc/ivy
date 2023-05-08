@@ -894,6 +894,10 @@ class Tensor:
         return torch_frontend.mul(self, other)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __matmul__(self, other):
+        return torch_frontend.matmul(self, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __rmul__(self, other):
         return torch_frontend.mul(other, self)
 
