@@ -145,6 +145,7 @@ def median(
         return ret.astype(jnp.float32)
 
 
+# Jax doesn't support overwrite_input=True and out!=None
 def nanmean(
     a: JaxArray,
     /,
