@@ -63,12 +63,15 @@ def assert_all_close(
 
 
 def assert_same_type_and_shape(values, this_key_chain=None):
-    x, y = values
-    if isinstance(x, np.ndarray):
-        x_dtype = str(x.dtype)
-        y_dtype = str(y.dtype).replace("longlong", "int64")
-        assert x.shape == y.shape, "x.shape = {}, y.shape = {}".format(x.shape, y.shape)
-        assert x_dtype == y_dtype, "x.dtype = {}, y.dtype = {}".format(x_dtype, y_dtype)
+    x_, y_ = values
+    for x, y in zip(x_, y_):
+        if isinstance(x, np.ndarray):
+            x_dtype = str(x.dtype)
+            y_dtype = str(y.dtype).replace("longlong", "int64")
+            assert x.shape == y.shape, \
+                "x.shape = {}, y.shape = {}".format(x.shape, y.shape)
+            assert x_dtype == y_dtype, \
+                "x.dtype = {}, y.dtype = {}".format(x_dtype, y_dtype)
 
 
 def value_test(
