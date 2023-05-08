@@ -21,7 +21,7 @@ class EagerTensor:
             + ", shape="
             + str(self.shape)
             + ", dtype="
-            + str(self.dtype)
+            + str(self.ivy_array.dtype)
             + ")"
         )
 
@@ -39,7 +39,7 @@ class EagerTensor:
     @property
     def dtype(self):
         return tf_frontend.DType(
-            tf_frontend.tensorflow_type_to_enum[self.dtype]
+            tf_frontend.tensorflow_type_to_enum[self.ivy_array.dtype]
         )
 
     @property
@@ -230,6 +230,13 @@ class EagerTensor:
             "ivy.functional.frontends.tensorflow.EagerTensor object "
             "doesn't support assignment"
         )
+
+    def __iter__(self):
+        ndim = len(self.shape)
+        if ndim == 0:
+            raise TypeError("iteration over a 0-d tensor not supported")
+        for i in range(ndim):
+            yield self[i]
 
 
 # Dummy Tensor class to help with compilation, don't add methods here

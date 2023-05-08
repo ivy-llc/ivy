@@ -17,7 +17,7 @@ def to_ivy_dtype(dtype):
 
 def handle_tf_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, dtype=None, **kwargs):
+    def _handle_tf_dtype(*args, dtype=None, **kwargs):
         if len(args) > (dtype_pos + 1):
             dtype = args[dtype_pos]
             kwargs = {
@@ -39,8 +39,8 @@ def handle_tf_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=dtype, **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
-    new_fn.handle_tf_dtype = True
-    return new_fn
+    _handle_tf_dtype.handle_tf_dtype = True
+    return _handle_tf_dtype
 
 
 def _tf_frontend_array_to_ivy(x):
@@ -67,9 +67,9 @@ def _to_ivy_array(x):
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_ivy_arrays_tf(*args, **kwargs):
         """
-        Converts all `TensorFlow.Tensor` instances in both the positional and keyword
+        Convert all `TensorFlow.Tensor` instances in both the positional and keyword
         arguments into `ivy.Array` instances, and then calls the function with the
         updated arguments.
 
@@ -103,16 +103,16 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
-    new_fn.inputs_to_ivy_arrays = True
-    return new_fn
+    _inputs_to_ivy_arrays_tf.inputs_to_ivy_arrays = True
+    return _inputs_to_ivy_arrays_tf
 
 
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _outputs_to_frontend_arrays_tf(*args, **kwargs):
         """
-        Calls the function, and then converts all `tensorflow.Tensor` instances in
-        the function return into `ivy.Array` instances.
+        Call the function, and then converts all `tensorflow.Tensor` instances in the
+        function return into `ivy.Array` instances.
 
         Parameters
         ----------
@@ -134,8 +134,8 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             ret, _ivy_array_to_tensorflow, include_derived={tuple: True}
         )
 
-    new_fn.outputs_to_frontend_arrays = True
-    return new_fn
+    _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays = True
+    return _outputs_to_frontend_arrays_tf
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -144,7 +144,8 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 # update kwargs dictionary keys helper
 def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
-    """A helper function for updating the key-word only arguments dictionary.
+    """
+    Update the key-word only arguments dictionary.
 
     Parameters
     ----------
@@ -172,9 +173,9 @@ def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
 
 def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callable:
     """
-    Mapping the raw_ops function with its respective frontend alias function,
-    as the implementations of raw_ops is way similar to that of frontend functions,
-    except that only arguments are passed as key-word only in raw_ops functions.
+    Map the raw_ops function with its respective frontend alias function, as the
+    implementations of raw_ops is way similar to that of frontend functions, except that
+    only arguments are passed as key-word only in raw_ops functions.
 
     Parameters
     ----------

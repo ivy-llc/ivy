@@ -401,9 +401,7 @@ def gradient(
     axis: Optional[Union[int, list, tuple]] = None,
     edge_order: int = 1,
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
-    """https://github.com/numpy/numpy/blob/v1.23.0/numpy/lib/
-    function_base.py#L969-L1312
-    """
+    # https://github.com/numpy/numpy/blob/v1.23.0/numpy/lib/function_base.py#L969-L1312
     device = x.device
     x = tf.experimental.numpy.asanyarray(x)
     N = x.ndim  # number of dimensions
@@ -620,7 +618,7 @@ def conj(
     return tf.math.conj(x)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("unsigned")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("unsigned",)}, backend_version)
 def ldexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable, int],
@@ -642,7 +640,7 @@ def ldexp(
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("unsigned")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("unsigned",)}, backend_version)
 def frexp(
     x: Union[tf.Tensor, tf.Variable],
     /,

@@ -1,4 +1,4 @@
-"""Base class for helper module methods"""
+"""Base class for helper module methods."""
 
 # global
 import abc
@@ -14,8 +14,8 @@ class ModuleHelpers(abc.ABC):
     # --------#
     def _top_v_fn(self, /, *, depth=None, flatten_key_chains=False):
         """
-        Returns the variables at a specific depth, with depth 1 returning the
-        variables of the current layer.
+        Return the variables at a specific depth, with depth 1 returning the variables
+        of the current layer.
 
         Parameters
         ----------
@@ -44,8 +44,8 @@ class ModuleHelpers(abc.ABC):
 
     def _top_mod_fn(self, /, *, depth=None):
         """
-        Find the top (parent) module at specific depth, starting with depth 1 to
-        return the current submodule.
+        Find the top (parent) module at specific depth, starting with depth 1 to return
+        the current submodule.
 
         Parameters
         ----------
@@ -68,8 +68,8 @@ class ModuleHelpers(abc.ABC):
     # noinspection PyProtectedMember
     def track_submod_rets(self):
         """
-        Returns True if the current module should have its returns tracked
-        as set by the user during the call.
+        Return True if the current module should have its returns tracked as set by the
+        user during the call.
 
         Returns
         -------
@@ -95,8 +95,8 @@ class ModuleHelpers(abc.ABC):
 
     def check_submod_rets(self):
         """
-        Returns True if there is an expected submodule return value
-        set by the user during the call.
+        Return True if there is an expected submodule return value set by the user
+        during the call.
 
         Returns
         -------
@@ -113,7 +113,6 @@ class ModuleHelpers(abc.ABC):
     def track_submod_call_order(self):
         """
         Tracks the order in which the submodules are called.
-
 
         Returns
         -------
@@ -215,8 +214,8 @@ class ModuleHelpers(abc.ABC):
 
     def get_mod_key(self, /, *, top_mod=None):
         """
-        Get the key of current module to be used when checking or tracking the
-        return values of a submodule.
+        Get the key of current module to be used when checking or tracking the return
+        values of a submodule.
 
         Parameters
         ----------
@@ -288,8 +287,8 @@ class ModuleHelpers(abc.ABC):
 
     def show_v_in_top_v(self, /, *, depth=None):
         """
-        Show sub containers from the perspective of the top layer.
-        Will give prompt if either of `v` or `top_v` is not initialized.
+        Show sub containers from the perspective of the top layer. Will give prompt if
+        either of `v` or `top_v` is not initialized.
 
         Parameters
         ----------
@@ -308,8 +307,8 @@ class ModuleHelpers(abc.ABC):
 
     def v_with_top_v_key_chains(self, /, *, depth=None, flatten_key_chains=False):
         """
-        Show the network's variables from the perspective of value of top layer.
-        Will give prompt if either of `v` and `top_v` is not initialized.
+        Show the network's variables from the perspective of value of top layer. Will
+        give prompt if either of `v` and `top_v` is not initialized.
 
         Parameters
         ----------
@@ -381,9 +380,9 @@ class ModuleHelpers(abc.ABC):
         self, /, *, upper_depth=None, lower_depth=None, flatten_key_chains=False
     ):
         """
-        Show lower submodules in the top module. `upper_depth` and `lower_depth`
-        are for controlling the coverage of upper and lower modules.
-        Will give prompt if no top module found.
+        Show lower submodules in the top module. `upper_depth` and `lower_depth` are for
+        controlling the coverage of upper and lower modules. Will give prompt if no top
+        module found.
 
         Parameters
         ----------
@@ -434,6 +433,7 @@ class ModuleHelpers(abc.ABC):
     def _check_submod_ret(self):
         """
         Check the actual submodule returns with the expected submodule return values.
+
         Raise AssertError if returns are not close enough.
         """
         top_mod = self.top_mod()
@@ -477,7 +477,7 @@ class ModuleHelpers(abc.ABC):
     # noinspection PyProtectedMember
     def _is_submod_leaf(self):
         """
-        Checks if the submodule is the leaf node of the network.
+        Check if the submodule is the leaf node of the network.
 
         Returns
         -------
@@ -544,7 +544,7 @@ class ModuleHelpers(abc.ABC):
 
     def show_structure(self):
         """
-        Prints the structure of the layer network.
+        Print the structure of the layer network.
 
         Returns
         -------

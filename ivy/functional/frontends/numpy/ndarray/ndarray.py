@@ -34,9 +34,6 @@ class ndarray:
             "ivy.array", "ivy.frontends.numpy.ndarray"
         )
 
-    def __str__(self):
-        return str(self.ivy_array)
-
     # Properties #
     # ---------- #
 
@@ -50,11 +47,15 @@ class ndarray:
 
     @property
     def shape(self):
-        return np_frontend.shape(self)
+        return self.ivy_array.shape
 
     @property
     def dtype(self):
-        return np_frontend.dtype(self.dtype)
+        return self.ivy_array.dtype
+
+    @property
+    def ndim(self):
+        return len(self.shape)
 
     # Setters #
     # --------#
@@ -177,7 +178,6 @@ class ndarray:
         keepdims=False,
         out=None,
     ):
-
         return np_frontend.argmin(
             self,
             axis=axis,
@@ -315,6 +315,9 @@ class ndarray:
             out=out,
         )
 
+    def tolist(self) -> list:
+        return self._ivy_array.to_list()
+
     def view(self):
         return np_frontend.reshape(self, tuple(self.shape))
 
@@ -361,6 +364,9 @@ class ndarray:
         self,
     ):
         return np_frontend.copy(self)
+
+    def __deepcopy__(self, memo):
+        return self.__class__(np_frontend.copy(self))
 
     def __neg__(
         self,
@@ -412,12 +418,17 @@ class ndarray:
     def __int__(
         self,
     ):
-        return ivy.array(ivy.reshape(self.ivy_array, -1), dtype=ivy.int64)[0]
+        return ivy.array(ivy.reshape(self.ivy_array, (-1,)), dtype=ivy.int64)[0]
 
     def __float__(
         self,
     ):
-        return ivy.array(ivy.reshape(self.ivy_array, -1), dtype=ivy.float64)[0]
+        return ivy.array(ivy.reshape(self.ivy_array, (-1,)), dtype=ivy.float64)[0]
+
+    def __complex__(
+        self,
+    ):
+        return ivy.array(ivy.reshape(self.ivy_array, (-1,)), dtype=ivy.complex128)[0]
 
     def __contains__(self, key, /):
         return key in ivy.reshape(self.ivy_array, -1)
@@ -465,9 +476,15 @@ class ndarray:
         ret = ivy.get_item(*ivy_args)
         return np_frontend.ndarray(ret, _init_overload=True)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value, /):
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
+
+    def __iter__(self):
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d ndarray not supported")
+        for i in range(self.ndim):
+            yield self[i]
 
     def __mod__(self, value, /):
         return np_frontend.mod(self, value, out=self)

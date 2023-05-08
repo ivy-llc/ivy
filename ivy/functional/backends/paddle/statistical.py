@@ -172,11 +172,10 @@ def sum(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    dtype = x.dtype if dtype is None else dtype
+    dtype = ivy.as_ivy_dtype(dtype)
     if x.dtype in [paddle.int8, paddle.uint8]:
-        dtype = x.dtype if dtype is None else dtype
-        return paddle.sum(
-            x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims
-        ).cast(dtype)
+        return paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
     return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
@@ -200,7 +199,8 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int16")}},
+    backend_version,
 )
 def cumprod(
     x: paddle.Tensor,

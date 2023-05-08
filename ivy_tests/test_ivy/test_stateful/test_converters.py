@@ -70,6 +70,17 @@ except ImportError:
     tf.GradientTape.tape = SimpleNamespace
     tf.GradientTape.watch = SimpleNamespace
 
+try:
+    import paddle
+except ImportError:
+    paddle = SimpleNamespace()
+    paddle.nn.Layer = SimpleNamespace
+    paddle.nn.Linear = SimpleNamespace
+    paddle.nn.functional.tanh = SimpleNamespace
+    paddle.optimizer = SimpleNamespace()
+    paddle.optimizer.SGD = SimpleNamespace
+    paddle.nn.L1Loss = SimpleNamespace
+
 
 # local
 import ivy
@@ -175,6 +186,29 @@ class FlaxModule(flax.linen.Module):
         return jnp.tanh(self._linear2(x))[0]
 
 
+class PaddleLinearModule(paddle.nn.Layer):
+    def __init__(self, in_size, out_size):
+        super(PaddleLinearModule, self).__init__()
+        self._linear = paddle.nn.Linear(in_size, out_size)
+
+    def forward(self, x):
+        return self._linear(x)
+
+
+class PaddleModule(paddle.nn.Layer):
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
+        super(PaddleModule, self).__init__()
+        self._linear0 = PaddleLinearModule(in_size, hidden_size)
+        self._linear1 = PaddleLinearModule(hidden_size, hidden_size)
+        self._linear2 = PaddleLinearModule(hidden_size, out_size)
+
+    def forward(self, x):
+        x = x.unsqueeze(0)
+        x = paddle.nn.functional.tanh(self._linear0(x))
+        x = paddle.nn.functional.tanh(self._linear1(x))
+        return paddle.nn.functional.tanh(self._linear2(x))[0]
+
+
 NATIVE_MODULES = {
     "torch": TorchModule,
     "jax": {
@@ -182,6 +216,7 @@ NATIVE_MODULES = {
         "flax": FlaxModule,
     },
     "tensorflow": TensorflowModule,
+    "paddle": PaddleModule,
 }
 
 FROM_CONVERTERS = {
@@ -191,6 +226,7 @@ FROM_CONVERTERS = {
         "flax": ivy.Module.from_flax_module,
     },
     "tensorflow": ivy.Module.from_keras_module,
+    "paddle": ivy.Module.from_paddle_module,
 }
 
 

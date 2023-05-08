@@ -71,9 +71,11 @@ def test_outputs_to_frontend_arrays(dtype_and_x, dtype):
     if not len(input_ivy.shape):
         scalar_input_ivy = ivy.to_scalar(input_ivy)
         outputs_to_frontend_arrays(_fn)(
-            scalar_input_ivy, scalar_input_ivy, check_default=True, dtype=dtype)
+            scalar_input_ivy, scalar_input_ivy, check_default=True, dtype=dtype
+        )
         outputs_to_frontend_arrays(_fn)(
-            scalar_input_ivy, input_ivy, check_default=True, dtype=dtype)
+            scalar_input_ivy, input_ivy, check_default=True, dtype=dtype
+        )
     output = outputs_to_frontend_arrays(_fn)(input_ivy, check_default=True, dtype=dtype)
     assert isinstance(output, Tensor)
     assert str(input_ivy.dtype) == str(output.dtype)
@@ -96,9 +98,11 @@ def test_to_ivy_arrays_and_back(dtype_and_x, dtype):
     if not len(input_ivy.shape):
         scalar_input_ivy = ivy.to_scalar(input_ivy)
         to_ivy_arrays_and_back(_fn)(
-            scalar_input_ivy, scalar_input_ivy, check_default=True, dtype=dtype)
+            scalar_input_ivy, scalar_input_ivy, check_default=True, dtype=dtype
+        )
         to_ivy_arrays_and_back(_fn)(
-            scalar_input_ivy, input_ivy, check_default=True, dtype=dtype)
+            scalar_input_ivy, input_ivy, check_default=True, dtype=dtype
+        )
     output = to_ivy_arrays_and_back(_fn)(input_ivy, check_default=True, dtype=dtype)
     assert isinstance(output, Tensor)
     assert str(input_ivy.dtype) == str(output.dtype)
@@ -109,9 +113,11 @@ def test_to_ivy_arrays_and_back(dtype_and_x, dtype):
     if not len(input_native.shape):
         scalar_input_native = ivy.to_scalar(input_native)
         to_ivy_arrays_and_back(_fn)(
-            scalar_input_native, scalar_input_native, check_default=True, dtype=dtype)
+            scalar_input_native, scalar_input_native, check_default=True, dtype=dtype
+        )
         to_ivy_arrays_and_back(_fn)(
-            scalar_input_native, input_native, check_default=True, dtype=dtype)
+            scalar_input_native, input_native, check_default=True, dtype=dtype
+        )
     output = to_ivy_arrays_and_back(_fn)(input_native, check_default=True, dtype=dtype)
     assert isinstance(output, Tensor)
     assert ivy.as_ivy_dtype(input_native.dtype) == str(output.dtype)
@@ -123,9 +129,11 @@ def test_to_ivy_arrays_and_back(dtype_and_x, dtype):
     if not len(input_frontend.shape):
         scalar_input_front = inputs_to_ivy_arrays(ivy.to_scalar)(input_frontend)
         to_ivy_arrays_and_back(_fn)(
-            scalar_input_front, scalar_input_front, check_default=True, dtype=dtype)
+            scalar_input_front, scalar_input_front, check_default=True, dtype=dtype
+        )
         to_ivy_arrays_and_back(_fn)(
-            scalar_input_front, input_frontend, check_default=True, dtype=dtype)
+            scalar_input_front, input_frontend, check_default=True, dtype=dtype
+        )
     output = to_ivy_arrays_and_back(_fn)(
         input_frontend, check_default=True, dtype=dtype
     )

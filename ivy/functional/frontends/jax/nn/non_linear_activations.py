@@ -1,6 +1,6 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-
+from ivy.func_wrapper import with_supported_dtypes
 
 # Helpers #
 # ------- #
@@ -282,6 +282,10 @@ def sigmoid(x):
     return ivy.astype(ret, x.dtype)
 
 
+@with_supported_dtypes(
+    {"0.3.14 and below": ("complex", "float")},
+    "jax",
+)
 @to_ivy_arrays_and_back
 def silu(x):
     x = _type_conversion(x)

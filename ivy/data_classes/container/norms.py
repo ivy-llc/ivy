@@ -23,8 +23,8 @@ class _ContainerWithNorms(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.layer_norm. This method simply
-        wraps the function, and so the docstring for ivy.layer_norm also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.layer_norm also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -76,7 +76,6 @@ class _ContainerWithNorms(ContainerBase):
             b: ivy.array([[-1.84, 0., 1.84],
                           [-1.84, 0., 1.84]])
         }
-
         """
         return ivy.layer_norm(
             self,

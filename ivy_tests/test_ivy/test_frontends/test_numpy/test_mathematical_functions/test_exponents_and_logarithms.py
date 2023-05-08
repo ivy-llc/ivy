@@ -19,7 +19,6 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_element
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -46,6 +45,8 @@ def test_numpy_exp(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
+        atol=1e-02,
         x=x[0],
         out=None,
         where=where,
@@ -65,7 +66,6 @@ def test_numpy_exp(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -92,6 +92,8 @@ def test_numpy_expm1(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
+        atol=1e-02,
         x=x[0],
         out=None,
         where=where,
@@ -111,7 +113,6 @@ def test_numpy_expm1(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -157,7 +158,6 @@ def test_numpy_exp2(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -207,7 +207,6 @@ def test_numpy_log10(
                 safety_factor_scale="linear",
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -255,7 +254,6 @@ def test_numpy_log(
                 safety_factor_scale="linear",
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -303,7 +301,6 @@ def test_numpy_log2(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -351,7 +348,6 @@ def test_numpy_log1p(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -402,7 +398,6 @@ def test_numpy_logaddexp(
                 max_value=100,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(

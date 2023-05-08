@@ -1,5 +1,3 @@
-# flake8: noqa
-
 from . import convolution_functions
 from .convolution_functions import *
 from . import distance_functions
