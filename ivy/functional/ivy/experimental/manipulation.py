@@ -889,6 +889,23 @@ def _to_pairs(x, n):
         )
     return x
 
+def _to_dilated(x, n):
+    if ivy.isscalar(x):
+        return ((x, x, x),) * n
+    elif len(x) == 3 and ivy.isscalar(x[0]):
+        return ((x[0], x[1], x[2]),) * n
+    elif len(x) != n:
+        ivy.utils.assertions.check_equal(
+            ivy.asarray(list(x)).shape,
+            (n, 3),
+            message=(
+                "tuple argument should contain "
+                "ndim groups where ndim is the number of "
+                "the input's dimensions"
+            ),
+        )
+    return x
+
 
 def _check_tuple_arg(arg, name, b_float=False):
     scalar_types = (int, float) if b_float else int
@@ -928,6 +945,7 @@ def _check_arguments(
         or mode
         in [
             "constant",
+            "dilated",
             "edge",
             "linear_ramp",
             "maximum",
@@ -942,10 +960,11 @@ def _check_arguments(
         message="the provided mode is not supported",
     )
     _check_tuple_arg(pad_width, "pad_width")
-    ivy.utils.assertions.check_true(
-        all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
-        message="the pad_widths must be greater or equal to zero",
-    )
+    if mode not in ["dilated"]:
+        ivy.utils.assertions.check_true(
+            all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
+            message="the pad_widths must be greater or equal to zero",
+        )
     if mode in ["maximum", "mean", "median", "minimum"]:
         _check_tuple_arg(stat_length, "stat_length")
         ivy.utils.assertions.check_true(
@@ -975,6 +994,7 @@ def pad(
     mode: Union[
         Literal[
             "constant",
+            "dilated",
             "edge",
             "linear_ramp",
             "maximum",
@@ -1144,7 +1164,14 @@ def pad(
         reflect_type,
     )
     input = ivy.asarray(input, dtype=input.dtype)
+
+    if mode == "dilated":
+        pad_width = _to_dilated(pad_width, input.ndim)
+        padded = _interior_pad(input, constant_values, pad_width)
+        return ivy.native_array(padded)
+
     pad_width = _to_pairs(pad_width, input.ndim)
+
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
@@ -1630,12 +1657,13 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-def _check_bounds(shape0, strides0, shape1, strides1, itemsize):
-    ndim0 = len(shape0)
+def _check_bounds(shape0, shape1, strides1, itemsize):
+    numel0 = math.prod(shape0)
     ndim1 = len(shape1)
-    return sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + sum(
-        strides1[i] - strides0[i] for i in range(min(ndim0, ndim1))
-    ) <= sum((shape0[i] - 1) * itemsize for i in range(ndim0))
+    return (
+        sum((shape1[i] - 1) * strides1[i] for i in range(ndim1)) + itemsize
+        <= numel0 * itemsize
+    )
 
 
 @inputs_to_native_shapes
@@ -1676,7 +1704,7 @@ def as_strided(
        [4, 5, 6]])
     """
     itemsize = x.itemsize
-    if not _check_bounds(x.shape, x.strides, shape, strides, itemsize):
+    if not _check_bounds(x.shape, shape, strides, itemsize):
         raise ivy.exceptions.IvyException("attempted unsafe memory access")
     if any(strides[i] % itemsize != 0 for i in range(len(strides))):
         raise ivy.exceptions.IvyException("strides must be multiple of itemsize")
@@ -1746,6 +1774,18 @@ def concat_from_sequence(
     )
 
 
+def _slice(operand, start_indices, limit_indices, strides=None):
+    strides = [1] * len(operand.shape) if strides is None else strides
+
+    full_slice = ()
+    for i, _ in enumerate(operand.shape):
+        strides_i = int(strides[i])
+        start_i = int(start_indices[i])
+        limit_i = int(limit_indices[i])
+        full_slice += (slice(start_i, limit_i, strides_i),)
+    return operand[full_slice]
+
+
 def _slice_along_axis(x, start=0, stop=None, stride=1, axis=0):
     if axis >= 0:
         slices = [slice(None)] * axis + [slice(start, stop, stride)]
@@ -1755,18 +1795,13 @@ def _slice_along_axis(x, start=0, stop=None, stride=1, axis=0):
 
 
 def _interior_pad(operand, padding_value, padding_config):
-    pad_width = [(low, high) for low, high, _ in padding_config]
-
     for axis, (_, _, interior) in enumerate(padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-
             new_array = ivy.full(new_shape, padding_value)
-
             src_indices = ivy.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
-
             index_tuple = [slice(None)] * operand.ndim
             index_tuple[axis] = dst_indices
             new_array = ivy.to_numpy(new_array)
@@ -1774,7 +1809,26 @@ def _interior_pad(operand, padding_value, padding_config):
             new_array[tuple(index_tuple)] = operand
             operand = new_array
 
-    padded = ivy.constant_pad(operand, pad_width, value=padding_value)
+    start_indices = [0] * operand.ndim
+    limit_indices = [0] * operand.ndim
+    for axis, (low, high, _) in enumerate(padding_config):
+        if low < 0:
+            start_indices[axis] = abs(low)
+        if high < 0:
+            limit_indices[axis] = high
+        else:
+            limit_indices[axis] = operand.shape[axis] + 1
+    padded = _slice(operand, start_indices, limit_indices)
+
+    pad_width = [(0, 0)] * operand.ndim
+    for axis, (low, high, _) in enumerate(padding_config):
+        if low > 0 and high > 0:
+            pad_width[axis] = (low, high)
+        elif low > 0 and not high > 0:
+            pad_width[axis] = (low, 0)
+        elif high > 0 and not low > 0:
+            pad_width[axis] = (0, high)
+    padded = ivy.constant_pad(padded, pad_width, value=padding_value)
     return padded
 
 

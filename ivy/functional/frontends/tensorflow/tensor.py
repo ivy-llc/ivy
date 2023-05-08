@@ -238,6 +238,7 @@ class EagerTensor:
         for i in range(ndim):
             yield self[i]
 
+
 # Dummy Tensor class to help with compilation, don't add methods here
 class Tensor(EagerTensor):
     pass

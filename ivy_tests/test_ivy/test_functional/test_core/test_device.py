@@ -485,8 +485,9 @@ def test_print_all_ivy_arrays_on_dev(
     assert len(written) == num
 
     if attr_only:
-        # Check that the attribute are printed are in the format of ((dim,...), type)
-        regex = r"^\(\((\d+,(\d,\d*)*)\), \'\w*\'\)$"
+        # Check that the attribute are printed are in the format of
+        # (ivy.Shape(dim,...), type)
+        regex = r"^\(ivy.Shape\((\d+,(\d,\d*)*)\), \'\w*\'\)$"
     else:
         # Check that the arrays are printed are in the format of ivy.array(...)
         regex = r"^ivy\.array\(\[.*\]\)$"
