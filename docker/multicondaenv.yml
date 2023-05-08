@@ -1,6 +1,0 @@
-name: multienv
-channels:
-  - conda-forge
-dependencies:
-  - python=3.8.0
-
