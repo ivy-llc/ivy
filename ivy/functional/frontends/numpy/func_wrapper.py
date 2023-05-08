@@ -486,31 +486,37 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
 
 
 def _count_operands(subscript):
-    if '->' in subscript:
-        input_subscript, output_index = subscript.split('->')
+    if "->" in subscript:
+        input_subscript, output_index = subscript.split("->")
     else:
         input_subscript = subscript
-    return len(input_subscript.split(','))
+    return len(input_subscript.split(","))
 
 
 def handle_numpy_out(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_numpy_out(*args, **kwargs):
-        if 'out' not in kwargs:
+        if "out" not in kwargs:
             keys = list(inspect.signature(fn).parameters.keys())
-            if fn.__name__ == 'einsum':
+            if fn.__name__ == "einsum":
                 out_pos = 1 + _count_operands(args[0])
             else:
                 out_pos = keys.index("out")
             kwargs = {
-                **dict(zip(keys[keys.index("out"):], args[out_pos:],)),
+                **dict(
+                    zip(
+                        keys[keys.index("out") :],
+                        args[out_pos:],
+                    )
+                ),
                 **kwargs,
             }
             args = args[:out_pos]
-        if 'out' in kwargs:
-            out = kwargs['out']
-            if ivy.exists(out) and not \
-                    ivy.nested_any(out, lambda x: isinstance(x, np_frontend.ndarray)):
+        if "out" in kwargs:
+            out = kwargs["out"]
+            if ivy.exists(out) and not ivy.nested_any(
+                out, lambda x: isinstance(x, np_frontend.ndarray)
+            ):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
                 )
