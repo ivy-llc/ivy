@@ -35,9 +35,9 @@ def _check_bounds_and_get_shape(low, high, shape):
 
     valid_types = (ivy.Array,)
     if len(backend_stack) == 0:
-        valid_types += (ivy.current_backend().NativeArray,)
+        valid_types += (ivy.current_backend().get_native_array_type(),)
     else:
-        valid_types += (ivy.NativeArray,)
+        valid_types += (ivy.get_native_array_type(),)
     if isinstance(low, valid_types):
         if isinstance(high, valid_types):
             ivy.utils.assertions.check_equal(ivy.shape(low), ivy.shape(high))

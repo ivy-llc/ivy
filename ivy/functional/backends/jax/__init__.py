@@ -4,7 +4,7 @@ from packaging import version
 import jaxlib
 import jax
 import jax.numpy as jnp
-from typing import Union
+from typing import Union, get_args
 
 # noinspection PyPackageRequirements
 from jaxlib.xla_extension import Buffer
@@ -43,15 +43,15 @@ JaxArray = Union[
     Buffer,
 ]
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeArray = (
+NativeArray = Union[
     jax.interpreters.xla._DeviceArray,
     jaxlib.xla_extension.DeviceArray,
     Buffer,
-)
+]
 
 if version.parse(jax.__version__) >= version.parse("0.4.1"):
     JaxArray = Union[JaxArray, jax.Array]
-    NativeArray += (jax.Array,)
+    NativeArray = Union[NativeArray, jax.Array]
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeDevice = jaxlib.xla_extension.Device
@@ -59,6 +59,10 @@ NativeDtype = jnp.dtype
 NativeShape = tuple
 
 NativeSparseArray = None
+
+
+def get_native_array_type():
+    return get_args(NativeArray)
 
 
 # devices

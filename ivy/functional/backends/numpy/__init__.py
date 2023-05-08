@@ -24,6 +24,10 @@ NativeShape = tuple
 NativeSparseArray = None
 
 
+def get_native_array_type():
+    return NativeArray
+
+
 # devices
 valid_devices = ("cpu",)
 

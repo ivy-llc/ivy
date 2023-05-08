@@ -23,6 +23,11 @@ NativeShape = list
 
 NativeSparseArray = paddle.Tensor
 
+
+def get_native_array_type():
+    return NativeArray
+
+
 # devices
 valid_devices = ("cpu",)
 
