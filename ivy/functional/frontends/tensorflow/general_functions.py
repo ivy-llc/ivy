@@ -80,6 +80,11 @@ def fill(dims, value, name=None):
     return ivy.full(dims, value)
 
 
+@to_ivy_arrays_and_back
+def foldl(fn, elems, initializer=None, name=None):
+    return ivy.foldl(fn, elems, initializer=initializer)
+
+
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back

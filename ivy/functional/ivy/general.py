@@ -1100,6 +1100,52 @@ def clip_matrix_norm(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+def foldl(
+    x: Union[ivy.Array, ivy.native_array],
+    fn: ivy.FunctionType(
+        Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]
+    ),
+    initializer: ivy.Array = None,
+    back_prop=True,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Apply left fold (foldl) operation that combines the elements of the input according
+    to the provided function.
+
+    Parameters
+    ----------
+    x
+        Input array to fold over.
+    fn
+        Function to apply to the input array.
+    initializer
+        Initial value to start the fold with.
+    back_prop
+        Whether to allow back propagation through the operation.
+        Default is True.
+
+    Returns
+    -------
+    ret
+        An array containing the result of the fold operation.
+
+    Examples
+    --------
+    ...
+    """
+    if not Callable(fn):
+        raise TypeError(f"Expected fn to be callable, but was {type(fn)}")
+    if initializer is None:
+        initializer = x[0]
+        x = x[1:]
+    return current_backend().foldl(x, fn, initializer, back_prop)
+
+
+@handle_array_function
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, ivy.Array, ivy.NativeArray],

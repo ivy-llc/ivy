@@ -262,6 +262,13 @@ def test_tensorflow_eye(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.foldl",
+)
+def test_tensorflow_foldl():
+    pass
+
+
 # ones
 @handle_frontend_test(
     fn_tree="tensorflow.ones",

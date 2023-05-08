@@ -48,6 +48,12 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
+def foldl(
+    x: tf.Tensor, fn: tf.function, initializer: tf.Tensor = None, back_prop: bool = True
+) -> tf.Tensor:
+    return tf.foldl(fn, x, initializer, back_prop)
+
+
 # tensorflow does not support uint indexing
 @with_unsupported_dtypes(
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
