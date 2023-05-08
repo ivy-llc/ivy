@@ -605,6 +605,25 @@ def test_function_unsupported_devices(
     assert sorted(tuple(exp)) == sorted(res)
 
 
+def get_gpu_mem_usage(device='gpu:0'):
+    handle = _get_nvml_gpu_handle(device)
+    info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+    return (info.used / info.total) * 100
+
+@handle_test(fn_tree="clear_cached_mem_on_dev")
+def test_clear_cached_mem_on_dev():
+    devices = _get_possible_devices()
+    for device in devices:
+        if 'gpu' in device:
+            print(device)
+            arr = ivy.random_normal(shape=(10000,10000), dtype="float32", device=device)
+            del arr
+            before = get_gpu_mem_usage(device)
+            ivy.clear_cached_mem_on_dev(device)
+            after = get_gpu_mem_usage(device)
+            assert before > after
+
+
 # Still to Add #
 # ---------------#
 
