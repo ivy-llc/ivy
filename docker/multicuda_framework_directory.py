@@ -12,7 +12,7 @@ def directory_generator(req, base="/opt/fw/"):
             if not os.path.exists(path):
                 install_pkg(path, pkg + "==" + ver)
         else:
-            install_pkg(base+versions, versions)
+            install_pkg(base + versions, versions)
 
 
 def install_pkg(path, pkg, base="fw/"):
@@ -45,5 +45,4 @@ if __name__ == "__main__":
     if len(arg_lis) > 1:  # we have specified what frameworks to install
         directory_generator(arg_lis[1:], "")
     else:
-        directory_generator(['tensorflow','jax','torch'])
-
+        directory_generator(["tensorflow", "jax", "torch"])
