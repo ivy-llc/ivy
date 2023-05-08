@@ -496,6 +496,5 @@ def unique(x, out_idx=ivy.int32, name=None):
         if i not in y:
             y.append(i)
         idx.append(y.index(i))
-
-    ret = (ivy.array(y), ivy.astype(idx, out_idx))
-    return ret
+    y, idx = ivy.array(y), ivy.astype(idx, out_idx)
+    return y, idx

@@ -1874,6 +1874,7 @@ def test_tensorflow_norm(
     fn_tree="tensorflow.unique",
     dtype=helpers.get_dtypes("integer"),
     x=st.lists(st.integers(1, 10), min_size=10, max_size=100),
+    test_with_out=st.just([False]),
 )
 def test_tensorflow_unique(
     *,
