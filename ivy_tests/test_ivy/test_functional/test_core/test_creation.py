@@ -43,7 +43,7 @@ def test_native_array(
 # linspace
 @handle_test(
     fn_tree="functional.ivy.linspace",
-    dtype_and_start_stop=helpers.dtype_and_values(
+    dtype_and_start_stop_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-1e5,
@@ -57,24 +57,28 @@ def test_native_array(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        valid_axis=True,
+        force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("float", full=False),
     num=helpers.ints(min_value=1, max_value=5),
-    axis=st.none(),
+    endpoint=st.booleans(),
 )
 def test_linspace(
     *,
-    dtype_and_start_stop,
+    dtype_and_start_stop_axis,
     num,
-    axis,
+    endpoint,
+    dtype,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, start_stop = dtype_and_start_stop
+    input_dtypes, start_stop, axis = dtype_and_start_stop_axis
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -85,8 +89,9 @@ def test_linspace(
         stop=start_stop[1],
         num=num,
         axis=axis,
-        device=on_device,
+        endpoint=endpoint,
         dtype=dtype[0],
+        device=on_device,
         ground_truth_backend=ground_truth_backend,
     )
 
