@@ -81,7 +81,7 @@ class DeviceArray:
     
     def cumprod(self, axis=None, dtype=None, out=None):
         return jax_frontend.numpy.cumprod(
-            self._ivy_array,
+            self,
             axis=axis,
             dtype=dtype,
             out=out,
