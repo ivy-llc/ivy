@@ -489,10 +489,5 @@ class ndarray:
     def __mod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
     
-    def ptp(self, *, axis=None, out=None, keepdims=False):
-        if isinstance(self._ivy_array, int):
-            return ivy.flatten(self._ivy_array, order="C")
-        else:
-            xmax = self.max(axis=axis, out=out, keepdims=keepdims)
-            xmin = self.min(axis=axis, out=out, keepdims=keepdims)
-            return np_frontend.subtract(xmax, xmin)
+    def conj(self, out=None, where=True, /):
+        return np_frontend.conj(self, out=self, where=where)
