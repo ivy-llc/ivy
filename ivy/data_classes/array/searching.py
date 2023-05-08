@@ -19,9 +19,9 @@ class _ArrayWithSearching(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
-        ivy.Array instance method variant of ivy.argmax. This method simply
-        wraps the function, and so the docstring for ivy.argmax also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.argmax. This method simply wraps the
+        function, and so the docstring for ivy.argmax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -74,7 +74,6 @@ class _ArrayWithSearching(abc.ABC):
         >>> y = x.argmax(axis=1, dtype=ivy.int64)
         >>> print(y, y.dtype)
         ivy.array([0, 2]) int64
-
         """
         return ivy.argmax(
             self._data,
@@ -96,9 +95,9 @@ class _ArrayWithSearching(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
-        ivy.Array instance method variant of ivy.argmin. This method simply
-        wraps the function, and so the docstring for ivy.argmin also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.argmin. This method simply wraps the
+        function, and so the docstring for ivy.argmin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -164,9 +163,9 @@ class _ArrayWithSearching(abc.ABC):
         fill_value: Number = 0,
     ) -> Union[Tuple[ivy.Array], ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.nonzero. This method simply
-        wraps the function, and so the docstring for ivy.nonzero also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.nonzero. This method simply wraps the
+        function, and so the docstring for ivy.nonzero also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -190,7 +189,6 @@ class _ArrayWithSearching(abc.ABC):
         -------
         ret
             Array containing the indices of the non-zero values.
-
         """
         return ivy.nonzero(
             self._data, as_tuple=as_tuple, size=size, fill_value=fill_value
@@ -205,9 +203,9 @@ class _ArrayWithSearching(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.where. This method simply
-        wraps the function, and so the docstring for ivy.where also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.where. This method simply wraps the
+        function, and so the docstring for ivy.where also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -235,15 +233,14 @@ class _ArrayWithSearching(abc.ABC):
         >>> res = x1.where(condition,x2)
         >>> print(res)
         ivy.array([[1, 6], [3, 4]])
-
         """
         return ivy.where(self._data, x1._data, x2._data, out=out)
 
     def argwhere(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.argwhere. This method simply
-        wraps the function, and so the docstring for ivy.argwhere also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.argwhere. This method simply wraps the
+        function, and so the docstring for ivy.argwhere also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -271,6 +268,5 @@ class _ArrayWithSearching(abc.ABC):
         >>> res = x.argwhere()
         >>> print(res)
         ivy.array([[0, 1], [1, 0], [1, 1]])
-
         """
         return ivy.argwhere(self._data, out=out)

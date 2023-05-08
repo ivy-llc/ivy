@@ -62,6 +62,27 @@ native_dtype_dict = {
     "bool": jnp.dtype("bool"),
 }
 
+char_rep_dtype_dict = {
+    "?": "bool",
+    "i": int,
+    "i1": "int8",
+    "i2": "int16",
+    "i4": "int32",
+    "i8": "int64",
+    "f": float,
+    "f2": "float16",
+    "f4": "float32",
+    "f8": "float64",
+    "c": complex,
+    "c8": "complex64",
+    "c16": "complex128",
+    "u": "uint32",
+    "u1": "uint8",
+    "u2": "uint16",
+    "u4": "uint32",
+    "u8": "uint64",
+}
+
 
 class Finfo:
     def __init__(self, jnp_finfo: jnp.finfo):
@@ -115,7 +136,7 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
 
 
 @with_unsupported_dtypes(
-    {"0.3.14 and below": ("complex")},
+    {"0.3.14 and below": ("complex",)},
     backend_version,
 )
 def broadcast_to(
@@ -173,6 +194,8 @@ def as_ivy_dtype(
     if isinstance(dtype_in, np.dtype):
         dtype_in = dtype_in.name
     if isinstance(dtype_in, str):
+        if dtype_in in char_rep_dtype_dict:
+            return as_ivy_dtype(char_rep_dtype_dict[dtype_in])
         if dtype_in in native_dtype_dict:
             dtype_str = dtype_in
         else:
@@ -214,6 +237,8 @@ def as_native_dtype(
         dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
+    if dtype_in in char_rep_dtype_dict:
+        return as_native_dtype(char_rep_dtype_dict[dtype_in])
     if dtype_in in native_dtype_dict.values():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
@@ -242,6 +267,8 @@ def dtype_bits(dtype_in: Union[jnp.dtype, str, np.dtype], /) -> int:
 
 
 def is_native_dtype(dtype_in: Union[jnp.dtype, str], /) -> bool:
+    if dtype_in.__hash__ is None:
+        return False
     if dtype_in in ivy_dtype_dict:
         return True
     else:

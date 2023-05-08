@@ -62,7 +62,7 @@ def test_torch_multinomial(
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -125,7 +125,7 @@ def test_torch_poisson(
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -168,7 +168,7 @@ def test_torch_randint(
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -202,7 +202,7 @@ def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -258,7 +258,7 @@ def test_torch_normal(
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -296,7 +296,7 @@ def test_torch_rand_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -330,7 +330,7 @@ def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags):
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -368,7 +368,7 @@ def test_torch_randn_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -410,11 +410,12 @@ def test_torch_bernoulli(
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
 
+# randperm
 @handle_frontend_test(
     fn_tree="torch.randperm",
     n=st.integers(min_value=0, max_value=10),
@@ -430,7 +431,6 @@ def test_torch_randperm(
     test_flags,
 ):
     def call():
-
         return helpers.test_frontend_function(
             input_dtypes=dtype,
             frontend=frontend,
@@ -449,6 +449,6 @@ def test_torch_randperm(
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape

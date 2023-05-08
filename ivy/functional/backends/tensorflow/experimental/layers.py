@@ -14,9 +14,41 @@ from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 def _from_int_to_tuple(arg, dim):
     if isinstance(arg, int):
         return (arg,) * dim
-    if isinstance(arg, tuple) and len(arg) == 1:
+    if isinstance(arg, (tuple, list)) and len(arg) == 1:
         return (arg[0],) * dim
     return arg
+
+
+def _determine_depth_max_pooling(x, kernel, strides, dims):
+    # determine depth pooling
+    depth_pooling = False
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1]
+        if kernel[-1] != 1:
+            depth_pooling = True
+            if any(tf.constant(spatial_kernel) != 1):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if x.shape[-1] % kernel[-1] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            x = tf.transpose(x, (0, dims + 1, *range(1, dims + 1)))
+            kernel = [kernel[-1], *[1] * (dims - 1)]
+            strides = [strides[-1], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            if len(strides) == dims + 2:
+                strides = strides[1:-1]
+    return x, kernel, strides, depth_pooling
 
 
 def max_pool1d(
@@ -29,7 +61,6 @@ def max_pool1d(
     data_format: str = "NWC",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
     res = tf.nn.max_pool1d(x, kernel, strides, padding)
@@ -57,6 +88,12 @@ def max_pool2d(
     dilation = _from_int_to_tuple(dilation, 2)
     strides = _from_int_to_tuple(strides, 2)
     kernel = _from_int_to_tuple(kernel, 2)
+
+    # determine depth pooling
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 2
+    )
+
     if isinstance(padding, int):
         padding = [(padding,) * 2] * 2
     elif isinstance(padding, tuple) and len(padding) == 1:
@@ -79,11 +116,13 @@ def max_pool2d(
             padding[i] = _padding_ceil_mode(
                 x_shape[i], new_kernel[i], padding[i], strides[i]
             )
-
-    padding = [(0, 0)] + list(padding) + [(0, 0)]
-    x = tf.pad(x, padding, constant_values=-math.inf)
+    if not depth_pooling:
+        padding = [(0, 0)] + list(padding) + [(0, 0)]
+        x = tf.pad(x, padding, constant_values=-math.inf)
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
+    if depth_pooling:
+        res = tf.transpose(res, (0, 2, 3, 1))
     # converting minimum value to -inf because tensorflow clips -inf to minimum value
     res = tf.where(res <= ivy.finfo(res.dtype).min, -math.inf, res)
     if data_format == "NCHW":
@@ -123,6 +162,8 @@ def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
             for i in range(dims)
         ]
     else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dims
         pad_specific = [sum(padding[i]) for i in range(dims)]
     c = []
     if ceil_mode:
@@ -339,7 +380,7 @@ def avg_pool3d(
         # sum pooling then dividing by divisor_override if it is provided
         res = ivy.conv_general_dilated(
             x,
-            tf.ones(kernel + [1, x.shape[-1]]),
+            tf.ones(kernel + (1, x.shape[-1])),
             strides,
             padding,
             dims=3,
@@ -350,7 +391,9 @@ def avg_pool3d(
         res = tf.nn.avg_pool3d(x, kernel, strides, padding)
 
     # removing any manual padding added because of ceil_mode or count_include_pad
-    if (manual_padding and not count_include_pad) or ceil_mode and not divisor_override:
+    if (
+        (manual_padding and not count_include_pad) or ceil_mode
+    ) and not divisor_override:
         if not count_include_pad:
             num_padded_values = [
                 tf.convert_to_tensor(
@@ -368,7 +411,7 @@ def avg_pool3d(
                     ),
                     dtype=res.dtype,
                 )
-                for i in range(2)
+                for i in range(3)
             ]
         else:
             num_padded_values = []
@@ -379,9 +422,9 @@ def avg_pool3d(
                     tf.constant([res.shape[i + 1]], dtype=tf.int32),
                 )
                 num_padded_values.append(num_pad)
-        num_padded_values1 = num_padded_values[0].reshape((-1, 1, 1))
-        num_padded_values2 = num_padded_values[1].reshape((1, -1, 1))
-        num_padded_values3 = num_padded_values[2].reshape((1, 1, -1))
+        num_padded_values1 = tf.reshape(num_padded_values[0], (-1, 1, 1))
+        num_padded_values2 = tf.reshape(num_padded_values[1], (1, -1, 1))
+        num_padded_values3 = tf.reshape(num_padded_values[2], (1, 1, -1))
         num_padded_values = (
             num_padded_values1 * kernel[1] * kernel[2]
             + num_padded_values2 * kernel[0] * kernel[2]
@@ -640,22 +683,20 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[
-        Literal[
-            "linear",
-            "bilinear",
-            "trilinear",
-            "nearest",
-            "area",
-            "nearest-exact",
-            "tf_area",
-            "bicubic",
-            "bicubic_tensorflow",
-            "mitchellcubic",
-            "lanczos3",
-            "lanczos5",
-            "gaussian",
-        ]
+    mode: Literal[
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "area",
+        "nearest-exact",
+        "tf_area",
+        "bicubic",
+        "bicubic_tensorflow",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
@@ -675,11 +716,11 @@ def interpolate(
         mode = (
             "bilinear"
             if mode == "linear"
-            else "area"
-            if mode == "tf_area"
-            else "nearest"
-            if mode == "nearest-exact"
-            else mode
+            else (
+                "area"
+                if mode == "tf_area"
+                else "nearest" if mode == "nearest-exact" else mode
+            )
         )
     if mode == "bicubic_tensorflow":
         mode = "bicubic"

@@ -289,8 +289,8 @@ def asarray(
 
 @to_ivy_arrays_and_back
 def frombuffer(
-    buffer, 
-    *, 
+    buffer,
+    *,
     dtype,
     count=-1,
     offset=0,

@@ -61,8 +61,10 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
         ivy.utils.assertions.check_equal(
             targets_batch,
             pred_batch,
-            message="first dim of predictions: {} must match targets length: {}".format(
-                pred_batch, targets_batch
+            message=(
+                "first dim of predictions: {} must match targets length: {}".format(
+                    pred_batch, targets_batch
+                )
             ),
         )
 
@@ -294,7 +296,6 @@ def squared_hinge(y_true, y_pred):
 
 @to_ivy_arrays_and_back
 def cosine_similarity(y_true, y_pred):
-
     y_pred = ivy.asarray(y_pred)
     y_true = ivy.asarray(y_true)
 

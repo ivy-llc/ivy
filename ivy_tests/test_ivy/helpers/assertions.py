@@ -13,8 +13,9 @@ TOLERANCE_DICT = {
 def assert_all_close(
     ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
-    """Matches the ret_np and ret_from_gt_np inputs element-by-element to ensure that
-    they are the same.
+    """
+    Match the ret_np and ret_from_gt_np inputs element-by-element to ensure that they
+    are the same.
 
     Parameters
     ----------
@@ -35,7 +36,9 @@ def assert_all_close(
     """
     ret_dtype = str(ret_np.dtype)
     ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
-    assert ret_dtype == ret_from_gt_dtype, (
+    assert (
+        ret_dtype == ret_from_gt_dtype
+    ), (
         "the ground truth framework {} returned a {} datatype while "
         "the backend {} returned a {} datatype".format(
             ground_truth_backend,
@@ -76,8 +79,8 @@ def value_test(
     atol=1e-6,
     ground_truth_backend="TensorFlow",
 ):
-    """Performs a value test for matching the arrays in ret_np_flat and
-    ret_from_np_gt_flat.
+    """
+    Perform a value test for matching the arrays in ret_np_flat and ret_from_np_gt_flat.
 
     Parameters
     ----------
@@ -104,7 +107,9 @@ def value_test(
         ret_np_flat = [ret_np_flat]
     if type(ret_np_from_gt_flat) != list:
         ret_np_from_gt_flat = [ret_np_from_gt_flat]
-    assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
+    assert len(
+        ret_np_flat
+    ) == len(ret_np_from_gt_flat), (
         "The length of results from backend {} and ground truth"
         "framework {} does not match\n\n"
         "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
@@ -138,8 +143,9 @@ def value_test(
 
 
 def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
-    """Checks whether a function does not support the input data types or the output
-    data type.
+    """
+    Check whether a function does not support the input data types or the output data
+    type.
 
     Parameters
     ----------
@@ -182,7 +188,8 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
 
 
 def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
-    """Checks whether a function does not support a given device.
+    """
+    Check whether a function does not support a given device.
 
     Parameters
     ----------
@@ -220,7 +227,8 @@ def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
 
 
 def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwargs_np):
-    """Checks whether a function does not support a given device or data types.
+    """
+    Check whether a function does not support a given device or data types.
 
     Parameters
     ----------
@@ -255,7 +263,8 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
 
 
 def test_unsupported_function(*, fn, args, kwargs):
-    """Tests a function with an unsupported datatype to raise an exception.
+    """
+    Test a function with an unsupported datatype to raise an exception.
 
     Parameters
     ----------
