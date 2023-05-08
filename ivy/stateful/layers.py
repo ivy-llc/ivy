@@ -1540,10 +1540,8 @@ class MaxPool3D(Module):
         array-like
             The output tensor after max pooling.
         """
-        return max_pool3d(inputs, pool_size=self.pool_size, kernel_size=self._kernel_size,
-                          stride=self._stride, padding=self._padding, data_format=self._data_format)
-
-
+        return max_pool3d(inputs, pool_size=self.pool_size, kernel_size=self._kernel_size,stride=self._stride, padding=self._padding, data_format=self._data_format)
+                          
 class AvgPool2D(Module):
     def __init__(
         self,
