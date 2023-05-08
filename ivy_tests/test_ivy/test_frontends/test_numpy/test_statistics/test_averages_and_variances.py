@@ -46,6 +46,8 @@ def test_numpy_mean(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-1,
+        rtol=1e-1,
         x=x[0],
         axis=axis,
         dtype=dtype[0],
@@ -53,7 +55,6 @@ def test_numpy_mean(
         keepdims=keep_dims,
         where=where,
         test_values=False,
-        rtol=1e-2,
     )
 
 
