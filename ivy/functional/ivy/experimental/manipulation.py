@@ -889,6 +889,23 @@ def _to_pairs(x, n):
         )
     return x
 
+def _to_dilated(x, n):
+    if ivy.isscalar(x):
+        return ((x, x, x),) * n
+    elif len(x) == 3 and ivy.isscalar(x[0]):
+        return ((x[0], x[1], x[2]),) * n
+    elif len(x) != n:
+        ivy.utils.assertions.check_equal(
+            ivy.asarray(list(x)).shape,
+            (n, 3),
+            message=(
+                "tuple argument should contain "
+                "ndim groups where ndim is the number of "
+                "the input's dimensions"
+            ),
+        )
+    return x
+
 
 def _check_tuple_arg(arg, name, b_float=False):
     scalar_types = (int, float) if b_float else int
@@ -1147,11 +1164,13 @@ def pad(
         reflect_type,
     )
     input = ivy.asarray(input, dtype=input.dtype)
-    pad_width = _to_pairs(pad_width, input.ndim)
 
     if mode == "dilated":
+        pad_width = _to_dilated(pad_width, input.ndim)
         padded = _interior_pad(input, constant_values, pad_width)
         return ivy.native_array(padded)
+
+    pad_width = _to_pairs(pad_width, input.ndim)
 
     if callable(mode):
         func = mode

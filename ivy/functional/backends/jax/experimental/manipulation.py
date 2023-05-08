@@ -174,8 +174,6 @@ def pad(
     constant_values = _to_nested_tuple(constant_values)
     end_values = _to_nested_tuple(end_values)
     input_dtype = input.dtype
-    if jnp.issubdtype(input_dtype, jnp.integer) and mode in ["mean", "median"]:
-        input = input.astype(jnp.float64)
 
     if mode == "dilated":
         padding_value = ivy.native_array(constant_values)
