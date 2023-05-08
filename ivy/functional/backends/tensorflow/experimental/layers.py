@@ -22,8 +22,8 @@ def _from_int_to_tuple(arg, dim):
 def _determine_depth_max_pooling(x, kernel, strides, dims):
     # determine depth pooling
     depth_pooling = False
-    spatial_kernel = kernel[1:-1]
     if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1]
         if kernel[-1] != 1:
             depth_pooling = True
             if any(tf.constant(spatial_kernel) != 1):
@@ -46,7 +46,8 @@ def _determine_depth_max_pooling(x, kernel, strides, dims):
             strides = [strides[-1], *[1] * (dims - 1)]
         else:
             kernel = spatial_kernel
-            strides = strides[1:-1]
+            if len(strides) == dims + 2:
+                strides = strides[1:-1]
     return x, kernel, strides, depth_pooling
 
 

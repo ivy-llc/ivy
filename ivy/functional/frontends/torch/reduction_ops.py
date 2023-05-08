@@ -248,3 +248,13 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
         values.append(results.counts)
 
     return Results(*values)
+
+
+@to_ivy_arrays_and_back
+def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
+    if (type(dim) in [tuple, list]) and (len(dim) == 2):
+        return ivy.matrix_norm(input, ord=p, axis=dim, keepdims=keepdim, out=out)
+    else:
+        return ivy.vector_norm(
+            input, ord=p, axis=dim, keepdims=keepdim, dtype=dtype, out=out
+        )
