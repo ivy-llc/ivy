@@ -1434,6 +1434,56 @@ class LSTM(Module):
 # Pooling #
 # --------#
 
+class MaxPool1D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NWC",
+        device=None,
+        v=None,
+        dtype=None,
+    ):
+        """
+        Class for applying Max Pooling over a mini-batch of inputs.
+        Parameters
+        ----------
+        kernel_size
+            The size of the sliding window,must be >0.
+        stride
+            The stride of the sliding window,must be > 0 Default value: kernel_size.
+        padding
+            Implicit negative infinity padding to be added on both sides,must be >=0 and <= kernel_size/2.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+        Parameters
+        ----------
+        x
+            The input to the layer.
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.max_pool1d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
 
 class MaxPool2D(Module):
     def __init__(
