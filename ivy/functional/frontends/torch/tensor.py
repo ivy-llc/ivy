@@ -846,6 +846,9 @@ class Tensor:
 
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
+    
+    def tile(self, dims):
+        return torch_frontend.tile(self, dims)
 
     # Special Methods #
     # -------------------#
