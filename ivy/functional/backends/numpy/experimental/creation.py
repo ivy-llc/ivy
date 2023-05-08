@@ -61,6 +61,8 @@ def hann_window(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if size == 1:
+        return np.array([1], dtype=dtype)
     if periodic is False:
         return np.array(np.hanning(size), dtype=dtype)
     else:
