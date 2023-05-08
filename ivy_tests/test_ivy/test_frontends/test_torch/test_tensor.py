@@ -123,6 +123,20 @@ def test_torch_tensor_property_shape(dtype_x):
 
 @given(
     dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_tensor_property_real(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(x.real, ivy.real(data[0]))
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("complex", prune_function=False)
     ),
 )
@@ -6419,40 +6433,6 @@ def test_torch_instance_acosh(
             "data": x[0],
         },
         method_input_dtypes=[],
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# real
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="real",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        allow_inf=False,
-    ),
-)
-def test_torch_instance_real(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
