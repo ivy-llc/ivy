@@ -199,8 +199,10 @@ def nanmedian(
 ) -> JaxArray:
     if overwrite_input:
         copied_input = input.copy()
+        overwrite_input=False
+        out=None
         return jnp.nanmedian(
-            copied_input, axis=axis, keepdims=keepdims, overwrite_input=False, out=None
+            copied_input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
         )
     return jnp.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=False, out=None
