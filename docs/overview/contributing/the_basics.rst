@@ -352,12 +352,12 @@ With Docker
 ***********
 
 #. With PyCharm (With or without docker):
-    #. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
+    1. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
         
         .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_button_pycharm.png?raw=true
            :width: 420
         
-    #. Testing can be done for the entire project, individual submodules, individual files and individual tests.
+    2. Testing can be done for the entire project, individual submodules, individual files and individual tests.
        This can be done by selecting the appropriate configuration from the top pane in PyCharm.
         
         .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_with_pycharm.png?raw=true
@@ -365,70 +365,70 @@ With Docker
         
 
 #. Through the command line (With docker):
-    #. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
+    1. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
 
         .. code-block:: none
 
             docker exec <container-name> rm -rf ivy
             docker cp ivy <container-name>:/ 
 
-    #. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
+    2. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
 
         .. code-block:: none
 
             docker exec -it ivy_container bash 
             cd ivy
 
-    #. Run the test using the pytest command.
+    3. Run the test using the pytest command.
 
-        #. Ivy Tests:
+        1. Ivy Tests:
 
-            #. For a single function: 
+            1. For a single function: 
 
                 .. code-block:: none
                 
                     pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
             
-            #. For a single file:
+            2. For a single file:
 
                 .. code-block:: none
                 
                     pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
-            #. For all tests:
+            3. For all tests:
 
                 .. code-block:: none
 
                     pytest ivy_tests/test_ivy/ --no-header --no-summary -q
 
-        #.  Array API Tests:
+        2.  Array API Tests:
 
-            #. For a single function: 
+            1. For a single function: 
 
                 .. code-block:: none
                 
                     pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
             
-            #. For a single file:
+            2. For a single file:
 
                 .. code-block:: none
                 
                     pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
             
-            #. For all tests:
+            3. For all tests:
 
                 .. code-block:: none
 
                     pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
         
-        #. For the entire project:
+        3. For the entire project:
 
             .. code-block:: none
                 
                 pytest ivy_tests/ --no-header --no-summary -q
 
 #. Through the command line (Without docker):
-    #. We need to first enter inside the virtual environment.
+    1. We need to first enter inside the virtual environment.
 
         .. code-block:: none
 
@@ -444,67 +444,67 @@ With Docker
 
         (on Mac/Linux)
 
-    #. Run the test using the pytest command.
+    2. Run the test using the pytest command.
 
-        #. Ivy Tests:
+        1. Ivy Tests:
 
-            #. For a single function: 
+            1. For a single function: 
 
                 .. code-block:: none
                 
                     python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
             
-            #. For a single file:
+            2. For a single file:
 
                 .. code-block:: none
                 
                     python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
-            #. For all tests:
+            3. For all tests:
 
                 .. code-block:: none
 
                     python -m pytest ivy_tests/test_ivy/ --no-header --no-summary -q
 
-        #.  Array API Tests 
+        2.  Array API Tests 
 
-            #. For a single function: 
+            1. For a single function: 
 
                 .. code-block:: none
                 
                     python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
             
-            #. For a single file:
+            2. For a single file:
 
                 .. code-block:: none
                 
                     python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
             
-            #. For all tests:
+            3. For all tests:
 
                 .. code-block:: none
 
                     python -m pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
         
-        #. For the entire project
+        3. For the entire project
 
             .. code-block:: none
                 
                 python -m pytest ivy_tests/ --no-header --no-summary -q
 
 #. Optional Flags: Various optional flags are available for running the tests such as :code:`device`, :code:`backend`, etc.
-    #. :code:`device`: 
-        #. This flag enables setting of the device where the tests would be run.
-        #. Possible values being :code:`cpu` and :code:`gpu`.
-        #. Default value is :code:`cpu`
-    #. :code:`backend`:
-        #. This flag enables running the tests for particular backends.
-        #. The values of this flag could be any possible combination of JAX, numpy, tensorflow and torch.
-        #. Default value is :code:`jax,numpy,tensorflow,torch`.
-    #. :code:`num-examples`:
-        #. Set the maximum number for examples to be generated by Hypothesis.
-        #. The value of this flag could be any positive integer value that is greater than 1.
-        #. Default value is :code:`5`.
+    1. :code:`device`: 
+        1. This flag enables setting of the device where the tests would be run.
+        2. Possible values being :code:`cpu` and :code:`gpu`.
+        3. Default value is :code:`cpu`
+    2. :code:`backend`:
+        1. This flag enables running the tests for particular backends.
+        2. The values of this flag could be any possible combination of JAX, numpy, tensorflow and torch.
+        3. Default value is :code:`jax,numpy,tensorflow,torch`.
+    3. :code:`num-examples`:
+        1. Set the maximum number for examples to be generated by Hypothesis.
+        2. The value of this flag could be any positive integer value that is greater than 1.
+        3. Default value is :code:`5`.
 
 Getting the most out of IDE
 ---------------------------
@@ -546,14 +546,14 @@ with PyCharm
     You can visit `Pycharm Blog`_ for more details on efficient coding!
 
 #. Debugging:
-    #. add breakpoints:
+    1. add breakpoints:
         #. Click the gutter at the executable line of code where you want to set the breakpoint or place the caret at the line and press :code:`Ctrl+F8`
 
         .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/adding_breakpoint.png?raw=true
            :aligh: center
            :width: 50%
 
-    #. Enter into the debug mode:
+    2. Enter into the debug mode:
         #. Click on Run icon and Select **Debug test** or press :code:`Shift+F9`.
         This will open up a Debug Window Toolbar:
 
@@ -561,7 +561,7 @@ with PyCharm
            :align: center
            :width: 50%
 
-    #. Stepping through the code:
+    3. Stepping through the code:
         #. Step over: 
             Steps over the current line of code and takes you to the next line even if the highlighted line has method calls in it.
 
@@ -590,7 +590,7 @@ with PyCharm
 
                 #. Click the desired method.
 
-    #. Python Console: 
+    4. Python Console: 
         #. Click the Console option on Debug Tool Window:
             This currently stores variables and their values upto which the code has been executed.
             You can print outputs and debug the code further on.
@@ -602,7 +602,7 @@ with PyCharm
                :aligh: center
                :width: 50%
 
-    #. Using **try-except**:
+    5. Using **try-except**:
         #. PyChram is great at pointing the lines of code which are causing tests to fail.
            Navigating to that line, you can add Try-Except block with breakpoints to get in depth understanding of the errors.
 
@@ -610,7 +610,7 @@ with PyCharm
            :align: center
            :width: 50%
 
-    #. Dummy **test** file:
+    6. Dummy **test** file:
         #. Create a separate dummy :code:`test.py` file wherein you can evaluate a particular test failure.
            Make sure you don't add or commit this dummy file while pushing your changes.
 
