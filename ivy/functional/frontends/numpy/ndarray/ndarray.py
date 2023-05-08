@@ -493,6 +493,6 @@ class ndarray:
         if isinstance(self._ivy_array, int):
             return ivy.flatten(self._ivy_array, order="C")
         else:
-            xmax = ivy.max(self, axis=axis, out=out, keepdims=keepdims)
-            xmin = ivy.min(self, axis=axis, out=out, keepdims=keepdims)
+            xmax = self.max(self, axis=axis, out=out, keepdims=keepdims)
+            xmin = self.min(self, axis=axis, out=out, keepdims=keepdims)
             return np_frontend.subtract(xmax, xmin)
