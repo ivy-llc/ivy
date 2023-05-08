@@ -112,7 +112,7 @@ class NestedArray(abc.ABC):
 
     @property
     def dtype(self) -> ivy.Dtype:
-        """Data type of the array elements"""
+        """Data type of the array elements."""
         return self._dtype
 
     @property

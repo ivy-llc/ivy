@@ -13,7 +13,6 @@ def l2_normalize(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     return torch.nn.functional.normalize(x, p=2, dim=axis, out=out)
 
 
@@ -122,7 +121,6 @@ def lp_normalize(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     return torch.nn.functional.normalize(x, p=p, dim=axis, out=out)
 
 

@@ -5,6 +5,136 @@ import torch
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+import ivy
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "uint8",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def histogram(
+    a: torch.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, torch.Tensor, str]] = None,
+    axis: Optional[torch.Tensor] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[torch.dtype] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[torch.Tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor]:
+    min_a = torch.min(a)
+    max_a = torch.max(a)
+    if isinstance(bins, torch.Tensor) and range:
+        raise ivy.exceptions.IvyException(
+            "Must choose between specifying bins and range or bin edges directly"
+        )
+    if range:
+        bins = torch.linspace(
+            start=range[0], end=range[1], steps=bins + 1, dtype=a.dtype
+        )
+        range = None
+    elif isinstance(bins, int):
+        range = (min_a, max_a)
+        bins = torch.linspace(
+            start=range[0], end=range[1], steps=bins + 1, dtype=a.dtype
+        )
+        range = None
+    if bins.size()[0] < 2:
+        raise ivy.exceptions.IvyException("bins must have at least 1 bin (size > 1)")
+    bins_out = bins.clone()
+    if extend_lower_interval and min_a < bins[0]:
+        bins.data[0] = min_a
+    if extend_upper_interval and max_a > bins[-1]:
+        bins.data[-1] = max_a
+    if a.ndim > 0 and axis is not None:
+        inverted_shape_dims = list(torch.flip(torch.arange(a.ndim), dims=[0]))
+        if isinstance(axis, int):
+            axis = [axis]
+        shape_axes = 1
+        for dimension in axis:
+            inverted_shape_dims.remove(dimension)
+            inverted_shape_dims.append(dimension)
+            shape_axes *= a.shape[dimension]
+        a_along_axis_1d = (
+            a.permute(inverted_shape_dims).flatten().reshape((-1, shape_axes))
+        )
+        if weights is None:
+            ret = []
+            for a_1d in a_along_axis_1d:
+                ret_1d = torch.histogram(
+                    a_1d,
+                    bins=bins,
+                    # TODO: waiting tensorflow version support to density
+                    # density=density,
+                )[0]
+                ret.append(ret_1d.tolist())
+        else:
+            weights_along_axis_1d = (
+                weights.permute(inverted_shape_dims).flatten().reshape((-1, shape_axes))
+            )
+            ret = []
+            for a_1d, weights_1d in zip(a_along_axis_1d, weights_along_axis_1d):
+                ret_1d = torch.histogram(
+                    a_1d,
+                    bins=bins,
+                    weight=weights_1d,
+                    # TODO: waiting tensorflow version support to density
+                    # density=density,
+                )[0]
+                ret.append(ret_1d.tolist())
+        out_shape = list(a.shape)
+        for dimension in sorted(axis, reverse=True):
+            del out_shape[dimension]
+        out_shape.insert(0, len(bins) - 1)
+        ret = torch.tensor(ret)
+        ret = ret.flatten()
+        index = torch.zeros(len(out_shape), dtype=int)
+        ret_shaped = torch.zeros(out_shape)
+        dim = 0
+        i = 0
+        if index.tolist() == (torch.tensor(out_shape) - 1).tolist():
+            ret_shaped.data[tuple(index)] = ret[i]
+        while index.tolist() != (torch.tensor(out_shape) - 1).tolist():
+            ret_shaped.data[tuple(index)] = ret[i]
+            dim_full_flag = False
+            while index[dim] == out_shape[dim] - 1:
+                index[dim] = 0
+                dim += 1
+                dim_full_flag = True
+            index[dim] += 1
+            i += 1
+            if dim_full_flag:
+                dim = 0
+        if index.tolist() == (torch.tensor(out_shape) - 1).tolist():
+            ret_shaped.data[tuple(index)] = ret[i]
+        ret = ret_shaped
+    else:
+        ret = torch.histogram(
+            a, bins=bins, range=range, weight=weights, density=density
+        )[0]
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype:
+        ret = ret.type(dtype)
+        bins_out = bins_out.type(dtype)
+    # TODO: weird error when returning bins: return ret, bins_out
+    return ret
+
+
+histogram.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bool")}, backend_version)

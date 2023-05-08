@@ -29,9 +29,10 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.moveaxis. This method simply
-        wraps the function, and so the docstring for ivy.unstack also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.moveaxis. This method simply wraps the
+        function, and so the docstring for ivy.unstack also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -67,9 +68,10 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.heaviside. This method simply
-        wraps the function, and so the docstring for ivy.heaviside also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.heaviside. This method simply wraps the
+        function, and so the docstring for ivy.heaviside also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -108,9 +110,10 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.flipud. This method simply
-        wraps the function, and so the docstring for ivy.flipud also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.flipud. This method simply wraps the
+        function, and so the docstring for ivy.flipud also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -146,9 +149,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.vstack. This method simply
-        wraps the function, and so the docstring for ivy.vstack also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.vstack. This method simply wraps the
+        function, and so the docstring for ivy.vstack also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -178,9 +181,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.hstack. This method simply
-        wraps the function, and so the docstring for ivy.hstack also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.hstack. This method simply wraps the
+        function, and so the docstring for ivy.hstack also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -188,7 +191,6 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
         >>> print(x.vstack(y))
         ivy.array([1, 2, 5, 6, 7, 8])
-
         """
         if not isinstance(arrays, (list, tuple)):
             arrays = [arrays]
@@ -209,9 +211,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.rot90.
-        This method simply wraps the function, and so the docstring
-        for ivy.rot90 also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.rot90. This method simply wraps the
+        function, and so the docstring for ivy.rot90 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -251,7 +253,6 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
                [[7, 6],
                 [5, 4]]])
-
         """
         return ivy.rot90(self._data, copy=copy, k=k, axes=axes, out=out)
 
@@ -264,9 +265,10 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         largest: bool = True,
         out: Optional[tuple] = None,
     ) -> Tuple[ivy.Array, ivy.NativeArray]:
-        """ivy.Array instance method variant of ivy.top_k. This method simply
-        wraps the function, and so the docstring for ivy.top_k also applies
-        to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.top_k. This method simply wraps the
+        function, and so the docstring for ivy.top_k also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -306,9 +308,10 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.fliplr. This method simply
-        wraps the function, and so the docstring for ivy.fliplr also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.fliplr. This method simply wraps the
+        function, and so the docstring for ivy.fliplr also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -340,9 +343,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.i0. This method simply
-        wraps the function, and so the docstring for ivy.i0 also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.i0. This method simply wraps the
+        function, and so the docstring for ivy.i0 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -374,9 +377,10 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         order: str = "C",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.flatten. This method simply
-        wraps the function, and so the docstring for ivy.flatten also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.flatten. This method simply wraps the
+        function, and so the docstring for ivy.flatten also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -498,9 +502,10 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         **kwargs: Optional[Any],
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.pad. This method simply
-        wraps the function, and so the docstring for ivy.pad also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.pad.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.pad also applies to this method with minimal changes.
         """
         return ivy.pad(
             self._data,
@@ -523,9 +528,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.vsplit. This method simply
-        wraps the function, and so the docstring for ivy.vsplit also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.vsplit. This method simply wraps the
+        function, and so the docstring for ivy.vsplit also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -564,9 +569,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.dsplit. This method simply
-        wraps the function, and so the docstring for ivy.dsplit also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.dsplit. This method simply wraps the
+        function, and so the docstring for ivy.dsplit also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -604,9 +609,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.atleast_1d. This method simply
-        wraps the function, and so the docstring for ivy.atleast_1d also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.atleast_1d. This method simply wraps
+        the function, and so the docstring for ivy.atleast_1d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -641,9 +646,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.dstack. This method simply
-        wraps the function, and so the docstring for ivy.dstack also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.dstack. This method simply wraps the
+        function, and so the docstring for ivy.dstack also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -669,9 +674,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.atleast_2d. This method simply
-        wraps the function, and so the docstring for ivy.atleast_2d also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.atleast_2d. This method simply wraps
+        the function, and so the docstring for ivy.atleast_2d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -702,9 +707,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.atleast_3d. This method simply
-        wraps the function, and so the docstring for ivy.atleast_3d also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.atleast_3d. This method simply wraps
+        the function, and so the docstring for ivy.atleast_3d also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -744,8 +749,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.take_along_axis. This method simply
-        wraps the function, and so the docstring for ivy.take_along_axis also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.take_along_axis also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -785,9 +790,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.hsplit. This method simply
-        wraps the function, and so the docstring for ivy.hsplit also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.hsplit. This method simply wraps the
+        function, and so the docstring for ivy.hsplit also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -834,8 +839,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Broadcast the input Array following the given shape
-        and the broadcast rule.
+        Broadcast the input Array following the given shape and the broadcast rule.
 
         Parameters
         ----------
@@ -878,3 +882,85 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Output Array
         """
         return ivy.as_strided(self._data, shape, strides)
+
+    @handle_view
+    def concat_from_sequence(
+        self: ivy.Array,
+        /,
+        input_sequence: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            List[Union[ivy.Array, ivy.NativeArray]],
+        ],
+        *,
+        new_axis: int = 0,
+        axis: int = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Concatenate a sequence of arrays along a new or an existing axis.
+
+        Parameters
+        ----------
+        self
+            Array input.
+        input_sequence
+            A sequence of arrays.
+        new_axis
+            Insert and concatenate on a new axis or not,
+            default 0 means do not insert new axis.
+            new_axis = 0: concatenate
+            new_axis = 1: stack
+        axis
+            The axis along which the arrays will be concatenated.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Output Array
+        """
+        if new_axis == 0:
+            return ivy.concat_from_sequence(
+                [self._data] + input_sequence, new_axis=new_axis, axis=axis, out=out
+            )
+        elif new_axis == 1:
+            if not isinstance(input_sequence, (tuple, list)):
+                input_sequence = [input_sequence]
+            if isinstance(input_sequence, tuple):
+                input_sequence = (self._data,) + input_sequence
+            else:
+                input_sequence = [self._data] + input_sequence
+            return ivy.concat_from_sequence(
+                input_sequence, new_axis=new_axis, axis=axis, out=out
+            )
+
+    @handle_view
+    def associative_scan(
+        self: ivy.Array,
+        fn: Callable,
+        /,
+        *,
+        reverse: bool = False,
+        axis: int = 0,
+    ) -> ivy.Array:
+        """
+        Perform an associative scan over the given array.
+
+        Parameters
+        ----------
+        self
+            The array to scan over.
+        fn
+            The associative function to apply.
+        reverse
+            Whether to scan in reverse with respect to the given axis.
+        axis
+            The axis to scan over.
+
+        Returns
+        -------
+        ret
+            The result of the scan.
+        """
+        return ivy.associative_scan(self._data, fn, reverse=reverse, axis=axis)

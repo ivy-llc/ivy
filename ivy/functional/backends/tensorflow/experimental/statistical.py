@@ -2,6 +2,70 @@ from typing import Union, Optional, Tuple, Sequence
 import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
+import ivy
+
+
+def histogram(
+    a: tf.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, tf.Tensor, str]] = None,
+    axis: Optional[tf.Tensor] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[tf.Tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[tf.Tensor]:
+    min_a = tf.reduce_min(a)
+    max_a = tf.reduce_max(a)
+    if isinstance(bins, tf.Tensor) and range:
+        raise ivy.exceptions.IvyException(
+            "Must choose between specifying bins and range or bin edges directly"
+        )
+    if range:
+        if isinstance(bins, int):
+            bins = tf.cast(
+                tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
+            )
+    elif isinstance(bins, int):
+        range = (min_a, max_a)
+        bins = tf.cast(
+            tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
+        )
+    if tf.shape(bins)[0] < 2:
+        raise ivy.exceptions.IvyException("bins must have at least 1 bin (size > 1)")
+    if min_a < bins[0] and not extend_lower_interval:
+        raise ivy.exceptions.IvyException(
+            "Values of x outside of the intervals cause errors in tensorflow backend. "
+            "Consider using extend_lower_interval to deal with this."
+        )
+    if max_a > bins[-1] and not extend_upper_interval:
+        raise ivy.exceptions.IvyException(
+            "Values of x outside of the intervals cause errors in tensorflow backend. "
+            "Consider using extend_upper_interval to deal with this."
+        )
+    ret = tfp.stats.histogram(
+        x=a,
+        edges=bins,
+        axis=axis,
+        weights=weights,
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        dtype=dtype,
+        name="histogram",
+    )
+    if density:
+        pass
+    # TODO: Tensorflow native dtype argument is not working
+    if dtype:
+        ret = tf.cast(ret, dtype)
+        bins = tf.cast(bins, dtype)
+    # TODO: weird error when returning bins: return ret, bins
+    return ret
+
 
 from ivy import with_supported_dtypes
 from .. import backend_version

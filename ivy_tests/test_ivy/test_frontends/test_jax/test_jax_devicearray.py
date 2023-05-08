@@ -5,7 +5,6 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
-from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _array_and_index
 from ivy.functional.frontends.jax import DeviceArray
 
 
@@ -41,7 +40,7 @@ def test_jax_devicearray_property_dtype(
 ):
     dtype, data = dtype_x
     x = DeviceArray(data[0])
-    assert x.dtype.ivy_dtype == dtype[0]
+    assert x.dtype == dtype[0]
 
 
 @given(
@@ -102,6 +101,78 @@ def test_jax_devicearray_property_at(x_y_index):
     keepdims=st.booleans(),
 )
 def test_jax_devicearray_argmax(
+    dtype_and_x,
+    keepdims,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdims": keepdims,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="conj",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
+    ),
+)
+def test_jax_devicearray_conj(
+    dtype_and_x,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="mean",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        force_int_axis=True,
+        min_num_dims=1,
+        valid_axis=True,
+    ),
+    keepdims=st.booleans(),
+)
+def test_jax_devicearray_mean(
     dtype_and_x,
     keepdims,
     on_device,
@@ -270,7 +341,7 @@ def test_jax_devicearray__ne_(
     init_tree="jax.numpy.array",
     method_name="__lt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -306,7 +377,7 @@ def test_jax_devicearray__lt_(
     init_tree="jax.numpy.array",
     method_name="__le__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
     ),
 )
@@ -342,7 +413,7 @@ def test_jax_devicearray__le_(
     init_tree="jax.numpy.array",
     method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
     ),
 )
@@ -378,7 +449,7 @@ def test_jax_devicearray__gt_(
     init_tree="jax.numpy.array",
     method_name="__ge__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
     ),
 )
@@ -1385,11 +1456,14 @@ def test_jax_special_rmatmul(
     )
 
 
+# __getitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__getitem__",
-    dtype_x_index=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
+    dtype_x_index=helpers.dtype_array_index(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
 )
 def test_jax_special_getitem(
     dtype_x_index,
@@ -1399,14 +1473,12 @@ def test_jax_special_getitem(
     method_flags,
     on_device,
 ):
-    dtypes, x = dtype_x_index
+    input_dtype, x, index = dtype_x_index
     helpers.test_frontend_method(
-        init_input_dtypes=[dtypes[0]],
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=[dtypes[1]],
-        method_all_as_kwargs_np={"idx": x[1]},
+        init_input_dtypes=[input_dtype[0]],
+        init_all_as_kwargs_np={"object": x},
+        method_input_dtypes=[input_dtype[1]],
+        method_all_as_kwargs_np={"idx": index},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

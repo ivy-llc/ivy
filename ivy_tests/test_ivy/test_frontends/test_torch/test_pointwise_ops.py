@@ -3,6 +3,7 @@ import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -1172,7 +1173,6 @@ def test_torch_round(
         fn_tree=fn_tree,
         input=x[0],
         decimals=decimals,
-        out=None,
     )
 
 
@@ -1185,7 +1185,7 @@ def _get_clip_inputs(draw):
     )
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes("numeric"),
             shape=shape,
         )
     )
@@ -1194,13 +1194,13 @@ def _get_clip_inputs(draw):
         max = draw(st.booleans())
         min = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0
+                dtype=x_dtype[0], shape=shape, min_value=0, max_value=25
             )
         )
         max = (
             draw(
                 helpers.array_values(
-                    dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+                    dtype=x_dtype[0], shape=shape, min_value=26, max_value=50
                 )
             )
             if max
@@ -1210,7 +1210,7 @@ def _get_clip_inputs(draw):
         min = None
         max = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+                dtype=x_dtype[0], shape=shape, min_value=26, max_value=50
             )
         )
     return x_dtype, x, min, max
@@ -1219,35 +1219,10 @@ def _get_clip_inputs(draw):
 # clamp
 @handle_frontend_test(
     fn_tree="torch.clamp",
+    aliases=["torch.clip"],
     input_and_ranges=_get_clip_inputs(),
 )
 def test_torch_clamp(
-    *,
-    input_and_ranges,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    x_dtype, x, min, max = input_and_ranges
-    helpers.test_frontend_function(
-        input_dtypes=x_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        min=min,
-        max=max,
-    )
-
-
-# clip
-@handle_frontend_test(
-    fn_tree="torch.clip",
-    input_and_ranges=_get_clip_inputs(),
-)
-def test_torch_clip(
     *,
     input_and_ranges,
     on_device,
@@ -1664,6 +1639,60 @@ def test_torch_pow(
     test_flags,
 ):
     input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=x[0],
+        exponent=x[1],
+    )
+
+
+# float_power_helper
+@st.composite
+def _float_power_helper(draw, *, available_dtypes=None):
+    if available_dtypes is None:
+        available_dtypes = helpers.get_dtypes("numeric")
+    dtype1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    dtype2 = draw(helpers.get_dtypes("numeric"))
+    if ivy.is_int_dtype(dtype2[0]):
+        min_value = 0
+    else:
+        min_value = -10
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            min_value=min_value,
+            max_value=10,
+            dtype=dtype2,
+        )
+    )
+    return (dtype1[0], dtype2[0]), (x1[0], x2[0])
+
+
+@handle_frontend_test(
+    fn_tree="torch.float_power",
+    dtype_and_x=_float_power_helper(),
+)
+def test_torch_float_power(
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    # Making sure zero to the power of negative doesn't occur
+    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -2365,4 +2394,104 @@ def test_torch_logit(
         input=input[0],
         eps=eps,
         out=None,
+    )
+
+
+# erf
+@handle_frontend_test(
+    fn_tree="torch.erf",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_erf(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.sgn",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+        abs_smallest_val=1e-10,
+        min_value=-10,
+        max_value=10,
+    ),
+)
+def test_torch_sgn(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        out=None,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nan_to_num",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=True,
+        allow_inf=True,
+    ),
+    nan=st.floats(min_value=-100.0, max_value=100.0),
+    posinf=st.just(None) | st.floats(min_value=5e100, max_value=5e100),
+    neginf=st.just(None) | st.floats(min_value=-5e100, max_value=-5e100),
+    test_with_out=st.just(False),
+)
+def test_torch_nan_to_num(
+    *,
+    dtype_and_x,
+    nan,
+    posinf,
+    neginf,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        nan=nan,
+        posinf=posinf,
+        neginf=neginf,
     )

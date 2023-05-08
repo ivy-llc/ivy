@@ -10,7 +10,6 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -23,7 +22,6 @@ def _check_valid_dimension_size(std):
 
 
 @handle_array_function
-@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -40,8 +38,7 @@ def eigh_tridiagonal(
     tol: Optional[float] = None,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
     """
-    Computes the eigenvalues and eigenvectors of a Hermitian
-    tridiagonal matrix.
+    Compute the eigenvalues and eigenvectors of a Hermitian tridiagonal matrix.
 
     Parameters
     ----------
@@ -181,7 +178,8 @@ def diagflat(
     num_cols: int = -1,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Returns a two-dimensional array with the flattened input as a diagonal.
+    """
+    Return a two-dimensional array with the flattened input as a diagonal.
 
     Parameters
     ----------
@@ -242,8 +240,9 @@ def kron(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Kronecker product, a composite array
-    made of blocks of the second array scaled by the first.
+    """
+    Compute the Kronecker product, a composite array made of blocks of the second array
+    scaled by the first.
 
     Parameters
     ----------
@@ -281,7 +280,8 @@ def matrix_exp(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the matrix exponential of a square matrix.
+    """
+    Compute the matrix exponential of a square matrix.
 
     Parameters
     ----------
@@ -319,8 +319,9 @@ def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[ivy.Array]:
-    """Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:
-    first is the set of eigenvalues, second is the set of eigenvectors.
+    """Compute eigenvalies and eigenvectors of x. Returns a tuple with two
+    elements: first is the set of eigenvalues, second is the set of
+    eigenvectors.
 
     Parameters
     ----------
@@ -380,7 +381,8 @@ def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> ivy.Array:
-    """Computes eigenvalues of x. Returns a set of eigenvalues.
+    """
+    Compute eigenvalues of x. Returns a set of eigenvalues.
 
     Parameters
     ----------
@@ -424,7 +426,8 @@ def adjoint(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the complex conjugate transpose of x.
+    """
+    Compute the complex conjugate transpose of x.
 
     Parameters
     ----------
@@ -461,8 +464,9 @@ def multi_dot(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the dot product of two or more matrices in a single function call,
-    while selecting the fastest evaluation order.
+    """
+    Compute the dot product of two or more matrices in a single function call, while
+    selecting the fastest evaluation order.
 
     Parameters
     ----------
@@ -513,7 +517,8 @@ def cond(
     p: Optional[Union[int, float, str]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the condition number of x.
+    """
+    Compute the condition number of x.
 
     Parameters
     ----------
@@ -562,7 +567,9 @@ def cov(
     aweights: Optional[ivy.Array] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
 ) -> ivy.Array:
-    """Computes the covariance of matrix x1, or variables x1 and x2.
+    """
+    Compute the covariance of matrix x1, or variables x1 and x2.
+
     Parameters
     ----------
     x1
@@ -596,6 +603,7 @@ def cov(
     out
         optional output array, for writing the result to. It must have a shape that
         the inputs broadcast to.
+
     Returns
     -------
     ret
@@ -604,6 +612,7 @@ def cov(
         floating-point data type determined by Type Promotion Rules and must be
         a square matrix of shape (N, N), where N is the number of variables in the
         input(s).
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cov.html>`_ # noqa
@@ -611,6 +620,7 @@ def cov(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:

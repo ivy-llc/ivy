@@ -3,7 +3,8 @@ from ivy.utils.backend import current_backend
 
 
 def bind_custom_gradient_function(func, custom_grad_func):
-    """Bind a custom gradient function to a function.
+    """
+    Bind a custom gradient function to a function.
 
     Parameters
     ----------
@@ -17,6 +18,5 @@ def bind_custom_gradient_function(func, custom_grad_func):
     -------
     ret
         the function
-
     """
     return current_backend(None).bind_custom_gradient_function(func, custom_grad_func)

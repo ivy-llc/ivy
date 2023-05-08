@@ -173,3 +173,12 @@ Framework-specific Considerations
 This should have hopefully given you a good feel for how the gradient API is implemented in Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `gradients channel`_ or in the `gradients forum`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/riNddnTgDdk" class="video">
+    </iframe>

@@ -25,7 +25,8 @@ from ivy.utils.exceptions import handle_exceptions
 def deserialize(
     name: Union[str, None], /, *, custom_objects: Optional[ivy.Dict] = None
 ) -> Union[Callable, None]:
-    """Returns activation function given a string identifier.
+    """
+    Return activation function given a string identifier.
 
     Parameters
     ----------
@@ -109,7 +110,8 @@ def gelu(
     approximate: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the Gaussian error linear unit (GELU) activation function.
+    """
+    Apply the Gaussian error linear unit (GELU) activation function.
 
     Parameters
     ----------
@@ -159,7 +161,8 @@ def gelu(
 def get(
     name: Union[str, None], /, *, custom_objects: Optional[ivy.Dict] = None
 ) -> Union[Callable, None]:
-    """Returns activation function given a string identifier.
+    """
+    Return activation function given a string identifier.
 
     Parameters
     ----------
@@ -217,7 +220,8 @@ def leaky_relu(
     alpha: float = 0.2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the leaky rectified linear unit function element-wise.
+    """
+    Apply the leaky rectified linear unit function element-wise.
 
     Parameters
     ----------
@@ -282,7 +286,8 @@ def log_softmax(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the log_softmax function element-wise.
+    """
+    Apply the log_softmax function element-wise.
 
     Parameters
     ----------
@@ -349,7 +354,8 @@ def log_softmax(
 def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the rectified linear unit function element-wise.
+    """
+    Apply the rectified linear unit function element-wise.
 
     Parameters
     ----------
@@ -404,7 +410,7 @@ def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
-    Applies the sigmoid function element-wise.
+    Apply the sigmoid function element-wise.
 
     Parameters
     ----------
@@ -456,7 +462,8 @@ def softmax(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the softmax function element-wise.
+    """
+    Apply the softmax function element-wise.
 
     Parameters
     ----------
@@ -506,7 +513,8 @@ def softplus(
     threshold: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the softplus function element-wise.
+    """
+    Apply the softplus function element-wise.
 
     Parameters
     ----------
@@ -544,7 +552,6 @@ def softplus(
     >>> y = ivy.softplus(x, threshold=2)
     >>> print(y)
     ivy.array([1.31, 2.13, 3.  ])
-
     """
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
 
@@ -558,7 +565,8 @@ def softplus(
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the mish activation function element-wise.
+    """
+    Apply the mish activation function element-wise.
 
     Parameters
     ----------

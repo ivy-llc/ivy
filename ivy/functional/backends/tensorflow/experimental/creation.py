@@ -93,7 +93,7 @@ def hann_window(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.signal.hann_window(size, periodic=periodic, dtype=dtype, name=None)
+    return tf.signal.hann_window(size, periodic=(not periodic), dtype=dtype)
 
 
 def tril_indices(
@@ -123,7 +123,7 @@ def tril_indices(
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("uint32", "uint64")}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("uint32", "uint64")}, backend_version)
 def frombuffer(
     buffer: bytes,
     dtype: Optional[tf.DType] = float,

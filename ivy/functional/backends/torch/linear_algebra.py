@@ -54,7 +54,6 @@ def cross(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     if axis is None:
         axis = -1
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -374,7 +373,6 @@ def solve(
 def svd(
     x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
-
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
 
@@ -519,7 +517,7 @@ def vander(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def vector_to_skew_symmetric_matrix(
     vector: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
