@@ -1133,6 +1133,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         mode: Union[
             Literal[
                 "constant",
+                "dilated",
                 "edge",
                 "linear_ramp",
                 "maximum",
@@ -1188,6 +1189,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         mode: Union[
             Literal[
                 "constant",
+                "dilated",
                 "edge",
                 "linear_ramp",
                 "maximum",
