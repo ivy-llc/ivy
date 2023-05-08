@@ -2910,37 +2910,35 @@ def test_numpy_instance_mod__(
         on_device=on_device,
     )
 
-#ptp    
+#conj
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
-    method_name="ptp",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_axis=None,
-        max_axis=None,
-        allow_neg_axes=True,
-        min_axes_size=1,
-        max_axes_size=None,
+    method_name="conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        exclude_min=True,
     ),
 )
-def test_numpy_instance_ptp(
-    dtype_x_axis,
+def test_numpy_instance_conj(
+    dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, xs = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         method_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": xs[0],
         },
         method_all_as_kwargs_np={
-            "axis": axis,
+            "value": xs[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
