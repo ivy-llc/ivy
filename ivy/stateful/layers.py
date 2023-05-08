@@ -1490,6 +1490,60 @@ class MaxPool2D(Module):
         )
 
 
+class MaxPool3D(Module):
+    def __init__(self, pool_size, kernel_size, stride=None, padding='valid', data_format='NDHWC', device=None, dtype=None):
+        """
+        Class for applying Max Pooling over a mini-batch of 3D inputs.
+
+        Parameters
+        ----------
+        pool_size : tuple of int
+            The size of the pooling window along each dimension of the input.
+        kernel_size : tuple of int
+            The size of the sliding window used to take the maximum.
+        stride : tuple of int or None, optional
+            The stride of the sliding window along each dimension of the input.
+            If None, stride is set to `pool_size`.
+        padding : str, optional
+            One of {'valid', 'same'}. The padding algorithm to use.
+            'valid' means no padding. 'same' results in padding evenly to the left/right or up/down
+            of the input such that output has the same height/width dimension as the input.
+        data_format : str, optional
+            One of {'NDHWC', 'NCDHW'}. The ordering of the dimensions in the inputs.
+            'NDHWC' means `(batch_size, depth, height, width, channels)`.
+            'NCDHW' means `(batch_size, channels, depth, height, width)`.
+        device : str or None, optional
+            The device on which to create the layer's variables.
+            If None, the default device will be used.
+        dtype : str or None, optional
+            The data type of the layer's variables.
+            If None, the default data type will be used.
+        """
+       
+        self._kernel_size = kernel_size
+        self._stride = stride or pool_size  # if stride is not specified, set it to pool_size
+        self._padding = padding.lower()  # convert to lowercase to ensure consistency
+        self._data_format = data_format.upper()  # convert to uppercase to ensure consistency
+        self.pool_size = pool_size
+
+    def _forward(self, inputs):
+        """
+        Apply max pooling to the input tensor.
+
+        Parameters
+        ----------
+        inputs : array-like
+            The input tensor.
+
+        Returns
+        -------
+        array-like
+            The output tensor after max pooling.
+        """
+        return max_pool3d(inputs, pool_size=self.pool_size, kernel_size=self._kernel_size,
+                          stride=self._stride, padding=self._padding, data_format=self._data_format)
+
+
 class AvgPool2D(Module):
     def __init__(
         self,
