@@ -2755,7 +2755,6 @@ def test_jax_numpy_polyint(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=1,
-        max_num_dims=1,
         min_dim_size=2,
     ),
     trim_leading_zeros=st.booleans(),
