@@ -251,6 +251,7 @@ def corrcoef(
     return torch.corrcoef(xarr)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def nanmedian(
     input: torch.Tensor,
     /,

@@ -163,7 +163,7 @@ def nanmedian(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if overwrite_input:
-        copied_input = input.copy()
+        copied_input = tf.identity(input)
         return tfp.stats.percentile(
             copied_input,
             50.0,
@@ -172,7 +172,7 @@ def nanmedian(
             keepdims=keepdims,
         )
     return tfp.stats.percentile(
-        copied_input,
+        input,
         50.0,
         axis=axis,
         interpolation="midpoint",
