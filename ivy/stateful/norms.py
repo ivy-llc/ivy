@@ -135,21 +135,29 @@ class BatchNorm2D(Module):
         self._track_running_stats = track_running_stats
         self._weight_shape = num_features
         self._bias_shape = num_features
+        self._running_mean_shape = num_features
+        self._running_var_shape = num_features
         self._weight_init = Ones()
         self._bias_init = Zeros()
-        self._running_mean = ivy.zeros(num_features)
-        self._running_var = ivy.ones(num_features)
+        self._running_mean_init = Zeros()
+        self._running_var_init = Ones()
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer."""
         if self._affine:
             return {
-                "weight": self._weight_init.create_variables(
-                    self._weight_shape, device, dtype=dtype
-                ),
-                "bias": self._bias_init.create_variables(
+                "b": self._bias_init.create_variables(
                     self._bias_shape, device, dtype=dtype
+                ),
+                "running_mean": self._running_mean_init.create_variables(
+                    self._running_mean_shape, device, dtype=dtype
+                ),
+                "running_var": self._running_var_init.create_variables(
+                    self._running_var_shape, device, dtype=dtype
+                ),
+                "w": self._weight_init.create_variables(
+                    self._weight_shape, device, dtype=dtype
                 ),
             }
         return {}
@@ -170,16 +178,16 @@ class BatchNorm2D(Module):
         """
         normalized, running_mean, running_var = ivy.batch_norm(
             inputs,
-            self._running_mean,
-            self._running_var,
+            self.v.running_mean,
+            self.v.running_var,
             eps=self._epsilon,
             momentum=self._momentum,
             training=self.training,
-            scale=self.v.weight if self._affine else None,
-            offset=self.v.bias if self._affine else None,
+            scale=self.v.w if self._affine else None,
+            offset=self.v.b if self._affine else None,
         )
         if self._track_running_stats:
-            self._running_mean = running_mean
-            self._running_var = running_var
+            self.v.running_mean = running_mean
+            self.v.running_var = running_var
 
         return normalized

@@ -528,6 +528,7 @@ def _pad_helper(draw):
         st.sampled_from(
             [
                 "constant",
+                "dilated",
                 "edge",
                 "linear_ramp",
                 "maximum",
@@ -540,7 +541,7 @@ def _pad_helper(draw):
             ]
         )
     )
-    if mode == "median":
+    if mode in ["median", "minimum", "maximum", "linear_ramp"]:
         dtypes = "float"
     else:
         dtypes = "numeric"
@@ -554,9 +555,29 @@ def _pad_helper(draw):
         )
     )
     ndim = len(shape)
-    pad_width = draw(_st_tuples_or_int(ndim))
+    min_dim = min(shape)
+    if mode == "dilated":
+        pad_width = draw(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=-min_dim, max_value=min_dim),
+                    st.integers(min_value=-min_dim, max_value=min_dim),
+                    st.integers(min_value=0, max_value=min_dim),
+                ),
+                min_size=ndim,
+                max_size=ndim,
+            )
+        )
+        constant_values = draw(
+            helpers.number(
+                min_value=0,
+                max_value=100,
+            ).filter(lambda _x: ivy.as_ivy_dtype(type(_x)) == dtype[0])
+        )
+    else:
+        pad_width = draw(_st_tuples_or_int(ndim))
+        constant_values = draw(_st_tuples_or_int(ndim))
     stat_length = draw(_st_tuples_or_int(ndim, min_val=2))
-    constant_values = draw(_st_tuples_or_int(ndim))
     end_values = draw(_st_tuples_or_int(ndim))
     return dtype, input[0], pad_width, stat_length, constant_values, end_values, mode
 
@@ -985,7 +1006,7 @@ def _as_strided_helper(draw):
             max_size=new_ndim,
         ).filter(lambda x: all(x[i] % itemsize == 0 for i in range(new_ndim)))
     )
-    assume(_check_bounds(x.shape, x.strides, shape, strides, itemsize))
+    assume(_check_bounds(x.shape, shape, strides, itemsize))
     return dtype, x, shape, strides
 
 

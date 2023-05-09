@@ -415,6 +415,7 @@ def test_torch_bernoulli(
         assert u.shape == v.shape
 
 
+# randperm
 @handle_frontend_test(
     fn_tree="torch.randperm",
     n=st.integers(min_value=0, max_value=10),

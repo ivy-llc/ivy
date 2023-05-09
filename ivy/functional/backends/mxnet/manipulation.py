@@ -122,7 +122,7 @@ def tile(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.tile Not Implemented")
+    return mx.nd.tile(x, repeats)
 
 
 def constant_pad(

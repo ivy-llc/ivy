@@ -152,6 +152,54 @@ def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
 
+def _slice(operand, start_indices, limit_indices, strides=None):
+    strides = [1] * len(operand.shape) if strides is None else strides
+
+    full_slice = ()
+    for i, _ in enumerate(operand.shape):
+        strides_i = int(strides[i])
+        start_i = int(start_indices[i])
+        limit_i = int(limit_indices[i])
+        full_slice += (slice(start_i, limit_i, strides_i),)
+    return operand[full_slice]
+
+
+def _interior_pad(operand, padding_value, padding_config):
+    for axis, (_, _, interior) in enumerate(padding_config):
+        if interior > 0:
+            new_shape = list(operand.shape)
+            new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
+            new_array = np.full(new_shape, padding_value)
+            src_indices = np.arange(operand.shape[axis])
+            dst_indices = src_indices * (interior + 1)
+            index_tuple = [slice(None)] * operand.ndim
+            index_tuple[axis] = dst_indices
+            new_array[tuple(index_tuple)] = operand
+            operand = new_array
+
+    start_indices = [0] * operand.ndim
+    limit_indices = [0] * operand.ndim
+    for axis, (low, high, _) in enumerate(padding_config):
+        if low < 0:
+            start_indices[axis] = abs(low)
+        if high < 0:
+            limit_indices[axis] = high
+        else:
+            limit_indices[axis] = operand.shape[axis] + 1
+    padded = _slice(operand, start_indices, limit_indices)
+
+    pad_width = [(0, 0)] * operand.ndim
+    for axis, (low, high, _) in enumerate(padding_config):
+        if low > 0 and high > 0:
+            pad_width[axis] = (low, high)
+        elif low > 0 and not high > 0:
+            pad_width[axis] = (low, 0)
+        elif high > 0 and not low > 0:
+            pad_width[axis] = (0, high)
+    padded = np.pad(padded, pad_width, constant_values=padding_value)
+    return padded
+
+
 def pad(
     input: np.ndarray,
     pad_width: Union[Sequence[Sequence[int]], np.ndarray, int],
@@ -160,6 +208,7 @@ def pad(
     mode: Union[
         Literal[
             "constant",
+            "dilated",
             "edge",
             "linear_ramp",
             "maximum",
@@ -179,6 +228,13 @@ def pad(
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> np.ndarray:
+
+    if mode == "dilated":
+        padding_value = ivy.native_array(constant_values)
+        operand = _flat_array_to_1_dim_array(input).astype(padding_value.dtype)
+        padded = _interior_pad(operand, padding_value, pad_width)
+        return ivy.native_array(padded)
+
     if callable(mode):
         return np.pad(
             _flat_array_to_1_dim_array(input),
