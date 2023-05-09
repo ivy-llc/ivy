@@ -4,7 +4,7 @@ torch_scatter = None
 from typing import Union, Optional, Sequence, Tuple
 
 import paddle
-
+import numpy as np
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -292,14 +292,12 @@ def cummax(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-
     if x.dtype == paddle.bool:
         x = paddle.cast(x, "float64")
-    elif x.dtype == paddle.int16 or x.dtype == paddle.int8:
+    elif x.dtype in [paddle.int16, paddle.int8, paddle.uint8, paddle.int16]:
         x = paddle.cast(x, "int64")
     elif x.dtype == paddle.complex128 or x.dtype == paddle.complex64:
-        x = paddle.real(x)
-
+        x = paddle.cast(paddle.real(x), "float64")
     if not (exclusive or reverse):
         return __find_cummax(x, axis=axis)
 
@@ -328,59 +326,64 @@ def cummax(
 def __find_cummax(
         x: paddle.Tensor,
         axis: int = 0,
+        dtype: Optional[paddle.dtype] = None
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     indices = []
     values = []
+    x_dtype = x.dtype if dtype is None else dtype
     if ((type(x[0]) == paddle.Tensor)
         or (type(x[0]) == ivy.data_classes.array.array.Array)) \
             and len(x[0].shape) >= 1 \
             and isinstance(x.tolist()[0], list):
-        if axis == 1:
-            x_list = x.tolist()
-            for ret1 in x_list:
-                value, indice = __find_indices_values(ret1,
-                                                      value=[], indice=[])
+        if axis >= 1:
+            if not isinstance(x, list):
+                x = x.tolist()
+            for ret1 in x:
+                value, indice = __find_cummax(paddle.to_tensor(ret1, dtype=x_dtype),
+                                              axis=axis - 1, dtype=x_dtype)
                 indices.append(indice)
                 values.append(value)
         else:
-            n1 = {}
-            x_list = x.tolist()
-            for index, ret1 in enumerate(x_list):
-                indice, value = [], []
-                for idx1, x1 in enumerate(ret1):
-                    if index == 0 or x_list[index][idx1] >= x_list[n1[idx1]][idx1]:
-                        n1[idx1] = index
-                        indice.append(index)
-                        value.append(x_list[index][idx1])
-                    else:
-                        indice.append(n1[idx1])
-                        value.append(x_list[n1[idx1]][idx1])
-                indices.append(indice)
-                values.append(value)
+            x_list = x.numpy()
+            it = np.nditer(x_list, flags=['multi_index'])
+            indices, values, z_list, n1 = x_list.copy(), x_list.copy(), [], {}
+            indices.fill(0)
+            values.fill(0)
+            for p in it:
+                z_list.append((p, it.multi_index))
+            z_list = sorted(z_list, key=lambda i: i[1])
+            for y, y_index in z_list:
+                multi_index = y_index
+                if tuple(multi_index[1:]) not in n1:
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                elif y >= x_list[tuple([n1[tuple(multi_index[1:])]] +
+                                       list(multi_index[1:]))]:
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                else:
+                    indices[y_index] = n1[tuple(multi_index[1:])]
+                    values[y_index] = x_list[tuple([n1[tuple(multi_index[1:])]] +
+                                                   list(multi_index[1:]))]
     else:
-        x_list = x.tolist()
-        values, indices = __find_indices_values(x_list, value=values, indice=indices)
+        if not isinstance(x, list):
+            x = x.tolist()
+        n = 0
+        for idx, y in enumerate(x):
+            if x[n] > y:
+                values.append(x[n])
+            elif x[n] <= y or idx == 0:
+                n = idx
+                values.append(y)
+            indices.append(n)
 
     if type(x) == paddle.Tensor:
-        return paddle.to_tensor(values, dtype=x.dtype), paddle.to_tensor(indices)
+        return paddle.to_tensor(values, dtype=x.dtype), \
+            paddle.to_tensor(indices, dtype='int64')
     else:
-        return ivy.array(values, dtype=x.dtype), ivy.array(indices, dtype='int64')
-
-
-def __find_indices_values(
-        ret1: list,
-        value: list,
-        indice: list):
-    n = 0
-    for idx, y in enumerate(ret1):
-        if ret1[n] > y:
-            value.append(ret1[n])
-        elif ret1[n] <= y or idx == 0:
-            n = idx
-            value.append(y)
-        indice.append(n)
-
-    return value, indice
+        return ivy.array(values, dtype=x_dtype), ivy.array(indices, dtype='int64')
 
 
 def einsum(

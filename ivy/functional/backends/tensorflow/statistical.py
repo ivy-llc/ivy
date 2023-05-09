@@ -7,7 +7,7 @@ import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-
+import numpy as np
 
 # Array API Standard #
 # -------------------#
@@ -212,7 +212,7 @@ def cummax(
     elif x.dtype == tf.int16 or x.dtype == tf.int8:
         x = tf.cast(x, tf.int64)
     elif x.dtype == tf.complex128 or x.dtype == tf.complex64:
-        x = tf.math.real(x)
+        x = tf.cast(tf.math.real(x), tf.float64)
     if exclusive or reverse:
         if exclusive and reverse:
             x, indices = __find_cummax(tf.experimental.numpy.flip(x, axis=axis),
@@ -248,37 +248,38 @@ def __find_cummax(
         x: tf.Tensor,
         axis: int = 0
 ) -> Tuple[tf.Tensor, tf.Tensor]:
-    indices = []
-    values = []
+    values, indices = [], []
     if isinstance(x[0], tf.Tensor) and isinstance(x[0].numpy().tolist(), list) \
             and len(x[0].numpy().tolist()) >= 1 :
-        if axis == 1:
+        if axis >= 1:
             for ret1 in x:
-                ret1_indices = tf.convert_to_tensor(list(range(0, ret1.shape[0])),
-                                                    dtype=ret1.dtype)
-                value, indice = tf.scan(lambda a, b: a if a > b
-                                        or tf.experimental.numpy.where
-                                        (ret1[0].numpy() == b[0].numpy()) == 0
-                                        else b, (ret1, ret1_indices))
+                value, indice = __find_cummax(ret1, axis=axis - 1)
                 indices.append(indice)
                 values.append(value)
         else:
-            n1 = {}
-            indices, values = [] , []
-            x_list = x.numpy().tolist()
-            for index, ret1 in enumerate(x_list):
-                indice = []
-                value = []
-                for idx1, x1 in enumerate(ret1):
-                    if index == 0 or x_list[index][idx1] >= x_list[n1[idx1]][idx1]:
-                        n1[idx1] = index
-                        indice.append(index)
-                        value.append(x_list[index][idx1])
-                    else:
-                        indice.append(n1[idx1])
-                        value.append(x_list[n1[idx1]][idx1])
-                indices.append(indice)
-                values.append(value)
+            x_list = x.numpy()
+            it = np.nditer(x_list, flags=['multi_index'])
+            indices, values, z_list, n1 = x_list.copy(), x_list.copy(), [], {}
+            indices.fill(0)
+            values.fill(0)
+            for p in it:
+                z_list.append((p, it.multi_index))
+            z_list = sorted(z_list, key=lambda i: i[1])
+            for y, y_index in z_list:
+                multi_index = y_index
+                if tuple(multi_index[1:]) not in n1:
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                elif y >= x_list[tuple([n1[tuple(multi_index[1:])]] +
+                                       list(multi_index[1:]))]:
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                else:
+                    indices[y_index] = n1[tuple(multi_index[1:])]
+                    values[y_index] = x_list[tuple([n1[tuple(multi_index[1:])]] +
+                                                   list(multi_index[1:]))]
     else:
         x_indices = tf.convert_to_tensor(list(range(0, x.shape[0])), dtype=x.dtype)
         values, indices = tf.scan(lambda a, b: a if a > b
