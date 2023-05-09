@@ -80,3 +80,13 @@ def diag_indices_from(arr):
         raise ValueError("All dimensions of input must be of equal length")
     idx = ivy.arange(n, dtype=int)
     return (idx,) * ndim
+
+@to_ivy_arrays_and_back
+def choose(idx, choices, out=None, mode='raise'):
+    choice_list = [choices[i] for i in ivy.to_numpy(idx)]
+    stacked_choices = ivy.stack(choice_list, axis=-1)
+
+    for i in range(len(choices)):
+        mask = idx == i
+        out = ivy.where(mask, stacked_choices[..., i], out)
+    return out
