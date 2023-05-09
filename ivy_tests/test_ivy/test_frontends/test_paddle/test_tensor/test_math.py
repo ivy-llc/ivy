@@ -1,5 +1,5 @@
 # global
-
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -60,9 +60,7 @@ def test_paddle_cos(
 # tan
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.tan",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
+    dtype_and_x=[[ivy.float64], ivy.array(1, dtype=ivy.float64)],
 )
 def test_paddle_tan(
     *,

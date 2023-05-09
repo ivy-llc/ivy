@@ -18,6 +18,6 @@ def cos(x, name=None):
 
 @to_ivy_arrays_and_back
 def tan(x, name=None):
-    x = x.astype("float64")
+    x = ivy.astype(x, ivy.float64)
     return ivy.tan(x)
 
