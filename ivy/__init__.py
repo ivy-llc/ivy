@@ -356,6 +356,16 @@ class Shape:
         return self._shape
 
     @property
+    def value(self):
+        return self._value
+
+    def concatenate(self, other):
+        if self._shape is None or other.dims is None:
+            raise ValueError("Unknown Shape")
+        else:
+            return Shape(self.dims + other.dims)
+
+    @property
     def as_dimension(self):
         if isinstance(self._shape, Shape):
             return self._shape
@@ -381,6 +391,49 @@ class Shape:
         if self._shape is not None:
             return len(self._shape)
         return None
+
+    def assert_same_rank(self, other):
+        other = Shape(other)
+        if self.rank != other.rank:
+            raise ValueError("Shapes %s and %s must have the same rank" % (self, other))
+
+    def assert_has_rank(self, rank):
+        if self.rank not in (None, rank):
+            raise ValueError("Shape %s must have rank %d" % (self, rank))
+
+    def unknown_shape(rank=None, **kwargs):
+        if rank is None and "ndims" in kwargs:
+            rank = kwargs.pop("ndims")
+        if kwargs:
+            raise TypeError("Unknown argument: %s" % kwargs)
+        if rank is None:
+            return Shape(None)
+        else:
+            return Shape([Shape(None)] * rank)
+
+    def with_rank(self, rank):
+        try:
+            return self.merge_with(unknown_shape(rank=rank))
+        except ValueError:
+            raise ValueError("Shape %s must have rank %d" % (self, rank))
+
+    def with_rank_at_least(self, rank):
+        if self.rank is not None and self.rank < rank:
+            raise ValueError("Shape %s must have rank at least %d" % (self, rank))
+        else:
+            return self
+
+    def with_rank_at_most(self, rank):
+        if self.rank is not None and self.rank > rank:
+            raise ValueError("Shape %s must have rank at most %d" % (self, rank))
+        else:
+            return self
+
+    def as_shape(shape):
+        if isinstance(shape, Shape):
+            return shape
+        else:
+            return Shape(shape)
 
     @property
     def dims(self):
