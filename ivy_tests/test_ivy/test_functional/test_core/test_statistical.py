@@ -347,6 +347,7 @@ def test_cumsum(
     )
 
 
+# cumprod
 @handle_test(
     fn_tree="functional.ivy.cumprod",
     dtype_x_axis_castable=_get_castable_dtype(),
@@ -394,6 +395,7 @@ def test_cumprod(
     )
 
 
+# cummin
 @handle_test(
     fn_tree="functional.ivy.cummin",
     dtype_x_axis_castable=_get_castable_dtype(),

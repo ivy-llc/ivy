@@ -65,7 +65,6 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     return ret
 
 
-# reverse is not implemented here, whereas it is implemented in the actual framework
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def cumprod(a, axis=None, dtype=None, out=None):

@@ -207,7 +207,6 @@ def cumprod(
 cumprod.support_native_out = True
 
 
-# my implementation of cummin
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def cummin(
     x: np.ndarray,

@@ -649,18 +649,15 @@ class _ArrayWithStatistical(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.cummin. This method simply wraps the
-        function, and so the docstring for ivy.cummin also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.cummin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
         self
             input array
         axis
-            int, axis along which to take the cumulative product. Default is ``0``.
-        exclusive
-            optional bool, whether to exclude the first value of the input array.
-            Default is ``False``.
+            int, axis along which to take the cumulative minimum. Default is ``0``.
         reverse
             Whether to perform the cummin from last to first element in the selected
             axis. Default is ``False`` (from first to last element)
@@ -687,21 +684,19 @@ class _ArrayWithStatistical(abc.ABC):
         -------
         ret
             Input array with cumulatively multiplied elements along the specified axis.
-
-        Examples TODO: CHANGE EXAMPLES AND ABOVE DISCRIPTION
         --------
         >>> x = ivy.array([1, 2, 3, 4, 5])
-        >>> y = x.cumprod()
+        >>> y = x.cummin()
         >>> print(y)
-        ivy.array([1, 2, 6, 24, 120])
+        ivy.array([1, 1, 1, 1, 1])
 
         >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
         >>> y = ivy.zeros((3, 2), dtype="int32")
-        >>> x.cumprod(axis=1, exclusive=True, out=y)
+        >>> x.cummin(axis=1, reverse=True, out=y)
         >>> print(y)
-        ivy.array([[0, 0],
-                   [0, 0],
-                   [0, 0]])
+        ivy.array([[ 2,  3],
+                  [ 5,  7],
+                  [11, 13]])
         """
         return ivy.cummin(
             self._data,

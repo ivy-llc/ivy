@@ -265,10 +265,6 @@ def cumprod(
 cumprod.support_native_out = True
 
 
-# my implementation. remove comment before commiting
-# what do exclusive and reverse do?
-# what do with unsupposrted_dtypes do?
-# how are these unsupported datatypes figured out?
 @with_unsupported_dtypes(
     {
         "1.12.0 and below": ("uint8", "float16", "bfloat16"),
