@@ -496,6 +496,7 @@ vector_to_skew_symmetric_matrix.support_native_out = True
 def lu(
     A: np.ndarray,
     /,
+    *,
     pivot: bool = True,
     permute_l: bool = 0,
     out: Optional[Tuple[np.ndarray, np.ndarray, np.ndarray]] = None,
