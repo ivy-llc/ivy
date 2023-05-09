@@ -1494,7 +1494,7 @@ class MaxPool2D(Module):
             self._kernel_size,
             self._stride,
             self._padding,
-            self._data_format
+            data_format=self._data_format,
         )
 
 class AvgPool2D(Module):
