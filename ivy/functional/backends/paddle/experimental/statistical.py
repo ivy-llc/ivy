@@ -288,3 +288,18 @@ def unravel_index(
         indices = paddle.floor(indices / dim)
 
     return tuple(reversed(coord))
+
+
+def cov(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[paddle.Tensor] = None,
+    aweights: Optional[paddle.Tensor] = None,
+    dtype: Optional[paddle.dtype] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
