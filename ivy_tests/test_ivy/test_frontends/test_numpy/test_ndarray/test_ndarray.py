@@ -2917,8 +2917,7 @@ def test_numpy_instance_mod__(
     method_name="ptp",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_axis=-1,
-        max_axis=0,
+        valid_axis=True,
     ),
 )
 def test_numpy_instance_ptp(
