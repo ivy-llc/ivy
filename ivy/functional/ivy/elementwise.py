@@ -5656,3 +5656,71 @@ def fmod(
     ivy.array([ nan,  nan,  nan])
     """
     return ivy.current_backend().fmod(x1, x2, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def fmax(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    out: Optional[ivy.Array] = None,
+    *,
+    where=True,
+    casting='same_kind',
+    order='K',
+    dtype=None,
+    subok=True[, signature, extobj]
+) -> ivy.Array:
+    """Element-wise maximum of array elements.
+       
+       Compare two arrays and returns a new array containing the element-wise
+       maxima. If one of the elements being compared is a NaN, then the non-nan
+       element is returned. The latter distinction is important for complex
+       NaNs, which are defined as at least one of the real or imaginary parts
+       being a NaN. The net effect is that NaNs are ignored when possible.
+
+    Parameters
+    ----------
+    x1, x2:
+        The arrays holding the elements to be compared. 
+        If ``x1.shape != x2.shape``, they must be broadcastable to a common
+        shape (which becomes the shape of the output).
+    out 
+        ndarray, None, or tuple of ndarray and None, optional
+        A location into which the result is stored. If provided, it must have
+        a shape that the inputs broadcast to. If not provided or None,
+        a freshly-allocated array is returned. A tuple (possible only as a keyword argument)
+        must have length equal to the number of outputs.
+    where
+        array_like, optional
+        This condition is broadcast over the input. At locations where the 
+        condition is True, the `out` array will be set to the ufunc result.
+        Elsewhere, the `out` array will retain its original value.
+        Note that if an uninitialized `out` array is created via the defualt 
+        ``out=None``, locations within it where the condition is False will
+        remain uninitialized.
+    **kwargs
+        For other keyword-only arguments, see the 
+        :ref:`ufunc docs <ufuncs.kwargs>`.
+
+    Returns
+    -------
+    y
+        ndarray or scalar
+        The maximum of `x1` and `x2`, element-wise.
+        This is the scalar if both `x1` and `x2` are scalars.
+
+    Examples
+    --------
+    >>> ivy.fmax([2, 3, 4], [1, 5, 2])
+    ivy.array([2., 5., 4.])
+
+    >>> ivy.fmax([ivy.nan, 0, ivy.nan], [0, ivy.nan, ivy.nan])
+    ivy.array([0., 0., nan])
+
+    """
+    return ivy.current_backend(x1, x2).fmax(x1, x2, out=out)
