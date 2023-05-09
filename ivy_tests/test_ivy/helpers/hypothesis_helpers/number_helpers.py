@@ -15,15 +15,15 @@ floats_info = {
 
 @st.composite
 def min_max_bound(draw, min_value=None, max_value=None):
-    min_val = draw(st.just(min_value))
-    max_val = draw(st.just(max_value))
+    min_val = draw(min_value) if isinstance(min_value, st.SearchStrategy) else min_value
+    max_val = draw(max_value) if isinstance(max_value, st.SearchStrategy) else max_value
     return min_val, max_val
 
 
 @st.composite
 def exclude_min_max(draw, exclude_min=True, exclude_max=True):
-    min_ex = draw(st.just(exclude_min))
-    max_ex = draw(st.just(exclude_max))
+    min_ex = draw(exclude_min) if isinstance(exclude_min, st.SearchStrategy) else exclude_min
+    max_ex = draw(exclude_max) if isinstance(exclude_max, st.SearchStrategy) else exclude_max
     return min_ex, max_ex
 
 
