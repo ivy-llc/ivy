@@ -384,3 +384,45 @@ def test_numpy_nanmedian(
         out=None,
         keepdims=keep_dims,
     )
+@handle_frontend_test(
+    fn_tree="numpy.var",
+    dtype_and_x=statistical_dtype_values(function="var"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    where=np_frontend_helpers.where(),
+    keep_dims=st.booleans(),
+)
+def test_numpy_var(
+    dtype_and_x,
+    dtype,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    input_dtypes, x, axis, correction = dtype_and_x
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
+        x=x[0],
+        axis=axis,
+        ddof=correction,
+        keepdims=keep_dims,
+        out=None,
+        dtype=dtype[0],
+        where=where,
+    )
