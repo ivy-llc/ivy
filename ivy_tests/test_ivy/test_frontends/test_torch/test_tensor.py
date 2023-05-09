@@ -1899,12 +1899,10 @@ def test_torch_special_mul(
     method_name="__matmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        #    shape=(3, 3),
         min_num_dims=1,
         num_arrays=2,
         shared_dtype=True,
         min_value=-1e04,
-        # max_value=1e04,
     ),
 )
 def test_torch_special_matmul(
