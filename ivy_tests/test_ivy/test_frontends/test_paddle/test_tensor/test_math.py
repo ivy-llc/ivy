@@ -59,7 +59,7 @@ def test_paddle_cos(
 
 # tan
 @handle_frontend_test(
-    fn_tree="paddle.tan",
+    fn_tree="paddle.tensor.math.tan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
