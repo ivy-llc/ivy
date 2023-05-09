@@ -355,6 +355,68 @@ class Shape:
     def shape(self):
         return self._shape
 
+    @property
+    def as_dimension(self):
+        if isinstance(self._shape, Shape):
+            return self._shape
+        else:
+            return Shape(self._shape)
+
+    @property
+    def shape(self):
+        return self._shap
+
+    def as_dimension(self):
+        if isinstance(self._shape, Shape):
+            return self._shape
+        else:
+            return Shape(self._shape)
+
+    def is_compatible_with(self, other):
+        return self._shape is None or other.value is None or self._shape == other.value
+
+    @property
+    def rank(self):
+        """Returns the rank of this shape, or None if it is unspecified."""
+        if self._shape is not None:
+            return len(self._shape)
+        return None
+
+    @property
+    def dims(self):
+        if self._shape is None:
+            return None
+        # return [as_dimension(d) for d in self._shape]
+
+    @property
+    def ndims(self):
+        """Deprecated accessor for `rank`."""
+        return self.rank
+
+    @property
+    def is_fully_defined(self):
+        return self._shape is not None and all(
+            shape is not None for shape in self._shape
+        )
+
+        # @property
+        # def num_elements(self):
+        # if self.is_fully_defined():
+        # return functools.reduce(operator.mul, self.as_list(), 1)
+        # else:
+        # return None
+
+    @property
+    def assert_is_fully_defined(self):
+        if not self.is_fully_defined():
+            raise ValueError("Shape %s is not fully defined" % self)
+
+    @property
+    def as_list(self):
+        if self._dims is None:
+            raise ValueError("as_list() is not defined on an unknown TensorShape.")
+        return list(self._dims)
+
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
