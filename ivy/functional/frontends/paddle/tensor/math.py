@@ -13,3 +13,8 @@ def sin(x, name=None):
 @to_ivy_arrays_and_back
 def cos(x, name=None):
     return ivy.cos(x)
+
+
+@to_ivy_arrays_and_back
+def tan(x, name=None):
+    return ivy.tan(x)
