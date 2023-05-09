@@ -1904,6 +1904,47 @@ def test_torch_special_mul(
     )
 
 
+@st.composite
+def _get_dtype_and_multiplicative_matrices(draw):
+    return draw(
+        st.one_of(
+            _get_dtype_input_and_matrices(),
+            _get_dtype_and_3dbatch_matrices(),
+        )
+    )
+
+
+# __matmul__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__matmul__",
+    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
+)
+def test_torch_special_matmul(
+    dtype_tensor1_tensor2,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    dtype, tensor1, tensor2 = dtype_tensor1_tensor2
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        init_all_as_kwargs_np={
+            "data": tensor1,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"other": tensor2},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # __rsub__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -7781,6 +7822,42 @@ def test_torch_instance_sign(
     ),
 )
 def test_torch_instance_fmod(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"other": x[1]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# fmod_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="fmod_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        min_value=-100,
+        max_value=100,
+    ),
+)
+def test_torch_instance_fmod_(
     dtype_and_x,
     frontend,
     frontend_method_data,
