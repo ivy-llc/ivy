@@ -893,7 +893,7 @@ class Tensor:
     def __mul__(self, other):
         return torch_frontend.mul(self, other)
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"1.11.0 and below": "bfloat16"}, "torch")
     def __matmul__(self, other):
         return torch_frontend.matmul(self, other)
 
