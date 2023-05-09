@@ -623,7 +623,7 @@ def values_and_ndindices(
         )
     ),
     reduction=st.sampled_from(["sum", "min", "max", "replace"]),
-    ground_truth_backend="torch",
+    ground_truth_backend="tensorflow",
 )
 def test_scatter_flat(
     x,
