@@ -419,13 +419,6 @@ def test_cummin(
     if "torch" in backend_fw.__name__:
         assume(not test_flags.as_variable[0])
         assume(not test_flags.test_gradients)
-    # gradient tests have been disabled for cummin as the gradients computed by the
-    # backends are inconsistent with tensorflow returning a zero gradient when the
-    # product is zero (discrete optimization), and torch and jax returning a non-zero
-    # gradient based on the value used to compute the product even if it's zero
-    # ToDo: Revisit this later
-    if np.abs(np.min(np.abs(x[0])) - 0) < 1e-4:
-        assume(not test_flags.test_gradients)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
@@ -437,8 +430,8 @@ def test_cummin(
         axis=axis,
         reverse=reverse,
         dtype=castable_dtype,
-        rtol_=1e-1,
-        atol_=1e-1,
+        rtol_=1e-4,
+        atol_=1e-4,
     )
 
 
