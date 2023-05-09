@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy.functional.frontends.paddle import promote_types_of_paddle_inputs
+from .tensor import Tensor
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -8,4 +8,5 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 @to_ivy_arrays_and_back
 def to_tensor(data, dtype=None, place=None, stop_gradient=True):
-    return ivy.array(data, dtype=dtype, device=place)
+    array = ivy.array(data, dtype=dtype, device=place)
+    return Tensor(array, dtype=dtype, place=place)
