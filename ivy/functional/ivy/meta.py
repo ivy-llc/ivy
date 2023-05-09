@@ -584,8 +584,6 @@ def reptile_step(
 
     Examples
     -------------------
-    >>> from ivy.func_wrapper import handle_array_function
-    >>> from ivy.functional.ivy.gradients import gradient_descent_update
     >>> import ivy
     >>> from ivy.functional.ivy.gradients import _variable
     >>> def inner_cost_fn(batch_in, v):
@@ -599,10 +597,8 @@ def reptile_step(
     >>> print(cost)
     ivy.array(1.4485182)
 
-    >>> print(gradients)
-    {
-        latent: ivy.array([-139.9569855])
-    }
+    >>> print(gradients.latent)
+    latent: ivy.array([-139.9569855])
 
     >>> batch = ivy.Container({"x": ivy.arange(1, 4, dtype="float32")})
     >>> variables = ivy.Container(
@@ -613,15 +609,11 @@ def reptile_step(
     >>> print(cost)
     ivy.array(0.9880483)
 
-    >>> print(gradients)
-    {
-        latent: ivy.array([-13.01766968, -13.01766968])
-    }
+    >>> print(gradients.latent)
+    ivy.array([-13.01766968, -13.01766968])
 
-    >>> print(firsts)
-    {
-        latent: ivy.array([[1.02197957, 2.02197981]])
-    }
+    >>> print(firsts.latent)
+    ivy.array([[1.02197957, 2.02197981]])
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
