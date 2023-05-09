@@ -366,13 +366,6 @@ class Shape:
             return Shape(self.dims + other.dims)
 
     @property
-    def as_dimension(self):
-        if isinstance(self._shape, Shape):
-            return self._shape
-        else:
-            return Shape(self._shape)
-
-    @property
     def shape(self):
         return self._shap
 
@@ -452,12 +445,11 @@ class Shape:
             shape is not None for shape in self._shape
         )
 
-        # @property
-        # def num_elements(self):
-        # if self.is_fully_defined():
-        # return functools.reduce(operator.mul, self.as_list(), 1)
-        # else:
-        # return None
+    property
+
+    def num_elements(self):
+        if not self.is_fully_defined():
+            return None
 
     @property
     def assert_is_fully_defined(self):
