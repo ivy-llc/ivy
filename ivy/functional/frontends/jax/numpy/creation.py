@@ -213,8 +213,3 @@ def csingle(x):
 @to_ivy_arrays_and_back
 def cdouble(x):
     return ivy.astype(x, ivy.complex128)
-
-
-@to_ivy_arrays_and_back
-def compress(condition, a, *, axis=None):
-    return ivy.compress(condition, a, axis=axis)
