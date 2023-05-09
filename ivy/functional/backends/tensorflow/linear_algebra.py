@@ -797,6 +797,11 @@ def vector_to_skew_symmetric_matrix(
     ret = tf.concat((row1, row2, row3), -2)
     return ret
 
+
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def lu(
     A: tf.Tensor,
     /,
@@ -805,5 +810,13 @@ def lu(
     permute_l: bool = 0,
     out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor, tf.Tensor]:
-    # not unpacking properly, still implementing
-    return tf.linalg.lu(A)
+    res = namedtuple("PLU", ["P", "L", "U"])
+    dtype = A.dtype
+    m, n = tf.shape(A)
+    lu, permutation = tf.linalg.lu(A)
+    P = tf.cast(tf.equal(permutation[None, :], tf.range(m, dtype=permutation.dtype)[:, None]), dtype=dtype)
+    k = tf.minimum(m, n)
+    L = tf.linalg.set_diag(tf.linalg.band_part(lu, -1, 0)[:, :k] + tf.eye(m, k, dtype=dtype),
+                           tf.ones((m,), dtype=dtype))
+    U = tf.linalg.band_part(lu, 0, -1)[:k, :]
+    return res(P, L, U)

@@ -2707,6 +2707,7 @@ def lu(
     /,
     *,
     pivot: bool = True,
+    permute_l: bool = False,
     out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
     """

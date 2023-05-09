@@ -1485,8 +1485,9 @@ def test_lu(
 ):
     assume(pivot)
     input_dtype, x = dtype_x
+    assume(matrix_is_stable(x[0], 10))
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend='jax',
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,

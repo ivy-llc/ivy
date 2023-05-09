@@ -537,10 +537,15 @@ def vector_to_skew_symmetric_matrix(
     return jnp.concatenate((row1, row2, row3), -2)
 
 
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def lu(
     A: JaxArray,
     /,
     *,
+    pivot: bool = 0,
     permute_l: bool = 0,
     out: Optional[JaxArray] = None
 ) -> Tuple[JaxArray, JaxArray, JaxArray]:

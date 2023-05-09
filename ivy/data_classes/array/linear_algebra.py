@@ -1053,3 +1053,13 @@ class _ArrayWithLinearAlgebra(abc.ABC):
             )
         """
         return ivy.vander(self._data, N=N, increasing=increasing, out=out)
+
+    def lu(
+        self: ivy.Array,
+        /,
+        *,
+        pivot: bool = True,
+        permute_l: bool = False,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.lu(self._data, pivot=pivot, permute_l=permute_l, out=out)

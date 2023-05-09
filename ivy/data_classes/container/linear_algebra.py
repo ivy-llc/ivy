@@ -3139,3 +3139,51 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             increasing=increasing,
             out=out,
         )
+
+    @staticmethod
+    def _static_lu(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        pivot: bool = True,
+        permute_l: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "lu",
+            x1,
+            pivot=pivot,
+            permute_l=permute_l,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def lu(
+        self: ivy.Container,
+        /,
+        *,
+        pivot: bool = True,
+        permute_l: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self._static_lu(
+            self,
+            pivot=pivot,
+            permute_l=permute_l,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

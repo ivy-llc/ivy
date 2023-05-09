@@ -492,19 +492,20 @@ def vector_to_skew_symmetric_matrix(
 
 vector_to_skew_symmetric_matrix.support_native_out = True
 
-
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def lu(
     A: np.ndarray,
     /,
-    *,
     pivot: bool = True,
     permute_l: bool = 0,
     out: Optional[Tuple[np.ndarray, np.ndarray, np.ndarray]] = None,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    dtype = A.dtype
+    res = namedtuple("PLU", ["P", "L", "U"])
     n = A.shape[0]
+    U = A.copy()
     L = np.eye(n)
     P = np.eye(n)
-    
     for i in range(n):
         for k in range(i, n):
             if ~np.isclose(U[i, i], 0.0):
@@ -514,5 +515,7 @@ def lu(
         factor = U[i + 1:, i] / U[i, i]
         L[i + 1:, i] = factor
         U[i + 1:] -= factor[:, np.newaxis] * U[i]
-
-    return P, L, U
+    P = P.astype(dtype)
+    L = L.astype(dtype)
+    U = U.astype(dtype)
+    return res(P, L, U)
