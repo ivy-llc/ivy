@@ -354,7 +354,7 @@ def test_cumsum(
     dtype_x_axis_castable=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        max_num_dims=2,
+        max_num_dims=6,
         min_value=-100,
         max_value=100,
         valid_axis=True,

@@ -1,4 +1,5 @@
 # global
+
 torch_scatter = None
 from typing import Union, Optional, Sequence, Tuple
 
@@ -330,7 +331,7 @@ def cummax(
     elif x.dtype == torch.int16 or x.dtype == torch.int8:
         x = x.to(dtype=torch.int64)
     elif x.dtype == torch.complex64 or x.dtype == torch.complex128:
-        x = x.real
+        x = x.real.to(dtype=torch.float64)
 
     if exclusive or reverse:
         if exclusive and reverse:
