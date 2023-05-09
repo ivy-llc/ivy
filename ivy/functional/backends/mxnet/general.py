@@ -336,3 +336,7 @@ def itemsize(x: mx.ndarray.NDArray, /) -> int:
 
 def strides(x: mx.ndarray.NDArray, /) -> Tuple[int]:
     return x.asnumpy().strides
+
+
+def container_types():
+    return []

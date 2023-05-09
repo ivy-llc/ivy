@@ -889,6 +889,7 @@ def _to_pairs(x, n):
         )
     return x
 
+
 def _to_dilated(x, n):
     if ivy.isscalar(x):
         return ((x, x, x),) * n

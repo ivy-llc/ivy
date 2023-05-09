@@ -19,8 +19,9 @@ def install_pkg(path, pkg, base="fw/"):
     if pkg.split("==")[0] if "==" in pkg else pkg == "torch":
         subprocess.run(
             (
-                f"pip3 install --upgrade {pkg} --target {path} --default-timeout=100 --extra-index-url"
-                " https://download.pytorch.org/whl/cu118  --no-cache-dir"
+                f"pip3 install --upgrade {pkg} --target {path} --default-timeout=100"
+                " --extra-index-url https://download.pytorch.org/whl/cu118 "
+                " --no-cache-dir"
             ),
             shell=True,
         )
@@ -28,14 +29,17 @@ def install_pkg(path, pkg, base="fw/"):
         subprocess.run(
             (
                 f"pip install --upgrade --target {path} 'jax[cuda11_local]' -f"
-                f" https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
-                f" --no-cache-dir"
+                " https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
+                " --no-cache-dir"
             ),
             shell=True,
         )
     else:
         subprocess.run(
-            f"pip3 install --upgrade {pkg} --target {path} --default-timeout=100   --no-cache-dir",
+            (
+                f"pip3 install --upgrade {pkg} --target {path} --default-timeout=100  "
+                " --no-cache-dir"
+            ),
             shell=True,
         )
 
