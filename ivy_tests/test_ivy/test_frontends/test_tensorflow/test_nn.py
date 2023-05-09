@@ -1458,17 +1458,18 @@ def _pool_args(draw):
     dims = draw(st.integers(min_value=1, max_value=3))
     data_formats = ["NWC", "NHWC", "NDHWC"]
     data_format = data_formats[dims - 1]
-    dilation = draw(st.sampled_from([None, [1] * dims, [2] * dims]))
-    return (
-        draw(
-            helpers.arrays_for_pooling(
-                min_dims=dims + 2, max_dims=dims + 2, min_side=1, max_side=4
-            )
-        ),
-        data_format,
-        draw(st.sampled_from(["MAX", "AVG"])),
-        dilation,
+    x = draw(
+        helpers.arrays_for_pooling(
+            min_dims=dims + 2, max_dims=dims + 2, min_side=1, max_side=4
+        )
     )
+
+    dilation = draw(st.sampled_from([None, [1] * dims, [2] * dims]))
+    window_size = [
+        draw(st.integers(min_value=1, max_value=x.shape[i + 1]) | st.just(1)) for _ in range(dims)
+    ]
+    
+    return x, data_format, draw(st.sampled_from(["MAX", "AVG"])), dilation, window_size
 
 
 @handle_frontend_test(
@@ -1484,7 +1485,7 @@ def test_tensorflow_pool(
     fn_tree,
     on_device,
 ):
-    (input_dtype, x, ksize, strides, padding), data_format, pooling_type, dilation = x_k_s_p_df
+    (input_dtype, x, ksize, strides, padding), data_format, pooling_type, dilation, window_size = x_k_s_p_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1494,7 +1495,7 @@ def test_tensorflow_pool(
         input=x[0],
         strides=strides,
         padding=padding,
-        window_shape=(2, 2),
+        window_shape=window_size,
         data_format=data_format,
         dilations=dilation,
         pooling_type=pooling_type,
