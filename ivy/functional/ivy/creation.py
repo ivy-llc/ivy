@@ -268,12 +268,15 @@ def arange(
 
 
 @handle_array_function
+@inputs_to_native_shapes
 @handle_out_argument
 @handle_array_like_without_promotion
 def asarray(
     obj: Union[
         ivy.Array,
         ivy.NativeArray,
+        ivy.Shape,
+        ivy.NativeShape,
         bool,
         int,
         float,

@@ -32,5 +32,5 @@ def ifftshift(x, axes=None):
 
 
 @to_ivy_arrays_and_back
-def rfft(a, n=None, axis=-1, norm="backward"):
-    return ivy.rfft(a, axis=axis, norm=norm, n=n)
+def fft(a, n=None, axis=-1, norm=None):
+    return ivy.fft(ivy.astype(a, ivy.complex128), axis, norm=norm, n=n)

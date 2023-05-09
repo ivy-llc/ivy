@@ -103,6 +103,7 @@ def asarray(
     obj: Union[
         torch.Tensor,
         np.ndarray,
+        torch.Size,
         bool,
         int,
         float,
@@ -410,7 +411,6 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
                 linspace_method(strt, stp, num, device=device)
                 for strt, stp in zip(start, stop)
             ]
-        torch.cat(res, -1).reshape(start_shape + [num])
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
             start = start.unsqueeze(-1)
