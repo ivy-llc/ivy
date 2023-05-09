@@ -11,6 +11,7 @@ import warnings
 
 import numpy as np
 import psutil
+import subprocess
 from hypothesis import strategies as st, assume
 
 try:
@@ -614,8 +615,9 @@ def get_gpu_mem_usage(device='gpu:0'):
 def test_clear_cached_mem_on_dev():
     devices = _get_possible_devices()
     for device in devices:
+        # Testing on only GPU since clearing cache mem is relevant
+        # for only CUDA devices
         if 'gpu' in device:
-            print(device)
             arr = ivy.random_normal(shape=(10000,10000), dtype="float32", device=device)
             del arr
             before = get_gpu_mem_usage(device)
@@ -624,13 +626,40 @@ def test_clear_cached_mem_on_dev():
             assert before > after
 
 
-# Still to Add #
-# ---------------#
+def get_cpu_percent():
+    output = subprocess.check_output(['top', '-bn1'])
+    cpu_percent = float(re.search(b'%Cpu\(s\):\s+([\d.]+)\s+us', output).group(1))
+    return cpu_percent
 
 
-# clear_cached_mem_on_dev
-# used_mem_on_dev # working fine for cpu
-# percent_used_mem_on_dev # working fine for cpu
-# dev_util # working fine for cpu
-# tpu_is_available
-# _assert_dev_correct_formatting
+@handle_test(fn_tree="dev_util")
+def test_dev_util():
+    devices = _get_possible_devices()
+    for device in devices:
+        # The internally called psutil.cpu_percent() has a unique behavior where it returns 0 
+        # as usage when run the second time in same line so simple 
+        # assert psutil.cpu_percent() == ivy.dev_util(device) isn't possible
+        if "cpu" in device:
+            assert 100 > ivy.dev_util(device) > 0
+            # Comparing CPU utilization using top. Two percentiles won't be directly equal
+            # but absolute difference should be below a safe threshold
+            assert abs(get_cpu_percent() - ivy.dev_util(device)) < 10
+        elif 'gpu' in device:
+            handle = _get_nvml_gpu_handle(device)
+            assert ivy.dev_util(device) == pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
+
+
+@handle_test(fn_tree="tpu_is_available")
+def test_tpu_is_available():
+    import tensorflow as tf
+    try:
+        resolver = tf.distribute.cluster_resolver.TPUClusterResolver()
+        tf.config.experimental_connect_to_cluster(resolver)
+        tf.tpu.experimental.initialize_tpu_system(resolver)
+        tf.config.list_logical_devices("TPU")
+        tf.distribute.experimental.TPUStrategy(resolver)
+        ground_truth =  True
+    except ValueError:
+        ground_truth =  False
+
+    assert ivy.tpu_is_available() == ground_truth
