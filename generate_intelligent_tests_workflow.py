@@ -60,8 +60,7 @@ for i in range(1, total_jobs + 1):
     print("        id: tests")
     print("        run: |")
     print(
-        f"          git clone -b master{i} https://github.com/unifyai/Mapping.git"
-        " --depth 1"
+        f"          git clone -b master{i} https://github.com/unifyai/Mapping.git"" --depth 1"
     )
     print("          pip install pydriller")
     print("          cp Mapping/tests.pbz2 ivy/")
