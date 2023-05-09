@@ -2500,8 +2500,8 @@ def test_tensorflow_greater_equal(
         x=x[0],
         y=x[1],
     )
-    
-    
+
+
 # in_top_k
 @handle_frontend_test(
     fn_tree="tensorflow.math.in_top_k",
@@ -2514,13 +2514,7 @@ def test_tensorflow_greater_equal(
     test_with_out=st.just(False),
 )
 def test_tensorflow_in_top_k(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    k
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, k
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2531,5 +2525,5 @@ def test_tensorflow_in_top_k(
         on_device=on_device,
         targets=x[0],
         pred=x[1],
-        k=k
+        k=k,
     )
