@@ -468,9 +468,9 @@ def test_function(
     ):
         if fw.backend not in fw_list or not ivy.nested_argwhere(
             all_as_kwargs_np,
-            lambda x: x.dtype in fw_list[fw.backend]
-            if isinstance(x, np.ndarray)
-            else None,
+            lambda x: (
+                x.dtype in fw_list[fw.backend] if isinstance(x, np.ndarray) else None
+            ),
         ):
             gradient_test(
                 fn=fn_name,
@@ -682,9 +682,11 @@ def test_frontend_function(
             if is_ret_tuple:
                 ret = ivy.nested_map(
                     ret,
-                    lambda _x: arrays_to_frontend(create_frontend_array)(_x)
-                    if not _is_frontend_array(_x)
-                    else _x,
+                    lambda _x: (
+                        arrays_to_frontend(create_frontend_array)(_x)
+                        if not _is_frontend_array(_x)
+                        else _x
+                    ),
                     include_derived=True,
                 )
             elif not _is_frontend_array(ret):
@@ -840,11 +842,11 @@ def test_frontend_function(
             # create frontend framework args
             args_frontend = ivy.nested_map(
                 args_np,
-                lambda x: ivy.native_array(x)
-                if isinstance(x, np.ndarray)
-                else ivy.as_native_dtype(x)
-                if isinstance(x, ivy.Dtype)
-                else x,
+                lambda x: (
+                    ivy.native_array(x)
+                    if isinstance(x, np.ndarray)
+                    else ivy.as_native_dtype(x) if isinstance(x, ivy.Dtype) else x
+                ),
                 shallow=False,
             )
             kwargs_frontend = ivy.nested_map(
@@ -1714,13 +1716,15 @@ def test_frontend_method(
         )
         args_method_frontend = ivy.nested_map(
             args_method_np,
-            lambda x: ivy.native_array(x)
-            if isinstance(x, np.ndarray)
-            else ivy.as_native_dtype(x)
-            if isinstance(x, ivy.Dtype)
-            else ivy.as_native_dev(x)
-            if isinstance(x, ivy.Device)
-            else x,
+            lambda x: (
+                ivy.native_array(x)
+                if isinstance(x, np.ndarray)
+                else (
+                    ivy.as_native_dtype(x)
+                    if isinstance(x, ivy.Dtype)
+                    else ivy.as_native_dev(x) if isinstance(x, ivy.Device) else x
+                )
+            ),
             shallow=False,
         )
         kwargs_method_frontend = ivy.nested_map(

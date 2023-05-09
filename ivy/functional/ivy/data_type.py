@@ -1258,17 +1258,21 @@ def default_int_dtype(
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_argwhere(
                 input,
-                lambda x: ivy.dtype(x) == "uint64"
-                if ivy.is_array(x)
-                else x > 9223372036854775807 and x != ivy.inf,
+                lambda x: (
+                    ivy.dtype(x) == "uint64"
+                    if ivy.is_array(x)
+                    else x > 9223372036854775807 and x != ivy.inf
+                ),
                 stop_after_n_found=1,
             ):
                 ret = ivy.uint64
             elif ivy.nested_argwhere(
                 input,
-                lambda x: ivy.dtype(x) == "int64"
-                if ivy.is_array(x)
-                else x > 2147483647 and x != ivy.inf,
+                lambda x: (
+                    ivy.dtype(x) == "int64"
+                    if ivy.is_array(x)
+                    else x > 2147483647 and x != ivy.inf
+                ),
                 stop_after_n_found=1,
             ):
                 ret = ivy.int64
@@ -1368,9 +1372,11 @@ def default_uint_dtype(
             is_native = lambda x: ivy.is_native_array(x)
             if ivy.nested_argwhere(
                 input,
-                lambda x: ivy.dtype(x) == "uint64"
-                if is_native(x)
-                else x > 9223372036854775807 and x != ivy.inf,
+                lambda x: (
+                    ivy.dtype(x) == "uint64"
+                    if is_native(x)
+                    else x > 9223372036854775807 and x != ivy.inf
+                ),
                 stop_after_n_found=1,
             ):
                 ret = ivy.uint64
@@ -1580,8 +1586,10 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        "supported_dtypes and unsupported_dtypes attributes cannot both exist \
-        in a particular backend",
+        (
+            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+            "in a particular backend"
+        ),
     )
     supported_dtypes = set(_get_dtypes(fn, complement=False))
     if recurse:
@@ -1618,8 +1626,10 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        "supported_dtypes and unsupported_dtypes attributes cannot both exist \
-        in a particular backend",
+        (
+            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+            "in a particular backend"
+        ),
     )
     unsupported_dtypes = set(_get_dtypes(fn, complement=True))
     if recurse:
