@@ -13,12 +13,21 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
+<<<<<<< HEAD
 @integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -90,9 +99,15 @@ def sinc(
     return ivy.current_backend(x).sinc(x, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+=======
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def lcm(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -129,9 +144,15 @@ def lcm(
     return ivy.current_backend().lcm(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+=======
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def fmax(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -173,9 +194,15 @@ def fmax(
     return ivy.current_backend().fmax(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+=======
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def fmin(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -217,10 +244,17 @@ def fmin(
     return ivy.current_backend().fmin(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+=======
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def trapz(
     y: ivy.Array,
     /,
@@ -274,9 +308,15 @@ def trapz(
     return ivy.current_backend().trapz(y, x=x, dx=dx, axis=axis, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+=======
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def float_power(
     x1: Union[ivy.Array, float, list, tuple],
     x2: Union[ivy.Array, float, list, tuple],
@@ -320,10 +360,17 @@ def float_power(
     return ivy.current_backend().float_power(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+=======
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def exp2(
     x: Union[ivy.Array, float, list, tuple],
     /,
@@ -357,9 +404,15 @@ def exp2(
     return ivy.current_backend().exp2(x, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+=======
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 @handle_exceptions
 def copysign(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
@@ -402,10 +455,17 @@ def copysign(
     return ivy.current_backend().copysign(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -458,11 +518,19 @@ def count_nonzero(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -514,9 +582,15 @@ def nansum(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+=======
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def gcd(
     x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
@@ -554,11 +628,19 @@ def gcd(
     return ivy.current_backend().gcd(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -618,10 +700,17 @@ def isclose(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+=======
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def angle(
     z: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -663,10 +752,17 @@ def angle(
     return ivy.current_backend(z).angle(z, deg=deg, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+=======
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def imag(
     val: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -699,10 +795,17 @@ def imag(
     return ivy.current_backend(val).imag(val, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+=======
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -758,9 +861,15 @@ def nan_to_num(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+=======
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def logaddexp2(
     x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
     x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
@@ -795,10 +904,17 @@ def logaddexp2(
     return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+=======
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -830,9 +946,15 @@ def signbit(
     return ivy.current_backend(x).signbit(x, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+=======
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def hypot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -865,10 +987,17 @@ def hypot(
     return ivy.current_backend(x1, x2).hypot(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+=======
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -919,10 +1048,17 @@ def diff(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -992,10 +1128,17 @@ def allclose(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+=======
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def fix(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -1028,11 +1171,19 @@ def fix(
     return ivy.current_backend(x).fix(x, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def nextafter(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1068,11 +1219,19 @@ def nextafter(
     return ivy.current_backend(x1, x2).nextafter(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def zeta(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
@@ -1110,10 +1269,17 @@ def zeta(
     return ivy.current_backend(x, q).zeta(x, q, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1188,9 +1354,15 @@ def gradient(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+=======
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 @handle_exceptions
 def xlogy(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1232,11 +1404,19 @@ def xlogy(
     return ivy.current_backend(x, y).xlogy(x, y, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def real(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1297,11 +1477,19 @@ def real(
     return ivy.current_backend(x).real(x, out=out)
 
 
+<<<<<<< HEAD
 @inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_ivy_arrays
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def binarizer(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1338,11 +1526,19 @@ def binarizer(
     return ret
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1395,11 +1591,19 @@ def conj(
     return ivy.current_backend(x).conj(x, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def ldexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1435,11 +1639,19 @@ def ldexp(
     return ivy.current_backend(x1, x2).ldexp(x1, x2, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def lerp(
     input: Union[ivy.Array, ivy.NativeArray],
     end: Union[ivy.Array, ivy.NativeArray],
@@ -1550,11 +1762,19 @@ def lerp(
 lerp.mixed_function = True
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def frexp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

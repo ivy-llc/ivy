@@ -759,14 +759,24 @@ def is_ivy_sparse_array(x):
     return isinstance(x, ivy.SparseArray)
 
 
+<<<<<<< HEAD
 @inputs_to_native_arrays
 @handle_exceptions
+=======
+@handle_exceptions
+@inputs_to_native_arrays
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def is_native_sparse_array(x):
     return ivy.current_backend().is_native_sparse_array(x)
 
 
+<<<<<<< HEAD
 @inputs_to_native_arrays
 @handle_exceptions
+=======
+@handle_exceptions
+@inputs_to_native_arrays
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def native_sparse_array(
     data=None,
     *,

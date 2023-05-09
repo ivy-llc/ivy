@@ -12,10 +12,17 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -51,11 +58,19 @@ def l2_normalize(
     return current_backend(x).l2_normalize(x, axis=axis, out=out)
 
 
+<<<<<<< HEAD
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
 @handle_array_like_without_promotion
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -150,11 +165,19 @@ def batch_norm(
 batch_norm.mixed_function = True
 
 
+<<<<<<< HEAD
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
 @handle_array_like_without_promotion
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def instance_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -258,10 +281,17 @@ def instance_norm(
 instance_norm.mixed_function = True
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

@@ -18,12 +18,21 @@ from ivy.utils.exceptions import handle_exceptions
 # ------#
 
 
+<<<<<<< HEAD
 @handle_array_function
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],

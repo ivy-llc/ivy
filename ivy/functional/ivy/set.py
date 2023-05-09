@@ -17,11 +17,19 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -141,11 +149,19 @@ def unique_all(
     return ivy.current_backend(x).unique_all(x, axis=axis)
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -242,12 +258,21 @@ def unique_inverse(
     return ivy.current_backend(x).unique_inverse(x)
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -328,11 +353,19 @@ def unique_values(
     return ivy.current_backend(x).unique_values(x, out=out)
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

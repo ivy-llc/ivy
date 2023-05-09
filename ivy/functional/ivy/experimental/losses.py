@@ -10,10 +10,17 @@ from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.ivy.losses import _reduce_loss
 
 
+<<<<<<< HEAD
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def binary_cross_entropy_with_logits(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

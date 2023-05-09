@@ -19,12 +19,21 @@ from ivy.func_wrapper import (
 # -------------------#
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -123,12 +132,21 @@ def argmax(
     )
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -228,11 +246,19 @@ def argmin(
     )
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -366,12 +392,21 @@ def nonzero(
     )
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -457,12 +492,21 @@ def where(
 # ------#
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

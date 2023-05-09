@@ -226,8 +226,13 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     return len(ivy.get_all_ivy_arrays_on_dev(device))
 
 
+<<<<<<< HEAD
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def print_all_ivy_arrays_on_dev(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -270,9 +275,15 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -819,11 +830,19 @@ def unset_default_device() -> None:
 # Device Allocation #
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -1143,8 +1162,13 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
     return tuple(supported)
 
 
+<<<<<<< HEAD
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     Return the supported devices of the current backend's function.
@@ -1184,8 +1208,13 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     return tuple(supported_devices)
 
 
+<<<<<<< HEAD
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     Return the unsupported devices of the current backend's function.

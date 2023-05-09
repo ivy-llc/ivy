@@ -301,12 +301,21 @@ def _variable_data(
     return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
+<<<<<<< HEAD
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -566,10 +575,17 @@ grad.computes_gradients = True
 # Optimizer Steps #
 
 
+<<<<<<< HEAD
 @handle_array_function
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
@@ -720,10 +736,17 @@ adam_step.out_index = 0
 # Optimizer Updates #
 
 
+<<<<<<< HEAD
 @handle_array_function
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
@@ -843,10 +866,17 @@ def optimizer_update(
     return w
 
 
+<<<<<<< HEAD
 @handle_array_function
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -936,10 +966,17 @@ def gradient_descent_update(
     return ivy.optimizer_update(w, dcdw, lr, stop_gradients=stop_gradients, out=out)
 
 
+<<<<<<< HEAD
 @handle_array_function
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -987,10 +1024,17 @@ def lars_update(
     )
 
 
+<<<<<<< HEAD
 @handle_array_function
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1152,10 +1196,17 @@ def adam_update(
 adam_update.out_index = 0
 
 
+<<<<<<< HEAD
 @handle_array_function
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],

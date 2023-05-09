@@ -14,10 +14,17 @@ from ivy.utils.exceptions import handle_exceptions
 #       Bins as str is not defined (check Numpy implementation).
 #       Permit multiple axis.
 #       Modify documentation to match the above modifications.
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -144,10 +151,17 @@ def histogram(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def median(
     input: ivy.Array,
     /,
@@ -188,11 +202,19 @@ def median(
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
 
 
+<<<<<<< HEAD
 @infer_dtype
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def nanmean(
     a: ivy.Array,
     /,
@@ -242,10 +264,17 @@ def nanmean(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -325,10 +354,17 @@ def quantile(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def corrcoef(
     x: ivy.Array,
     /,
@@ -340,10 +376,17 @@ def corrcoef(
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def nanmedian(
     input: ivy.Array,
     /,
@@ -400,10 +443,17 @@ def nanmedian(
     )
 
 
+<<<<<<< HEAD
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+=======
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def bincount(
     x: ivy.Array,
     /,

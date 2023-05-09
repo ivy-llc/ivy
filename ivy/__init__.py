@@ -251,10 +251,67 @@ class Shape:
         self._shape = self._shape * other
         return self
 
+<<<<<<< HEAD
+=======
+    def __rmul__(self, other):
+        self._shape = other * self._shape
+        return self
+
+    def __bool__(self):
+        return self._shape.__bool__()
+
+    def __div__(self, other):
+        return self._shape // other
+
+    def __mod__(self, other):
+        return self._shape % other
+
+    def __rdiv__(self, other):
+        return other // self._shape
+
+    def __rmod__(self, other):
+        return other % self._shape
+
+    def __reduce__(self):
+        return (self._shape,)
+
+    def as_dimension(self, other):
+        if isinstance(other, self._shape):
+            return other
+        else:
+            return self._shape
+
+    def __sub__(self, other):
+        try:
+            self._shape = self._shape - other
+        except TypeError:
+            self._shape = self._shape - list(other)
+        return self
+
+    def __rsub__(self, other):
+        try:
+            self._shape = other - self._shape
+        except TypeError:
+            self._shape = list(other) - self._shape
+        return self
+
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
     def __eq__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
 
+<<<<<<< HEAD
+=======
+    def __int__(self):
+        if hasattr(self._shape, "__int__"):
+            res = self._shape.__int__()
+        else:
+            res = int(self._shape)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
     def __ge__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape >= other
@@ -280,6 +337,29 @@ class Shape:
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
 
+<<<<<<< HEAD
+=======
+    def __delattr__(self, item):
+        return super().__delattr__(item)
+
+    def __hash__(self):
+        return hash(self._shape)
+
+    def __str__(self):
+        return "?" if self._shape is None else str(self._shape)
+
+    def __sizeof__(self):
+        return len(self._shape) if self._shape is not None else 0
+
+    def __iter__(self):
+        if self._dims is None:
+            raise ValueError("Cannot iterate over a shape")
+        return iter(d for d in self._shape)
+
+    def __dir__(self):
+        return self._shape.__dir__()
+
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
     @property
     def shape(self):
         return self._shape
