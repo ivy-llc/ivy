@@ -522,6 +522,57 @@ def pool(
         data_format=None, 
         dilations=None, 
         name=None):
+
+    if data_format is None or not data_format.startswith("NC"):
+        data_format = "channel_last"
+    else:
+        data_format = "channel_first"
+
+    if len(ivy.shape(input)) == 3:
+        if pooling_type == 'AVG':
+            return ivy.avg_pool1d(
+                input,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format)
+        elif pooling_type == 'MAX':
+            return ivy.max_pool1d(
+                input,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format)
+    elif len(ivy.shape(input)) == 4:
+        if pooling_type == 'AVG':
+            return ivy.avg_pool2d(
+                input,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format)
+        elif pooling_type == 'MAX':
+            return ivy.max_pool2d(
+                input,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format)
+    else:
+        if pooling_type == 'AVG':
+            return ivy.avg_pool3d(
+                input,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format)
+        elif pooling_type == 'MAX':
+            return ivy.max_pool3d(
+                input,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format)   
     return ivy.pool(
         input,
         window_shape,

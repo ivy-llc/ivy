@@ -173,7 +173,7 @@ def pool(
         data_format: str = "",
         dilations=None,
         name=None,
-        out: Optional[ivy.Array] = None):
+        out: Optional[ivy.Array] = None) -> ivy.Array:
     
     # pylint: disable=line-too-long
     """Performs an N-D pooling operation.
