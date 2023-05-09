@@ -9,7 +9,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from jaxlib.xla_extension import ArrayImpl
 from . import backend_version
-import numpy as np
+
 
 # Array API Standard #
 # -------------------#
@@ -226,7 +226,7 @@ def cummax(
     elif x.dtype == jnp.int16 or x.dtype == jnp.int8:
         x = x.astype(jnp.int64)
     elif x.dtype == jnp.complex128 or x.dtype == jnp.complex64:
-        x = jnp.real(x).astype(jnp.float64)
+        x = jnp.real(x)
     if exclusive or (reverse and exclusive):
         if exclusive and reverse:
             indices = __find_cummax_indices(jnp.flip(x, axis=axis), axis=axis)
@@ -264,36 +264,39 @@ def __find_cummax_indices(
     n, indice, indices = 0, [], []
 
     if type(x[0]) == ArrayImpl and len(x[0].shape) >= 1:
-        if axis >= 1:
+        if axis == 1:
+
             for ret1 in x:
-                indice = __find_cummax_indices(ret1, axis=axis - 1)
-                indices.append(indice)
+                indices.append(
+                    [n := idx if idx == 0 else n if ret1[n] > y
+                        else (n := idx) for idx, y in enumerate(ret1)])
         else:
-            it = np.nditer(x, flags=['multi_index'])
-            indices, z_list, n1 = x.copy(), [], {}
-            indices = jnp.zeros(np.array(indices.shape), dtype=x.dtype)
-            for p in it:
-                z_list.append((p, it.multi_index))
-            z_list = sorted(z_list, key=lambda i: i[1])
-            for y, y_index in z_list:
-                multi_index = y_index
-                if tuple(multi_index[1:]) not in n1:
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices = indices.at[y_index].set(multi_index[0])
-                elif y >= x[tuple([n1[tuple(multi_index[1:])]] +
-                                  list(multi_index[1:]))]:
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices = indices.at[y_index].set(multi_index[0])
+            n1 = {}
+            for index, ret1 in enumerate(x):
+                indice = []
+                if type(ret1) == ArrayImpl and len(x[0].shape) >= 1:
+                    for idx1, x1 in enumerate(ret1):
+                        if index == 0 or x[index][idx1] >= x[n1[idx1]][idx1]:
+                            n1[idx1] = index
+                            indice.append(index)
+                        else:
+                            indice.append(n1[idx1])
                 else:
-                    indices = indices.at[y_index].set(n1[tuple(multi_index[1:])])
+                    indice.append(index)
+                indices.append(indice)
     else:
         n, indices = 0, []
         for idx, y in enumerate(x):
-            if idx == 0 or x[n] <= y:
+            if x[n] > y:
+                indices.append(n)
+            elif idx == 0:
                 n = idx
-            indices.append(n)
+                indices.append(idx)
+            else:
+                n = idx
+                indices.append(idx)
 
-    return jnp.asarray(indices, dtype='int64')
+    return jnp.asarray(indices)
 
 
 def einsum(

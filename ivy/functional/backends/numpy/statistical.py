@@ -259,13 +259,12 @@ def cummax(
     elif x.dtype == np.int16 or x.dtype == np.int8:
         x = x.astype(np.int64)
     elif x.dtype == np.complex128 or x.dtype == np.complex64:
-        x = np.real(x).astype(np.float64)
+        x = np.real(x)
     if exclusive or reverse:
         if exclusive and reverse:
             indices = __find_cummax_indices(np.flip(x, axis=axis), axis=axis)
             x = np.maximum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=x.dtype)
-            x = np.swapaxes(x, axis, -1)
-            indices = np.swapaxes(indices, axis, -1)
+            x, indices = np.swapaxes(x, axis, -1), np.swapaxes(indices, axis, -1)
             x, indices = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1),\
                 np.concatenate((np.zeros_like(indices[..., -1:]),
                                 indices[..., :-1]), -1)
@@ -295,38 +294,40 @@ def __find_cummax_indices(
         x: np.ndarray,
         axis: int = 0,
 ) -> np.ndarray:
-    indices = []
-    if type(x[0]) == np.ndarray:
-        if axis >= 1:
-            for ret1 in x:
-                indice = __find_cummax_indices(ret1, axis=axis - 1)
-                indices.append(indice)
+    indice, indices = [], []
 
+    if type(x[0]) == np.ndarray:
+        if axis == 1:
+            for ret1 in x:
+                indices.append(
+                    __find_indices_values(ret1, indice=[]))
         else:
-            it = np.nditer(x, flags=['multi_index'])
-            indices, z_list, n1 = x.copy(), [], {}
-            indices.fill(0)
-            for p in it:
-                z_list.append((p, it.multi_index))
-            z_list = sorted(z_list, key=lambda i: i[1])
-            for y, y_index in z_list:
-                multi_index = y_index
-                if tuple(multi_index[1:]) not in n1:
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                elif y >= x[tuple([n1[tuple(multi_index[1:])]] +
-                                  list(multi_index[1:]))]:
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                else:
-                    indices[y_index] = n1[tuple(multi_index[1:])]
+            n1 = {}
+            for index, ret1 in enumerate(x):
+                indice = []
+                for idx1, x1 in enumerate(ret1):
+                    if index == 0 or x[index][idx1] >= x[n1[idx1]][idx1]:
+                        n1[idx1] = index
+                        indice.append(index)
+                    else:
+                        indice.append(n1[idx1])
+                indices.append(indice)
     else:
-        n = 0
-        for index1, ret1 in enumerate(x):
-            if x[n] <= ret1 or index1 == 0:
-                n = index1
-            indices.append(n)
-    return np.array(indices, dtype=np.int64)
+        indices = __find_indices_values(x, indice=[])
+
+    return np.array(indices)
+
+
+def __find_indices_values(
+        ret1: np.ndarray,
+        indice: list):
+    n = 0
+    for idx, y in enumerate(ret1):
+        if ret1[n] <= y or idx == 0:
+            n = idx
+        indice.append(n)
+
+    return indice
 
 
 @_scalar_output_to_0d_array
