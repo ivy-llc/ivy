@@ -49,6 +49,10 @@ class Tensor:
         return self.ivy_array.shape
 
     @property
+    def real(self):
+        return self.ivy_array.real()
+
+    @property
     def imag(self):
         return self.ivy_array.imag()
 
@@ -136,8 +140,8 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
-    def sum(self):
-        return torch_frontend.sum(self)
+    def sum(self, dim=None, keepdim=False, *, dtype=None):
+        return torch_frontend.sum(self, dim=dim, keepdim=keepdim, dtype=dtype)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def sin(self):
@@ -767,9 +771,6 @@ class Tensor:
     def acosh(self):
         return torch_frontend.acosh(self)
 
-    def real(self):
-        return torch_frontend.real(self)
-
     def masked_fill(self, mask, value):
         # TODO: replace with torch_frontend.where when it's added
         return torch_frontend.tensor(ivy.where(mask, value, self))
@@ -846,6 +847,24 @@ class Tensor:
 
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+    def trunc(self):
+        return torch_frontend.trunc(self)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+    def trunc_(self):
+        self.ivy_array = self.trunc().ivy_array
+        return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+    def fix(self):
+        return torch_frontend.fix(self)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+    def fix_(self):
+        self.ivy_array = self.fix().ivy_array
+        return self
 
     # Special Methods #
     # -------------------#
@@ -1069,5 +1088,15 @@ class Tensor:
         return torch_frontend.sign(self._ivy_array)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def fmod(self, other, *, out=None):
+        return torch_frontend.fmod(self, other, out=out)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def fmod_(self, other):
+        self.ivy_array = self.fmod(other).ivy_array
+        return self
+    
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def logdet(self):
         return torch_frontend.log(torch_frontend.det(self))
+

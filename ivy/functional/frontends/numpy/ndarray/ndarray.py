@@ -209,6 +209,27 @@ class ndarray:
             dtype=dtype,
             subok=subok,
         )
+    
+    def conj(
+        self,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    ):
+        return np_frontend.conj(
+            self.ivy_array,
+            out=out,
+            where=where,
+            casting=casting,
+            order=order,
+            dtype=dtype,
+            subok=subok,
+        )
 
     def cumprod(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumprod(
@@ -488,3 +509,8 @@ class ndarray:
 
     def __mod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
+
+    def ptp(self, *, axis=None, out=None, keepdims=False):
+        xmax = self.max(axis=axis, out=out, keepdims=keepdims)
+        xmin = self.min(axis=axis, out=out, keepdims=keepdims)
+        return np_frontend.subtract(xmax, xmin)
