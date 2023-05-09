@@ -509,6 +509,15 @@ def set_paddle_backend():
     set_backend("paddle")
 
 
+def set_mxnet_backend():
+    """
+    Set MXNet to be the global backend.
+
+    equivalent to `ivy.set_backend("mx")`.
+    """  # noqa
+    set_backend("mxnet")
+
+
 @prevent_access_locally
 def previous_backend():
     """

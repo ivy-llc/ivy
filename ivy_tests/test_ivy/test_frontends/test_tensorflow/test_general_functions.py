@@ -1872,6 +1872,40 @@ def test_tensorflow_reverse(
     )
 
 
+# scan
+@handle_frontend_test(
+    fn_tree="tensorflow.scan",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=['float32'],
+        num_arrays=1,
+        min_num_dims=2,
+        max_dim_size=3
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_scan(
+    *,
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    def _test_fn(a, x):
+        return a + x
+
+    x_dtype, elems = dtypes_values
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        fn=_test_fn,
+        elems=elems[0],
+    )
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.norm",
     aliases=["tensorflow.norm"],

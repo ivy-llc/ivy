@@ -15,10 +15,10 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def msort(
     a: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -52,10 +52,10 @@ def msort(
     return ivy.current_backend().msort(a, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
     /,

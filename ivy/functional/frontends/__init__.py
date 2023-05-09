@@ -3,12 +3,16 @@ versions = {
     "tensorflow": "2.9.0",
     "numpy": "1.23.2",
     "jax": "0.3.16",
+    "scipy": "1.10.1",
+    "paddle": "2.4.2",
 }
 
 import importlib
 
 from . import numpy
 from . import jax
+from . import paddle
+from . import scipy
 from . import tensorflow
 from . import torch
 
@@ -97,3 +101,5 @@ set_frontend_to_specific_version(torch)
 set_frontend_to_specific_version(tensorflow)
 set_frontend_to_specific_version(jax)
 set_frontend_to_specific_version(numpy)
+set_frontend_to_specific_version(scipy)
+set_frontend_to_specific_version(paddle)
