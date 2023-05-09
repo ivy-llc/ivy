@@ -75,7 +75,7 @@ def test_numpy_fft(dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_
 @handle_frontend_test(
     fn_tree="numpy.fft.rfft",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex"), array_api_dtypes=True
+        available_dtypes=helpers.get_dtypes("numeric"), array_api_dtypes=True
     ),
 )
 def test_numpy_rftt(*, dtype_and_x, frontend, test_flags, fn_tree, on_device):
