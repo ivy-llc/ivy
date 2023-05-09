@@ -1092,6 +1092,6 @@ class Tensor:
         return torch_frontend.fmod(self, other, out=out)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
-    def fmod_(self, other, *, out=None):
-        self.ivy_array = self.fmod(other, out=out).ivy_array
+    def fmod_(self, other):
+        self.ivy_array = self.fmod(other).ivy_array
         return self
