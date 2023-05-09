@@ -46,6 +46,11 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
+    def all(self, *, axis=None, out=None, keepdims=False):
+        return jax_frontend.numpy.all(
+            self._ivy_array, axis=axis, keepdims=keepdims, out=out
+        )
+
     def argmax(
         self,
         /,
@@ -72,6 +77,14 @@ class DeviceArray:
             out=out,
             keepdims=keepdims,
             where=where,
+        )
+    
+    def cumprod(self, axis=None, dtype=None, out=None):
+        return jax_frontend.numpy.cumprod(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
         )
 
     def __add__(self, other):
