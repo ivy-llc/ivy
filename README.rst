@@ -276,11 +276,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
 
 The model's output can be visualized as follows:
 
-.. raw:: html
-
-   <div align="center">
-      <img width="50%" src="https://i.imgur.com/DUc97i2.gif">
-   </div>
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/webm/video_hq.webm
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
 covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more!
