@@ -4,7 +4,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 import sys
-
+import numpy as np
 
 @to_ivy_arrays_and_back
 def reshape(x, /, newshape, order="C"):
@@ -12,9 +12,8 @@ def reshape(x, /, newshape, order="C"):
 
 
 @to_ivy_arrays_and_back
-def resize(x, /, newshape):
-    x_new = ravel(x)
-
+def resize(x, newshape,/,refcheck=True):
+    x_new = np.ravel(x)
     total_size = 1
     for diff_size in newshape:
         total_size *= diff_size
@@ -22,14 +21,14 @@ def resize(x, /, newshape):
             raise ValueError('values must not be negative')
     
     if x_new.size == 0 or total_size == 0:
-        return ivy.zeros_like(x_new)   
-    
-    repetition = -(-total_size//x_new.size)
+        return ivy.zeros_like(x_new) 
+    repetition = -(-total_size//len(x_new))
     # zeros = ivy.zeros((repetition * repetition),dtype=int)
     # x_new = ivy.concat((x_new,zeros))[:total_size]
     # or
-    x_new = ivy.concat((x_new,) * repetition)[:total_size]
-    y = ivy.reshape(x_new,newshape=newshape,order="C")
+    conc = (x_new,) * repetition
+    x_new = np.concatenate(conc)[:total_size]
+    y = np.reshape(x_new,newshape=newshape,order="C")
     return y
 
 

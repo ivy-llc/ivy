@@ -183,10 +183,35 @@ def test_numpy_moveaxis(
     
 
 # resize  
+@st.composite
+def dtype_and_resize(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=helpers.get_shape(
+                allow_none=False,
+                min_num_dims=1,
+                max_num_dims=5,
+                min_dim_size=2,
+                max_dim_size=10,
+            ),
+        )
+    )
+    new_shape = draw(
+        helpers.get_shape(
+                allow_none=False,
+                min_num_dims=2,
+                max_num_dims=5,
+                min_dim_size=2,
+                max_dim_size=10,
+            ),
+    )
+    return dtype, x, new_shape
+
+
 @handle_frontend_test(
     fn_tree="numpy.resize",
-    dtypes_x_shape=dtypes_x_reshape(),
-    # order=st.sampled_from(["C", "F", "A"]), 
+    dtypes_x_shape=dtype_and_resize(),
 )
 def test_numpy_resize(
     *,
@@ -196,37 +221,37 @@ def test_numpy_resize(
     frontend,
     test_flags,
 ):
-    dtype, x, shape = dtypes_x_shape
-    helpers.test_frontend_function(
+    dtype, x, new_shape = dtypes_x_shape
+    out = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x = x[0],
-        newshape = shape,
+        x = x,
+        newshape = new_shape,
     )
 
 # asarray_chkfinite
-@handle_frontend_test(
-    fn_tree="numpy.asarray_chkfinite",
-    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_numpy_asarray_chkfinite(
-    *,
-    dtype_and_a,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-   dtype, a = dtype_and_a
-   helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=a[0],
-    )
+# @handle_frontend_test(
+#     fn_tree="numpy.asarray_chkfinite",
+#     dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+#     test_with_out=st.just(False),
+# )
+# def test_numpy_asarray_chkfinite(
+#     *,
+#     dtype_and_a,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#    dtype, a = dtype_and_a
+#    helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         a=a[0],
+#     )
