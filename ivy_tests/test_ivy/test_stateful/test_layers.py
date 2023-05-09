@@ -1106,6 +1106,7 @@ def test_maxpool1d_layer(
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    padding_type = 'explicit' if isinstance(padding, tuple) else 'valid'
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1115,6 +1116,7 @@ def test_maxpool1d_layer(
             "stride": stride,
             "padding": padding,
             "device": on_device,
+            "data_format": "NWC",
             "dtype": input_dtype[0],
         },
         method_input_dtypes=input_dtype,
@@ -1123,6 +1125,9 @@ def test_maxpool1d_layer(
         method_name=method_name,
         test_gradients=test_gradients,
         on_device=on_device,
+        atol=1e-5,
+        rtol=1e-5,
+        padding_type=padding_type
     )
 # MaxPool2D
 @handle_method(
