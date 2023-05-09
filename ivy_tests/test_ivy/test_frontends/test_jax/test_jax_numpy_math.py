@@ -2704,17 +2704,18 @@ def test_jax_numpy_polyder(
 # polyint
 @st.composite
 def _get_array_values_m_and_k(draw):
-    dtype_and_x= draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=1,
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_arrays=1,
+            min_num_dims=1,
+            max_num_dims=1,
+            min_dim_size=1,
         )
     )
     dtype, x = dtype_and_x
     m = draw(st.integers(min_value=0, max_value=10))
-    max_bound = m-1
+    max_bound = m - 1
     if max_bound <= m:
         k = None
     else:

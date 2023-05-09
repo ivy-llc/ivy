@@ -106,7 +106,7 @@ straight away going through the `Setting up Ivy`_ section, or dive deep into Ivy
 If you would like to contribute, you can join our growing `Community`_ 🌍, check out our `Contributing`_ guide,
 and take a look at the `open tasks`_ if you'd like to dive straight in 🧑‍💻 
 
-`unify.ai <https://unify.ai>`_ **together 🦾**
+**Let's** `unify.ai <https://unify.ai>`_ **together 🦾**
 
 
 Contents

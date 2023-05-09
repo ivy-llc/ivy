@@ -52,7 +52,14 @@ def arange(
 @asarray_handle_nestable
 def asarray(
     obj: Union[
-        JaxArray, bool, int, float, NestedSequence, SupportsBufferProtocol, np.ndarray
+        JaxArray,
+        bool,
+        int,
+        float,
+        tuple,
+        NestedSequence,
+        SupportsBufferProtocol,
+        np.ndarray,
     ],
     /,
     *,
