@@ -623,7 +623,7 @@ def sinh(x, name=None):
 
 
 @to_ivy_arrays_and_back
-def softmax(logits, axis=-1):
+def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 

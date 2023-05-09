@@ -3814,7 +3814,7 @@ def isin(
 
 @handle_exceptions
 @handle_nestable
-@to_native_arrays_and_back
+@inputs_to_native_arrays
 def itemsize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

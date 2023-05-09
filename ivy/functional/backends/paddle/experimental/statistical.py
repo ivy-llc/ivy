@@ -242,10 +242,16 @@ def nanmedian(
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
     keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
     overwrite_input: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        if dtype is None:
+            dtype = input.dtype
+        input = input.cast("float32")
+        paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
+    return paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(

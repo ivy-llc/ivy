@@ -283,31 +283,22 @@ def scatter_flat(
     if ivy.exists(size) and ivy.exists(target):
         ivy.utils.assertions.check_equal(len(target.shape), 1)
         ivy.utils.assertions.check_equal(target.shape[0], size)
+    if not target_given:
+        reduction = "replace"
     if reduction == "sum":
-        if not target_given:
-            target = jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].add(updates)
     elif reduction == "replace":
         if not target_given:
             target = jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].set(updates)
     elif reduction == "min":
-        if not target_given:
-            target = jnp.ones([size], dtype=updates.dtype) * 1e12
         target = target.at[indices].min(updates)
-        if not target_given:
-            target = jnp.where(target == 1e12, 0.0, target)
     elif reduction == "max":
-        if not target_given:
-            target = jnp.ones([size], dtype=updates.dtype) * -1e12
         target = target.at[indices].max(updates)
-        if not target_given:
-            target = jnp.where(target == -1e12, 0.0, target)
     else:
         raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
+            "reduction is {}, but it must be one of "
+            '"sum", "min", "max" or "replace"'.format(reduction)
         )
     return _to_device(target)
 
@@ -375,35 +366,22 @@ def scatter_nd(
     if ivy.exists(shape) and ivy.exists(target):
         ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
+    if not target_given:
+        reduction = "replace"
     if reduction == "sum":
-        if not target_given:
-            target = jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].add(updates)
     elif reduction == "replace":
         if not target_given:
             target = jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].set(updates)
     elif reduction == "min":
-        if not target_given:
-            target = jnp.ones(shape, dtype=updates.dtype) * 1e12
         target = target.at[indices_tuple].min(updates)
-        if not target_given:
-            target = jnp.asarray(
-                jnp.where(target == 1e12, 0.0, target), dtype=updates.dtype
-            )
     elif reduction == "max":
-        if not target_given:
-            target = jnp.ones(shape, dtype=updates.dtype) * -1e12
         target = target.at[indices_tuple].max(updates)
-        if not target_given:
-            target = jnp.asarray(
-                jnp.where(target == -1e12, 0.0, target), dtype=updates.dtype
-            )
     else:
         raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
+            "reduction is {}, but it must be one of "
+            '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, _to_device(target))

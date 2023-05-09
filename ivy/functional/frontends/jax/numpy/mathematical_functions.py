@@ -676,3 +676,8 @@ def product(
         else:
             a[0] *= initial
     return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
+def round(x, decimals=0, /):
+    return ivy.round(x, decimals)
