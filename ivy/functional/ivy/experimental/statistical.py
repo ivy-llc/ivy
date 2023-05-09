@@ -14,10 +14,10 @@ from ivy.utils.exceptions import handle_exceptions
 #       Bins as str is not defined (check Numpy implementation).
 #       Permit multiple axis.
 #       Modify documentation to match the above modifications.
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -144,10 +144,10 @@ def histogram(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def median(
     input: ivy.Array,
     /,
@@ -188,11 +188,11 @@ def median(
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def nanmean(
     a: ivy.Array,
     /,
@@ -242,10 +242,10 @@ def nanmean(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -325,10 +325,10 @@ def quantile(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def corrcoef(
     x: ivy.Array,
     /,
@@ -340,10 +340,10 @@ def corrcoef(
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def nanmedian(
     input: ivy.Array,
     /,
@@ -400,10 +400,10 @@ def nanmedian(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def bincount(
     x: ivy.Array,
     /,
