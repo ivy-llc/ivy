@@ -486,7 +486,7 @@ def scan(
     swap_memory=False,
     infer_shape=True,
     reverse=False,
-    name=None
+    name=None,
 ):
     elems = ivy.asarray(elems)
     return ivy.associative_scan(elems, fn, reverse=reverse)
@@ -507,10 +507,7 @@ norm.supported_dtypes = (
 
 @to_ivy_arrays_and_back
 def unique(x, out_idx=ivy.int32, name=None):
-    y, idx = [], []
-    for i in x:
-        if i not in y:
-            y.append(i)
-        idx.append(y.index(i))
-    y, idx = ivy.array(y), ivy.astype(idx, out_idx)
+    ret = ivy.unique_all(x, by_value=False)
+    y = ret[0]
+    idx = ivy.astype(ret[2], out_idx)
     return y, idx

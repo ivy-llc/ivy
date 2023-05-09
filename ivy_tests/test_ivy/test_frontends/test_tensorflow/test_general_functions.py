@@ -1835,10 +1835,7 @@ def test_tensorflow_reverse(
 @handle_frontend_test(
     fn_tree="tensorflow.scan",
     dtypes_values=helpers.dtype_and_values(
-        available_dtypes=['float32'],
-        num_arrays=1,
-        min_num_dims=2,
-        max_dim_size=3
+        available_dtypes=["float32"], num_arrays=1, min_num_dims=2, max_dim_size=3
     ),
     test_with_out=st.just(False),
 )
@@ -1906,22 +1903,29 @@ def test_tensorflow_norm(
 
 @handle_frontend_test(
     fn_tree="tensorflow.unique",
-    dtype=helpers.get_dtypes("integer"),
-    x=st.lists(st.integers(1, 10), min_size=10, max_size=100),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=["int64", "int32"],
+        min_value=1,
+        max_value=100,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
     test_with_out=st.just([False]),
 )
 def test_tensorflow_unique(
     *,
-    dtype,
-    x,
+    dtype_x,
     frontend,
     fn_tree,
     test_flags,
     on_device,
 ):
+    dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        x=x,
+        x=x[0],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
