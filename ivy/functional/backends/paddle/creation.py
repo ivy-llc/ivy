@@ -100,6 +100,7 @@ def asarray(
         bool,
         int,
         float,
+        list,
         NestedSequence,
         SupportsBufferProtocol,
     ],
@@ -373,14 +374,11 @@ def linspace(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if not isinstance(start, paddle.Tensor):
+    if not isinstance(start, (paddle.Tensor, int)):
         start = paddle.to_tensor(start)
 
-    if not isinstance(start, paddle.Tensor):
+    if not isinstance(start, (paddle.Tensor, int)):
         start = paddle.to_tensor(stop)
-
-    if not isinstance(start, paddle.Tensor):
-        start = paddle.to_tensor(num)
 
     if axis is None:
         axis = -1
@@ -411,6 +409,8 @@ def linspace(
         and ans[0] != start
     ):
         ans[0] = start
+    if ivy.is_ivy_array(ans):
+        ans = paddle.to_tensor(ans.data)
     if "int" in str(dtype) and paddle.is_floating_point(ans):
         ans = paddle.floor(ans)
     return to_device(ans.cast(dtype), device)

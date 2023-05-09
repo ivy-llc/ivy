@@ -166,12 +166,12 @@ class NestedSequence(Protocol[_T_co]):
 # -------------------#
 
 
-@infer_device
-@handle_array_function
-@outputs_to_ivy_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_device
 def arange(
     start: Number,
     /,
@@ -267,13 +267,16 @@ def arange(
     )
 
 
-@handle_array_function
-@handle_out_argument
 @handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@handle_array_function
 def asarray(
     obj: Union[
         ivy.Array,
         ivy.NativeArray,
+        ivy.Shape,
+        ivy.NativeShape,
         bool,
         int,
         float,
@@ -358,14 +361,14 @@ def asarray(
     )
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@outputs_to_ivy_arrays
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_dtype
+@infer_device
 def zeros(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -420,14 +423,14 @@ def zeros(
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@outputs_to_ivy_arrays
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_dtype
+@infer_device
 def ones(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -505,13 +508,13 @@ def ones(
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -610,13 +613,13 @@ def full_like(
     )
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -727,13 +730,13 @@ def ones_like(
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -844,11 +847,11 @@ def zeros_like(
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -892,11 +895,11 @@ def tril(
     return current_backend(x).tril(x, k=k, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -989,13 +992,13 @@ def empty(
     return current_backend().empty(shape, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1039,13 +1042,13 @@ def empty_like(
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@outputs_to_ivy_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_dtype
+@infer_device
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -1185,13 +1188,13 @@ def eye(
     )
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1294,11 +1297,11 @@ def linspace(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
 @handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
@@ -1411,14 +1414,14 @@ def meshgrid(
     )
 
 
-@infer_device
-@handle_array_function
-@inputs_to_native_arrays
-@outputs_to_ivy_arrays
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@outputs_to_ivy_arrays
+@inputs_to_native_arrays
+@handle_array_function
+@infer_device
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
@@ -1521,11 +1524,11 @@ def full(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1572,11 +1575,11 @@ def from_dlpack(
 array = asarray
 
 
-@handle_array_function
-@inputs_to_native_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_arrays
+@handle_array_function
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1735,12 +1738,12 @@ def native_array(
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
-@infer_device
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_device
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -1848,13 +1851,13 @@ def one_hot(
     )
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
