@@ -553,7 +553,7 @@ def reptile_step(
     batch
         The input batch
     cost_fn
-        callable for the cost function, receivng the task-specific sub-batch as
+        callable for the cost function, receiving the task-specific sub-batch as
         a positional parameter variables as a keyword-only parameter 'v'
     variables
         Variables to be optimized
