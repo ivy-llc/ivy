@@ -460,7 +460,7 @@ class ndarray:
         return np_frontend.absolute(self)
 
     def __invert__(self):
-        return np_frontend.invert(self)
+        return np_frontend.inv(self)
 
     def __array__(self, dtype=None, /):
         if not dtype:
