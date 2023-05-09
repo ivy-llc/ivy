@@ -723,7 +723,7 @@ def test_frontend_function(
                     if test_flags.generate_frontend_arrays:
                         assert ret_array.ivy_array.data is out_array.ivy_array.data
                     else:
-                        assert ret.data is out.data
+                        assert ret_array.data is out_array.data
                 assert ret_array is out_array
         else:
             if ivy.native_inplace_support and not any(

@@ -11,6 +11,36 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def invert_permutation(
+    x: Union[ivy.Array, ivy.NativeArray, list, tuple],
+    /,
+) -> ivy.Array:
+    """
+    Computes the inverse of an index permutation.
+
+    Parameters
+    ----------
+    x
+        1-D integer array-like, which represents indices of a zero-based array and is
+        supposedly used to permute the array.
+
+    Returns
+    -------
+    ret
+        the inverse of the index permutation represented by ''x''
+
+    Examples
+    --------
+    >>> a = ivy.asarray([0, 3, 1, 2])
+    >>> ivy.invert_permutation(a)
+    ivy.array([0, 2, 3, 1])
+    """
+    return ivy.current_backend().invert_permutation(x)
+
+
 # Array API Standard #
 # -------------------#
 
