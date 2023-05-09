@@ -1489,7 +1489,16 @@ class MaxPool2D(Module):
             data_format=self._data_format,
         )
 
+    
+        return ivy.max_pool3d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
 
+        
 class AvgPool2D(Module):
     def __init__(
         self,
