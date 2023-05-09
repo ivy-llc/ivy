@@ -3865,11 +3865,10 @@ def test_tensorflow_Zeta(
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Where",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         min_value=0,
         max_value=10,
-        min_num_dims=1,
     ),
 )
 def test_tensorflow_Where(
@@ -3880,7 +3879,7 @@ def test_tensorflow_Where(
     test_flags,
     on_device,
 ):
-    input_dtype, [condition] = dtype_and_input
+    input_dtype, condition = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
