@@ -13,8 +13,8 @@ def abs(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     where: Optional[Union[bool, tf.Tensor, tf.Variable]] = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not tf.is_tensor(x):
         x = tf.convert_to_tensor(x)
@@ -22,7 +22,7 @@ def abs(
     if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
     if where:
-        return tf.abs(x, where=where)
+        return ivy.where(x != 0, tf.abs(x), 0)
     return tf.abs(x)
 
 

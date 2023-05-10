@@ -15,8 +15,8 @@ def abs(
     x: Union[float, np.ndarray],
     /,
     *,
-    out: Optional[np.ndarray] = None,
     where: Optional[Union[bool, np.ndarray]] = True,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if where:
         return np.absolute(x, out=out, where=where)

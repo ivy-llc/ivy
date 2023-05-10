@@ -24,11 +24,12 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
-        where
-            optional boolean mask, apply the function only to the values that are True
+
         Returns
         -------
         ret

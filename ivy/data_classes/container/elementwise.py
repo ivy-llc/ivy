@@ -81,8 +81,8 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
         where: Optional[ivy.Container] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.abs. This method simply wraps the
@@ -104,11 +104,12 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-        where
-            optional output container,  where would be a boolean mask.
+
 
         Returns
         -------

@@ -524,14 +524,14 @@ def abs(
     x: Union[float, torch.Tensor],
     /,
     *,
-    out: Optional[torch.Tensor] = None,
     where: Optional[Union[bool, torch.Tensor]] = True,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if x.dtype is torch.bool:
         return x
     if where:
-        return torch.abs(x, out=out, where=where)
+        return ivy.where(x != 0, torch.abs(x), 0)
     return torch.abs(x, out=out)
 
 

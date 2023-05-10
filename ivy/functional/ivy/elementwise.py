@@ -29,8 +29,8 @@ def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-    where: Optional[ivy.Array] = False,
 ) -> ivy.Array:  # noqa
     """Calculate the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
@@ -51,12 +51,14 @@ def abs(
     Parameters
     ----------
     x
-        input array. Should have a numeric data type.
+        input array. Should have a numeric data type
+    where
+        optional output array, a boolean mask
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    where
-        optional output array, a boolean mask
+
 
     Returns
     -------

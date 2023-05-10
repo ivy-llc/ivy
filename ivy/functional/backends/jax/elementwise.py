@@ -16,8 +16,8 @@ def abs(
     x: Union[float, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = None,
     out: Optional[JaxArray] = None,
-    where: Optional[ivy.Array] = None,
 ) -> JaxArray:
     if "bool" in str(x.dtype):
         return x
