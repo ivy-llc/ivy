@@ -91,7 +91,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[jnp.dtype] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)

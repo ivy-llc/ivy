@@ -109,7 +109,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[np.dtype] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None and not ivy.is_bool_dtype(x):

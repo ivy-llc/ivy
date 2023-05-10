@@ -65,7 +65,7 @@ def sum(
     *,
     axis: Optional[Union[(int, Sequence[int])]] = None,
     dtype: Optional[None] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise NotImplementedError("mxnet.sum Not Implemented")

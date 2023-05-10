@@ -169,7 +169,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[paddle.dtype] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = x.dtype if dtype is None else dtype
