@@ -2,7 +2,7 @@
 
 
 def available_frameworks():
-    available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch", "paddle"]
+    available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
     try:
         import jax
 
