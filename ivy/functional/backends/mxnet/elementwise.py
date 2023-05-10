@@ -485,7 +485,7 @@ def sin(
         ret = mx.nd.sin(x)
 
     if "int" in str(x_dtype):
-        ret = ret.astype('float32')
+        ret = ret.astype("float32")
     else:
         ret = ret.astype(x_dtype)
 

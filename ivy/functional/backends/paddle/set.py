@@ -56,9 +56,9 @@ def unique_all(
         counts = paddle.gather(counts, sort_idx)
         ivy_paddle = ivy.current_backend()
         inv_sort_idx = ivy_paddle.invert_permutation(sort_idx)
-        inverse_indices = ivy_paddle.vmap(
-            lambda y: paddle.gather(inv_sort_idx, y)
-        )(inverse_indices)
+        inverse_indices = ivy_paddle.vmap(lambda y: paddle.gather(inv_sort_idx, y))(
+            inverse_indices
+        )
 
     return Results(
         values.cast(x_dtype),

@@ -9,7 +9,7 @@ import _pickle as cPickle
 
 # Shared Map
 tests = {}
-BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
+BACKENDS = ["numpy", "jax", "tensorflow", "torch", "paddle"]
 
 os.system("git config --global --add safe.directory /ivy")
 N = 40
