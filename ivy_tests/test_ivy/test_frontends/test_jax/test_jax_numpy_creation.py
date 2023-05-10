@@ -538,7 +538,7 @@ def test_jax_numpy_empty_like(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        prototype=x[0],
         dtype=dtype[0],
         shape=shape,
     )
