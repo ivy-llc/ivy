@@ -239,6 +239,12 @@ def is_tensor(x, name=None):
 
 @to_ivy_arrays_and_back
 def gather(params, indices, axis=None, batch_dims=0, name=None):
+    if axis is None:
+        axis = batch_dims
+    else:
+        axis = axis % len(params.shape)
+    if axis < batch_dims:
+        axis = batch_dims
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -471,6 +477,22 @@ def reverse(tensor, axis, name=None):
 
 
 @to_ivy_arrays_and_back
+def scan(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    infer_shape=True,
+    reverse=False,
+    name=None,
+):
+    elems = ivy.asarray(elems)
+    return ivy.associative_scan(elems, fn, reverse=reverse)
+
+
+@to_ivy_arrays_and_back
 def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     return tf_frontend.linalg.norm(
         tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
@@ -484,5 +506,13 @@ norm.supported_dtypes = (
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
 def meshgrid(*arrays, sparse=False, indexing):
     return ivy.meshgrid(arrays, sparse, indexing)
+=======
+def unique(x, out_idx=ivy.int32, name=None):
+    ret = ivy.unique_all(x, by_value=False)
+    y = ret[0]
+    idx = ivy.astype(ret[2], out_idx)
+    return y, idx
+>>>>>>> 375b95b5521c98831fb643fc6f91fc5d94e775f8

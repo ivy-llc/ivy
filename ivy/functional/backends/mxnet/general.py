@@ -322,6 +322,21 @@ def is_native_array(
 
 def to_numpy(x: mx.ndarray.NDArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
+        if x.shape == ():
+            new_arr = x.asnumpy()
+            return new_arr
         return x.copy().asnumpy()
     else:
         return x.asnumpy()
+
+
+def itemsize(x: mx.ndarray.NDArray, /) -> int:
+    return x.asnumpy().itemsize
+
+
+def strides(x: mx.ndarray.NDArray, /) -> Tuple[int]:
+    return x.asnumpy().strides
+
+
+def container_types():
+    return []

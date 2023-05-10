@@ -56,6 +56,7 @@ def test_unique_values(
         valid_axis=True,
     ),
     none_axis=st.booleans(),
+    by_value=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     ground_truth_backend="numpy",
@@ -64,6 +65,7 @@ def test_unique_all(
     *,
     dtype_x_axis,
     none_axis,
+    by_value,
     test_flags,
     backend_fw,
     fn_name,
@@ -82,6 +84,7 @@ def test_unique_all(
         fn_name=fn_name,
         x=x[0],
         axis=axis,
+        by_value=by_value,
     )
 
 
