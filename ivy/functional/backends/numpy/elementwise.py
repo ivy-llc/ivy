@@ -18,7 +18,7 @@ def abs(
     where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return ivy.where(where, np.absolute(x), x)
+    return ivy.where(where, np.absolute(x, out=out), x)
 
 
 abs.support_native_out = True
