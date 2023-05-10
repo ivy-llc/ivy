@@ -435,7 +435,10 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
         return linspace_method(start, stop, num, dtype=dtype, device=device)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
-        res = torch.transpose(res, axis, -1)
+        ndim = res.ndim
+        perm = list(range(0, ndim - 1))
+        perm.insert(axis % (ndim + 1), ndim - 1)
+        res = res.permute(perm)
     return res.to(device)
 
 
