@@ -207,10 +207,8 @@ def zeros_like(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.zeros_like Not Implemented")
-
-
-array = asarray
+    ret = mx.ndarray.zeros_like(x, dtype=dtype)
+    return ivy.to_device(ret, device)
 
 
 def copy_array(
