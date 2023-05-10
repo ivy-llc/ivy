@@ -27,8 +27,11 @@ def acos(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if where:
+        return ivy.where(x != 0, tf.acos(x), 0)
     return tf.acos(x)
 
 

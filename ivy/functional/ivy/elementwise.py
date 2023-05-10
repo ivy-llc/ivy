@@ -115,8 +115,9 @@ def acos(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """
     Calculate an implementation-dependent approximation of the principal value of the
     inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element x_i
@@ -135,6 +136,9 @@ def acos(
     ----------
     x
         input array. Should have a floating-point data type.
+    where
+        optional output array, a boolean mask
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -181,7 +185,7 @@ def acos(
         b: ivy.array([0., 1.57, 3.14])
     }
     """
-    return ivy.current_backend(x).acos(x, out=out)
+    return ivy.current_backend(x).acos(x, out=out, where=where)
 
 
 @handle_exceptions

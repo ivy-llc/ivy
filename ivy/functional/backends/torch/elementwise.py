@@ -333,8 +333,16 @@ greater_equal.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def acos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def acos(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
+    if where:
+        return ivy.where(x != 0, torch.acos(x), 0)
     return torch.acos(x, out=out)
 
 

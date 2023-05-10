@@ -21,7 +21,15 @@ abs.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def acos(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def acos(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if where & np.arccos(x, out=out):
+        return np.arccos(x, out=out, where=where)
     return np.arccos(x, out=out)
 
 

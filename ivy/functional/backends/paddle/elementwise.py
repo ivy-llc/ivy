@@ -507,7 +507,13 @@ def greater_equal(
     },
     backend_version,
 )
-def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def acos(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -517,6 +523,8 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         ret_dtype = x.dtype
+        if where:
+            ivy.where(x != 0, paddle.abs(x.cast("float32")).cast(x.dtype), 0)
         return paddle.acos(x.cast("float32")).cast(ret_dtype)
     return paddle.acos(x)
 

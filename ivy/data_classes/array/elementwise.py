@@ -37,7 +37,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.abs(self, out=out)
 
-    def acosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def acosh(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.acosh. This method simply wraps the
         function, and so the docstring for ivy.acosh also applies to this method with
@@ -48,6 +53,8 @@ class _ArrayWithElementwise(abc.ABC):
         self
             input array whose elements each represent the area of a hyperbolic sector.
             Should have a real-valued floating-point data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -66,7 +73,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([1.32, 2.99, 0.  ])
         """
-        return ivy.acosh(self._data, out=out)
+        return ivy.acosh(self._data, where=where, out=out)
 
     def acos(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
