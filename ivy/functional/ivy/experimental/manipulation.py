@@ -1168,7 +1168,11 @@ def pad(
 
     if mode == "dilated":
         pad_width = _to_dilated(pad_width, input.ndim)
-        padded = _interior_pad(input, constant_values, pad_width)
+        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
+            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
+        else:
+            padding_value = constant_values
+        padded = _interior_pad(input, padding_value, pad_width)
         return ivy.native_array(padded)
 
     pad_width = _to_pairs(pad_width, input.ndim)
