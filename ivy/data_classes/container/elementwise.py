@@ -16,8 +16,8 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
-        where: bool = False,
     ) -> ivy.Container:  # noqa
         """
         ivy.Container static method variant of ivy.abs. This method simply wraps the
