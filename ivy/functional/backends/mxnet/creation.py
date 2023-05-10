@@ -149,13 +149,13 @@ def meshgrid(
 
 
 def ones(
-    *size: Union[(int, Sequence[int])],
     shape: Optional[ivy.NativeShape] = None,
+    *,
     dtype: None,
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.ones Not Implemented")
+    return mx.nd.ones(shape, dtype=dtype, ctx=device)
 
 
 def ones_like(
@@ -166,7 +166,7 @@ def ones_like(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.ones_like Not Implemented")
+    return mx.nd.ones_like(x, dtype=dtype, ctx=device)
 
 
 def tril(
