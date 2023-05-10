@@ -207,6 +207,31 @@ def cumprod(
 cumprod.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
+def cummax(
+    x: np.ndarray,
+    /,
+    *,
+    axis: int = 0,
+    reverse: bool = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if dtype is None:
+        if x.dtype == "bool":
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
+    if not (reverse):
+        return np.maximum.accumulate(x, axis, dtype=dtype, out=out)
+    elif reverse:
+        x = np.maximum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+        return np.flip(x, axis=axis)
+
+
+cummax.support_native_out = True
+
+
 def cumsum(
     x: np.ndarray,
     axis: int = 0,
