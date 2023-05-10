@@ -698,6 +698,10 @@ class Tensor:
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int32, copy=False)
         return self
 
+    def half(self, memory_format=None):
+        self.ivy_array = ivy.astype(self.ivy_array, ivy.float16, copy=False)
+        return self
+
     def bool(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.bool, copy=False)
         return self
