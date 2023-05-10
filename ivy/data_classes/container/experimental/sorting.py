@@ -18,9 +18,11 @@ class _ContainerWithSortingExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.invert_permutation. This method
-        simply wraps the function, and so the docstring for ivy.invert_permutation also
-        applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.invert_permutation.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.invert_permutation also applies to this method with minimal
+        changes.
         """
         return ContainerBase.cont_multi_map_in_function(
             "invert_permutation",
@@ -41,9 +43,11 @@ class _ContainerWithSortingExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.invert_permutation. This method
-        simply wraps the function, and so the docstring for ivy.invert_permutation also
-        applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.invert_permutation.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.invert_permutation also applies to this method with minimal
+        changes.
         """
         return self.static_invert_permutation(
             self,

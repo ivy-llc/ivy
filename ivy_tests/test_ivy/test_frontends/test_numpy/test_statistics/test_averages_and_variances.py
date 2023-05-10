@@ -384,6 +384,8 @@ def test_numpy_nanmedian(
         out=None,
         keepdims=keep_dims,
     )
+
+
 @handle_frontend_test(
     fn_tree="numpy.var",
     dtype_and_x=statistical_dtype_values(function="var"),

@@ -45,9 +45,9 @@ def unique_all(
         counts = np.take(counts, sort_idx)
         indices = np.take(indices, sort_idx)
         inv_sort_idx = ivy.current_backend().invert_permutation(sort_idx)
-        inverse_indices = np.vectorize(
-            lambda y: np.take(inv_sort_idx, y)
-        )(inverse_indices)
+        inverse_indices = np.vectorize(lambda y: np.take(inv_sort_idx, y))(
+            inverse_indices
+        )
 
     return Results(
         values.astype(x.dtype),

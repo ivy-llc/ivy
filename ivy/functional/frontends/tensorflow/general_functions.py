@@ -486,7 +486,7 @@ def scan(
     swap_memory=False,
     infer_shape=True,
     reverse=False,
-    name=None
+    name=None,
 ):
     elems = ivy.asarray(elems)
     return ivy.associative_scan(elems, fn, reverse=reverse)
