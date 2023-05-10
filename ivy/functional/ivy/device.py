@@ -458,7 +458,7 @@ def used_mem_on_dev(
         The device string to convert to native device handle.
     process_specific
         Whether to check the memory used by this python process alone. Default is
-        False. Currently, it is only supported for cpu.
+        False.
 
     Returns
     -------
