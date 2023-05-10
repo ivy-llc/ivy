@@ -228,7 +228,6 @@ def pad(
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> np.ndarray:
-
     if mode == "dilated":
         padding_value = ivy.native_array(constant_values)
         operand = _flat_array_to_1_dim_array(input).astype(padding_value.dtype)

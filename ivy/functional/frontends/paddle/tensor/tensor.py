@@ -3,10 +3,15 @@ import ivy.functional.frontends.paddle as paddle_frontend
 
 
 class Tensor:
-    def __init__(self, array):
+    def __init__(self, array, dtype=None, place="cpu", stop_gradient=True):
         self._ivy_array = (
-            ivy.array(array) if not isinstance(array, ivy.Array) else array
+            ivy.array(array, dtype=dtype, device=place)
+            if not isinstance(array, ivy.Array)
+            else array
         )
+        self._dtype = dtype
+        self._place = place
+        self._stop_gradient = stop_gradient
 
     def __repr__(self):
         return (
