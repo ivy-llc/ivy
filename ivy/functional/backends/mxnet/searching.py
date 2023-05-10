@@ -1,10 +1,10 @@
 import mxnet as mx
 from numbers import Number
 from typing import Optional, Union, Tuple
-
 import numpy as np
 
 import ivy
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def argmax(
@@ -17,7 +17,7 @@ def argmax(
     select_last_index: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.argmax Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def argmin(
@@ -30,7 +30,7 @@ def argmin(
     select_last_index: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.argmin Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def nonzero(
@@ -41,7 +41,7 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[(None, mx.ndarray.NDArray, Tuple[Union[(None, mx.ndarray.NDArray)]])]:
-    raise NotImplementedError("mxnet.nonzero Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def where(
@@ -52,7 +52,7 @@ def where(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.where Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def argwhere(
@@ -61,4 +61,4 @@ def argwhere(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.argwhere Not Implemented")
+    raise IvyNotImplementedException()

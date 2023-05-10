@@ -8,6 +8,8 @@ import mxnet as mx
 from typing import Optional, Union, Sequence
 import ivy
 
+from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def random_uniform(
     *,
@@ -19,7 +21,7 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.random_uniform Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def random_normal(
@@ -32,7 +34,7 @@ def random_normal(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.random_normal Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def multinomial(
@@ -47,7 +49,7 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.multinomial Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def randint(
@@ -61,11 +63,11 @@ def randint(
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.randint Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def seed(*, seed_value: int = 0) -> None:
-    raise NotImplementedError("mxnet.seed Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def shuffle(
@@ -75,4 +77,4 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.shuffle Not Implemented")
+    raise IvyNotImplementedException()
