@@ -1433,18 +1433,14 @@ class LSTM(Module):
 
 # Pooling #
 # --------#
-
 class MaxPool1D(Module):
     def __init__(
         self,
         kernel_size,
-        stride,
-        padding,
-        /,
-        *,
+        stride=None,
+        padding=0,
         data_format="NWC",
         device=None,
-        v=None,
         dtype=None,
     ):
         """
@@ -1452,26 +1448,26 @@ class MaxPool1D(Module):
         Parameters
         ----------
         kernel_size
-            The size of the sliding window,must be >0.
+            The size of the sliding window, must be >0.
         stride
-            The stride of the sliding window,must be > 0 Default value: kernel_size.
+            The stride of the sliding window, must be > 0. Default value: kernel_size.
         padding
-            Implicit negative infinity padding to be added on both sides,must be >=0 and <= kernel_size/2.
+            Implicit negative infinity padding to be added on both sides, must be >=0 and <= kernel_size/2.
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
         """
         self._kernel_size = kernel_size
-        self._stride = stride
+        self._stride = stride or kernel_size
         self._padding = padding
         self._data_format = data_format
         Module.__init__(self, device=device, dtype=dtype)
 
-    def _forward(self, inputs):
+    def forward(self, inputs):
         """
         Forward pass of the layer.
         Parameters
         ----------
-        x
+        inputs
             The input to the layer.
         Returns
         -------
