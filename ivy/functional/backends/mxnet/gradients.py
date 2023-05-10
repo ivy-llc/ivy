@@ -5,7 +5,7 @@ from typing import Optional, Sequence, Union
 
 
 def variable(x, /):
-    raise NotImplementedError("mxnet.variable Not Implemented")
+    return x
 
 
 def is_variable(x, /, *, exclusive=False):
