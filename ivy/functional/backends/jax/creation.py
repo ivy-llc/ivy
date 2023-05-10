@@ -358,3 +358,13 @@ def one_hot(
         res = jnp.moveaxis(res, -1, axis)
 
     return _to_device(res, device)
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[jnp.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> JaxArray:
+    return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+
