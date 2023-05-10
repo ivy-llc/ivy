@@ -11,46 +11,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
-      - run_tests_1
-      - run_tests_2
-      - run_tests_3
-      - run_tests_4
-      - run_tests_5
-      - run_tests_6
-      - run_tests_7
-      - run_tests_8
-      - run_tests_9
-      - run_tests_10
-      - run_tests_11
-      - run_tests_12
-      - run_tests_13
-      - run_tests_14
-      - run_tests_15
-      - run_tests_16
-      - run_tests_17
-      - run_tests_18
-      - run_tests_19
-      - run_tests_20
-      - run_tests_21
-      - run_tests_22
-      - run_tests_23
-      - run_tests_24
-      - run_tests_25
-      - run_tests_26
-      - run_tests_27
-      - run_tests_28
-      - run_tests_29
-      - run_tests_30
-      - run_tests_31
-      - run_tests_32
-      - run_tests_33
-      - run_tests_34
-      - run_tests_35
-      - run_tests_36
-      - run_tests_37
-      - run_tests_38
-      - run_tests_39
-      - run_tests_40
+      - run_tests
 
     steps:
       - name: Download all test results
