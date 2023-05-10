@@ -70,8 +70,8 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
             where=where,
+            out=out,
         )
 
     def abs(
@@ -134,8 +134,8 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
             where=where,
+            out=out,
         )
 
     @staticmethod
