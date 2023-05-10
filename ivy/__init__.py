@@ -1348,6 +1348,7 @@ from ivy.utils.backend.sub_backend_handler import (
 def current_sub_backends():
     return []
 
+
 # casting modes
 
 downcast_dtypes = False
@@ -1375,7 +1376,6 @@ def cast_data_types(val=True):
     global upcast_dtypes
     global downcast_dtypes
     global crosscast_dtypes
-    upcast_dtypes=val
-    downcast_dtypes=val
-    crosscast_dtypes=val
-
+    upcast_dtypes = val
+    downcast_dtypes = val
+    crosscast_dtypes = val
