@@ -357,8 +357,8 @@ def searchsorted(
 ):
     if right and side == "left":
         raise ivy.exceptions.IvyError(
-            "side and right can't be set to opposites, got side of left"
-            " while right was True"
+            "side and right can't be set to opposites,\
+            got side of left while right was True"
         )
     if right:
         side = "right"
@@ -381,3 +381,8 @@ def diag(input, diagonal=0, *, out=None):
 @to_ivy_arrays_and_back
 def clone(input):
     return ivy.copy_array(input)
+
+
+@to_ivy_arrays_and_back
+def histc(input, bins=10, min=None, max=None, *, out=None):
+    return ivy.histc(input, bins=bins, min=min, max=max, out=out)

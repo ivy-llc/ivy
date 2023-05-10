@@ -1318,3 +1318,55 @@ def test_torch_clone(
         on_device=on_device,
         input=x[0],
     )
+
+# histc
+
+
+@handle_frontend_test(
+    fn_tree="torch.histc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
+        min_num_dims=1,
+    ),
+    bins=st.integers(min_value=1, max_value=100),
+    min=st.integers(min_value=-100, max_value=100),
+    min=st.integers(min_value=-100, max_value=100),
+    max=st.integers(min_value=-100, max_value=100),
+    out=st.just(False),
+    test_with_out=st.just(False),
+    test_values=st.just(False),
+    align_corners=st.just(False),
+)
+def test_torch_histc(
+    *,
+    dtype_and_x,
+    bins,
+    min,
+    max,
+    out,
+    test_with_out,
+    test_values,
+    align_corners,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        bins=bins,
+        min=min,
+        max=max,
+        out=out,
+        test_with_out=test_with_out,
+        test_values=test_values,
+        align_corners=align_corners,
+    )
