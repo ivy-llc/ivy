@@ -36,13 +36,13 @@ from ivy.functional.ivy.device import _get_nvml_gpu_handle
 # ------- #
 
 
-def _ram_array_and_clear_test(metric_fn, size=1000000000):
+def _ram_array_and_clear_test(metric_fn, device, size=1000000000):
     # This function checks if the memory usage changes before, during and after
 
     # Measure usage before creating array
     before = metric_fn()
     # Create an array of floats, by default with 10 million elements (40 MB)
-    arr = ivy.random_normal(shape=(size,), dtype="float32", device="cpu")
+    arr = ivy.random_normal(shape=(size,), dtype="float32", device=device)
     during = metric_fn()
     # Check that the memory usage has increased
     assert before < during
@@ -522,11 +522,10 @@ def test_used_mem_on_dev():
         assert ivy.used_mem_on_dev(device) > 0
         assert ivy.used_mem_on_dev(device) < ivy.total_mem_on_dev(device)
 
-    # Testing if it's detects changes in RAM usage, cannot apply this to GPU, as we can
-    # only get the total memory usage of a GPU, not the usage by the program.
-    _ram_array_and_clear_test(
-        lambda: ivy.used_mem_on_dev(ivy.Device("cpu"), process_specific=True)
-    )
+        _ram_array_and_clear_test(
+            lambda: ivy.used_mem_on_dev(device, process_specific=True), 
+            device=device
+        )
 
 
 @handle_test(fn_tree="percent_used_mem_on_dev")
@@ -537,10 +536,11 @@ def test_percent_used_mem_on_dev():
         used = ivy.percent_used_mem_on_dev(ivy.Device(device))
         assert 0 <= used <= 100
 
-    # Same as test_used_mem_on_dev, but using percent of total memory as metric function
-    _ram_array_and_clear_test(
-        lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), process_specific=True)
-    )
+        # Same as test_used_mem_on_dev, but using percent of total memory as metric function
+        _ram_array_and_clear_test(
+            lambda: ivy.percent_used_mem_on_dev(device, process_specific=True),
+            device=device
+        )
 
 
 @handle_test(fn_tree="gpu_is_available")
