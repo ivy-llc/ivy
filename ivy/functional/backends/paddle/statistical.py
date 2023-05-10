@@ -242,6 +242,34 @@ def cumprod(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int8", "int16")}},
     backend_version,
 )
+def cummax(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    reverse: bool = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    dtype = dtype if dtype is not None else x.dtype
+    if reverse:
+        x = paddle.flip(x, axis=[axis])
+    x_unstacked = paddle.unbind(x, axis=axis)
+    cummax_x_unstacked = []
+    cummax_x_unstacked.append(x_unstacked[0])
+    for i, x_sub in enumerate(x_unstacked[1:]):
+        cummax_x_sub = paddle.maximum(cummax_x_unstacked[i], x_sub)
+        cummax_x_unstacked.append(cummax_x_sub)
+    cummax_x = paddle.stack(cummax_x_unstacked, axis=axis)
+    if reverse:
+        cummax_x = paddle.flip(cummax_x, axis=[axis])
+    return cummax_x.cast(dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int8", "int16")}},
+    backend_version,
+)
 def cummin(
     x: paddle.Tensor,
     /,
