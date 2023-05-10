@@ -505,14 +505,8 @@ norm.supported_dtypes = (
 )
 
 
-@to_ivy_arrays_and_back
-<<<<<<< HEAD
-def meshgrid(*arrays, sparse=False, indexing):
-    return ivy.meshgrid(arrays, sparse, indexing)
-=======
 def unique(x, out_idx=ivy.int32, name=None):
     ret = ivy.unique_all(x, by_value=False)
     y = ret[0]
     idx = ivy.astype(ret[2], out_idx)
     return y, idx
->>>>>>> 375b95b5521c98831fb643fc6f91fc5d94e775f8

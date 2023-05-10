@@ -1902,35 +1902,6 @@ def test_tensorflow_norm(
 
 
 @handle_frontend_test(
-<<<<<<< HEAD
-    fn_tree="tensorflow.meshgrid",
-    aliases=["tensorflow.meshgrid"],
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1,
-    ),
-    indexing=st.one_of('ij', 'xy'),
-    sparse=st.booleans(),
-)
-def test_tensorflow_meshgrid(
-        *,
-        arrays,
-        sparse,
-        indexing,
-        input_dtype,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
-):
-    dtype, arrays = dtype_and_x
-    sparse = sparse
-    indexing = indexing
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-=======
     fn_tree="tensorflow.unique",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=["int64", "int32"],
@@ -1955,16 +1926,12 @@ def test_tensorflow_unique(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         x=x[0],
->>>>>>> 375b95b5521c98831fb643fc6f91fc5d94e775f8
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-<<<<<<< HEAD
+
         arrays=arrays,
         sparse=sparse,
         indexing=indexing,
     )
-=======
-    )
->>>>>>> 375b95b5521c98831fb643fc6f91fc5d94e775f8
