@@ -21,10 +21,10 @@ def _check_valid_dimension_size(std):
     ivy.utils.assertions.check_dimensions(std)
 
 
-@handle_array_function
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_array_function
 def eigh_tridiagonal(
     alpha: Union[ivy.Array, ivy.NativeArray],
     beta: Union[ivy.Array, ivy.NativeArray],
@@ -162,11 +162,11 @@ def eigh_tridiagonal(
 eigh_tridiagonal.mixed_function = True
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -228,11 +228,11 @@ def diagflat(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -269,11 +269,11 @@ def kron(
     return current_backend(a, b).kron(a, b, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -311,10 +311,10 @@ def matrix_exp(
     return current_backend(x).matrix_exp(x, out=out)
 
 
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -373,10 +373,10 @@ def eig(
     return current_backend(x).eig(x)
 
 
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -415,11 +415,11 @@ def eigvals(
     return current_backend(x).eigvals(x)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -454,9 +454,9 @@ def adjoint(
     return current_backend(x).adjoint(x, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_exceptions
 def multi_dot(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
@@ -505,11 +505,11 @@ def multi_dot(
     return current_backend(x).multi_dot(x, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -550,10 +550,10 @@ def cond(
     return current_backend(x).cond(x, p=p, out=out)
 
 
-@to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@to_native_arrays_and_back
 def cov(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray] = None,
