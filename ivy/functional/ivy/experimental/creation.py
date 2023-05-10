@@ -206,11 +206,18 @@ def hann_window(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-def stft(signals, frame_length, frame_step, fft_length=None,
-         window_fn=hann_window,
-         pad_end=False, name=None, 
-         out: Optional[ivy.Array] = None,):
-  """Computes the [Short-time Fourier Transform][stft] of `signals`.
+def stft(
+    signals, 
+    frame_length, 
+    frame_step, 
+    fft_length=None,
+    window_fn=hann_window,
+    pad_end=False, 
+    name=None, 
+    out: Optional[ivy.Array] = None,
+):
+  """
+  Computes the [Short-time Fourier Transform][stft] of `signals`.
 
   Implemented with TPU/GPU-compatible ops and supports gradients.
 
@@ -240,9 +247,14 @@ def stft(signals, frame_length, frame_step, fft_length=None,
   [stft]: https://en.wikipedia.org/wiki/Short-time_Fourier_transform
   """
   return ivy.current_backend().stft(
-        signals, frame_length, frame_step, fft_length=fft_length,
-         window_fn=window_fn,
-         pad_end=pad_end, name=name, out=out
+      signals, 
+      frame_length, 
+      frame_step, 
+      fft_length=fft_length,
+      window_fn=window_fn,
+      pad_end=pad_end, 
+      name=name, 
+      out=out,
     )
 
 
