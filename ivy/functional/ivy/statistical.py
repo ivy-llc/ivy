@@ -1210,23 +1210,23 @@ def cummax(
     >>> x = ivy.array([1, 5, 2, 0])
     >>> y = ivy.cummax(x)
     >>> print(y)
-    ivy.array([1, 1, 1, 0])
+    ivy.array([1, 5, 5, 5])
     >>> x = ivy.array([[6, 4, 2],
     ...                [1, 3, 0]])
     >>> y = ivy.zeros((2,3))
     >>> ivy.cummax(x, axis=0, reverse=True, out=y)
     >>> print(y)
-    ivy.array([[1., 3., 0.],
-        [1., 3., 0.]])
+    ivy.array([[6, 4, 2],
+        [6, 4, 2]])
 
     >>> x = ivy.array([[2, 4, 5],
     ...                [3, 6, 5],
     ...                [1, 3, 10]])
     >>> ivy.cummax(x,axis=1,reverse=True, dtype='int64', out=x)
     >>> print(x)
-    ivy.array([[ 2,  4,  5],
-        [ 3,  5,  5],
-        [ 1,  3, 10]])
+    ivy.array([[ 5,  5,  5],
+        [ 6,  6,  5],
+        [ 10,  10, 10]])
 
     With :class:`ivy.Container` input:
 
