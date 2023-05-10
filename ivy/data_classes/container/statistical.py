@@ -1590,7 +1590,6 @@ class _ContainerWithStatistical(ContainerBase):
         ret
             Containers with arrays cummax at leaves along specified axis.
 
-        Examples #TODO: change examples and change doc string
         --------
         With one :class:`ivy.Container` instances:
 

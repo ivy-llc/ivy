@@ -648,8 +648,8 @@ class _ArrayWithStatistical(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.cummin. This method simply wraps the
-        function, and so the docstring for ivy.cummin also applies to this method with
+        ivy.Array instance method variant of ivy.cummax. This method simply wraps the
+        function, and so the docstring for ivy.cummax also applies to this method with
         minimal changes.
 
         Parameters
@@ -657,9 +657,9 @@ class _ArrayWithStatistical(abc.ABC):
         self
             input array
         axis
-            int, axis along which to take the cumulative minimum. Default is ``0``.
+            int, axis along which to take the cumulative maximum. Default is ``0``.
         reverse
-            Whether to perform the cummin from last to first element in the selected
+            Whether to perform the cummax from last to first element in the selected
             axis. Default is ``False`` (from first to last element)
         dtype
             data type of the returned array. If None, if the default data type
@@ -685,18 +685,18 @@ class _ArrayWithStatistical(abc.ABC):
         ret
             Input array with cumulatively multiplied elements along the specified axis.
         --------
-        >>> x = ivy.array([1, 2, 3, 4, 5])
-        >>> y = x.cummin()
+        >>> x = ivy.array([1, 2, 5, 4, 3])
+        >>> y = x.cummax()
         >>> print(y)
-        ivy.array([1, 1, 1, 1, 1])
+        ivy.array([1, 2, 5, 5, 5])
 
         >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
         >>> y = ivy.zeros((3, 2), dtype="int32")
-        >>> x.cummin(axis=1, reverse=True, out=y)
+        >>> x.cummax(axis=1, reverse=True, out=y)
         >>> print(y)
-        ivy.array([[ 2,  3],
-                  [ 5,  7],
-                  [11, 13]])
+        ivy.array([[ 3,  3],
+                  [ 7,  7],
+                  [13, 13]])
         """
         return ivy.cummax(
             self._data,
