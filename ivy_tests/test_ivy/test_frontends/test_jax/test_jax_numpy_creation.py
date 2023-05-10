@@ -38,7 +38,7 @@ def test_jax_numpy_array(
     input_dtype, x = dtype_and_x
 
     if as_list:
-        if isinstance(x, list):
+        if isinstance(x, list) and "complex" not in input_dtype[0]:
             x = [list(i) if len(i.shape) > 0 else [float(i)] for i in x]
         else:
             x = list(x)
