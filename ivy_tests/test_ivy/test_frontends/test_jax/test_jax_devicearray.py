@@ -159,7 +159,7 @@ def test_jax_devicearray_conj(
         on_device=on_device,
     )
 
-    
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
