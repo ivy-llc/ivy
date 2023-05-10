@@ -1164,14 +1164,14 @@ def cummax(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the cumulative minimum of the elements along a given axis.
+    Return the cumulative maximum of the elements along a given axis.
 
     Parameters
     ----------
     x
         Input array.
     axis
-        Axis along which the cumulative minimum is computed. Default is ``0``.
+        Axis along which the cumulative maximum is computed. Default is ``0``.
     reverse
         Whether to perform the cummax from last to first element in the selected
         axis. Default is ``False`` (from first to last element)
