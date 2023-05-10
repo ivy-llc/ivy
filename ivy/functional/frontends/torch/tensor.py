@@ -46,7 +46,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return Size(self.ivy_array.shape)
 
     @property
     def real(self):
@@ -612,7 +612,7 @@ class Tensor:
         return self
 
     def size(self, dim=None):
-        shape = ivy.shape(self.ivy_array)
+        shape = self.shape
         if dim is None:
             return shape
         else:
@@ -900,7 +900,7 @@ class Tensor:
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d tensor not supported")
-        for i in range(self.ndim):
+        for i in range(self.shape[0]):
             yield self[i]
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
@@ -961,6 +961,22 @@ class Tensor:
         )
         return self
 
+    def __int__(self):
+        item = self.item()
+        if isinstance(item, complex):
+            if item.imag != 0:
+                raise TypeError("can't convert complex to int without overflow")
+            item = item.real
+        return int(item)
+
+    def __float__(self):
+        item = self.item()
+        if isinstance(item, complex):
+            if item.imag != 0:
+                raise TypeError("can't convert complex to float without overflow")
+            item = item.real
+        return float(item)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __eq__(self, other):
         return torch_frontend.equal(self, other)
@@ -998,6 +1014,11 @@ class Tensor:
 
     def bitwise_xor(self, other):
         return torch_frontend.bitwise_xor(self, other)
+
+    def item(self):
+        if self.ndim == 0 or (self.ndim == 1 and self.shape[0] == 1):
+            return self.ivy_array.to_scalar()
+        raise ValueError("only size-1 tensors can be converted to Python scalars")
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def cumprod(self, dim, dtype):
@@ -1099,3 +1120,23 @@ class Tensor:
     def fmod_(self, other):
         self.ivy_array = self.fmod(other).ivy_array
         return self
+
+    def tolist(self):
+        return self._ivy_array.to_list()
+
+
+class Size(tuple):
+    def __new__(cls, iterable=()):
+        new_iterable = list()
+        for i, item in enumerate(iterable):
+            if isinstance(item, int):
+                new_iterable.append(item)
+                continue
+            try:
+                new_iterable.append(int(item))
+            except Exception:
+                raise TypeError(f"Expected int, but got {type(item)} at index {i}")
+        return super().__new__(cls, new_iterable)
+
+    def __repr__(self):
+        return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
