@@ -1,6 +1,8 @@
 from typing import Tuple, Union, Optional
 import mxnet as mx
 
+from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def unique_all(
     x: Union[(None, mx.ndarray.NDArray)], /, *, axis: Optional[int] = None
@@ -12,19 +14,19 @@ def unique_all(
         Union[(None, mx.ndarray.NDArray)],
     )
 ]:
-    raise NotImplementedError("mxnet.unique_all Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def unique_counts(
     x: Union[(None, mx.ndarray.NDArray)], /
 ) -> Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]:
-    raise NotImplementedError("mxnet.unique_counts Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def unique_inverse(
     x: Union[(None, mx.ndarray.NDArray)], /
 ) -> Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]:
-    raise NotImplementedError("mxnet.unique_inverse Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def unique_values(
@@ -33,4 +35,4 @@ def unique_values(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.unique_values Not Implemented")
+    raise IvyNotImplementedException()

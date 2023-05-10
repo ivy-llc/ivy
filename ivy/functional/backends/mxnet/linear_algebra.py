@@ -1,7 +1,8 @@
 import mxnet as mx
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
-from ivy import inf
 
+from ivy import inf
+from ivy.utils.exceptions import IvyNotImplementedException
 
 def cholesky(
     x: Union[(None, mx.ndarray.NDArray)],
@@ -10,7 +11,7 @@ def cholesky(
     upper: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.cholesky Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def cross(
@@ -24,7 +25,7 @@ def cross(
     axis: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.cross Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def det(
@@ -33,7 +34,7 @@ def det(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.det Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def diagonal(
@@ -45,7 +46,7 @@ def diagonal(
     axis2: int = (-1),
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.diagonal Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def eig(
@@ -54,7 +55,7 @@ def eig(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Tuple[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.eig Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def eigh(
@@ -64,7 +65,7 @@ def eigh(
     UPLO: str = "L",
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Tuple[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.eigh Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def eigvalsh(
@@ -74,7 +75,7 @@ def eigvalsh(
     UPLO: str = "L",
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.eigvalsh Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def inner(
@@ -84,7 +85,7 @@ def inner(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.inner Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def inv(
@@ -94,7 +95,7 @@ def inv(
     adjoint: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.inv Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def matmul(
@@ -108,7 +109,7 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.matmul Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def matrix_norm(
@@ -120,7 +121,7 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.matrix_norm Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def matrix_power(
@@ -130,7 +131,7 @@ def matrix_power(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.matrix_power Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def matrix_rank(
@@ -141,7 +142,7 @@ def matrix_rank(
     rtol: Optional[Union[(float, Tuple[float])]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.matrix_rank Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def matrix_transpose(
@@ -151,7 +152,7 @@ def matrix_transpose(
     conjugate: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.matrix_transpose Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def outer(
@@ -161,7 +162,7 @@ def outer(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.outer Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def pinv(
@@ -171,7 +172,7 @@ def pinv(
     rtol: Optional[Union[(float, Tuple[float])]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.pinv Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def qr(
@@ -183,13 +184,13 @@ def qr(
         Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]
     ] = None,
 ) -> NamedTuple:
-    raise NotImplementedError("mxnet.qr Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def slogdet(
     x: Union[(None, mx.ndarray.NDArray)], /
 ) -> Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]:
-    raise NotImplementedError("mxnet.slogdet Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def solve(
@@ -200,7 +201,7 @@ def solve(
     adjoint: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.solve Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def svd(
@@ -212,7 +213,7 @@ def svd(
 ) -> Union[
     (Union[(None, mx.ndarray.NDArray)], Tuple[(Union[(None, mx.ndarray.NDArray)], ...)])
 ]:
-    raise NotImplementedError("mxnet.svd Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def svdvals(
@@ -221,7 +222,7 @@ def svdvals(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.svdvals Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def tensordot(
@@ -232,7 +233,7 @@ def tensordot(
     axes: Union[(int, Tuple[(List[int], List[int])])] = 2,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.tensordot Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def trace(
@@ -244,7 +245,7 @@ def trace(
     axis2: int = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.trace Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def vecdot(
@@ -255,7 +256,7 @@ def vecdot(
     axis: int = (-1),
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.vecdot Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def vector_norm(
@@ -268,7 +269,7 @@ def vector_norm(
     dtype: Optional[None] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.vector_norm Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def diag(
@@ -278,7 +279,7 @@ def diag(
     k: int = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.diag Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def vander(
@@ -289,7 +290,7 @@ def vander(
     increasing: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.vander Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def vector_to_skew_symmetric_matrix(
@@ -298,4 +299,4 @@ def vector_to_skew_symmetric_matrix(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.vector_to_skew_symmetric_matrix Not Implemented")
+    raise IvyNotImplementedException()
