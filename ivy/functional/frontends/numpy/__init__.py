@@ -524,9 +524,9 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _square,
 )
 
-from ivy.functional.frontends.numpy.linalg.solving_equations_and_inverting_matrices import {
+from ivy.functional.frontends.numpy.linalg.solving_equations_and_inverting_matrices import (
     inv,
-}
+)
 
 from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
     _add,
