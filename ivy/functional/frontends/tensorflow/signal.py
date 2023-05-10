@@ -31,5 +31,5 @@ def stft(signals, frame_length, frame_step, fft_length, window_fn, pad_end, name
     fft_length=fft_length,
     window_fn=window_fn,
     pad_end=pad_end,
-    name=name
-)
+    name=name,
+    )
