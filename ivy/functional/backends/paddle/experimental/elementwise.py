@@ -318,8 +318,13 @@ def diff(
     append: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x = paddle.to_tensor(x)
-    return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
+    ret_dtype = x.dtype
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        x = x.cast("float32")
+    prepend, append = [paddle.to_tensor(a, dtype=x.dtype) for a in [prepend, append]]
+    return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append).cast(
+        ret_dtype
+    )
 
 
 @with_unsupported_device_and_dtypes(

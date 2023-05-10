@@ -1,5 +1,7 @@
 import mxnet as mx
 from typing import Union, Optional
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
 def abs(
@@ -463,13 +465,33 @@ def sign(
     raise NotImplementedError("mxnet.sign Not Implemented")
 
 
+@with_supported_dtypes(
+    {"1.9.1 and below": ("float",)},
+    backend_version,
+)
 def sin(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    return mx.nd.sin(x)
+    x_dtype = x.dtype
+    # have to handle zero dim array separately from dtype
+    zero_dim = False
+    if x.shape == ():
+        ret = mx.nd.sin(mx.nd.array([x.asscalar()]))
+        zero_dim = True
+    else:
+        ret = mx.nd.sin(x)
+
+    if "int" in str(x_dtype):
+        ret = ret.astype('float32')
+    else:
+        ret = ret.astype(x_dtype)
+
+    if zero_dim:
+        return ret.reshape(())
+    return ret
 
 
 def sinh(
@@ -487,7 +509,7 @@ def sqrt(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.sqrt Not Implemented")
+    return mx.nd.sqrt(x)
 
 
 def square(

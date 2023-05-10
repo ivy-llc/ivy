@@ -201,7 +201,7 @@ def randperm(
     requires_grad=False,
     pin_memory=False
 ):
-    arr = ivy.arange(n)
-    ret = ivy.shuffle(arr)
+    arr = ivy.arange(n, device=device, dtype=dtype)
+    ret = ivy.shuffle(arr, out=out)
 
     return ret
