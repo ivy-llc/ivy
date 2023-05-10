@@ -209,7 +209,7 @@ class ndarray:
             dtype=dtype,
             subok=subok,
         )
-    
+
     def conj(
         self,
         /,

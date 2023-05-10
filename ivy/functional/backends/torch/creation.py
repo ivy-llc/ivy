@@ -1,8 +1,7 @@
 # global
-
+import copy
 from numbers import Number
 from typing import Union, List, Optional, Sequence
-
 import numpy as np
 import torch
 from torch import Tensor
@@ -614,3 +613,15 @@ def one_hot(
         res = torch.moveaxis(res, -1, axis)
 
     return res.to(device, dtype)
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[torch.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> torch.Tensor:
+    buffer_copy = copy.deepcopy(buffer)
+    dtype = ivy.as_native_dtype(dtype)
+
+    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)

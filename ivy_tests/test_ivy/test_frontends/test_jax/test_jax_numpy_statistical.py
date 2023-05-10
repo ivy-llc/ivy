@@ -972,3 +972,39 @@ def test_jax_numpy_nanmean(
         keepdims=keepdims,
         where=where,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.nanmedian",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        min_value=-(2**10),
+        max_value=2**10,
+        valid_axis=True,
+    ),
+    keepdims=st.booleans(),
+    overwrite_input=st.booleans(),
+)
+def test_jax_numpy_nanmedian(
+    on_device,
+    frontend,
+    *,
+    dtype_x_axis,
+    keepdims,
+    fn_tree,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        out=None,
+        overwrite_input=False,
+        keepdims=keepdims,
+    )
