@@ -21,7 +21,7 @@ def resize(x, newshape,/,refcheck=True):
             raise ValueError('values must not be negative')
     
     if x_new.size == 0 or total_size == 0:
-        return ivy.zeros_like(x_new) 
+        return np.zeros_like(x_new) 
     repetition = -(-total_size//len(x_new))
     # zeros = ivy.zeros((repetition * repetition),dtype=int)
     # x_new = ivy.concat((x_new,zeros))[:total_size]
@@ -29,7 +29,7 @@ def resize(x, newshape,/,refcheck=True):
     conc = (x_new,) * repetition
     x_new = np.concatenate(conc)[:total_size]
     y = np.reshape(x_new,newshape=newshape,order="C")
-    return y
+    return ivy.array(y)
 
 
 @to_ivy_arrays_and_back
@@ -53,3 +53,4 @@ def asarray_chkfinite(a, dtype=None, order=None):
     if not ivy.all(ivy.isfinite(a)):
         raise ValueError("array must not contain infs or NaNs")
     return a
+
