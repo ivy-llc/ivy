@@ -37,5 +37,6 @@ def fft(a, n=None, axis=-1, norm=None):
 
 
 @to_ivy_arrays_and_back
-def rfft(a, dft_length=None, axis=-1, norm="backward"):
-    return ivy.dft(a, axis, dft_length, norm, inverse=False, onesided=True, out=None)
+def rfft(a, n=None, axis=-1, norm="backward"):
+    a = ivy.astype(a, ivy.real)
+    return ivy.dft(a, axis, inverse=False, onesided=True, dft_length=n, norm="backward")
