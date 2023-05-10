@@ -475,10 +475,23 @@ def sin(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    x_dtype = x.dtype
+    # have to handle zero dim array separately from dtype
+    zero_dim = False
     if x.shape == ():
         ret = mx.nd.sin(mx.nd.array([x.asscalar()]))
+        zero_dim = True
+    else:
+        ret = mx.nd.sin(x)
+
+    if "int" in str(x_dtype):
+        ret = ret.astype('float32')
+    else:
+        ret = ret.astype(x_dtype)
+
+    if zero_dim:
         return ret.reshape(())
-    return mx.nd.sin(x)
+    return ret
 
 
 def sinh(

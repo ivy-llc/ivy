@@ -8,6 +8,18 @@ from ivy.functional.backends.jax import JaxArray
 from . import backend_version
 
 
+# invert_permutation
+def invert_permutation(
+    x: Union[JaxArray, list, tuple],
+    /,
+) -> JaxArray:
+    sorted_indices = jnp.argsort(x)
+    inverse = jnp.zeros_like(sorted_indices)
+    inverse = inverse.at[sorted_indices].set(jnp.arange(len(x)))
+    inverse_permutation = jnp.argsort(inverse)
+    return inverse_permutation
+
+
 # msort
 def msort(
     a: Union[JaxArray, list, tuple],

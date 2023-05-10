@@ -19,10 +19,10 @@ from ivy.func_wrapper import (
 )
 
 
-@infer_device
-@outputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@outputs_to_ivy_arrays
+@infer_device
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -115,11 +115,11 @@ def triu_indices(
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -155,11 +155,11 @@ def vorbis_window(
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def hann_window(
     size: int,
     /,
@@ -245,11 +245,12 @@ def stft(signals, frame_length, frame_step, fft_length=None,
          pad_end=pad_end, name=name, out=out
     )
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
+
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -294,10 +295,10 @@ def kaiser_window(
     )
 
 
-@infer_dtype
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@infer_dtype
 def kaiser_bessel_derived_window(
     window_length: int,
     periodic: bool = True,
@@ -363,10 +364,10 @@ def kaiser_bessel_derived_window(
 kaiser_bessel_derived_window.mixed_function = True
 
 
-@infer_dtype
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@infer_dtype
 def hamming_window(
     window_length: int,
     /,
@@ -439,10 +440,10 @@ def hamming_window(
 hamming_window.mixed_function = True
 
 
-@infer_device
-@outputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@outputs_to_ivy_arrays
+@infer_device
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -534,13 +535,13 @@ def tril_indices(
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
 
-@infer_device
-@infer_dtype
-@inputs_to_ivy_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_ivy_arrays
+@infer_dtype
+@infer_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -630,8 +631,8 @@ def eye_like(
     )
 
 
-@outputs_to_ivy_arrays
 @handle_nestable
+@outputs_to_ivy_arrays
 def frombuffer(
     buffer: bytes,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
