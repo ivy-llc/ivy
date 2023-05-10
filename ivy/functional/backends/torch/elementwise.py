@@ -530,9 +530,7 @@ def abs(
     x = _cast_for_unary_op(x)
     if x.dtype is torch.bool:
         return x
-    if where:
-        return ivy.where(x != 0, torch.abs(x), 0)
-    return torch.abs(x, out=out)
+    return ivy.where(where, torch.abs(x), x)
 
 
 abs.support_native_out = True

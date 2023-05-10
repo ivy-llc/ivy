@@ -831,10 +831,8 @@ def abs(
         paddle.float16,
         paddle.bool,
     ]:
-        if where:
-            ivy.where(x != 0, paddle.abs(x.cast("float32")).cast(x.dtype), 0)
-        return paddle.abs(x.cast("float32")).cast(x.dtype)
-    return paddle.abs(x)
+        return ivy.where(where, paddle.abs(x.cast("float32")).cast(x.dtype), x)
+    return ivy.where(where, paddle.abs(x), x)
 
 
 @with_unsupported_device_and_dtypes(

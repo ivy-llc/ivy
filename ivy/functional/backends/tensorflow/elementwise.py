@@ -21,9 +21,7 @@ def abs(
     x_dtype = ivy.dtype(x)
     if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
-    if where:
-        return ivy.where(x != 0, tf.abs(x), 0)
-    return tf.abs(x)
+    return ivy.where(where, tf.abs(x), x)
 
 
 def acos(
