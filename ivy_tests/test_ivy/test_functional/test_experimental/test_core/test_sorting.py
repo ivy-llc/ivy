@@ -9,9 +9,15 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @st.composite
 def _invert_permutation_helper(draw):
-    return ['int64'], [np.array(draw(st.permutations(
-        list(range(draw(st.integers(min_value=3, max_value=10))))
-    )))]
+    return ["int64"], [
+        np.array(
+            draw(
+                st.permutations(
+                    list(range(draw(st.integers(min_value=3, max_value=10))))
+                )
+            )
+        )
+    ]
 
 
 # invert_permutation

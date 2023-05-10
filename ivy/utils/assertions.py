@@ -268,6 +268,13 @@ def check_kernel_padding_size(kernel_size, padding_size):
             )
 
 
+def check_dev_correct_formatting(device):
+    assert device[0:3] in ["gpu", "tpu", "cpu"]
+    if device != "cpu":
+        assert device[3] == ":"
+        assert device[4:].isnumeric()
+
+
 # Jax Specific #
 # ------- #
 

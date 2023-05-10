@@ -26,7 +26,7 @@ def to_device(
     stream: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.to_device Not Implemented")
+    return x.as_in_context(as_native_dev(device))
 
 
 def as_ivy_dev(device):

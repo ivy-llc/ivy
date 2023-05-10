@@ -54,6 +54,9 @@ def asarray(
     return ret
 
 
+array = asarray
+
+
 def empty(
     *size: Union[(int, Sequence[int])],
     shape: Optional[ivy.NativeShape] = None,
