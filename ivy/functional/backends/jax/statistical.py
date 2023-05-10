@@ -155,7 +155,7 @@ def cov(
         fweights=fweights,
         aweights=aweights,
     )
-    return ivy.astype(ret, x.dtype, copy=False)
+    return ret
 
 
 # Extra #
