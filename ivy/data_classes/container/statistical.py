@@ -1366,7 +1366,7 @@ class _ContainerWithStatistical(ContainerBase):
         )
 
     @staticmethod
-    def _static_cummin(
+    def _static_cummax(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -1380,21 +1380,21 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cummin. This method simply wraps the
-        function, and so the docstring for ivy.cummin also applies to this method with
+        ivy.Container static method variant of ivy.cummax. This method simply wraps the
+        function, and so the docstring for ivy.cummax also applies to this method with
         minimal changes.
 
         Parameters
         ----------
         x
-            Input array or container to cummin.
+            Input array or container to cummax.
         axis
-            Axis to cummin along. Default is ``0``.
+            Axis to cummax along. Default is ``0``.
         exclusive
             Whether to exclude the first element of the input array.
             Default is ``False``.
         reverse
-            Whether to perform the cummin from last to first element in the selected
+            Whether to perform the cummax from last to first element in the selected
             axis. Default is ``False`` (from first to last element)
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
@@ -1415,14 +1415,13 @@ class _ContainerWithStatistical(ContainerBase):
         Returns
         -------
         ret
-            Containers with arrays cummin at leaves along specified axis.
+            Containers with arrays cummax at leaves along specified axis.
 
-        Examples #TODO: fix examples and this doc
         --------
         With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = ivy.Container.static_cummin(x, axis=0)
+        >>> y = ivy.Container.static_cummax(x, axis=0)
         >>> print(y)
         {
             a: ivy.array([1, 2, 6]),
@@ -1432,7 +1431,7 @@ class _ContainerWithStatistical(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> ivy.Container.static_cummin(x, axis=1, exclusive=True, out=y)
+        >>> ivy.Container.static_cummax(x, axis=1, exclusive=True, out=y)
         >>> print(y)
         {
             a: ivy.array([[1, 2],
@@ -1444,7 +1443,7 @@ class _ContainerWithStatistical(ContainerBase):
         }
         """
         return ContainerBase.cont_multi_map_in_function(
-            "cummin",
+            "cummax",
             x,
             axis=axis,
             reverse=reverse,
@@ -1543,7 +1542,7 @@ class _ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
-    def cummin(
+    def cummax(
         self: ivy.Container,
         /,
         *,
@@ -1557,14 +1556,14 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cummin. This method simply wraps
-        the function, and so the docstring for ivy.cummin also applies to this method
+        ivy.Container instance method variant of ivy.cummax. This method simply wraps
+        the function, and so the docstring for ivy.cummax also applies to this method
         with minimal changes.
 
         Parameters
         ----------
         self
-            Input container to cummin at leaves.
+            Input container to cummax at leaves.
         axis
             Axis along which the cumulative product is computed. Default is ``0``.
         exclusive
@@ -1589,14 +1588,14 @@ class _ContainerWithStatistical(ContainerBase):
         Returns
         -------
         ret
-            Containers with arrays cummin at leaves along specified axis.
+            Containers with arrays cummax at leaves along specified axis.
 
         Examples #TODO: change examples and change doc string
         --------
         With one :class:`ivy.Container` instances:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = x.cummin(axis=0)
+        >>> y = x.cummax(axis=0)
         >>> print(y)
         {
             a: ivy.array([1, 2, 6]),
@@ -1606,7 +1605,7 @@ class _ContainerWithStatistical(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> x.cummin(axis=1, exclusive=True, out=y)
+        >>> x.cummax(axis=1, exclusive=True, out=y)
         {
             a: ivy.array([[1, 2],
                           [1, 5],
@@ -1616,7 +1615,7 @@ class _ContainerWithStatistical(ContainerBase):
                           [1, 5]])
         }
         """
-        return self._static_cummin(
+        return self._static_cummax(
             self,
             axis=axis,
             reverse=reverse,

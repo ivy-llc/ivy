@@ -208,7 +208,7 @@ cumprod.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
-def cummin(
+def cummax(
     x: np.ndarray,
     /,
     *,
@@ -223,13 +223,13 @@ def cummin(
         else:
             dtype = _infer_dtype(x.dtype)
     if not (reverse):
-        return np.minimum.accumulate(x, axis, dtype=dtype, out=out)
+        return np.maximum.accumulate(x, axis, dtype=dtype, out=out)
     elif reverse:
-        x = np.minimum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+        x = np.maximum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=dtype)
         return np.flip(x, axis=axis)
 
 
-cummin.support_native_out = True
+cummax.support_native_out = True
 
 
 def cumsum(

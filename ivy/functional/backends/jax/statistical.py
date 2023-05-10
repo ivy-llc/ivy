@@ -177,7 +177,7 @@ def cumprod(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
-def cummin(
+def cummax(
     x: JaxArray,
     /,
     *,
@@ -194,7 +194,7 @@ def cummin(
             dtype = ivy.default_int_dtype(as_native=True)
         else:
             dtype = _infer_dtype(x.dtype)
-    return jlax.cummin(x, axis, reverse=reverse).astype(dtype)
+    return jlax.cummax(x, axis, reverse=reverse).astype(dtype)
 
 
 def cumsum(

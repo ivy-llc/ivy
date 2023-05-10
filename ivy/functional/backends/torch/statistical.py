@@ -272,7 +272,7 @@ cumprod.support_native_out = True
     },
     backend_version,
 )
-def cummin(
+def cummax(
     x: torch.Tensor,
     /,
     *,
@@ -285,16 +285,16 @@ def cummin(
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     if not (reverse):
-        ret = torch.cummin(x, axis)[0]
+        ret = torch.cummax(x, axis)[0]
     else:
-        ret = torch.cummin(torch.flip(x, dims=(axis,)), axis)[0]
+        ret = torch.cummax(torch.flip(x, dims=(axis,)), axis)[0]
         ret = torch.flip(ret, (axis,))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret.to(dtype))
     return ret.to(dtype)
 
 
-cummin.support_native_out = True
+cummax.support_native_out = True
 
 
 # Function does support uint8, but allowing support for unsigned will cause

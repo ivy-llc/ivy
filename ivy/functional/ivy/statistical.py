@@ -1154,7 +1154,7 @@ def cumprod(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-def cummin(
+def cummax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
@@ -1173,7 +1173,7 @@ def cummin(
     axis
         Axis along which the cumulative minimum is computed. Default is ``0``.
     reverse
-        Whether to perform the cummin from last to first element in the selected
+        Whether to perform the cummax from last to first element in the selected
         axis. Default is ``False`` (from first to last element)
     dtype
         Data type of the returned array. Default is ``None``.
@@ -1200,7 +1200,7 @@ def cummin(
     Returns
     -------
     ret
-        Array which holds the result of applying cummin at each
+        Array which holds the result of applying cummax at each
         original array elements along the specified axis.
 
     Examples
@@ -1208,13 +1208,13 @@ def cummin(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 5, 2, 0])
-    >>> y = ivy.cummin(x)
+    >>> y = ivy.cummax(x)
     >>> print(y)
     ivy.array([1, 1, 1, 0])
     >>> x = ivy.array([[6, 4, 2],
     ...                [1, 3, 0]])
     >>> y = ivy.zeros((2,3))
-    >>> ivy.cummin(x, axis=0, reverse=True, out=y)
+    >>> ivy.cummax(x, axis=0, reverse=True, out=y)
     >>> print(y)
     ivy.array([[1., 3., 0.],
         [1., 3., 0.]])
@@ -1222,7 +1222,7 @@ def cummin(
     >>> x = ivy.array([[2, 4, 5],
     ...                [3, 6, 5],
     ...                [1, 3, 10]])
-    >>> ivy.cummin(x,axis=1,reverse=True, dtype='int64', out=x)
+    >>> ivy.cummax(x,axis=1,reverse=True, dtype='int64', out=x)
     >>> print(x)
     ivy.array([[ 2,  4,  5],
         [ 3,  5,  5],
@@ -1232,7 +1232,7 @@ def cummin(
 
     >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]),
     ...                   b=ivy.array([[3, 5, 7]]))
-    >>> y = ivy.cummin(x, axis= 0)
+    >>> y = ivy.cummax(x, axis= 0)
     >>> print(y)
     {
         a: ivy.array([[1, 3, 5]]),
@@ -1248,7 +1248,7 @@ def cummin(
     >>> y = ivy.Container(a = ivy.zeros((1, 3)),
     ...                   b = ivy.zeros((2, 3)),
     ...                   c = ivy.zeros((3,3)))
-    >>> ivy.cummin(x,axis=1,reverse=True, out=y)
+    >>> ivy.cummax(x,axis=1,reverse=True, out=y)
     >>> print(y)
     {
     a: ivy.array([[1., 3., 4.]]),
@@ -1266,7 +1266,7 @@ def cummin(
     ...                   c=ivy.array([[1, 2],
     ...                                [3, 4],
     ...                                [6, 4]]))
-    >>> ivy.cummin(x,axis=0,out=x)
+    >>> ivy.cummax(x,axis=0,out=x)
     >>> print(x)
     {
     a: ivy.array([[0],
@@ -1278,7 +1278,7 @@ def cummin(
                     [1, 2]])
     }
     """
-    return current_backend(x).cummin(
+    return current_backend(x).cummax(
         x, axis=axis, reverse=reverse, dtype=dtype, out=out
     )
 

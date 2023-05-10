@@ -638,7 +638,7 @@ class _ArrayWithStatistical(abc.ABC):
             out=out,
         )
 
-    def cummin(
+    def cummax(
         self: ivy.Array,
         /,
         *,
@@ -698,7 +698,7 @@ class _ArrayWithStatistical(abc.ABC):
                   [ 5,  7],
                   [11, 13]])
         """
-        return ivy.cummin(
+        return ivy.cummax(
             self._data,
             axis=axis,
             reverse=reverse,
