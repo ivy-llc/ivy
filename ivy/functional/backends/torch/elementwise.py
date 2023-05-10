@@ -524,7 +524,7 @@ def abs(
     x: Union[float, torch.Tensor],
     /,
     *,
-    where: Optional[Union[bool, torch.Tensor]] = True,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)

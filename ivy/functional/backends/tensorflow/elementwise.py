@@ -13,7 +13,7 @@ def abs(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
-    where: Optional[Union[bool, tf.Tensor, tf.Variable]] = True,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not tf.is_tensor(x):

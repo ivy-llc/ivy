@@ -821,7 +821,7 @@ def abs(
     x: Union[float, paddle.Tensor],
     /,
     *,
-    where: Optional[Union[bool, paddle.Tensor]] = True,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in [
