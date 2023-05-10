@@ -101,15 +101,19 @@ def valid_stft_params(draw):
     # draw data types
     dtype = draw(helpers.get_dtypes("numeric"))
     # Draw values for the input signal x
-    x = draw(st.lists(st.floats(min_value=-1e6, max_value=1e6), min_size=2, max_size=1000))
+    x = draw(
+        st.lists(st.floats(min_value=-1e6, max_value=1e6), min_size=2, max_size=1000)
+    )
     # Draw values for the window function size
     frame_length = draw(st.integers(min_value=2, max_value=1000))
     # Draw values for the hop size between adjacent frames
     frame_step = draw(st.integers(min_value=1, max_value=frame_length))
     # Draw values for the window function type
-    window_fn = draw(st.sampled_from(['hann', 'hamming', 'rectangle', 'blackman', 'bartlett']))
+    window_fn = draw(
+        st.sampled_from(['hann', 'hamming', 'rectangle', 'blackman', 'bartlett'])
+    )
     # Draw values for the FFT size
-    fft_length = draw(st.integers(min_value=frame_length, max_value=frame_length*4))
+    fft_length = draw(st.integers(min_value=frame_length, max_value=frame_length * 4))
     return dtype, x, frame_length, frame_step, window_fn, fft_length
 
 
@@ -138,6 +142,6 @@ def test_tensorflow_stft(
         frame_step=frame_step,
         window_fn=window_fn,
         fft_length=fft_length,
-        pad_end = True,
+        pad_end=True,
         name=None,
     )
