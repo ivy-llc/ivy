@@ -78,7 +78,7 @@ class DeviceArray:
             keepdims=keepdims,
             where=where,
         )
-    
+
     def cumprod(self, axis=None, dtype=None, out=None):
         return jax_frontend.numpy.cumprod(
             self,

@@ -66,7 +66,9 @@ def unique_all(
         counts = tf.gather(counts, sort_idx)
         indices = tf.gather(indices, sort_idx)
         inv_sort_idx = tf.math.invert_permutation(sort_idx)
-        inverse_indices = tf.map_fn(lambda y: tf.gather(inv_sort_idx, y), inverse_indices)
+        inverse_indices = tf.map_fn(
+            lambda y: tf.gather(inv_sort_idx, y), inverse_indices
+        )
 
     return Results(
         tf.cast(values, dtype=x.dtype),

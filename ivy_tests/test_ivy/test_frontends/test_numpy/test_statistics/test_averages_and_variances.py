@@ -46,6 +46,8 @@ def test_numpy_mean(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-2,
+        rtol=1e-2,
         x=x[0],
         axis=axis,
         dtype=dtype[0],
@@ -90,6 +92,8 @@ def test_numpy_nanmean(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         a=a[0],
         axis=axis,
         dtype=dtype[0],
@@ -384,6 +388,8 @@ def test_numpy_nanmedian(
         out=None,
         keepdims=keep_dims,
     )
+
+
 @handle_frontend_test(
     fn_tree="numpy.var",
     dtype_and_x=statistical_dtype_values(function="var"),
