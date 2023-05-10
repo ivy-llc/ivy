@@ -1,8 +1,8 @@
 from typing import Union, Optional, Sequence
 import mxnet as mx
 
-
 import ivy
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def dirichlet(
@@ -14,7 +14,7 @@ def dirichlet(
     seed: Optional[int] = None,
     dtype: Optional[None] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.dirichlet Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def beta(
@@ -28,7 +28,7 @@ def beta(
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.beta Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def gamma(
@@ -42,7 +42,7 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.gamma Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def poisson(
@@ -54,7 +54,7 @@ def poisson(
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.poisson Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def bernoulli(
@@ -67,4 +67,4 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.bernoulli Not Implemented")
+    raise IvyNotImplementedException()

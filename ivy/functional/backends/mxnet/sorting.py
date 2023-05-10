@@ -2,6 +2,7 @@ from typing import Union, Optional, Literal, List
 import mxnet as mx
 
 import ivy
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def argsort(
@@ -13,7 +14,7 @@ def argsort(
     stable: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.argsort Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def sort(
@@ -25,7 +26,7 @@ def sort(
     stable: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.sort Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def searchsorted(
@@ -38,4 +39,4 @@ def searchsorted(
     ret_dtype: None = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.searchsorted Not Implemented")
+    raise IvyNotImplementedException()

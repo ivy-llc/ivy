@@ -8,6 +8,56 @@ import ivy
 
 class _ContainerWithSortingExperimental(ContainerBase):
     @staticmethod
+    def static_invert_permutation(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.invert_permutation.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.invert_permutation also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "invert_permutation",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def invert_permutation(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.invert_permutation.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.invert_permutation also applies to this method with minimal
+        changes.
+        """
+        return self.static_invert_permutation(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_msort(
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
         /,

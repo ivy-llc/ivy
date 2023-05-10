@@ -481,6 +481,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         mode: Union[
             Literal[
                 "constant",
+                "dilated",
                 "edge",
                 "linear_ramp",
                 "maximum",
