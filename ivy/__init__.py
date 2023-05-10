@@ -365,6 +365,13 @@ class Shape:
         else:
             return Shape(self.dims + other.dims)
 
+    def index(shape, index):
+        assert isinstance(shape, Shape)
+        if shape.rank is None:
+            return Shape(None)
+        else:
+            return shape._shape[index]
+
     @property
     def shape(self):
         return self._shap
