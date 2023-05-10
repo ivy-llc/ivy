@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.tensorflow.general_functions import _num_to_bit_list
@@ -1930,8 +1931,37 @@ def test_tensorflow_unique(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+    )
 
-        arrays=arrays,
+
+@handle_frontend_test(
+    fn_tree="tensorflow.meshgrid",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=2, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    sparse=st.booleans(),
+    indexing=st.sampled_from(["xy", "ij"]),
+    test_with_out=st.just(False),
+)
+def test_meshgrid(
+    *,
+    input_dtypes,
+    dtype_and_arrays,
+    test_flags,
+    sparse,
+    indexing,
+    fn_tree,
+    on_device,
+):
+    dtype, arrays = dtype_and_arrays
+    return ivy.meshgrid(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
         sparse=sparse,
         indexing=indexing,
     )
