@@ -211,7 +211,10 @@ def zeros_like(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    ret = mx.ndarray.zeros_like(x, dtype=dtype)
+    if x.shape == ():
+        ret = mx.nd.array(0, dtype=dtype)
+    else:
+        ret = mx.ndarray.zeros_like(x, dtype=dtype)
     return ivy.to_device(ret, device)
 
 

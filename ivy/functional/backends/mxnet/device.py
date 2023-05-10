@@ -42,6 +42,8 @@ def as_ivy_dev(device):
 
 
 def as_native_dev(device: str, /):
+    if isinstance(device, mx.Context):
+        return device
     if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
     elif device.find("gpu") != -1:
