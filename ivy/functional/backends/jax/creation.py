@@ -319,9 +319,14 @@ array = asarray
 def copy_array(
     x: JaxArray, *, to_ivy_array: bool = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
+    x = (
+        jax.core.ShapedArray(x.shape, x.dtype)
+        if isinstance(x, jax.core.ShapedArray)
+        else jnp.array(x)
+    )
     if to_ivy_array:
-        return ivy.to_ivy(jnp.array(x))
-    return jnp.array(x)
+        return ivy.to_ivy(x)
+    return x
 
 
 def one_hot(
@@ -367,4 +372,3 @@ def frombuffer(
     offset: Optional[int] = 0,
 ) -> JaxArray:
     return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
-
