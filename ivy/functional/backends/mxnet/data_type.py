@@ -21,6 +21,7 @@ ivy_dtype_dict = {
     np.float16: "float16",
     np.float32: "float32",
     np.float64: "float64",
+    np.bool_: "bool",
 }
 native_dtype_dict = {
     "int8": np.int8,
