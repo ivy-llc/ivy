@@ -25,12 +25,21 @@ from ivy.utils.exceptions import handle_exceptions
 # Linear #
 
 
+<<<<<<< HEAD
+@handle_array_function
+@inputs_to_ivy_arrays
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -175,11 +184,19 @@ linear.mixed_function = True
 # Dropout #
 
 
+<<<<<<< HEAD
+@handle_array_function
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+@inputs_to_ivy_arrays
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -349,9 +366,15 @@ def dropout(
 # Attention #
 
 
+<<<<<<< HEAD
+@handle_array_function
+@handle_array_like_without_promotion
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_array_like_without_promotion
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -557,10 +580,17 @@ def scaled_dot_product_attention(
 scaled_dot_product_attention.mixed_function = True
 
 
+<<<<<<< HEAD
+@handle_array_function
+@handle_array_like_without_promotion
+@handle_exceptions
+@inputs_to_ivy_arrays
+=======
 @handle_exceptions
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale: float,
@@ -790,12 +820,21 @@ def multi_head_attention(
 # Convolutions #
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -885,6 +924,15 @@ def conv1d(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -892,6 +940,7 @@ def conv1d(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1020,11 +1069,19 @@ def conv1d_transpose(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+=======
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1147,6 +1204,15 @@ def conv2d(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1154,6 +1220,7 @@ def conv2d(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1267,12 +1334,21 @@ def conv2d_transpose(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1405,12 +1481,21 @@ def depthwise_conv2d(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1521,6 +1606,15 @@ def conv3d(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1528,6 +1622,7 @@ def conv3d(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1631,12 +1726,21 @@ def conv3d_transpose(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1707,6 +1811,15 @@ def conv_general_dilated(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1714,6 +1827,7 @@ def conv_general_dilated(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1782,11 +1896,19 @@ def conv_general_transpose(
     )
 
 
+<<<<<<< HEAD
+@inputs_to_native_shapes
+@handle_array_function
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @handle_array_function
 @inputs_to_native_shapes
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1883,11 +2005,19 @@ def conv(
 # LSTM #
 
 
+<<<<<<< HEAD
+@handle_array_function
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],

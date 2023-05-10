@@ -34,11 +34,19 @@ def _get_promoted_type_of_operands(operands):
 # -------------------#
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+=======
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -135,12 +143,21 @@ def min(
     return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -242,6 +259,15 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
+<<<<<<< HEAD
+@handle_array_function
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -249,6 +275,7 @@ def max(
 @to_native_arrays_and_back
 @integer_arrays_to_float
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -351,12 +378,21 @@ def mean(
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -474,12 +510,21 @@ def prod(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -607,12 +652,21 @@ def std(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -740,12 +794,21 @@ def sum(
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -854,12 +917,21 @@ def var(
 # ------#
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -997,12 +1069,21 @@ def cumsum(
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1148,12 +1229,21 @@ def cumprod(
     )
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],

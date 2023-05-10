@@ -84,6 +84,16 @@ def _check_shapes_broadcastable(out, inp):
 # ------#
 
 
+<<<<<<< HEAD
+@infer_device
+@infer_dtype
+@handle_array_function
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -92,6 +102,7 @@ def _check_shapes_broadcastable(out, inp):
 @handle_array_function
 @infer_dtype
 @infer_device
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -199,6 +210,16 @@ def random_uniform(
     )
 
 
+<<<<<<< HEAD
+@infer_device
+@infer_dtype
+@handle_array_function
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -207,6 +228,7 @@ def random_uniform(
 @handle_array_function
 @infer_dtype
 @infer_device
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -311,12 +333,21 @@ def random_normal(
     )
 
 
+<<<<<<< HEAD
+@infer_device
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 @infer_device
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -420,6 +451,15 @@ def multinomial(
     )
 
 
+<<<<<<< HEAD
+@infer_device
+@handle_array_function
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -427,6 +467,7 @@ def multinomial(
 @to_native_arrays_and_back
 @handle_array_function
 @infer_device
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -499,8 +540,13 @@ def randint(
     )
 
 
+<<<<<<< HEAD
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def seed(*, seed_value: int = 0) -> None:
     """
     Set the seed for random number generation.
@@ -518,11 +564,19 @@ def seed(*, seed_value: int = 0) -> None:
     return ivy.current_backend().seed(seed_value=seed_value)
 
 
+<<<<<<< HEAD
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

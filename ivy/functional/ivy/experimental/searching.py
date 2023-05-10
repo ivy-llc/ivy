@@ -8,10 +8,17 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def unravel_index(
     indices: Union[ivy.Array, ivy.NativeArray],
     shape: Tuple[int],

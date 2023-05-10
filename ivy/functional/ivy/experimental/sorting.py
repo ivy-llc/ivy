@@ -45,10 +45,17 @@ def invert_permutation(
 # -------------------#
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def msort(
     a: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -82,10 +89,17 @@ def msort(
     return ivy.current_backend().msort(a, out=out)
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
     /,

@@ -17,9 +17,15 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+=======
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -80,9 +86,15 @@ def max_pool1d(
     )
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+=======
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -161,9 +173,15 @@ def max_pool2d(
     )
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+=======
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -231,9 +249,15 @@ def max_pool3d(
     )
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+=======
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -312,9 +336,15 @@ def avg_pool1d(
     )
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+=======
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def avg_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -396,9 +426,15 @@ def avg_pool2d(
     )
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+=======
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def avg_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -483,11 +519,19 @@ def avg_pool3d(
     )
 
 
+<<<<<<< HEAD
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @integer_arrays_to_float
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -582,10 +626,17 @@ def dct(
     return ivy.current_backend(x).dct(x, type=type, n=n, axis=axis, norm=norm, out=out)
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -649,10 +700,17 @@ def fft(
     return ivy.current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -722,10 +780,17 @@ def dropout1d(
     )
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -771,11 +836,19 @@ def dropout3d(
     )
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -838,9 +911,15 @@ def ifft(
     return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
 
 
+<<<<<<< HEAD
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -898,10 +977,17 @@ def embedding(
 embedding.mixed_function = True
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -976,10 +1062,17 @@ def dft(
     return res
 
 
+<<<<<<< HEAD
+@inputs_to_ivy_arrays
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @inputs_to_ivy_arrays
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
@@ -1317,8 +1410,13 @@ def _upsample_bicubic2d_default(
     return result
 
 
+<<<<<<< HEAD
+@handle_out_argument
+@handle_nestable
+=======
 @handle_nestable
 @handle_out_argument
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],

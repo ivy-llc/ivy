@@ -251,6 +251,8 @@ class Shape:
         self._shape = self._shape * other
         return self
 
+<<<<<<< HEAD
+=======
     def __rmul__(self, other):
         self._shape = other * self._shape
         return self
@@ -293,10 +295,13 @@ class Shape:
             self._shape = list(other) - self._shape
         return self
 
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
     def __eq__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
 
+<<<<<<< HEAD
+=======
     def __int__(self):
         if hasattr(self._shape, "__int__"):
             res = self._shape.__int__()
@@ -306,6 +311,7 @@ class Shape:
             return res
         return to_ivy(res)
 
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
     def __ge__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape >= other
@@ -331,6 +337,8 @@ class Shape:
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
 
+<<<<<<< HEAD
+=======
     def __delattr__(self, item):
         return super().__delattr__(item)
 
@@ -346,6 +354,7 @@ class Shape:
     def __dir__(self):
         return self._shape.__dir__()
 
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
     @property
     def shape(self):
         return self._shape

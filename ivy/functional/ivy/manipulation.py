@@ -1,8 +1,3 @@
-# For Review
-# global
-from typing import Union, Optional, Tuple, List, Iterable, Sequence
-from numbers import Number
-from numpy.core.numeric import normalize_axis_tuple
 
 # local
 import ivy
@@ -35,11 +30,11 @@ def _calculate_out_shape(axis, array_shape):
 # -------------------#
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -92,13 +87,13 @@ def concat(
     return current_backend(xs[0]).concat(xs, axis=axis, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_view
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_view
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -221,13 +216,13 @@ def expand_dims(
     return current_backend(x).expand_dims(x, copy=copy, axis=axis, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_view
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_view
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -308,13 +303,13 @@ def flip(
     return current_backend(x).flip(x, copy=copy, axis=axis, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_view
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_view
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -400,13 +395,13 @@ def permute_dims(
     return current_backend(x).permute_dims(x, axes, copy=copy, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_view
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_view
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -520,12 +515,12 @@ def reshape(
     )
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -630,13 +625,13 @@ def roll(
     return current_backend(x).roll(x, shift, axis=axis, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_view
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_view
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -716,11 +711,11 @@ def squeeze(
     return current_backend(x).squeeze(x, axis, copy=copy, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def stack(
     arrays: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -803,11 +798,11 @@ def stack(
 # ------#
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
@@ -928,12 +923,12 @@ def clip(
     return current_backend(x).clip(x, x_min, x_max, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1015,12 +1010,12 @@ def constant_pad(
     return current_backend(x).constant_pad(x, pad_width=pad_width, value=value, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1086,12 +1081,12 @@ def repeat(
     return current_backend(x).repeat(x, repeats, axis=axis, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_view
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_view
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1164,13 +1159,13 @@ def split(
     )
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_view
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_view
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -1269,11 +1264,11 @@ def swapaxes(
     return current_backend(x).swapaxes(x, axis0, axis1, copy=copy, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1348,12 +1343,12 @@ def tile(
     return current_backend(x).tile(x, repeats, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_view
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_view
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1437,12 +1432,12 @@ def unstack(
     return current_backend(x).unstack(x, copy=copy, axis=axis, keepdims=keepdims)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1506,4 +1501,40 @@ def zero_pad(
         b: ivy.array([0., 0., 3., 4., 5., 0., 0., 0.])
     }
     """
+    # check x
+    if not isinstance(x, (ivy.Array, ivy.NativeArray)):
+        raise TypeError('Input x must be of type ivy.Array or ivy.NativeArray, but was {}'.format(type(x)))
+
+    # check pad_width
+    if not isinstance(pad_width, Iterable):
+        raise TypeError('Input pad_width must be iterable, but was {}'.format(type(pad_width)))
+
+    # check out
+    if out is not None and not isinstance(out, (ivy.Array, ivy.NativeArray)):
+        raise TypeError('Input out must be of type ivy.Array or ivy.NativeArray, but was {}'.format(type(out)))
+
+    # then we need to check the input shapes
+    # check x 
+    if not isinstance(x, ivy.Container):
+        x = ivy.expand_dims(x, 0)
+
+    # check pad_width
+    if not isinstance(pad_width, ivy.Container):
+        pad_width = ivy.expand_dims(pad_width, 0)
+
+    # check out
+    if out is not None and not isinstance(out, ivy.Container):
+        out = ivy.expand_dims(out, 0)
+
+    # then we need to check the input shapes
     return current_backend(x).zero_pad(x, pad_width, out=out)
+
+    # the above function should return 
+    # 1. a padded array of rank equal to x with shape increased according to pad_width
+    # 2. a padded array of rank equal to x with shape increased according to pad_width and written to out
+
+    # the return type should be ivy.Array or ivy.Container
+
+    # the return value should be a padded array of rank equal to x with shape increased according to pad_width
+
+    # the return value should be a padded array of rank equal to x with shape increased according to pad_width and written to out

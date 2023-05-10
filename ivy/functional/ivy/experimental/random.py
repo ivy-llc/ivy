@@ -13,10 +13,17 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 # dirichlet
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def dirichlet(
     alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
@@ -79,11 +86,19 @@ def dirichlet(
     )
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def beta(
     a: Union[float, ivy.NativeArray, ivy.Array],
     b: Union[float, ivy.NativeArray, ivy.Array],
@@ -132,11 +147,19 @@ def beta(
     )
 
 
+<<<<<<< HEAD
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def gamma(
     alpha: Union[float, ivy.NativeArray, ivy.Array],
     beta: Union[float, ivy.NativeArray, ivy.Array],
@@ -181,6 +204,15 @@ def gamma(
     )
 
 
+<<<<<<< HEAD
+@infer_device
+@infer_dtype
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -188,6 +220,7 @@ def gamma(
 @to_native_arrays_and_back
 @infer_dtype
 @infer_device
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def poisson(
     lam: Union[float, ivy.Array, ivy.NativeArray],
     *,
@@ -247,6 +280,15 @@ def poisson(
     )
 
 
+<<<<<<< HEAD
+@infer_device
+@infer_dtype
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+=======
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -254,6 +296,7 @@ def poisson(
 @to_native_arrays_and_back
 @infer_dtype
 @infer_device
+>>>>>>> 9c7d90cbff07ccbd4ecb786d3b0507302db12d52
 def bernoulli(
     probs: Union[float, ivy.Array, ivy.NativeArray],
     *,
