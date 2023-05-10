@@ -426,3 +426,43 @@ def ptp(a, axis=None, out=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
     y = ivy.min(a, axis=axis, keepdims=keepdims)
     return ivy.subtract(x, y)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype is None:
+        dtype = "float64" if ivy.is_int_dtype(a) else a.dtype
+    if ivy.is_array(where):
+        where1 = ivy.array(where, dtype=ivy.bool)
+        a = ivy.where(where1, a, ivy.full_like(a, ivy.nan))
+    nan_mask1 = ivy.isnan(a)
+    not_nan_mask1 = ~ivy.isnan(a)
+    b1 = ivy.where(ivy.logical_not(nan_mask1), a, ivy.zeros_like(a))
+    array_sum1 = ivy.sum(b1, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    not_nan_mask_count1 = ivy.sum(
+        not_nan_mask1, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+    )
+    count_zero_handel = ivy.where(
+        not_nan_mask_count1 != 0,
+        not_nan_mask_count1,
+        ivy.full_like(not_nan_mask_count1, ivy.nan),
+    )
+    ret_nanmean = ivy.divide(array_sum1, count_zero_handel)
+    return ret_nanmean
+
+  
+@to_ivy_arrays_and_back
+def nanmedian(
+    a,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    overwrite_input=False,
+):
+    return ivy.nanmedian(
+        a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+    )

@@ -53,7 +53,7 @@ def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
 
 
 @st.composite
-def _get_castable_dtype(draw):
+def _get_castable_dtype(draw, min_value=None, max_value=None):
     available_dtypes = helpers.get_dtypes("numeric")
     shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
     dtype, values = draw(
@@ -64,6 +64,8 @@ def _get_castable_dtype(draw):
             small_abs_safety_factor=24,
             safety_factor_scale="log",
             shape=shape,
+            min_value=min_value,
+            max_value=max_value,
         )
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))

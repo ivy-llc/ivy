@@ -1,6 +1,8 @@
 from typing import Union, Optional, Sequence
 import mxnet as mx
 
+from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def min(
     x: Union[(None, mx.ndarray.NDArray)],
@@ -10,7 +12,7 @@ def min(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.min Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def max(
@@ -21,7 +23,7 @@ def max(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.max Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def mean(
@@ -32,7 +34,7 @@ def mean(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.mean Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def prod(
@@ -44,7 +46,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.prod Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def std(
@@ -56,7 +58,7 @@ def std(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.std Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def sum(
@@ -68,7 +70,7 @@ def sum(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.sum Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def var(
@@ -80,7 +82,7 @@ def var(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.var Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def cumprod(
@@ -93,7 +95,7 @@ def cumprod(
     dtype: Optional[None] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.cumprod Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def cumsum(
@@ -105,7 +107,7 @@ def cumsum(
     dtype: Optional[None] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.cumsum Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def einsum(
@@ -113,4 +115,4 @@ def einsum(
     *operands: Union[(None, mx.ndarray.NDArray)],
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.einsum Not Implemented")
+    raise IvyNotImplementedException()
