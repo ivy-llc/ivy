@@ -51,6 +51,9 @@ class DeviceArray:
             self._ivy_array, axis=axis, keepdims=keepdims, out=out
         )
 
+    def flatten(self, *, order="C"):
+        return jax_frontend.numpy.ravel(self._ivy_array, order=order)
+
     def argmax(
         self,
         /,
