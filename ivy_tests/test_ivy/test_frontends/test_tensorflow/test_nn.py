@@ -1466,7 +1466,7 @@ def _pool_args(draw):
 
     dilation = draw(st.sampled_from([None, [1] * dims, [2] * dims]))
     window_size = [
-        draw(st.integers(min_value=1, max_value=x.shape[i + 1]) | st.just(1)) for _ in range(dims)
+        draw(st.integers(min_value=1, max_value=x[0].shape[i + 1]) | st.just(1)) for _ in range(dims)
     ]
     
     return x, data_format, draw(st.sampled_from(["MAX", "AVG"])), dilation, window_size
