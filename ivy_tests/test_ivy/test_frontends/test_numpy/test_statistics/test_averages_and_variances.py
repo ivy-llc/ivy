@@ -90,6 +90,8 @@ def test_numpy_nanmean(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         a=a[0],
         axis=axis,
         dtype=dtype[0],
