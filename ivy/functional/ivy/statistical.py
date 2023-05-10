@@ -1251,31 +1251,12 @@ def cummax(
     >>> ivy.cummax(x,axis=1,reverse=True, out=y)
     >>> print(y)
     {
-    a: ivy.array([[1., 3., 4.]]),
-    b: ivy.array([[3., 5., 8.],
-                    [5., 5., 5.]]),
-    c: ivy.array([[1., 1., 1.],
-                    [3., 6., 9.],
-                    [0., 2., 3.]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[0],[5]]),
-    ...                                [5]]),
-    ...                   b=ivy.array([[6, 8, 7],
-    ...                                [4, 2, 3]]),
-    ...                   c=ivy.array([[1, 2],
-    ...                                [3, 4],
-    ...                                [6, 4]]))
-    >>> ivy.cummax(x,axis=0,out=x)
-    >>> print(x)
-    {
-    a: ivy.array([[0],
-                    [0]]),
-    b: ivy.array([[6, 8, 7],
-                    [4, 2, 3]]),
-    c: ivy.array([[1, 2],
-                    [1, 2],
-                    [1, 2]])
+    a: ivy.array([[4., 4., 4.]]),
+    b: ivy.array([[8., 8., 8.],
+                    [6., 6., 5.]]),
+    c: ivy.array([[4., 4., 1.],
+                    [9., 9., 9.],
+                    [3., 3., 3.]])
     }
     """
     return current_backend(x).cummax(
