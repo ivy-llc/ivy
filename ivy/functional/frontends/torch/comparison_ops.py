@@ -287,11 +287,4 @@ def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
 def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
     if dim is None:
         dim = -1
-    if sorted:
-        return namedtuple("topk", ["values", "indices"])(
-            ivy.sort(ivy.top_k(input, k, axis=dim, largest=largest, out=out).values),
-            ivy.argsort(
-                ivy.top_k(input, k, axis=dim, largest=largest, out=out).indices
-            ),
-        )
-    return ivy.top_k(input, k, axis=dim, largest=largest, out=out)
+    return ivy.top_k(input, k, axis=dim, largest=largest, sorted=sorted, out=out)
