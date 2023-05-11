@@ -1434,15 +1434,7 @@ class LSTM(Module):
 # Pooling #
 
 class MaxPool1D(Module):
-    def __init__(
-        self,
-        kernel_size,
-        stride,
-        padding,
-        data_format="NWC",
-        device=None,
-        dtype=None,
-    ):
+    def __init__(self,kernel_size,stride,padding,data_format="NWC",device=None,dtype=None):
         """
         Class for applying Max Pooling over a mini-batch of inputs.
         Parameters
@@ -1473,13 +1465,7 @@ class MaxPool1D(Module):
         -------
         The output of the layer.
         """
-        return ivy.max_pool1d(
-            inputs,
-            self._kernel_size,
-            self._stride,
-            self._padding,
-            data_format=self._data_format,
-        )
+        return ivy.max_pool1d(inputs,self._kernel_size,self._stride,self._padding,data_format=self._data_format)
 
 class MaxPool2D(Module):
     def __init__(
