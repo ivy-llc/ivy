@@ -490,9 +490,8 @@ we cast to the default supported `float` dtype if it's the unsupported integer c
 The `cast_data_types` mode is the combination of all the three modes that we discussed till now. It works it way from crosscasting to upcasting and finally to downcasting to provide support
 for any unsupported dtype that is encountered by the functions.
 
-Together with these modes we provide some level of flexibility to users when they encounter functions that don't support a dtype which is otherwise supported
-by the backend. However, it should be well understood that this may lead to loss of precision and/or increase in memory
-consumption.
+Together with these modes we provide some level of flexibility to users when they encounter functions that don't support a dtype which is otherwise supported by the backend. However, it should
+be well understood that this may lead to loss of precision and/or increase in memory consumption.
 
 
 Superset Data Type Support
