@@ -1546,14 +1546,13 @@ class AvgPool2D(Module):
         )
 
 
-class Embedding(ivy.Module):
+class Embedding(Module):
     def __init__(
         self,
         num_embeddings: int,
         embedding_dim: int,
         padding_idx: Optional[int] = None,
         max_norm: Optional[float] = None,
-        norm_type: float = 2.0,
         v=None,
         device=None,
         dtype=None,
@@ -1599,7 +1598,6 @@ class Embedding(ivy.Module):
 
         self.padding_idx = padding_idx
         self.max_norm = max_norm
-        self.norm_type = norm_type
         self._weight_init = KaimingNormal(fan_mode="fan_out")
         self._embedding_shape = (self.num_embeddings, self.embedding_dim)
         Module.__init__(self, device=device, v=v, dtype=dtype)
@@ -1626,11 +1624,21 @@ class Embedding(ivy.Module):
             The outputs following the Embedding layer
                         *[batch_size,max_len,embedding_dim]*
         """
-        return ivy.embedding(
-            inputs,
+        batch_size, max_len = inputs.shape
+        res = ivy.embedding(
             self.v["w"],
-            self.padding_idx,
-            self.max_norm,
-            self.norm_type,
-            self.sparse,
+            inputs,
+            max_norm=self.max_norm,
         )
+        if self.padding_idx is not None:
+            _flatten_inputs = ivy.reshape(inputs, batch_size * max_len)
+
+            _flatten_res = ivy.reshape(res, (batch_size * max_len, self.embedding_dim))
+            _padding_inds = ivy.argwhere(_flatten_inputs == self.padding_idx)
+
+            if len(_padding_inds) != 0:
+                _flatten_res[_padding_inds] = ivy.full(
+                    (self.embedding_dim,), self.padding_idx
+                )
+                res = _flatten_res.reshape((batch_size, max_len, self.embedding_dim))
+        return res
