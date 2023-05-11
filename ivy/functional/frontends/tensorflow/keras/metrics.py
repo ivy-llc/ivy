@@ -61,8 +61,10 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
         ivy.utils.assertions.check_equal(
             targets_batch,
             pred_batch,
-            message="first dim of predictions: {} must match targets length: {}".format(
-                pred_batch, targets_batch
+            message=(
+                "first dim of predictions: {} must match targets length: {}".format(
+                    pred_batch, targets_batch
+                )
             ),
         )
 
@@ -299,10 +301,7 @@ def cosine_similarity(y_true, y_pred):
 
     if len(y_pred.shape) == len(y_pred.shape) and len(y_true.shape) == 2:
         numerator = ivy.sum(y_true * y_pred, axis=1)
-        denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
     else:
         numerator = ivy.vecdot(y_true, y_pred)
-        denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
-
-    cosine = numerator / denominator
-    return cosine
+    denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
+    return numerator / denominator

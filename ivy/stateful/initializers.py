@@ -169,8 +169,9 @@ class Uniform(Initializer):
         elif self._fan_mode == "fan_out":
             ivy.utils.assertions.check_exists(
                 fan_out,
-                message="output_channels must be specified for fan_out \
-                denominator mode",
+                message=(
+                    "output_channels must be specified for fan_out denominator mode"
+                ),
             )
             fan = fan_out
         elif self._fan_mode == "fan_sum":
@@ -179,8 +180,10 @@ class Uniform(Initializer):
                 fan_out,
                 fn=ivy.exists,
                 type="all",
-                message="input_channels and output_channels must both be \
-                specified for fan_sum denominator mode.",
+                message=(
+                    "input_channels and output_channels must both be"
+                    " specified for fan_sum denominator mode."
+                ),
             )
             fan = fan_in + fan_out
         elif self._fan_mode == "fan_avg":
@@ -189,8 +192,10 @@ class Uniform(Initializer):
                 fan_out,
                 fn=ivy.exists,
                 type="all",
-                message="input_channels and output_channels must both be \
-                specified for fan_avg denominator mode.",
+                message=(
+                    "input_channels and output_channels must both be"
+                    " specified for fan_avg denominator mode."
+                ),
             )
             fan = (fan_in + fan_out) / 2
         else:
@@ -316,8 +321,9 @@ class KaimingNormal(Initializer):
         elif self._fan_mode == "fan_out":
             ivy.utils.assertions.check_exists(
                 fan_out,
-                message="output_channels must be specified for fan_out \
-                denominator mode",
+                message=(
+                    "output_channels must be specified for fan_out denominator mode"
+                ),
             )
             fan = fan_out
         elif self._fan_mode == "fan_sum":
@@ -326,8 +332,10 @@ class KaimingNormal(Initializer):
                 fan_out,
                 fn=ivy.exists,
                 type="all",
-                message="input_channels and output_channels must both be \
-                specified for fan_sum denominator mode.",
+                message=(
+                    "input_channels and output_channels must both be"
+                    " specified for fan_sum denominator mode."
+                ),
             )
             fan = fan_in + fan_out
         elif self._fan_mode == "fan_avg":
@@ -336,8 +344,10 @@ class KaimingNormal(Initializer):
                 fan_out,
                 fn=ivy.exists,
                 type="all",
-                message="input_channels and output_channels must both be \
-                specified for fan_avg denominator mode.",
+                message=(
+                    "input_channels and output_channels must both be"
+                    " specified for fan_avg denominator mode."
+                ),
             )
             fan = (fan_in + fan_out) / 2
         else:

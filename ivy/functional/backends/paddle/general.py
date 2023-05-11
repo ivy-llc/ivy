@@ -507,11 +507,13 @@ def scatter_nd(
                 else out
             )
         # handle numeric updates
-        updates = ivy.array(updates)
-        updates = updates.cast(
-            ivy.dtype(out, as_native=True)
-            if ivy.exists(out)
-            else ivy.default_dtype(item=updates),
+        updates = paddle.to_tensor(
+            updates,
+            dtype=(
+                ivy.dtype(out, as_native=True)
+                if ivy.exists(out)
+                else ivy.default_dtype(item=updates)
+            ),
         )
         contains_slices = (
             any(isinstance(idx, slice) for idx in indices)
@@ -533,7 +535,7 @@ def scatter_nd(
             shape = out.shape if ivy.exists(out) else updates.shape
             indices = ivy.stack(
                 [
-                    ivy.flatten(value)
+                    paddle.flatten(value)
                     for value in ivy.meshgrid(*[ivy.arange(shape[0])], indexing="ij")
                 ],
                 axis=-1,
@@ -542,26 +544,28 @@ def scatter_nd(
             shape = (
                 shape
                 if ivy.exists(shape)
-                else out.shape
-                if ivy.exists(out)
-                else updates.shape
+                else out.shape if ivy.exists(out) else updates.shape
             )
             indices = _parse_ellipsis(indices, len(shape))
             indices = ivy.stack(
                 [
-                    ivy.flatten(value)
+                    paddle.flatten(value)
                     for value in ivy.meshgrid(
                         *[
-                            ivy.arange(s)
-                            if idx == slice(None, None, None)
-                            else ivy.arange(
-                                ivy.default(idx.start, 0),
-                                ivy.default(idx.stop, s),
-                                ivy.default(idx.step, 1),
+                            (
+                                ivy.arange(s)
+                                if idx == slice(None, None, None)
+                                else (
+                                    ivy.arange(
+                                        ivy.default(idx.start, 0),
+                                        ivy.default(idx.stop, s),
+                                        ivy.default(idx.step, 1),
+                                    )
+                                    if isinstance(idx, slice)
+                                    and (idx != slice(None, None, None))
+                                    else paddle.to_tensor([idx % s])
+                                )
                             )
-                            if isinstance(idx, slice)
-                            and (idx != slice(None, None, None))
-                            else ivy.array([idx % s])
                             for s, idx in zip(shape, indices)
                         ],
                         indexing="ij",
@@ -573,9 +577,7 @@ def scatter_nd(
             shape = (
                 shape
                 if ivy.exists(shape)
-                else out.shape
-                if ivy.exists(out)
-                else updates.shape
+                else out.shape if ivy.exists(out) else updates.shape
             )
             if isinstance(indices, (tuple, list)):
                 indices = (
@@ -583,19 +585,23 @@ def scatter_nd(
                 )
                 indices = ivy.stack(
                     [
-                        ivy.flatten(value)
+                        paddle.flatten(value)
                         for value in ivy.meshgrid(
                             *[
-                                ivy.arange(s)
-                                if idx == slice(None, None, None)
-                                else ivy.arange(
-                                    ivy.default(idx.start, 0),
-                                    ivy.default(idx.stop, s),
-                                    ivy.default(idx.step, 1),
+                                (
+                                    ivy.arange(s)
+                                    if idx == slice(None, None, None)
+                                    else (
+                                        ivy.arange(
+                                            ivy.default(idx.start, 0),
+                                            ivy.default(idx.stop, s),
+                                            ivy.default(idx.step, 1),
+                                        )
+                                        if isinstance(idx, slice)
+                                        and (idx != slice(None, None, None))
+                                        else paddle.to_tensor([idx % s])
+                                    )
                                 )
-                                if isinstance(idx, slice)
-                                and (idx != slice(None, None, None))
-                                else ivy.array([idx % s])
                                 for s, idx in zip(shape, indices)
                             ],
                             indexing="ij",
@@ -606,7 +612,7 @@ def scatter_nd(
             else:
                 indices = ivy.stack(
                     [
-                        ivy.flatten(value)
+                        paddle.flatten(value)
                         for value in ivy.meshgrid(
                             *[
                                 ivy.arange(
@@ -631,19 +637,23 @@ def scatter_nd(
                 indices = [
                     ivy.stack(
                         [
-                            ivy.flatten(value)
+                            paddle.flatten(value)
                             for value in ivy.meshgrid(
                                 *[
-                                    ivy.arange(s)
-                                    if idx == slice(None, None, None)
-                                    else ivy.arange(
-                                        ivy.default(idx.start, 0),
-                                        ivy.ivy.default(idx.stop, s),
-                                        ivy.default(idx.step, 1),
+                                    (
+                                        ivy.arange(s)
+                                        if idx == slice(None, None, None)
+                                        else (
+                                            ivy.arange(
+                                                ivy.default(idx.start, 0),
+                                                ivy.ivy.default(idx.stop, s),
+                                                ivy.default(idx.step, 1),
+                                            )
+                                            if isinstance(idx, slice)
+                                            and idx != slice(None, None, None)
+                                            else paddle.to_tensor([idx % s])
+                                        )
                                     )
-                                    if isinstance(idx, slice)
-                                    and idx != slice(None, None, None)
-                                    else ivy.array([idx % s])
                                     for s, idx in zip(shape, index)
                                 ],
                                 indexing="xy",
@@ -663,10 +673,12 @@ def scatter_nd(
         )
         if sum(updates.shape) < sum(expected_shape):
             updates = ivy.broadcast_to(updates, expected_shape)
-        elif sum(updates.shape) > sum(expected_shape):
-            indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1:])
-        elif updates.shape != expected_shape:
-            updates = ivy.broadcast_to(updates, expected_shape)
+        elif sum(updates.shape) >= sum(expected_shape):
+            indices_shape = updates.shape[:1] + indices.shape[-1:]
+            if sum(indices.shape) < sum(indices_shape):
+                indices = ivy.broadcast_to(indices, indices_shape)
+            else:
+                updates = ivy.broadcast_to(updates, expected_shape)
         # implementation
         target = out
         target_given = ivy.exists(target)
@@ -704,7 +716,7 @@ def scatter_nd(
             else:
                 raise ivy.utils.exceptions.IvyException(
                     "reduction is {}, but it must be one of "
-                    '"sum", "min" or "max"'.format(reduction)
+                    '"sum", "min", "max" or "replace"'.format(reduction)
                 )
     if ivy.exists(out):
         return inplace_update(out, ret)

@@ -4,6 +4,8 @@ from typing import Optional, Literal, Union, List
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def argsort(
@@ -36,6 +38,17 @@ def sort(
     return ret
 
 
+# msort
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+def msort(
+    a: Union[np.ndarray, list, tuple], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.msort(a)
+
+
+msort.support_native_out = False
+
+
 def searchsorted(
     x: np.ndarray,
     v: np.ndarray,
@@ -58,7 +71,7 @@ def searchsorted(
         )
     if x.ndim != 1:
         assert x.shape[:-1] == v.shape[:-1], RuntimeError(
-            f"the first N-1 dimensions of x array and v array "
+            "the first N-1 dimensions of x array and v array "
             f"must match, got {x.shape} and {v.shape}"
         )
         if is_sorter_provided:
