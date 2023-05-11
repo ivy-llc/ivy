@@ -189,16 +189,20 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     largest: Optional[bool] = True,
+    sorted: bool = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    k = min(k, x.shape[axis])
     topk_res = NamedTuple(
         "top_k", [("values", paddle.Tensor), ("indices", paddle.Tensor)]
     )
     with ivy.ArrayMode(False):
         indices = ivy.argsort(x, axis=axis, descending=largest)
         indices = paddle.index_select(indices, paddle.arange(end=k), axis)
+        if not sorted:
+            indices = paddle.sort(indices, axis=axis)
         val = ivy.take_along_axis(x, indices, axis)
         return topk_res(val, indices)
 

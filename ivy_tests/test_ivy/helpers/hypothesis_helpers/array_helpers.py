@@ -1034,7 +1034,7 @@ def arrays_and_axes(
     force_int_axis=False,
 ):
     """
-    Generates a list of arrays and axes.
+    Generate a list of arrays and axes.
 
     Parameters
     ----------
@@ -1306,7 +1306,7 @@ def array_values(
     else:
         raise TypeError(
             f"{dtype} is not a valid data type that can be generated,"
-            f" only integers, floats and booleans are allowed."
+            " only integers, floats and booleans are allowed."
         )
 
     if kind_dtype != "bool":

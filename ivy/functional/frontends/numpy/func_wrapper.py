@@ -35,10 +35,12 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
             if assert_fn:
                 ivy.utils.assertions.check_all_or_any_fn(
                     *args,
-                    fn=lambda x: assert_fn(x)
-                    if ivy.shape(x) == ()
-                    else np_frontend.can_cast(
-                        x, ivy.as_ivy_dtype(dtype), casting=casting
+                    fn=lambda x: (
+                        assert_fn(x)
+                        if ivy.shape(x) == ()
+                        else np_frontend.can_cast(
+                            x, ivy.as_ivy_dtype(dtype), casting=casting
+                        )
                     ),
                     type="all",
                     message="type of input is incompatible with dtype: {}".format(
@@ -71,8 +73,8 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
         fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
         assert_fn = lambda x: ivy.dtype(x) == fn_func
         if scalar_check:
-            assert_fn = (
-                lambda x: ivy.dtype(x) == fn_func
+            assert_fn = lambda x: (
+                ivy.dtype(x) == fn_func
                 if ivy.shape(x) != ()
                 else _casting_no_special_case(ivy.dtype(x), fn_func, none)
             )
@@ -371,9 +373,11 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
-            ivy.set_default_int_dtype(
-                "int64"
-            ) if platform.system() != "Windows" else ivy.set_default_int_dtype("int32")
+            (
+                ivy.set_default_int_dtype("int64")
+                if platform.system() != "Windows"
+                else ivy.set_default_int_dtype("int32")
+            )
             ivy.set_default_float_dtype("float64")
             set_default_dtype = True
         if contains_order:
@@ -481,34 +485,42 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     return _from_zero_dim_arrays_to_scalar
 
 
+def _count_operands(subscript):
+    if "->" in subscript:
+        input_subscript, output_index = subscript.split("->")
+    else:
+        input_subscript = subscript
+    return len(input_subscript.split(","))
+
+
 def handle_numpy_out(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _handle_numpy_out(*args, out=None, **kwargs):
-        if len(args) > (out_pos + 1):
-            out = args[out_pos]
+    def _handle_numpy_out(*args, **kwargs):
+        if "out" not in kwargs:
+            keys = list(inspect.signature(fn).parameters.keys())
+            if fn.__name__ == "einsum":
+                out_pos = 1 + _count_operands(args[0])
+            else:
+                out_pos = keys.index("out")
             kwargs = {
                 **dict(
                     zip(
-                        list(inspect.signature(fn).parameters.keys())[
-                            out_pos + 1 : len(args)
-                        ],
-                        args[out_pos + 1 :],
+                        keys[keys.index("out") :],
+                        args[out_pos:],
                     )
                 ),
                 **kwargs,
             }
             args = args[:out_pos]
-        elif len(args) == (out_pos + 1):
-            out = args[out_pos]
-            args = args[:-1]
-        if ivy.exists(out):
-            if not ivy.nested_any(out, lambda x: isinstance(x, np_frontend.ndarray)):
+        if "out" in kwargs:
+            out = kwargs["out"]
+            if ivy.exists(out) and not ivy.nested_any(
+                out, lambda x: isinstance(x, np_frontend.ndarray)
+            ):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
                 )
-            return fn(*args, out=out, **kwargs)
         return fn(*args, **kwargs)
 
-    out_pos = list(inspect.signature(fn).parameters).index("out")
     _handle_numpy_out.handle_numpy_out = True
     return _handle_numpy_out

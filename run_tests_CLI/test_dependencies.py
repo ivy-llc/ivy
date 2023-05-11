@@ -135,8 +135,7 @@ if __name__ == "__main__":
         type=str,
         required=True,
         help=(
-            "Comma separated filepaths of all text files to check. "
-            "Spaces are ignored."
+            "Comma separated filepaths of all text files to check. Spaces are ignored."
         ),
     )
     parser.add_argument(
