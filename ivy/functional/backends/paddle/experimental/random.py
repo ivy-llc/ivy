@@ -59,7 +59,16 @@ def poisson(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if seed:
+        paddle.seed(seed)
+    if isinstance(lam, (int, float)):
+        lamb = paddle.ones(paddle.cast(shape, "int32")) * lam
+        return paddle.poisson(lamb).cast(dtype)
+    if lam.dtype not in [paddle.float32, paddle.float64]:
+        lam = lam.cast("float32")
+        lamb = paddle.ones(paddle.cast(shape, "int32")) * lam
+
+    return paddle.poisson(lamb).cast(dtype)
 
 
 def bernoulli(
