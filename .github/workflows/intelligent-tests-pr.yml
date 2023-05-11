@@ -43,16 +43,35 @@ jobs:
       - run_tests_30
       - run_tests_31
       - run_tests_32
+      - run_tests_33
+      - run_tests_34
+      - run_tests_35
+      - run_tests_36
+      - run_tests_37
+      - run_tests_38
+      - run_tests_39
+      - run_tests_40
 
     steps:
       - name: Download all test results
         uses: actions/download-artifact@v3
 
-      - name: Combine test results
+      - name: Combined Test Results
         run: |
           find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt
           echo "Test results summary:"
           cat combined_test_results.txt
+
+      - name: New Failures Introduced
+        run: |
+          find . -name "new_failures_*.txt" -exec cat {} + > combined_failures.txt
+          if [ -s combined_failures.txt ]
+          then
+              echo "This PR introduces the following new failing tests:"
+              cat combined_failures.txt
+          else
+              echo "This PR does not introduce any new test failures! Yippee!"
+          fi
 
   run_tests_1:
     runs-on: ubuntu-latest
@@ -77,7 +96,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py extra
           set -o pipefail
-          python run_tests_pr.py | tee test_results_1.txt
+          python run_tests_pr.py new_failures_1.txt | tee test_results_1.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -85,6 +104,12 @@ jobs:
         with:
           name: test_results_1
           path: ivy/test_results_1.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_1
+          path: ivy/new_failures_1.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -113,7 +138,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_2.txt
+          python run_tests_pr.py new_failures_2.txt | tee test_results_2.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -121,6 +146,12 @@ jobs:
         with:
           name: test_results_2
           path: ivy/test_results_2.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_2
+          path: ivy/new_failures_2.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -149,7 +180,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_3.txt
+          python run_tests_pr.py new_failures_3.txt | tee test_results_3.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -157,6 +188,12 @@ jobs:
         with:
           name: test_results_3
           path: ivy/test_results_3.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_3
+          path: ivy/new_failures_3.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -185,7 +222,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_4.txt
+          python run_tests_pr.py new_failures_4.txt | tee test_results_4.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -193,6 +230,12 @@ jobs:
         with:
           name: test_results_4
           path: ivy/test_results_4.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_4
+          path: ivy/new_failures_4.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -221,7 +264,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_5.txt
+          python run_tests_pr.py new_failures_5.txt | tee test_results_5.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -229,6 +272,12 @@ jobs:
         with:
           name: test_results_5
           path: ivy/test_results_5.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_5
+          path: ivy/new_failures_5.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -257,7 +306,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_6.txt
+          python run_tests_pr.py new_failures_6.txt | tee test_results_6.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -265,6 +314,12 @@ jobs:
         with:
           name: test_results_6
           path: ivy/test_results_6.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_6
+          path: ivy/new_failures_6.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -293,7 +348,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_7.txt
+          python run_tests_pr.py new_failures_7.txt | tee test_results_7.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -301,6 +356,12 @@ jobs:
         with:
           name: test_results_7
           path: ivy/test_results_7.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_7
+          path: ivy/new_failures_7.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -329,7 +390,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_8.txt
+          python run_tests_pr.py new_failures_8.txt | tee test_results_8.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -337,6 +398,12 @@ jobs:
         with:
           name: test_results_8
           path: ivy/test_results_8.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_8
+          path: ivy/new_failures_8.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -365,7 +432,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_9.txt
+          python run_tests_pr.py new_failures_9.txt | tee test_results_9.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -373,6 +440,12 @@ jobs:
         with:
           name: test_results_9
           path: ivy/test_results_9.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_9
+          path: ivy/new_failures_9.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -401,7 +474,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_10.txt
+          python run_tests_pr.py new_failures_10.txt | tee test_results_10.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -409,6 +482,12 @@ jobs:
         with:
           name: test_results_10
           path: ivy/test_results_10.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_10
+          path: ivy/new_failures_10.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -437,7 +516,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_11.txt
+          python run_tests_pr.py new_failures_11.txt | tee test_results_11.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -445,6 +524,12 @@ jobs:
         with:
           name: test_results_11
           path: ivy/test_results_11.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_11
+          path: ivy/new_failures_11.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -473,7 +558,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_12.txt
+          python run_tests_pr.py new_failures_12.txt | tee test_results_12.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -481,6 +566,12 @@ jobs:
         with:
           name: test_results_12
           path: ivy/test_results_12.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_12
+          path: ivy/new_failures_12.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -509,7 +600,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_13.txt
+          python run_tests_pr.py new_failures_13.txt | tee test_results_13.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -517,6 +608,12 @@ jobs:
         with:
           name: test_results_13
           path: ivy/test_results_13.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_13
+          path: ivy/new_failures_13.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -545,7 +642,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_14.txt
+          python run_tests_pr.py new_failures_14.txt | tee test_results_14.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -553,6 +650,12 @@ jobs:
         with:
           name: test_results_14
           path: ivy/test_results_14.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_14
+          path: ivy/new_failures_14.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -581,7 +684,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_15.txt
+          python run_tests_pr.py new_failures_15.txt | tee test_results_15.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -589,6 +692,12 @@ jobs:
         with:
           name: test_results_15
           path: ivy/test_results_15.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_15
+          path: ivy/new_failures_15.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -617,7 +726,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_16.txt
+          python run_tests_pr.py new_failures_16.txt | tee test_results_16.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -625,6 +734,12 @@ jobs:
         with:
           name: test_results_16
           path: ivy/test_results_16.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_16
+          path: ivy/new_failures_16.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -653,7 +768,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_17.txt
+          python run_tests_pr.py new_failures_17.txt | tee test_results_17.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -661,6 +776,12 @@ jobs:
         with:
           name: test_results_17
           path: ivy/test_results_17.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_17
+          path: ivy/new_failures_17.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -689,7 +810,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_18.txt
+          python run_tests_pr.py new_failures_18.txt | tee test_results_18.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -697,6 +818,12 @@ jobs:
         with:
           name: test_results_18
           path: ivy/test_results_18.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_18
+          path: ivy/new_failures_18.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -725,7 +852,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_19.txt
+          python run_tests_pr.py new_failures_19.txt | tee test_results_19.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -733,6 +860,12 @@ jobs:
         with:
           name: test_results_19
           path: ivy/test_results_19.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_19
+          path: ivy/new_failures_19.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -761,7 +894,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_20.txt
+          python run_tests_pr.py new_failures_20.txt | tee test_results_20.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -769,6 +902,12 @@ jobs:
         with:
           name: test_results_20
           path: ivy/test_results_20.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_20
+          path: ivy/new_failures_20.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -797,7 +936,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_21.txt
+          python run_tests_pr.py new_failures_21.txt | tee test_results_21.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -805,6 +944,12 @@ jobs:
         with:
           name: test_results_21
           path: ivy/test_results_21.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_21
+          path: ivy/new_failures_21.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -833,7 +978,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_22.txt
+          python run_tests_pr.py new_failures_22.txt | tee test_results_22.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -841,6 +986,12 @@ jobs:
         with:
           name: test_results_22
           path: ivy/test_results_22.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_22
+          path: ivy/new_failures_22.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -869,7 +1020,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_23.txt
+          python run_tests_pr.py new_failures_23.txt | tee test_results_23.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -877,6 +1028,12 @@ jobs:
         with:
           name: test_results_23
           path: ivy/test_results_23.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_23
+          path: ivy/new_failures_23.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -905,7 +1062,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_24.txt
+          python run_tests_pr.py new_failures_24.txt | tee test_results_24.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -913,6 +1070,12 @@ jobs:
         with:
           name: test_results_24
           path: ivy/test_results_24.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_24
+          path: ivy/new_failures_24.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -941,7 +1104,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_25.txt
+          python run_tests_pr.py new_failures_25.txt | tee test_results_25.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -949,6 +1112,12 @@ jobs:
         with:
           name: test_results_25
           path: ivy/test_results_25.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_25
+          path: ivy/new_failures_25.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -977,7 +1146,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_26.txt
+          python run_tests_pr.py new_failures_26.txt | tee test_results_26.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -985,6 +1154,12 @@ jobs:
         with:
           name: test_results_26
           path: ivy/test_results_26.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_26
+          path: ivy/new_failures_26.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -1013,7 +1188,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_27.txt
+          python run_tests_pr.py new_failures_27.txt | tee test_results_27.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1021,6 +1196,12 @@ jobs:
         with:
           name: test_results_27
           path: ivy/test_results_27.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_27
+          path: ivy/new_failures_27.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -1049,7 +1230,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_28.txt
+          python run_tests_pr.py new_failures_28.txt | tee test_results_28.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1057,6 +1238,12 @@ jobs:
         with:
           name: test_results_28
           path: ivy/test_results_28.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_28
+          path: ivy/new_failures_28.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -1085,7 +1272,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_29.txt
+          python run_tests_pr.py new_failures_29.txt | tee test_results_29.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1093,6 +1280,12 @@ jobs:
         with:
           name: test_results_29
           path: ivy/test_results_29.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_29
+          path: ivy/new_failures_29.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -1121,7 +1314,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_30.txt
+          python run_tests_pr.py new_failures_30.txt | tee test_results_30.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1129,6 +1322,12 @@ jobs:
         with:
           name: test_results_30
           path: ivy/test_results_30.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_30
+          path: ivy/new_failures_30.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -1157,7 +1356,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_31.txt
+          python run_tests_pr.py new_failures_31.txt | tee test_results_31.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1165,6 +1364,12 @@ jobs:
         with:
           name: test_results_31
           path: ivy/test_results_31.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_31
+          path: ivy/new_failures_31.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
@@ -1193,7 +1398,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           set -o pipefail
-          python run_tests_pr.py | tee test_results_32.txt
+          python run_tests_pr.py new_failures_32.txt | tee test_results_32.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1201,6 +1406,348 @@ jobs:
         with:
           name: test_results_32
           path: ivy/test_results_32.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_32
+          path: ivy/new_failures_32.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_33:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master33 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_33.txt | tee test_results_33.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_33
+          path: ivy/test_results_33.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_33
+          path: ivy/new_failures_33.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_34:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master34 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_34.txt | tee test_results_34.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_34
+          path: ivy/test_results_34.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_34
+          path: ivy/new_failures_34.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_35:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master35 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_35.txt | tee test_results_35.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_35
+          path: ivy/test_results_35.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_35
+          path: ivy/new_failures_35.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_36:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master36 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_36.txt | tee test_results_36.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_36
+          path: ivy/test_results_36.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_36
+          path: ivy/new_failures_36.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_37:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master37 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_37.txt | tee test_results_37.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_37
+          path: ivy/test_results_37.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_37
+          path: ivy/new_failures_37.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_38:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master38 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_38.txt | tee test_results_38.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_38
+          path: ivy/test_results_38.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_38
+          path: ivy/new_failures_38.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_39:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master39 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_39.txt | tee test_results_39.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_39
+          path: ivy/test_results_39.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_39
+          path: ivy/new_failures_39.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_40:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master40 https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python determine_tests.py
+          set -o pipefail
+          python run_tests_pr.py new_failures_40.txt | tee test_results_40.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_40
+          path: ivy/test_results_40.txt
+
+      - name: Upload New Failures
+        uses: actions/upload-artifact@v3
+        with:
+          name: new_failures_40
+          path: ivy/new_failures_40.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'

@@ -1,29 +1,51 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
 @handle_frontend_test(
     fn_tree="numpy.nextafter",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="nextafter"
     ),
 )
 def test_numpy_nextafter(
-    dtype_and_x,
+    dtypes_values_casting,
+    where,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=False,
-        x1=x[0],
-        x2=x[1],
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )

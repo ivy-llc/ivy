@@ -176,6 +176,31 @@ def test_tensorflow_exp(
     )
 
 
+# expm1
+@handle_frontend_test(
+    fn_tree="tensorflow.math.expm1",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_expm1(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # sqrt
 @handle_frontend_test(
     fn_tree="tensorflow.math.sqrt",
@@ -2389,6 +2414,32 @@ def test_tensorflow_less(
     )
 
 
+# angle
+@handle_frontend_test(
+    fn_tree="tensorflow.math.angle",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=["float64", "complex64", "complex128"],
+    ),
+)
+def test_tensorflow_angle(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 # zeta
 @handle_frontend_test(
     fn_tree="tensorflow.math.zeta",
@@ -2448,4 +2499,31 @@ def test_tensorflow_greater_equal(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# in_top_k
+@handle_frontend_test(
+    fn_tree="tensorflow.math.in_top_k",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    k=st.integers(min_value=0, max_value=5),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_in_top_k(
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, k
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        targets=x[0],
+        pred=x[1],
+        k=k,
     )

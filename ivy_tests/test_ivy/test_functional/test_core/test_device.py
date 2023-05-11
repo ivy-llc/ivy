@@ -11,15 +11,16 @@ import warnings
 
 import numpy as np
 import psutil
+import subprocess
 from hypothesis import strategies as st, assume
 
 try:
     import pynvml
 except ImportError:
     warnings.warn(
-        "pynvml installation was not found in the environment,\
-         functionalities of the Ivy's device module will be limited.\
-         Please install pynvml if you wish to use GPUs with Ivy."
+        "pynvml installation was not found in the environment, functionalities"
+        " of the Ivy's device module will be limited. Please install pynvml if"
+        " you wish to use GPUs with Ivy."
     )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
@@ -35,13 +36,13 @@ from ivy.functional.ivy.device import _get_nvml_gpu_handle
 # ------- #
 
 
-def _ram_array_and_clear_test(metric_fn, size=10000000):
+def _ram_array_and_clear_test(metric_fn, device, size=1000000000):
     # This function checks if the memory usage changes before, during and after
 
     # Measure usage before creating array
     before = metric_fn()
     # Create an array of floats, by default with 10 million elements (40 MB)
-    arr = ivy.random_normal(shape=(size,), dtype="float32", device="cpu")
+    arr = ivy.random_normal(shape=(size,), dtype="float32", device=device)
     during = metric_fn()
     # Check that the memory usage has increased
     assert before < during
@@ -162,6 +163,8 @@ def test_as_native_dev(*, dtype_and_x, test_flags, on_device):
             )
         elif ivy.current_backend_str() == "torch":
             assert ret.type == device.type
+        elif ivy.current_backend_str() == "paddle":
+            assert ret._equals(device)
         else:
             assert ret == device
 
@@ -231,7 +234,10 @@ def test_to_device(
         assert x_on_dev is out
 
         # should be the same device
-        assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
+        if "paddle" not in ivy.current_backend_str():
+            assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
+        else:
+            assert ivy.dev(x_on_dev, as_native=False) == ivy.dev(out, as_native=False)
 
         # check if native arrays are the same
         # these backends do not support native inplace updates
@@ -480,8 +486,9 @@ def test_print_all_ivy_arrays_on_dev(
     assert len(written) == num
 
     if attr_only:
-        # Check that the attribute are printed are in the format of ((dim,...), type)
-        regex = r"^\(\((\d+,(\d,\d*)*)\), \'\w*\'\)$"
+        # Check that the attribute are printed are in the format of
+        # (ivy.Shape(dim,...), type)
+        regex = r"^\(ivy.Shape\((\d+,(\d,\d*)*)\), \'\w*\'\)$"
     else:
         # Check that the arrays are printed are in the format of ivy.array(...)
         regex = r"^ivy\.array\(\[.*\]\)$"
@@ -515,11 +522,9 @@ def test_used_mem_on_dev():
         assert ivy.used_mem_on_dev(device) > 0
         assert ivy.used_mem_on_dev(device) < ivy.total_mem_on_dev(device)
 
-    # Testing if it's detects changes in RAM usage, cannot apply this to GPU, as we can
-    # only get the total memory usage of a GPU, not the usage by the program.
-    _ram_array_and_clear_test(
-        lambda: ivy.used_mem_on_dev(ivy.Device("cpu"), process_specific=True)
-    )
+        _ram_array_and_clear_test(
+            lambda: ivy.used_mem_on_dev(device, process_specific=True), device=device
+        )
 
 
 @handle_test(fn_tree="percent_used_mem_on_dev")
@@ -530,10 +535,11 @@ def test_percent_used_mem_on_dev():
         used = ivy.percent_used_mem_on_dev(ivy.Device(device))
         assert 0 <= used <= 100
 
-    # Same as test_used_mem_on_dev, but using percent of total memory as metric function
-    _ram_array_and_clear_test(
-        lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), process_specific=True)
-    )
+        # Same as test_used_mem_on_dev, but using percent of total memory as metric function
+        _ram_array_and_clear_test(
+            lambda: ivy.percent_used_mem_on_dev(device, process_specific=True),
+            device=device,
+        )
 
 
 @handle_test(fn_tree="gpu_is_available")
@@ -599,13 +605,66 @@ def test_function_unsupported_devices(
     assert sorted(tuple(exp)) == sorted(res)
 
 
-# Still to Add #
-# ---------------#
+def get_gpu_mem_usage(device="gpu:0"):
+    handle = _get_nvml_gpu_handle(device)
+    info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+    return (info.used / info.total) * 100
 
 
-# clear_cached_mem_on_dev
-# used_mem_on_dev # working fine for cpu
-# percent_used_mem_on_dev # working fine for cpu
-# dev_util # working fine for cpu
-# tpu_is_available
-# _assert_dev_correct_formatting
+@handle_test(fn_tree="clear_cached_mem_on_dev")
+def test_clear_cached_mem_on_dev():
+    devices = _get_possible_devices()
+    for device in devices:
+        # Testing on only GPU since clearing cache mem is relevant
+        # for only CUDA devices
+        if "gpu" in device:
+            arr = ivy.random_normal(
+                shape=(10000, 10000), dtype="float32", device=device
+            )
+            del arr
+            before = get_gpu_mem_usage(device)
+            ivy.clear_cached_mem_on_dev(device)
+            after = get_gpu_mem_usage(device)
+            assert before > after
+
+
+def get_cpu_percent():
+    output = subprocess.check_output(["top", "-bn1"])
+    cpu_percent = float(re.search(b"%Cpu\(s\):\s+([\d.]+)\s+us", output).group(1))
+    return cpu_percent
+
+
+@handle_test(fn_tree="dev_util")
+def test_dev_util():
+    devices = _get_possible_devices()
+    for device in devices:
+        # The internally called psutil.cpu_percent() has a unique behavior where it returns 0
+        # as usage when run the second time in same line so simple
+        # assert psutil.cpu_percent() == ivy.dev_util(device) isn't possible
+        if "cpu" in device:
+            assert 100 > ivy.dev_util(device) > 0
+            # Comparing CPU utilization using top. Two percentiles won't be directly equal
+            # but absolute difference should be below a safe threshold
+            assert abs(get_cpu_percent() - ivy.dev_util(device)) < 10
+        elif "gpu" in device:
+            handle = _get_nvml_gpu_handle(device)
+            assert (
+                ivy.dev_util(device) == pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
+            )
+
+
+@handle_test(fn_tree="tpu_is_available")
+def test_tpu_is_available():
+    import tensorflow as tf
+
+    try:
+        resolver = tf.distribute.cluster_resolver.TPUClusterResolver()
+        tf.config.experimental_connect_to_cluster(resolver)
+        tf.tpu.experimental.initialize_tpu_system(resolver)
+        tf.config.list_logical_devices("TPU")
+        tf.distribute.experimental.TPUStrategy(resolver)
+        ground_truth = True
+    except ValueError:
+        ground_truth = False
+
+    assert ivy.tpu_is_available() == ground_truth

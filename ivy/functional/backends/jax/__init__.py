@@ -6,9 +6,6 @@ import jax
 import jax.numpy as jnp
 from typing import Union
 
-# noinspection PyPackageRequirements
-from jaxlib.xla_extension import Buffer
-
 # make ivy.Container compatible with jax pytree traversal
 from jax.tree_util import register_pytree_node
 from jax.tree_util import tree_flatten, tree_unflatten
@@ -36,22 +33,16 @@ else:
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
-# noinspection PyUnresolvedReferences
-JaxArray = Union[
-    jax.interpreters.xla._DeviceArray,
-    jaxlib.xla_extension.DeviceArray,
-    Buffer,
-]
-# noinspection PyUnresolvedReferences,PyProtectedMember
-NativeArray = (
-    jax.interpreters.xla._DeviceArray,
-    jaxlib.xla_extension.DeviceArray,
-    Buffer,
-)
-
 if version.parse(jax.__version__) >= version.parse("0.4.1"):
-    JaxArray = Union[JaxArray, jax.Array]
-    NativeArray += (jax.Array,)
+    JaxArray = jax.Array
+    NativeArray = (jax.Array,)
+else:
+    JaxArray = jaxlib.xla_extension.DeviceArray
+    NativeArray = (jaxlib.xla_extension.DeviceArray,)
+
+if version.parse(jax.__version__) <= version.parse("0.4.8"):
+    JaxArray = Union[JaxArray, jax.interpreters.xla._DeviceArray]
+    NativeArray += (jax.interpreters.xla._DeviceArray,)
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeDevice = jaxlib.xla_extension.Device

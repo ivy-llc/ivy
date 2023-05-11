@@ -42,6 +42,8 @@ def floats(
         minimum value of floats generated.
     max_value
         maximum value of floats generated.
+    abs_smallest_val
+        the absolute smallest representable value of the data type.
     allow_nan
         if True, allow Nans in the list.
     allow_inf
@@ -78,7 +80,7 @@ def floats(
     Returns
     -------
     ret
-        Float.
+        A strategy that draws floats.
     """
     # ToDo assert that if min or max can be represented
     dtype = draw(dtype_helpers.get_dtypes("float", full=False, prune_function=False))
@@ -169,7 +171,7 @@ def ints(
     Returns
     -------
     ret
-        Integer.
+        A strategy that draws integers.
     """
     dtype = draw(dtype_helpers.get_dtypes("integer", full=False, prune_function=False))
     if min_value is None and max_value is None:
@@ -234,7 +236,7 @@ def number(
     Returns
     -------
     ret
-        An integer or float.
+        A strategy that draws integers or floats.
     """
     return draw(
         ints(

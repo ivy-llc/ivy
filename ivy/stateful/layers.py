@@ -1350,9 +1350,11 @@ class LSTM(Module):
                     {
                         "w": self._w_init.create_variables(
                             (
-                                self._input_channels
-                                if i == 0
-                                else self._output_channels,
+                                (
+                                    self._input_channels
+                                    if i == 0
+                                    else self._output_channels
+                                ),
                                 4 * self._output_channels,
                             ),
                             device,
@@ -1427,3 +1429,117 @@ class LSTM(Module):
         if not self._return_state:
             return h_t
         return h_t, (h_n_list, c_n_list)
+
+
+# Pooling #
+# --------#
+
+
+class MaxPool2D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NHWC",
+        device=None,
+        v=None,
+        dtype=None,
+    ):
+        """
+        Class for applying Max Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.max_pool2d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
+
+
+class AvgPool2D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NHWC",
+        device=None,
+        v=None,
+        dtype=None,
+    ):
+        """
+        Class for applying Average Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.avg_pool2d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )

@@ -7,15 +7,9 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
-from typing import Union, Optional
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
-    to_native_arrays_and_back,
-    handle_out_argument,
-    handle_nestable,
-    handle_array_like_without_promotion,
 )
-from ivy.utils.exceptions import handle_exceptions
 
 
 @to_ivy_arrays_and_back
@@ -52,8 +46,7 @@ def argwhere(a, /, *, size=None, fill_value=None):
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
         logging.warning(
-            "'kind' argument to argsort is ignored; only 'stable' sorts "
-            "are supported."
+            "'kind' argument to argsort is ignored; only 'stable' sorts are supported."
         )
     if order is not None:
         raise ivy.utils.exceptions.IvyError(
@@ -117,20 +110,8 @@ def extract(condition, arr):
     return arr[condition]
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-def sort(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[ivy.Array] = None,
-):
+@to_ivy_arrays_and_back
+def sort(x, axis=-1, descending=False, stable=True, out=None):
     if axis == -1 and not descending and stable:
         x = ivy.sort(x)
     if axis == 1 and descending and not stable:

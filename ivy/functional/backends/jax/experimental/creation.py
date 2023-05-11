@@ -55,6 +55,8 @@ def hann_window(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if size == 1:
+        return jnp.array([1], dtype=dtype)
     if periodic is False:
         return jnp.array(jnp.hanning(size), dtype=dtype)
     else:
@@ -87,12 +89,3 @@ def tril_indices(
         jnp.tril_indices(n=n_rows, k=k, m=n_cols),
         device=device,
     )
-
-
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[jnp.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
-) -> JaxArray:
-    return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)

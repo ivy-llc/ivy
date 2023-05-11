@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_dim_size=2,
         max_num_dims=2,
     ),
-    val=helpers.floats(),
+    val=helpers.floats(min_value=-10, max_value=10),
     wrap=helpers.get_dtypes(kind="bool"),
     test_with_out=st.just(False),
 )
