@@ -256,6 +256,7 @@ def test_numpy_cov(
     test_flags,
     fn_tree,
     on_device,
+    keep_dims,
 ):
     input_dtypes, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -270,6 +271,7 @@ def test_numpy_cov(
         x=x[0],
         axis=axis,
         dtype=dtype[0],
+        keepdims=keep_dims,
         test_values=False,
     )
 
