@@ -1,6 +1,6 @@
 # global
 import paddle
-from typing import Optional
+from typing import Optional, Union
 
 # local
 import ivy
@@ -112,3 +112,16 @@ def searchsorted(
         )
 
     return paddle.searchsorted(x, v, right=right).cast(ret_dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8",
+                                 "uint8",
+                                 "int16",
+                                 "float16",
+                                 "complex")}}, backend_version
+)
+def msort(
+    a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.sort(a, axis=0)
