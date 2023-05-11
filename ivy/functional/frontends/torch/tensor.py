@@ -1128,6 +1128,10 @@ class Tensor:
     def tolist(self):
         return self._ivy_array.to_list()
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+    def topk(self, k, dim=None, largest=True, sorted=True):
+        return torch_frontend.topk(self, k, dim=dim, largest=largest, sorted=sorted)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):

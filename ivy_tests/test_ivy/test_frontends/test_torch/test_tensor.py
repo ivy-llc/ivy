@@ -3,6 +3,8 @@ import pytest
 from types import SimpleNamespace
 import numpy as np
 
+from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import \
+    _topk_helper
 
 try:
     import torch
@@ -7909,4 +7911,41 @@ def test_torch_instance_fmod_(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
+    )
+
+
+# topk
+# TODO: add value test after the stable sorting is added to torch
+# https://github.com/pytorch/pytorch/issues/88184
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="topk",
+    dtype_x_axis_k=_topk_helper(),
+    largest=st.booleans(),
+    sorted=st.booleans(),
+)
+def test_torch_instance_topk(
+    dtype_x_axis_k,
+    largest,
+    sorted,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, input, axis, k = dtype_x_axis_k
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": input[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "k": k, "dim": axis, "largest": largest, "sorted": sorted},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        test_values=False,
     )
