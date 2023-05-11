@@ -539,3 +539,17 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+def householder_product(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.householder_product(x1, x2)
+
+
+householder_product.support_native_out = True

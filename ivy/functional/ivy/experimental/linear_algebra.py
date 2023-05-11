@@ -698,3 +698,18 @@ def cov(
         aweights=aweights,
         dtype=dtype,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def householder_product(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+) -> ivy.Array:
+    return current_backend(x1).householder_prodcut(x1, x2)
