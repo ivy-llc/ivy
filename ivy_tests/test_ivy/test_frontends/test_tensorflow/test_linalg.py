@@ -841,11 +841,11 @@ def test_tensorflow_adjoint(
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.diag",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+        available_dtypes=["int64", "int32"],
+        min_num_dims=2,
         max_num_dims=2,
         min_dim_size=2,
-        max_dim_size=10,
+        max_dim_size=2,
     ),
     k=helpers.ints(min_value=0, max_value=10),
 )

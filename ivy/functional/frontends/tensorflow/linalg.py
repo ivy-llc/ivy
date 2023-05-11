@@ -292,4 +292,4 @@ def diag(
         size *= dim
     if (num_cols and num_rows) and (size == (num_cols * num_rows)):
         output = ivy.reshape(output, (num_rows, num_cols))
-    return output
+    return ivy.astype(output, ivy.dtype(diagonal))
