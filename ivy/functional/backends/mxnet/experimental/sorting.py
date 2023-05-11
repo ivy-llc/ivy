@@ -1,6 +1,8 @@
 from typing import Union, Optional
 import mxnet as mx
 
+from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def msort(
     a: Union[(None, mx.ndarray.NDArray, list, tuple)],
@@ -8,7 +10,7 @@ def msort(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.msort Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def lexsort(
@@ -18,4 +20,4 @@ def lexsort(
     axis: int = (-1),
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.lexsort Not Implemented")
+    raise IvyNotImplementedException()

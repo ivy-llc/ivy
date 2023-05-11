@@ -418,6 +418,13 @@ def pow(x, y):
 
 
 @to_ivy_arrays_and_back
+def pad(operand, padding_value, padding_config):
+    return ivy.pad(
+        operand, padding_config, mode="dilated", constant_values=padding_value
+    )
+
+
+@to_ivy_arrays_and_back
 def reciprocal(x):
     return ivy.reciprocal(x)
 

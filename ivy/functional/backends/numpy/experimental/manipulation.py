@@ -229,9 +229,11 @@ def pad(
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if mode == "dilated":
-        padding_value = ivy.native_array(constant_values)
-        operand = _flat_array_to_1_dim_array(input).astype(padding_value.dtype)
-        padded = _interior_pad(operand, padding_value, pad_width)
+        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
+            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
+        else:
+            padding_value = constant_values
+        padded = _interior_pad(input, padding_value, pad_width)
         return ivy.native_array(padded)
 
     if callable(mode):
