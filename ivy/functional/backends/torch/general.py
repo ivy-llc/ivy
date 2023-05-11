@@ -1,9 +1,10 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from functools import reduce
+import math
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List
+from typing import Optional, Union, Sequence, Callable, List, Tuple
 
 try:
     import functorch
@@ -14,7 +15,7 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
 from ivy.functional.ivy.general import _parse_ellipsis
 from . import backend_version, is_variable
 
@@ -70,7 +71,11 @@ def get_item(
     x: torch.Tensor,
     /,
     query: torch.Tensor,
+    *,
+    copy: bool = None,
 ) -> torch.Tensor:
+    if copy:
+        x = torch.clone(x)
     if ivy.is_array(query) and ivy.dtype(query, as_native=True) is not torch.bool:
         return x.__getitem__(query.to(torch.int64))
     if isinstance(query, slice) and query.step is not None and query.step < 0:
@@ -298,7 +303,7 @@ def inplace_update(
             x_native[()] = val_native
         if ivy.is_ivy_array(x):
             x.data = x_native
-
+            _update_torch_views(x)
         else:
             x = ivy.to_ivy(x_native)
         if ensure_in_backend:
@@ -341,22 +346,16 @@ def scatter_flat(
         ivy.utils.assertions.check_equal(len(target.shape), 1)
         ivy.utils.assertions.check_equal(target.shape[0], size)
     dtype = updates.dtype
-    if reduction in ["sum", "replace"]:
-        initial_val = torch.tensor(0).type(dtype)
-    elif reduction == "min":
-        initial_val = torch.tensor(1e12).type(dtype)
-    elif reduction == "max":
-        initial_val = torch.tensor(-1e12).type(dtype)
-    else:
+    if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
+            "reduction is {}, but it must be one of "
+            '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if target_given:
         output = out
     else:
-        output = torch.ones([size], dtype=dtype) * initial_val
+        reduction = "replace"
+        output = torch.zeros([size], dtype=dtype)
     global torch_scatter
     if torch_scatter is None:
         try:
@@ -371,12 +370,6 @@ def scatter_flat(
     else:
         res = torch_scatter.scatter(
             updates, indices.type(torch.int64), out=output, reduce=reduction
-        )
-    if not target_given:
-        return torch.where(
-            res == initial_val,
-            torch.zeros([size], dtype=updates.dtype),
-            res,
         )
     return res
 
@@ -405,9 +398,11 @@ def scatter_nd(
     # handle numeric updates
     updates = torch.tensor(
         [updates] if isinstance(updates, (float, int, bool)) else updates,
-        dtype=ivy.dtype(out, as_native=True)
-        if ivy.exists(out)
-        else ivy.default_dtype(item=updates, as_native=True),
+        dtype=(
+            ivy.dtype(out, as_native=True)
+            if ivy.exists(out)
+            else ivy.default_dtype(item=updates, as_native=True)
+        ),
     )
 
     # handle non-tensor indices
@@ -428,9 +423,7 @@ def scatter_nd(
         shape = (
             shape
             if ivy.exists(shape)
-            else out.shape
-            if ivy.exists(out)
-            else updates.shape
+            else out.shape if ivy.exists(out) else updates.shape
         )
         indices = _parse_ellipsis(indices, len(shape))
         indices = torch.stack(
@@ -438,9 +431,11 @@ def scatter_nd(
                 torch.reshape(value, (-1,))
                 for value in torch.meshgrid(
                     *[
-                        torch.range(0, s - 1)
-                        if idx == slice(None, None, None)
-                        else torch.Tensor([idx % s])
+                        (
+                            torch.range(0, s - 1)
+                            if idx == slice(None, None, None)
+                            else torch.Tensor([idx % s])
+                        )
                         for s, idx in zip(shape, indices)
                     ],
                     indexing="ij",
@@ -459,9 +454,7 @@ def scatter_nd(
             shape = (
                 shape
                 if ivy.exists(shape)
-                else out.shape
-                if ivy.exists(out)
-                else updates.shape
+                else out.shape if ivy.exists(out) else updates.shape
             )
             indices = _parse_index(indices, len(shape))
             indices = [
@@ -470,9 +463,11 @@ def scatter_nd(
                         torch.reshape(value, (-1,))
                         for value in torch.meshgrid(
                             *[
-                                torch.range(0, s - 1)
-                                if idx == slice(None, None, None)
-                                else torch.tensor([idx % s])
+                                (
+                                    torch.range(0, s - 1)
+                                    if idx == slice(None, None, None)
+                                    else torch.tensor([idx % s])
+                                )
                                 for s, idx in zip(shape, index)
                             ],
                             indexing="xy",
@@ -510,28 +505,16 @@ def scatter_nd(
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_result_size = reduce(mul, shape, 1)
-    if reduction in ["sum", "replace"]:
-        initial_val = torch.tensor(0).type(dtype)
-    elif reduction == "min":
-        if dtype.is_floating_point:
-            initial_val = min(torch.finfo(dtype).max, 1e12)
-        else:
-            initial_val = int(min(torch.iinfo(dtype).max, 1e12))
-    elif reduction == "max":
-        if dtype.is_floating_point:
-            initial_val = max(torch.finfo(dtype).min, -1e12)
-        else:
-            initial_val = int(max(torch.iinfo(dtype).min, -1e12))
-    else:
+    if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
+            "reduction is {}, but it must be one of "
+            '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if target_given:
         flat_output = torch.reshape(out._data, (flat_result_size,))
     else:
-        flat_output = torch.ones(flat_result_size, dtype=dtype) * initial_val
+        reduction = "replace"
+        flat_output = torch.zeros(flat_result_size, dtype=dtype)
     flat_updates = torch.reshape(updates, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
@@ -560,12 +543,6 @@ def scatter_nd(
             flat_indices_for_flat,
             out=flat_output.clone(),
             reduce=reduction,
-        )
-    if not target_given:
-        flat_scatter = torch.where(
-            flat_scatter == initial_val,
-            torch.zeros(flat_result_size, dtype=updates.dtype),
-            flat_scatter,
         )
     res = torch.reshape(flat_scatter, list(shape))
     if ivy.exists(out):
@@ -602,3 +579,35 @@ def vmap(
         return new_func(*args)
 
     return _vmap
+
+
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
+)
+def isin(
+    elements: torch.tensor,
+    test_elements: torch.tensor,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> torch.tensor:
+    return torch.isin(
+        elements,
+        test_elements,
+        assume_unique=assume_unique,
+        invert=invert,
+    )
+
+
+isin.support_native_out = True
+
+
+def itemsize(x: torch.tensor) -> int:
+    return x.element_size()
+
+
+def strides(x: torch.tensor) -> Tuple[int]:
+    return tuple(
+        [int(stride * math.ceil(ivy.dtype_bits(x.dtype) / 8)) for stride in x.stride()]
+    )

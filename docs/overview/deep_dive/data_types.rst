@@ -43,8 +43,8 @@ The data types supported by Ivy are as follows:
 * float32
 * float64
 * bool
-
-Note that Ivy does not currently support complex data types, these will hopefully be added in a future implementation.
+* complex64
+* complex128
 
 The supported data types are all defined at `import time`_, with each of these set as an `ivy.Dtype`_ instance.
 The :class:`ivy.Dtype` class derives from :class:`str`, and has simple logic in the constructor to verify that the string formatting is correct.

@@ -357,8 +357,8 @@ def searchsorted(
 ):
     if right and side == "left":
         raise ivy.exceptions.IvyError(
-            "side and right can't be set to opposites,\
-            got side of left while right was True"
+            "side and right can't be set to opposites, got side of left"
+            " while right was True"
         )
     if right:
         side = "right"
@@ -371,3 +371,13 @@ def searchsorted(
 @to_ivy_arrays_and_back
 def atleast_3d(*tensors):
     return ivy.atleast_3d(*tensors)
+
+
+@to_ivy_arrays_and_back
+def diag(input, diagonal=0, *, out=None):
+    return ivy.diag(input, k=diagonal)
+
+
+@to_ivy_arrays_and_back
+def clone(input):
+    return ivy.copy_array(input)

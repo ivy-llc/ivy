@@ -15,13 +15,14 @@ from ivy.func_wrapper import (
     handle_out_argument,
     infer_dtype,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 
 
-@infer_device
-@outputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@outputs_to_ivy_arrays
+@infer_device
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -30,7 +31,7 @@ def triu_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array]:
-    """Returns the indices of the upper triangular part of a row by col matrix in a
+    """Return the indices of the upper triangular part of a row by col matrix in a
     2-by-N shape (tuple of two N dimensional arrays), where the first row contains
     row coordinates of all indices and the second row contains column coordinates.
     Indices are ordered based on rows and then columns.  The upper triangular part
@@ -114,19 +115,20 @@ def triu_indices(
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an array that contains a vorbis power complementary window
-    of size window_length.
+    """
+    Return an array that contains a vorbis power complementary window of size
+    window_length.
 
     Parameters
     ----------
@@ -153,11 +155,11 @@ def vorbis_window(
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def hann_window(
     size: int,
     /,
@@ -166,8 +168,9 @@ def hann_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Generate a Hann window. The Hanning window
-    is a taper formed by using a weighted cosine.
+    """
+    Generate a Hann window. The Hanning window is a taper formed by using a weighted
+    cosine.
 
     Parameters
     ----------
@@ -193,27 +196,83 @@ def hann_window(
 
     >>> ivy.hann_window(7, False)
     ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
-
     """
     return ivy.current_backend().hann_window(
         size, periodic=periodic, dtype=dtype, out=out
     )
 
 
-@infer_dtype
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def stft(
+    signals,
+    frame_length,
+    frame_step,
+    fft_length=None,
+    window_fn=hann_window,
+    pad_end=False,
+    name=None,
+    out: Optional[ivy.Array] = None,
+):
+    """
+    Computes the [Short-time Fourier Transform][stft] of `signals`.
+
+    Implemented with TPU/GPU-compatible ops and supports gradients.
+
+    Args:
+      signals: A `[..., samples]` `float32`/`float64` `Tensor` of real-valued
+        signals.
+      frame_length: An integer scalar `Tensor`. The window length in samples.
+      frame_step: An integer scalar `Tensor`. The number of samples to step.
+      fft_length: An integer scalar `Tensor`. The size of the FFT to apply.
+        If not provided, uses the smallest power of 2 enclosing `frame_length`.
+      window_fn: A callable that takes a window length and a `dtype` keyword
+        argument and returns a `[window_length]` `Tensor` of samples in the
+        provided datatype. If set to `None`, no windowing is used.
+      pad_end: Whether to pad the end of `signals` with zeros when the provided
+        frame length and step produces a frame that lies partially past its end.
+      name: An optional name for the operation.
+
+    Returns:
+      A `[..., frames, fft_unique_bins]` `Tensor` of `complex64`/`complex128`
+      STFT values where `fft_unique_bins` is `fft_length // 2 + 1` (the unique
+      components of the FFT).
+
+    Raises:
+      ValueError: If `signals` is not at least rank 1, `frame_length` is
+        not scalar, or `frame_step` is not scalar.
+
+    [stft]: https://en.wikipedia.org/wiki/Short-time_Fourier_transform
+    """
+    return ivy.current_backend().stft(
+        signals,
+        frame_length,
+        frame_step,
+        fft_length=fft_length,
+        window_fn=window_fn,
+        pad_end=pad_end,
+        name=name,
+        out=out,
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
     *,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Kaiser window with window length window_length and shape beta
+    """
+    Compute the Kaiser window with window length window_length and shape beta.
 
     Parameters
     ----------
@@ -248,11 +307,10 @@ def kaiser_window(
     )
 
 
-@infer_dtype
-@outputs_to_ivy_arrays
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@infer_dtype
 def kaiser_bessel_derived_window(
     window_length: int,
     periodic: bool = True,
@@ -261,8 +319,9 @@ def kaiser_bessel_derived_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Kaiser bessel derived window with
-    window length window_length and shape beta
+    """
+    Compute the Kaiser bessel derived window with window length window_length and shape
+    beta.
 
     Parameters
     ----------
@@ -288,10 +347,10 @@ def kaiser_bessel_derived_window(
     >>> ivy.kaiser_bessel_derived_window(5)
     ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])
 
-    >>> ivy.kaiser_derived_window(5, False)
+    >>> ivy.kaiser_bessel_derived_window(5, False)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
-    >>> ivy.kaiser_derived_window(5, False, 5)
+    >>> ivy.kaiser_bessel_derived_window(5, False, 5)
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
     window_length = window_length // 2
@@ -314,11 +373,13 @@ def kaiser_bessel_derived_window(
     return ivy.array(dn_low + dn_mid, dtype=dtype, out=out)
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
+kaiser_bessel_derived_window.mixed_function = True
+
+
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@infer_dtype
 def hamming_window(
     window_length: int,
     /,
@@ -326,10 +387,11 @@ def hamming_window(
     periodic: bool = True,
     alpha: float = 0.54,
     beta: float = 0.46,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Hamming window with window length window_length
+    """
+    Compute the Hamming window with window length window_length.
 
     Parameters
     ----------
@@ -387,10 +449,13 @@ def hamming_window(
             )
 
 
-@infer_device
-@outputs_to_ivy_arrays
-@handle_nestable
+hamming_window.mixed_function = True
+
+
 @handle_exceptions
+@handle_nestable
+@outputs_to_ivy_arrays
+@infer_device
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -399,7 +464,7 @@ def tril_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
-    """Returns the indices of the lower triangular part of a row by col matrix in a
+    """Return the indices of the lower triangular part of a row by col matrix in a
     2-by-N shape (tuple of two N dimensional arrays), where the first row contains
     row coordinates of all indices and the second row contains column coordinates.
     Indices are ordered based on rows and then columns.  The lower triangular part
@@ -482,13 +547,13 @@ def tril_indices(
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
 
-@infer_device
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_ivy_arrays
+@infer_dtype
+@infer_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -498,8 +563,9 @@ def eye_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a array filled with ones on the k diagonal and zeros elsewhere. having
-    the same ``shape`` as an input array ``x``.
+    """Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having
+    the same ``shape`` as the first and last dim of input array ``x``. input array ``x``
+    should to be 2D.
 
 
     Parameters
@@ -523,15 +589,6 @@ def eye_like(
     ret
         an array having the same shape as ``x`` and filled with ``ones`` in
         diagonal ``k`` and ``zeros`` elsewhere.
-
-    Notes
-    -----
-    Generate a 2D tensor (matrix) with ones on the diagonal and zeros everywhere else.
-    Only 2D tensors are supported, i.e. input T1 must be of rank 2. The shape of the
-    output tensor is the same as the input tensor. The data type can be specified by
-    the 'dtype' argument. If 'dtype' is not specified, then the type of input tensor
-    is used. By default, the main diagonal is populated with ones, but attribute 'k'
-    can be used to populate upper or lower diagonals.
 
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -569,8 +626,13 @@ def eye_like(
     }
 
     """
-    cols = 1 if len(x.shape) == 1 else x.shape[-1]
-    rows = x.shape[0]
+    shape = ivy.shape(x, as_array=True)
+    dim = len(shape)
+    if dim <= 1:
+        cols = dim
+    else:
+        cols = shape[-1]
+    rows = 0 if dim < 1 else shape[0]
     return ivy.eye(
         rows,
         cols,

@@ -10,7 +10,6 @@ import time
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 from paddle.fluid.libpaddle import Place
-from ivy.utils.exceptions import IvyNotImplementedException
 
 
 # API #
@@ -76,6 +75,12 @@ def clear_mem_on_dev(device: Place, /):
     device = as_native_dev(device)
     if isinstance(device, paddle.fluid.libpaddle.CUDAPlace):
         paddle.device.cuda.empty_cache()
+
+
+def clear_cached_mem_on_dev(device: str, /):
+    if "gpu" in device:
+        paddle.device.cuda.empty_cache()
+    return None
 
 
 def num_gpus() -> int:

@@ -103,7 +103,8 @@ def _compute_quantile(
                     axis_single < dims and axis_single >= -dims
                 ):
                     raise ValueError(
-                        "Axis should be None, int, or a list, element should in range [-rank(x), rank(x))."
+                        "Axis should be None, int, or a list, element should in "
+                        "range [-rank(x), rank(x))."
                     )
                 if axis_single < 0:
                     axis_single = axis_single + dims
@@ -116,7 +117,8 @@ def _compute_quantile(
         else:
             if not isinstance(axis, int) or not (axis < dims and axis >= -dims):
                 raise ValueError(
-                    "Axis should be None, int, or a list, element should in range [-rank(x), rank(x))."
+                    "Axis should be None, int, or a list, element should in "
+                    "range [-rank(x), rank(x))."
                 )
             if axis < 0:
                 axis += dims
@@ -148,7 +150,8 @@ def _compute_quantile(
     for index in indices:
         if interpolation not in ["linear", "lower", "higher", "midpoint", "nearest"]:
             raise ValueError(
-                "interpolation must be 'linear', 'lower', 'higher', 'midpoint', or 'nearest'"
+                "interpolation must be 'linear', 'lower', 'higher', 'midpoint', "
+                "or 'nearest'"
             )
         if interpolation == "lower":
             index = paddle.floor(index)
@@ -239,10 +242,16 @@ def nanmedian(
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
     keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
     overwrite_input: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        if dtype is None:
+            dtype = input.dtype
+        input = input.cast("float32")
+        paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
+    return paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(

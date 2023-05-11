@@ -58,7 +58,7 @@ def _to_ivy_array(x):
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_ivy_arrays_jax(*args, **kwargs):
         # check if kwargs contains an out argument, and if so, remove it
         has_out = False
         out = None
@@ -78,12 +78,12 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             new_kwargs["out"] = out
         return fn(*new_args, **new_kwargs)
 
-    return new_fn
+    return _inputs_to_ivy_arrays_jax
 
 
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _outputs_to_frontend_arrays_jax(*args, **kwargs):
         weak_type = not any(
             (isinstance(arg, jax_frontend.DeviceArray) and arg.weak_type is False)
             or ivy.is_array(arg)
@@ -116,7 +116,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             ret, nested=True, include_derived={tuple: True}
         )
 
-    return new_fn
+    return _outputs_to_frontend_arrays_jax
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -125,7 +125,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 def handle_jax_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, dtype=None, **kwargs):
+    def _handle_jax_dtype(*args, dtype=None, **kwargs):
         if len(args) > (dtype_pos + 1):
             dtype = args[dtype_pos]
             kwargs = {
@@ -158,32 +158,15 @@ def handle_jax_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=dtype, **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
-    return new_fn
+    return _handle_jax_dtype
 
 
 def outputs_to_native_arrays(fn: Callable):
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _outputs_to_native_arrays(*args, **kwargs):
         ret = fn(*args, **kwargs)
         if isinstance(ret, jax_frontend.DeviceArray):
             ret = ret.ivy_array.data
         return ret
-        # return ivy.to_native(_to_ivy_array(ret))
 
-    return new_fn
-
-
-def inputs_to_frontend_arrays(fn: Callable):
-    @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
-        args = ivy.nested_map(args, lambda x: jax_frontend.DeviceArray(ivy.array(x)))
-        kwargs = ivy.nested_map(
-            kwargs, lambda x: jax_frontend.DeviceArray(ivy.array(x))
-        )
-        return fn(*args, **kwargs)
-
-    return new_fn
-
-
-def to_frontend_arrays_and_back(fn: Callable) -> Callable:
-    return outputs_to_native_arrays(inputs_to_frontend_arrays(fn))
+    return _outputs_to_native_arrays

@@ -55,7 +55,6 @@ def cross(
     axis: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.cross(
         x1, x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis
@@ -100,7 +99,6 @@ def eig(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable]]:
-
     result_tuple = NamedTuple(
         "eig",
         [
@@ -120,7 +118,6 @@ def eigh(
     UPLO: str = "L",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable]]:
-
     if UPLO not in ("L", "U"):
         raise ValueError("UPLO argument must be 'L' or 'U'")
     result_tuple = NamedTuple(
@@ -217,14 +214,13 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     dtype_from = tf.as_dtype(x1.dtype)
 
     if transpose_a:
-        x1 = tf.transpose(x1)
+        x1 = tf.linalg.matrix_transpose(x1)
     if transpose_b:
-        x2 = tf.transpose(x2)
+        x2 = tf.linalg.matrix_transpose(x2)
 
     if adjoint_a:
         x1 = tf.linalg.adjoint(x1)
@@ -257,7 +253,6 @@ def matmul(
         if x1.shape == 0:
             ret = tf.constant(0)
         else:
-
             ret = tf.reduce_sum(tf.math.multiply(x1, x2))
         ret = tf.cast(ret, dtype=dtype_from)  # return ret
 
@@ -274,7 +269,7 @@ def matmul(
             x2_padded = True
         ret = tf.matmul(x1, x2)
 
-    ret = ivy.astype(ret, dtype_from, copy=False).to_native()
+    ret = ivy.to_native(ivy.astype(ret, dtype_from, copy=False))
     if x1_padded_2:
         ret = ret[0]
     elif x1_padded:
@@ -301,28 +296,34 @@ def matrix_norm(
 
     if ord == -float("inf"):
         reduce_min = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis
+            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True),
+            axis=axis,
+            keepdims=keepdims,
         )
         ret = reduce_min
     elif ord == -1:
         ret = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True), axis=axis
+            tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True),
+            axis=axis,
+            keepdims=keepdims,
         )
     elif ord == -2:
         ret = tf.reduce_min(
-            tf.linalg.svd(x, compute_uv=False), axis=axis, keepdims=keepdims
+            tf.linalg.svd(x, compute_uv=False), axis=axis[1], keepdims=keepdims
         )
+        if keepdims:
+            ret = tf.expand_dims(ret, -1)
     elif ord == "nuc":
         if tf.size(x).numpy() == 0:
             ret = x
         else:
-            ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
+            ret = tf.reduce_sum(
+                tf.linalg.svd(x, compute_uv=False), axis=-1, keepdims=keepdims
+            )
+            if keepdims:
+                ret = tf.expand_dims(ret, -1)
     else:
         ret = tf.linalg.norm(x, ord, axis, keepdims)
-    if keepdims:
-        ret = tf.reshape(ret, x.shape[:-2] + (1, 1))
-    else:
-        ret = tf.reshape(ret, x.shape[:-2])
     if _expand_dims:
         ret = tf.squeeze(ret, axis=0)
     return ret
@@ -603,7 +604,6 @@ def svd(
     full_matrices: bool = True,
     compute_uv: bool = True,
 ) -> Union[Union[tf.Tensor, tf.Variable], Tuple[Union[tf.Tensor, tf.Variable], ...]]:
-
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
 

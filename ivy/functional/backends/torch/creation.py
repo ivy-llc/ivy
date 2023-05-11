@@ -1,8 +1,7 @@
 # global
-
+import copy
 from numbers import Number
 from typing import Union, List, Optional, Sequence
-
 import numpy as np
 import torch
 from torch import Tensor
@@ -46,7 +45,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
     start: float,
@@ -103,6 +102,7 @@ def asarray(
     obj: Union[
         torch.Tensor,
         np.ndarray,
+        torch.Size,
         bool,
         int,
         float,
@@ -116,7 +116,6 @@ def asarray(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     if isinstance(obj, torch.Tensor) and dtype is None:
         if copy is True:
             return obj.clone().detach().to(device)
@@ -411,7 +410,6 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
                 linspace_method(strt, stp, num, device=device)
                 for strt, stp in zip(start, stop)
             ]
-        torch.cat(res, -1).reshape(start_shape + [num])
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
             start = start.unsqueeze(-1)
@@ -436,7 +434,10 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
         return linspace_method(start, stop, num, dtype=dtype, device=device)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
-        res = torch.transpose(res, axis, -1)
+        ndim = res.ndim
+        perm = list(range(0, ndim - 1))
+        perm.insert(axis % (ndim + 1), ndim - 1)
+        res = res.permute(perm)
     return res.to(device)
 
 
@@ -444,6 +445,7 @@ def meshgrid(
     *arrays: torch.Tensor,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[torch.Tensor] = None,
 ) -> List[torch.Tensor]:
     if not sparse:
         return list(torch.meshgrid(*arrays, indexing=indexing))
@@ -468,7 +470,7 @@ def ones(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.ones(shape, dtype=dtype, device=device)
+    return torch.ones(shape, dtype=dtype, device=device, out=out)
 
 
 ones.support_native_out = True
@@ -611,3 +613,15 @@ def one_hot(
         res = torch.moveaxis(res, -1, axis)
 
     return res.to(device, dtype)
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[torch.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> torch.Tensor:
+    buffer_copy = copy.deepcopy(buffer)
+    dtype = ivy.as_native_dtype(dtype)
+
+    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)

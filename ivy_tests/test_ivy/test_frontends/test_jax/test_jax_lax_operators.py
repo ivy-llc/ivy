@@ -1,7 +1,9 @@
 # global
 import numpy as np
+import jax.numpy as jnp
 from hypothesis import assume, strategies as st
 import random
+from jax.lax import ConvDimensionNumbers
 
 # local
 import ivy
@@ -11,6 +13,10 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
 from ivy.functional.frontends.jax.numpy import can_cast
+from ivy.functional.frontends.jax.lax.operators import (
+    _dimension_numbers,
+    _argsort_tuple,
+)
 
 
 # add
@@ -1278,6 +1284,61 @@ def test_jax_lax_pow(
     )
 
 
+@st.composite
+def _pad_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("bool"),
+            ret_shape=True,
+            min_num_dims=1,
+            min_dim_size=2,
+            min_value=-100,
+            max_value=100,
+        ).filter(lambda _x: _x[0][0] not in ["float16", "bfloat16"])
+    )
+    ndim = len(shape)
+    min_dim = min(shape)
+    padding_config = draw(
+        st.lists(
+            st.tuples(
+                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
+                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
+                st.integers(min_value=0, max_value=min_dim - 1),
+            ),
+            min_size=ndim,
+            max_size=ndim,
+        )
+    )
+    padding_value = draw(st.booleans())
+    return dtype, x[0], padding_value, padding_config
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.pad",
+    dtype_x_params=_pad_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_pad(
+    *,
+    dtype_x_params,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, operand, padding_value, padding_config = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=operand,
+        padding_value=padding_value,
+        padding_config=padding_config,
+    )
+
+
 @handle_frontend_test(
     fn_tree="jax.lax.gt",
     dtypes_and_xs=helpers.dtype_and_values(
@@ -1787,37 +1848,54 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     fc = draw(st.sampled_from(group_list)) if general else 1
     strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
     dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
-    if dim == 2:
-        data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
-    elif dim == 1:
-        data_format = draw(st.sampled_from(["NWC", "NCW"]))
+    if general:
+        if dim == 2:
+            dim_num_st1 = st.sampled_from(["NCHW", "NHWC"])
+            dim_num_st2 = st.sampled_from(["OIHW", "HWIO"])
+        elif dim == 1:
+            dim_num_st1 = st.sampled_from(["NWC", "NCW"])
+            dim_num_st2 = st.sampled_from(["OIW", "WIO"])
+        else:
+            dim_num_st1 = st.sampled_from(["NDHWC", "NCDHW"])
+            dim_num_st2 = st.sampled_from(["OIDHW", "DHWIO"])
+        dim_seq = [*range(0, dim + 2)]
+        dimension_numbers = draw(
+            st.sampled_from(
+                [
+                    None,
+                    (draw(dim_num_st1), draw(dim_num_st2), draw(dim_num_st1)),
+                    ConvDimensionNumbers(
+                        *map(
+                            tuple,
+                            draw(
+                                st.lists(
+                                    st.permutations(dim_seq), min_size=3, max_size=3
+                                )
+                            ),
+                        )
+                    ),
+                ]
+            )
+        )
     else:
-        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
-    x_dim = []
-    for i in range(dim):
-        min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
-        x_dim.append(draw(st.integers(min_x, min_x + 1)))
-    x_dim = tuple(x_dim)
-    if dim == 1:
-        filter_df = draw(st.sampled_from(["OIW", "WIO"]))
-    elif dim == 2:
-        filter_df = draw(st.sampled_from(["OIHW", "HWIO"]))
-    else:
-        filter_df = draw(st.sampled_from(["OIDHW", "DHWIO"]))
+        dimension_numbers = (
+            ("NCH", "OIH", "NCH")
+            if dim == 1
+            else ("NCHW", "OIHW", "NCHW") if dim == 2 else ("NCDHW", "OIDHW", "NCDHW")
+        )
+    dim_nums = _dimension_numbers(dimension_numbers, dim + 2, transp=transpose)
     if not transpose:
         output_channels = output_channels * fc
         channel_shape = (output_channels, input_channels // fc)
     else:
         input_channels = input_channels * fc
         channel_shape = (output_channels // fc, input_channels)
-    if filter_df[0] == "O":
-        filter_shape = channel_shape + filter_shape
-    else:
-        filter_shape = filter_shape + channel_shape[::-1]
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
-        x_shape = (batch_size,) + x_dim + (input_channels,)
-    else:
-        x_shape = (batch_size, input_channels) + x_dim
+    x_dim = []
+    for i in range(dim):
+        min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
+        x_dim.append(draw(st.integers(min_x, min_x + 1)))
+    x_shape = (batch_size, input_channels, *x_dim)
+    filter_shape = channel_shape + filter_shape
     vals = draw(
         helpers.array_values(
             dtype=dtype[0],
@@ -1826,6 +1904,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             max_value=1.0,
         )
     )
+    vals = ivy.permute_dims(vals, axes=_argsort_tuple(dim_nums[0]))
     filters = draw(
         helpers.array_values(
             dtype=dtype[0],
@@ -1834,12 +1913,13 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             max_value=1.0,
         )
     )
+    filters = ivy.permute_dims(filters, axes=_argsort_tuple(dim_nums[1]))
     if general and not transpose:
         x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
         dilations = (dilations, x_dilation)
     if draw(st.booleans()):
         p_dtype, pref = draw(
-            helpers.get_castable_dtype(draw(helpers.get_dtypes("numeric")), dtype[0])
+            helpers.get_castable_dtype(draw(helpers.get_dtypes("float")), dtype[0])
         )
         assume(can_cast(p_dtype, pref))
     else:
@@ -1849,7 +1929,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         vals,
         filters,
         dilations,
-        (data_format, filter_df, data_format),
+        dimension_numbers,
         strides,
         padding,
         fc,
@@ -1872,7 +1952,6 @@ def test_jax_lax_conv(
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
-    assume(dim_num[0][1] == "C" and dim_num[1][0] == "O")
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -2193,6 +2272,65 @@ def test_jax_lax_slice(
     )
 
 
+@st.composite
+def _slice_in_dim_helper(draw):
+    dtype, x, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            force_int_axis=True,
+            valid_axis=True,
+        ),
+    )
+    operand = x[0]
+    start_index = draw(
+        st.integers(min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis])
+    )
+    if start_index < 0:
+        limit_index = draw(
+            st.integers(
+                min_value=start_index + operand.shape[axis],
+                max_value=operand.shape[axis],
+            )
+        )
+    else:
+        limit_index = draw(
+            st.integers(
+                min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis]
+            ).filter(lambda _x: _x >= start_index)
+        )
+    stride = draw(st.integers(min_value=1, max_value=abs(limit_index + 1)))
+    return dtype, x, start_index, limit_index, stride, axis
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.slice_in_dim",
+    dtype_x_params=_slice_in_dim_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_slice_in_dim(
+    *,
+    dtype_x_params,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, start_index, limit_index, stride, axis = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        start_index=start_index,
+        limit_index=limit_index,
+        stride=stride,
+        axis=axis,
+    )
+
+
 # expand_dims
 @handle_frontend_test(
     fn_tree="jax.lax.expand_dims",
@@ -2359,6 +2497,98 @@ def test_jax_lax_top_k(
     )
 
 
+@st.composite
+def _reduce_window_helper(draw):
+    dtype = draw(
+        helpers.get_dtypes("numeric", full=False).filter(
+            lambda x: x[0] not in ("bfloat16", "uint64", "uint32")
+        )
+    )
+    init_value = draw(helpers.array_values(dtype=dtype[0], shape=()))
+
+    def py_func(accumulator, window):
+        if not len(window.shape):
+            window = jnp.expand_dims(window, 0)
+        sum = 0
+        for w in window:
+            sum += w
+        return accumulator + sum
+
+    ndim = draw(st.integers(min_value=1, max_value=4))
+
+    _, others = draw(
+        helpers.dtype_and_values(
+            num_arrays=4,
+            dtype=["int64"] * 4,
+            shape=(ndim,),
+            min_value=1,
+            max_value=3,
+            small_abs_safety_factor=1,
+            large_abs_safety_factor=1,
+        )
+    )
+    others = [other.tolist() for other in others]
+
+    window, dilation = others[0], others[2]
+    op_shape = []
+    for i in range(ndim):
+        min_x = window[i] + (window[i] - 1) * (dilation[i] - 1)
+        op_shape.append(draw(st.integers(min_x, min_x + 1)))
+    dtype, operand = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=op_shape,
+        )
+    )
+
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=ndim,
+                max_size=ndim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
+
+    return dtype * 2, operand, init_value, py_func, others, padding
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.reduce_window",
+    all_args=_reduce_window_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_reduce_window(
+    *,
+    all_args,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtypes, operand, init_value, computation, others, padding = all_args
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=operand[0],
+        init_value=init_value,
+        computation=computation,
+        window_dimensions=others[0],
+        window_strides=others[1],
+        padding=padding,
+        base_dilation=others[2],
+        window_dilation=None,
+    )
+
+
 # real
 @handle_frontend_test(
     fn_tree="jax.lax.real",
@@ -2432,4 +2662,40 @@ def test_jax_lax_squeeze(
         on_device=on_device,
         array=value[0],
         dimensions=dim,
+    )
+
+
+# nextafter
+@handle_frontend_test(
+    fn_tree="jax.lax.nextafter",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_nextafter(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[0],
     )

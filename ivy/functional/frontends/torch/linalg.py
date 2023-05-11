@@ -87,6 +87,12 @@ def slogdet(input, *, out=None):
     return ivy.slogdet(input)
 
 
+@with_unsupported_dtypes({"2.0.0 and below": ("bfloat16", "float16")}, "torch")
+@to_ivy_arrays_and_back
+def cond(input, p=None, *, out=None):
+    return ivy.cond(input, p=p, out=out)
+
+
 @to_ivy_arrays_and_back
 def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
@@ -236,3 +242,9 @@ def vander(x, N=None):
     output = ivy.reshape(output, (*original_shape, N))
     output = ivy.astype(output, x.dtype)
     return output
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def multi_dot(tensors, *, out=None):
+    return ivy.multi_dot(tensors, out=out)

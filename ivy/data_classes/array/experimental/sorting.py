@@ -16,8 +16,8 @@ class _ArrayWithSortingExperimental(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.msort. This method simply wraps the
-        function, and so the docstring for ivy.msort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.msort also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -51,8 +51,8 @@ class _ArrayWithSortingExperimental(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.lexsort. This method simply wraps the
-        function, and so the docstring for ivy.lexsort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.lexsort also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

@@ -8,7 +8,7 @@ Building the Docs using Docker
 ------------------------------
 
 Using convenience script
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 The easiest way to build the docs is to use the ``docs/make_docs.sh`` script.
 
