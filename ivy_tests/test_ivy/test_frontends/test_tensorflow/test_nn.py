@@ -12,6 +12,10 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _dropout_help
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
+    x_and_filters,
+)
+
 
 
 @handle_frontend_test(
@@ -1383,14 +1387,12 @@ def test_tensorflow_crelu(
 # conv_transpose
 @handle_frontend_test(
     fn_tree="tensorflow.nn.conv_transpose",
-    x_f_d_df=_x_and_filters(
-        dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NWC", "NHWC", "NDHWC"]),
-        padding=st.sampled_from(["SAME"]),
-        type="2d",
+    dims=st.shared(st.integers(1, 3), key="dims"),
+    x_f_d_df=x_and_filters(
+        general=True,
         transpose=True,
+        bias=True,
     ),
-    dims=st.integers(min_value=1, max_value=3),
     test_with_out=st.just(False),
 )
 def test_tensorflow_conv_transpose(
@@ -1402,17 +1404,28 @@ def test_tensorflow_conv_transpose(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, filters, dilations, data_format, strides, padding, output_shape = x_f_d_df
+    (
+        dtype,
+        value,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        output_shape,
+        fc,
+        bias,
+    ) = x_f_d_df
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        value=x[0],
+        value=value[0],
         filters=filters,
-        strides=strides,
-        padding=padding,
+        strides=stride,
+        padding=pad,
         dims=dims,
         data_format=data_format,
     )
