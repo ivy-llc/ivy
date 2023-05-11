@@ -353,6 +353,17 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     return _outputs_to_ivy_shapes
 
 
+def to_native_shapes_and_back(fn: Callable) -> Callable:
+    """
+    Make `fn` receive `ivy.NativeShape` and return `ivy.Shape`.
+
+    Wrap `fn` so that input shapes are all converted to
+    `ivy.NativeShape` instances and return shapes are all converted to
+    `ivy.Shape` instances.
+    """
+    return outputs_to_ivy_shapes(inputs_to_native_shapes(fn))
+
+
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_ivy_arrays(*args, **kwargs):

@@ -58,11 +58,3 @@ def tril_indices(
 ) -> Tuple[(Union[(None, mx.ndarray.NDArray)], ...)]:
     raise IvyNotImplementedException()
 
-
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[None] = float,
-    count: Optional[int] = (-1),
-    offset: Optional[int] = 0,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
