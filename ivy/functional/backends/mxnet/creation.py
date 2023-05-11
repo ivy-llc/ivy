@@ -240,3 +240,13 @@ def one_hot(
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[None] = float,
+    count: Optional[int] = (-1),
+    offset: Optional[int] = 0,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
