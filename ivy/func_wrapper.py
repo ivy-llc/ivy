@@ -39,10 +39,12 @@ FN_DECORATORS = [
 
 # for casting modes, order is the hierarchy
 casting_modes_dict = {
-    "uint": lambda : ivy.valid_uint_dtypes,
-    "int": lambda:sorted(tuple(set(ivy.valid_int_dtypes).difference(set(ivy.valid_uint_dtypes)))),
-    "float": lambda:ivy.valid_float_dtypes,
-    "complex": lambda:ivy.valid_complex_dtypes,
+    "uint": lambda: ivy.valid_uint_dtypes,
+    "int": lambda: sorted(
+        tuple(set(ivy.valid_int_dtypes).difference(set(ivy.valid_uint_dtypes)))
+    ),
+    "float": lambda: ivy.valid_float_dtypes,
+    "complex": lambda: ivy.valid_complex_dtypes,
 }
 
 
@@ -60,11 +62,11 @@ def caster(dtype, intersect):
             if ret_dtype:
                 return ret_dtype
             # check upcasting
-            ret_dtype = upcaster(dtype,intersect)
+            ret_dtype = upcaster(dtype, intersect)
             if ret_dtype:
                 return ret_dtype
             # check downcasting
-            ret_dtype = downcaster(dtype,intersect)
+            ret_dtype = downcaster(dtype, intersect)
             if ret_dtype:
                 return ret_dtype
         elif ivy.crosscast_dtypes:
@@ -90,9 +92,7 @@ def upcaster(dtype, intersect):
         index = casting_modes_dict["uint"]().index(dtype) + 1
         result = ""
         while index < len(casting_modes_dict["uint"]()):
-            if (
-                 casting_modes_dict["uint"]()[index] not in intersect
-            ):
+            if casting_modes_dict["uint"]()[index] not in intersect:
                 result = casting_modes_dict["uint"]()[index]
                 break
             index += 1
@@ -102,9 +102,7 @@ def upcaster(dtype, intersect):
         index = casting_modes_dict["int"]().index(dtype) + 1
         result = ""
         while index < len(casting_modes_dict["int"]()):
-            if (
-                 casting_modes_dict["int"]()[index] not in intersect
-            ):
+            if casting_modes_dict["int"]()[index] not in intersect:
                 result = casting_modes_dict["int"]()[index]
                 break
             index += 1
@@ -114,9 +112,7 @@ def upcaster(dtype, intersect):
         index = casting_modes_dict["float"]().index(dtype) + 1
         result = ""
         while index < len(casting_modes_dict["float"]()):
-            if (
-                 casting_modes_dict["float"]()[index] not in intersect
-            ):
+            if casting_modes_dict["float"]()[index] not in intersect:
                 result = casting_modes_dict["float"]()[index]
                 break
             index += 1
@@ -126,9 +122,7 @@ def upcaster(dtype, intersect):
         index = casting_modes_dict["complex"]().index(dtype) + 1
         result = ""
         while index < len(casting_modes_dict["complex"]()):
-            if (
-                 casting_modes_dict["complex"]()[index] not in intersect
-            ):
+            if casting_modes_dict["complex"]()[index] not in intersect:
                 result = casting_modes_dict["complex"]()[index]
                 break
             index += 1
@@ -141,9 +135,7 @@ def downcaster(dtype, intersect):
         index = casting_modes_dict["uint"]().index(dtype) - 1
         result = ""
         while index >= 0:
-            if (
-                 casting_modes_dict["int"]()[index] not in intersect
-            ):
+            if casting_modes_dict["int"]()[index] not in intersect:
                 result = casting_modes_dict["uint"]()[index]
                 break
             index -= 1
@@ -153,9 +145,7 @@ def downcaster(dtype, intersect):
         index = casting_modes_dict["int"]().index(dtype) - 1
         result = ""
         while index >= 0:
-            if (
-                 casting_modes_dict["int"]()[index] not in intersect
-            ):
+            if casting_modes_dict["int"]()[index] not in intersect:
                 result = casting_modes_dict["int"]()[index]
                 break
             index -= 1
@@ -163,14 +153,11 @@ def downcaster(dtype, intersect):
 
     if "float" in dtype:
 
-
         index = casting_modes_dict["float"]().index(dtype) - 1
 
         result = ""
         while index >= 0:
-            if (
-                 casting_modes_dict["float"]()[index] not in intersect
-            ):
+            if casting_modes_dict["float"]()[index] not in intersect:
                 result = casting_modes_dict["float"]()[index]
                 break
             index -= 1
@@ -180,9 +167,7 @@ def downcaster(dtype, intersect):
         index = casting_modes_dict["complex"]().index(dtype) - 1
         result = ""
         while index >= 0:
-            if (
-                casting_modes_dict["complex"]()[index] not in intersect
-            ):
+            if casting_modes_dict["complex"]()[index] not in intersect:
                 result = casting_modes_dict["complex"]()[index]
                 break
             index -= 1
@@ -200,8 +185,6 @@ def cross_caster(intersect):
         dtype = ivy.default_int_dtype()
 
     return str(dtype)
-
-
 
 
 def try_array_function_override(func, overloaded_args, types, args, kwargs):
@@ -1041,10 +1024,6 @@ def casting_modes_ops(fn):
         return fn(*args, **kwargs)
 
     return method
-
-
-
-
 
 
 # Gets dtype from a version dictionary
