@@ -1515,22 +1515,21 @@ class _ContainerWithStatistical(ContainerBase):
         >>> y = ivy.Container.static_cummin(x, axis=0)
         >>> print(y)
         {
-            a: ivy.array([1, 2, 6]),
-            b: ivy.array([4, 20, 120])
+            a: ivy.array([1, 1, 1]),
+            b: ivy.array([4, 4, 4])
         }
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> ivy.Container.static_cummin(x, axis=1, exclusive=True, out=y)
-        >>> print(y)
+        >>> x.static_cummin(axis=1, out=y)
         {
-            a: ivy.array([[1, 2],
-                          [1, 5],
-                          [1, 11]]),
-            b: ivy.array([[1, 3],
-                          [1, 4],
-                          [1, 5]])
+            a: ivy.array([[2, 2],
+                          [5, 5],
+                          [11, 11]]),
+            b: ivy.array([[3, 3],
+                          [4, 4],
+                          [5, 5]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1773,21 +1772,21 @@ class _ContainerWithStatistical(ContainerBase):
         >>> y = x.cummin(axis=0)
         >>> print(y)
         {
-            a: ivy.array([1, 2, 6]),
-            b: ivy.array([4, 20, 120])
+            a: ivy.array([1, 1, 1]),
+            b: ivy.array([4, 4, 4])
         }
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> x.cummin(axis=1, exclusive=True, out=y)
+        >>> x.cummin(axis=1, out=y)
         {
-            a: ivy.array([[1, 2],
-                          [1, 5],
-                          [1, 11]]),
-            b: ivy.array([[1, 3],
-                          [1, 4],
-                          [1, 5]])
+            a: ivy.array([[2, 2],
+                          [5, 5],
+                          [11, 11]]),
+            b: ivy.array([[3, 3],
+                          [4, 4],
+                          [5, 5]])
         }
         """
         return self._static_cummin(
