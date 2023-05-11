@@ -84,7 +84,6 @@ def diag_indices_from(arr):
 
 @to_ivy_arrays_and_back
 def apply_over_axes(func, a, axes):
-    print(a)
     val = ivy.array(a)
     N = len(a.shape)
     if len(ivy.array(axes).shape) == 0:
