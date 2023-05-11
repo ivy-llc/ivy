@@ -43,7 +43,6 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
 
 @to_ivy_arrays_and_back
 def qdwh(x, *, is_hermitian=False, max_iterations=None, eps=None, dynamic_shape=None):
-    # If dynamic_shape is provided, pad x to that shape
     if dynamic_shape:
         m, n = dynamic_shape
         x_pad = np_frontend.zeros((m, n), dtype=x.dtype)
