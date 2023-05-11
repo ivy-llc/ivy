@@ -491,7 +491,8 @@ The `cast_data_types` mode is the combination of all the three modes that we dis
 for any unsupported dtype that is encountered by the functions.
 
 Together with these modes we provide some level of flexibility to users when they encounter functions that don't support a dtype which is otherwise supported
-by the backend.
+by the backend. However, it should be well understood that this may lead to loss of precision and/or increase in memory
+consumption.
 
 
 Superset Data Type Support
