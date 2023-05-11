@@ -251,9 +251,60 @@ class Shape:
         self._shape = self._shape * other
         return self
 
+    def __rmul__(self, other):
+        self._shape = other * self._shape
+        return self
+
+    def __bool__(self):
+        return self._shape.__bool__()
+
+    def __div__(self, other):
+        return self._shape // other
+
+    def __mod__(self, other):
+        return self._shape % other
+
+    def __rdiv__(self, other):
+        return other // self._shape
+
+    def __rmod__(self, other):
+        return other % self._shape
+
+    def __reduce__(self):
+        return (self._shape,)
+
+    def as_dimension(self, other):
+        if isinstance(other, self._shape):
+            return other
+        else:
+            return self._shape
+
+    def __sub__(self, other):
+        try:
+            self._shape = self._shape - other
+        except TypeError:
+            self._shape = self._shape - list(other)
+        return self
+
+    def __rsub__(self, other):
+        try:
+            self._shape = other - self._shape
+        except TypeError:
+            self._shape = list(other) - self._shape
+        return self
+
     def __eq__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
+
+    def __int__(self):
+        if hasattr(self._shape, "__int__"):
+            res = self._shape.__int__()
+        else:
+            res = int(self._shape)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
 
     def __ge__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
@@ -279,6 +330,21 @@ class Shape:
 
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
+
+    def __delattr__(self, item):
+        return super().__delattr__(item)
+
+    def __hash__(self):
+        return hash(self._shape)
+
+    def __str__(self):
+        return "?" if self._shape is None else str(self._shape)
+
+    def __sizeof__(self):
+        return len(self._shape) if self._shape is not None else 0
+
+    def __dir__(self):
+        return self._shape.__dir__()
 
     @property
     def shape(self):
@@ -1276,35 +1342,3 @@ from ivy.utils.backend.sub_backend_handler import (
 
 def current_sub_backends():
     return []
-
-
-# casting modes
-
-downcast_dtypes = False
-upcast_dtypes = False
-crosscast_dtypes = False
-cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
-
-
-def downcast_data_types(val=True):
-    global downcast_dtypes
-    downcast_dtypes = val
-
-
-def upcast_data_types(val=True):
-    global upcast_dtypes
-    upcast_dtypes = val
-
-
-def crosscast_data_types(val=True):
-    global crosscast_dtypes
-    crosscast_dtypes = val
-
-
-def cast_data_types(val=True):
-    global upcast_dtypes
-    global downcast_dtypes
-    global crosscast_dtypes
-    upcast_dtypes=val
-    downcast_dtypes=val
-    crosscast_dtypes=val
