@@ -282,16 +282,9 @@ def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
     if dim is None:
         dim = -1
-    if sorted:
-        return namedtuple("topk", ["values", "indices"])(
-            ivy.sort(ivy.top_k(input, k, axis=dim, largest=largest, out=out).values),
-            ivy.argsort(
-                ivy.top_k(input, k, axis=dim, largest=largest, out=out).indices
-            ),
-        )
-    return ivy.top_k(input, k, axis=dim, largest=largest, out=out)
+    return ivy.top_k(input, k, axis=dim, largest=largest, sorted=sorted, out=out)

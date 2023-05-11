@@ -348,33 +348,30 @@ def test_rot90(
 # top_k
 @handle_test(
     fn_tree="functional.ivy.experimental.top_k",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
-        min_dim_size=4,
-        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
     ),
-    axis=helpers.ints(min_value=-1, max_value=0),
     k=helpers.ints(min_value=1, max_value=4),
     largest=st.booleans(),
+    sorted=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_top_k(
     *,
-    dtype_and_x,
-    axis,
+    dtype_x_axis,
     k,
     largest,
+    sorted,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, axis = dtype_x_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -386,6 +383,7 @@ def test_top_k(
         k=k,
         axis=axis,
         largest=largest,
+        sorted=sorted,
     )
 
 

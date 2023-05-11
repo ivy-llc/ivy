@@ -69,6 +69,7 @@ def rot90(
     return tf.experimental.numpy.rot90(m, k, axes)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("unsigned", "complex")}, backend_version)
 def top_k(
     x: tf.Tensor,
     k: int,
@@ -76,8 +77,10 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
+    k = min(k, x.shape[axis])
     if not largest:
         indices = tf.experimental.numpy.argsort(x, axis=axis)
         indices = tf.experimental.numpy.take(
@@ -85,13 +88,13 @@ def top_k(
         )
         indices = tf.dtypes.cast(indices, tf.int32)
     else:
-        x = -x
-        indices = tf.experimental.numpy.argsort(x, axis=axis)
+        indices = tf.experimental.numpy.argsort(-x, axis=axis)
         indices = tf.experimental.numpy.take(
             indices, tf.experimental.numpy.arange(k), axis=axis
         )
         indices = tf.dtypes.cast(indices, tf.int32)
-        x = -x
+    if not sorted:
+        indices = tf.sort(indices, axis=axis)
     topk_res = NamedTuple("top_k", [("values", tf.Tensor), ("indices", tf.Tensor)])
     val = tf.experimental.numpy.take_along_axis(x, indices, axis=axis)
     indices = tf.dtypes.cast(indices, tf.int64)

@@ -90,16 +90,18 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[JaxArray, JaxArray]] = None,
 ) -> Tuple[JaxArray, JaxArray]:
+    k = min(k, x.shape[axis])
     if not largest:
         indices = jnp.argsort(x, axis=axis)
         indices = jnp.take(indices, jnp.arange(k), axis=axis)
     else:
-        x = -x
-        indices = jnp.argsort(x, axis=axis)
+        indices = jnp.argsort(-x, axis=axis)
         indices = jnp.take(indices, jnp.arange(k), axis=axis)
-        x = -x
+    if not sorted:
+        indices = jnp.sort(indices, axis=axis)
     topk_res = NamedTuple("top_k", [("values", JaxArray), ("indices", JaxArray)])
     val = jnp.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
@@ -176,9 +178,11 @@ def pad(
     input_dtype = input.dtype
 
     if mode == "dilated":
-        padding_value = ivy.native_array(constant_values)
-        operand = _flat_array_to_1_dim_array(input).astype(padding_value.dtype)
-        padded = jlax.pad(operand, padding_value, pad_width)
+        if ivy.as_ivy_dtype(type(constant_values)) != input_dtype:
+            padding_value = ivy.native_array(constant_values, dtype=input_dtype)
+        else:
+            padding_value = constant_values
+        padded = jlax.pad(input, padding_value, pad_width)
         return padded
 
     if callable(mode):

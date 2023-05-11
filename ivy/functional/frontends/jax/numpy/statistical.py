@@ -16,6 +16,7 @@ def einsum(
     out=None,
     optimize="optimal",
     precision=None,
+    preferred_element_type=None,
     _use_xeinsum=False,
     _dot_general=None,
 ):
@@ -451,3 +452,18 @@ def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     )
     ret_nanmean = ivy.divide(array_sum1, count_zero_handel)
     return ret_nanmean
+
+
+@to_ivy_arrays_and_back
+def nanmedian(
+    a,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    overwrite_input=False,
+):
+    return ivy.nanmedian(
+        a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+    )

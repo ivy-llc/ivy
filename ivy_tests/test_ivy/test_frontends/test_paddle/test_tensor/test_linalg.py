@@ -105,8 +105,7 @@ def test_paddle_matmul(
 
 # eig
 @handle_frontend_test(
-    fn_tree="paddle.linalg.eig",
-    aliases=["paddle.tensor.linalg.eig"],
+    fn_tree="paddle.tensor.linalg.eig",
     dtype_and_input=_get_dtype_and_square_matrix(real_and_complex_only=True),
     test_with_out=st.just(False),
 )
@@ -149,8 +148,7 @@ def test_paddle_eig(
 
 # eigvals
 @handle_frontend_test(
-    fn_tree="paddle.linalg.eigvals",
-    aliases=["paddle.tensor.linalg.eigvals"],
+    fn_tree="paddle.tensor.linalg.eigvals",
     dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
     test_with_out=st.just(False),
 )
@@ -180,8 +178,7 @@ def test_paddle_eigvals(
 
 # eigvalsh
 @handle_frontend_test(
-    fn_tree="paddle.eigvalsh",
-    aliases=["paddle.linalg.eigvalsh", "paddle.tensor.linalg.eigvalsh"],
+    fn_tree="paddle.tensor.linalg.eigvalsh",
     dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
     UPLO=st.sampled_from(("L", "U")),
     test_with_out=st.just(False),
@@ -214,8 +211,7 @@ def test_paddle_eigvalsh(
 
 # eigh
 @handle_frontend_test(
-    fn_tree="paddle.linalg.eigh",
-    aliases=["paddle.tensor.linalg.eigh"],
+    fn_tree="paddle.tensor.linalg.eigh",
     dtype_and_input=_get_dtype_and_square_matrix(real_and_complex_only=True),
     UPLO=st.sampled_from(("L", "U")),
     test_with_out=st.just(False),
@@ -261,8 +257,7 @@ def test_paddle_eigh(
 
 # pinv
 @handle_frontend_test(
-    fn_tree="paddle.linalg.pinv",
-    aliases=["paddle.tensor.linalg.pinv"],
+    fn_tree="paddle.tensor.linalg.pinv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
