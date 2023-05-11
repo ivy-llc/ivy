@@ -49,43 +49,6 @@ def invert_permutation(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-def msort(
-    a: Union[ivy.Array, ivy.NativeArray, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Return a copy of an array sorted along the first axis.
-
-    Parameters
-    ----------
-    a
-        array-like input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        sorted array of the same type and shape as a
-
-    Examples
-    --------
-    >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
-    >>> ivy.msort(a)
-    ivy.array(
-        [[6, 2, 6],
-         [8, 9, 6]]
-        )
-    """
-    return ivy.current_backend().msort(a, out=out)
-
-
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
     /,

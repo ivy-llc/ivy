@@ -202,7 +202,12 @@ def squeeze(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16",
+                                 "bfloat16",
+                                 "int16",
+                                 "uint8",
+                                 "int8",
+                                 "float16")}}, backend_version
 )
 def stack(
     arrays: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
@@ -236,7 +241,6 @@ def stack(
         imag_stacked = paddle.stack(imag_list, axis=axis)
         return re_stacked + imag_stacked * 1j
     else:
-        arrays = list(map(lambda x: x.cast(dtype), arrays))
         return paddle.stack(arrays, axis=axis)
 
 
