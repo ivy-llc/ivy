@@ -7,7 +7,6 @@ import tensorflow as tf
 # local
 import ivy
 
-
 # Array API Standard #
 # -------------------#
 
@@ -92,7 +91,7 @@ def hann_window(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.signal.hann_window(size, periodic=periodic, dtype=dtype, name=None)
+    return tf.signal.hann_window(size, periodic=(not periodic), dtype=dtype)
 
 
 def tril_indices(

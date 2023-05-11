@@ -200,10 +200,18 @@ def trunc(input, *, out=None):
     return ivy.trunc(input, out=out)
 
 
+fix = trunc
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sqrt(input, *, out=None):
     return ivy.sqrt(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def real(input):
+    return ivy.real(input)
 
 
 @to_ivy_arrays_and_back
@@ -238,8 +246,8 @@ def logical_xor(input, other, *, out=None):
 @to_ivy_arrays_and_back
 def round(input, *, decimals=0, out=None):
     m = ivy.full(input.shape, 10**decimals)
-    upscale = ivy.multiply(input, m, out=out)
-    rounded = ivy.round(upscale, out=out)
+    upscale = ivy.multiply(input, m)
+    rounded = ivy.round(upscale)
     return ivy.divide(rounded, m, out=out)
 
 
@@ -249,7 +257,7 @@ def ceil(input, *, out=None):
     return ivy.ceil(input, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def clamp(input, min=None, max=None, *, out=None):
     ivy.utils.assertions.check_all_or_any_fn(
@@ -260,7 +268,6 @@ def clamp(input, min=None, max=None, *, out=None):
         limit=[1, 2],
         message="at most one of min or max can be None",
     )
-    input = ivy.array(input)
     if min is None:
         return ivy.minimum(input, max, out=out)
     if max is None:
@@ -268,23 +275,7 @@ def clamp(input, min=None, max=None, *, out=None):
     return ivy.clip(input, min, max, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-@to_ivy_arrays_and_back
-def clip(input, min=None, max=None, *, out=None):
-    ivy.utils.assertions.check_all_or_any_fn(
-        min,
-        max,
-        fn=ivy.exists,
-        type="any",
-        limit=[1, 2],
-        message="at most one of min or max can be None",
-    )
-    input = ivy.array(input)
-    if min is None:
-        return ivy.minimum(input, max, out=out)
-    if max is None:
-        return ivy.maximum(input, min, out=out)
-    return ivy.clip(input, min, max, out=out)
+clip = clamp
 
 
 @to_ivy_arrays_and_back
@@ -354,6 +345,7 @@ def log1p(input, *, out=None):
     return ivy.log1p(input, out=out)
 
 
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.divide(tensor1, tensor2)), out=out)
@@ -368,6 +360,12 @@ def addcmul(input, tensor1, tensor2, *, value=1, out=None):
 @to_ivy_arrays_and_back
 def pow(input, exponent, *, out=None):
     return ivy.pow(input, exponent, out=out)
+
+
+@to_ivy_arrays_and_back
+def float_power(input, exponent, *, out=None):
+    input, exponent = torch_frontend.promote_types_of_torch_inputs(input, exponent)
+    return ivy.float_power(input, exponent, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -487,3 +485,44 @@ def nextafter(input, *, out=None):
 @to_ivy_arrays_and_back
 def fmod(x1, x2, out=None):
     return ivy.fmod(x1, x2, out=out)
+
+
+@to_ivy_arrays_and_back
+def imag(input):
+    return ivy.imag(input)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def logit(input, eps=None, *, out=None):
+    if eps is None:
+        eps = -1.0
+    lo = eps
+    hi = 1 - eps
+
+    input = ivy.clip(input, lo, hi, out=out)
+
+    return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+@to_ivy_arrays_and_back
+def erf(input, *, out=None):
+    return ivy.erf(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def sgn(input, *, out=None):
+    if ivy.is_complex_dtype(input.dtype):
+        input_abs = ivy.abs(input, out=out)
+        return ivy.where(
+            input_abs == 0, 0, ivy.divide(input, input_abs, out=out), out=out
+        )
+    else:
+        return ivy.sign(input, out=out)
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
+    return ivy.nan_to_num(input, nan=nan, posinf=posinf, neginf=neginf, out=out)

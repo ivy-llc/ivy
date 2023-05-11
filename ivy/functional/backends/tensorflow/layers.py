@@ -33,6 +33,8 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations):
         pad_list = [
             (new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)
         ]
+    elif isinstance(padding, int):
+        pad_list = [(padding, padding)] * dims
     else:
         pad_list = padding
     return tf.pad(
@@ -69,7 +71,7 @@ def conv1d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -123,7 +125,7 @@ def conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -177,7 +179,7 @@ def depthwise_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -203,7 +205,7 @@ def conv3d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -265,7 +267,7 @@ def conv_general_dilated(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,

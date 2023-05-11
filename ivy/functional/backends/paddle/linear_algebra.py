@@ -283,12 +283,16 @@ def matrix_norm(
             keepdim=keepdims,
         )
     elif ord == -2:
-        ret = paddle.amin(paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims)
+        ret = paddle.amin(paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims)
+        if keepdims:
+            ret = ret.unsqueeze(-1)
     elif ord == "nuc":
         if x.size == 0:
             ret = x
         else:
             ret = paddle.sum(paddle.linalg.svd(x)[1], axis=-1, keepdim=keepdims)
+            if keepdims:
+                ret = ret.unsqueeze(-1)
     elif ord == "fro":
         ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
     elif ord == float("inf"):
@@ -305,9 +309,10 @@ def matrix_norm(
             keepdim=keepdims,
         )
     elif ord == 2:
-        ret = paddle.amax(
-            paddle.linalg.svd(x)[1].unsqueeze(-1), axis=axis[1], keepdim=keepdims
-        )
+        ret = paddle.amax(paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims)
+        if keepdims:
+            ret = ret.unsqueeze(-1)
+
     if _expand_dims:
         ret = paddle.squeeze(ret, axis=0)
     return ret

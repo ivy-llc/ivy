@@ -295,7 +295,7 @@ But we should try to avoid this, in order to make the flow of computation as int
 
 When compiling the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
 The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be compiled in any case.
-The distinction is only really relevant when stepping through and debugging with eager mode execution, and for the reasons outlined above, the preference is to keep compositional implicitly nestable where possible.
+The distinction is only really relevant when stepping through and debugging with eager mode execution, and for the reasons outlined above, the preference is to keep compositional functions implicitly nestable where possible.
 
 **Shared Nested Structure**
 

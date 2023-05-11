@@ -2,6 +2,7 @@ torch-scatter # torch_scatter requires a prior existing installation of torch, h
 functorch
 scipy
 dm-haiku # mod_name=haiku
+flax
 protobuf
 pydriller
 tqdm

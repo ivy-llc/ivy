@@ -3,6 +3,14 @@ import tensorflow as tf
 from typing import Union, Optional
 
 
+# invert_permutation
+def invert_permutation(
+    x: Union[tf.Tensor, tf.Variable, list, tuple],
+    /,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.invert_permutation(x)
+
+
 # msort
 def msort(
     a: Union[tf.Tensor, tf.Variable, list, tuple],

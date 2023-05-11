@@ -99,7 +99,7 @@ def test_set_backend(backend, array_type):
     ivy.utils.assertions.check_equal(str(type(ivy.to_native(x))), array_type)
 
 
-@pytest.mark.parametrize(("backend"), available_frameworks())
+@pytest.mark.parametrize("backend", available_frameworks())
 def test_previous_backend(backend):
     if not ivy.backend_stack:
         assert ivy.previous_backend() is None
@@ -161,7 +161,7 @@ def test_current_backend(backend, array_type):
         )
 
 
-@pytest.mark.parametrize(("excluded"), available_frameworks_with_none)
+@pytest.mark.parametrize("excluded", available_frameworks_with_none)
 def test_choose_random_backend(excluded):
     backend = ivy.choose_random_backend(excluded=excluded)
     if excluded is None:

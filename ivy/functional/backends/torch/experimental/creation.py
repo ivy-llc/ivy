@@ -6,6 +6,10 @@ import torch
 
 # local
 import ivy
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+)
+from .. import backend_version
 
 # noinspection PyProtectedMember
 
@@ -94,6 +98,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,
@@ -106,9 +111,6 @@ def hann_window(
         size,
         periodic=periodic,
         dtype=dtype,
-        layout=torch.strided,
-        device=None,
-        requires_grad=None,
     )
 
 
@@ -123,7 +125,6 @@ def tril_indices(
     *,
     device: torch.device,
 ) -> Tuple[torch.Tensor, ...]:
-
     n_cols = n_rows if n_cols is None else n_cols
 
     if n_rows <= 0 or n_cols <= 0:

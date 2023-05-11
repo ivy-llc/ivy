@@ -126,13 +126,13 @@ def matmul(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if transpose_a:
-        x1 = np.transpose(x1)
+        x1 = np.swapaxes(x1, -1, -2)
     if transpose_b:
-        x2 = np.transpose(x2)
+        x2 = np.swapaxes(x2, -1, -2)
     if adjoint_a:
-        x1 = np.transpose(np.conjugate(x1))
+        x1 = np.swapaxes(np.conjugate(x1), -1, -2)
     if adjoint_b:
-        x2 = np.transpose(np.conjugate(x2))
+        x2 = np.swapaxes(np.conjugate(x2), -1, -2)
     ret = np.matmul(x1, x2, out=out)
     if len(x1.shape) == len(x2.shape) == 1:
         ret = np.array(ret)
@@ -457,7 +457,7 @@ def diag(
     return np.diag(x, k=k)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex")}, backend_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def vander(
     x: np.ndarray,
     /,
@@ -469,7 +469,7 @@ def vander(
     return np.vander(x, N=N, increasing=increasing).astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex")}, backend_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def vector_to_skew_symmetric_matrix(
     vector: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
