@@ -1432,13 +1432,13 @@ class LSTM(Module):
 
 
 # Pooling #
-# --------#
+
 class MaxPool1D(Module):
     def __init__(
         self,
         kernel_size,
-        stride=None,
-        padding=0,
+        stride,
+        padding,
         data_format="NWC",
         device=None,
         dtype=None,
@@ -1462,7 +1462,7 @@ class MaxPool1D(Module):
         self._data_format = data_format
         Module.__init__(self, device=device, dtype=dtype)
 
-    def forward(self, inputs):
+    def _forward(self, inputs):
         """
         Forward pass of the layer.
         Parameters
