@@ -3,8 +3,9 @@
 # local
 import ivy
 from ivy.stateful.module import Module
-from ivy.stateful.initializers import Zeros, GlorotUniform
+from ivy.stateful.initializers import Zeros, GlorotUniform, KaimingNormal
 from ivy.func_wrapper import handle_nestable
+from typing import Optional
 
 
 # ToDo: update docstrings and typehints according to ivy\layers
@@ -1542,4 +1543,94 @@ class AvgPool2D(Module):
             self._stride,
             self._padding,
             data_format=self._data_format,
+        )
+
+
+class Embedding(ivy.Module):
+    def __init__(
+        self,
+        num_embeddings: int,
+        embedding_dim: int,
+        padding_idx: Optional[int] = None,
+        max_norm: Optional[float] = None,
+        norm_type: float = 2.0,
+        v=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Embedding layer. The layer stores an embedding matrix E of size (num_embeddings
+        x embedding_dim), where each row in the matrix represents the embedding of a
+        specific index in the input.
+
+        Parameters
+        ----------
+        num_embeddings : int
+            The number of embeddings to store in the embedding matrix.
+        embedding_dim : int
+            The dimension of each embedding vector.
+        padding_idx : int or None, optional
+            If specified, the embedding vector for padding_idx is
+                initialized to all zeros.Default is None.
+        max_norm : float or None, optional
+            If specified, each embedding vector is L2-normalized. Default is None.
+        norm_type : float, optional
+            The type of the p-norm to be computed for the max_norm option.
+        v : ivy container, optional
+            Variables for the embedding layer, constructed internally by default.
+        device : str or None, optional
+            Device on which to create the layer's variables. Default is None.
+        dtype : str or None, optional
+            Data type of the internal variables to be created. Default is None.
+        """
+        self.num_embeddings = num_embeddings
+        self.embedding_dim = embedding_dim
+
+        if padding_idx is not None:
+            if padding_idx > 0:
+                assert (
+                    padding_idx < self.num_embeddings
+                ), "Padding_idx must be within num_embeddings"
+            elif padding_idx < 0:
+                assert (
+                    padding_idx >= -self.num_embeddings
+                ), "Padding_idx must be within num_embeddings"
+                padding_idx = self.num_embeddings + padding_idx
+
+        self.padding_idx = padding_idx
+        self.max_norm = max_norm
+        self.norm_type = norm_type
+        self._weight_init = KaimingNormal(fan_mode="fan_out")
+        self._embedding_shape = (self.num_embeddings, self.embedding_dim)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
+
+    def _create_variables(self, *, device=None, dtype=None):
+        return {
+            "w": self._weight_init.create_variables(
+                self._embedding_shape, device, fan_out=self.embedding_dim, dtype=dtype
+            ),
+        }
+
+    def _forward(self, inputs):
+        """
+        Perform forward pass of the Embedding layer.
+
+        Parameters
+        ----------
+        inputs
+            Inputs to process *[batch_size,max_len]*.
+
+        Returns
+        -------
+        ret
+            The outputs following the Embedding layer
+                        *[batch_size,max_len,embedding_dim]*
+        """
+        return ivy.embedding(
+            inputs,
+            self.v["w"],
+            self.padding_idx,
+            self.max_norm,
+            self.norm_type,
+            self.sparse,
         )
