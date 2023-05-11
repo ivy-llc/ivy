@@ -252,7 +252,6 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     return ret
 
 
-
 def _quantile_is_valid(q):
     # avoid expensive reductions, relevant for arrays with < O(1000) elements
     if q.ndim == 1 and q.size < 10:
