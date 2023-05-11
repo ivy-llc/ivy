@@ -1123,6 +1123,8 @@ def test_maxpool1d_layer(
         test_gradients=test_gradients,
         on_device=on_device,
     )
+    
+    
 # MaxPool2D
 @handle_method(
     method_tree="MaxPool2D.__call__",
