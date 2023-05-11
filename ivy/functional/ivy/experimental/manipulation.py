@@ -559,8 +559,9 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """
@@ -576,6 +577,8 @@ def top_k(
         The axis along which we must return the top elements default value is 1.
     largest
         If largest is set to False we return k smallest elements of the array.
+    sorted
+        If sorted is set to True we return the elements in sorted order.
     out:
         Optional output tuple, for writing the result to. Must have two arrays inside,
         with a shape that the returned tuple broadcast to.
@@ -623,7 +626,9 @@ def top_k(
         ]
     }
     """
-    return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)
+    return current_backend(x).top_k(
+        x, k, axis=axis, largest=largest, sorted=sorted, out=out
+    )
 
 
 @handle_nestable
