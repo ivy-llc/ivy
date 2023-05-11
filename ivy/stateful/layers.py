@@ -1637,8 +1637,6 @@ class Embedding(Module):
             _padding_inds = ivy.argwhere(_flatten_inputs == self.padding_idx)
 
             if len(_padding_inds) != 0:
-                _flatten_res[_padding_inds] = ivy.full(
-                    (self.embedding_dim,), self.padding_idx
-                )
+                _flatten_res[_padding_inds] = ivy.zeros(shape=(self.embedding_dim,))
                 res = _flatten_res.reshape((batch_size, max_len, self.embedding_dim))
         return res
