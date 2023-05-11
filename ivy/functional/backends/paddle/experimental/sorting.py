@@ -1,7 +1,8 @@
 # global
 import paddle
 from typing import Optional, Union
-
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from .. import backend_version
 
 # invert_permutation
 def invert_permutation(
@@ -16,6 +17,13 @@ def invert_permutation(
 
 
 # msort
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8",
+                                 "uint8",
+                                 "int16",
+                                 "float16",
+                                 "complex")}}, backend_version
+)
 def msort(
     a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:

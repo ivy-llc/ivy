@@ -21,6 +21,7 @@ def invert_permutation(
 
 
 # msort
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[JaxArray, list, tuple],
     /,

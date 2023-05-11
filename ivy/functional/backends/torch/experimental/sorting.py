@@ -1,7 +1,8 @@
 # global
 import torch
 from typing import Optional, Union
-
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 # invert_permutation
 def invert_permutation(
@@ -16,6 +17,7 @@ def invert_permutation(
 
 
 # msort
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[torch.Tensor, list, tuple], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:

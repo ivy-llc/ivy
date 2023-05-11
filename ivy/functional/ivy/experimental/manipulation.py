@@ -559,8 +559,9 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """
@@ -576,6 +577,8 @@ def top_k(
         The axis along which we must return the top elements default value is 1.
     largest
         If largest is set to False we return k smallest elements of the array.
+    sorted
+        If sorted is set to True we return the elements in sorted order.
     out:
         Optional output tuple, for writing the result to. Must have two arrays inside,
         with a shape that the returned tuple broadcast to.
@@ -623,7 +626,9 @@ def top_k(
         ]
     }
     """
-    return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)
+    return current_backend(x).top_k(
+        x, k, axis=axis, largest=largest, sorted=sorted, out=out
+    )
 
 
 @handle_nestable
@@ -1168,7 +1173,11 @@ def pad(
 
     if mode == "dilated":
         pad_width = _to_dilated(pad_width, input.ndim)
-        padded = _interior_pad(input, constant_values, pad_width)
+        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
+            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
+        else:
+            padding_value = constant_values
+        padded = _interior_pad(input, padding_value, pad_width)
         return ivy.native_array(padded)
 
     pad_width = _to_pairs(pad_width, input.ndim)
