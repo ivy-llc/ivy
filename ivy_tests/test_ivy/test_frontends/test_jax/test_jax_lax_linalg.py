@@ -191,14 +191,12 @@ def test_jax_lax_eigh(
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
-    lower=st.booleans(),
     symmetrize_input=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_jax_lax_qdwh(
     *,
     dtype_and_x,
-    lower,
     symmetrize_input,
     on_device,
     fn_tree,
@@ -223,12 +221,11 @@ def test_jax_lax_qdwh(
     )
     ret = [ivy.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
-
-    L, Q = ret
-    frontend_Q, frontend_L = frontend_ret
+    l, q = ret
+    frontend_q, frontend_l = frontend_ret
 
     assert_all_close(
         ret_np=Q @ np.diag(L) @ Q.T,
-        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+        ret_from_gt_np=frontend_q @ np.diag(frontend_l) @ frontend_Q.T,
         atol=1e-2,
     )
