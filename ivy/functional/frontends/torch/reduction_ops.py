@@ -48,8 +48,8 @@ def any(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def sum(input, dim=None, keepdim=False, *, out=None):
-    return ivy.sum(input, axis=dim, keepdims=keepdim, out=out)
+def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
+    return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
 
 
 @to_ivy_arrays_and_back
