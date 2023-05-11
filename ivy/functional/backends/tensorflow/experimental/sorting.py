@@ -11,14 +11,6 @@ def invert_permutation(
     return tf.math.invert_permutation(x)
 
 
-# msort
-def msort(
-    a: Union[tf.Tensor, tf.Variable, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.sort(a, axis=0)
 
 
 # lexsort

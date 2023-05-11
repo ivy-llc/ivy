@@ -106,16 +106,18 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
+    k = min(k, x.shape[axis])
     if not largest:
         indices = np.argsort(x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
     else:
-        x = -x
-        indices = np.argsort(x, axis=axis)
+        indices = np.argsort(-x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
-        x = -x
+    if not sorted:
+        indices = np.sort(indices, axis=axis)
     topk_res = NamedTuple("top_k", [("values", np.ndarray), ("indices", np.ndarray)])
     val = np.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)

@@ -12,7 +12,15 @@ import tensorflow as tf
 
 def if_else(cond, body_fn, orelse_fn, vars):
     cond = bool(cond)
-    return tf.cond(cond, lambda: body_fn(*vars), lambda: orelse_fn(*vars))
+    # return tf.cond(cond, lambda: body_fn(*vars), lambda: orelse_fn(*vars))
+
+    # use pythonic placeholder until the graph compiler supports callable arguments
+
+    if cond:
+        return body_fn(*vars)
+    else:
+        return orelse_fn(*vars)
+
 
 
 def while_loop(test_fn, body_fn, vars):

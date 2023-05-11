@@ -637,6 +637,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         axis: int = -1,
         largest: bool = True,
+        sorted: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -658,6 +659,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             The axis along which we must return the top elements default value is 1.
         largest
             If largest is set to False we return k smallest elements of the array.
+        sorted
+            If sorted is set to True we return the elements in sorted order.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -702,6 +705,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             k,
             axis=axis,
             largest=largest,
+            sorted=sorted,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -716,6 +720,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         axis: int = -1,
         largest: bool = True,
+        sorted: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -737,6 +742,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             The axis along which we must return the top elements default value is 1.
         largest
             If largest is set to False we return k smallest elements of the array.
+        sorted
+            If sorted is set to True we return the elements in sorted order.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -780,6 +787,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             k,
             axis=axis,
             largest=largest,
+            sorted=sorted,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
