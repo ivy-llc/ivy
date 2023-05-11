@@ -177,7 +177,7 @@ def test_jax_lax_eigh(
         atol=1e-2,
     )
 
-#qdwh
+# qdwh
 @handle_frontend_test(
     fn_tree="jax.lax.linalg.qdwh",
     dtype_and_x=helpers.dtype_and_values(
@@ -194,6 +194,7 @@ def test_jax_lax_eigh(
     symmetrize_input=st.booleans(),
     test_with_out=st.just(False),
 )
+
 def test_jax_lax_qdwh(
     *,
     dtype_and_x,

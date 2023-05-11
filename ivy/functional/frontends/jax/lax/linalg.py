@@ -46,7 +46,7 @@ def qdwh(x, *, is_hermitian=False, max_iterations=None, eps=None, dynamic_shape=
     if dynamic_shape:
         m, n = dynamic_shape
         x_pad = np_frontend.zeros((m, n), dtype=x.dtype)
-        x_pad[:x.shape[0], :x.shape[1]] = x
+        x_pad[: x.shape[0], : x.shape[1]] = x
         x = x_pad
 
     # Compute the SVD of x
@@ -71,7 +71,7 @@ def qdwh(x, *, is_hermitian=False, max_iterations=None, eps=None, dynamic_shape=
         h += delta_h
         num_iters += 1
         x = np_frontend.linalg.norm(delta_h)
-        y = np_frontend.linalg.norm(h) * (4 * eps)**(1/3)
+        y = np_frontend.linalg.norm(h) * (4 * eps) ** (1 / 3)
         if eps:
             # Check for convergence
             if x < y:
