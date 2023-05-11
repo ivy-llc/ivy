@@ -80,3 +80,27 @@ def diag_indices_from(arr):
         raise ValueError("All dimensions of input must be of equal length")
     idx = ivy.arange(n, dtype=int)
     return (idx,) * ndim
+
+
+@to_ivy_arrays_and_back
+def apply_over_axes(func, a, axes):
+    val = ivy.array(a)
+    N = len(a.shape)
+    if len(ivy.array(axes).shape) == 0:
+        axes = (axes,)
+    for axis in axes:
+        if axis < 0:
+            axis = N + axis
+        args = (val, axis)
+        res = func(*args)
+        if len(res.shape) == len(val.shape):
+            val = res
+        else:
+            res = ivy.expand_dims(res, axis)
+            if len(res.shape) == len(val.shape):
+                val = res
+            else:
+                raise ValueError(
+                    "function is not returning an array of the correct shape"
+                )
+    return val
