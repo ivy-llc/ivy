@@ -11,6 +11,38 @@ from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
+def _determine_depth_max_pooling(x, kernel, strides, dims):
+    # determine depth pooling
+    depth_pooling = False
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1]
+        if kernel[-1] != 1:
+            depth_pooling = True
+            if any(np.array(spatial_kernel) != 1):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if x.shape[-1] % kernel[-1] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            x = np.transpose(x, (0, dims + 1, *range(1, dims + 1)))
+            kernel = [kernel[-1], *[1] * (dims - 1)]
+            strides = [strides[-1], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            if len(strides) == dims + 2:
+                strides = strides[1:-1]
+    return x, kernel, strides, depth_pooling
+
+
 def max_pool1d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -106,34 +138,41 @@ def max_pool2d(
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
 
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 2
+    )
     x_shape = list(x.shape[1:3])
     filters = np.ones((list(kernel)), dtype=x.dtype)
-    for j in range(2):
-        if dilation[j] > 1:
-            filters = _add_dilations(filters, dilation[j], axis=j, values=0)
-    kernel = list(filters.shape)
-    pad_list = padding
-    if isinstance(padding, str):
-        pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-        pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
-        pad_list = [(pad_h // 2, pad_h - pad_h // 2), (pad_w // 2, pad_w - pad_w // 2)]
-    pad_list = list(pad_list)
-    if ceil_mode:
-        for i in range(2):
-            pad_list[i] = _padding_ceil_mode(
-                x_shape[i], kernel[i], pad_list[i], strides[i]
-            )
+    if not depth_pooling:
+        for j in range(2):
+            if dilation[j] > 1:
+                filters = _add_dilations(filters, dilation[j], axis=j, values=0)
+        kernel = list(filters.shape)
+        pad_list = padding
+        if isinstance(padding, str):
+            pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+            pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+            pad_list = [
+                (pad_h // 2, pad_h - pad_h // 2),
+                (pad_w // 2, pad_w - pad_w // 2),
+            ]
+        pad_list = list(pad_list)
+        if ceil_mode:
+            for i in range(2):
+                pad_list[i] = _padding_ceil_mode(
+                    x_shape[i], kernel[i], pad_list[i], strides[i]
+                )
 
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            *pad_list,
-            (0, 0),
-        ],
-        "constant",
-        constant_values=-math.inf,
-    )
+        x = np.pad(
+            x,
+            [
+                (0, 0),
+                *pad_list,
+                (0, 0),
+            ],
+            "constant",
+            constant_values=-math.inf,
+        )
 
     x_shape = x.shape
     new_h = (x_shape[1] - kernel[0]) // strides[0] + 1
@@ -159,6 +198,9 @@ def max_pool2d(
 
     # B x OH x OW x O
     res = sub_matrices.max(axis=(3, 4))
+
+    if depth_pooling:
+        res = np.transpose(res, (0, 2, 3, 1))
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res

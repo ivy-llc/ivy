@@ -325,32 +325,43 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 def inputs_to_native_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: x.shape
-            if isinstance(x, ivy.Shape) and ivy.get_array_mode()
-            else x,
+            lambda x: (
+                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
+            ),
         )
         return fn(*args, **kwargs)
 
-    new_fn.inputs_to_native_shapes = True
-    return new_fn
+    _inputs_to_native_shapes.inputs_to_native_shapes = True
+    return _inputs_to_native_shapes
 
 
 def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: x.shape
-            if isinstance(x, ivy.Shape) and ivy.get_array_mode()
-            else x,
+            lambda x: (
+                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
+            ),
         )
         return fn(*args, **kwargs)
 
-    new_fn.outputs_to_ivy_shapes = True
-    return new_fn
+    _outputs_to_ivy_shapes.outputs_to_ivy_shapes = True
+    return _outputs_to_ivy_shapes
+
+
+def to_native_shapes_and_back(fn: Callable) -> Callable:
+    """
+    Make `fn` receive `ivy.NativeShape` and return `ivy.Shape`.
+
+    Wrap `fn` so that input shapes are all converted to
+    `ivy.NativeShape` instances and return shapes are all converted to
+    `ivy.Shape` instances.
+    """
+    return outputs_to_ivy_shapes(inputs_to_native_shapes(fn))
 
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:

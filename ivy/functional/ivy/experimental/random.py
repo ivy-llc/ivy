@@ -13,10 +13,10 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 # dirichlet
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def dirichlet(
     alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
@@ -79,11 +79,11 @@ def dirichlet(
     )
 
 
-@to_native_arrays_and_back
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
 def beta(
     a: Union[float, ivy.NativeArray, ivy.Array],
     b: Union[float, ivy.NativeArray, ivy.Array],
@@ -132,11 +132,11 @@ def beta(
     )
 
 
-@to_native_arrays_and_back
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
 def gamma(
     alpha: Union[float, ivy.NativeArray, ivy.Array],
     beta: Union[float, ivy.NativeArray, ivy.Array],
@@ -153,12 +153,12 @@ def gamma(
 
     Parameters
     ----------
-    shape
-        Shape parameter of the gamma distribution.
     alpha
         Alpha parameter of the gamma distribution.
     beta
         Beta parameter of the gamma distribution.
+    shape
+        Shape parameter of the gamma distribution.
     device
         device on which to create the array. 'cuda:0',
         'cuda:1', 'cpu' etc. (Default value = None).
@@ -177,17 +177,17 @@ def gamma(
         Returns an array filled with random values sampled from a gamma distribution.
     """
     return ivy.current_backend().gamma(
-        shape, alpha, beta, device=device, dtype=dtype, seed=seed, out=out
+        alpha, beta, shape=shape, device=device, dtype=dtype, seed=seed, out=out
     )
 
 
-@infer_device
-@infer_dtype
-@to_native_arrays_and_back
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
+@infer_dtype
+@infer_device
 def poisson(
     lam: Union[float, ivy.Array, ivy.NativeArray],
     *,
@@ -247,13 +247,13 @@ def poisson(
     )
 
 
-@infer_device
-@infer_dtype
-@to_native_arrays_and_back
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
+@infer_dtype
+@infer_device
 def bernoulli(
     probs: Union[float, ivy.Array, ivy.NativeArray],
     *,

@@ -45,3 +45,28 @@ def stateless_uniform(
 @to_ivy_arrays_and_back
 def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
     return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed)
+
+
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def stateless_normal(
+    shape, seed, mean=0.0, stddev=1.0, dtype=ivy.float32, name=None, alg="auto_select"
+):
+    return ivy.random_normal(
+        mean=mean, std=stddev, shape=shape, dtype=dtype, seed=seed[0] + seed[1]
+    )
+
+
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def stateless_poisson(shape, seed, lam, dtype=ivy.int32, name=None):
+    return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed[0] + seed[1])
+
+
+@to_ivy_arrays_and_back
+def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
+    return ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed)

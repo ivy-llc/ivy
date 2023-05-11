@@ -13,7 +13,7 @@ Here, we explain all tasks which are currently open for contributions from the c
 This section of the docs will be updated frequently, whereby new tasks will be added and completed tasks will be removed.
 The tasks outlined here are generally broad high-level tasks, each of which is made up of many individual sub-tasks, distributed across task-specific `ToDo List Issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
-Please read about `ToDo List Issues <https://lets-unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues>`_ in detail before continuing.
+Please read about `ToDo List Issues <https://unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues>`_ in detail before continuing.
 All tasks should be selected and allocated as described in the ToDo List Issues section.
 We make no mention of task selection and allocation in the explanations below, which instead focus on the steps to complete only once a sub-task has been allocated to you.
 
@@ -113,7 +113,7 @@ Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/i
 
 The general workflow for this task is:
 
-#. Find the correct location for the function by following the *Where to place a frontend function* subsection below
+#. Find the correct location for the function by following the :ref:`Where to place a frontend function` subsection below
 #. Implement the function by following the :ref:`Ivy Frontends` guide
 #. Write tests for your function by following the :ref:`Ivy Frontend Tests` guide
 #. Verify that the tests for your function are passing
@@ -224,9 +224,9 @@ A general workflow for these tasks would be:
 
 #. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`, sometimes as a composition if the respective backends do not behave in a similar way.
    You may also use submodule-specific helper functions to recreate the behaviour.
-   Refer the `Backend API Guide <https://lets-unify.ai/docs/ivy/deep_dive/navigating_the_code.html#backend-api>`_ on how this can be done.
+   Refer the `Backend API Guide <https://unify.ai/docs/ivy/deep_dive/navigating_the_code.html#backend-api>`_ on how this can be done.
 #. Implement the functions in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation.
-   Refer the `Ivy API Guide <https://lets-unify.ai/docs/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
+   Refer the `Ivy API Guide <https://unify.ai/docs/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
 #. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
    in :mod:`ivy/array/experimental/[relevant_submodule].py`
 #. Write tests for the function using the :ref:`Ivy Tests` guide, and make sure they are passing.
@@ -237,6 +237,24 @@ A few points to keep in mind while doing this:
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function in the hypothesis library.
 
 If you’re stuck on a function which requires complex compositions, feel free to reselect a function 🙂.
+
+Creating an Issue on Ivy's GitHub using a Template
+----------------------------------------------------
+
+#. Go to the `GitHub Ivy <https://github.com/unifyai/ivy>`_ page, select the Issues tab, and click on the green button :code:`New issue` at the centre-right of the screen.
+#. You will see 5 options. Each option has a predetermined form. To start filling in the form, click on the green button at the right which says :code:`Get started`. The options are explained as follows:
+
+   * Bug Report:
+      In case you find a bug in our API, you have to provide details in the form and the issue will be assigned to one of our team members to look into.
+   * Feature request:
+      If you want to suggest an idea for our project, our team is always open for suggestions.
+   * Missing Function Suggestion:
+      In case you find a function which the other frameworks have and is missing in our API or we have some functionality missing which the other frameworks support(superset behavior).
+   * Sub-Task:
+      Reserve a sub-task from a ToDo list issue.
+   * Questions:
+      If you want to interact with the Ivy community to ask for any type of help, discussing and more!
+#. To submit your issue, you will have to complete the requirements in the form and click on the green button :code:`Submit new issue` at the right-bottom of the screen.
 
 
 **Round Up**

@@ -976,7 +976,7 @@ def test_lstm_layer(
     ),
     with_v=st.booleans(),
     seq_v=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False) | st.none(),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
 )
 def test_sequential_layer(
     bs_c_target,
@@ -989,9 +989,16 @@ def test_sequential_layer(
     method_name,
     class_name,
 ):
+    dtype = dtype[0]
     # smoke test
     batch_shape, channels, target = bs_c_target
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+    tolerance_dict = {
+        "bfloat16": 1e-2,
+        "float16": 1e-2,
+        "float32": 1e-5,
+        "float64": 1e-5,
+        None: 1e-5,
+    }
     if method_flags.as_variable[0]:
         x = _variable(
             ivy.asarray(
@@ -1071,7 +1078,7 @@ def test_sequential_layer(
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
-    assert ret.shape == tuple(batch_shape + [channels])
+    assert ret.shape == ivy.Shape(batch_shape + [channels])
     # value test
     if not with_v:
         return

@@ -1,15 +1,15 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
-import math
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
+import numpy as np
 from typing import Sequence
 
 # local
-import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy.functional.ivy.experimental.manipulation import _check_bounds
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
 
 
 # Helpers #
@@ -528,6 +528,7 @@ def _pad_helper(draw):
         st.sampled_from(
             [
                 "constant",
+                "dilated",
                 "edge",
                 "linear_ramp",
                 "maximum",
@@ -540,7 +541,7 @@ def _pad_helper(draw):
             ]
         )
     )
-    if mode == "median":
+    if mode in ["median", "minimum", "maximum", "linear_ramp"]:
         dtypes = "float"
     else:
         dtypes = "numeric"
@@ -554,9 +555,29 @@ def _pad_helper(draw):
         ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
     )
     ndim = len(shape)
-    pad_width = draw(_st_tuples_or_int(ndim))
+    min_dim = min(shape)
+    if mode == "dilated":
+        pad_width = draw(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=-min_dim, max_value=min_dim),
+                    st.integers(min_value=-min_dim, max_value=min_dim),
+                    st.integers(min_value=0, max_value=min_dim),
+                ),
+                min_size=ndim,
+                max_size=ndim,
+            )
+        )
+        constant_values = draw(
+            helpers.number(
+                min_value=0,
+                max_value=100,
+            ).filter(lambda _x: ivy.as_ivy_dtype(type(_x)) == dtype[0])
+        )
+    else:
+        pad_width = draw(_st_tuples_or_int(ndim))
+        constant_values = draw(_st_tuples_or_int(ndim))
     stat_length = draw(_st_tuples_or_int(ndim, min_val=2))
-    constant_values = draw(_st_tuples_or_int(ndim))
     end_values = draw(_st_tuples_or_int(ndim))
     return dtype, input[0], pad_width, stat_length, constant_values, end_values, mode
 
@@ -971,52 +992,21 @@ def test_expand(
     )
 
 
-def _factorize(n):
-    factors = []
-    for i in range(2, int(math.sqrt(n)) + 1):
-        if n == 1:
-            break
-        while n % i == 0:
-            factors.append(i)
-            n //= i
-    if n > 1:
-        factors.append(n)
-    return factors
-
-
-@st.composite
-def _get_reshape(draw, shape):
-    size = 1 if len(shape) == 0 else math.prod(shape)
-    new_shape = draw(st.permutations(_factorize(size)))
-    reduct = draw(st.integers(min_value=1, max_value=len(new_shape)))
-    new_shape = (math.prod(new_shape[:reduct]), *new_shape[reduct:])
-    if shape == new_shape:
-        ones = draw(st.integers(min_value=1, max_value=5))
-        new_shape = tuple(draw(st.permutations(new_shape + (1,) * ones)))
-    return new_shape
-
-
 @st.composite
 def _as_strided_helper(draw):
-    dtype, x, x_shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=2,
-            min_dim_size=2,
-            ret_shape=True,
-        )
-    )
-    shape = draw(_get_reshape(x_shape))
+    dtype, x = draw(helpers.dtype_and_values(min_num_dims=1, max_num_dims=5))
+    x = x[0]
+    itemsize = x.itemsize
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=5))
     new_ndim = len(shape)
-    itemsize = x[0].itemsize
-    # the ground truth numpy results for strides greater than itemsize are inconsistent
     strides = draw(
         st.lists(
-            st.integers(min_value=1, max_value=itemsize),
+            st.integers(min_value=1, max_value=16),
             min_size=new_ndim,
             max_size=new_ndim,
-        )
+        ).filter(lambda x: all(x[i] % itemsize == 0 for i in range(new_ndim)))
     )
+    assume(_check_bounds(x.shape, shape, strides, itemsize))
     return dtype, x, shape, strides
 
 
@@ -1044,7 +1034,7 @@ def test_as_strided(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
+        x=x,
         shape=shape,
         strides=strides,
     )
