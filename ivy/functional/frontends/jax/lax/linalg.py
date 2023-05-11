@@ -87,3 +87,4 @@ def qdwh(x, *, is_hermitian=False, max_iterations=None, eps=None, dynamic_shape=
     u = u_avg @ np_frontend.linalg.inv(h_sqrt)
 
     return u, h, num_iters, is_converged
+

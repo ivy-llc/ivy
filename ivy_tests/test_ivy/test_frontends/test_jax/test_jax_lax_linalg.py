@@ -179,7 +179,7 @@ def test_jax_lax_eigh(
 
 #qdwh
 @handle_frontend_test(
-    fn_tree="jax.lax.linalg.qdwh",
+    fn_tree="jax.lax.linalg",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
