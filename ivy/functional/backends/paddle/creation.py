@@ -1,5 +1,5 @@
 # global
-
+import struct
 from numbers import Number
 from typing import Union, List, Optional, Sequence
 
@@ -100,6 +100,7 @@ def asarray(
         bool,
         int,
         float,
+        list,
         NestedSequence,
         SupportsBufferProtocol,
     ],
@@ -373,14 +374,11 @@ def linspace(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if not isinstance(start, paddle.Tensor):
+    if not isinstance(start, (paddle.Tensor, int)):
         start = paddle.to_tensor(start)
 
-    if not isinstance(start, paddle.Tensor):
+    if not isinstance(start, (paddle.Tensor, int)):
         start = paddle.to_tensor(stop)
-
-    if not isinstance(start, paddle.Tensor):
-        start = paddle.to_tensor(num)
 
     if axis is None:
         axis = -1
@@ -411,6 +409,8 @@ def linspace(
         and ans[0] != start
     ):
         ans[0] = start
+    if ivy.is_ivy_array(ans):
+        ans = paddle.to_tensor(ans.data)
     if "int" in str(dtype) and paddle.is_floating_point(ans):
         ans = paddle.floor(ans)
     return to_device(ans.cast(dtype), device)
@@ -633,3 +633,52 @@ def one_hot(
         res = paddle.moveaxis(res, -1, axis)
 
     return to_device(res.cast(dtype), device)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "bfloat16",
+            "complex64",
+            "complex128",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    backend_version,
+)
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[paddle.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> paddle.Tensor:
+    dtype_bytes = int(ivy.Dtype(dtype).dtype_bits / 8)
+    if str(dtype) == "bool":
+        dtype_bytes = 1
+    dtype_str = str(dtype)
+    struct_format = {
+        "bool": "?",
+        "int8": "b",
+        "int16": "h",
+        "int32": "i",
+        "int64": "q",
+        "uint8": "B",
+        "float16": "e",
+        "float32": "f",
+        "float64": "d",
+    }
+    ret = []
+    for i in range(0, len(buffer), dtype_bytes):
+        x = struct.unpack(struct_format[dtype_str], buffer[i : i + dtype_bytes])
+        ret = ret + list(x)
+    if offset > 0:
+        offset = int(offset / dtype_bytes)
+    if count > -1:
+        ret = ret[offset : offset + count]
+    else:
+        ret = ret[offset:]
+    ret = paddle.to_tensor(ret, dtype=dtype)
+
+    return ret
