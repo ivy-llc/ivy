@@ -47,6 +47,7 @@ jobs:
 
       - name: Run Tests
         run: |
+          pip install pymongo
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
