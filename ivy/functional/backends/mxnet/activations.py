@@ -63,3 +63,7 @@ def get(
 
 def mish(x: None, /, *, out: Optional[None] = None) -> None:
     raise IvyNotImplementedException()
+
+
+def silu(x: None, /, *, out: Optional[None] = None) -> None:
+    raise IvyNotImplementedException()

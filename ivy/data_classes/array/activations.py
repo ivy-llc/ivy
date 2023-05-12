@@ -286,3 +286,26 @@ class _ArrayWithActivations(abc.ABC):
         ivy.array([-0.30340147,  0.        ,  0.86509842])
         """
         return ivy.mish(self._data, out=out)
+
+    def silu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.silu. This method simply wraps the
+        function, and so the docstring for ivy.silu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.silu()
+        >>> print(y)
+        ivy.array([-0.26894143,  0.        ,  0.73105854])
+        """
+        return ivy.silu(self._data, out=out)

@@ -87,7 +87,7 @@ def sigmoid(
 ) -> paddle.Tensor:
     if ivy.as_ivy_dtype(x.dtype) in unsupported_dtypes:
         if paddle.is_complex(x):
-            return 1 / (1 + ivy.exp(x))
+            return 1 / (1 + ivy.exp(-x))
         return F.sigmoid(x.cast("float32")).cast(x.dtype)
     return F.sigmoid(x)
 
@@ -170,3 +170,15 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             return x * ivy.tanh(ivy.log1p(ivy.exp(x)))
         return F.mish(x.cast("float32")).cast(x.dtype)
     return F.mish(x)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
+def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+
+    if ivy.as_ivy_dtype(x.dtype) in unsupported_dtypes:
+        if paddle.is_complex(x):
+            return x * (1 / (1 + ivy.exp(-x)))
+        return F.silu(x.cast("float32")).cast(x.dtype)
+    return F.silu(x)

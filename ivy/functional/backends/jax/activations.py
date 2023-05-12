@@ -84,3 +84,7 @@ def log_softmax(
 
 def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
     return x * jnp.tanh(jax.nn.softplus(x))
+
+
+def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.silu(x)
