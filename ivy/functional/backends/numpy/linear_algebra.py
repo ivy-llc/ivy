@@ -492,7 +492,7 @@ def vector_to_skew_symmetric_matrix(
 
 vector_to_skew_symmetric_matrix.support_native_out = True
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("uint64", "float16", "uint16", "bfloat16", "uint32")}, backend_version)
 def lu(
     A: np.ndarray,
     /,
