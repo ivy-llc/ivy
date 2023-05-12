@@ -14,6 +14,7 @@ def square(x):
         return x**2
 
 
+@st.composite
 def leaf_strategy():
     return st.lists(st.integers(1, 10)).map(ivy.array)
 
@@ -44,11 +45,10 @@ def tree_dict_strategy(draw):
     return draw(tree_strategy())
 
 
-
 # tree_leaves
 @handle_frontend_test(
     fn_tree="jax._src.tree_util.tree_leaves",
-    tree=tree_dict_strategy(),
+    tree=leaf_strategy(),
     dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_jax_tree_leaves(
