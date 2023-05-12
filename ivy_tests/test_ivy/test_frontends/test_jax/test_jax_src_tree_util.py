@@ -50,13 +50,11 @@ def tree_dict_strategy(draw):
     fn_tree="jax._src.tree_util.tree_leaves",
     tree=tree_dict_strategy(),
     dtype=helpers.get_dtypes("valid", full=False),
-    is_leaf=None,
 )
 def test_jax_tree_leaves(
     *,
     tree,
     dtype,
-    is_leaf,
     test_flags,
     fn_tree,
     frontend,
@@ -70,7 +68,6 @@ def test_jax_tree_leaves(
         fn_tree=fn_tree,
         on_device=on_device,
         tree=tree,
-        is_leaf=is_leaf,
     )
 
 
