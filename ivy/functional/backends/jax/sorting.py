@@ -4,7 +4,9 @@ from typing import Optional, Literal, Union, List
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 def argsort(
@@ -72,3 +74,14 @@ def searchsorted(
     else:
         ret = jnp.searchsorted(x, v, side=side)
     return ret.astype(ret_dtype)
+
+
+# msort
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
+def msort(
+    a: Union[JaxArray, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.msort(a)
