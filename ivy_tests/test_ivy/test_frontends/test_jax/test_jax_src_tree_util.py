@@ -15,8 +15,8 @@ def square(x):
 
 
 @st.composite
-def leaf_strategy():
-    return st.lists(st.integers(1, 10)).map(ivy.array)
+def leaf_strategy(draw):
+    return draw(st.lists(st.integers(1, 10)).map(ivy.array))
 
 
 def tree_strategy(max_depth=2):
