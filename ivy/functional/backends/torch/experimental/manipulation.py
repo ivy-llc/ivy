@@ -98,8 +98,10 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
+    k = min(k, x.shape[axis])
     topk_res = NamedTuple(
         "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
     )
@@ -107,10 +109,10 @@ def top_k(
         indices = torch.argsort(x, dim=axis)
         indices = torch.index_select(indices, axis, torch.arange(k))
     else:
-        x = -x
-        indices = torch.argsort(x, dim=axis)
+        indices = torch.argsort(-x, dim=axis)
         indices = torch.index_select(indices, axis, torch.arange(k))
-        x = -x
+    if not sorted:
+        indices = torch.sort(indices, dim=axis)[0]
     val = torch.gather(x, axis, indices)
     return topk_res(val, indices)
 

@@ -327,7 +327,7 @@ def test_eye_like(
     )
 
 
-#stft
+# stft
 @st.composite
 def valid_stft_params(draw):
     # draw data types
@@ -342,11 +342,12 @@ def valid_stft_params(draw):
     frame_step = draw(st.integers(min_value=1, max_value=frame_length))
     # Draw values for the window function type
     window_fn = draw(
-        st.sampled_from(['hann', 'hamming', 'rectangle', 'blackman', 'bartlett'])
+        st.sampled_from(["hann", "hamming", "rectangle", "blackman", "bartlett"])
     )
     # Draw values for the FFT size
     fft_length = draw(st.integers(min_value=frame_length, max_value=frame_length * 4))
     return dtype, x, frame_length, frame_step, window_fn, fft_length
+
 
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",
@@ -376,4 +377,3 @@ def test_stft(
         pad_end=True,
         name=None,
     )
-    

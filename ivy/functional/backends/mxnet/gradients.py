@@ -6,6 +6,7 @@ from typing import Optional, Sequence, Union
 # local
 from ivy.utils.exceptions import IvyNotImplementedException
 
+
 def variable(x, /):
     return x
 

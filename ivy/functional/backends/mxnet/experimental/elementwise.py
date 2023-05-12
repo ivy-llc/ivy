@@ -5,7 +5,6 @@ import mxnet as mx
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-
 def sinc(
     x: Union[(None, mx.ndarray.NDArray)],
     /,

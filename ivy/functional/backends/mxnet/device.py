@@ -10,6 +10,7 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 from ivy.utils.exceptions import IvyNotImplementedException
 
+
 def dev(
     x: Union[(None, mx.ndarray.NDArray)], /, *, as_native: bool = False
 ) -> Union[(ivy.Device, str)]:

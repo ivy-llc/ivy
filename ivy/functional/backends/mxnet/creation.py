@@ -249,4 +249,3 @@ def frombuffer(
     offset: Optional[int] = 0,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
-

@@ -1301,9 +1301,9 @@ def _pad_helper(draw):
     padding_config = draw(
         st.lists(
             st.tuples(
-                st.integers(min_value=-(min_dim-1), max_value=min_dim-1),
-                st.integers(min_value=-(min_dim-1), max_value=min_dim-1),
-                st.integers(min_value=0, max_value=min_dim-1),
+                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
+                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
+                st.integers(min_value=0, max_value=min_dim - 1),
             ),
             min_size=ndim,
             max_size=ndim,
