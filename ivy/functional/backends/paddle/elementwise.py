@@ -403,7 +403,7 @@ def multiply(
 @with_unsupported_device_and_dtypes(
     {
         "2.4.2 and below": {
-            "cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128", "bool")
+            "cpu": ("uint16", "bfloat16", "complex64", "complex128", "bool")
         }
     },
     backend_version,
@@ -597,7 +597,7 @@ def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 @with_unsupported_device_and_dtypes(
     {
         "2.4.2 and below": {
-            "cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128", "bool")
+            "cpu": ("uint16", "bfloat16", "complex64", "complex128", "bool")
         }
     },
     backend_version,

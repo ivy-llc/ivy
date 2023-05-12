@@ -1,6 +1,5 @@
 import sys
 from get_all_tests import get_all_tests
-from tqdm import tqdm
 
 N = 40
 
@@ -13,7 +12,7 @@ def main():
     start = run_iter * tests_per_run
     end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
     with open("tests_to_run", "w") as f:
-        for test in tqdm(test_names[start:end]):
+        for test in test_names[start:end]:
             f.write(test + "\n")
 
 

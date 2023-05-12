@@ -72,8 +72,9 @@ def top_k(
     k: int,
     /,
     *,
-    axis: int = (-1),
+    axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[(None, None)]] = None,
 ) -> Tuple[(None, None)]:
     raise IvyNotImplementedException()

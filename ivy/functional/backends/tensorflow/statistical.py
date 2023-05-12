@@ -209,6 +209,37 @@ def cummax(
         return tf.cast(cummax_x, dtype)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("float16", "bfloat16", "complex128", "complex64")},
+    backend_version,
+)
+def cummin(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: int = 0,
+    reverse: bool = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.as_native_dtype(dtype)
+    if reverse:
+        x = tf.reverse(x, axis=[axis])
+    x_unstacked = tf.unstack(x, axis=axis)
+    cummin_x_unstacked = []
+    cummin_x_unstacked.append(x_unstacked[0])
+    for i, x_sub in enumerate(x_unstacked[1:]):
+        cummin_x_sub = tf.minimum(cummin_x_unstacked[i], x_sub)
+        cummin_x_unstacked.append(cummin_x_sub)
+    cummin_x = tf.stack(cummin_x_unstacked, axis=axis)
+    if reverse:
+        cummin_x = tf.reverse(cummin_x, axis=[axis])
+    if dtype is None:
+        return cummin_x
+    else:
+        return tf.cast(cummin_x, dtype)
+
+
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,

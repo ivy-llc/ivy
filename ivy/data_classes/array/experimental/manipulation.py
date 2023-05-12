@@ -261,8 +261,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         k: int,
         /,
         *,
-        axis: Optional[int] = None,
+        axis: int = -1,
         largest: bool = True,
+        sorted: bool = True,
         out: Optional[tuple] = None,
     ) -> Tuple[ivy.Array, ivy.NativeArray]:
         """
@@ -280,6 +281,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             The axis along which we must return the top elements default value is 1.
         largest
             If largest is set to False we return k smallest elements of the array.
+        sorted
+            If sorted is set to True we return the elements in sorted order.
         out:
             Optional output tuple, for writing the result to. Must have two arrays,
             with a shape that the returned tuple broadcast to.
@@ -298,7 +301,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> print(y)
         top_k(values=ivy.array([9., 5.]), indices=ivy.array([4, 3]))
         """
-        return ivy.top_k(self, k, axis=axis, largest=largest, out=out)
+        return ivy.top_k(self, k, axis=axis, largest=largest, sorted=sorted, out=out)
 
     @handle_view
     def fliplr(
@@ -965,3 +968,16 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             The result of the scan.
         """
         return ivy.associative_scan(self._data, fn, reverse=reverse, axis=axis)
+
+    def unique_consecutive(
+            self: ivy.Array,
+            /,
+            *,
+            axis: Optional[int] = None,
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.unique_consecutive. This method simply
+        wraps the function, and so the docstring for ivy.unique_consecutive also applies
+        to this method with minimal changes.
+        """
+        return ivy.unique_consecutive(self._data, axis=axis)

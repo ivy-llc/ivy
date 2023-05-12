@@ -21,15 +21,15 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
 
 
-#stft
+# stft
 @to_ivy_arrays_and_back
 def stft(signals, frame_length, frame_step, fft_length, window_fn, pad_end, name):
     return ivy.stft(
-    signals,
-    frame_length,
-    frame_step,
-    fft_length=fft_length,
-    window_fn=window_fn,
-    pad_end=pad_end,
-    name=name,
+        signals,
+        frame_length,
+        frame_step,
+        fft_length=fft_length,
+        window_fn=window_fn,
+        pad_end=pad_end,
+        name=name,
     )

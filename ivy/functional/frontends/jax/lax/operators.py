@@ -419,7 +419,9 @@ def pow(x, y):
 
 @to_ivy_arrays_and_back
 def pad(operand, padding_value, padding_config):
-    return ivy.pad(operand, padding_config, mode="dilated", constant_values=padding_value)
+    return ivy.pad(
+        operand, padding_config, mode="dilated", constant_values=padding_value
+    )
 
 
 @to_ivy_arrays_and_back
@@ -693,16 +695,6 @@ def reduce_window(
 ):
     # ToDo: add support for window_dilation
     op, dims, strides = operand, window_dimensions, window_strides
-    if any(
-        [
-            (window_dimensions[i] - 1) * (base_dilation[i] - 1) + window_dimensions[i]
-            > operand.shape[i]
-            for i in range(operand.ndim)
-        ]
-    ):
-        raise ValueError(
-            "Invalid window dimensions and base dilation for the given operand shape"
-        )
 
     if isinstance(padding, str):
         pads = _padtype_to_pads(op.shape, dims, strides, padding)
@@ -711,7 +703,7 @@ def reduce_window(
     op = op.reshape((1, 1) + op.shape)
     if base_dilation:
         op = _dilate(op, base_dilation)
-    view = _conv_view(op, [1, 1] + dims, strides, pads)[0]
+    view = _conv_view(op, [1, 1] + list(dims), strides, pads)[0]
     view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
     reducer = _make_reducer(computation, init_value)
     return ivy.array(reducer(view, axis=-1))

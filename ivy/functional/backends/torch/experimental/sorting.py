@@ -15,16 +15,6 @@ def invert_permutation(
     return inverse_permutation
 
 
-# msort
-def msort(
-    a: Union[torch.Tensor, list, tuple], /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return torch.msort(a, out=out)
-
-
-msort.support_native_out = True
-
-
 # lexsort
 def lexsort(
     keys: torch.Tensor, /, *, axis: int = -1, out: Optional[torch.Tensor] = None
