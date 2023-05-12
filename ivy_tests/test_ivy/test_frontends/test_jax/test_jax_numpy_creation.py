@@ -859,3 +859,41 @@ def test_jax_numpy_cdouble(
         on_device=on_device,
         x=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.compress",
+    dtype_arr=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=10,
+        max_dim_size=100,
+    ),
+    condition=helpers.array_values(
+        dtype=helpers.get_dtypes("bool"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
+        ),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_compress(
+    *,
+    dtype_arr,
+    condition,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, arr = dtype_arr
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition,
+        a=arr[0],
+    )
