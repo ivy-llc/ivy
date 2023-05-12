@@ -366,6 +366,7 @@ class Conv1D(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         data_format="NWC",
         dilations=1,
         device=None,
@@ -392,6 +393,8 @@ class Conv1D(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         data_format
             NWC" or "NCW". Defaults to "NWC".
         dilations
@@ -400,7 +403,7 @@ class Conv1D(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -417,6 +420,7 @@ class Conv1D(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
@@ -434,22 +438,27 @@ class Conv1D(Module):
             the desired data type of the internal variables to be created.
              Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -474,7 +483,7 @@ class Conv1D(Module):
                 data_format=self._data_format,
                 dilations=self._dilations,
             )
-            + self.v.b
+            + (self.v.b if self._with_bias else 0)
         )
 
 
@@ -490,6 +499,7 @@ class Conv1DTranspose(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         output_shape=None,
         data_format="NWC",
         dilations=1,
@@ -517,6 +527,8 @@ class Conv1DTranspose(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         output_shape
             Shape of the output (Default value = None)
         data_format
@@ -527,7 +539,7 @@ class Conv1DTranspose(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -544,6 +556,7 @@ class Conv1DTranspose(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
@@ -562,22 +575,27 @@ class Conv1DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -603,7 +621,7 @@ class Conv1DTranspose(Module):
                 data_format=self._data_format,
                 dilations=self._dilations,
             )
-            + self.v.b
+            + (self.v.b if self._with_bias else 0)
         )
 
 
@@ -619,6 +637,7 @@ class Conv2D(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         data_format="NHWC",
         dilations=1,
         device=None,
@@ -645,6 +664,8 @@ class Conv2D(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         data_format
             NHWC" or "NCHW". Defaults to "NHWC".
         dilations
@@ -653,7 +674,7 @@ class Conv2D(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -672,6 +693,7 @@ class Conv2D(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
@@ -689,22 +711,27 @@ class Conv2D(Module):
             the desired data type of the internal variables to be created.
             Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -729,7 +756,7 @@ class Conv2D(Module):
                 data_format=self._data_format,
                 dilations=self._dilations,
             )
-            + self.v.b
+            + (self.v.b if self._with_bias else 0)
         )
 
 
@@ -745,6 +772,7 @@ class Conv2DTranspose(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         output_shape=None,
         data_format="NHWC",
         dilations=1,
@@ -772,6 +800,8 @@ class Conv2DTranspose(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         output_shape
             Shape of the output (Default value = None)
         data_format
@@ -782,7 +812,7 @@ class Conv2DTranspose(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -800,6 +830,7 @@ class Conv2DTranspose(Module):
             else (1, output_channels, 1, 1)
         )
         self._w_init = weight_initializer
+        self._with_bias = with_bias
         self._b_init = bias_initializer
         self._output_shape = output_shape
         self._data_format = data_format
@@ -819,22 +850,27 @@ class Conv2DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -860,7 +896,7 @@ class Conv2DTranspose(Module):
                 data_format=self._data_format,
                 dilations=self._dilations,
             )
-            + self.v.b
+            + (self.v.b if self._with_bias else 0)
         )
 
 
@@ -875,6 +911,7 @@ class DepthwiseConv2D(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         data_format="NHWC",
         dilations=1,
         device=None,
@@ -899,6 +936,8 @@ class DepthwiseConv2D(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         data_format
             NHWC" or "NCHW". Defaults to "NHWC".
         dilations
@@ -907,7 +946,7 @@ class DepthwiseConv2D(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -925,6 +964,7 @@ class DepthwiseConv2D(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
@@ -942,22 +982,27 @@ class DepthwiseConv2D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
-                self._num_channels,
-                self._num_channels,
+                self._output_channels,
+                self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._num_channels,
-                self._num_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -982,7 +1027,7 @@ class DepthwiseConv2D(Module):
                 data_format=self._data_format,
                 dilations=self._dilations,
             )
-            + self.v.b
+            + (self.v.b if self._with_bias else 0)
         )
 
 
@@ -998,6 +1043,7 @@ class Conv3D(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         data_format="NDHWC",
         dilations=1,
         device=None,
@@ -1024,6 +1070,8 @@ class Conv3D(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
         dilations
@@ -1032,7 +1080,7 @@ class Conv3D(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -1051,6 +1099,7 @@ class Conv3D(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
@@ -1068,22 +1117,27 @@ class Conv3D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -1109,7 +1163,7 @@ class Conv3D(Module):
                 data_format=self._data_format,
                 dilations=self._dilations,
             )
-            + self.v.b
+            + (self.v.b if self._with_bias else 0)
         )
 
 
@@ -1125,6 +1179,7 @@ class Conv3DTranspose(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         output_shape=None,
         data_format="NDHWC",
         dilations=1,
@@ -1152,6 +1207,8 @@ class Conv3DTranspose(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         output_shape
             Shape of the output (Default value = None)
         data_format
@@ -1162,7 +1219,7 @@ class Conv3DTranspose(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -1181,6 +1238,7 @@ class Conv3DTranspose(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
@@ -1200,22 +1258,27 @@ class Conv3DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -1242,7 +1305,7 @@ class Conv3DTranspose(Module):
                 data_format=self._data_format,
                 dilations=self._dilations,
             )
-            + self.v.b
+            + (self.v.b if self._with_bias else 0)
         )
 
 
@@ -1443,6 +1506,7 @@ class MaxPool2D(Module):
         padding,
         /,
         *,
+        data_format="NHWC",
         device=None,
         v=None,
         dtype=None,
@@ -1464,6 +1528,7 @@ class MaxPool2D(Module):
         self._kernel_size = kernel_size
         self._stride = stride
         self._padding = padding
+        self._data_format = data_format
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
@@ -1479,7 +1544,13 @@ class MaxPool2D(Module):
         -------
         The output of the layer.
         """
-        return ivy.max_pool2d(inputs, self._kernel_size, self._stride, self._padding)
+        return ivy.max_pool2d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
 
 
 class AvgPool2D(Module):
@@ -1490,6 +1561,7 @@ class AvgPool2D(Module):
         padding,
         /,
         *,
+        data_format="NHWC",
         device=None,
         v=None,
         dtype=None,
@@ -1511,6 +1583,7 @@ class AvgPool2D(Module):
         self._kernel_size = kernel_size
         self._stride = stride
         self._padding = padding
+        self._data_format = data_format
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
@@ -1526,4 +1599,10 @@ class AvgPool2D(Module):
         -------
         The output of the layer.
         """
-        return ivy.avg_pool2d(inputs, self._kernel_size, self._stride, self._padding)
+        return ivy.avg_pool2d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )

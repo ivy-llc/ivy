@@ -10,7 +10,9 @@ assignees: ''
 <!-- Information below is optional. -->
 
 **Why should this be implemented?**
-Because 3+ of the native frameworks have it, and it's a complex function.
+- 3+ of the native frameworks have this function
+- it's an NN-related function and should be as efficient as possible
+- it's needed for a complex/long frontend function implementation
 
 **Links to native framework implementations**
 - [Jax](<FUNC_URL_DOCS>)
