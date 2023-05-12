@@ -217,7 +217,6 @@ def test_jax_lax_qdwh(
         on_device=on_device,
         test_values=False,
         x=x,
-        lower=lower,
         symmetrize_input=symmetrize_input,
     )
     ret = [ivy.to_numpy(x) for x in ret]
