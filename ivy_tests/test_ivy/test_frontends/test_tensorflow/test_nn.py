@@ -1389,7 +1389,7 @@ def test_tensorflow_crelu(
     fn_tree="tensorflow.nn.conv_transpose",
     dims=st.shared(st.integers(1, 3), key="dims"),
     x_f_d_df=x_and_filters(
-        dims=st.shared(st.integers(1, 3), key="dims"),
+        dim=st.shared(st.integers(1, 3), key="dims"),
         general=True,
         transpose=True,
         bias=True,
