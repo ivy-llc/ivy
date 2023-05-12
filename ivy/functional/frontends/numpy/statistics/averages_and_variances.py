@@ -313,7 +313,6 @@ def nanpercentile(
     a = ivy.array(a)
     q = ivy.divide(q, 100.0)
     q = ivy.array(q)
-    # print(q)
     if not _quantile_is_valid(q):
         raise ValueError("percentile s must be in the range [0, 100]")
     if axis is None:
@@ -327,7 +326,7 @@ def nanpercentile(
         for i in q:
             resultarray.append(cpercentile(nanlessarray, i))
         return resultarray
-    elif axis == 1:
+    elif axis==1:
         resultarray = []
         nanlessarrayofarrays = []
         for i in a:
