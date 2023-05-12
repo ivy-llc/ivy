@@ -1130,7 +1130,7 @@ def test_maxpool2d_layer(
 # MaxPool3D
 @handle_method(
     method_tree="MaxPool3D.__call__",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=8),
 )
 def test_maxpool3d_layer(
     *,
