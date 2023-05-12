@@ -549,9 +549,13 @@ def lu(
     permute_l: bool = False,
     out: Optional[Union[Tuple[JaxArray, JaxArray], Tuple[JaxArray, JaxArray, JaxArray]]] = None
 ) -> Union[Tuple[JaxArray, JaxArray], Tuple[JaxArray, JaxArray, JaxArray]]:
+    dtype = A.dtype
     res = namedtuple("PLU", ["P", "L", "U"])
     res2 = namedtuple("PLU", ["PL", "U"])
     P, L, U = jsp.linalg.lu(A)
+    P = P.astype(dtype)
+    L = L.astype(dtype)
+    U = U.astype(dtype)
     if permute_l:
         return res2(jnp.matmul(P, L), U)
     return res(P, L, U)

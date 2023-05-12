@@ -1465,16 +1465,7 @@ def test_vander(
 
 @handle_test(
     fn_tree="functional.ivy.lu",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-        min_num_dims=3,
-        max_num_dims=3,
-        min_dim_size=3,
-        max_dim_size=3,
-        shape=helpers.ints(min_value=1, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    dtype_x= _get_dtype_and_matrix(),
     pivot=st.booleans(),
 )
 def test_lu(
@@ -1489,7 +1480,7 @@ def test_lu(
 ):
     assume(pivot)
     input_dtype, x = dtype_x
-    assume(matrix_is_stable(x[0], 10))
+    assume(np.all(matrix_is_stable(np.array(x), cond_limit=5)).item())
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
