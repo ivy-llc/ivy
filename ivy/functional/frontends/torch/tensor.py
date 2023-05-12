@@ -1037,10 +1037,10 @@ class Tensor:
 
     # fmt: off
     @with_unsupported_dtypes({"1.11.0 and below": ("int8", "int16", "int32", "int64", "uint8", "bool", "float16",)},"torch",)  # noqa
-    # fmt: on
     def exp_(self):
         self.ivy_array = self.exp().ivy_array
         return self
+    # fmt: on
 
     def mul(self, other):
         return torch_frontend.mul(self, other)
