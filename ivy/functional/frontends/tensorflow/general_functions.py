@@ -54,7 +54,8 @@ def clip_by_global_norm(t_list, clip_norm, use_norm=None):
 
 @to_ivy_arrays_and_back
 def foldl(func, xs, acc):
-    return functools.reduce(func, xs, acc)
+    arr= ivy.array(acc)
+    return functools.reduce(func, xs, arr)
 
 
 
