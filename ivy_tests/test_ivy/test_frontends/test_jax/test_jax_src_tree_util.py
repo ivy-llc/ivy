@@ -44,6 +44,25 @@ def tree_dict_strategy(draw):
     return draw(tree_strategy())
 
 
+
+# tree_leaves
+@handle_frontend_test(
+    fn_tree="jax._src.tree_util.tree_leaves",
+    tree=tree_dict_strategy(),
+)
+def test_jax_tree_leaves(
+    *,
+    tree,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    result = tree_leaves(tree)
+    expected = ivy.Container(tree)
+    assert ivy.equal(ivy.Container(result), expected)
+
+
 # tree_map
 @handle_frontend_test(
     fn_tree="jax._src.tree_util.tree_map",
