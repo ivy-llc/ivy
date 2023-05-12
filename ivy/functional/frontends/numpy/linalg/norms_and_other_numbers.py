@@ -66,3 +66,10 @@ def slogdet(a):
 def trace(a, offset=0, axis1=0, axis2=1, out=None):
     ret = ivy.trace(a, offset=offset, axis1=axis1, axis2=axis2, out=out)
     return ret
+
+
+# cond
+@from_zero_dim_arrays_to_scalar
+def cond(x, p=None):
+    ret = ivy.cond(x, p)
+    return ret
