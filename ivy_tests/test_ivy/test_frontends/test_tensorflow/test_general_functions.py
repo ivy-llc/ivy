@@ -39,6 +39,33 @@ def _get_clip_inputs(draw):
     return x_dtype, x, min, max
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.foldl",
+    dtype_and_func=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_tensorflow_foldl(
+    *,
+    dtype_and_func,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, func = dtype_and_func
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        func=func[0],
+    )
+
+
 # argsort
 @handle_frontend_test(
     fn_tree="tensorflow.argsort",

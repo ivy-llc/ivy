@@ -1,6 +1,6 @@
 # global
 from builtins import slice as py_slice, range as py_range
-
+import functools
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
@@ -49,6 +49,13 @@ def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     return [
         ivy.multiply(t, ivy.divide(clip_norm, max_clip_ratio)) for t in t_list
     ], global_norm
+
+
+
+@to_ivy_arrays_and_back
+def foldl(func, xs, acc):
+    return functools.reduce(func, xs, acc)
+
 
 
 @to_ivy_arrays_and_back
