@@ -87,8 +87,8 @@ def test_numpy_rfft(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=True,
-        a=x,
+        a=x[0],
         n=None,
-        axis=-1,
-        norm="backward",
+        axis=1,
+        norm=None,
     )
