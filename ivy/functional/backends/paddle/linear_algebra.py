@@ -253,7 +253,7 @@ def matmul(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "float16", "bfloat16", "complex64")}}, backend_version
 )
 def matrix_norm(
     x: paddle.Tensor,
@@ -264,57 +264,36 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    _expand_dims = False
-    if x.ndim == 2:
-        x = paddle.unsqueeze(x, axis=0)
-        _expand_dims = True
-
     if ord == -float("inf"):
         ret = paddle.amin(
             paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
-            axis=axis,
             keepdim=keepdims,
         )
-
     elif ord == -1:
         ret = paddle.amin(
             paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
-            axis=axis,
             keepdim=keepdims,
         )
     elif ord == -2:
-        ret = paddle.amin(paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims)
-        if keepdims:
-            ret = ret.unsqueeze(-1)
+        ret = paddle.amin(paddle.linalg.svd(x)[1], keepdim=keepdims)
     elif ord == "nuc":
-        if x.size == 0:
-            ret = x
-        else:
-            ret = paddle.sum(paddle.linalg.svd(x)[1], axis=-1, keepdim=keepdims)
-            if keepdims:
-                ret = ret.unsqueeze(-1)
+        ret = paddle.sum(paddle.linalg.svd(x)[1], keepdim=keepdims)
     elif ord == "fro":
         ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
     elif ord == float("inf"):
         ret = paddle.amax(
             paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
-            axis=axis,
             keepdim=keepdims,
         )
-
     elif ord == 1:
         ret = paddle.amax(
             paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
-            axis=axis,
             keepdim=keepdims,
         )
     elif ord == 2:
-        ret = paddle.amax(paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims)
-        if keepdims:
-            ret = ret.unsqueeze(-1)
-
-    if _expand_dims:
-        ret = paddle.squeeze(ret, axis=0)
+        ret = paddle.amax(paddle.linalg.svd(x)[1], keepdim=keepdims)
+    else:
+        raise ValueError("Unsupported ord value: {}".format(ord))
     return ret
 
 
