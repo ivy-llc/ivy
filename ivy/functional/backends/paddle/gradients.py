@@ -8,6 +8,8 @@ from itertools import chain
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from . import backend_version
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -15,8 +17,6 @@ from ivy.functional.ivy.gradients import (
     _set_duplicates,
     _process_func_ret_and_grads,
 )
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from . import backend_version
 
 
 def variable(x, /):
@@ -206,13 +206,42 @@ def jac(func: Callable):
     return callback_fn
 
 
-def grad(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+def grad(f, argnums=0):
+    if grad.nth == 0:
+        grad.f_original = f
 
-    def callback_fn(x_in):
-        x = ivy.to_native(ivy.array(x_in)).detach()
-        x.stop_gradient = False
-        grad_fn(x).backward()
-        return ivy.to_ivy(x.gradient())
+    # ToDo: Return grads on nth chained calls rather than None. issue with paddle.grad.
+    def _nth_derivative(n):
+        def _inner(x):
+            x = ivy.to_native(x)
+            if n == 0:
+                x.stop_gradient = False
+                ret = grad.f_original(x) if grad.f_original is not None else f(x)
+                grad.nth = 0
+                return ret
+            else:
+                x.stop_gradient = False
+                y = _nth_derivative(n - 1)(x)
+                y = ivy.to_native(y)
+                y_ones = paddle.ones_like(y)
+                y_ones.stop_gradient = False
+                y.stop_gradient = False
+                dy_dx = paddle.grad(
+                    outputs=[y],
+                    inputs=[x],
+                    create_graph=True,
+                    grad_outputs=y_ones,
+                    retain_graph=True,
+                    allow_unused=True,
+                )[0]
+            return dy_dx
 
-    return callback_fn
+        return _inner
+
+    grad.nth += 1
+
+    return _nth_derivative(grad.nth)
+
+
+grad.f_original = None
+grad.nth = 0

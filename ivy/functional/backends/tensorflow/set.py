@@ -12,6 +12,7 @@ def unique_all(
     /,
     *,
     axis: Optional[int] = None,
+    by_value: bool = True,
 ) -> Tuple[
     Union[tf.Tensor, tf.Variable],
     Union[tf.Tensor, tf.Variable],
@@ -31,14 +32,6 @@ def unique_all(
         x=x,
         axis=tf.constant([axis], dtype=tf.int32),
     )
-    values_ = tf.experimental.numpy.moveaxis(values, axis, 0)
-    values_ = tf.reshape(values_, (values_.shape[0], -1))
-    first_elements = values_[:, 0]
-    sort_idx = tf.argsort(first_elements)
-    values = tf.gather(values, sort_idx, axis=axis)
-    counts = tf.gather(counts, sort_idx)
-    inv_sort_idx = tf.math.invert_permutation(sort_idx)
-    inverse_indices = tf.map_fn(lambda y: tf.gather(inv_sort_idx, y), inverse_indices)
 
     tensor_list = x.numpy().tolist()
     if (
@@ -60,12 +53,26 @@ def unique_all(
         decimal = tf.range(tf.size(inverse_indices)) / tf.size(inverse_indices)
         inv_sorted = tf.argsort(tf.cast(inverse_indices, dtype=decimal.dtype) + decimal)
         tot_counts = tf.concat(
-            [tf.zeros((1,), dtype=counts.dtype), tf.cumsum(counts, axis=0)[:-1]], 0)
+            [tf.zeros((1,), dtype=counts.dtype), tf.cumsum(counts, axis=0)[:-1]], 0
+        )
         indices = inv_sorted.numpy()[tot_counts]
 
+    if by_value:
+        values_ = tf.experimental.numpy.moveaxis(values, axis, 0)
+        values_ = tf.reshape(values_, (values_.shape[0], -1))
+        first_elements = values_[:, 0]
+        sort_idx = tf.argsort(first_elements)
+        values = tf.gather(values, sort_idx, axis=axis)
+        counts = tf.gather(counts, sort_idx)
+        indices = tf.gather(indices, sort_idx)
+        inv_sort_idx = tf.math.invert_permutation(sort_idx)
+        inverse_indices = tf.map_fn(
+            lambda y: tf.gather(inv_sort_idx, y), inverse_indices
+        )
+
     return Results(
-        tf.cast(values, x.dtype),
-        tf.convert_to_tensor(indices, dtype=tf.int64),
+        tf.cast(values, dtype=x.dtype),
+        tf.cast(indices, dtype=tf.int64),
         tf.cast(inverse_indices, dtype=tf.int64),
         tf.cast(counts, dtype=tf.int64),
     )

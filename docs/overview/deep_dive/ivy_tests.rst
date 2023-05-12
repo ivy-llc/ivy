@@ -13,7 +13,7 @@ Ivy Tests
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`finfo`: https://github.com/unifyai/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276
 .. _`data generation`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337
-.. _`here`: https://lets-unify.ai/docs/ivy/deep_dive/function_types.html#function-types
+.. _`here`: https://unify.ai/docs/ivy/deep_dive/function_types.html#function-types
 .. _`test_default_int_dtype`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
 .. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
 .. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
@@ -54,8 +54,8 @@ Ivy Tests
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
-.. _`CI Pipeline`: https://lets-unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
-.. _`setting up`: https://lets-unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
+.. _`CI Pipeline`: https://unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
+.. _`setting up`: https://unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
 
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`, there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
@@ -559,7 +559,7 @@ This function should be used in places where the result doesn’t depend on the 
 
 **Note** - Under the hood, **array_values** strategy is called if the data type is *integer*, and **none_or_list_of_floats** is called when the data type is *float*.
 
-15. `get_probs`_ -  This is similar to the **get_mean_std** strategy, and is used to generate a tuple containing two values.
+15. `get_probs`_ -  This is used to generate a tuple containing two values.
     The first one being the *unnormalized probabilities* for all elements in a population, the second one being the *population size*.
     For example-:
 

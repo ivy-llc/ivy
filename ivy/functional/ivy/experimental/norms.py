@@ -12,10 +12,10 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -23,7 +23,8 @@ def l2_normalize(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Normalizes the input array along the given axis to have L2 norm equal to 1.
+    """Normalize the input array along the given axis to have L2 norm equal to
+    1.
 
     Parameters
     ----------
@@ -50,11 +51,11 @@ def l2_normalize(
     return current_backend(x).l2_normalize(x, axis=axis, out=out)
 
 
+@handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
-@handle_array_like_without_promotion
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -69,7 +70,7 @@ def batch_norm(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Applies batch normalization to the input array and returns the normalized input,
+    Apply batch normalization to the input array and returns the normalized input,
     running mean and running variance arrays as output. If ``training == False``,
     the mean and variance arrays passed as input are used for normalization
     and the same arrays are returned as running mean and running variance
@@ -149,11 +150,11 @@ def batch_norm(
 batch_norm.mixed_function = True
 
 
+@handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
-@handle_array_like_without_promotion
 def instance_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -168,7 +169,7 @@ def instance_norm(
     out: Optional[ivy.Array] = None,
 ):
     """
-    Applies instance normalization to the input array and returns the normalized input,
+    Apply instance normalization to the input array and returns the normalized input,
     running mean and running variance arrays as output. If ``training == False``,
     the mean and variance arrays passed as input are used for normalization
     and the same arrays are returned as running mean and running variance
@@ -257,10 +258,10 @@ def instance_norm(
 instance_norm.mixed_function = True
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -269,7 +270,8 @@ def lp_normalize(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Normalizes the input array along the given axis to have Lp norm equal to 1.
+    """Normalize the input array along the given axis to have Lp norm equal to
+    1.
 
     Parameters
     ----------

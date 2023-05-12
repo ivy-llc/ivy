@@ -10,10 +10,10 @@ from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.ivy.losses import _reduce_loss
 
 
-@inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
 def binary_cross_entropy_with_logits(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -24,7 +24,8 @@ def binary_cross_entropy_with_logits(
     reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the binary cross entropy with logits loss.
+    """
+    Compute the binary cross entropy with logits loss.
 
     Parameters
     ----------
@@ -99,7 +100,6 @@ def binary_cross_entropy_with_logits(
     {
         a: ivy.array([0.024, 3.822, 0.263])
     }
-
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.sigmoid(pred)

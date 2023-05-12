@@ -11,50 +11,44 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-# Array API Standard #
-# -------------------#
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
-def msort(
-    a: Union[ivy.Array, ivy.NativeArray, list, tuple],
+@handle_nestable
+@to_native_arrays_and_back
+def invert_permutation(
+    x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
-    *,
-    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a copy of an array sorted along the first axis.
+    """
+    Computes the inverse of an index permutation.
 
     Parameters
     ----------
-    a
-        array-like input.
-    out
-        optional output array, for writing the result to.
+    x
+        1-D integer array-like, which represents indices of a zero-based array and is
+        supposedly used to permute the array.
 
     Returns
     -------
     ret
-        sorted array of the same type and shape as a
+        the inverse of the index permutation represented by ''x''
 
     Examples
     --------
-    >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
-    >>> ivy.msort(a)
-    ivy.array(
-        [[6, 2, 6],
-         [8, 9, 6]]
-        )
+    >>> a = ivy.asarray([0, 3, 1, 2])
+    >>> ivy.invert_permutation(a)
+    ivy.array([0, 2, 3, 1])
     """
-    return ivy.current_backend().msort(a, out=out)
+    return ivy.current_backend().invert_permutation(x)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
+# Array API Standard #
+# -------------------#
+
+
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -62,11 +56,11 @@ def lexsort(
     axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Perform an indirect stable sort with an array of keys in ascending order,
-    with the last key used as primary sort order, second-to-last for secondary,
-    and so on. Each row of the key must have the same length, which will also
-    be the length of the returned array of integer indices,
-    which describes the sort order.
+    """
+    Perform an indirect stable sort with an array of keys in ascending order, with the
+    last key used as primary sort order, second-to-last for secondary, and so on. Each
+    row of the key must have the same length, which will also be the length of the
+    returned array of integer indices, which describes the sort order.
 
     Parameters
     ----------

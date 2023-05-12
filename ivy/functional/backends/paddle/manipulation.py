@@ -36,11 +36,11 @@ def concat(
         raise ivy.utils.exceptions.IvyException(
             "Tensor list contains more than two dtypes"
         )
-    if dtype == "int16":
-        xs = [array.cast("int32") for array in xs]
+    if dtype == paddle.int16:
+        xs = list(map(lambda x: x.cast("int32"), xs))
         return paddle.concat(xs, axis).cast("int16")
     else:
-        xs = [array.cast(dtype) for array in xs]
+        xs = list(map(lambda x: x.cast(dtype), xs))
         return paddle.concat(xs, axis)
 
 
@@ -202,7 +202,12 @@ def squeeze(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": ("uint16", "bfloat16", "int16", "uint8", "int8", "float16")
+        }
+    },
+    backend_version,
 )
 def stack(
     arrays: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
@@ -211,8 +216,6 @@ def stack(
     axis: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # The input list converted to a tensor to ensure matching dtype of elements.
-    # Because stack function does not support mixed dtypes.
     dtype_list = set(map(lambda x: x.dtype, arrays))
     if len(dtype_list) == 1:
         dtype = dtype_list.pop()
@@ -238,7 +241,6 @@ def stack(
         imag_stacked = paddle.stack(imag_list, axis=axis)
         return re_stacked + imag_stacked * 1j
     else:
-        arrays = list(map(lambda x: x.cast(dtype), arrays))
         return paddle.stack(arrays, axis=axis)
 
 
@@ -285,7 +287,7 @@ def split(
             num_or_size_splits + type(num_or_size_splits)([-1])
         elif sum(num_or_size_splits) > x.shape[axis]:
             raise ivy.utils.exceptions.IvyException(
-                f"total split size is not compatible with input shape,"
+                "total split size is not compatible with input shape,"
                 f" got {sum(num_or_size_splits)} which is more than x.shape[axis]"
             )
 
@@ -347,19 +349,20 @@ def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if ivy.min(repeats) == 0:
-        # This logic is to mimic other backends behaviour when a 0 in repeat
-        # is received since paddle doesn't natively support it
-        if len(repeats) < x.ndim:
-            shape = x.shape
-            shape[-len(repeat) :] = ivy.multiply(
-                shape[-len(repeat) :], repeats
-            ).to_list()
-        elif len(repeats) > x.ndim:
-            shape = repeats
-            shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
-        else:
-            shape = ivy.multiply(x.shape, repeats).to_list()
-        return paddle.zeros(shape).cast(x.dtype)
+        with ivy.ArrayMode(False):
+            # This logic is to mimic other backends behaviour when a 0 in repeat
+            # is received since paddle doesn't natively support it
+            if len(repeats) < x.ndim:
+                shape = x.shape
+                shape[-len(repeat) :] = ivy.multiply(
+                    shape[-len(repeat) :], repeats
+                ).to_list()
+            elif len(repeats) > x.ndim:
+                shape = repeats
+                shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
+            else:
+                shape = ivy.multiply(x.shape, repeats).tolist()
+            return ivy.zeros(shape).cast(x.dtype)
 
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.tile(x.cast("float32"), repeats).cast(x.dtype)

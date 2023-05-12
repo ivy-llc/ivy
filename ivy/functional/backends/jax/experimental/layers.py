@@ -17,7 +17,7 @@ from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 def _from_int_to_tuple(arg, dim):
     if isinstance(arg, int):
         return (arg,) * dim
-    if isinstance(arg, tuple) and len(arg) == 1:
+    if isinstance(arg, (tuple, list)) and len(arg) == 1:
         return (arg[0],) * dim
     return arg
 
@@ -91,6 +91,8 @@ def general_pool(
     if isinstance(padding, str):
         pad_list = _pad_str_to_list(inputs, dims, padding, strides, new_window_shape)
     else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dim
         pad_list = [(0, 0)] + list(padding) + [(0, 0)]
 
     if ceil_mode:
@@ -219,7 +221,6 @@ def avg_pool1d(
     ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if data_format == "NCW":
         x = jnp.transpose(x, (0, 2, 1))
 
@@ -265,9 +266,9 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if isinstance(kernel, int):
         kernel = (kernel,) * 2
     elif len(kernel) == 1:
@@ -287,17 +288,21 @@ def avg_pool2d(
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
-    res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype),
-        0.0,
-        jlax.add,
-        kernel,
-        strides,
-        padding,
-        2,
-        count_include_pad=count_include_pad,
-        ceil_mode=ceil_mode,
-    )
+    if divisor_override is not None:
+        divisor = divisor_override
+    else:
+        divisor = general_pool(
+            jnp.ones(div_shape, dtype=res.dtype),
+            0.0,
+            jlax.add,
+            kernel,
+            strides,
+            padding,
+            2,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+        )
+    res = res / divisor
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
     return res
@@ -312,9 +317,10 @@ def avg_pool3d(
     *,
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if isinstance(kernel, int):
         kernel = (kernel,) * 3
     elif len(kernel) == 1:
@@ -328,21 +334,28 @@ def avg_pool3d(
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
 
-    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 3)
-
-    res = res / general_pool(
-        jnp.ones_like(x, dtype=res.dtype),
-        0.0,
-        jlax.add,
-        kernel,
-        strides,
-        padding,
-        3,
-        count_include_pad=count_include_pad,
+    res = general_pool(
+        x, 0.0, jlax.add, kernel, strides, padding, 3, ceil_mode=ceil_mode
     )
 
+    if divisor_override is not None:
+        divisor = divisor_override
+    else:
+        divisor = general_pool(
+            jnp.ones_like(x, dtype=res.dtype),
+            0.0,
+            jlax.add,
+            kernel,
+            strides,
+            padding,
+            3,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+        )
+    res = res / divisor
+
     if data_format == "NCDHW":
-        res = jnp.transpose(x, (0, 2, 3, 4, 1))
+        res = jnp.transpose(res, (0, 4, 1, 2, 3))
 
     return res
 
@@ -584,9 +597,7 @@ def interpolate(
     mode = (
         "nearest"
         if mode == "nearest-exact"
-        else "bicubic" "bicubic"
-        if mode == "bicubic_tensorflow"
-        else mode
+        else "bicubic" if mode == "bicubic_tensorflow" else mode
     )
 
     size = [x.shape[0], *size, x.shape[1]]

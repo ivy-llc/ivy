@@ -270,7 +270,7 @@ The `test-array-api.yml <https://github.com/unifyai/ivy/blob/master/.github/work
 Other than being triggered on push and pull requests with the required labels, It can also be manually dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ Tab.
 
 The Workflow runs the Array API Tests for each backend and submodule pair.
-More details about the Array API Tests are available `here <https://lets-unify.ai/docs/ivy/deep_dive/array_api_tests.rst.html>`_.
+More details about the Array API Tests are available `here <https://unify.ai/docs/ivy/deep_dive/array_api_tests.rst.html>`_.
 
 Periodic Testing
 ----------------

@@ -169,14 +169,13 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[paddle.dtype] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    dtype = x.dtype if dtype is None else dtype
+    dtype = ivy.as_ivy_dtype(dtype)
     if x.dtype in [paddle.int8, paddle.uint8]:
-        dtype = x.dtype if dtype is None else dtype
-        return paddle.sum(
-            x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims
-        ).cast(dtype)
+        return paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
     return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
@@ -200,7 +199,8 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int16")}},
+    backend_version,
 )
 def cumprod(
     x: paddle.Tensor,
@@ -236,6 +236,62 @@ def cumprod(
         with ivy.ArrayMode(False):
             x = paddle.cumprod(ivy.flip(x, axis=(axis,)), dim=axis)
             return ivy.flip(x, axis=axis).cast(dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int8", "int16")}},
+    backend_version,
+)
+def cummax(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    reverse: bool = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    dtype = dtype if dtype is not None else x.dtype
+    if reverse:
+        x = paddle.flip(x, axis=[axis])
+    x_unstacked = paddle.unbind(x, axis=axis)
+    cummax_x_unstacked = []
+    cummax_x_unstacked.append(x_unstacked[0])
+    for i, x_sub in enumerate(x_unstacked[1:]):
+        cummax_x_sub = paddle.maximum(cummax_x_unstacked[i], x_sub)
+        cummax_x_unstacked.append(cummax_x_sub)
+    cummax_x = paddle.stack(cummax_x_unstacked, axis=axis)
+    if reverse:
+        cummax_x = paddle.flip(cummax_x, axis=[axis])
+    return cummax_x.cast(dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int8", "int16")}},
+    backend_version,
+)
+def cummin(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    reverse: bool = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    dtype = dtype if dtype is not None else x.dtype
+    if reverse:
+        x = paddle.flip(x, axis=[axis])
+    x_unstacked = paddle.unbind(x, axis=axis)
+    cummin_x_unstacked = []
+    cummin_x_unstacked.append(x_unstacked[0])
+    for i, x_sub in enumerate(x_unstacked[1:]):
+        cummin_x_sub = paddle.minimum(cummin_x_unstacked[i], x_sub)
+        cummin_x_unstacked.append(cummin_x_sub)
+    cummin_x = paddle.stack(cummin_x_unstacked, axis=axis)
+    if reverse:
+        cummin_x = paddle.flip(cummin_x, axis=[axis])
+    return cummin_x.cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
