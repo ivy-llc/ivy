@@ -50,6 +50,17 @@ def sort(
 sort.support_native_out = True
 
 
+# msort
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+def msort(
+    a: Union[torch.Tensor, list, tuple], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.msort(a, out=out)
+
+
+msort.support_native_out = True
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def searchsorted(
     x: torch.Tensor,
