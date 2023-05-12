@@ -3,6 +3,7 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy.functional.frontends.jax._src.tree_util import tree_leaves, tree_map
+import hypothesis.strategies as st
 
 
 # tree_leaves
@@ -37,53 +38,61 @@ def test_jax_tree_leaves(
     ), f"Expected {expected}, but got {leaves}"
 
 
-# Define a function to recursively check that the tree has been squared correctly
-def assert_squared(x, y):
+# Define a function to square each leaf node
+def square(x):
     if isinstance(x, ivy.Array):
-        assert ivy.all(ivy.equal(y, ivy.square(x)))
+        return ivy.square(x)
     else:
-        assert ivy.all(ivy.equal(y, x**2))
+        return x**2
 
 
-def tree_multimap(fn, tree, *rest):
-    if not rest:
-        return tree
-    if isinstance(tree, dict):
-        return {k: tree_multimap(fn, tree[k], *[r[k] for r in rest]) for k in tree}
+def leaf_strategy():
+    return st.lists(st.integers(1, 10)).map(ivy.array)
+
+
+def tree_strategy(max_depth=2):
+    if max_depth == 0:
+        return leaf_strategy()
     else:
-        return fn(tree, *[r for r in rest])
+        return st.dictionaries(
+            keys=st.one_of(
+                *[
+                    st.text(
+                        alphabet=st.characters(min_codepoint=97, max_codepoint=122),
+                        min_size=1,
+                        max_size=1,
+                    ).filter(lambda x: x not in used_keys)
+                    for used_keys in [set()]
+                ]
+            ),
+            values=st.one_of(leaf_strategy(), tree_strategy(max_depth - 1)),
+            min_size=1,
+            max_size=10,
+        )
+
+
+@st.composite
+def tree_dict_strategy(draw):
+    return draw(tree_strategy())
 
 
 # tree_map
 @handle_frontend_test(
     fn_tree="jax._src.tree_util.tree_map",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
+    tree=tree_dict_strategy(),
 )
 def test_jax_tree_map(
     *,
-    dtype_and_x,
+    tree,
     test_flags,
     fn_tree,
     frontend,
     on_device,
 ):
-    # Define a sample tree
-    tree = {
-        "a": ivy.array([1, 2, 3]),
-        "b": {"c": ivy.array([4, 5]), "d": ivy.array([6])},
-    }
-
-    # Define a function to square each leaf node
-    def square(x):
-        if isinstance(x, ivy.Array):
-            return ivy.square(x)
-        else:
-            return x**2
-
     # Apply the square function to the tree using tree_map
     result = tree_map(square, tree)
 
-    # Recursively check that the resulting tree has been squared correctly
-    tree_multimap(assert_squared, tree, result)
+    # compute the expected result
+    expected = ivy.square(ivy.Container(tree))
+
+    assert ivy.equal(ivy.Container(result), expected)
