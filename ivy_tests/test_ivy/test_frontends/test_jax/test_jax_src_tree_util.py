@@ -49,18 +49,29 @@ def tree_dict_strategy(draw):
 @handle_frontend_test(
     fn_tree="jax._src.tree_util.tree_leaves",
     tree=tree_dict_strategy(),
+    dtype=helpers.get_dtypes("valid", full=False),
+    is_leaf=None,
 )
 def test_jax_tree_leaves(
     *,
     tree,
+    dtype,
+    is_leaf,
     test_flags,
     fn_tree,
     frontend,
     on_device,
 ):
-    result = tree_leaves(tree)
-    expected = ivy.Container(tree)
-    assert ivy.equal(ivy.Container(result), expected)
+    input_dtype = dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tree=tree,
+        is_leaf=is_leaf,
+    )
 
 
 # tree_map
