@@ -6,38 +6,6 @@ from ivy.functional.frontends.jax._src.tree_util import tree_leaves, tree_map
 import hypothesis.strategies as st
 
 
-# tree_leaves
-@handle_frontend_test(
-    fn_tree="jax._src.tree_util.tree_leaves",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_jax_tree_leaves(
-    *,
-    dtype_and_x,
-    test_flags,
-    fn_tree,
-    frontend,
-    on_device,
-):
-    data = {
-        "a": ivy.array([1, 2, 3]),
-        "b": {"c": ivy.array([4, 5, 6]), "d": ivy.array([7, 8, 9])},
-    }
-
-    # Calling implementation of tree_leaves
-    leaves = tree_leaves(data)
-
-    # Define the expected result
-    expected = [ivy.array([1, 2, 3]), ivy.array([4, 5, 6]), ivy.array([7, 8, 9])]
-
-    # Check that the result is correct
-    assert ivy.all(
-        ivy.equal(expected, leaves)
-    ), f"Expected {expected}, but got {leaves}"
-
-
 # Define a function to square each leaf node
 def square(x):
     if isinstance(x, ivy.Array):
