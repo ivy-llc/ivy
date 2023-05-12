@@ -6,6 +6,9 @@ import numpy as np
 from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import (
     _topk_helper,
 )
+from ivy_tests.test_ivy.test_frontends.test_torch.test_reduction_ops import (
+    _get_axis_and_p,
+)
 
 try:
     import torch
@@ -7994,5 +7997,40 @@ def test_torch_instance_bitwise_right_shift(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# norm
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="norm",
+    p_dtype_x_axis=_get_axis_and_p(),
+    keepdim=st.booleans(),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_torch_instance_norm(
+    p_dtype_x_axis,
+    keepdim,
+    dtype,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    p, values = p_dtype_x_axis
+    input_dtype, x, axis = values
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "p": p, "dim": axis, "keepdim": keepdim, "dtype": dtype[0]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         on_device=on_device,
     )
