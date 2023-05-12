@@ -253,3 +253,14 @@ def einsum(equation, *inputs, **kwargs):
 @to_ivy_arrays_and_back
 def adjoint(matrix, name=None):
     return ivy.adjoint(matrix)
+
+# qr
+@to_ivy_arrays_and_back
+def qr(input, full_matrices=False, name=None):
+    if full_matrices:
+        Q, R = ivy.qr(input)
+        Q = []
+        ret = Q, R
+    else:
+        ret = ivy.qr(input)
+    return ret
