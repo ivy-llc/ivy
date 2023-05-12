@@ -88,6 +88,82 @@ def test_jax_devicearray_property_at(x_y_index):
     assert x.at[idx].get() == x[idx]
 
 
+@st.composite
+def dims_and_offset(draw):
+    # shape_actual = draw(shape)
+    # dim1 = draw(helpers.get_axis(shape=shape_actual, force_int=True, allow_neg=False))
+    # dim2 = draw(helpers.get_axis(shape=shape_actual, force_int=True, allow_neg=False))
+    # if dim1 == dim2:
+    #     if dim1 == 0:
+    #         dim2 = 1
+    #     else:
+    #         dim2 = 0
+    dtype_x_axis_shape = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            valid_axis=True,
+            force_int_axis=True,
+            allow_neg_axes=False,
+            min_dim_size=2,
+            ret_shape=True,
+        )
+    )
+
+    dtype, x, axis1, shape = dtype_x_axis_shape
+    arr_shape = list(shape)
+    axis2 = None
+    for i in range(len(arr_shape)):
+        if i != axis1:
+            axis2 = i
+            break
+
+    # offset = draw(
+    #     st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    # )
+    return dtype, x, axis1, axis2
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="diagonal",
+    dims_and_offset=dims_and_offset(),
+)
+def test_jax_devicearray_diagonal(
+    dims_and_offset,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis1, axis2 = dims_and_offset
+
+    # num_of_dims = len(np.shape(x))
+    assume(axis1 != axis2)
+    # if axis1 < 0:
+    #     assume(axis1 + num_of_dims != axis2)
+    # if axis2 < 0:
+    #     assume(axis1 != axis2 + num_of_dims)
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis1": axis1,
+            "axis2": axis2,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
