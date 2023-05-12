@@ -70,3 +70,8 @@ def stateless_poisson(shape, seed, lam, dtype=ivy.int32, name=None):
 @to_ivy_arrays_and_back
 def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
     return ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed)
+
+
+@to_ivy_arrays_and_back
+def create_rng_state(seed, alg):
+    return ivy.create_rng_state(seed=seed, alg=alg)

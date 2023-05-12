@@ -357,3 +357,34 @@ def test_tensorflow_gamma(
         seed=seed,
         test_values=False,
     )
+
+
+# random_create_rng_state
+@handle_frontend_test(
+    fn_tree="tensorflow.random.create_rng_state",
+    dtype=helpers.array_dtypes(
+        available_dtypes=("float32", "float64"),
+    ),
+    seed=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_create_rng_state(
+    frontend,
+    fn_tree,
+    on_device,
+    dtype,
+    seed,
+    alg,
+    test_flags,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dtype=dtype[0],
+        seed=seed,
+        alg=alg,
+        test_values=False,
+    )
