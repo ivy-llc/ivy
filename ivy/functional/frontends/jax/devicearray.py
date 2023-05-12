@@ -46,6 +46,11 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
+    def diagonal(self, offset=0, axis1=0, axis2=1):
+        return jax_frontend.numpy.diagonal(
+            self._ivy_array, offset=offset, axis1=axis1, axis2=axis2
+        )
+
     def all(self, *, axis=None, out=None, keepdims=False):
         return jax_frontend.numpy.all(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out
