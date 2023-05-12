@@ -145,7 +145,7 @@ Or we can flip each sub-array:
         }
     }
 
-There are about 200 such functions for the :class:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/tree/master/ivy/container>`_ or `docs <https://lets-unify.ai/docs/ivy/core/container.html>`_ to see what they are!
+There are about 200 such functions for the :class:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/tree/master/ivy/container>`_ or `docs <https://unify.ai/docs/ivy/core/container.html>`_ to see what they are!
 
 Built-ins
 ----------
@@ -458,7 +458,7 @@ All nested structures above this height are truncated into single keys with a â€
 These are very useful methods when stepping through code and debugging complex nested structures such as the weights of a network.
 
 There are also methods: :code:`cont_with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`cont_with_key_length_limit` for setting the maximum key length before string clipping, :code:`cont_with_print_indent` for controlling the nested indent, and many more.
-Check out the `docs <https://lets-unify.ai/docs/ivy/core/container.html>`_ for more details!
+Check out the `docs <https://unify.ai/docs/ivy/core/container.html>`_ for more details!
 
 Use Cases
 ---------

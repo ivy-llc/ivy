@@ -4,7 +4,7 @@
 import os
 import abc
 import copy
-from typing import Optional, List, Tuple, Dict
+from typing import Optional, Tuple, Dict
 
 # local
 import ivy
@@ -329,9 +329,9 @@ class Module(ModuleConverters, ModuleHelpers):
 
         created_ids.cont_map(lambda x, kc: unique_callback(x, kc))
         vs_ids.cont_map(
-            lambda x, kc: unique_callback(x, kc)
-            if x not in ids
-            else found_dup_callback(x, kc)
+            lambda x, kc: (
+                unique_callback(x, kc) if x not in ids else found_dup_callback(x, kc)
+            )
         )
         for dup_kc in duplicate_keychains:
             vs = vs.cont_prune_key_chain(dup_kc)
@@ -659,50 +659,30 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def show_graph(
         self,
-        *args,
-        v=None,
-        stateful: Optional[List] = None,
-        arg_stateful_idxs: Optional[List] = None,
-        kwarg_stateful_idxs: Optional[List] = None,
         randomness_factor: float = 0.1,
         save_to_disk: bool = False,
+        notebook: bool = False,
         with_edge_labels: bool = True,
         with_arg_labels: bool = True,
         with_output_labels: bool = True,
         output_connected_only: bool = True,
-        include_generators: bool = True,
-        array_caching: bool = True,
         highlight_subgraph: Optional[int] = None,
         fname: Optional[str] = None,
-        return_graph: bool = False,
-        **kwargs,
     ):
-        self(*args, v=v, **kwargs)  # for on call build modes
-        if not self._built:
-            self.build(*args, from_call=False, **kwargs)  # for explicit build modes
-        kwargs["v"] = ivy.default(v, self.v)
-        graph = ivy.show_graph(
-            self._call,
-            *args,
-            **kwargs,
-            stateful=stateful,
-            arg_stateful_idxs=arg_stateful_idxs,
-            kwarg_stateful_idxs=kwarg_stateful_idxs,
-            randomness_factor=randomness_factor,
+        if not ivy.exists(self._module_graph):
+            raise ValueError("You must compile the module to display the graph.")
+
+        return self._module_graph.show(
             save_to_disk=save_to_disk,
+            notebook=notebook,
             with_edge_labels=with_edge_labels,
             with_arg_labels=with_arg_labels,
             with_output_labels=with_output_labels,
             output_connected_only=output_connected_only,
-            include_generators=include_generators,
-            array_caching=array_caching,
+            randomness_factor=randomness_factor,
             highlight_subgraph=highlight_subgraph,
             fname=fname,
-            return_graph=return_graph,
         )
-
-        if return_graph:
-            return graph
 
     def compile(
         self,

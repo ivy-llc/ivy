@@ -98,6 +98,8 @@ def log_softmax(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ):
+    if axis is None:
+        axis = -1
     return torch.nn.functional.log_softmax(x, axis)
 
 

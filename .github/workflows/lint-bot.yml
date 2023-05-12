@@ -12,3 +12,4 @@ jobs:
   fix-linting:
     name: Fix Linting
     uses: unifyai/workflows/.github/workflows/lint-bot.yml@master
+    secrets: inherit

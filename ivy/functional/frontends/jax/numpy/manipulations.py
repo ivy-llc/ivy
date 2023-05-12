@@ -118,7 +118,7 @@ def take(
     indices_are_sorted=False,
     fill_value=None,
 ):
-    return ivy.take_along_axis(a, indices, axis, out=out)
+    return ivy.gather(a, indices, axis=axis, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -293,3 +293,22 @@ def tri(N, M=None, k=0, dtype="float64"):
         M = N
     ones = ivy.ones((N, M), dtype=dtype)
     return ivy.tril(ones, k=k)
+
+
+@to_ivy_arrays_and_back
+def blackman(M):
+    if M < 1:
+        return ivy.array([])
+    if M == 1:
+        return ivy.ones(1)
+    n = ivy.arange(0, M)
+    alpha = 0.16
+    a0 = (1 - alpha) / 2
+    a1 = 1 / 2
+    a2 = alpha / 2
+    ret = (
+        a0
+        - a1 * ivy.cos(2 * ivy.pi * n / (M - 1))
+        + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
+    )
+    return ret
