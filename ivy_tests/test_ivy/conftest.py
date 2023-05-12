@@ -13,6 +13,7 @@ mod_frontend = {
     "torch": None,
     "mindspore": None,
     "scipy": None,
+    "paddle": None,
 }  # multiversion
 mod_backend = {
     "tensorflow": None,
