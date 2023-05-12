@@ -498,11 +498,12 @@ def lu(
     /,
     *,
     pivot: bool = True,
-    permute_l: bool = 0,
-    out: Optional[Tuple[np.ndarray, np.ndarray, np.ndarray]] = None,
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    permute_l: bool = False,
+    out: Optional[Union[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray, np.ndarray]]] = None,
+) -> Union[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray, np.ndarray]]:
     dtype = A.dtype
     res = namedtuple("PLU", ["P", "L", "U"])
+    res2 = namedtuple("PLU", ["PL", "U"])
     n = A.shape[0]
     U = A.copy()
     L = np.eye(n)
@@ -519,4 +520,6 @@ def lu(
     P = P.astype(dtype)
     L = L.astype(dtype)
     U = U.astype(dtype)
+    if permute_l:
+        return res2(np.matmul(P, L), U)
     return res(P, L, U)

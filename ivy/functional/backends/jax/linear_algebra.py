@@ -545,10 +545,13 @@ def lu(
     A: JaxArray,
     /,
     *,
-    pivot: bool = 0,
-    permute_l: bool = 0,
-    out: Optional[JaxArray] = None
-) -> Tuple[JaxArray, JaxArray, JaxArray]:
+    pivot: bool = True,
+    permute_l: bool = False,
+    out: Optional[Union[Tuple[JaxArray, JaxArray], Tuple[JaxArray, JaxArray, JaxArray]]] = None
+) -> Union[Tuple[JaxArray, JaxArray], Tuple[JaxArray, JaxArray, JaxArray]]:
     res = namedtuple("PLU", ["P", "L", "U"])
+    res2 = namedtuple("PLU", ["PL", "U"])
     P, L, U = jsp.linalg.lu(A)
+    if permute_l:
+        return res2(jnp.matmul(P, L), U)
     return res(P, L, U)

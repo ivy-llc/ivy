@@ -2709,7 +2709,7 @@ def lu(
     pivot: bool = True,
     permute_l: bool = False,
     out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
-) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
+) ->Union[Tuple[ivy.Array, ivy.Array], Tuple[ivy.Array, ivy.Array, ivy.Array]]:
     """
     Parameters
     ----------
@@ -2719,13 +2719,26 @@ def lu(
     pivot
         Whether to compute the LU decomposition with partial pivoting, or the regular LU
         decomposition. pivot = False not supported on CPU. Default: True.
-
+    permute_l
+         Perform the multiplication P*L (Default: do not permute)
     out
         tuple of two tensors to write the output to. Ignored if None. Default: None.
 
     Returns
     -------
     ret
-        A named tuple (LU, pivots).
+        **(If permute_l == False)**
+
+            P ((M, M) ndarray) – Permutation matrix
+
+            L ((M, K) ndarray) – Lower triangular or trapezoidal matrix with unit diagonal. K = min(M, N)
+
+            U ((K, N) ndarray) – Upper triangular or trapezoidal matrix
+
+        **(If permute_l == True)**
+
+            PL – Permuted L matrix.
+
+            U  – Upper triangular or trapezoidal matrix
     """
-    return current_backend(A).lu_factor(A, pivot=pivot, out=out)
+    return current_backend(A).lu_factor(A, permute_l=permute_l ,pivot=pivot, out=out)
