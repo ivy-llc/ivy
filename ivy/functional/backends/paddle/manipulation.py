@@ -202,12 +202,12 @@ def squeeze(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16",
-                                 "bfloat16",
-                                 "int16",
-                                 "uint8",
-                                 "int8",
-                                 "float16")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": ("uint16", "bfloat16", "int16", "uint8", "int8", "float16")
+        }
+    },
+    backend_version,
 )
 def stack(
     arrays: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],

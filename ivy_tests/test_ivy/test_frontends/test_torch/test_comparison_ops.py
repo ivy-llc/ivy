@@ -720,12 +720,14 @@ def test_torch_kthvalue(
 
 @st.composite
 def _topk_helper(draw):
-    dtype, x, axis = draw(helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        force_int_axis=True,
-        valid_axis=True,
-    ))
+    dtype, x, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            force_int_axis=True,
+            valid_axis=True,
+        )
+    )
     k = draw(st.integers(min_value=1, max_value=x[0].shape[axis]))
     return dtype, x, axis, k
 

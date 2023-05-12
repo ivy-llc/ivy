@@ -3,8 +3,9 @@ import pytest
 from types import SimpleNamespace
 import numpy as np
 
-from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import \
-    _topk_helper
+from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import (
+    _topk_helper,
+)
 
 try:
     import torch
@@ -7941,7 +7942,11 @@ def test_torch_instance_topk(
         init_all_as_kwargs_np={"data": input[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "k": k, "dim": axis, "largest": largest, "sorted": sorted},
+            "k": k,
+            "dim": axis,
+            "largest": largest,
+            "sorted": sorted,
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
