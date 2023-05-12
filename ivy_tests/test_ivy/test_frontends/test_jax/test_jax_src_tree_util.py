@@ -59,7 +59,7 @@ def test_jax_tree_leaves(
 ):
     result = tree_leaves(tree)
     expected = ivy.Container(tree)
-    assert ivy.equal(ivy.Container(result), expected)
+    assert ivy.equal(result, expected)
 
 
 # tree_map
