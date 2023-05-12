@@ -2518,7 +2518,7 @@ def test_jax_lax_squeeze(
         dimensions=dim,
     )
 
- 
+
 # nextafter
 @handle_frontend_test(
     fn_tree="jax.lax.nextafter",
@@ -2554,7 +2554,7 @@ def test_jax_lax_nextafter(
         x2=x[0],
     )
 
-    
+
 # conj
 @handle_frontend_test(
     fn_tree="jax.lax.conj",
