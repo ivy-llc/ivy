@@ -14,9 +14,8 @@ def square(x):
         return x**2
 
 
-@st.composite
-def leaf_strategy(draw):
-    return draw(st.lists(st.integers(1, 10)).map(ivy.array))
+def leaf_strategy():
+    return st.lists(st.integers(1, 10)).map(ivy.array)
 
 
 def tree_strategy(max_depth=2):
@@ -48,27 +47,19 @@ def tree_dict_strategy(draw):
 # tree_leaves
 @handle_frontend_test(
     fn_tree="jax._src.tree_util.tree_leaves",
-    tree=leaf_strategy(),
-    dtype=helpers.get_dtypes("valid", full=False),
+    tree=tree_dict_strategy(),
 )
 def test_jax_tree_leaves(
     *,
     tree,
-    dtype,
     test_flags,
     fn_tree,
     frontend,
     on_device,
 ):
-    input_dtype = dtype
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        tree=tree,
-    )
+    result = tree_leaves(tree)
+    expected = ivy.Container(tree)
+    assert ivy.equal(ivy.Container(result), expected)
 
 
 # tree_map
