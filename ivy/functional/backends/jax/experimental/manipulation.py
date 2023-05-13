@@ -370,7 +370,8 @@ def unique_consecutive(
                 jnp.diff(x, axis=axis) != 0,
                 axis=tuple(i for i in jnp.arange(x.ndim) if i != axis),
             )
-        )[0] + 1,
+        )[0]
+        + 1,
         axis=axis,
     )
     output = jnp.concatenate(
