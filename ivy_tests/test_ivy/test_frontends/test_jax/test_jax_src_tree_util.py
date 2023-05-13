@@ -1,6 +1,5 @@
 # local
 import ivy
-import jax
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy.functional.frontends.jax._src.tree_util import tree_leaves, tree_map
@@ -59,7 +58,7 @@ def test_jax_tree_leaves(
     on_device,
 ):
     result = tree_leaves(tree)
-    expected = jax.tree_util.tree_leaves(tree)
+    expected = ivy.Array(tree)
     assert ivy.equal(result, expected)
 
 
