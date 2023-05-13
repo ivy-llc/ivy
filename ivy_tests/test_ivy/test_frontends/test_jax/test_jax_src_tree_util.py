@@ -57,8 +57,13 @@ def test_jax_tree_leaves(
     frontend,
     on_device,
 ):
-    result = tree_leaves(tree)
-    expected = leaf_strategy()
+    # Apply the tree_leaves function to obtain the leaves of the tree
+    result = ivy.Container(tree_leaves(tree, is_leaf=None))
+    
+    # compute the expected result
+    expected = ivy.Container(leaf_strategy())
+    
+    # value test
     assert ivy.equal(result, expected)
 
 
