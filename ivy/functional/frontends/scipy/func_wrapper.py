@@ -39,10 +39,11 @@ def _to_ivy_array(x):
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_scipy(*args, **kwargs):
-        # Convert all `ndarray.NDArray` instances in both the positional and keyword
-        # arguments into `ivy.Array` instances, and then calls the function with the
-        # updated arguments.
-
+        """
+        Converts all `ndarray.NDArray` instances in both the positional and keyword
+        arguments into `ivy.Array` instances, and then calls the function with the
+        updated arguments.
+        """
         # check if kwargs contains an out argument, and if so, remove it
         has_out = False
         out = None
@@ -69,9 +70,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays_scipy(*args, **kwargs):
-        # Call the function, and then converts all `ivy.Array` instances in the
-        # function return into `ndarray.NDArray` instances.
-
+        """
+        Calls the function, and then converts all `ivy.Array` instances in
+        the function return into `ndarray.NDArray` instances.
+        """
         # call unmodified function
         ret = fn(*args, **kwargs)
 
@@ -85,8 +87,10 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    # Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
-    # return arrays are all converted to `ndarray.NDArray` instances.
+    """
+    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
+    and return arrays are all converted to `ndarray.NDArray` instances.
+    """
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
 
