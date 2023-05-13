@@ -974,8 +974,8 @@ class DepthwiseConv2D(Module):
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
-                self._output_channels,
-                self._input_channels,
+                self._num_channels,
+                self._num_channels,
                 dtype=dtype,
             )
         }
@@ -985,8 +985,8 @@ class DepthwiseConv2D(Module):
                 b=self._b_init.create_variables(
                     self._b_shape,
                     device,
-                    self._output_channels,
-                    self._input_channels,
+                    self._num_channels,
+                    self._num_channels,
                     dtype=dtype,
                 ),
             )
