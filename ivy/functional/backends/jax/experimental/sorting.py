@@ -20,16 +20,6 @@ def invert_permutation(
     return inverse_permutation
 
 
-# msort
-def msort(
-    a: Union[JaxArray, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.msort(a)
-
-
 # lexsort
 @with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def lexsort(

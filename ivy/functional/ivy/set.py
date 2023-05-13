@@ -27,6 +27,7 @@ def unique_all(
     /,
     *,
     axis: Optional[int] = None,
+    by_value: bool = True,
 ) -> Tuple[
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
@@ -74,6 +75,10 @@ def unique_all(
         the axis to apply unique on. If None, the unique elements of the flattened ``x``
         are returned.
 
+    by_value
+        If False, the unique elements will be sorted in the same order that they occur
+        in ''x''. Otherwise, they will be sorted by value.
+
     Returns
     -------
     ret
@@ -93,9 +98,6 @@ def unique_all(
           containing the number of times each unique element occurs in ``x``. The
           returned array must have the same length as ``values`` and must have the
           default array index data type.
-
-        .. note::
-           The returned unique elements are ordered by value.
 
 
     This function conforms to the `Array API Standard
@@ -138,7 +140,7 @@ def unique_all(
        counts=ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
 
     """
-    return ivy.current_backend(x).unique_all(x, axis=axis)
+    return ivy.current_backend(x).unique_all(x, axis=axis, by_value=by_value)
 
 
 @handle_exceptions
