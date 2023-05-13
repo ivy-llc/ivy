@@ -7842,7 +7842,7 @@ def test_torch_instance_sign(
         on_device=on_device,
     )
 
-    
+
 # fmod
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -7997,7 +7997,6 @@ def test_torch_instance_bitwise_right_shift(
         on_device=on_device,
     )
     
-    
 # logdet
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8014,10 +8013,8 @@ def test_torch_instance_logdet(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    
     dtype, x = dtype_and_x
     x = np.matmul(x.T, x) + np.identity(x.shape[0])
-    
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
