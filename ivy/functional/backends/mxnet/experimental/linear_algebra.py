@@ -1,6 +1,8 @@
 from typing import Union, Optional, Tuple, List, Sequence
 import mxnet as mx
 
+from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def eigh_tridiagonal(
     alpha: Union[(None, mx.ndarray.NDArray)],
@@ -20,7 +22,7 @@ def eigh_tridiagonal(
         Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])],
     )
 ]:
-    raise NotImplementedError("mxnet.eigh_tridiagonal Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def diagflat(
@@ -34,7 +36,7 @@ def diagflat(
     num_cols: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
-    raise NotImplementedError("mxnet.diagflat Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def kron(
@@ -44,7 +46,7 @@ def kron(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.kron Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def matrix_exp(
@@ -53,7 +55,7 @@ def matrix_exp(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.matrix_exp Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def eig(
@@ -62,13 +64,13 @@ def eig(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Tuple[None]:
-    raise NotImplementedError("mxnet.eig Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def eigvals(
     x: Union[(None, mx.ndarray.NDArray)], /
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.eigvals Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def adjoint(
@@ -77,7 +79,7 @@ def adjoint(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.adjoint Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def multi_dot(
@@ -86,7 +88,7 @@ def multi_dot(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> None:
-    raise NotImplementedError("mxnet.multi_dot Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def cond(
@@ -96,7 +98,7 @@ def cond(
     p: Optional[Union[(None, int, str)]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.cond Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def cov(
@@ -111,4 +113,4 @@ def cov(
     aweights: Optional[None] = None,
     dtype: Optional[type] = None,
 ) -> None:
-    raise NotImplementedError("mxnet.cov Not Implemented")
+    raise IvyNotImplementedException()

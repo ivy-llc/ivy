@@ -64,9 +64,9 @@ def unique_all(
         counts = ivy_torch.gather(counts, sort_idx)
         indices = ivy_torch.gather(indices, sort_idx)
         inv_sort_idx = ivy_torch.invert_permutation(sort_idx)
-        inverse_indices = torch.vmap(
-            lambda y: torch.gather(inv_sort_idx, 0, y)
-        )(inverse_indices)
+        inverse_indices = torch.vmap(lambda y: torch.gather(inv_sort_idx, 0, y))(
+            inverse_indices
+        )
 
     return Results(
         values.to(x.dtype),
