@@ -4,6 +4,8 @@ from typing import Optional, Literal, Union, List
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def argsort(
@@ -34,6 +36,17 @@ def sort(
     if descending:
         ret = np.asarray((np.flip(ret, axis)))
     return ret
+
+
+# msort
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+def msort(
+    a: Union[np.ndarray, list, tuple], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.msort(a)
+
+
+msort.support_native_out = False
 
 
 def searchsorted(
