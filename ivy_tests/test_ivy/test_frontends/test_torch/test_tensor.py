@@ -8014,6 +8014,10 @@ def test_torch_instance_logdet(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    
+    dtype, x = dtype_and_x
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])
+    
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -8026,5 +8030,4 @@ def test_torch_instance_logdet(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
-        rtol_=1e-2,
     )
