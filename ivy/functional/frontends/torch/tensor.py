@@ -1157,4 +1157,5 @@ class Size(tuple):
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def logdet(self):
-        return torch_frontend.log(torch_frontend.det(self))
+        chol = torch_frontend.cholesky(self)
+        return 2*torch_frontend.sum(torch_frontend.log(torch_frontend.real(torch_frontend.diagonal(chol))))
