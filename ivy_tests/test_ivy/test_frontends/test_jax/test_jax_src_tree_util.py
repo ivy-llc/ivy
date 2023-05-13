@@ -58,7 +58,7 @@ def test_jax_tree_leaves(
     on_device,
 ):
     result = tree_leaves(tree)
-    expected = ivy.Array(tree)
+    expected = leaf_strategy()
     assert ivy.equal(result, expected)
 
 
