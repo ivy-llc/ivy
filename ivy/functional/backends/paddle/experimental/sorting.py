@@ -15,13 +15,6 @@ def invert_permutation(
     return inverse_permutation
 
 
-# msort
-def msort(
-    a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None
-) -> paddle.Tensor:
-    return paddle.sort(a, axis=0)
-
-
 # lexsort
 def lexsort(
     keys: paddle.Tensor, /, *, axis: int = -1, out: Optional[paddle.Tensor] = None

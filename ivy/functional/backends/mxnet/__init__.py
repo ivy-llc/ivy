@@ -1,9 +1,9 @@
 import sys
-import logging
 import numpy as np
 import mxnet as mx
 import ivy
 from ivy.func_wrapper import _dtype_from_version
+from ivy.utils.exceptions import IvyNotImplementedException
 
 backend_version = {"version": mx.__version__}
 if not ivy.is_local():
@@ -96,7 +96,7 @@ supports_gradients = True
 
 
 def closest_valid_dtype(type=None, /, as_native=False):
-    raise NotImplementedError("mxnet.closest_valid_dtype Not Implemented")
+    raise IvyNotImplementedException()
 
 
 backend = "mxnet"
