@@ -1137,7 +1137,11 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": rshift_dtypes}, "torch")
     def bitwise_right_shift(self, other, *, out=None):
         return torch_frontend.bitwise_right_shift(self._ivy_array, other)
-
+    
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def logdet(self):
+        chol = torch_frontend.cholesky(self)
+        return 2*torch_frontend.sum(torch_frontend.log(torch_frontend.real(torch_frontend.diagonal(chol))))
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1154,8 +1158,5 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
-
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
-    def logdet(self):
-        chol = torch_frontend.cholesky(self)
-        return 2*torch_frontend.sum(torch_frontend.log(torch_frontend.real(torch_frontend.diagonal(chol))))
+    
+    
