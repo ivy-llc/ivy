@@ -318,3 +318,27 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     return interpolate(
         input, size=size, scale_factor=scale_factor, mode="bilinear", align_corners=True
     )
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def affine_grid(theta, size, align_corners=False):
+    if len(size) == 4:
+        N, C, H, W = size
+        # torch does not include -1,1 in its calculation of linspace
+        x = ivy.linspace(-1 + (1 / H), 1 - (1 / H), H)
+        y = ivy.linspace(-1 + (1 / W), 1 - (1 / W), W)
+        x_t, y_t = ivy.meshgrid(x, y)
+
+        # reshape to (xt, yt, 1)
+        ones = ivy.ones(ivy.prod(x_t.shape).data)
+        sampling_grid = ivy.vstack([x_t.flatten(), y_t.flatten(), ones])
+
+        # repeat grid num_batch times
+        # expand axis 0 dim and stack per image in batch
+        sampling_grids_batched = ivy.repeat(sampling_grid, N)
+        sampling_grid = ivy.reshape(sampling_grids_batched, (N, C, H * W))
+
+        batch_grids = ivy.matmul(theta, sampling_grid)
+        output = ivy.reshape(batch_grids, (N, H, W, 2))
+        return output
