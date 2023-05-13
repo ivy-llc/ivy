@@ -31,7 +31,7 @@ class Tensor:
 
     @property
     def place(self):
-        return ivy.dev(self._ivy_array)
+        return self.ivy_array.device
 
     @property
     def dtype(self):
@@ -40,6 +40,10 @@ class Tensor:
     @property
     def shape(self):
         return self._ivy_array.shape
+
+    @property
+    def ndim(self):
+        return self.dim()
 
     # Setters #
     # --------#
@@ -58,6 +62,16 @@ class Tensor:
         ret = ivy.get_item(*ivy_args)
         return paddle_frontend.Tensor(ret)
 
+    def __setitem__(self, item, value):
+        item, value = ivy.nested_map([item, value], _to_ivy_array)
+        self.ivy_array[item] = value
+
+    def __iter__(self):
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d tensor not supported")
+        for i in range(self.shape[0]):
+            yield self[i]
+
     # Instance Methods #
     # ---------------- #
 
@@ -73,3 +87,6 @@ class Tensor:
             else:
                 return paddle_frontend.reshape(self._ivy_array, args)
         return paddle_frontend.reshape(self._ivy_array)
+
+    def dim(self):
+        return self.ivy_array.ndim
