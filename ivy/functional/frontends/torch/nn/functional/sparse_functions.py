@@ -1,6 +1,7 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.func_wrapper import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -29,3 +30,9 @@ def embedding(
             ret[i] = weight[x, :]
     ret_dtype = torch_frontend.promote_types_torch(input.dtype, weight.dtype)
     return ivy.astype(ret, ret_dtype)
+
+
+@with_supported_dtypes({"1.11.0 and below": ("int64",)}, "torch")
+@to_ivy_arrays_and_back
+def one_hot(tensor, num_classes=-1):
+    return ivy.astype(ivy.one_hot(tensor, num_classes), tensor.dtype)
