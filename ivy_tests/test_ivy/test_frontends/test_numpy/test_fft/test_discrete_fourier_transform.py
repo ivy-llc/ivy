@@ -75,10 +75,14 @@ def test_numpy_fft(dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_
 @handle_frontend_test(
     fn_tree="numpy.fft.rfft",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), array_api_dtypes=True
+        available_dtypes=helpers.get_dtypes("numeric"),
+        array_api_dtypes=True,
+        shape=(2,),
     ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    n=st.integers(min_value=2, max_value=10),
 )
-def test_numpy_rfft(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+def test_numpy_rfft(dtype_and_x, n, norm, frontend, test_flags, fn_tree, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -88,7 +92,8 @@ def test_numpy_rfft(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         on_device=on_device,
         test_values=True,
         a=x[0],
-        n=None,
+        n=n,
         axis=1,
-        norm=None,
+        norm=norm,
+        out=None,
     )
