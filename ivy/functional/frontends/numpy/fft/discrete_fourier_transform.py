@@ -59,7 +59,7 @@ def fftshift(x, axes=None):
 
 
 @to_ivy_arrays_and_back
-def rfft(a, n=None, axis=1, norm=None):
+def rfft(a, n=None, axis=-1, norm=None):
     a = ivy.array(a, dtype=ivy.complex128)
     if norm is None:
         norm = "backward"
