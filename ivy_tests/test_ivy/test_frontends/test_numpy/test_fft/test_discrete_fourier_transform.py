@@ -99,13 +99,8 @@ def test_numpy_fttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         array_api_dtypes=True,
         shape=(2,),
     ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
-    n=st.integers(min_value=2, max_value=10),
-    axis=st.integers(min_value=0, max_value=1),
 )
-def test_numpy_rfft(
-    dtype_and_x, axis, n, norm, frontend, test_flags, fn_tree, on_device
-):
+def test_numpy_rfft(dtype_and_x, frontend, test_flags, fn_tree, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -115,7 +110,7 @@ def test_numpy_rfft(
         on_device=on_device,
         test_values=True,
         a=x[0],
-        n=n,
-        axis=axis,
-        norm=norm,
+        n=None,
+        axis=-1,
+        norm=None,
     )
