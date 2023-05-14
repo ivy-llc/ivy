@@ -55,6 +55,11 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.ndim >= 6:
+        # Paddle unsqueeze sets a maximum limit of 6 dims in the output
+        x_shape = x.shape
+        x_shape.insert(axis, 1)
+        return x.reshape(x_shape)
     if x.dtype == paddle.float16:
         return paddle.unsqueeze(x.cast("float32"), axis).cast(x.dtype)
     return paddle.unsqueeze(x, axis)
@@ -196,13 +201,23 @@ def squeeze(
         raise ivy.utils.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
+    if x.ndim > 6:
+        # Paddle squeeze sets a maximum limit of 6 dims in the input
+        x_shape = x.shape
+        x_shape.pop(axis)
+        return x.reshape(x_shape)
     if x.dtype in [paddle.int16, paddle.float16]:
         return paddle.squeeze(x.cast("float32"), axis=axis).cast(x.dtype)
     return paddle.squeeze(x, axis=axis)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": ("uint16", "bfloat16", "int16", "uint8", "int8", "float16")
+        }
+    },
+    backend_version,
 )
 def stack(
     arrays: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
@@ -236,7 +251,6 @@ def stack(
         imag_stacked = paddle.stack(imag_list, axis=axis)
         return re_stacked + imag_stacked * 1j
     else:
-        arrays = list(map(lambda x: x.cast(dtype), arrays))
         return paddle.stack(arrays, axis=axis)
 
 

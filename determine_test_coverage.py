@@ -9,11 +9,11 @@ import _pickle as cPickle
 
 # Shared Map
 tests = {}
-BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
+BACKENDS = ["numpy", "jax", "tensorflow", "torch", "paddle"]
 
 os.system("git config --global --add safe.directory /ivy")
-N = 40
-run_iter = int(sys.argv[1])
+N = 64
+run_iter = int(sys.argv[1]) - 1
 
 os.system(
     "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest"
