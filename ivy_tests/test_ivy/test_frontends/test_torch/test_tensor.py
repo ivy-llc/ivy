@@ -7996,7 +7996,8 @@ def test_torch_instance_bitwise_right_shift(
         frontend=frontend,
         on_device=on_device,
     )
-    
+
+
 # logdet
 @handle_frontend_method(
     class_tree=CLASS_TREE,
