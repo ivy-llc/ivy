@@ -1315,11 +1315,11 @@ def test_torch_ldl_factor(
     ret = [ivy.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
-    LD, pivot = ret
-    frontend_LD, frontend_pivot = frontend_ret
+    LDL, pivot = ret
+    frontend_LDL, frontend_pivot = frontend_ret
 
     assert_all_close(
-        ret_np=[LD, pivot],
-        ret_from_gt_np=[frontend_LD, frontend_pivot],
+        ret_np=[LDL, pivot],
+        ret_from_gt_np=[frontend_LDL, frontend_pivot],
         ground_truth_backend=frontend,
     )

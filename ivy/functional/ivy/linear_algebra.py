@@ -2728,3 +2728,36 @@ def lu_factor(
         A named tuple (LU, pivots).
     """
     return current_backend(A).lu_factor(A, pivot=pivot, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def ldl_factor(
+    A: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    hermitian: bool = True,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    """
+    Parameters
+    ----------
+    A
+        tensor of shape (*, n, n) where * is zero or more batch dimensions.
+
+    hermitian
+        Whether to consider the input to be Hermitian or symmetric.
+        For real-valued matrices, this switch has no effect. Default: False.
+
+    out
+        tuple of two tensors to write the output to. Ignored if None. Default: None.
+
+    Returns
+    -------
+    ret
+        A named tuple (LDL, pivots).
+    """
+    return current_backend(A).ldl_factor(A, hermitian=hermitian, out=out)
