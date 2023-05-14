@@ -1165,3 +1165,105 @@ def test_avgpool2d_layer(
 
 
 # ToDo : Add gradient testing once random number generation is unified
+
+
+@st.composite
+def _embedding_inps(draw):
+    dtype = draw(
+        helpers.get_dtypes("float", full=False).filter(
+            lambda x: x[0] not in ["float16", "bfloat"]
+        )
+    )
+    batch_size = draw(st.integers(min_value=1, max_value=8))
+    max_len = draw(st.integers(min_value=5, max_value=20))
+    embedding_dim = draw(st.integers(min_value=5, max_value=50))
+    num_embeding = draw(st.integers(min_value=10, max_value=100))
+    max_norm = draw(st.integers(min_value=1, max_value=10))
+    padding_indx = draw(
+        st.integers(min_value=1, max_value=embedding_dim).filter(
+            lambda x: x < num_embeding
+        )
+        | st.none()
+    )
+    inp_dtype, inputs = draw(
+        helpers.dtype_and_values(
+            shape=(batch_size, max_len),
+            available_dtypes=helpers.get_dtypes("integer", full=False),
+            min_value=1,
+            max_value=num_embeding - 1,
+        ).filter(
+            lambda x: x[0][0] in ["int32", "int64"] and np.max(x[1][0]) < num_embeding
+        )
+    )
+    return (
+        dtype,
+        inputs,
+        inp_dtype,
+        num_embeding,
+        embedding_dim,
+        padding_indx,
+        max_norm,
+    )
+
+
+@handle_method(
+    method_tree="Embedding.__call__",
+    embedding_comb=_embedding_inps(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    method_num_positional_args=helpers.num_positional_args(
+        fn_name="Embedding._forward"
+    ),
+    seed=helpers.seed(),
+)
+def test_embedding_layer(
+    *,
+    embedding_comb,
+    seed,
+    init_with_v,
+    method_with_v,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    (
+        dtype,
+        inputs,
+        inp_dtype,
+        num_embeding,
+        embedding_dim,
+        padding_indx,
+        max_norm,
+    ) = embedding_comb
+    ivy.seed(seed_value=seed)
+    ret_np_flat, ret_np_from_gt_flat = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "num_embeddings": num_embeding,
+            "embedding_dim": embedding_dim,
+            "padding_idx": padding_indx,
+            "max_norm": max_norm,
+            "dtype": dtype[0],
+            "device": on_device,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={
+            "inputs": ivy.asarray(inputs[0], dtype=inp_dtype[0]),
+        },
+        class_name=class_name,
+        method_name=method_name,
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_values=False,
+        return_flat_np_arrays=True,
+        on_device=on_device,
+    )
+    assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])

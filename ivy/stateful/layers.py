@@ -5,7 +5,6 @@ import ivy
 from ivy.stateful.module import Module
 from ivy.stateful.initializers import Zeros, GlorotUniform, KaimingNormal
 from ivy.func_wrapper import handle_nestable
-from typing import Optional
 
 
 # ToDo: update docstrings and typehints according to ivy\layers
@@ -1551,8 +1550,10 @@ class Embedding(Module):
         self,
         num_embeddings: int,
         embedding_dim: int,
-        padding_idx: Optional[int] = None,
-        max_norm: Optional[float] = None,
+        /,
+        *,
+        padding_idx=None,
+        max_norm=None,
         v=None,
         device=None,
         dtype=None,
@@ -1584,7 +1585,6 @@ class Embedding(Module):
         """
         self.num_embeddings = num_embeddings
         self.embedding_dim = embedding_dim
-
         if padding_idx is not None:
             if padding_idx > 0:
                 assert (
@@ -1595,11 +1595,18 @@ class Embedding(Module):
                     padding_idx >= -self.num_embeddings
                 ), "Padding_idx must be within num_embeddings"
                 padding_idx = self.num_embeddings + padding_idx
-
         self.padding_idx = padding_idx
         self.max_norm = max_norm
         self._weight_init = KaimingNormal(fan_mode="fan_out")
         self._embedding_shape = (self.num_embeddings, self.embedding_dim)
+        print(
+            {
+                "num_embedding": num_embeddings,
+                "embedding_dim": embedding_dim,
+                "padding_indx": padding_idx,
+                "max_norm": max_norm,
+            }
+        )
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, *, device=None, dtype=None):
@@ -1631,12 +1638,21 @@ class Embedding(Module):
             max_norm=self.max_norm,
         )
         if self.padding_idx is not None:
-            _flatten_inputs = ivy.reshape(inputs, batch_size * max_len)
+            inputs_2d = inputs.reshape((batch_size * max_len,))
 
-            _flatten_res = ivy.reshape(res, (batch_size * max_len, self.embedding_dim))
-            _padding_inds = ivy.argwhere(_flatten_inputs == self.padding_idx)
+            padding_inds = ivy.nonzero(inputs_2d == self.padding_idx)[0]
 
-            if len(_padding_inds) != 0:
-                _flatten_res[_padding_inds] = ivy.zeros(shape=(self.embedding_dim,))
-                res = _flatten_res.reshape((batch_size, max_len, self.embedding_dim))
+        if len(padding_inds) != 0:
+            padding_mask = ivy.ones(
+                (batch_size * max_len, self.embedding_dim),
+            )
+
+            padding_mask[padding_inds, :] = ivy.zeros(
+                (self.embedding_dim,),
+            )
+            padding_mask = padding_mask.reshape(
+                (batch_size, max_len, self.embedding_dim)
+            )
+
+            res = res * padding_mask
         return res
