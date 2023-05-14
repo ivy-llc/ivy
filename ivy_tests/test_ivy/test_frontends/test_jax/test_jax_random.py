@@ -772,17 +772,31 @@ def test_jax_bernoulli(
     input_dtype, key = dtype_key
     dtype_p, shape = dtype_p_shape_
     dtype, p = dtype_p
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype + dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        key=key[0],
-        p=p[0],
-        shape=shape,
-    )
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype + dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            p=p[0],
+            shape=shape,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
 
 
 # TODO Update the test by fixing the uint32 unsupported problem
@@ -811,13 +825,26 @@ def test_jax_fold_in(
 ):
     input_dtype, key = dtype_key
 
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        key=key[0],
-        data=data,
-    )
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            data=data,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
