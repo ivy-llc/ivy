@@ -171,3 +171,41 @@ def t(key, df, shape=(), dtype="float64"):
 def randint(key, shape, minval, maxval, dtype="int64"):
     seed = _get_seed(key)
     return ivy.randint(minval, maxval, shape=shape, dtype=dtype, seed=seed)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def multivariate_normal(key, mean, cov, shape=None, dtype=None, method="cholesky"):
+    _get_seed(key)
+    if method not in {"svd", "eigh", "cholesky"}:
+        raise ValueError("method must be one of {'svd', 'eigh', 'cholesky'}")
+    if not ivy.get_num_dims(mean) >= 1:
+        msg = "multivariate_normal requires mean.ndim >= 1, got mean.ndim == {}"
+        raise ValueError(msg.format(ivy.get_num_dims(mean)))
+    if not ivy.get_num_dims(cov) >= 2:
+        msg = "multivariate_normal requires cov.ndim >= 2, got cov.ndim == {}"
+        raise ValueError(msg.format(ivy.get_num_dims(cov)))
+
+    n = mean.shape[-1]
+
+    if ivy.shape(cov)[-2:] != (n, n):
+        msg = (
+            "multivariate_normal requires cov.shape == (..., n, n) for n={n}, "
+            "but got cov.shape == {shape}."
+        )
+        raise ValueError(msg.format(n=n, shape=ivy.shape(cov)))
+
+    if shape is None:
+        shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2])
+
+    if method == "svd":
+        (u, s, _) = ivy.svd(cov)
+        factor = u * ivy.sqrt(s[..., None, :])
+    elif method == "eigh":
+        (w, v) = ivy.eigh(cov)
+        factor = v * ivy.sqrt(w[..., None, :])
+    else:  # 'cholesky'
+        factor = ivy.cholesky(cov)
+    normal_samples = normal(key, shape + mean.shape[-1:], dtype)
+    result = mean + ivy.einsum("...ij,...j->...i", factor, normal_samples)
+    return result
