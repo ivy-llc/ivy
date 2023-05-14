@@ -621,7 +621,7 @@ class _ArrayWithGeneral(abc.ABC):
         The data produced by this method can be recovered using appropriate methods or functions depending on the data type.
         """
 
-        return ivy.to_file(self)
+        return ivy.to_file(self, fid, sep, format_)
 
 
     def supports_inplace_updates(self: ivy.Array, /) -> bool:
