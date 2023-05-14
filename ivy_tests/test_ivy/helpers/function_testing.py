@@ -11,7 +11,7 @@ try:
     import jsonpickle
 except Exception:
     pass
-
+from ivy.utils.exceptions import IvyException
 
 def framework_comparator(frontend):
     if ivy.current_backend_str() != frontend.split("/")[0]:
@@ -2086,7 +2086,10 @@ def arrays_to_frontend(frontend_array_fn=None):
             return x
         elif ivy.is_array(x):
             if x.shape == ():
-                ret = frontend_array_fn(x, dtype=ivy.Dtype(str(np.asarray(x).dtype)))
+                try:
+                    ret = frontend_array_fn(x, dtype=ivy.Dtype(str(x.dtype)))
+                except IvyException:
+                    ret = frontend_array_fn(x, dtype=ivy.array(x).dtype)
             else:
                 ret = frontend_array_fn(x)
             return ret
