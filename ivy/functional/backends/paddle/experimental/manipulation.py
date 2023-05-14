@@ -1,3 +1,4 @@
+from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 from .. import backend_version
@@ -592,3 +593,66 @@ def concat_from_sequence(
             return ivy.concat(input_sequence, axis=axis)
         elif new_axis == 1:
             return ivy.stack(input_sequence, axis=axis)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+)
+def unique_consecutive(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    x_shape = None
+    if axis is None:
+        x_shape = x.shape
+        x = x.flatten()
+        axis = -1
+    if axis < 0:
+        axis += x.ndim
+    split_indices = paddle.flatten(
+        paddle.where(
+            ivy.current_backend().any(
+                paddle.abs(paddle.diff(x, axis=axis)) > 1e-50,
+                axis=tuple(i for i in paddle.arange(x.ndim) if i != axis),
+            )
+        )[0]
+        + 1,
+    )
+    if len(split_indices) > 0:
+        split_sizes = (
+            [split_indices[0]]
+            + [
+                split_indices[i] - split_indices[i - 1]
+                for i in range(1, len(split_indices))
+            ]
+            + [x.shape[axis] - split_indices[-1]]
+        )
+        sub_arrays = paddle.split(
+            x,
+            split_sizes,
+            axis=axis,
+        )
+    else:
+        sub_arrays = [x]
+    output = paddle.concat(
+        [
+            ivy.current_backend().unique_all(sub_array, axis=axis)[0]
+            for sub_array in sub_arrays
+        ],
+        axis=axis,
+    )
+    counts = paddle.to_tensor([sub_array.shape[axis] for sub_array in sub_arrays])
+    inverse_indices = paddle.repeat_interleave(paddle.arange(len(counts)), counts)
+    if x_shape:
+        inverse_indices = paddle.reshape(inverse_indices, x_shape)
+    return Results(
+        output.astype(x.dtype),
+        inverse_indices,
+        counts,
+    )

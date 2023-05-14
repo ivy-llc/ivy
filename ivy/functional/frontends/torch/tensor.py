@@ -1132,6 +1132,19 @@ class Tensor:
     def topk(self, k, dim=None, largest=True, sorted=True):
         return torch_frontend.topk(self, k, dim=dim, largest=largest, sorted=sorted)
 
+    rshift_dtypes = ("float16", "bfloat16", "float32", "float64", "bool", "complex")
+
+    @with_unsupported_dtypes({"1.11.0 and below": rshift_dtypes}, "torch")
+    def bitwise_right_shift(self, other, *, out=None):
+        return torch_frontend.bitwise_right_shift(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def logdet(self):
+        chol = torch_frontend.cholesky(self)
+        return 2 * torch_frontend.sum(
+            torch_frontend.log(torch_frontend.real(torch_frontend.diagonal(chol)))
+        )
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):

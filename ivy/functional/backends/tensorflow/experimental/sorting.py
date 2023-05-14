@@ -11,8 +11,6 @@ def invert_permutation(
     return tf.math.invert_permutation(x)
 
 
-
-
 # lexsort
 def lexsort(
     keys: Union[tf.Tensor, tf.Variable],

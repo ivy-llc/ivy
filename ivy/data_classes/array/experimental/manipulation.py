@@ -968,3 +968,18 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             The result of the scan.
         """
         return ivy.associative_scan(self._data, fn, reverse=reverse, axis=axis)
+
+    def unique_consecutive(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[int] = None,
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.unique_consecutive.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unique_consecutive also applies to this method with minimal
+        changes.
+        """
+        return ivy.unique_consecutive(self._data, axis=axis)

@@ -10,6 +10,7 @@ from collections import namedtuple
 import ivy
 from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
+import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from .elementwise import _elementwise_helper
@@ -77,9 +78,10 @@ def cross(
         paddle.bool,
     ]:
         if paddle.is_complex(x1):
-            return _cross(
-                x1.real(), x2.real(), axisa, axisb, axisc, axis
-            ) + 1j * _cross(x1.real(), x2.real(), axisa, axisb, axisc, axis)
+            return paddle.complex(
+                _cross(x1.real(), x2.real(), axisa, axisb, axisc, axis),
+                _cross(x1.real(), x2.real(), axisa, axisb, axisc, axis),
+            )
         return _cross(
             x1.cast("float32"),
             x2.cast("float32"),
@@ -130,9 +132,10 @@ def diagonal(
         paddle.complex128,
     ]:
         if paddle.is_complex(x):
-            return paddle.diagonal(
-                x.real(), offset=offset, axis1=axis1, axis2=axis2
-            ) + 1j * paddle.diagonal(x.imag(), offset=offset, axis1=axis1, axis2=axis2)
+            return paddle.complex(
+                paddle.diagonal(x.real(), offset=offset, axis1=axis1, axis2=axis2),
+                paddle.diagonal(x.imag(), offset=offset, axis1=axis1, axis2=axis2),
+            )
         return paddle.diagonal(
             x.cast("float32"), offset=offset, axis1=axis1, axis2=axis2
         ).cast(x.dtype)
@@ -186,7 +189,7 @@ def inner(
         paddle.bool,
     ]:
         x1, x2 = x1.cast("float32"), x2.cast("float32")
-    return paddle.inner(x1, x2).cast(ret_dtype)
+    return paddle.inner(x1, x2).squeeze().cast(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -353,25 +356,27 @@ def matrix_rank(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.ndim < 2:
-        return paddle.to_tensor(0, dtype=x.dtype)
-    else:
-        atol = atol if atol is not None else 0
-        rtol = rtol if rtol is not None else 0
-        with ivy.ArrayMode(False):
-            svd_values = svd(x)[1]
-            sigma = ivy.max(svd_values)
-            tol = ivy.maximum(atol, rtol * sigma)
-        if x.dtype in [
-            paddle.int8,
-            paddle.int16,
-            paddle.int32,
-            paddle.int64,
-            paddle.uint8,
-            paddle.float16,
-            paddle.bool,
-        ]:
-            return paddle.linalg.matrix_rank(x.cast("float32"), tol=tol).cast(x.dtype)
-        return paddle.linalg.matrix_rank(x, tol=tol).cast(x.dtype)
+        return paddle.to_tensor(0).squeeze().astype(x.dtype)
+    atol = atol if atol is not None else 0
+    rtol = rtol if rtol is not None else 0
+    svd_values = paddle_backend.svd(x)[1]
+    sigma = paddle_backend.max(svd_values)
+    tol = paddle_backend.maximum(atol, rtol * sigma)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        return (
+            paddle.linalg.matrix_rank(x.cast("float32"), tol=tol)
+            .squeeze()
+            .cast(x.dtype)
+        )
+    return paddle.linalg.matrix_rank(x, tol=tol).squeeze().cast(x.dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -468,7 +473,7 @@ def slogdet(
         "slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)]
     )
     sign, logabsdet = paddle.linalg.slogdet(x)
-    return results(sign, logabsdet)
+    return results(sign.squeeze(), logabsdet.squeeze())
 
 
 @with_unsupported_device_and_dtypes(
@@ -534,8 +539,7 @@ def svd(
 def svdvals(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        return svd(x)[1]
+    return paddle_backend.svd(x)[1]
 
 
 @with_unsupported_device_and_dtypes(
@@ -561,7 +565,8 @@ def tensordot(
         paddle.bool,
     ]:
         x1, x2 = x1.cast("float32"), x2.cast("float32")
-    return paddle.tensordot(x1, x2, axes=axes).cast(ret_dtype)
+    ret = paddle.tensordot(x1, x2, axes=axes)
+    return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -576,7 +581,8 @@ def trace(
     axis2: int = 1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.trace(x, offset=offset, axis1=axis1, axis2=axis2)
+    ret = paddle.trace(x, offset=offset, axis1=axis1, axis2=axis2)
+    return ret.squeeze() if x.ndim <= 2 else ret
 
 
 @with_unsupported_device_and_dtypes(
@@ -591,8 +597,8 @@ def vecdot(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     axes = [axis % x1.ndim]
-    with ivy.ArrayMode(False):
-        return tensordot(x1, x2, axes=axes)
+
+    paddle_backend.tensordot(x1, x2, axes=axes)
 
 
 @with_unsupported_device_and_dtypes(
@@ -610,8 +616,10 @@ def vector_norm(
 ) -> paddle.Tensor:
     ret_scalar = False
     dtype = dtype if dtype is not None else x.dtype
+    if dtype in ["complex64", "complex128"]:
+        dtype = "float" + str(ivy.dtype_bits(dtype) // 2)
     if x.ndim == 0:
-        x = ivy.to_native(ivy.expand_dims(x, axis=0))
+        x = paddle_backend.expand_dims(x, axis=0)
         ret_scalar = True
 
     if x.dtype in [
@@ -626,7 +634,7 @@ def vector_norm(
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            x = ivy.to_native(ivy.abs(x))
+            x = paddle.abs(x)
             ret = paddle.norm(x, p=ord, axis=axis, keepdim=keepdims).astype(dtype)
         else:
             ret = paddle.norm(
@@ -634,7 +642,9 @@ def vector_norm(
             ).astype(dtype)
     else:
         ret = paddle.norm(x, p=ord, axis=axis, keepdim=keepdims).astype(dtype)
-    return ivy.squeeze(ret, axis=-1) if ret_scalar else ret
+    if ret_scalar or (x.ndim == 1 and not keepdims):
+        ret = paddle_backend.squeeze(ret, axis=axis)
+    return ret
 
 
 # Extra #
@@ -660,8 +670,8 @@ def diag(
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.diag(x.real(), offset=k) + 1j * paddle.diag(
-                x.imag(), offset=k
+            return paddle.complex(
+                paddle.diag(x.real(), offset=k), paddle.diag(x.imag(), offset=k)
             )
         return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
     return paddle.diag(x, offset=k)
