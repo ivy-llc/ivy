@@ -1171,7 +1171,7 @@ def test_avgpool2d_layer(
 def _embedding_inps(draw):
     dtype = draw(
         helpers.get_dtypes("float", full=False).filter(
-            lambda x: x[0] not in ["float16", "bfloat"]
+            lambda x: x[0] not in ["float16", "bfloat16"]
         )
     )
     batch_size = draw(st.integers(min_value=1, max_value=8))
