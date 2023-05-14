@@ -316,7 +316,7 @@ class ndarray:
         )
 
     def tofile(self, fid, sep="", format="%s"):
-        return self._ivy_array.tofile(fid, sep=sep, format=format)
+        return self._ivy_array.to_file(fid, sep=sep, format=format)
 
     def tolist(self) -> list:
         return self._ivy_array.to_list()
