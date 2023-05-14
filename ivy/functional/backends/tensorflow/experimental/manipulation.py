@@ -302,12 +302,15 @@ def unique_consecutive(
     ndim = len(x.shape)
     if axis < 0:
         axis += ndim
-    splits = tf.where(
-        tf.math.reduce_any(
-            tf.experimental.numpy.diff(x, axis=axis) != 0,
-            axis=tuple(i for i in tf.range(ndim) if i != axis),
+    splits = (
+        tf.where(
+            tf.math.reduce_any(
+                tf.experimental.numpy.diff(x, axis=axis) != 0,
+                axis=tuple(i for i in tf.range(ndim) if i != axis),
+            )
         )
-    ) + 1
+        + 1
+    )
     if tf.size(splits) > 0:
         sub_arrays = tf.experimental.numpy.split(x, tf.reshape(splits, -1), axis=axis)
     else:
