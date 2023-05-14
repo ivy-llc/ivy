@@ -746,11 +746,11 @@ def dtype_p_shape(draw):
 
 
 # TODO Update the test by fixing the uint32 unsupported problem
-@pytest.mark.xfail
+# @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.bernoulli",
     dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
+        available_dtypes=helpers.get_dtypes("integer", full=False),
         min_value=0,
         max_value=2000,
         min_num_dims=1,
