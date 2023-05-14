@@ -325,20 +325,11 @@ def upsample_bilinear(input, size=None, scale_factor=None):
 def affine_grid(theta, size, align_corners=False):
     if len(size) == 4:
         N, C, H, W = size
-        # torch does not include -1,1 in its calculation of linspace
-        x = ivy.linspace(-1 + (1 / H), 1 - (1 / H), H)
-        y = ivy.linspace(-1 + (1 / W), 1 - (1 / W), W)
-        x_t, y_t = ivy.meshgrid(x, y)
-
-        # reshape to (xt, yt, 1)
-        ones = ivy.ones(ivy.prod(x_t.shape).data)
-        sampling_grid = ivy.vstack([x_t.flatten(), y_t.flatten(), ones])
-
-        # repeat grid num_batch times
-        # expand axis 0 dim and stack per image in batch
-        sampling_grids_batched = ivy.repeat(sampling_grid, N)
-        sampling_grid = ivy.reshape(sampling_grids_batched, (N, C, H * W))
-
-        batch_grids = ivy.matmul(theta, sampling_grid)
-        output = ivy.reshape(batch_grids, (N, H, W, 2))
-        return output
+        if not align_corners:
+            # torch does not include -1,1 in its calculation of linspace
+            base_grid = ivy.empty((N, H, W, 3))
+            base_grid.select(-1, 0).copy_(ivy.linspace(-1, 1, W))
+            base_grid.select(-1, 1).copy_(ivy.linspace(-1, 1, H).unsqueeze_(-1))
+            base_grid.select(-1, 2).fill_(1)
+            grid = base_grid.view((N, H * W, 3)).bmm(theta.transpose(1, 2))
+            return grid.view((N, H, W, 2))
