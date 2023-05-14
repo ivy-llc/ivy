@@ -55,6 +55,11 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.ndim >= 6:
+        # Paddle unsqueeze sets a maximum limit of 6 dims in the output
+        x_shape = x.shape
+        x_shape.insert(axis, 1)
+        return x.reshape(x_shape)
     if x.dtype == paddle.float16:
         return paddle.unsqueeze(x.cast("float32"), axis).cast(x.dtype)
     return paddle.unsqueeze(x, axis)
@@ -196,6 +201,11 @@ def squeeze(
         raise ivy.utils.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
+    if x.ndim > 6:
+        # Paddle squeeze sets a maximum limit of 6 dims in the input
+        x_shape = x.shape
+        x_shape.pop(axis)
+        return x.reshape(x_shape)
     if x.dtype in [paddle.int16, paddle.float16]:
         return paddle.squeeze(x.cast("float32"), axis=axis).cast(x.dtype)
     return paddle.squeeze(x, axis=axis)
