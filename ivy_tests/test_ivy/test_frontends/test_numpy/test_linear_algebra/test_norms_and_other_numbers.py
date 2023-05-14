@@ -1,6 +1,8 @@
 # global
 from hypothesis import strategies as st, assume
 
+import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -233,4 +235,29 @@ def test_numpy_trace(
         offset=offset,
         axis1=axis1,
         axis2=axis2,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.linalg.cond",
+    p=st.sampled_from([ivy.inf, -ivy.inf, "fro", None, 1, -1, 2, -2]),
+    dtype_and_x=helpers.dtype_and_values(min_num_dims=2),
+)
+def test_numpy_cond(
+    dtype_and_x,
+    p,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        p=p,
     )
