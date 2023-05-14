@@ -1240,7 +1240,8 @@ def test_embedding_layer(
         max_norm,
     ) = embedding_comb
     ivy.seed(seed_value=seed)
-    ret_np_flat, ret_np_from_gt_flat = helpers.test_method(
+    v = ivy.ones(shape=(num_embeding, embedding_dim))
+    helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1251,6 +1252,7 @@ def test_embedding_layer(
             "max_norm": max_norm,
             "dtype": dtype[0],
             "device": on_device,
+            "v": {"w": v},
         },
         method_input_dtypes=dtype,
         method_all_as_kwargs_np={
@@ -1262,8 +1264,6 @@ def test_embedding_layer(
         method_with_v=method_with_v,
         rtol_=1e-2,
         atol_=1e-2,
-        test_values=False,
-        return_flat_np_arrays=True,
+        test_values=True,
         on_device=on_device,
     )
-    assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])

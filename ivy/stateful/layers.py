@@ -1623,6 +1623,7 @@ class Embedding(Module):
             The outputs following the Embedding layer
                         *[batch_size,max_len,embedding_dim]*
         """
+        print("input", inputs)
         batch_size, max_len = inputs.shape
         res = ivy.embedding(
             self.v["w"],
@@ -1634,17 +1635,17 @@ class Embedding(Module):
 
             padding_inds = ivy.nonzero(inputs_2d == self.padding_idx)[0]
 
-        if len(padding_inds) != 0:
-            padding_mask = ivy.ones(
-                (batch_size * max_len, self.embedding_dim),
-            )
+            if len(padding_inds) != 0:
+                padding_mask = ivy.ones(
+                    (batch_size * max_len, self.embedding_dim),
+                )
 
-            padding_mask[padding_inds, :] = ivy.zeros(
-                (self.embedding_dim,),
-            )
-            padding_mask = padding_mask.reshape(
-                (batch_size, max_len, self.embedding_dim)
-            )
+                padding_mask[padding_inds, :] = ivy.zeros(
+                    (self.embedding_dim,),
+                )
+                padding_mask = padding_mask.reshape(
+                    (batch_size, max_len, self.embedding_dim)
+                )
 
-            res = res * padding_mask
+                res = res * padding_mask
         return res
