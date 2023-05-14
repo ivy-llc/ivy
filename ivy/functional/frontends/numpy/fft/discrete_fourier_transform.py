@@ -58,8 +58,9 @@ def fftshift(x, axes=None):
     return roll
 
 
+@to_ivy_arrays_and_back
 def rfft(a, n=None, axis=1, norm=None):
-    a = ivy.array(a, dtype=ivy.float64)
+    a = ivy.array(a, dtype=ivy.complex128)
     if norm is None:
         norm = "backward"
     return ivy.dft(a, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
