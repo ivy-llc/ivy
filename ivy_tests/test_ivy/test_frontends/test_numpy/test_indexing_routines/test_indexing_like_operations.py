@@ -108,7 +108,7 @@ def test_numpy_diagonal(
 
 @handle_frontend_test(
     fn_tree="numpy.put_along_axis",
-    dtype_x_indices_axis=helpers.array_indices_axis(
+    dtype_x_indices_axis=helpers.array_indices_put_along_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
         min_num_dims=1,
