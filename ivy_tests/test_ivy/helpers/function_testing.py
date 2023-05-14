@@ -2084,6 +2084,12 @@ def arrays_to_frontend(frontend_array_fn=None):
     def _new_fn(x, *args, **kwargs):
         if _is_frontend_array(x):
             return x
-        return frontend_array_fn(x, *args, **kwargs) if ivy.is_array(x) else x
+        elif ivy.is_array(x):
+            if x.shape == ():
+                ret = frontend_array_fn(x, dtype=ivy.Dtype(str(np.asarray(x).dtype)))
+            else:
+                ret = frontend_array_fn(x)
+            return ret
+        return x
 
     return _new_fn
