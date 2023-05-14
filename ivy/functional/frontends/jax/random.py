@@ -171,3 +171,24 @@ def t(key, df, shape=(), dtype="float64"):
 def randint(key, shape, minval, maxval, dtype="int64"):
     seed = _get_seed(key)
     return ivy.randint(minval, maxval, shape=shape, dtype=dtype, seed=seed)
+
+
+@to_ivy_arrays_and_back
+@handle_jax_dtype
+def truncated_normal(key, lower, upper, shape=None, dtype="float64"):
+    seed = _get_seed(key)
+    sqrt2 = ivy.array(ivy.sqrt(2), dtype=dtype)
+
+    a = ivy.erf(lower / sqrt2)
+    b = ivy.erf(upper / sqrt2)
+    u = ivy.random_uniform(
+        low=ivy.to_list(a), high=ivy.to_list(b), seed=seed, shape=shape, dtype=dtype
+    )
+    # TODO implement the inverse error function in the backend
+    out = sqrt2 * 1 / ivy.erf(u)
+
+    return ivy.clip(
+        out,
+        ivy.nextafter(ivy.stop_gradient(lower), ivy.array(ivy.inf, dtype=dtype)),
+        ivy.nextafter(ivy.stop_gradient(upper), ivy.array(-ivy.inf, dtype=dtype)),
+    )
