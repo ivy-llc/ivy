@@ -467,21 +467,18 @@ def vector_norm(
 ) -> JaxArray:
     if dtype and x.dtype != dtype:
         x = x.astype(dtype)
+
+    ret_scalar = False
+    if x.ndim == 0:
+        x = jnp.expand_dims(x, 0)
+        ret_scalar = True
+
     if isinstance(axis, list):
         axis = tuple(axis)
-    if axis is None:
-        jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), ord, axis, keepdims)
-    else:
-        if ord == jnp.inf:
-            jnp_normalized_vector = jnp.abs(x).max(axis=axis, keepdims=keepdims)
-        elif ord == -jnp.inf:
-            jnp_normalized_vector = jnp.abs(x).min(axis=axis, keepdims=keepdims)
-        elif isinstance(ord, (int, float)) and ord != 0:
-            jnp_normalized_vector = jnp.sum(
-                jnp.abs(x) ** ord, axis=axis, keepdims=keepdims
-            ) ** (1.0 / ord)
-        else:
-            jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
+
+    jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
+    if ret_scalar:
+        jnp_normalized_vector = jnp.squeeze(jnp_normalized_vector)
     return jnp_normalized_vector
 
 

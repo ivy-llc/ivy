@@ -4,6 +4,7 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 
+
 def cholesky(
     x: Union[(None, mx.ndarray.NDArray)],
     /,

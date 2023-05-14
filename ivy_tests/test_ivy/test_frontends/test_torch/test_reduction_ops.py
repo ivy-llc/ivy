@@ -908,3 +908,43 @@ def test_torch_norm(
         dim=axis,
         keepdim=keepdim,
     )
+
+
+# known bug of returning empty tensors when ret_inv or ret_counts is passed positionally
+# https://github.com/pytorch/pytorch/issues/68610
+# ToDo: activate test_values when this is resolved
+@handle_frontend_test(
+    fn_tree="torch.unique_consecutive",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=2,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    ret_inv=st.booleans(),
+    ret_counts=st.booleans(),
+)
+def test_torch_unique_consecutive(
+    *,
+    dtype_x_axis,
+    ret_inv,
+    ret_counts,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        return_inverse=ret_inv,
+        return_counts=ret_counts,
+        dim=axis,
+        test_values=False,
+    )

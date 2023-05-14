@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 from numbers import Number
+from collections import namedtuple
 import numpy as np
 
 # local
@@ -106,16 +107,18 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
+    k = min(k, x.shape[axis])
     if not largest:
         indices = np.argsort(x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
     else:
-        x = -x
-        indices = np.argsort(x, axis=axis)
+        indices = np.argsort(-x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
-        x = -x
+    if not sorted:
+        indices = np.sort(indices, axis=axis)
     topk_res = NamedTuple("top_k", [("values", np.ndarray), ("indices", np.ndarray)])
     val = np.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
@@ -437,3 +440,46 @@ def concat_from_sequence(
     elif new_axis == 1:
         ret = np.stack(input_sequence, axis=axis)
         return ret
+
+
+def unique_consecutive(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    x_shape = None
+    if axis is None:
+        x_shape = x.shape
+        x = x.flatten()
+        axis = -1
+    if axis < 0:
+        axis += x.ndim
+    sub_arrays = np.split(
+        x,
+        np.where(
+            np.any(
+                np.diff(x, axis=axis) != 0,
+                axis=tuple(i for i in np.arange(x.ndim) if i != axis),
+            )
+        )[0]
+        + 1,
+        axis=axis,
+    )
+    output = np.concatenate(
+        [np.unique(sub_array, axis=axis) for sub_array in sub_arrays],
+        axis=axis,
+    )
+    counts = np.array([sub_array.shape[axis] for sub_array in sub_arrays])
+    inverse_indices = np.repeat(np.arange(len(counts)), counts)
+    if x_shape:
+        inverse_indices = np.reshape(inverse_indices, x_shape)
+    return Results(
+        output.astype(x.dtype),
+        inverse_indices,
+        counts,
+    )

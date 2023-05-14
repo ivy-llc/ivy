@@ -95,7 +95,7 @@ def test_tensorflow_idct(
     )
 
 
-#stft
+# stft
 @st.composite
 def valid_stft_params(draw):
     # draw data types
@@ -110,7 +110,7 @@ def valid_stft_params(draw):
     frame_step = draw(st.integers(min_value=1, max_value=frame_length))
     # Draw values for the window function type
     window_fn = draw(
-        st.sampled_from(['hann', 'hamming', 'rectangle', 'blackman', 'bartlett'])
+        st.sampled_from(["hann", "hamming", "rectangle", "blackman", "bartlett"])
     )
     # Draw values for the FFT size
     fft_length = draw(st.integers(min_value=frame_length, max_value=frame_length * 4))

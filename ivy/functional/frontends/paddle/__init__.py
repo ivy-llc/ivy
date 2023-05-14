@@ -214,6 +214,7 @@ def promote_types_of_paddle_inputs(
 
 from . import vision
 from . import nn
+from .nn.functional.activation import tanh
 from . import linalg
 from . import fft
 from . import signal

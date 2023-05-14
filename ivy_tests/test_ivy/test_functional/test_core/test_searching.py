@@ -55,7 +55,7 @@ def _broadcastable_trio(draw):
     fn_tree="functional.ivy.argmax",
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
-    dtype=helpers.get_dtypes("integer", full=False),
+    dtype=helpers.get_dtypes("integer", full=False, none=True),
     select_last_index=st.booleans(),
 )
 def test_argmax(
@@ -90,7 +90,7 @@ def test_argmax(
     fn_tree="functional.ivy.argmin",
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
-    output_dtype=helpers.get_dtypes("integer", full=False),
+    output_dtype=helpers.get_dtypes("integer", full=False, none=True),
     select_last_index=st.booleans(),
 )
 def test_argmin(
@@ -206,7 +206,7 @@ def test_argwhere(
 ):
     dtype, x = x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="torch",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
