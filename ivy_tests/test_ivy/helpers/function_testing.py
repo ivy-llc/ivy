@@ -2085,7 +2085,7 @@ def arrays_to_frontend(frontend_array_fn=None):
         if _is_frontend_array(x):
             return x
         elif ivy.is_array(x):
-            if x.shape == ():
+            if tuple(x.shape) == ():
                 try:
                     ret = frontend_array_fn(x, dtype=ivy.Dtype(str(x.dtype)))
                 except IvyException:
