@@ -746,7 +746,6 @@ def dtype_p_shape(draw):
 
 
 # TODO Update the test by fixing the uint32 unsupported problem
-# @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.bernoulli",
     dtype_key=helpers.dtype_and_values(
@@ -800,7 +799,6 @@ def test_jax_bernoulli(
 
 
 # TODO Update the test by fixing the uint32 unsupported problem
-@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.fold_in",
     dtype_key=helpers.dtype_and_values(
