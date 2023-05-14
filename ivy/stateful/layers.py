@@ -1599,14 +1599,6 @@ class Embedding(Module):
         self.max_norm = max_norm
         self._weight_init = KaimingNormal(fan_mode="fan_out")
         self._embedding_shape = (self.num_embeddings, self.embedding_dim)
-        print(
-            {
-                "num_embedding": num_embeddings,
-                "embedding_dim": embedding_dim,
-                "padding_indx": padding_idx,
-                "max_norm": max_norm,
-            }
-        )
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, *, device=None, dtype=None):
