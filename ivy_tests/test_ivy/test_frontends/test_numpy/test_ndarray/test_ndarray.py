@@ -2763,7 +2763,7 @@ def test_numpy_instance_array_wrap__(
     on_device,
 ):
     input_dtypes, x = dtype_and_x
-    out_arr = np.array(x)
+    array = np.array(x)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -2771,7 +2771,7 @@ def test_numpy_instance_array_wrap__(
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
-            "out_arr": out_arr,
+            "array": array,
             "context": None,
         },
         init_flags=init_flags,
