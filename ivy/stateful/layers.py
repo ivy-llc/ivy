@@ -474,17 +474,14 @@ class Conv1D(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_w,d_out]*
         """
-        return (
-            ivy.conv1d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv1d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv1DTranspose(Module):
@@ -611,18 +608,15 @@ class Conv1DTranspose(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_w,d_out]*
         """
-        return (
-            ivy.conv1d_transpose(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                output_shape=self._output_shape,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv1d_transpose(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            output_shape=self._output_shape,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv2D(Module):
@@ -747,17 +741,14 @@ class Conv2D(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv2d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv2d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv2DTranspose(Module):
@@ -886,18 +877,15 @@ class Conv2DTranspose(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv2d_transpose(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                output_shape=self._output_shape,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv2d_transpose(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            output_shape=self._output_shape,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class DepthwiseConv2D(Module):
@@ -986,8 +974,8 @@ class DepthwiseConv2D(Module):
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
-                self._output_channels,
-                self._input_channels,
+                self._num_channels,
+                self._num_channels,
                 dtype=dtype,
             )
         }
@@ -997,8 +985,8 @@ class DepthwiseConv2D(Module):
                 b=self._b_init.create_variables(
                     self._b_shape,
                     device,
-                    self._output_channels,
-                    self._input_channels,
+                    self._num_channels,
+                    self._num_channels,
                     dtype=dtype,
                 ),
             )
@@ -1018,17 +1006,14 @@ class DepthwiseConv2D(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return (
-            ivy.depthwise_conv2d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.depthwise_conv2d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv3D(Module):
@@ -1154,17 +1139,14 @@ class Conv3D(Module):
             The outputs following the conv1d layer
             *[batch_size,new_d,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv3d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv3d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv3DTranspose(Module):
@@ -1295,18 +1277,15 @@ class Conv3DTranspose(Module):
             The outputs following the conv1d layer
             *[batch_size,new_d,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv3d_transpose(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                output_shape=self._output_shape,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv3d_transpose(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            output_shape=self._output_shape,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 # LSTM #
