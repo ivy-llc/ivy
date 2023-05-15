@@ -68,12 +68,14 @@ def assert_same_type_and_shape(values, this_key_chain=None):
         if isinstance(x, np.ndarray):
             x_d = str(x.dtype).replace("longlong", "int64")
             y_d = str(y.dtype).replace("longlong", "int64")
-            assert x.shape == y.shape, "returned shape = {}, ground-truth returned shape = {}".format(
+            assert (
+                x.shape == y.shape
+            ), "returned shape = {}, ground-truth returned shape = {}".format(
                 x.shape, y.shape
             )
-            assert x_d == y_d, "returned dtype = {}, ground-truth returned dtype = {}".format(
-                x_d, y_d
-            )
+            assert (
+                x_d == y_d
+            ), "returned dtype = {}, ground-truth returned dtype = {}".format(x_d, y_d)
 
 
 def value_test(

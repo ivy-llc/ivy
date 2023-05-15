@@ -152,7 +152,6 @@ def downcaster(dtype, intersect):
         return result
 
     if "float" in dtype:
-
         index = casting_modes_dict["float"]().index(dtype) - 1
 
         result = ""
@@ -1006,7 +1005,6 @@ def casting_modes_ops(fn):
             return fn(*args, **kwargs)
 
         if "dtype" in kwargs and kwargs["dtype"] is not None:
-
             dtype = caster(kwargs["dtype"], intersect)
             if dtype:
                 kwargs["dtype"] = ivy.as_native_dtype(dtype)

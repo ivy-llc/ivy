@@ -123,6 +123,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 def shuffle(
     x: torch.Tensor,
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,
