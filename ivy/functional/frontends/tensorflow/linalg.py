@@ -35,6 +35,7 @@ def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
 
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
         "2.9.0 and below": (
@@ -48,7 +49,6 @@ def eigvalsh(tensor, name=None):
     },
     "tensorflow",
 )
-@to_ivy_arrays_and_back
 def matmul(
     a,
     b,
