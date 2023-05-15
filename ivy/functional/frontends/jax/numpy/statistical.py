@@ -470,12 +470,14 @@ def nanmedian(
 
 
 @to_ivy_arrays_and_back
-def correlate(a, v, mode='valid', precision=None):
-    a, v = promote_types_of_jax_inputs(a, v)
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+def correlate(a, v, mode="valid", precision=None):
     if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
         raise ValueError("correlate() only support 1-dimensional inputs.")
     if a.shape[0] == 0 or v.shape[0] == 0:
-        raise ValueError(f"correlate: inputs cannot be empty, got shapes {a.shape} and {v.shape}.")
+        raise ValueError(
+            f"correlate: inputs cannot be empty, got shapes {a.shape} and {v.shape}."
+        )
     if v.shape[0] > a.shape[0]:
         need_flip = True
         a, v = v, a
