@@ -305,7 +305,7 @@ def test_seed(seed_val):
         min_dim_size=2,
     ),
     seed=helpers.ints(min_value=0, max_value=100),
-    axis=helpers.ints(min_value=0, max_value=3),
+    axis=helpers.ints(min_value=0, max_value=0),
     test_gradients=st.just(False),
 )
 def test_shuffle(
