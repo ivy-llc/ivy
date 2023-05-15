@@ -97,21 +97,19 @@ def standard_normal(size=None):
 def standard_gamma(shape, size=None):
     return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
 
-#Binomial
+# Binomial
+
+
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def binomial(n, p, size=None):
-    def comb(k,n):
-        if k>=n:
-            KMinusn=k-n
-            return math.factorial(n)/ (math.factorial(k)*math.factorial(KMinusn))
-        else:
-            raise("Size is less than n")
-    
+    def comb(k, n):
+        if k >= n:
+            KMinusn = k - n
+            return math.factorial(n) / (math.factorial(k) * math.factorial(KMinusn))
     oneMinusP = ivy.subtract(1, p)
-    nMinusSize = ivy.subtract(n,size)
-    return (ivy.pow(oneMinusP, nMinusSize))*(ivy.pow(p, size))*comb(size[0],n)
-    
+    nMinusSize = ivy.subtract(n, size)
+    return (ivy.pow(oneMinusP, nMinusSize)) * (ivy.pow(p, size)) * comb(size[0], n)
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def chisquare(df, size=None):
