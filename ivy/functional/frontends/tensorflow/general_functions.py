@@ -249,6 +249,15 @@ def gather(params, indices, axis=None, batch_dims=0, name=None):
 
 
 @to_ivy_arrays_and_back
+def gradients(ys, xs, grad_ys=None, name=None, grad_fn=None, **kwargs):
+    if grad_fn is None:
+        def _grad_fn(grad_ys):
+            return tf_frontend.gradients(ys, xs, grad_ys=grad_ys, **kwargs)
+        grad_fn = _grad_fn
+    return ivy.execute_with_gradients(grad_fn, grad_ys)
+
+
+@to_ivy_arrays_and_back
 def gather_nd(params, indices, batch_dims=0, name=None):
     return ivy.gather_nd(params, indices, batch_dims=batch_dims)
 

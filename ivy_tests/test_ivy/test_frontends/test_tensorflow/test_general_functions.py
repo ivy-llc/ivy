@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1048,6 +1049,34 @@ def test_tensorflow_gather(
         indices=indices,
         axis=axis,
         batch_dims=batch_dims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.gradients",
+    all_args=helpers.tensorflow_gradients_args(),
+)
+def test_tensorflow_gradients(
+    *,
+    all_args,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    inputs, output_grads = all_args
+
+    def grad_fn(grad_ys):
+        return ivy.grad(inputs, grad_ys=grad_ys)
+
+    helpers.test_frontend_function(
+        input_dtypes=tuple(inp.dtype for inp in inputs),
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        grad_ys=output_grads,
+        grad_fn=grad_fn,
     )
 
 

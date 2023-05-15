@@ -4,6 +4,7 @@ import math
 
 # local
 import ivy
+import ivy.functional.frontends.tensorflow as tf
 import numpy as np
 from . import array_helpers, number_helpers, dtype_helpers
 from ivy.functional.ivy.layers import _deconv_length
@@ -232,6 +233,43 @@ def get_shape(
     if shape is None:
         return shape
     return tuple(shape)
+
+
+def tensorflow_gradients_args(*,
+                              input_shapes=None,
+                              input_dtypes=None,
+                              output_grad_shapes=None,
+                              output_grad_dtypes=None):
+
+        """
+    Generates arguments for testing the gradients function of a TensorFlow frontend.
+    Parameters
+    ----------
+    input_shapes : tuple of tuples of ints, optional
+        Shapes of the input tensors. If not specified, defaults to ((1,),).
+    input_dtypes : tuple of dtypes, optional
+        Data types of the input tensors. If not specified, defaults to (tf.float32,).
+    output_grad_shapes : tuple of tuples of ints, optional
+        Shapes of the output gradient tensors. If not specified, defaults to None.
+    output_grad_dtypes : tuple of dtypes, optional
+        Data types of the output gradient tensors. If not specified, defaults to None.
+    Returns
+    -------
+    A tuple of the form (inputs, output_grads), where:
+    - inputs is a tuple of input tensors.
+    - output_grads is a tuple of output gradient tensors of the same shape as the output tensors.
+    """
+        input_shapes = input_shapes or ((1,),)
+        input_dtypes = input_dtypes or (tf.float32,)
+        output_grad_shapes = output_grad_shapes or input_shapes
+        output_grad_dtypes = output_grad_dtypes or input_dtypes
+
+        inputs = tuple(tf.ones(shape=shape, dtype=dtype) for shape, dtype in zip(input_shapes, input_dtypes))
+        output_tensors = tf.gradients(tf.reduce_sum(tf.stack([tf.reduce_prod(inp) for inp in inputs])), inputs)
+
+        output_grads = tuple(tf.ones(shape=shape, dtype=dtype) for shape, dtype in zip(output_grad_shapes, output_grad_dtypes))
+
+        return inputs, output_grads
 
 
 @st.composite
