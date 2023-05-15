@@ -326,10 +326,9 @@ def affine_grid(theta, size, align_corners=False):
     if len(size) == 4:
         N, C, H, W = size
         if not align_corners:
-            # torch does not include -1,1 in its calculation of linspace
             base_grid = ivy.empty((N, H, W, 3))
-            base_grid.select(-1, 0).copy_(ivy.linspace(-1, 1, W))
-            base_grid.select(-1, 1).copy_(ivy.linspace(-1, 1, H).unsqueeze_(-1))
-            base_grid.select(-1, 2).fill_(1)
-            grid = base_grid.view((N, H * W, 3)).bmm(theta.transpose(1, 2))
+            base_grid[:, :, :, 0] = ivy.linspace(-1, 1, W)
+            base_grid[:, :, :, 1] = ivy.linspace(-1, 1, H)
+            base_grid[:, :, :, 2] = ivy.full((W, H), 1)
+            grid = ivy.matmul(base_grid.view((N, H * W, 3)), theta.swapaxes(1, 2))
             return grid.view((N, H, W, 2))
