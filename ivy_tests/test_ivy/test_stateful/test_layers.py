@@ -1091,7 +1091,7 @@ def test_sequential_layer(
 
 @handle_method(
     method_tree="MaxPool1D.__call__",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=2, max_dims=3, min_side=1, max_side=4),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=2, max_side=4),
 )
 def test_maxpool1d_layer(
     *,
@@ -1105,23 +1105,20 @@ def test_maxpool1d_layer(
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
-
-    if len(x[0].shape) == 2:
-        x[0] = np.expand_dims(x[0], axis=2)
-
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
-            "kernel_size": kernel_size[-1],
-            "stride": stride[-1],
-            "padding": padding[-1],
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "data_format": "NCW",
             "device": on_device,
-            "dtype": input_dtype[0],
+            "dtype": input_dtype,
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"inputs": x[0], "data_format": "NCW"},
+        method_all_as_kwargs_np={"inputs": x[0]},
         class_name=class_name,
         method_name=method_name,
         test_gradients=test_gradients,
