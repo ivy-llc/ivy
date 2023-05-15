@@ -2047,6 +2047,7 @@ def _get_num_padded_values(i, p, n, k, s):
 @handle_array_function
 @handle_out_argument
 @handle_array_like_without_promotion
+@inputs_to_ivy_arrays
 @handle_exceptions
 def stft(
     signal: Union[ivy.Array, ivy.NativeArray],
@@ -2111,3 +2112,5 @@ def stft(
         norm=norm,
         out=out,
     )
+
+stft.mixed_function = True
