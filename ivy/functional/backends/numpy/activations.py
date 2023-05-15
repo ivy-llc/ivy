@@ -116,11 +116,3 @@ def mish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 mish.support_native_out = True
-
-@_scalar_output_to_0d_array
-def silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    if not ivy.is_array(x):
-        return np.asarray(x * (1 / (1 + np.exp(-x))))
-    return np.asarray(x * (1 / (1 + np.exp(-x)))).astype(x.dtype)
-
-silu.support_native_out = True

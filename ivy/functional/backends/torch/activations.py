@@ -108,10 +108,3 @@ def log_softmax(
 )
 def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.mish(x)
-
-
-@with_unsupported_dtypes(
-    {"1.11.0 and below": ("complex", "float16", "bfloat16")}, backend_version
-)
-def silu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.nn.functional.silu(x)
