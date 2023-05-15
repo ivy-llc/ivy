@@ -1,3 +1,5 @@
+import numpy as np
+
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -39,5 +41,9 @@ def vander(x, N=None, increasing=False):
 
 
 # diagflat
-def diagflat(v, offset=0):
-    return ivy.diagflat(v, offset=offset)
+@to_ivy_arrays_and_back
+def diagflat(v, k=0):
+    ret = ivy.diagflat(v, offset=k)
+    while len(ivy.shape(ret)) < 2:
+        ret = ret.expand_dims(axis=0)
+    return ret

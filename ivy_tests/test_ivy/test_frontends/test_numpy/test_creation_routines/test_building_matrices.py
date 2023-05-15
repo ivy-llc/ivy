@@ -1,4 +1,5 @@
 # global
+import numpy as np
 from hypothesis import strategies as st
 
 # local
@@ -167,22 +168,28 @@ def test_numpy_vander(
 # diagflat
 @handle_frontend_test(
     fn_tree="numpy.diagflat",
-    dtype_and_x_k=_diag_helper(),
+    args_packet=_generate_diag_args(),
+    test_with_out=st.just(False),
 )
 def test_numpy_diagflat(
-    dtype_and_x_k,
+    *,
     frontend,
     test_flags,
     fn_tree,
     on_device,
+    args_packet,
 ):
-    dtype, x, k = dtype_and_x_k
+    dtype_x, offset, dtype_padding_value, align, num_rows, num_cols = args_packet
+
+    x_dtype, x = dtype_x
+    padding_value_dtype, padding_value = dtype_padding_value
+
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=x_dtype + ["int64"] + padding_value_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         v=x[0],
-        k=k,
+        k=offset,
     )
