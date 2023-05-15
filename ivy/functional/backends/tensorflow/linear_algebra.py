@@ -713,16 +713,24 @@ def vector_norm(
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype and x.dtype != dtype:
         x = tf.cast(x, dtype)
-    if ord == -float("inf"):
-        tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
-    elif ord == float("inf"):
-        tn_normalized_vector = tf.reduce_max(tf.abs(x), axis, keepdims)
-    elif ord == 0:
-        tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
+    # Mathematical Norms
+    if ord > 0:
+        tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
     else:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
-            1.0 / ord
+        if ord == -float("inf"):
+            tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
+        elif ord == 0:
+            tn_normalized_vector = tf.reduce_sum(
+                tf.cast(x != 0, x.dtype), axis, keepdims
+            )
+        else:
+            tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
+                1.0 / ord
+            )
+        tn_normalized_vector = tf.cast(
+            tn_normalized_vector, tn_normalized_vector.dtype.real_dtype
         )
+
     return tn_normalized_vector
 
 

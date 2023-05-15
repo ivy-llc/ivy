@@ -50,6 +50,17 @@ def sort(
     return ret
 
 
+# msort
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+def msort(
+    a: Union[tf.Tensor, tf.Variable, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.sort(a, axis=0)
+
+
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def searchsorted(
     x: Union[tf.Tensor, tf.Variable],

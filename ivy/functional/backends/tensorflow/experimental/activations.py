@@ -53,3 +53,16 @@ def selu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+def silu(
+    x: Tensor,
+    /,
+    *,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.nn.silu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
