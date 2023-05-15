@@ -7,7 +7,6 @@
 
 # # local
 # import ivy_tests.test_ivy.helpers as helpers
-# from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # # Helpers #
@@ -110,6 +109,44 @@
 #     if is_vec_norm:
 #         return _vector_norm_example()
 #     return _matrix_norm_example()
+
+
+# @st.composite
+# def _get_dtype_and_matrix(draw, *, symmetric=False):
+#     # batch_shape, shared, random_size
+#     input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("float")))))
+#     random_size = draw(helpers.ints(min_value=2, max_value=4))
+#     batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
+#     if symmetric:
+#         num_independnt_vals = int((random_size**2) / 2 + random_size / 2)
+#         array_vals_flat = np.array(
+#             draw(
+#                 helpers.array_values(
+#                     dtype=input_dtype,
+#                     shape=tuple(list(batch_shape) + [num_independnt_vals]),
+#                     min_value=2,
+#                     max_value=5,
+#                 )
+#             )
+#         )
+#         array_vals = np.zeros(batch_shape + (random_size, random_size))
+#         c = 0
+#         for i in range(random_size):
+#             for j in range(random_size):
+#                 if j < i:
+#                     continue
+#                 array_vals[..., i, j] = array_vals_flat[..., c]
+#                 array_vals[..., j, i] = array_vals_flat[..., c]
+#                 c += 1
+#         return [input_dtype], array_vals
+#     return [input_dtype], draw(
+#         helpers.array_values(
+#             dtype=input_dtype,
+#             shape=tuple(list(batch_shape) + [random_size, random_size]),
+#             min_value=2,
+#             max_value=5,
+#         )
+#     )
 
 
 # # Tests #
@@ -402,4 +439,34 @@
 #         fn_tree=fn_tree,
 #         on_device=on_device,
 #         a=x[0],
+#     )
+
+# # det
+# @handle_frontend_test(
+#     fn_tree="scipy.linalg.det",
+#     dtype_and_x=_get_dtype_and_matrix(),
+#     test_with_out=st.just(False),
+#     overwrite_a = st.booleans(),
+#     check_finite = st.booleans(),
+
+# )
+# def test_scipy_det(
+#     dtype_and_x,
+#     overwrite_a,
+#     check_finite,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+#     on_device,
+# ):
+#     dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         a=x[0],
+#         overwrite_a=overwrite_a,
+#         check_finite=check_finite
 #     )

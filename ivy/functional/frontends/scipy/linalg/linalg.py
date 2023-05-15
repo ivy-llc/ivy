@@ -144,3 +144,11 @@ def svdvals(a, /, *, overwrite_a=False, check_finite=True):
     if check_finite:
         _check_finite(a)
     return ivy.svdvals(a)
+
+
+# det
+@to_ivy_arrays_and_back
+def det(a, overwrite_a=False, check_finite=True):
+    if check_finite(a):
+        _check_finite(a)
+    return ivy.det(a)
