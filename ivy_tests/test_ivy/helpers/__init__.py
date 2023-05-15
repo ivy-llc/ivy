@@ -1,4 +1,3 @@
-# flake8: noqa
 # Hypothesis strategies
 from . import hypothesis_helpers
 from .hypothesis_helpers import *

@@ -22,10 +22,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.min.
-        This method simply wraps the function, and so
-        the docstring for ivy.min also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.min. This method simply wraps the
+        function, and so the docstring for ivy.min also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -80,9 +79,11 @@ class _ContainerWithStatistical(ContainerBase):
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.min(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.min(x_, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -103,10 +104,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.max.
-        This method simply wraps the function, and so
-        the docstring for ivy.max also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.max. This method simply wraps the
+        function, and so the docstring for ivy.max also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -158,9 +159,11 @@ class _ContainerWithStatistical(ContainerBase):
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.max(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.max(x_, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -181,10 +184,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.mean.
-        This method simply wraps the function, and so
-        the docstring for ivy.mean also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.mean. This method simply wraps the
+        function, and so the docstring for ivy.mean also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -287,13 +290,14 @@ class _ContainerWithStatistical(ContainerBase):
             a: ivy.array([1., 2.]),
             b: ivy.array([3., 4.])
         }
-
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.mean(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.mean(x_, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -316,10 +320,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.var.
-        This method simply wraps the function, and so the
-        docstring for ivy.var also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.var. This method simply wraps the
+        function, and so the docstring for ivy.var also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -404,15 +407,14 @@ class _ContainerWithStatistical(ContainerBase):
             a: ivy.array([2.25, 2.25, 2.25]),
             b: ivy.array([2.25, 2.25, 2.25])
         }
-
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.var(
-                    x_, axis=axis, correction=correction, keepdims=keepdims
-                )
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.var(x_, axis=axis, correction=correction, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -436,10 +438,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.var.
-        This method simply wraps the function, and so
-        the docstring for ivy.var also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.var. This method simply wraps the
+        function, and so the docstring for ivy.var also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -480,7 +481,6 @@ class _ContainerWithStatistical(ContainerBase):
             a:ivy.array(0.12666667),
             b:ivy.array(0.11555555)
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "var",
@@ -509,10 +509,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ):
-        """ivy.Container static method variant of ivy.prod.
-        This method simply wraps the function, and so
-        the docstring for ivy.prod also applies to this method
-        with minimal changes.
+        """
+        ivy.Container static method variant of ivy.prod. This method simply wraps the
+        function, and so the docstring for ivy.prod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -648,10 +648,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.prod.
-        This method simply wraps the function, and so
-        the docstring for ivy.prod also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.prod. This method simply wraps the
+        function, and so the docstring for ivy.prod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -838,10 +838,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.std.
-        This method simply wraps the function, and so
-        the docstring for ivy.std also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.std. This method simply wraps the
+        function, and so the docstring for ivy.std also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -955,16 +955,14 @@ class _ContainerWithStatistical(ContainerBase):
         a: ivy.array([1.2472192, 0.]),
         b: ivy.array([2.44948983, 1.41421354])
         }
-
-
         """
         return self.cont_handle_inplace(
             self.cont_map(
-                lambda x_, _: ivy.std(
-                    x_, axis=axis, correction=correction, keepdims=keepdims
-                )
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: (
+                    ivy.std(x_, axis=axis, correction=correction, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
                 key_chains=key_chains,
                 to_apply=to_apply,
                 prune_unapplied=prune_unapplied,
@@ -991,9 +989,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cumsum. This method
-        simply wraps the function, and so the docstring for ivy.cumsum
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.cumsum. This method simply wraps the
+        function, and so the docstring for ivy.cumsum also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1133,9 +1131,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cumsum. This method
-        simply wraps the function, and so the docstring for ivy.cumsum
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.cumsum. This method simply wraps
+        the function, and so the docstring for ivy.cumsum also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1290,9 +1288,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cumprod. This method
-        simply wraps the function, and so the docstring for ivy.cumprod
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.cumprod. This method simply wraps the
+        function, and so the docstring for ivy.cumprod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1367,6 +1365,186 @@ class _ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def _static_cummax(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = 0,
+        reverse: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.cummax. This method simply wraps the
+        function, and so the docstring for ivy.cummax also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array or container to cummax.
+        axis
+            Axis to cummax along. Default is ``0``.
+        exclusive
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
+        reverse
+            Whether to perform the cummax from last to first element in the selected
+            axis. Default is ``False`` (from first to last element)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        dtype
+            Data type of the returned array. Default is ``None``.
+        out
+            Optional output container. Default is ``None``.
+
+        Returns
+        -------
+        ret
+            Containers with arrays cummax at leaves along specified axis.
+
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> y = ivy.Container.static_cummax(x, axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 2, 3]),
+            b: ivy.array([4, 5, 6])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
+                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+        >>> ivy.Container.static_cummax(x, axis=1, out=y)
+        >>> print(y)
+        {
+            a: ivy.array([[2., 3.],
+                          [5., 7.],
+                          [11., 13.]]),
+            b: ivy.array([[3., 4.],
+                          [4., 5.],
+                          [5., 6.]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "cummax",
+            x,
+            axis=axis,
+            reverse=reverse,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
+    @staticmethod
+    def _static_cummin(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = 0,
+        reverse: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.cummin. This method simply wraps the
+        function, and so the docstring for ivy.cummin also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array or container to cummin.
+        axis
+            Axis to cummin along. Default is ``0``.
+        exclusive
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
+        reverse
+            Whether to perform the cummin from last to first element in the selected
+            axis. Default is ``False`` (from first to last element)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        dtype
+            Data type of the returned array. Default is ``None``.
+        out
+            Optional output container. Default is ``None``.
+
+        Returns
+        -------
+        ret
+            Containers with arrays cummin at leaves along specified axis.
+
+        Examples #TODO: fix examples and this doc
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> y = ivy.Container.static_cummin(x, axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 1, 1]),
+            b: ivy.array([4, 4, 4])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
+                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+        >>> x.static_cummin(axis=1, out=y)
+        {
+            a: ivy.array([[2, 2],
+                          [5, 5],
+                          [11, 11]]),
+            b: ivy.array([[3, 3],
+                          [4, 4],
+                          [5, 5]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "cummin",
+            x,
+            axis=axis,
+            reverse=reverse,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
     def cumprod(
         self: ivy.Container,
         /,
@@ -1382,9 +1560,9 @@ class _ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cumprod. This method
-        simply wraps the function, and so the docstring for ivy.cumprod
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.cumprod. This method simply wraps
+        the function, and so the docstring for ivy.cumprod also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1445,6 +1623,175 @@ class _ContainerWithStatistical(ContainerBase):
             self,
             axis=axis,
             exclusive=exclusive,
+            reverse=reverse,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
+    def cummax(
+        self: ivy.Container,
+        /,
+        *,
+        axis: int = 0,
+        reverse: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.cummax. This method simply wraps
+        the function, and so the docstring for ivy.cummax also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container to cummax at leaves.
+        axis
+            Axis along which the cumulative product is computed. Default is ``0``.
+        exclusive
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        dtype
+            Data type of the returned array. Default is ``None``.
+        out
+            Optional output container. Default is ``None``.
+
+        Returns
+        -------
+        ret
+            Containers with arrays cummax at leaves along specified axis.
+
+        --------
+        With one :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> y = x.cummax(axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 2, 3]),
+            b: ivy.array([4, 5, 6])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
+                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+        >>> x.cummax(axis=1, exclusive=True, out=y)
+        {
+            a: ivy.array([[2., 3.],
+                          [5., 7.],
+                          [11., 13.]]),
+            b: ivy.array([[3., 4.],
+                          [4., 5.],
+                          [5., 6.]])
+        }
+        """
+        return self._static_cummax(
+            self,
+            axis=axis,
+            reverse=reverse,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
+    def cummin(
+        self: ivy.Container,
+        /,
+        *,
+        axis: int = 0,
+        reverse: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.cummin. This method simply wraps
+        the function, and so the docstring for ivy.cummin also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container to cummin at leaves.
+        axis
+            Axis along which the cumulative product is computed. Default is ``0``.
+        exclusive
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        dtype
+            Data type of the returned array. Default is ``None``.
+        out
+            Optional output container. Default is ``None``.
+
+        Returns
+        -------
+        ret
+            Containers with arrays cummin at leaves along specified axis.
+
+        Examples #TODO: change examples and change doc string
+        --------
+        With one :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> y = x.cummin(axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 1, 1]),
+            b: ivy.array([4, 4, 4])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
+                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+        >>> x.cummin(axis=1, out=y)
+        {
+            a: ivy.array([[2, 2],
+                          [5, 5],
+                          [11, 11]]),
+            b: ivy.array([[3, 3],
+                          [4, 4],
+                          [5, 5]])
+        }
+        """
+        return self._static_cummin(
+            self,
+            axis=axis,
             reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,

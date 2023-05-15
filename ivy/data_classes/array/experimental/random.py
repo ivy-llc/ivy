@@ -16,9 +16,10 @@ class _ArrayWithRandomExperimental(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.dirichlet. This method simply
-        wraps the function, and so the docstring for ivy.shuffle also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.dirichlet. This method simply wraps the
+        function, and so the docstring for ivy.shuffle also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -70,9 +71,10 @@ class _ArrayWithRandomExperimental(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.beta. This method simply
-        wraps the function, and so the docstring for ivy.beta also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.beta. This method simply wraps the
+        function, and so the docstring for ivy.beta also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -120,9 +122,10 @@ class _ArrayWithRandomExperimental(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.gamma. This method simply
-        wraps the function, and so the docstring for ivy.gamma also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.gamma. This method simply wraps the
+        function, and so the docstring for ivy.gamma also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

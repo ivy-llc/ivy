@@ -357,8 +357,8 @@ def searchsorted(
 ):
     if right and side == "left":
         raise ivy.exceptions.IvyError(
-            "side and right can't be set to opposites,\
-            got side of left while right was True"
+            "side and right can't be set to opposites, got side of left"
+            " while right was True"
         )
     if right:
         side = "right"
@@ -387,3 +387,8 @@ def bucketize(input, boundaries, /, *, out_int32=False, right=False, out=None):
     if out_int32:
         ret = ivy.astype(ret, "int32")
     return ret
+
+@to_ivy_arrays_and_back
+def clone(input):
+    return ivy.copy_array(input)
+

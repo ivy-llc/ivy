@@ -12,7 +12,8 @@ class _ArrayWithNormsExperimental(abc.ABC):
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Normalizes the array to have unit L2 norm.
+        """
+        Normalize the array to have unit L2 norm.
 
         Parameters
         ----------
@@ -53,9 +54,9 @@ class _ArrayWithNormsExperimental(abc.ABC):
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.batch_norm. This method
-        simply wraps the function, and so the docstring for ivy.batch_norm
-        also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.batch_norm. This method simply wraps
+        the function, and so the docstring for ivy.batch_norm also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -93,7 +94,6 @@ class _ArrayWithNormsExperimental(abc.ABC):
               Default value is 0.1.
         out
             optional output array, for writing the result to.
-            Parameters
 
         Returns
         -------
@@ -127,9 +127,9 @@ class _ArrayWithNormsExperimental(abc.ABC):
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.instance_norm. This method
-        simply wraps the function, and so the docstring for ivy.instance_norm
-        also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.instance_norm. This method simply wraps
+        the function, and so the docstring for ivy.instance_norm also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -167,7 +167,6 @@ class _ArrayWithNormsExperimental(abc.ABC):
               Default value is 0.1.
         out
             optional output array, for writing the result to.
-            Parameters
 
         Returns
         -------
@@ -195,7 +194,8 @@ class _ArrayWithNormsExperimental(abc.ABC):
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Normalizes the array to have Lp norm.
+        """
+        Normalize the array to have Lp norm.
 
         Parameters
         ----------

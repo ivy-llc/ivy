@@ -17,12 +17,12 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -31,7 +31,7 @@ def all(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests whether all input array elements evaluate to ``True`` along a specified
+    """Test whether all input array elements evaluate to ``True`` along a specified
     axis.
 
     .. note::
@@ -128,12 +128,12 @@ def all(
     return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -142,7 +142,7 @@ def any(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Tests whether any input array element evaluates to ``True`` along a specified
+    """Test whether any input array element evaluates to ``True`` along a specified
     axis.
 
     .. note::

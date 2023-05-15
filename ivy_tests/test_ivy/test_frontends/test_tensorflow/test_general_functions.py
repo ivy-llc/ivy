@@ -104,7 +104,6 @@ def test_tensorflow_clip_by_value(
 
 @st.composite
 def _get_global_norm_clip_inputs(draw):
-
     t_list_dtype, t_list = draw(
         helpers.dtype_and_values(
             num_arrays=2,
@@ -644,6 +643,32 @@ def test_tensorflow_expand_dims(
         on_device=on_device,
         input=value[0],
         axis=axis,
+    )
+
+
+# identity_n
+@handle_frontend_test(
+    fn_tree="tensorflow.identity_n",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_identity_n(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
     )
 
 
@@ -1450,7 +1475,6 @@ def test_tensorflow_one_hot(
     test_flags,
     on_device,
 ):
-
     input_dtype, x = dtype_and_x
     depth = 10
     helpers.test_frontend_function(
@@ -1795,7 +1819,6 @@ def test_tensorflow_reverse(
     test_flags,
     on_device,
 ):
-
     dtype, x, axis_dtype, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=dtype + axis_dtype,
@@ -1805,6 +1828,37 @@ def test_tensorflow_reverse(
         on_device=on_device,
         tensor=x[0],
         axis=axis[0],
+    )
+
+
+# scan
+@handle_frontend_test(
+    fn_tree="tensorflow.scan",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=["float32"], num_arrays=1, min_num_dims=2, max_dim_size=3
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_scan(
+    *,
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    def _test_fn(a, x):
+        return a + x
+
+    x_dtype, elems = dtypes_values
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        fn=_test_fn,
+        elems=elems[0],
     )
 
 
@@ -1844,4 +1898,36 @@ def test_tensorflow_norm(
         ord=ord,
         axis=axis,
         keepdims=keepdims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.unique",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=["int64", "int32"],
+        min_value=1,
+        max_value=100,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    test_with_out=st.just([False]),
+)
+def test_tensorflow_unique(
+    *,
+    dtype_x,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        x=x[0],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
     )

@@ -1,10 +1,11 @@
 # global
-
+import struct
 from numbers import Number
 from typing import Union, List, Optional, Sequence
 
 import numpy as np
 import paddle
+import ivy.functional.backends.paddle as paddle_backend
 
 # local
 import ivy
@@ -67,20 +68,18 @@ def arange(
         else:
             return to_device(paddle.arange(start, stop, step), device)
     else:
-        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
         return to_device(paddle.arange(start, stop, step).cast(dtype), device)
 
 
 def _stack_tensors(x, dtype):
-    # TODO: change paddle.stack to ivy.stack
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x[i] = _stack_tensors(item, dtype)
-        x = ivy.stack(x)
+        x = paddle_backend.stack(x)
     else:
         if isinstance(x, (list, tuple)):
             if isinstance(x[0], paddle.Tensor):
-                x = ivy.stack([i for i in x])
+                x = paddle_backend.stack([i for i in x])
             else:
                 x = paddle.to_tensor(x, dtype=dtype)
     x.stop_gradient = False
@@ -100,6 +99,7 @@ def asarray(
         bool,
         int,
         float,
+        list,
         NestedSequence,
         SupportsBufferProtocol,
     ],
@@ -133,7 +133,9 @@ def asarray(
         # a multidimensional list which contains a tensor
         if isinstance(obj[0], paddle.Tensor) or contain_tensor:
             if copy is True:
-                ret = ivy.stack([i for i in obj]).cast(dtype).clone().detach()
+                ret = (
+                    paddle_backend.stack([i for i in obj]).cast(dtype).clone().detach()
+                )
                 ret.stop_gradient = obj[0].stop_gradient
                 return ret
             else:
@@ -145,8 +147,7 @@ def asarray(
     elif isinstance(obj, (Number, bool, complex)):
         if dtype is None:
             dtype = ivy.default_dtype(item=obj)
-        with ivy.ArrayMode(False):
-            return ivy.squeeze(paddle.to_tensor(obj, dtype=dtype), 0)
+        return paddle_backend.squeeze(paddle.to_tensor(obj, dtype=dtype), 0)
 
     else:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
@@ -174,16 +175,12 @@ def asarray(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if size and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return to_device(paddle.empty(shape=shape).cast(dtype), device)
 
 
@@ -222,7 +219,7 @@ def eye(
         return to_device(i.astype(dtype), device)
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
-    i = ivy.broadcast_to(i, reshape_dims)
+    i = paddle_backend.broadcast_to(i, reshape_dims)
     return_mat = paddle.tile(i, tile_dims)
     return to_device(return_mat.astype(dtype), device)
 
@@ -245,6 +242,8 @@ def full(
 ) -> paddle.Tensor:
     if dtype is None:
         dtype = ivy.default_dtype(item=fill_value)
+    if not isinstance(shape, Sequence):
+        shape = [shape]
     return to_device(
         paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
     )
@@ -276,9 +275,9 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
         sos_shape = start_shape
         if num == 1:
             if axis is not None:
-                return ivy.expand_dims(start, axis=axis)
+                return paddle_backend.expand_dims(start, axis=axis)
             else:
-                return ivy.expand_dims(start, axis=-1)
+                return paddle_backend.expand_dims(start, axis=-1)
         start = start.reshape((-1,))
         linspace_method = (
             _differentiable_linspace if not start.stop_gradient else paddle.linspace
@@ -287,16 +286,18 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
         stop_shape = stop.shape
         sos_shape = stop_shape
         if num == 1:
-            return ivy.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start
+            return (
+                paddle_backend.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start
+            )
         stop = stop.reshape((-1,))
         linspace_method = (
             _differentiable_linspace if not stop.stop_gradient else paddle.linspace
         )
     if start_is_array and stop_is_array:
         if num < start.shape[0]:
-            start = ivy.expand_dims(start, axis=-1)
-            stop = ivy.expand_dims(stop, axis=-1)
-            diff = stop - start
+            start = paddle_backend.expand_dims(start, axis=-1)
+            stop = paddle_backend.expand_dims(stop, axis=-1)
+            diff = paddle_backend.subtract(stop, start)
             inc = diff / (num - 1)
             res = [start]
             res += [start + inc * i for i in range(1, num - 1)]
@@ -304,55 +305,57 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
         else:
             res = [
                 linspace_method(strt, stp, num)
-                for strt, stp in zip(ivy.unstack(start), ivy.unstack(stop))
+                for strt, stp in zip(
+                    paddle_backend.unstack(start, keepdims=True),
+                    paddle_backend.unstack(stop, keepdims=True),
+                )
             ]
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
-            start = ivy.expand_dims(start, axis=axis)
+            start = paddle_backend.expand_dims(start, axis=axis)
             diff = stop - start
             inc = diff / (num - 1)
             res = [start]
             res += [start + inc * i for i in range(1, num - 1)]
-            res.append(ivy.ones_like(start) * stop)
+            res.append(paddle.ones(start.shape).astype(start.dtype) * stop)
         else:
             res = [linspace_method(strt, stop, num) for strt in start]
     elif not start_is_array and stop_is_array:
         if num < stop.shape[0]:
-            stop = ivy.expand_dims(stop, axis=-1)
+            stop = paddle_backend.expand_dims(stop, axis=-1)
             diff = stop - start
             inc = diff / (num - 1)
-            res = [ivy.ones_like(stop) * start]
+            res = [paddle.ones(stop.shape).astype(stop.dtype) * start]
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
             res = [linspace_method(start, stp, num) for stp in stop]
     else:
         return linspace_method(start, stop, num, dtype=dtype)
-    res = ivy.concat(res, axis=-1).reshape(sos_shape + [num])
+    res = paddle_backend.concat(res, axis=-1).reshape(sos_shape + [num])
     if axis is not None:
         ndim = res.ndim
-        perm = ivy.arange(0, ndim - 1).tolist()
+        perm = list(range(ndim - 1))
         perm.insert(axis % (ndim + 1), ndim - 1)
-        res = ivy.permute_dims(res, perm)
+        res = paddle_backend.permute_dims(res, perm)
     return res
 
 
 def _differentiable_linspace(start, stop, num, *, dtype=None):
-    with ivy.ArrayMode(False):
-        start = ivy.to_native(start)
-        num = paddle.to_tensor(num, stop_gradient=False)
-        if num == 1:
-            return ivy.expand_dims(start, axis=0)
-        n_m_1 = ivy.subtract(num, 1)
-        increment = ivy.divide(ivy.subtract(stop, start), n_m_1)
-        increment_tiled = ivy.repeat(increment, n_m_1)
-        increments = ivy.multiply(
-            increment_tiled,
-            paddle.linspace(1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype),
-        )
-        if start.ndim == 0:
-            start = ivy.expand_dims(start, axis=0)
-        res = ivy.concat((start, ivy.add(start, increments)), axis=0)
+    start = ivy.to_native(start)
+    num = paddle.to_tensor(num, stop_gradient=False)
+    if num == 1:
+        return paddle_backend.expand_dims(start, axis=0)
+    n_m_1 = paddle_backend.subtract(num, 1)
+    increment = paddle_backend.divide(paddle_backend.subtract(stop, start), n_m_1)
+    increment_tiled = paddle_backend.repeat(increment, n_m_1)
+    increments = paddle_backend.multiply(
+        increment_tiled,
+        paddle.linspace(1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype),
+    )
+    if start.ndim == 0:
+        start = paddle_backend.expand_dims(start, axis=0)
+    res = paddle_backend.concat((start, paddle_backend.add(start, increments)), axis=0)
     return res.cast(dtype)
 
 
@@ -375,14 +378,11 @@ def linspace(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if not isinstance(start, paddle.Tensor):
+    if not isinstance(start, (paddle.Tensor, int)):
         start = paddle.to_tensor(start)
 
-    if not isinstance(start, paddle.Tensor):
+    if not isinstance(start, (paddle.Tensor, int)):
         start = paddle.to_tensor(stop)
-
-    if not isinstance(start, paddle.Tensor):
-        start = paddle.to_tensor(num)
 
     if axis is None:
         axis = -1
@@ -393,7 +393,7 @@ def linspace(
             ans = _linspace_helper(start, stop, num + 1, axis)
         if axis < 0:
             axis += len(ans.shape)
-        ans = ans[_slice_at_axis(slice(None, -1), axis)]
+        ans = paddle_backend.get_item(ans, _slice_at_axis(slice(None, -1), axis))
     else:
         if dtype is not None:
             ans = _linspace_helper(start, stop, num, axis, dtype=dtype)
@@ -413,6 +413,8 @@ def linspace(
         and ans[0] != start
     ):
         ans[0] = start
+    if ivy.is_ivy_array(ans):
+        ans = paddle.to_tensor(ans.data)
     if "int" in str(dtype) and paddle.is_floating_point(ans):
         ans = paddle.floor(ans)
     return to_device(ans.cast(dtype), device)
@@ -438,12 +440,18 @@ def meshgrid(
     *arrays: paddle.Tensor,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[paddle.Tensor] = None,
 ) -> List[paddle.Tensor]:
     if not sparse:
         if indexing == "ij":
             return paddle.meshgrid(*arrays)
         elif indexing == "xy":
-            return paddle.meshgrid(*arrays[::-1])[::-1]
+            index_switch = lambda x: (
+                paddle_backend.swapaxes(x, 0, 1) if x.ndim > 1 else x
+            )
+            arrays = list(map(index_switch, arrays))
+            ret = paddle.meshgrid(*arrays)
+            return list(map(index_switch, ret))
         else:
             raise ValueError(f"indexing must be either 'ij' or 'xy', got {indexing}")
 
@@ -452,7 +460,6 @@ def meshgrid(
         paddle.reshape(paddle.to_tensor(a), (sd[:i] + (-1,) + sd[i + 1 :]))
         for i, a in enumerate(arrays)
     ]
-
     if indexing == "xy" and len(arrays) > 1:
         res[0] = paddle.reshape(res[0], (1, -1) + sd[2:])
         res[1] = paddle.reshape(res[1], (-1, 1) + sd[2:])
@@ -464,16 +471,12 @@ def meshgrid(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if size and shape:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return to_device(paddle.ones(shape=shape).cast(dtype), device)
 
 
@@ -539,16 +542,12 @@ def triu(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if size and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return to_device(paddle.zeros(shape=shape).cast(dtype), device)
 
 
@@ -606,7 +605,9 @@ def one_hot(
 ) -> paddle.Tensor:
     on_none = on_value is None
     off_none = off_value is None
+    expand_ret = False
     if indices.ndim == 0:
+        expand_ret = True
         indices = indices.cast("int64").unsqueeze(0)
     if dtype is None:
         if on_none and off_none:
@@ -637,5 +638,55 @@ def one_hot(
 
     if axis is not None:
         res = paddle.moveaxis(res, -1, axis)
-
+    if expand_ret:
+        res = res.squeeze()
     return to_device(res.cast(dtype), device)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "bfloat16",
+            "complex64",
+            "complex128",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    backend_version,
+)
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[paddle.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> paddle.Tensor:
+    dtype_bytes = int(ivy.Dtype(dtype).dtype_bits / 8)
+    if str(dtype) == "bool":
+        dtype_bytes = 1
+    dtype_str = str(dtype)
+    struct_format = {
+        "bool": "?",
+        "int8": "b",
+        "int16": "h",
+        "int32": "i",
+        "int64": "q",
+        "uint8": "B",
+        "float16": "e",
+        "float32": "f",
+        "float64": "d",
+    }
+    ret = []
+    for i in range(0, len(buffer), dtype_bytes):
+        x = struct.unpack(struct_format[dtype_str], buffer[i : i + dtype_bytes])
+        ret = ret + list(x)
+    if offset > 0:
+        offset = int(offset / dtype_bytes)
+    if count > -1:
+        ret = ret[offset : offset + count]
+    else:
+        ret = ret[offset:]
+    ret = paddle.to_tensor(ret, dtype=dtype)
+
+    return ret

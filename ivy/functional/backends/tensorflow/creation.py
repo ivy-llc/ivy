@@ -77,6 +77,7 @@ def asarray(
     obj: Union[
         tf.Tensor,
         tf.Variable,
+        tf.TensorShape,
         bool,
         int,
         float,
@@ -92,6 +93,12 @@ def asarray(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
+        if isinstance(obj, tf.TensorShape):
+            if dtype is None:
+                return tf.convert_to_tensor(obj.as_list())
+            else:
+                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+                return tf.convert_to_tensor(obj.as_list(), dtype=dtype)
         if copy:
             if dtype is None and isinstance(obj, tf.Tensor):
                 return tf.identity(obj)
@@ -142,16 +149,12 @@ def asarray(
 
 
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if size and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     with tf.device(device):
         return tf.experimental.numpy.empty(shape, dtype)
 
@@ -282,8 +285,8 @@ def linspace(
     if axis is None:
         axis = -1
     with tf.device(device):
-        start = tf.constant(start, dtype=dtype)
-        stop = tf.constant(stop, dtype=dtype)
+        start = tf.cast(tf.constant(start), dtype=dtype)
+        stop = tf.cast(tf.constant(stop), dtype=dtype)
         if not endpoint:
             ans = tf.linspace(start, stop, num + 1, axis=axis)
             if axis < 0:
@@ -303,6 +306,7 @@ def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if not sparse:
         return tf.meshgrid(*arrays, indexing=indexing)
@@ -321,16 +325,12 @@ def meshgrid(
 
 
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if size and shape:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     with tf.device(device):
         return tf.ones(shape, dtype)
 
@@ -369,16 +369,12 @@ def triu(
 
 
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if size and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     with tf.device(device):
         return tf.zeros(shape, dtype)
 
@@ -442,3 +438,24 @@ def one_hot(
     return tf.one_hot(
         indices, depth, on_value=on_value, off_value=off_value, axis=axis, dtype=dtype
     )
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("uint32", "uint64")}, backend_version)
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[tf.DType] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(buffer, bytearray):
+        buffer = bytes(buffer)
+    ret = tf.io.decode_raw(buffer, dtype)
+    dtype = tf.dtypes.as_dtype(dtype)
+    if offset > 0:
+        offset = int(offset / dtype.size)
+    if count > -1:
+        ret = ret[offset : offset + count]
+    else:
+        ret = ret[offset:]
+
+    return ret
