@@ -40,6 +40,7 @@ def eigh(x, UPLO="L", name=None):
 
 
 # pinv
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def pinv(x, rcond=1e-15, hermitian=False, name=None):
     # TODO: Add hermitian functionality
