@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 def _dtype_x_limited_axis(draw, *, allow_none=False):
     dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric", full=False),
+            available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=1,
             min_dim_size=1,
             ret_shape=True,
