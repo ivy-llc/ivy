@@ -146,7 +146,6 @@ def argsort(
 
     Example 8: Setting the descending argument to True to sort the elements in descending order.
     The resulting container y has the same structure as x, but with each element replaced by its sorted indices in descending order.
-
     >>> x = ivy.Container(a=ivy.array([4,3,6]), b=ivy.array([[4, 5], [2, 4]]))
     >>> y = ivy.argsort(x, descending=True)
     >>> print(y)
