@@ -1,3 +1,5 @@
+import numpy as np
+
 import ivy
 
 
@@ -161,7 +163,7 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
         )
         and not (
             ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, float)
+            and isinstance(fill_value, (float, np.float32))
             or isinstance(fill_value, bool)
         )
     ):

@@ -2,15 +2,14 @@
 
 torch_scatter = None
 from typing import Union, Optional, Sequence
-
-
-import paddle
-
-# local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from . import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
+import paddle
+import ivy.functional.backends.paddle as paddle_backend
+
+# local
+from . import backend_version
 
 # Array API Standard #
 # -------------------#
@@ -27,6 +26,7 @@ def min(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    ret_dtype = x.dtype
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -38,11 +38,21 @@ def min(
     ]:
         if paddle.is_complex(x):
             real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
-            masked_x = ivy.to_native(ivy.greater_equal(x, paddle.amin(x.real())) * x)
+            masked_x = paddle_backend.greater_equal(x, paddle.amin(x.real())) * x
             imag = paddle.amin(masked_x.imag(), axis=axis, keepdim=keepdims)
-            return real + 1j * imag
-        return paddle.amin(x.cast("float32"), axis=axis, keepdim=keepdims).cast(x.dtype)
-    return paddle.amin(x, axis=axis, keepdim=keepdims)
+            ret = paddle.complex(real, imag)
+        else:
+            ret = paddle.amin(x.cast("float32"), axis=axis, keepdim=keepdims)
+    else:
+        ret = paddle.amin(x, axis=axis, keepdim=keepdims)
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.astype(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -56,6 +66,7 @@ def max(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    ret_dtype = x.dtype
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -67,11 +78,22 @@ def max(
     ]:
         if paddle.is_complex(x):
             real = paddle.amax(x.real(), axis=axis, keepdim=keepdims)
-            masked_x = ivy.to_native(ivy.greater_equal(x, paddle.amax(x.real())) * x)
+            masked_x = paddle_backend.greater_equal(x, paddle.amax(x.real())) * x
             imag = paddle.amax(masked_x.imag(), axis=axis, keepdim=keepdims)
-            return real + 1j * imag
-        return paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims).cast(x.dtype)
-    return paddle.amax(x, axis=axis, keepdim=keepdims)
+            ret = paddle.complex(real, imag)
+        else:
+            ret = paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims)
+    else:
+        ret = paddle.amax(x, axis=axis, keepdim=keepdims)
+
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.astype(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -85,31 +107,29 @@ def mean(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.int32,
-        paddle.int64,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
+    ret_dtype = x.dtype
+    if x.dtype not in [
+        paddle.float32,
+        paddle.float64,
     ]:
         if paddle.is_complex(x):
-            ret = paddle.mean(x.real(), axis=axis, keepdim=keepdims) + 1j * paddle.mean(
-                x.imag(), axis=axis, keepdim=keepdims
+            ret = paddle.complex(
+                paddle.mean(x.real(), axis=axis, keepdim=keepdims),
+                paddle.mean(x.imag(), axis=axis, keepdim=keepdims),
             )
-            if ret.ndim == 1 and not keepdims and axis is None:
-                ret = ret.squeeze()
-            return ret
-        ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
-        if ret.ndim == 1 and not keepdims and axis is None:
-            ret = ret.squeeze()
-        return ret.astype(x.dtype)
-    ret = paddle.mean(x, axis=axis, keepdim=keepdims)
-    if ret.ndim == 1 and not keepdims and axis is None:
+        else:
+            ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
+    else:
+        ret = paddle.mean(x, axis=axis, keepdim=keepdims)
+
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
         ret = ret.squeeze()
-    return ret
+    return ret.astype(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -130,19 +150,22 @@ def prod(
 
 
 def _std(x, axis, correction, keepdim):
-    with ivy.ArrayMode(False):
-        u = mean(x, axis=axis, keepdims=True)
-        out = sum(ivy.pow(ivy.subtract(x, u), 2), axis=axis, keepdims=keepdim)
-        num_elm_in = paddle.prod(paddle.to_tensor(x.shape)).item()
-        num_elm_out = paddle.prod(paddle.to_tensor(out.shape)).item()
-        n = num_elm_out / num_elm_in
-        out = ivy.sqrt(ivy.multiply(out, n))
-        if correction:
-            n = ivy.sqrt(
-                ivy.divide(num_elm_in, (num_elm_in - correction * num_elm_out))
-            )
-            out = ivy.multiply(out, n)
-        return out
+    u = paddle_backend.mean(x, axis=axis, keepdims=True)
+    out = paddle_backend.sum(
+        paddle_backend.pow(paddle_backend.subtract(x, u), 2),
+        axis=axis,
+        keepdims=keepdim,
+    )
+    num_elm_in = paddle.prod(paddle.to_tensor(x.shape)).item()
+    num_elm_out = paddle.prod(paddle.to_tensor(out.shape)).item()
+    n = num_elm_out / num_elm_in
+    out = paddle_backend.sqrt(paddle_backend.multiply(out, n))
+    if correction:
+        n = paddle_backend.sqrt(
+            paddle_backend.divide(num_elm_in, (num_elm_in - correction * num_elm_out))
+        )
+        out = paddle_backend.multiply(out, n)
+    return out
 
 
 @with_unsupported_device_and_dtypes(
@@ -175,8 +198,17 @@ def sum(
     dtype = x.dtype if dtype is None else dtype
     dtype = ivy.as_ivy_dtype(dtype)
     if x.dtype in [paddle.int8, paddle.uint8]:
-        return paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
-    return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+        ret = paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
+    else:
+        ret = paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = paddle_backend.squeeze(ret, axis=-1)
+    return ret
 
 
 @with_unsupported_device_and_dtypes(
@@ -191,8 +223,7 @@ def var(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        ret = ivy.pow(_std(x, axis, correction, keepdims), 2).cast(x.dtype)
+    ret = paddle_backend.pow(_std(x, axis, correction, keepdims), 2).cast(x.dtype)
     return ret
 
 
@@ -220,22 +251,35 @@ def cumprod(
     if not (exclusive or reverse):
         return paddle.cumprod(x, dim=axis).cast(dtype)
     elif exclusive and reverse:
-        with ivy.ArrayMode(False):
-            x = paddle.cumprod(ivy.flip(x, axis=(axis,)), dim=axis)
-            x = ivy.swapaxes(x, axis, -1)
-            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
-            x = ivy.swapaxes(x, axis, -1)
-            return ivy.flip(x, axis=(axis,)).cast(dtype)
+        x = paddle.cumprod(paddle_backend.flip(x, axis=(axis,)), dim=axis)
+        x = paddle_backend.swapaxes(x, axis, -1)
+        x = paddle_backend.concat(
+            [
+                paddle.ones_like(
+                    paddle_backend.get_item(x, (..., slice(-1, None, None)))
+                ),
+                paddle_backend.get_item(x, (..., slice(None, -1, None))),
+            ],
+            axis=-1,
+        )
+        x = paddle_backend.swapaxes(x, axis, -1)
+        return paddle_backend.flip(x, axis=(axis,)).cast(dtype)
     elif exclusive:
-        with ivy.ArrayMode(False):
-            x = ivy.swapaxes(x, axis, -1)
-            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
-            x = paddle.cumprod(x, -1)
-            return ivy.swapaxes(x, axis, -1).cast(dtype)
+        x = paddle_backend.swapaxes(x, axis, -1)
+        x = paddle_backend.concat(
+            [
+                paddle.ones_like(
+                    paddle_backend.get_item(x, (..., slice(-1, None, None)))
+                ),
+                paddle_backend.get_item(x, (..., slice(None, -1, None))),
+            ],
+            axis=-1,
+        )
+        x = paddle.cumprod(x, -1)
+        return paddle_backend.swapaxes(x, axis, -1).cast(dtype)
     else:
-        with ivy.ArrayMode(False):
-            x = paddle.cumprod(ivy.flip(x, axis=(axis,)), dim=axis)
-            return ivy.flip(x, axis=axis).cast(dtype)
+        x = paddle.cumprod(paddle_backend.flip(x, axis=(axis,)), dim=axis)
+        return paddle_backend.flip(x, axis=axis).cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -320,22 +364,35 @@ def cumsum(
     if not (exclusive or reverse):
         return paddle.cumsum(x, axis=axis).cast(dtype)
     elif exclusive and reverse:
-        with ivy.ArrayMode(False):
-            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
-            x = ivy.swapaxes(x, axis, -1)
-            x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
-            x = ivy.swapaxes(x, axis, -1)
-            return ivy.flip(x, axis=(axis,)).cast(dtype)
+        x = paddle.cumsum(paddle_backend.flip(x, axis=(axis,)), axis=axis)
+        x = paddle_backend.swapaxes(x, axis, -1)
+        x = paddle_backend.concat(
+            [
+                paddle.zeros_like(
+                    paddle_backend.get_item(x, (..., slice(-1, None, None)))
+                ),
+                paddle_backend.get_item(x, (..., slice(None, -1, None))),
+            ],
+            axis=-1,
+        )
+        x = paddle_backend.swapaxes(x, axis, -1)
+        return paddle_backend.flip(x, axis=(axis,)).cast(dtype)
     elif exclusive:
-        with ivy.ArrayMode(False):
-            x = ivy.swapaxes(x, axis, -1)
-            x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
-            x = paddle.cumsum(x, -1)
-            return ivy.swapaxes(x, axis, -1).cast(dtype)
+        x = paddle_backend.swapaxes(x, axis, -1)
+        x = paddle_backend.concat(
+            [
+                paddle.zeros_like(
+                    paddle_backend.get_item(x, (..., slice(-1, None, None)))
+                ),
+                paddle_backend.get_item(x, (..., slice(None, -1, None))),
+            ],
+            axis=-1,
+        )
+        x = paddle.cumsum(x, -1)
+        return paddle_backend.swapaxes(x, axis, -1).cast(dtype)
     else:
-        with ivy.ArrayMode(False):
-            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
-            return ivy.flip(x, axis=axis).cast(dtype)
+        x = paddle.cumsum(paddle_backend.flip(x, axis=(axis,)), axis=axis)
+        return paddle_backend.flip(x, axis=axis).cast(dtype)
 
 
 def einsum(

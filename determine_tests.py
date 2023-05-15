@@ -5,15 +5,14 @@ import bz2
 import _pickle as cPickle
 import sys
 
-BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
+BACKENDS = ["numpy", "jax", "tensorflow", "torch", "paddle"]
 
 
 def get_all_tests():
     os.system(
         "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest"
         " python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy "
-        "--my_test_dump true > test_names "
-        # noqa
+        "--my_test_dump true > test_names "  # noqa
     )
     test_names_without_backend = []
     test_names = []

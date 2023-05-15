@@ -348,7 +348,10 @@ def unique_consecutive(
         ["output", "inverse_indices", "counts"],
     )
     output, inverse_indices, counts = torch.unique_consecutive(
-        x, return_inverse=True, return_counts=True, dim=axis,
+        x,
+        return_inverse=True,
+        return_counts=True,
+        dim=axis,
     )
     return Results(
         output.to(x.dtype),
