@@ -226,6 +226,7 @@ from .tensor.logic import *
 from .tensor.manipulation import *
 from .tensor.math import *
 from .tensor.random import *
+from .tensor.stat import *
 from .tensor.search import *
 from .tensor.einsum import *
 from .tensor.stat import *
