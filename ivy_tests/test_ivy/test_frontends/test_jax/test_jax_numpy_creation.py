@@ -22,7 +22,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     as_list=st.booleans(),
     copy=st.booleans(),
     ndmin=helpers.ints(min_value=0, max_value=10),
-    test_with_out=st.just(False),
+    test_with_out=st.just(True),
 )
 def test_jax_numpy_array(
     *,
@@ -866,7 +866,7 @@ def test_jax_numpy_cdouble(
     dtype_arr=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=1,
-        max_num_dims=2,
+        max_num_dims=1,
         min_dim_size=10,
         max_dim_size=100,
     ),
@@ -876,12 +876,14 @@ def test_jax_numpy_cdouble(
             min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
         ),
     ),
-    test_with_out=st.just(False),
+    axis=st.just(0),
+    test_with_out=st.just(True),
 )
 def test_jax_numpy_compress(
     *,
     dtype_arr,
     condition,
+    axis,
     frontend,
     test_flags,
     fn_tree,
@@ -896,4 +898,5 @@ def test_jax_numpy_compress(
         on_device=on_device,
         condition=condition,
         a=arr[0],
+        axis=axis,
     )

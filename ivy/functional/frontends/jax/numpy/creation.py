@@ -8,6 +8,8 @@ from ivy.functional.frontends.jax.func_wrapper import (
     handle_jax_dtype,
 )
 
+from ivy.func_wrapper import handle_out_argument
+
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
@@ -216,7 +218,8 @@ def cdouble(x):
 
 
 @to_ivy_arrays_and_back
-def compress(condition, a, *, axis=None):
+@handle_out_argument
+def compress(condition, a, *, axis=None, out=None):
     condition_arr = ivy.asarray(condition).astype(bool)
     if condition_arr.ndim != 1:
         raise ivy.utils.exceptions.IvyException("Condition must be a 1D array")
