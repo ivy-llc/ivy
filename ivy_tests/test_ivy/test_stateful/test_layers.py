@@ -1125,8 +1125,7 @@ def test_maxpool1d_layer(
         test_gradients=test_gradients,
         on_device=on_device,
         atol=1e-5,
-        rtol=1e-5,
-        padding_type=padding_type,                                        
+        rtol=1e-5,                                       
     )
     
     
