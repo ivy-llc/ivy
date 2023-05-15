@@ -141,7 +141,7 @@ def std(
     return ret.astype(dtype, copy=False)
 
 
-def weighted_average(
+def _weighted_average(
     a, /, *, axis=None, weights=None, keepdims_kw=None, returned=False
 ):
     if a.shape != weights.shape:
@@ -163,12 +163,12 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     keepdims_kw = {"keepdims": keepdims} if keepdims else {}
 
     avg, weights_sum = (
-        weighted_average(
+        _weighted_average(
             a, weights=weights, axis=axis, keepdims_kw=keepdims_kw, returned=True
         )
         if weights
         else a.mean(axis, **keepdims_kw)
-    ), a.mean(axis, **keepdims_kw).dtype.type(a.count(axis))
+    ), a.mean(axis, **keepdims_kw).dtype.type(a.shape[axis])
 
     weights_sum = (
         ivy.broadcast_to(weights_sum, avg.shape).copy()
