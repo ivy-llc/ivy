@@ -1,7 +1,6 @@
 import os
 import sys
 from pydriller import Repository
-import random
 import pickle  # noqa
 from tqdm import tqdm
 import bz2
