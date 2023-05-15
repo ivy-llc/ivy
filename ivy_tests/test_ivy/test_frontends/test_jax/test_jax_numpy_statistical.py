@@ -1035,7 +1035,6 @@ def test_jax_numpy_correlate(
     mode,
 ):
     input_dtype, x = dtype_and_x
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
