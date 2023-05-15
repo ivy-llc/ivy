@@ -179,7 +179,7 @@ def index_select(input, dim, index, *, out=None):
 
 @to_ivy_arrays_and_back
 def index_reduce(dim, index, source, reduce, *, include_self=True):
-    return torch.index_reduce(dim, index, source, reduce, include_self=include_self)
+    return ivy.index_reduce_axis(dim, index, source, reduce, include_self=include_self)
 
 
 @to_ivy_arrays_and_back
