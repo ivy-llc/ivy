@@ -13,14 +13,12 @@ def l2_normalize(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     return torch.nn.functional.normalize(x, p=2, dim=axis, out=out)
 
 
 l2_normalize.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 @handle_mixed_function(
     lambda x, mean, variance, scale, offset, **kwargs: (
         x.ndim > 1
@@ -30,6 +28,7 @@ l2_normalize.support_native_out = True
         and (offset is None or offset.ndim == 1)
     )
 )
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def batch_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
@@ -122,7 +121,6 @@ def lp_normalize(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     return torch.nn.functional.normalize(x, p=p, dim=axis, out=out)
 
 

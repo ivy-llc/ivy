@@ -52,7 +52,14 @@ def arange(
 @asarray_handle_nestable
 def asarray(
     obj: Union[
-        JaxArray, bool, int, float, NestedSequence, SupportsBufferProtocol, np.ndarray
+        JaxArray,
+        bool,
+        int,
+        float,
+        tuple,
+        NestedSequence,
+        SupportsBufferProtocol,
+        np.ndarray,
     ],
     /,
     *,
@@ -89,16 +96,12 @@ def asarray(
 
 
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if size and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return _to_device(jnp.empty(shape, dtype), device=device)
 
 
@@ -248,21 +251,18 @@ def meshgrid(
     *arrays: JaxArray,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[JaxArray] = None,
 ) -> List[JaxArray]:
     return jnp.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if size and shape:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return _to_device(jnp.ones(shape, dtype), device=device)
 
 
@@ -286,16 +286,12 @@ def triu(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxAr
 
 
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if size and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return _to_device(
         jnp.zeros(shape, dtype),
         device=device,
@@ -323,9 +319,14 @@ array = asarray
 def copy_array(
     x: JaxArray, *, to_ivy_array: bool = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
+    x = (
+        jax.core.ShapedArray(x.shape, x.dtype)
+        if isinstance(x, jax.core.ShapedArray)
+        else jnp.array(x)
+    )
     if to_ivy_array:
-        return ivy.to_ivy(jnp.array(x))
-    return jnp.array(x)
+        return ivy.to_ivy(x)
+    return x
 
 
 def one_hot(
@@ -362,3 +363,12 @@ def one_hot(
         res = jnp.moveaxis(res, -1, axis)
 
     return _to_device(res, device)
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[jnp.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> JaxArray:
+    return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)

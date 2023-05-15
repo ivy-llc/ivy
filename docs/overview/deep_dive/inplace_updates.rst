@@ -24,6 +24,8 @@ Inplace Updates
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/982738152236130335
 .. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
 .. _`in the decorator`: https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287
+.. _`mixed_function attribute`: https://github.com/unifyai/ivy/blob/fe162b84a6d5f492f9e2cef4fbd145fadede8b8f/ivy/func_wrapper.py#L574
+.. _`out argument as a keyword argument`: https://github.com/unifyai/ivy/blob/e4505b6a7ad4922ed423ae09da8c9707c9926161/ivy/func_wrapper.py#L585
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
 This enables much more control over the memory-efficiency of the program, preventing old unused arrays from being kept in memory for any longer than is strictly necessary.
@@ -429,16 +431,11 @@ Technically, this could be handled using the `handle_out_argument`_ wrapping, bu
 
 As explained in the :ref:`Function Types` section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected.
 
-Unlike *compositional* arguments, where the :code:`handle_out_argument` decorator is not included, this decorator *should* be included for *mixed* functions.
+Unlike *compositional* functions, where the :code:`handle_out_argument` decorator is not included, this decorator *should* be included for *mixed* functions.
 This decorator is needed in order to ensure the :code:`out` argument is handled correctly when the backend *does* include a backend-specific implementation, which itself may or may not handle the :code:`out` argument explicitly.
 In such cases, the *mixed* function behaves like a *primary* function.
-If the backend-specific implementation does not handle the :code:`out` argument explicitly (there is no attribute :code:`support_native_out` specified on the backend function), then it will need to be handled `in the decorator`_.
+If the backend-specific implementation does not handle the :code:`out` argument explicitly (there is no attribute :code:`support_native_out` specified on the backend function), then it will need to be handled `in the decorator`_. Moreover, when the mixed function defers to the compositional implementation, the handle_out_argument decorator will check for the `mixed_function attribute`_ and call the compositional function by directly passing the `out argument as a keyword argument`_.
 
-However, the inclusion of this decorator means that in cases where the *mixed* function is called compositionally (there is no backend implementation), then the :code:`out` argument will also be handled `in the decorator`_, this time because of the lack of the :code:`support_native_out` attribute found on the compositional implementation.
-But this is not ideal.
-All compositional implementations are fully capable of handling the :code:`out` argument explicitly, and so handling it `in the decorator`_ will likely be less efficient, and prevent us from leveraging backend-specific in-place optimizations where they might exist when calling the individual Ivy functions of the compositional implementation.
-
-Therefore, we always add the :code:`support_native_out` attribute to *mixed* functions, to ensure that the :code:`out` argument is always handled directly by the compositional implementation, rather than being handled `in the decorator`_.
 
 
 Views

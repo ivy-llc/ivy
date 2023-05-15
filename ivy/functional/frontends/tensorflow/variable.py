@@ -291,9 +291,11 @@ class IndexedSlices:
         return "IndexedSlices(\nindices=%s,\nvalues=%s%s\n)" % (
             self._indices,
             self._values,
-            (", dense_shape=%s" % (self._dense_shape,))
-            if self._dense_shape is not None
-            else "",
+            (
+                ", dense_shape=%s" % (self._dense_shape,)
+                if self._dense_shape is not None
+                else ""
+            ),
         )
 
     def __neg__(self):

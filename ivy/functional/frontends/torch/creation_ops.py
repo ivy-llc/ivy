@@ -285,3 +285,15 @@ def asarray(
     copy=None,
 ):
     return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)
+
+
+@to_ivy_arrays_and_back
+def frombuffer(
+    buffer,
+    *,
+    dtype,
+    count=-1,
+    offset=0,
+    requires_grad=False,
+):
+    return ivy.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
