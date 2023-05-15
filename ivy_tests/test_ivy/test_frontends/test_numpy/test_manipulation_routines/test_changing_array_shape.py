@@ -228,7 +228,7 @@ def test_numpy_resize(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x = x,
+        x = x[0],
         newshape = new_shape,
     )
 

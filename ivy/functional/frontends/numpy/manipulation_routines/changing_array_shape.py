@@ -13,7 +13,7 @@ def reshape(x, /, newshape, order="C"):
 
 @to_ivy_arrays_and_back
 def resize(x, newshape,/,refcheck=True):
-    x_new = np.ravel(x)
+    x_new = ivy.reshape(x, shape=(-1,), order='C')
     total_size = 1
     for diff_size in newshape:
         total_size *= diff_size
@@ -21,15 +21,12 @@ def resize(x, newshape,/,refcheck=True):
             raise ValueError('values must not be negative')
     
     if x_new.size == 0 or total_size == 0:
-        return np.zeros_like(x_new) 
+        return ivy.zeros_like(x_new) 
     repetition = -(-total_size//len(x_new))
-    # zeros = ivy.zeros((repetition * repetition),dtype=int)
-    # x_new = ivy.concat((x_new,zeros))[:total_size]
-    # or
     conc = (x_new,) * repetition
-    x_new = np.concatenate(conc)[:total_size]
-    y = np.reshape(x_new,newshape=newshape,order="C")
-    return ivy.array(y)
+    x_new = ivy.concat(conc)[:total_size]
+    y = ivy.reshape(x_new,shape=newshape,order="C")
+    return y
 
 
 @to_ivy_arrays_and_back
