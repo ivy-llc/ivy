@@ -621,15 +621,18 @@ def unique_consecutive(
                 paddle.abs(paddle.diff(x, axis=axis)) > 1e-50,
                 axis=tuple(i for i in paddle.arange(x.ndim) if i != axis),
             )
-        )[0] + 1,
+        )[0]
+        + 1,
     )
     if len(split_indices) > 0:
-        split_sizes = [split_indices[0]] + \
-                      [
-                          split_indices[i] - split_indices[i-1]
-                          for i in range(1, len(split_indices))
-                      ] + \
-                      [x.shape[axis] - split_indices[-1]]
+        split_sizes = (
+            [split_indices[0]]
+            + [
+                split_indices[i] - split_indices[i - 1]
+                for i in range(1, len(split_indices))
+            ]
+            + [x.shape[axis] - split_indices[-1]]
+        )
         sub_arrays = paddle.split(
             x,
             split_sizes,
@@ -638,7 +641,10 @@ def unique_consecutive(
     else:
         sub_arrays = [x]
     output = paddle.concat(
-        [ivy.current_backend().unique_all(sub_array, axis=axis)[0] for sub_array in sub_arrays],
+        [
+            ivy.current_backend().unique_all(sub_array, axis=axis)[0]
+            for sub_array in sub_arrays
+        ],
         axis=axis,
     )
     counts = paddle.to_tensor([sub_array.shape[axis] for sub_array in sub_arrays])
