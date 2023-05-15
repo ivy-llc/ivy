@@ -1028,6 +1028,7 @@ class _ContainerWithRandom(ContainerBase):
     @staticmethod
     def _static_shuffle(
         x: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = 0,
         /,
         *,
         seed: Optional[int] = None,
@@ -1046,6 +1047,8 @@ class _ContainerWithRandom(ContainerBase):
         ----------
         x
             Input array or container. Should have a numeric data type.
+        axis
+            The axis which input array or container is shuffled along. Default is 0.
         seed
             A python integer. Used to create a random seed distribution
         key_chains
@@ -1081,6 +1084,7 @@ class _ContainerWithRandom(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "shuffle",
             x,
+            axis,
             seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1091,6 +1095,7 @@ class _ContainerWithRandom(ContainerBase):
 
     def shuffle(
         self: ivy.Container,
+        axis: Optional[int] = 0,
         /,
         *,
         seed: Optional[int] = None,
@@ -1109,6 +1114,8 @@ class _ContainerWithRandom(ContainerBase):
         ----------
         self
             Input container. Should have a numeric data type.
+        axis
+            The axis which input container is shuffled along. Default is 0.
         seed
             A python integer. Used to create a random seed distribution
         key_chains
@@ -1143,6 +1150,7 @@ class _ContainerWithRandom(ContainerBase):
         """
         return self._static_shuffle(
             self,
+            axis,
             seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,

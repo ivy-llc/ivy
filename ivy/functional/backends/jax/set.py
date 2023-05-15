@@ -5,6 +5,7 @@ from collections import namedtuple
 
 # local
 from ivy.functional.backends.jax import JaxArray
+import ivy
 
 
 def unique_all(
@@ -12,6 +13,7 @@ def unique_all(
     /,
     *,
     axis: Optional[int] = None,
+    by_value: bool = True,
 ) -> Tuple[JaxArray, JaxArray, JaxArray, JaxArray]:
     Results = namedtuple(
         "Results",
@@ -46,6 +48,16 @@ def unique_all(
         )
         nan_idx = jnp.where(jnp.isnan(x.flatten()))[0]
         indices = jnp.concatenate((indices[:-1], nan_idx), axis=0).astype(indices.dtype)
+
+    if not by_value:
+        sort_idx = jnp.argsort(indices)
+        values = jnp.take(values, sort_idx, axis=axis)
+        counts = jnp.take(counts, sort_idx)
+        indices = jnp.take(indices, sort_idx)
+        inv_sort_idx = ivy.current_backend().invert_permutation(sort_idx)
+        inverse_indices = jnp.vectorize(lambda y: jnp.take(inv_sort_idx, y))(
+            inverse_indices
+        )
 
     return Results(
         values.astype(x.dtype),

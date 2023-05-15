@@ -66,6 +66,14 @@ def dirichlet(key, alpha, shape=None, dtype="float32"):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
+def cauchy(key, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=shape, dtype=dtype, seed=seed)
+    return ivy.tan(ivy.pi * (u - 0.5))
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"0.3.14 and below": ("unsigned", "int8", "int16")},
     "jax",
@@ -163,3 +171,18 @@ def t(key, df, shape=(), dtype="float64"):
 def randint(key, shape, minval, maxval, dtype="int64"):
     seed = _get_seed(key)
     return ivy.randint(minval, maxval, shape=shape, dtype=dtype, seed=seed)
+
+
+@to_ivy_arrays_and_back
+def permutation(key, x, axis=0, independent=False):
+    x = ivy.array(x)
+    seed = _get_seed(key)
+    if not ivy.get_num_dims(x):
+        r = int(x)
+        return ivy.shuffle(ivy.arange(r), axis, seed=seed)
+    if independent:
+        return ivy.shuffle(x, axis, seed=seed)
+    rand = ivy.arange(x.shape[axis])
+    ind = ivy.shuffle(rand, 0, seed=seed)
+
+    return ivy.gather(x, ind, axis=axis)
