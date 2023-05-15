@@ -5,6 +5,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy.functional.frontends.jax._src.api import device_put, device_get
 from hypothesis import given, assume, strategies as st
+from ivy.functional.frontends.jax._src.api import vmap
 
 
 def _fn1(x, y):
@@ -16,7 +17,7 @@ def _fn2(x, y):
 
 
 def _fn3(x, y):
-    ivy.add(x, y)
+    return ivy.add(x, y)
 
 
 # vmap
@@ -37,12 +38,11 @@ def _fn3(x, y):
 def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
     dtype, generated_arrays, in_axes = dtype_and_arrays_and_axes
     arrays = [ivy.native_array(array) for array in generated_arrays]
-    assume(ivy.as_ivy_dtype(dtype[0]) not in ivy.function_unsupported_dtypes(ivy.vmap))
 
     if in_axes_as_cont:
-        vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
+        vmapped_func = vmap(func, in_axes=in_axes, out_axes=0)
     else:
-        vmapped_func = ivy.vmap(func, in_axes=0, out_axes=0)
+        vmapped_func = vmap(func, in_axes=0, out_axes=0)
 
     assert callable(vmapped_func)
 
