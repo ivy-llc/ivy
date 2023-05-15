@@ -43,7 +43,7 @@ def test_relu(
 @handle_test(
     fn_tree="functional.ivy.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False, key="leaky_relu"),
+        available_dtypes=helpers.get_dtypes("valid", full=False, key="leaky_relu"),
         large_abs_safety_factor=16,
         small_abs_safety_factor=16,
         safety_factor_scale="log",
@@ -185,7 +185,7 @@ def test_softmax(
 @handle_test(
     fn_tree="functional.ivy.softplus",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
