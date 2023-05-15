@@ -13,6 +13,7 @@ except Exception:
     pass
 from ivy.utils.exceptions import IvyException
 
+
 def framework_comparator(frontend):
     if ivy.current_backend_str() != frontend.split("/")[0]:
         return False

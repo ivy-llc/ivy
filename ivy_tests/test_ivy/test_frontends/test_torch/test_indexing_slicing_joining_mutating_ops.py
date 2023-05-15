@@ -1383,8 +1383,8 @@ def test_torch_masked_select(
         input=x[0],
         mask=mask,
     )
-    
-    
+
+
 @handle_frontend_test(
     fn_tree="torch.take",
     dtype_and_x=helpers.array_indices_axis(
@@ -1408,4 +1408,4 @@ def test_torch_take(
         on_device=on_device,
         input=xs,
         index=indices,
-    )    
+    )

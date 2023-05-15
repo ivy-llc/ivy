@@ -8063,7 +8063,7 @@ def test_torch_instance_logdet(
         on_device=on_device,
     )
 
-    
+
 # multiply
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8097,4 +8097,4 @@ def test_torch_instance_multiply(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
-    ) 
+    )
