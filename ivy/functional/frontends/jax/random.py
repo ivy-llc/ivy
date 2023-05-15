@@ -172,6 +172,17 @@ def randint(key, shape, minval, maxval, dtype="int64"):
     seed = _get_seed(key)
     return ivy.randint(minval, maxval, shape=shape, dtype=dtype, seed=seed)
 
+@to_ivy_arrays_and_back
+def bernoulli(key, p=0.5, shape=None):
+    seed = _get_seed(key)
+    return ivy.bernoulli(p, shape=shape, seed=seed)
+
+@to_ivy_arrays_and_back
+def fold_in(key, data):
+    s = ivy.bitwise_left_shift(
+        ivy.asarray(data, dtype=ivy.uint32), ivy.array(32, dtype=ivy.uint32)
+    )
+    return ivy.bitwise_xor(key, s)
 
 @to_ivy_arrays_and_back
 def permutation(key, x, axis=0, independent=False):
@@ -184,5 +195,4 @@ def permutation(key, x, axis=0, independent=False):
         return ivy.shuffle(x, axis, seed=seed)
     rand = ivy.arange(x.shape[axis])
     ind = ivy.shuffle(rand, 0, seed=seed)
-
     return ivy.gather(x, ind, axis=axis)
