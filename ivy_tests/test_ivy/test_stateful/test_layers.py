@@ -1105,9 +1105,6 @@ def test_maxpool1d_layer(
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
-    kernel_size = kernel_size[-1]
-    stride = stride[-1]
-    padding = padding[-1]
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
