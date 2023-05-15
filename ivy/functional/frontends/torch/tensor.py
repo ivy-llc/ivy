@@ -521,6 +521,10 @@ class Tensor:
             ivy.stop_gradient(self.ivy_array, preserve_type=False)
         )
 
+    def detach_(self):
+        self.ivy_array = self.detach().ivy_array
+        return self
+
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
 
@@ -1134,12 +1138,10 @@ class Tensor:
 
     def tolist(self):
         return self._ivy_array.to_list()
-    
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def multiply(self, other, *, out=None):
         return torch_frontend.multiply(self, other, out=out)
-    
-
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
     def topk(self, k, dim=None, largest=True, sorted=True):
