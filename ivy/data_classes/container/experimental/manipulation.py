@@ -2725,9 +2725,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.unique_consecutive. This method
-        simply wraps the function, and so the docstring for ivy.unique_consecutive also
-        applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.unique_consecutive.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unique_consecutive also applies to this method with minimal
+        changes.
         """
         return ContainerBase.cont_multi_map_in_function(
             "unique_consecutive",
@@ -2750,9 +2752,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.unique_consecutive. This method
-        simply wraps the function, and so the docstring for ivy.unique_consecutive also
-        applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.unique_consecutive.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unique_consecutive also applies to this method with minimal
+        changes.
         """
         return self._static_unique_consecutive(
             self,

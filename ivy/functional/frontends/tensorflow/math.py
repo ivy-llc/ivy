@@ -671,7 +671,5 @@ def in_top_k(target, pred, k, name=None):
 
 
 @to_ivy_arrays_and_back
-def conj(
-    x, name=None
-):
+def conj(x, name=None):
     return ivy.conj(x)
