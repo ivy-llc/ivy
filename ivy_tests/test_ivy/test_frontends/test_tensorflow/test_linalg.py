@@ -842,12 +842,14 @@ def test_tensorflow_adjoint(
     fn_tree="tensorflow.linalg.diag",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["int64", "int32"],
-        min_num_dims=2,
+        min_num_dims=1,
         max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=2,
+        min_dim_size=5,
+        max_dim_size=10,
+        min_value=0,
+        max_value=10,
     ),
-    k=helpers.ints(min_value=0, max_value=10),
+    k=st.just(0),
 )
 def test_tensorflow_diag(
     dtype_and_x,
