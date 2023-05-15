@@ -1105,6 +1105,9 @@ def test_maxpool1d_layer(
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    kernel_size = kernel_size[-1]
+    stride = stride[-1]
+    padding = padding[-1]
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1115,7 +1118,7 @@ def test_maxpool1d_layer(
             "padding": padding,
             "data_format": "NCW",
             "device": on_device,
-            "dtype": input_dtype,
+            "dtype": input_dtype[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"inputs": x[0]},
