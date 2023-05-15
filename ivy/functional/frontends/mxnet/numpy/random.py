@@ -3,8 +3,8 @@ from ivy.functional.frontends.mxnet.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
-def shuffle(x):
-    ivy.shuffle(x)
+def shuffle(x, axis=0):
+    ivy.shuffle(x, axis)
 
 
 @to_ivy_arrays_and_back
