@@ -1474,15 +1474,12 @@ class MaxPool1D(Module):
         -------
         The output of the layer.
         """
-        if inputs.size()[-1] < self._kernel_size:
-            return ivy.zeros(inputs.shape[:-1] + (1,))
-        else:
-            return ivy.max_pool1d(
-                inputs,
-                self._kernel_size,
-                self._stride,
-                self._padding,
-                data_format=self._data_format,
+        return ivy.max_pool1d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
             )
 
 class MaxPool2D(Module):
