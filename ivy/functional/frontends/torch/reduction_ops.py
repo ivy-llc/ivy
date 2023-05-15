@@ -258,3 +258,23 @@ def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
         return ivy.vector_norm(
             input, ord=p, axis=dim, keepdims=keepdim, dtype=dtype, out=out
         )
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "complex",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def unique_consecutive(input, return_inverse, return_counts, dim):
+    output, inverse_indices, counts = ivy.unique_consecutive(input, axis=dim)
+    ret = (output,)
+    if return_inverse:
+        ret += (inverse_indices,)
+    if return_counts:
+        ret += (counts,)
+    return ret

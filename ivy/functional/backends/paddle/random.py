@@ -2,6 +2,7 @@
 
 # global
 import paddle
+import ivy.functional.backends.paddle as paddle_backend
 from typing import Optional, Union, Sequence
 
 # local
@@ -46,8 +47,10 @@ def random_uniform(
     if seed:
         _ = paddle.seed(seed)
     random_base = paddle.uniform(shape, min=0.0, max=1.0)
-    with ivy.ArrayMode(False):
-        return ivy.add(ivy.multiply(random_base, rng), low).cast(dtype)
+
+    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(
+        dtype
+    )
 
 
 @with_unsupported_device_and_dtypes(
@@ -155,6 +158,6 @@ def shuffle(
         if paddle.is_complex(x):
             shuffled_real = paddle.index_select(x.real(), indices)
             shuffled_imag = paddle.index_select(x.imag(), indices)
-            return shuffled_real + 1j * shuffled_imag
+            return paddle.complex(shuffled_real, shuffled_imag)
         return paddle.index_select(x.cast("float32"), indices).cast(x.dtype)
     return paddle.index_select(x, indices)

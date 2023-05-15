@@ -1,5 +1,6 @@
 # global
 import jax.numpy as jnp
+import jax.lax as jlax
 from typing import Union, Optional, Sequence
 
 # local
@@ -91,7 +92,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[jnp.dtype] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
@@ -173,6 +174,48 @@ def cumprod(
     else:
         x = jnp.cumprod(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
         return jnp.flip(x, axis=axis)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def cummax(
+    x: JaxArray,
+    /,
+    *,
+    axis: int = 0,
+    reverse: bool = False,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if axis < 0:
+        axis = axis + len(x.shape)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
+    return jlax.cummax(x, axis, reverse=reverse).astype(dtype)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def cummin(
+    x: JaxArray,
+    /,
+    *,
+    axis: int = 0,
+    reverse: bool = False,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if axis < 0:
+        axis = axis + len(x.shape)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
+    return jlax.cummin(x, axis, reverse=reverse).astype(dtype)
 
 
 def cumsum(
