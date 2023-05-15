@@ -356,6 +356,9 @@ def kaiser_bessel_derived_window(
     window_length = window_length // 2
     w = ivy.kaiser_window(window_length + 1, periodic, beta)
 
+    if window_length == 0:
+        return ivy.array([1], dtype=dtype, out=out)
+
     sum_i_N = sum([w[i] for i in range(0, window_length + 1)])
 
     def sum_i_n(n):

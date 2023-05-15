@@ -2712,3 +2712,57 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             The result of the scan.
         """
         return ivy.associative_scan(self, fn, reverse=reverse, axis=axis)
+
+    @staticmethod
+    def _static_unique_consecutive(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.unique_consecutive.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unique_consecutive also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unique_consecutive",
+            x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def unique_consecutive(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.unique_consecutive.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unique_consecutive also applies to this method with minimal
+        changes.
+        """
+        return self._static_unique_consecutive(
+            self,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
