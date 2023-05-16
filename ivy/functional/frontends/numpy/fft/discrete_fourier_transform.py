@@ -59,8 +59,9 @@ def fftshift(x, axes=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 def rfft(a, n=None, axis=-1, norm=None):
-    a = ivy.asarray(a)
+    a = ivy.real(a)
     if norm is None:
         norm = "backward"
     return ivy.dft(a, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
