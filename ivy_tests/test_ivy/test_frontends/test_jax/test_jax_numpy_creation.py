@@ -866,7 +866,7 @@ def test_jax_numpy_cdouble(
     dtype_arr=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=1,
-        max_num_dims=1,
+        max_num_dims=2,
         min_dim_size=10,
         max_dim_size=100,
     ),
@@ -876,7 +876,11 @@ def test_jax_numpy_cdouble(
             min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
         ),
     ),
-    axis=st.just(0),
+    axis=st.one_of(
+        st.none(),
+        st.just(0),
+        st.just(1),
+    ),
     test_with_out=st.just(True),
 )
 def test_jax_numpy_compress(
