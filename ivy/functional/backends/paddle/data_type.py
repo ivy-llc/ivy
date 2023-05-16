@@ -2,6 +2,7 @@
 from typing import Optional, Union, Sequence, List
 
 import paddle
+import ivy.functional.backends.paddle as paddle_backend
 import numpy as np
 
 # local
@@ -129,17 +130,19 @@ def astype(
 )
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
     if len(arrays) > 1:
-        desired_shape = ivy.broadcast_shapes(arrays[0].shape, arrays[1].shape)
+        desired_shape = paddle_backend.broadcast_shapes(
+            arrays[0].shape, arrays[1].shape
+        )
         if len(arrays) > 2:
-            with ivy.ArrayMode(False):
-                for i in range(2, len(arrays)):
-                    desired_shape = ivy.broadcast_shapes(desired_shape, arrays[i].shape)
+            for i in range(2, len(arrays)):
+                desired_shape = paddle_backend.broadcast_shapes(
+                    desired_shape, arrays[i].shape
+                )
     else:
         return [arrays[0]]
     result = []
-    with ivy.ArrayMode(False):
-        for tensor in arrays:
-            result.append(broadcast_to(tensor, desired_shape))
+    for tensor in arrays:
+        result.append(paddle_backend.broadcast_to(tensor, desired_shape))
     return result
 
 
@@ -160,8 +163,7 @@ def broadcast_to(
         if len(shape) == 0:
             return x
         else:
-            with ivy.ArrayMode(False):
-                x = ivy.expand_dims(x, axis=0)
+            x = paddle_backend.expand_dims(x, axis=0)
     if x.ndim > len(shape):
         x = x.reshape([-1])
 
@@ -175,7 +177,7 @@ def broadcast_to(
     elif x.dtype in [paddle.complex64, paddle.complex128]:
         x_real = paddle.broadcast_to(x.real(), shape)
         x_imag = paddle.broadcast_to(x.imag(), shape)
-        return x_real + 1j * x_imag
+        return paddle.complex(x_real, x_imag)
     else:
         return paddle.broadcast_to(x, shape)
 
