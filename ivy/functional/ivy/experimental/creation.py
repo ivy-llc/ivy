@@ -217,7 +217,7 @@ def stft(
     out: Optional[ivy.Array] = None,
 ):
     """
-    Computes the [Short-time Fourier Transform][stft] of `signals`.
+    Compute the [Short-time Fourier Transform][stft] of `signals`.
 
     Implemented with TPU/GPU-compatible ops and supports gradients.
 
@@ -235,12 +235,14 @@ def stft(
         frame length and step produces a frame that lies partially past its end.
       name: An optional name for the operation.
 
-    Returns:
+    Returns
+    -------
       A `[..., frames, fft_unique_bins]` `Tensor` of `complex64`/`complex128`
       STFT values where `fft_unique_bins` is `fft_length // 2 + 1` (the unique
       components of the FFT).
 
-    Raises:
+    Raises
+    -------
       ValueError: If `signals` is not at least rank 1, `frame_length` is
         not scalar, or `frame_step` is not scalar.
 
