@@ -521,6 +521,10 @@ class Tensor:
             ivy.stop_gradient(self.ivy_array, preserve_type=False)
         )
 
+    def detach_(self):
+        self.ivy_array = self.detach().ivy_array
+        return self
+
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
 
