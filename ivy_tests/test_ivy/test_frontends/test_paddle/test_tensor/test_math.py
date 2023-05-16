@@ -83,7 +83,7 @@ def test_paddle_acos(
         atol=1e-2,
         x=x[0],
     )
-    # atan
+# atan
 @handle_frontend_test(
     fn_tree="paddle.atan",
     dtype_and_x=helpers.dtype_and_values(
@@ -105,7 +105,6 @@ def test_paddle_atan(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-2,
         x=x[0],
     )
 
