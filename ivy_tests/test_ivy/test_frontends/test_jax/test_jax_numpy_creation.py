@@ -870,6 +870,7 @@ def test_jax_numpy_cdouble(
         min_dim_size=10,
         max_dim_size=100,
         valid_axis=True,
+        force_int_axis=True,
     ),
     condition=helpers.array_values(
         dtype=helpers.get_dtypes("bool"),
