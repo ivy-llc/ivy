@@ -59,10 +59,10 @@ def test_jax_tree_leaves(
 ):
     # Apply the tree_leaves function to obtain the leaves of the tree
     result = tree_leaves(tree, is_leaf=None)
-    
+
     # compute the expected result
     expected = ivy.Array(jax.tree_util.tree_leaves(tree))
-    
+
     # value test
     assert ivy.equal(ivy.Array(result), expected)
 
