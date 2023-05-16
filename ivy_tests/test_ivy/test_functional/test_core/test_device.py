@@ -619,10 +619,6 @@ def test_clear_cached_mem_on_dev():
         # Testing on only GPU since clearing cache mem is relevant
         # for only CUDA devices
         if "gpu" in device:
-            arr = ivy.random_normal(
-                shape=(10000, 10000), dtype="float32", device=device
-            )
-            del arr
             before = get_gpu_mem_usage(device)
             ivy.clear_cached_mem_on_dev(device)
             after = get_gpu_mem_usage(device)
@@ -639,12 +635,13 @@ def get_cpu_percent():
 def test_dev_util():
     devices = _get_possible_devices()
     for device in devices:
-        # The internally called psutil.cpu_percent() has a unique behavior where it returns 0
+        # The internally called psutil.cpu_percent() has a unique behavior (returns 0)
         # as usage when run the second time in same line so simple
         # assert psutil.cpu_percent() == ivy.dev_util(device) isn't possible
         if "cpu" in device:
             assert 100 > ivy.dev_util(device) > 0
-            # Comparing CPU utilization using top. Two percentiles won't be directly equal
+            # Comparing CPU utilization using top
+            # Two percentiles won't be directly equal
             # but absolute difference should be below a safe threshold
             assert abs(get_cpu_percent() - ivy.dev_util(device)) < 10
         elif "gpu" in device:
