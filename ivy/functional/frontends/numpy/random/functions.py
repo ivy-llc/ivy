@@ -103,13 +103,17 @@ def standard_gamma(shape, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def binomial(n, p, size=None):
-    def comb(k, n):
+    def comb(k,n):
         if k >= n:
             KMinusn = k - n
             return math.factorial(n) / (math.factorial(k) * math.factorial(KMinusn))
+        else:
+            raise ValueError("k < n")
     oneMinusP = ivy.subtract(1, p)
     nMinusSize = ivy.subtract(n, size)
     return (ivy.pow(oneMinusP, nMinusSize)) * (ivy.pow(p, size)) * comb(size[0], n)
+
+
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def chisquare(df, size=None):
