@@ -6,6 +6,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy.functional.frontends.jax._src.api import device_put, device_get
 from hypothesis import given, assume, strategies as st
 from ivy.functional.frontends.jax._src.api import vmap
+import jax
 
 
 def _fn1(x, y):
@@ -34,10 +35,18 @@ def _fn3(x, y):
         return_dtype=True,
     ),
     in_axes_as_cont=st.booleans(),
+    sample_backend=st.sampled_from(["jax", "numpy", "tensorflow", "torch", "paddle"]),
 )
-def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
+def test_vmap(
+    func,
+    dtype_and_arrays_and_axes,
+    in_axes_as_cont,
+    sample_backend,
+):
     dtype, generated_arrays, in_axes = dtype_and_arrays_and_axes
     arrays = [ivy.native_array(array) for array in generated_arrays]
+
+    ivy.set_backend(sample_backend)
 
     if in_axes_as_cont:
         vmapped_func = vmap(func, in_axes=in_axes, out_axes=0)
@@ -52,12 +61,14 @@ def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
     except Exception:
         fw_res = None
 
+    ivy.previous_backend()
+
     ivy.set_backend("jax")
     arrays = [ivy.native_array(array) for array in generated_arrays]
     if in_axes_as_cont:
-        jax_vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
+        jax_vmapped_func = jax.vmap(func, in_axes=in_axes, out_axes=0)
     else:
-        jax_vmapped_func = ivy.vmap(func, in_axes=0, out_axes=0)
+        jax_vmapped_func = jax.vmap(func, in_axes=0, out_axes=0)
 
     assert callable(jax_vmapped_func)
 
