@@ -152,3 +152,9 @@ def det(a, overwrite_a=False, check_finite=True):
     if check_finite(a):
         _check_finite(a)
     return ivy.det(a)
+
+
+# logm
+@to_ivy_arrays_and_back
+def logm(A, disp=True):
+    return ivy.log(A)

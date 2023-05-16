@@ -1,12 +1,7 @@
 # # TODO: uncomment after frontend is not required
-# # global
-# import ivy
-# import sys
-# from hypothesis import strategies as st, assume
-# import numpy as np
+# global
 
-# # local
-# import ivy_tests.test_ivy.helpers as helpers
+# local
 
 
 # # Helpers #
@@ -469,4 +464,35 @@
 #         a=x[0],
 #         overwrite_a=overwrite_a,
 #         check_finite=check_finite
+#     )
+
+
+# #logm
+# @handle_frontend_test(
+#     fn_tree="scipy.linalg.logm",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("float"),
+#         small_abs_safety_factor=2,
+#         safety_factor_scale="linear",
+#     ),
+#     test_with_out=st.just(False),
+
+
+# )
+# def test_scipy_logm(
+#     dtype_and_x,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+#     on_device,
+# ):
+#     dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         a=x[0]
+
 #     )
