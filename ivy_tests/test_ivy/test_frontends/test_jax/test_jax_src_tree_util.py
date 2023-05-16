@@ -1,5 +1,6 @@
 # local
 import ivy
+import jax
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy.functional.frontends.jax._src.tree_util import tree_leaves, tree_map
 import hypothesis.strategies as st
@@ -57,13 +58,13 @@ def test_jax_tree_leaves(
     on_device,
 ):
     # Apply the tree_leaves function to obtain the leaves of the tree
-    result = ivy.Container(tree_leaves(tree, is_leaf=None))
+    result = tree_leaves(tree, is_leaf=None)
     
     # compute the expected result
-    expected = ivy.Container(leaf_strategy())
+    expected = ivy.Array(jax.tree_util.tree_leaves(tree))
     
     # value test
-    assert ivy.equal(result, expected)
+    assert ivy.equal(ivy.Array(result), expected)
 
 
 # tree_map
