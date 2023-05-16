@@ -2,6 +2,9 @@
 import ivy.functional.frontends.tensorflow.ragged as ragged_tf
 import ivy
 
+# local
+from functools import reduce
+
 # try:
 #     import tensorflow as tf
 # except ImportError:
@@ -13,7 +16,7 @@ import ivy
 
 
 def _is_composite_array(x):
-    if isinstance(x, ragged_tf.ragged.RaggedTensor):
+    if isinstance(x, ragged_tf.RaggedTensor):
         return True
     if ivy.is_ivy_sparse_array(x) or ivy.is_native_sparse_array(x):
         return True
@@ -21,7 +24,7 @@ def _is_composite_array(x):
 
 
 def _flatten_composite_array(x, expand_composites=False):
-    if isinstance(x, ragged_tf.ragged.RaggedTensor):
+    if isinstance(x, ragged_tf.RaggedTensor):
         if not expand_composites:
             return x
         new_struc = [x.flat_values]
@@ -34,10 +37,11 @@ def _flatten_composite_array(x, expand_composites=False):
 
 def flatten(structure, expand_composites=False):
     if expand_composites and _is_composite_array(structure):
-        return _flatten_composite_array(structure)
+        return _flatten_composite_array(structure, expand_composites=expand_composites)
     elif isinstance(structure, (tuple, list)):
-        return [flatten(child) for child in structure]
+        return list(reduce(lambda x, y: flatten(x) + flatten(y), structure))
     elif isinstance(structure, dict):
-        return [flatten(structure[key]) for key in sorted(structure)]
-
+        return list(
+            reduce(lambda x, y: flatten(x) + flatten(y), sorted(structure.values()))
+        )
     return [structure]
