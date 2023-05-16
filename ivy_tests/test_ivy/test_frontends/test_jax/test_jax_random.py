@@ -849,7 +849,7 @@ def test_jax_fold_in(
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
-  
+
 # TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(

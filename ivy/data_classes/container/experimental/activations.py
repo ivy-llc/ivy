@@ -663,7 +663,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             out=out,
         )
 
-
     @staticmethod
     def _static_silu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
