@@ -559,8 +559,9 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """
@@ -576,6 +577,8 @@ def top_k(
         The axis along which we must return the top elements default value is 1.
     largest
         If largest is set to False we return k smallest elements of the array.
+    sorted
+        If sorted is set to True we return the elements in sorted order.
     out:
         Optional output tuple, for writing the result to. Must have two arrays inside,
         with a shape that the returned tuple broadcast to.
@@ -623,7 +626,9 @@ def top_k(
         ]
     }
     """
-    return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)
+    return current_backend(x).top_k(
+        x, k, axis=axis, largest=largest, sorted=sorted, out=out
+    )
 
 
 @handle_nestable
@@ -755,7 +760,7 @@ def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
         )
     else:
         right_ramp = ivy.empty((0,))
-    return left_ramp.to_numpy(), right_ramp.to_numpy()
+    return left_ramp, right_ramp
 
 
 def _get_stats(padded, axis, width_pair, length_pair, stat_func):
@@ -768,13 +773,13 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
     if right_length is None or max_length < right_length:
         right_length = max_length
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
-    left_chunk = ivy.array(padded[left_slice])
+    left_chunk = padded[left_slice]
     left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
     left_stat = ivy.round(left_stat) if "int" in left_chunk.dtype else left_stat
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
-    right_chunk = ivy.array(padded[right_slice])
+    right_chunk = padded[right_slice]
     right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
     right_stat = ivy.round(right_stat) if "int" in right_chunk.dtype else right_stat
     return left_stat, right_stat
@@ -867,8 +872,7 @@ def _pad_simple(array, pad_width, fill_value=None):
     original_area_slice = tuple(
         slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
     )
-    padded = padded.to_numpy()
-    padded[original_area_slice] = array.to_numpy()
+    padded[original_area_slice] = array
     return padded, original_area_slice
 
 
@@ -1164,15 +1168,15 @@ def pad(
         end_values,
         reflect_type,
     )
-    input = ivy.asarray(input, dtype=input.dtype)
-
     if mode == "dilated":
         pad_width = _to_dilated(pad_width, input.ndim)
-        padded = _interior_pad(input, constant_values, pad_width)
-        return ivy.native_array(padded)
-
+        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
+            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
+        else:
+            padding_value = constant_values
+        padded = _interior_pad(input, padding_value, pad_width)
+        return padded
     pad_width = _to_pairs(pad_width, input.ndim)
-
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
@@ -1215,7 +1219,6 @@ def pad(
             )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
-            stat_pair = ivy.to_numpy(stat_pair)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
@@ -1236,8 +1239,7 @@ def pad(
                 left_index, right_index, padded = _set_wrap_both(
                     padded, axis, (left_index, right_index)
                 )
-    padded = ivy.array(padded).to_native()
-    return padded
+    return padded.astype(input.dtype)
 
 
 pad.mixed_function = True
@@ -1805,8 +1807,6 @@ def _interior_pad(operand, padding_value, padding_config):
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
             index_tuple[axis] = dst_indices
-            new_array = ivy.to_numpy(new_array)
-            operand = ivy.to_numpy(operand)
             new_array[tuple(index_tuple)] = operand
             operand = new_array
 
@@ -1922,3 +1922,53 @@ def associative_scan(
         scans = [ivy.flip(scanned, axis=[axis]) for scanned in scans]
 
     return ivy.reshape(ivy.asarray(scans), elems[0].shape)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+def unique_consecutive(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[
+    Union[ivy.Array, ivy.NativeArray],
+    Union[ivy.Array, ivy.NativeArray],
+    Union[ivy.Array, ivy.NativeArray],
+]:
+    """Eliminates all but the first element from every consecutive group of equivalent
+    elements in ``x``.
+
+    Parameters
+    ----------
+    x
+        input array.
+
+    axis
+        the axis to apply unique on. If None, unique is applied on flattened ``x``.
+
+    Returns
+    -------
+    ret
+        a namedtuple ``(output, inverse_indices, counts)`` whose
+        - first element has the field name ``output`` and is an array
+          containing ``x`` with its equivalent consecutive elements eliminated.
+        - second element has the field name ``inverse_indices`` and is an
+          array containing the indices of ``output`` that reconstruct ``x``.
+        - third element has the field name ``counts`` and is an array
+          containing the number of occurrences for each unique value or array in ``x``.
+
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([1, 1, 2, 2, 3, 1, 1, 2])
+    >>> ivy..unique_consecutive(x)
+    Results(values=ivy.array([1, 2, 3, 1, 2]),
+        inverse_indices=ivy.array([0, 0, 1, 1, 2, 3, 3, 4]),
+        counts=ivy.array([2, 2, 1, 2, 1]))
+    """
+    return ivy.current_backend(x).unique_consecutive(x, axis=axis)

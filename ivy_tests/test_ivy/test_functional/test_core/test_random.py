@@ -305,12 +305,14 @@ def test_seed(seed_val):
         min_dim_size=2,
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    axis=helpers.ints(min_value=0, max_value=0),
     test_gradients=st.just(False),
 )
 def test_shuffle(
     *,
     dtype_and_x,
     seed,
+    axis,
     test_flags,
     backend_fw,
     fn_name,
@@ -329,6 +331,7 @@ def test_shuffle(
             fn_name=fn_name,
             test_values=False,
             x=x[0],
+            axis=axis,
             seed=seed,
         )
 
