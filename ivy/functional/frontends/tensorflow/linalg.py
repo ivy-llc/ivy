@@ -253,3 +253,8 @@ def einsum(equation, *inputs, **kwargs):
 @to_ivy_arrays_and_back
 def adjoint(matrix, name=None):
     return ivy.adjoint(matrix)
+
+
+@to_ivy_arrays_and_back
+def tensor_diag(diagonal, name=None):
+    return ivy.diagflat(diagonal)

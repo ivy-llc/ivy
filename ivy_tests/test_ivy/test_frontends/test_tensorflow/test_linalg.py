@@ -835,3 +835,45 @@ def test_tensorflow_adjoint(
         on_device=on_device,
         matrix=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.tensor_diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=(
+            ivy.float16,
+            ivy.float32,
+            ivy.float64,
+            ivy.int32,
+            ivy.int64,
+            ivy.complex64,
+            ivy.complex128,
+        ),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_value=-1.0e5,
+        max_value=1.0e5,
+        allow_nan=False,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_tensor_diag(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        diagonal=x[0],
+    )
