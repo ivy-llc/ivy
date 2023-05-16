@@ -202,6 +202,36 @@ def nanmedian(
     )
 
 
+def nanmin(
+    input: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    out: Optional[JaxArray] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[float] = None,
+    where: JaxArray = None,
+) -> JaxArray:
+    return jnp.nanmin(
+        input, axis=axis, out=out, keepdims=keepdims, initial=initial, where=where
+    )
+
+
+def nanmax(
+    input: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    out: Optional[JaxArray] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[float] = None,
+    where: JaxArray = None,
+) -> JaxArray:
+    return jnp.nanmax(
+        input, axis=axis, out=out, keepdims=keepdims, initial=initial, where=where
+    )
+
+
 def bincount(
     x: JaxArray,
     /,
