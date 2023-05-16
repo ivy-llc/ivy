@@ -152,8 +152,17 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         if not getattr(fn, "__module__", None):
             continue
         if "backend" in fn.__module__:
-            f_supported = wrapper(get_fn(fn, False))
-            out = merge_fn(f_supported, out)
+            is_partial_mixed = hasattr(fn, "handle_mixed_function")
+            f_supported = get_fn(fn, False)
+            if is_partial_mixed:
+                out = {
+                    "compositional": merge_fn(
+                        wrapper(f_supported["compositional"]), out
+                    ),
+                    "primary": merge_fn(wrapper(f_supported["primary"]), out),
+                }
+            else:
+                out = merge_fn(wrapper(f_supported), out)
             continue
         elif "frontend" in fn.__module__ or (
             hasattr(fn, "__name__") and "einops" in fn.__name__
@@ -1565,8 +1574,6 @@ def dtype(
 @handle_exceptions
 @handle_nestable
 def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple, dict]:
-
-
     """
     Return the supported data types of the current backend's function.
 
@@ -1615,7 +1622,6 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
 def function_unsupported_dtypes(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
-
     """
     Return the unsupported data types of the current backend's function.
 
