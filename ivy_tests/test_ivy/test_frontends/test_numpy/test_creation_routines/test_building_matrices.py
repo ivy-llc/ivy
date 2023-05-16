@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import strategies as st
 
 # local
@@ -7,8 +6,6 @@ import ivy_tests.test_ivy.helpers as helpers
 
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _diag_helper
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_linalg import _generate_diag_args
-
 
 # tril
 @handle_frontend_test(
@@ -168,28 +165,22 @@ def test_numpy_vander(
 # diagflat
 @handle_frontend_test(
     fn_tree="numpy.diagflat",
-    args_packet=_generate_diag_args(),
-    test_with_out=st.just(False),
+    dtype_and_x_k=_diag_helper(),
 )
 def test_numpy_diagflat(
-    *,
+    dtype_and_x_k,
     frontend,
     test_flags,
     fn_tree,
     on_device,
-    args_packet,
 ):
-    dtype_x, offset, dtype_padding_value, align, num_rows, num_cols = args_packet
-
-    x_dtype, x = dtype_x
-    padding_value_dtype, padding_value = dtype_padding_value
-
+    dtype, x, k = dtype_and_x_k
     helpers.test_frontend_function(
-        input_dtypes=x_dtype + ["int64"] + padding_value_dtype,
+        input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         v=x[0],
-        k=offset,
+        k=k,
     )
