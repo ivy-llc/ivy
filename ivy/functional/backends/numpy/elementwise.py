@@ -751,7 +751,7 @@ minimum.support_native_out = True
 def reciprocal(
     x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    numerator = np.ones((1,), dtype=x.dtype)
+    numerator = np.ones_like(x)
     return np.true_divide(numerator, x, out=out)
 
 
