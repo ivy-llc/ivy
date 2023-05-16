@@ -55,7 +55,9 @@ def test_paddle_cos(
         on_device=on_device,
         x=x[0],
     )
-  # acos
+
+    
+# acos
 @handle_frontend_test(
     fn_tree="paddle.acos",
     dtype_and_x=helpers.dtype_and_values(
@@ -80,6 +82,7 @@ def test_paddle_acos(
         atol=1e-2,
         x=x[0],
     )
+
 
 # tanh
 @handle_frontend_test(

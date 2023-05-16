@@ -55,3 +55,10 @@ def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("complex", "float16", "bfloat16")}, backend_version
+)
+def silu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.nn.functional.silu(x)
