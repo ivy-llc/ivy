@@ -728,11 +728,9 @@ def interpolate(
         ret = tf.squeeze(ret, axis=-2)
     return ret
 
-interpolate.partial_mixed_handler = lambda x, *args, mode="linear", \
-    scale_factor=None, recompute_scale_factor=None, align_corners=None, \
-    **kwargs: (
-    (not align_corners and (len(x.shape) - 2) < 2) and
-    mode not in ["nearest", "area", "bicubic"] and
-    recompute_scale_factor
-)
 
+interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
+    (not align_corners and (len(x.shape) - 2) < 2)
+    and mode not in ["nearest", "area", "bicubic"]
+    and recompute_scale_factor
+)
