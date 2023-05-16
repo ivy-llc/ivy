@@ -384,8 +384,10 @@ class Array(
         try:
             if ivy.current_backend_str() == "torch":
                 self._data = self._data.detach()
+            if ivy.is_ivy_array(val):
+                val = val.data
             self._data.__setitem__(query, val)
-        except (AttributeError, TypeError, ValueError):
+        except:
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
             self._dtype = ivy.dtype(self._data)
 
@@ -1127,11 +1129,10 @@ class Array(
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ivy.Array not supported")
-        if ivy.current_backend_str() == "paddle" and self.dtype in [
-            "int8",
-            "int16",
-            "uint8",
-            "float16",
-        ]:
-            return iter([to_ivy(i) for i in ivy.unstack(self._data)])
+        if ivy.current_backend_str() == "paddle":
+            if self.ndim == 1:
+                ret = [to_ivy(i).squeeze(0) for i in self._data]
+                return iter(ret)
+            elif self.dtype in ["int8", "int16", "uint8", "float16"]:
+                return iter([to_ivy(i) for i in ivy.unstack(self._data)])
         return iter([to_ivy(i) for i in self._data])

@@ -29,13 +29,14 @@ def test_sinc(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=1e-02,
-        ground_truth_backend="jax",
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -64,13 +65,14 @@ def test_lcm(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="numpy",
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
@@ -109,7 +111,7 @@ def test_fmax(
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
-        ground_truth_backend="jax",
+        ground_truth_backend=ground_truth_backend,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -340,13 +342,14 @@ def test_copysign(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     (x1_dtype, x2_dtype), (x1, x2) = dtype_x1_x2
     helpers.test_function(
         input_dtypes=[x1_dtype, x2_dtype],
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="torch",
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
         x1=x1,
@@ -550,7 +553,7 @@ def test_isclose(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="numpy",
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
         a=x[0],

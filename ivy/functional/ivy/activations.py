@@ -91,18 +91,19 @@ ACTIVATION_FUNCTIONS = [
     "log_softmax",
     "relu",
     "sigmoid",
+    "silu",
     "softmax",
     "softplus",
 ]
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -207,12 +208,12 @@ def get(
     return ivy.deserialize(name, custom_objects=custom_objects)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -273,12 +274,12 @@ def leaky_relu(
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -345,12 +346,12 @@ def log_softmax(
     return current_backend(x).log_softmax(x, axis=axis, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -399,13 +400,13 @@ def relu(
     return current_backend(x).relu(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -449,12 +450,12 @@ def sigmoid(
     return current_backend(x).sigmoid(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -499,12 +500,12 @@ def softmax(
     return current_backend(x).softmax(x, axis=axis, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -556,12 +557,12 @@ def softplus(
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

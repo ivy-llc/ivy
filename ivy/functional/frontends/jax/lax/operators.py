@@ -8,6 +8,7 @@ import math
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_unsupported_dtypes
 
 _min = builtins.min
 _slice = builtins.slice
@@ -357,11 +358,13 @@ def full_like(x, fill_value, dtype=None, shape=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def ge(x, y):
     return ivy.greater_equal(x, y)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def gt(x, y):
     return ivy.greater(x, y)
@@ -415,6 +418,13 @@ def neg(x):
 @to_ivy_arrays_and_back
 def pow(x, y):
     return ivy.pow(x, y)
+
+
+@to_ivy_arrays_and_back
+def pad(operand, padding_value, padding_config):
+    return ivy.pad(
+        operand, padding_config, mode="dilated", constant_values=padding_value
+    )
 
 
 @to_ivy_arrays_and_back
@@ -573,23 +583,31 @@ def top_k(operand, k):
 
 def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
     def _pad(arr, pads, pad_value):
-        out = ivy.astype(ivy.pad(
-            arr,
-            ivy.maximum(0, pads).to_list(),
-            mode='constant',
-            constant_values=pad_value
-        ), arr.dtype)
-        slices = tuple(_slice(abs(lo) if lo < 0 else 0, hi % dim if hi < 0 else None)
-                       for (lo, hi), dim in zip(pads, arr.shape))
+        out = ivy.astype(
+            ivy.pad(
+                arr,
+                ivy.maximum(0, pads).to_list(),
+                mode="constant",
+                constant_values=pad_value,
+            ),
+            arr.dtype,
+        )
+        slices = tuple(
+            _slice(abs(lo) if lo < 0 else 0, hi % dim if hi < 0 else None)
+            for (lo, hi), dim in zip(pads, arr.shape)
+        )
         return out[slices]
 
-    if (_min(lhs.ndim, len(rhs_shape)) < 2 or lhs.ndim != len(rhs_shape)
-            or lhs.shape[1] != rhs_shape[1]):
-        raise ValueError('Dimension mismatch')
+    if (
+        _min(lhs.ndim, len(rhs_shape)) < 2
+        or lhs.ndim != len(rhs_shape)
+        or lhs.shape[1] != rhs_shape[1]
+    ):
+        raise ValueError("Dimension mismatch")
     if len(window_strides) != len(rhs_shape) - 2:
-        raise ValueError('Wrong number of strides for spatial dimensions')
+        raise ValueError("Wrong number of strides for spatial dimensions")
     if len(pads) != len(rhs_shape) - 2:
-        raise ValueError('Wrong number of pads for spatial dimensions')
+        raise ValueError("Wrong number of pads for spatial dimensions")
 
     lhs = _pad(lhs, [(0, 0)] * 2 + list(pads), pad_value)
     in_shape = lhs.shape[2:]
@@ -600,17 +618,16 @@ def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
     view_strides = lhs.strides[:1] + tuple(out_strides) + lhs.strides[1:]
 
     out_shape = [
-        (in_shape[i] - filter_shape[i]) // s + 1
-        for i, s in enumerate(window_strides)
+        (in_shape[i] - filter_shape[i]) // s + 1 for i, s in enumerate(window_strides)
     ]
     view_shape = list(lhs.shape[:1]) + out_shape + rhs_shape[1:]
 
     view = ivy.as_strided(lhs, view_shape, view_strides)
 
     view_axes = list(range(view.ndim))
-    sum_axes = view_axes[-dim-1:]
+    sum_axes = view_axes[-dim - 1 :]
     rhs_axes = [view.ndim] + sum_axes
-    out_axes = [0, view.ndim] + list(range(1, dim+1))
+    out_axes = [0, view.ndim] + list(range(1, dim + 1))
 
     return view, view_axes, rhs_axes, out_axes
 
@@ -631,16 +648,16 @@ def _dilate(operand, factors, fill_value=0):
 
 
 def _padtype_to_pads(in_shape, filter_shape, window_strides, padding):
-    if padding.upper() == 'SAME':
+    if padding.upper() == "SAME":
         out_shape = [
             math.ceil(in_size / stride)
-            for in_size, stride
-            in zip(in_shape, window_strides)
+            for in_size, stride in zip(in_shape, window_strides)
         ]
         pad_sizes = [
             _max((out_size - 1) * stride + filter_size - in_size, 0)
-            for out_size, stride, filter_size, in_size
-            in zip(out_shape, window_strides, filter_shape, in_shape)
+            for out_size, stride, filter_size, in_size in zip(
+                out_shape, window_strides, filter_shape, in_shape
+            )
         ]
         return [(pad_size // 2, pad_size - pad_size // 2) for pad_size in pad_sizes]
     else:
@@ -681,13 +698,6 @@ def reduce_window(
 ):
     # ToDo: add support for window_dilation
     op, dims, strides = operand, window_dimensions, window_strides
-    if any(
-        [(window_dimensions[i] - 1) * (base_dilation[i] - 1) +
-         window_dimensions[i] > operand.shape[i] for i in range(operand.ndim)]
-    ):
-        raise ValueError(
-            "Invalid window dimensions and base dilation for the given operand shape"
-        )
 
     if isinstance(padding, str):
         pads = _padtype_to_pads(op.shape, dims, strides, padding)
@@ -696,8 +706,8 @@ def reduce_window(
     op = op.reshape((1, 1) + op.shape)
     if base_dilation:
         op = _dilate(op, base_dilation)
-    view = _conv_view(op, [1, 1] + dims, strides, pads)[0]
-    view = view.reshape((*view.shape[1:1 + len(dims)], -1))
+    view = _conv_view(op, [1, 1] + list(dims), strides, pads)[0]
+    view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
     reducer = _make_reducer(computation, init_value)
     return ivy.array(reducer(view, axis=-1))
 
@@ -715,3 +725,8 @@ def real(x):
 @to_ivy_arrays_and_back
 def nextafter(x1, x2):
     return ivy.nextafter(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def conj(x):
+    return ivy.conj(x)
