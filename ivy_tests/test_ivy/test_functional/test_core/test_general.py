@@ -623,7 +623,7 @@ def values_and_ndindices(
         )
     ),
     reduction=st.sampled_from(["sum", "min", "max", "replace"]),
-    ground_truth_backend="torch",
+    ground_truth_backend="tensorflow",
 )
 def test_scatter_flat(
     x,
@@ -1060,7 +1060,7 @@ def test_explicit_ivy_framework_handles():
     ivy.previous_backend()
 
     # set with explicit handle caught
-    ivy_exp = ivy.get_backend(fw_str)
+    ivy_exp = ivy.with_backend(fw_str)
     assert ivy_exp.current_backend_str() == fw_str
 
     # assert backend implemented function is accessible

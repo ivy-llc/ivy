@@ -1,7 +1,7 @@
 import torch
 from typing import Optional, Tuple
 
-from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
 
@@ -20,15 +20,6 @@ l2_normalize.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
-@handle_mixed_function(
-    lambda x, mean, variance, scale, offset, **kwargs: (
-        x.ndim > 1
-        and mean.ndim == 1
-        and variance.ndim == 1
-        and (scale is None or scale.ndim == 1)
-        and (offset is None or offset.ndim == 1)
-    )
-)
 def batch_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
@@ -65,16 +56,16 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
-@handle_mixed_function(
-    lambda x, mean, variance, scale, offset, **kwargs: (
-        x.ndim > 1
-        and mean.ndim == 1
-        and variance.ndim == 1
-        and (scale is None or scale.ndim == 1)
-        and (offset is None or offset.ndim == 1)
-    )
+batch_norm.partial_mixed_handler = lambda x, mean, variance, scale, offset, **kwargs: (
+    x.ndim > 1
+    and mean.ndim == 1
+    and variance.ndim == 1
+    and (scale is None or scale.ndim == 1)
+    and (offset is None or offset.ndim == 1)
 )
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def instance_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
@@ -110,6 +101,17 @@ def instance_norm(
     )
     xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
     return xnormalized, runningmean, runningvariance
+
+
+instance_norm.partial_mixed_handler = (
+    lambda x, mean, variance, scale, offset, **kwargs: (
+        x.ndim > 1
+        and mean.ndim == 1
+        and variance.ndim == 1
+        and (scale is None or scale.ndim == 1)
+        and (offset is None or offset.ndim == 1)
+    )
+)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)

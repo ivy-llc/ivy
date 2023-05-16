@@ -3,14 +3,16 @@ import torch
 from typing import Optional, Union
 
 
-# msort
-def msort(
-    a: Union[torch.Tensor, list, tuple], /, *, out: Optional[torch.Tensor] = None
+# invert_permutation
+def invert_permutation(
+    x: Union[torch.Tensor, list, tuple],
+    /,
 ) -> torch.Tensor:
-    return torch.msort(a, out=out)
-
-
-msort.support_native_out = True
+    sorted_indices = torch.argsort(x)
+    inverse = torch.zeros_like(sorted_indices)
+    inverse[sorted_indices] = torch.arange(len(x))
+    inverse_permutation = torch.argsort(inverse)
+    return inverse_permutation
 
 
 # lexsort
