@@ -96,7 +96,7 @@ def nanargmin(a, /, *, axis=None, out=None, keepdims=False):
 
 @to_ivy_arrays_and_back
 def extract(cond, arr, /):
-    if cond.dtype == 'bool':
+    if cond.dtype == "bool":
         return arr[cond]
     else:
-        return arr[cond !=0]
+        return arr[cond != 0]
