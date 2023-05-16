@@ -1,6 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, integer_arrays_to_float
 
 
 @to_ivy_arrays_and_back
@@ -58,9 +58,9 @@ def fftshift(x, axes=None):
     return roll
 
 
+@integer_arrays_to_float
 @to_ivy_arrays_and_back
 def rfft(a, n=None, axis=-1, norm=None):
-    a = ivy.array(a, dtype=ivy.float64)
     if norm is None:
         norm = "backward"
     return ivy.dft(a, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
