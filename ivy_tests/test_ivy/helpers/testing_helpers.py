@@ -230,14 +230,12 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
         is_mixed = hasattr(_fn, "mixed_function") and ivy.__dict__[_fn.__name__] != _fn
-        _is_mixed_partial = False
         if is_mixed:
             _fn = ivy.__dict__[_fn.__name__]
-            _is_mixed_partial = hasattr(_fn, "handle_mixed_function")
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
         devices_and_dtypes = (
             tuple(devices_and_dtypes.values())
-            if _is_mixed_partial
+            if "compositional" in devices_and_dtypes.keys()
             else (devices_and_dtypes,)
         )
         # Issue with bfloat16 and tensorflow

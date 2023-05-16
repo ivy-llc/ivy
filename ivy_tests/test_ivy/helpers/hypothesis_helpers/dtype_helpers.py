@@ -31,7 +31,7 @@ _dtype_kind_keys = {
 }
 
 
-def _get_fn_dtypes(framework, mixed_fn_dtypes="compositional", kind="valid"):
+def _get_fn_dtypes(framework, kind="valid", mixed_fn_dtypes="compositional"):
     all_devices_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
         framework.backend
     ]
@@ -261,7 +261,7 @@ def get_dtypes(
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
         else:
-            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
+            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind=kind)
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatible with ground truth backend
@@ -299,7 +299,7 @@ def get_dtypes(
             valid_dtypes = valid_dtypes.intersection(backend_ret)
         else:
             valid_dtypes = valid_dtypes.intersection(
-                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
+                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind=kind)
             )
 
     valid_dtypes = list(valid_dtypes)

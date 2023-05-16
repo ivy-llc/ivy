@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def _instance_and_batch_norm_helper(draw, *, min_num_dims=1, min_dim_size=1):
     x_dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes("float", mixed_fn_compos=False),
             large_abs_safety_factor=24,
             small_abs_safety_factor=24,
             safety_factor_scale="log",
@@ -39,27 +39,27 @@ def _instance_and_batch_norm_helper(draw, *, min_num_dims=1, min_dim_size=1):
             num_arrays=3,
         )
     )
-    return x_dtype, x[-1], others[0], others[1], others[2], variance[0]
+    momentum = draw(
+        helpers.floats(min_value=0.01, max_value=0.1, mixed_fn_compos=False)
+    )
+    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1, mixed_fn_compos=False))
+    return x_dtype, x[-1], others[0], others[1], others[2], variance[0], momentum, eps
 
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.batch_norm",
     data=_instance_and_batch_norm_helper(min_num_dims=2, min_dim_size=2),
-    momentum=helpers.floats(min_value=0.01, max_value=0.1),
-    eps=helpers.floats(min_value=1e-5, max_value=0.1),
     training=st.booleans(),
 )
 def test_torch_batch_norm(
     *,
     data,
-    momentum,
-    eps,
     training,
     frontend,
     test_flags,
     fn_tree,
 ):
-    input_dtype, input, weight, bias, running_mean, running_var = data
+    input_dtype, input, weight, bias, running_mean, running_var, momentum, eps = data
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -81,21 +81,17 @@ def test_torch_batch_norm(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.instance_norm",
     data=_instance_and_batch_norm_helper(min_num_dims=3, min_dim_size=2),
-    momentum=helpers.floats(min_value=0.01, max_value=0.1),
-    eps=helpers.floats(min_value=1e-5, max_value=0.1),
     use_input_stats=st.booleans(),
 )
 def test_torch_instance_norm(
     *,
     data,
-    momentum,
-    eps,
     use_input_stats,
     frontend,
     test_flags,
     fn_tree,
 ):
-    input_dtype, input, weight, bias, running_mean, running_var = data
+    input_dtype, input, weight, bias, running_mean, running_var, momentum, eps = data
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
