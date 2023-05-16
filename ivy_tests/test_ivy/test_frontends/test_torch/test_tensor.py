@@ -8252,7 +8252,6 @@ def test_torch_instance_multiply(
     ),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
-    # test_with_out=st.just(False),
 )
 def test_torch_instance_unique(
     dtype_x_axis,
