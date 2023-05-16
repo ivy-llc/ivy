@@ -99,6 +99,7 @@ def test_numpy_fttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         array_api_dtypes=True,
         shape=(2,),
     ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
 )
 def test_numpy_rfft(dtype_and_x, frontend, test_flags, fn_tree, on_device):
     input_dtype, x = dtype_and_x
@@ -112,5 +113,5 @@ def test_numpy_rfft(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         a=x[0],
         n=None,
         axis=-1,
-        norm=None,
+        norm=norm,
     )
