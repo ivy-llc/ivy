@@ -1931,3 +1931,53 @@ def associative_scan(
         scans = [ivy.flip(scanned, axis=[axis]) for scanned in scans]
 
     return ivy.reshape(ivy.asarray(scans), elems[0].shape)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+def unique_consecutive(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[
+    Union[ivy.Array, ivy.NativeArray],
+    Union[ivy.Array, ivy.NativeArray],
+    Union[ivy.Array, ivy.NativeArray],
+]:
+    """Eliminates all but the first element from every consecutive group of equivalent
+    elements in ``x``.
+
+    Parameters
+    ----------
+    x
+        input array.
+
+    axis
+        the axis to apply unique on. If None, unique is applied on flattened ``x``.
+
+    Returns
+    -------
+    ret
+        a namedtuple ``(output, inverse_indices, counts)`` whose
+        - first element has the field name ``output`` and is an array
+          containing ``x`` with its equivalent consecutive elements eliminated.
+        - second element has the field name ``inverse_indices`` and is an
+          array containing the indices of ``output`` that reconstruct ``x``.
+        - third element has the field name ``counts`` and is an array
+          containing the number of occurrences for each unique value or array in ``x``.
+
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([1, 1, 2, 2, 3, 1, 1, 2])
+    >>> ivy..unique_consecutive(x)
+    Results(values=ivy.array([1, 2, 3, 1, 2]),
+        inverse_indices=ivy.array([0, 0, 1, 1, 2, 3, 3, 4]),
+        counts=ivy.array([2, 2, 1, 2, 1]))
+    """
+    return ivy.current_backend(x).unique_consecutive(x, axis=axis)

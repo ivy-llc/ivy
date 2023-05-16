@@ -8,7 +8,6 @@ import ivy
 
 
 class _ArrayWithSortingExperimental(abc.ABC):
-
     def lexsort(
         self: ivy.Array,
         /,

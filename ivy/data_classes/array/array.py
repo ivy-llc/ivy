@@ -1133,11 +1133,6 @@ class Array(
             if self.ndim == 1:
                 ret = [to_ivy(i).squeeze(0) for i in self._data]
                 return iter(ret)
-            elif self.dtype in [
-                "int8",
-                "int16",
-                "uint8",
-                "float16"
-            ]:
+            elif self.dtype in ["int8", "int16", "uint8", "float16"]:
                 return iter([to_ivy(i) for i in ivy.unstack(self._data)])
         return iter([to_ivy(i) for i in self._data])

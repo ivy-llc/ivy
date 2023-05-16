@@ -422,24 +422,18 @@ def vector_norm(
 ) -> np.ndarray:
     if dtype and x.dtype != dtype:
         x = x.astype(dtype)
+
+    ret_scalar = False
+    if x.ndim == 0:
+        x = np.expand_dims(x, 0)
+        ret_scalar = True
+
     if isinstance(axis, list):
         axis = tuple(axis)
-    if axis is None:
-        np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
-    else:
-        if ord == np.Inf:
-            np_normalized_vector = np.abs(x).max(axis=axis, keepdims=keepdims)
-        elif ord == -np.Inf:
-            np_normalized_vector = np.abs(x).min(axis=axis, keepdims=keepdims)
-        elif isinstance(ord, (int, float)) and ord != 0:
-            np_normalized_vector = np.sum(
-                np.abs(x) ** ord, axis=axis, keepdims=keepdims
-            ) ** (1.0 / ord)
-        else:
-            np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
-    if np_normalized_vector.shape == ():
-        np_normalized_vector = np.expand_dims(np_normalized_vector, 0)
-    np_normalized_vector = np_normalized_vector.astype(x.dtype)
+
+    np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
+    if ret_scalar:
+        np_normalized_vector = np.squeeze(np_normalized_vector)
     return np_normalized_vector
 
 
