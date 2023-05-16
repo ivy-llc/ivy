@@ -83,7 +83,7 @@ valid_numeric_dtypes = {
     )
 }
 
-valid_int_dtypes= {
+valid_int_dtypes = {
     "1.11.0 and below": (ivy.int8, ivy.int16, ivy.int32, ivy.int64, ivy.uint8)
 }
 valid_float_dtypes = {
@@ -117,15 +117,11 @@ invalid_complex_dtypes = {"1.11.0 and below": ()}
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
 
 # leave these untouched
-invalid_numeric_dtypes = _dtype_from_version(
-    invalid_numeric_dtypes, backend_version
-)
+invalid_numeric_dtypes = _dtype_from_version(invalid_numeric_dtypes, backend_version)
 invalid_int_dtypes = _dtype_from_version(invalid_int_dtypes, backend_version)
 invalid_float_dtypes = _dtype_from_version(invalid_float_dtypes, backend_version)
 invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes, backend_version)
-invalid_complex_dtypes = _dtype_from_version(
-    invalid_complex_dtypes, backend_version
-)
+invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_version)
 
 native_inplace_support = True
 
