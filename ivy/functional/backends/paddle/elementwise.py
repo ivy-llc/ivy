@@ -881,10 +881,8 @@ def abs(
         paddle.float16,
         paddle.bool,
     ]:
-
         return ivy.where(where, paddle.abs(x.astype("float32")).astype(x.dtype), x)
     return ivy.where(where, paddle.abs(x), x)
-
 
 
 @with_unsupported_device_and_dtypes(
