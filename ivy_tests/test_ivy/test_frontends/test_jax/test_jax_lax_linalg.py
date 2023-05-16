@@ -230,6 +230,7 @@ def test_jax_lax_qdwh(
     )
 
     x = np.array([[1, 2], [3, 4]], dtype=np.complex128)
+    is_hermitian = False
     max_iterations = 10
     eps = 1e-6
     dynamic_shape = None
@@ -271,7 +272,6 @@ def test_jax_lax_qdwh(
 
         if max_iterations and num_iters >= max_iterations:
             is_converged = False
-
             break
 
     # Compute the polar decomposition
