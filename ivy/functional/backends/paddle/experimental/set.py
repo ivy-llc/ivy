@@ -20,5 +20,5 @@ def union(
         x2 = paddle.concat(x2, axis=0)
     if out is not None:
         raise IvyNotImplementedException(
-            'paddle set difference does not support out kwarg.')
+            'paddle set union does not support out kwarg.')
     return pfl.union1d(x1, x2)
