@@ -30,3 +30,14 @@ internal_automation_tools/
 .idea/*
 .ivy/*
 .DS_Store*
+fn_path_cache
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+ivy_dev/
