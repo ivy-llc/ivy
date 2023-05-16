@@ -190,6 +190,7 @@ if __name__ == "__main__":
                 or coll[0] == "jax"
                 or coll[0] == "tensorflow"
                 or coll[0] == "torch"
+                or coll[0] == "paddle"
             ):
                 frontend_version = "latest-stable"
             update_individual_test_results(
