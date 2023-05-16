@@ -9,6 +9,18 @@ import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
+unsupported_dtypes = [
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "float16",
+    "complex64",
+    "complex128",
+    "bool",
+]
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
@@ -53,50 +65,6 @@ def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return F.relu6(x.cast("float32")).cast(x.dtype)
 
 
-# TODO: add support for the rest of the dtypes
-# use numpy implementation with ivy functions
-@with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "uint16",
-                "bfloat16",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "complex64",
-                "complex128",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def batch_norm(
-    x: paddle.Tensor,
-    mean: paddle.Tensor,
-    variance: paddle.Tensor,
-    /,
-    *,
-    scale: Optional[paddle.Tensor] = None,
-    offset: Optional[paddle.Tensor] = None,
-    training: bool = False,
-    eps: float = 1e-5,
-):
-    return F.batch_norm(
-        x,
-        running_mean=mean,
-        running_var=variance,
-        weight=scale,
-        bias=offset,
-        training=training,
-        epsilon=eps,
-    )
-
-
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
@@ -125,3 +93,14 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             )
             return ret
     return F.selu(x.cast("float32")).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
+def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if ivy.as_ivy_dtype(x.dtype) in unsupported_dtypes:
+        if paddle.is_complex(x):
+            return x * (1 / (1 + ivy.exp(-x)))
+        return F.silu(x.cast("float32")).cast(x.dtype)
+    return F.silu(x)

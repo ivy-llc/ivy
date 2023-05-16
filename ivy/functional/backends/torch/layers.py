@@ -12,11 +12,11 @@ from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
 
+@handle_mixed_function(lambda x, weight, **kwargs: weight.ndim == 2)
 @with_unsupported_dtypes(
     {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
-@handle_mixed_function(lambda x, weight, **kwargs: weight.ndim == 2)
 def linear(
     x: torch.Tensor,
     weight: torch.Tensor,

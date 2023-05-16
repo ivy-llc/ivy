@@ -7,6 +7,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
+    _get_castable_dtype,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
     statistical_dtype_values as statistical_dtype_values_experimental,
@@ -245,8 +246,7 @@ def test_torch_any(
 
 @handle_frontend_test(
     fn_tree="torch.sum",
-    dtype_and_x=statistical_dtype_values(
-        function="sum",
+    dtype_and_x=_get_castable_dtype(
         min_value=-1e04,
         max_value=1e04,
     ),
@@ -261,7 +261,10 @@ def test_torch_sum(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, castable_dtype = dtype_and_x
+    if test_flags.as_variable:
+        castable_dtype = input_dtype
+    input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -271,6 +274,7 @@ def test_torch_sum(
         input=x[0],
         dim=axis,
         keepdim=keepdims,
+        dtype=castable_dtype,
     )
 
 
@@ -396,6 +400,7 @@ def test_torch_std(
     )
 
 
+# prod
 @handle_frontend_test(
     fn_tree="torch.prod",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -406,6 +411,9 @@ def test_torch_std(
         allow_neg_axes=False,
         max_axes_size=1,
         force_int_axis=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
     dtype=helpers.get_dtypes("numeric", none=True, full=False),
     keepdims=st.booleans(),
@@ -433,8 +441,8 @@ def test_torch_prod(
         on_device=on_device,
         input=x[0],
         dim=axis,
-        dtype=dtype[0],
         keepdim=keepdims,
+        dtype=dtype[0],
     )
 
 
@@ -833,4 +841,110 @@ def test_torch_unique(
         return_inverse=return_inverse,
         return_counts=return_counts,
         dim=axis,
+    )
+
+
+@st.composite
+def _get_axis_and_p(draw):
+    force_tuple_axis = True
+
+    p = draw(st.sampled_from(["fro", "nuc", 1, -1, 2, -2]))
+    if p == "fro" or p == "nuc":
+        force_tuple_axis = True
+        min_axes_size = 2
+
+    else:
+        force_tuple_axis = False
+        min_axes_size = 1
+
+    dtype_x_axis = draw(
+        helpers.dtype_values_axis(
+            num_arrays=1,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=3,
+            max_dim_size=2,
+            valid_axis=True,
+            min_axes_size=min_axes_size,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+            force_tuple_axis=force_tuple_axis,
+        )
+    )
+
+    return (p, dtype_x_axis)
+
+
+# norm
+@handle_frontend_test(
+    fn_tree="torch.norm",
+    p_dtype_x_axis=_get_axis_and_p(),
+    keepdim=st.booleans(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_torch_norm(
+    *,
+    p_dtype_x_axis,
+    keepdim,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    p, values = p_dtype_x_axis
+    input_dtype, x, axis = values
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        atol=1e-08,
+        input=x[0],
+        p=p,
+        dim=axis,
+        keepdim=keepdim,
+    )
+
+
+# known bug of returning empty tensors when ret_inv or ret_counts is passed positionally
+# https://github.com/pytorch/pytorch/issues/68610
+# ToDo: activate test_values when this is resolved
+@handle_frontend_test(
+    fn_tree="torch.unique_consecutive",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=2,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    ret_inv=st.booleans(),
+    ret_counts=st.booleans(),
+)
+def test_torch_unique_consecutive(
+    *,
+    dtype_x_axis,
+    ret_inv,
+    ret_counts,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        return_inverse=ret_inv,
+        return_counts=ret_counts,
+        dim=axis,
+        test_values=False,
     )

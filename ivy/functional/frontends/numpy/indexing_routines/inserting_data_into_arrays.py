@@ -25,6 +25,6 @@ def fill_diagonal(a, val, wrap=False):
 
     # Write the value out into the diagonal.
     shape = a.shape
-    a = ivy.reshape(a, a.size)
-    a[:end:step] = val
-    a = ivy.reshape(a, shape)
+    temp = ivy.flatten(a)
+    temp[:end:step] = val
+    a = ivy.reshape(temp, shape)

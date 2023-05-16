@@ -1,7 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
-    outputs_to_numpy_arrays,
 )
 
 
@@ -30,10 +29,12 @@ def unravel_index(indices, shape, order="C"):
     return tuple(ret)
 
 
-@outputs_to_numpy_arrays
+@to_ivy_arrays_and_back
 def diag_indices(n, ndim=2):
-    idx = ivy.arange(n, dtype=int)
-    return (idx,) * ndim
+    idx = ivy.arange(n)
+    res = ivy.array((idx,) * ndim)
+    res = tuple(res.astype("int64"))
+    return res
 
 
 @to_ivy_arrays_and_back

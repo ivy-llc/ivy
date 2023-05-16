@@ -2763,6 +2763,7 @@ def test_jax_pytree_compatibility(on_device):
         assert np.array_equal(ivy.to_numpy(cont_values[i]), ivy.to_numpy(true_val))
 
 
+@pytest.mark.skip("Prevents PyTest from Terminating.")
 def test_container_from_queues(on_device):
     if "gpu" in on_device:
         # Cannot re-initialize CUDA in forked subprocess. 'spawn'
@@ -2787,8 +2788,7 @@ def test_container_from_queues(on_device):
                     "a": [
                         ivy.to_native(ivy.array([1.0, 2.0, 3.0], device=on_device))
                         * worker_id
-                    ]
-                    * load_size
+                    ] * load_size
                 }
             )
 

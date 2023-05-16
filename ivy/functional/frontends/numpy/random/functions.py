@@ -79,10 +79,10 @@ def beta(a, b, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def shuffle(x, /):
+def shuffle(x, axis=0, /):
     if isinstance(x, int):
         x = ivy.arange(x)
-    return ivy.shuffle(x)
+    return ivy.shuffle(x, axis)
 
 
 @to_ivy_arrays_and_back
