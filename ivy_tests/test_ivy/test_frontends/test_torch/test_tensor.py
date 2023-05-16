@@ -7996,3 +7996,48 @@ def test_torch_instance_bitwise_right_shift(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+# TODO: need to fix this test after fixing the tests reults from torch.unique
+# unique
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="unique",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    return_inverse=st.booleans(),
+    return_counts=st.booleans(),
+    # test_with_out=st.just(False),
+)
+def test_torch_instance_unique(
+    dtype_x_axis,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    return_inverse,
+    return_counts,
+):
+    input_dtypes, x, axis = dtype_x_axis
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "sorted": True,
+            "return_inverse": return_inverse,
+            "return_counts": return_counts,
+            "dim": axis,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )

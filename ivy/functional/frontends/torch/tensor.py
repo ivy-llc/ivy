@@ -1138,6 +1138,16 @@ class Tensor:
     def bitwise_right_shift(self, other, *, out=None):
         return torch_frontend.bitwise_right_shift(self._ivy_array, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def unique(self, sorted=True, return_inverse=False, return_counts=False, dim=None):
+        return torch_frontend.unique(
+            self,
+            sorted=sorted,
+            return_inverse=return_inverse,
+            return_counts=return_counts,
+            dim=dim,
+        )
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
