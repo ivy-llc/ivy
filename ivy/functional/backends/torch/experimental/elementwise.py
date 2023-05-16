@@ -490,12 +490,12 @@ def _are_suitable_types_for_torch_lerp(input, end, weight):
     return True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 @handle_mixed_function(
     lambda input, end, weight, **kwargs: (
         _are_suitable_types_for_torch_lerp(input, end, weight)
     )
 )
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def lerp(
     input: torch.Tensor,
     end: torch.Tensor,
@@ -505,6 +505,9 @@ def lerp(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.lerp(input, end, weight, out=out)
+
+
+lerp.support_native_out = True
 
 
 def frexp(
