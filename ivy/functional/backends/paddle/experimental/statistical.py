@@ -288,3 +288,59 @@ def unravel_index(
         indices = paddle.floor(indices / dim)
 
     return tuple(reversed(coord))
+
+
+def cov(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[paddle.Tensor] = None,
+    aweights: Optional[paddle.Tensor] = None,
+    dtype: Optional[paddle.dtype] = None,
+) -> paddle.Tensor:
+    if x2 is not None:
+        x = paddle.concat([x1, x2], axis=0)
+    else:
+        x = x1
+
+    if ddof is None:
+        if bias:
+            ddof = 0
+        else:
+            ddof = 1
+
+    if fweights is not None:
+        if fweights.ndim != 1:
+            raise ValueError("fweights must be 1-D tensor")
+        if fweights.shape[0] != x.shape[0]:
+            raise ValueError("fweights and x must have the same length")
+
+        fweights = paddle.unsqueeze(fweights, axis=1)
+        x = x * fweights
+
+    if aweights is not None:
+        if aweights.ndim != 1:
+            raise ValueError("aweights must be 1-D tensor")
+        if aweights.shape[0] != x.shape[0]:
+            raise ValueError("aweights and x must have the same length")
+
+        aweights = paddle.unsqueeze(aweights, axis=1)
+        x = x * aweights
+
+    mean = paddle.mean(x, axis=0, dtype=dtype)
+    x_centered = x - mean
+
+    if rowVar:
+        covariance_matrix = paddle.matmul(x_centered, x_centered, transpose_x=True) / (
+            x.shape[0] - ddof
+        )
+    else:
+        covariance_matrix = paddle.matmul(x_centered, x_centered, transpose_y=True) / (
+            x.shape[0] - ddof
+        )
+
+    return covariance_matrix
