@@ -1,8 +1,5 @@
 # local
-import ivy
-from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.paddle.tensor.math import tanh as paddle_tanh
 
 
-@to_ivy_arrays_and_back
-def tanh(x, name=None):
-    return ivy.tanh(x)
+tanh = paddle_tanh

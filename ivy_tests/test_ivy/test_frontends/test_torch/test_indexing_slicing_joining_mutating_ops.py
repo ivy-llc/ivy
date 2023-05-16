@@ -1383,3 +1383,29 @@ def test_torch_masked_select(
         input=x[0],
         mask=mask,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.take",
+    dtype_and_x=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes(), indices_dtypes=["int64"]
+    ),
+)
+def test_torch_take(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtypes, xs, indices, _, _ = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs,
+        index=indices,
+    )

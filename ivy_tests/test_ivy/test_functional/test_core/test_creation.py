@@ -2,6 +2,7 @@
 
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
 
 # local
 import ivy
@@ -868,5 +869,55 @@ def test_one_hot(
         off_value=off_value,
         axis=axis,
         dtype=dtype,
+        ground_truth_backend=ground_truth_backend,
+    )
+
+
+@st.composite
+def _get_dtype_buffer_count_offset(draw):
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+        )
+    )
+    value = np.array(value)
+    length = value.size
+    value = value.tobytes()
+
+    offset = draw(helpers.ints(min_value=0, max_value=length - 1))
+    count = draw(helpers.ints(min_value=-(2**30), max_value=length - offset))
+    if count == 0:
+        count = -1
+    offset = offset * np.dtype(dtype[0]).itemsize
+
+    return dtype, value, count, offset
+
+
+@handle_test(
+    fn_tree="functional.ivy.frombuffer",
+    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_frombuffer(
+    dtype_buffer_count_offset,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, buffer, count, offset = dtype_buffer_count_offset
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        buffer=buffer,
+        dtype=input_dtype[0],
+        count=count,
+        offset=offset,
         ground_truth_backend=ground_truth_backend,
     )

@@ -387,13 +387,25 @@ def nanmedian(
     ret
         A new array holding the result. If the input contains integers
 
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
     Examples
     --------
-    >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
-    >>> a.nanmedian(a)
-        3.0
-    >>> a.nanmedian(a, axis=0)
-        array([6.5, 2. , 2.5])
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[12.0, 10.0, 34.0], [45.0, 23.0, ivy.nan]])
+    >>> ivy.nanmedian(x)
+        ivy.array(23.)
+    With a mix of :class:`ivy.Container` and :class:`ivy.Array` input:
+    >>> x = ivy.Container(a=ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]]),
+            b=ivy.array([[12, 10, 34], [45, 23, ivy.nan]]))
+    >>> ivy.nanmedian(x)
+    {
+        a: ivy.array(3.),
+        b: ivy.array(23.)
+    }
     """
     return ivy.current_backend().nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out

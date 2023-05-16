@@ -6,7 +6,6 @@ import torch
 
 # local
 import ivy
-import copy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
 )
@@ -136,15 +135,3 @@ def tril_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
-
-
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[torch.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
-) -> torch.Tensor:
-    buffer_copy = copy.deepcopy(buffer)
-    dtype = ivy.as_native_dtype(dtype)
-
-    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
