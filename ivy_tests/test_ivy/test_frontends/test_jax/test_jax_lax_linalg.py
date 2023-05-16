@@ -271,6 +271,7 @@ def test_jax_lax_qdwh(
 
         if max_iterations and num_iters >= max_iterations:
             is_converged = False
+
             break
 
     # Compute the polar decomposition
