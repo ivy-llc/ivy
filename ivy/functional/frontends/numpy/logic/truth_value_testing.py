@@ -61,7 +61,12 @@ def isfortran(a):
 
 @to_ivy_arrays_and_back
 def isreal(x):
-    return ivy.isreal(x)
+
+    try:
+        valid = x.imag
+    except AttributeError:
+        valid = np_frontend.asarray(x).imag
+    return valid == 0
 
 
 @to_ivy_arrays_and_back
