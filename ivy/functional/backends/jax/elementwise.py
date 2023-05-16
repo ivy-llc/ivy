@@ -22,7 +22,7 @@ def abs(
     if "bool" in str(x.dtype):
         return x
     # jnp.where is used for consistent gradients
-    return jnp.where(where, jnp.absolute(x), x)
+    return ivy.where(where, jnp.where(x != 0, jnp.absolute(x), 0), x)
 
 
 def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
