@@ -535,7 +535,8 @@ def test_percent_used_mem_on_dev():
         used = ivy.percent_used_mem_on_dev(ivy.Device(device))
         assert 0 <= used <= 100
 
-        # Same as test_used_mem_on_dev, but using percent of total memory as metric function
+        # Same as test_used_mem_on_dev
+        # Difference is that it uses percent of total memory as metric function
         _ram_array_and_clear_test(
             lambda: ivy.percent_used_mem_on_dev(device, process_specific=True),
             device=device,
