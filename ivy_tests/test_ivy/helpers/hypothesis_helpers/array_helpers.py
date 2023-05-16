@@ -1555,7 +1555,7 @@ def arrays_for_pooling(
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
-    new_kernel = kernel
+        new_kernel = kernel
     if return_dilation:
         new_kernel = []
         dilations = []
