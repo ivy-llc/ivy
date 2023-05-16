@@ -66,6 +66,16 @@ def pytest_addoption(parser):
         type=str,
         help="ivy traceback",
     )
+    parser.addoption(
+        "-D",
+        "--deterministic",
+        action="store_true",
+        default=False,
+        help=(
+            "Use hash of the test function as a seed, "
+            "disables Redis database if exists."
+        ),
+    )
 
 
 def pytest_configure(config):
@@ -106,6 +116,10 @@ def pytest_configure(config):
         profile_settings["max_examples"] = max_examples
     if deadline:
         profile_settings["deadline"] = deadline
+
+    if config.getoption("deterministic"):
+        profile_settings["database"] = None
+        profile_settings["derandomize"] = True
 
     settings.register_profile(
         "ivy_profile",

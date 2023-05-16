@@ -1,8 +1,12 @@
+# global
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
+from collections import namedtuple
+import torch
+
+# local
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
-import torch
 import ivy
 
 
@@ -98,8 +102,10 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
+    k = min(k, x.shape[axis])
     topk_res = NamedTuple(
         "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
     )
@@ -107,10 +113,10 @@ def top_k(
         indices = torch.argsort(x, dim=axis)
         indices = torch.index_select(indices, axis, torch.arange(k))
     else:
-        x = -x
-        indices = torch.argsort(x, dim=axis)
+        indices = torch.argsort(-x, dim=axis)
         indices = torch.index_select(indices, axis, torch.arange(k))
-        x = -x
+    if not sorted:
+        indices = torch.sort(indices, dim=axis)[0]
     val = torch.gather(x, axis, indices)
     return topk_res(val, indices)
 
@@ -328,3 +334,27 @@ def concat_from_sequence(
     elif new_axis == 1:
         ret = torch.stack(input_sequence, dim=axis)
         return ret
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
+def unique_consecutive(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    output, inverse_indices, counts = torch.unique_consecutive(
+        x,
+        return_inverse=True,
+        return_counts=True,
+        dim=axis,
+    )
+    return Results(
+        output.to(x.dtype),
+        inverse_indices,
+        counts,
+    )

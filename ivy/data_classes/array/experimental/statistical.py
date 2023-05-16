@@ -357,11 +357,14 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
-        >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
-        >>> a.nanmedian(a)
-            3.0
-        >>> a.nanmedian(a, axis=0)
-            array([6.5, 2. , 2.5])
+
+        With :class:`ivy.array` input and default backend set as `numpy`:
+
+        >>> a = ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]])
+        >>> a.nanmedian()
+            ivy.array(3.)
+        >>> a.nanmedian(axis=0)
+            ivy.array([6.5, 2. , 2.5])
         """
         return ivy.nanmedian(
             self._data,

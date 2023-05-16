@@ -79,6 +79,21 @@ class DeviceArray:
             where=where,
         )
 
+    def cumprod(self, axis=None, dtype=None, out=None):
+        return jax_frontend.numpy.cumprod(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
+
+    def nonzero(self, *, size=None, fill_value=None):
+        return jax_frontend.numpy.nonzero(
+            self,
+            size=size,
+            fill_value=fill_value,
+        )
+
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 
