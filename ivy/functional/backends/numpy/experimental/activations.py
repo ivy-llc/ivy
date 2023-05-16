@@ -80,4 +80,5 @@ def silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     else:
         return np.asarray(x * (1 / (1 + np.exp(-x)))).astype(x.dtype)
 
+
 silu.support_native_out = True
