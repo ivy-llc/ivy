@@ -670,6 +670,7 @@ def in_top_k(target, pred, k, name=None):
     return ivy.array([val in top_k.values for val in target])
 
 
+@to_ivy_arrays_and_back
 def conj(x, name=None):
     return ivy.conj(x)
 
