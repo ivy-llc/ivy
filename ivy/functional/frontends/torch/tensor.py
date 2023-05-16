@@ -125,15 +125,7 @@ class Tensor:
         self.ivy_array = self.addbmm(batch1, batch2, beta=beta, alpha=alpha).ivy_array
         return self
 
-    @with_unsupported_dtypes(
-        {
-            "1.11.0 and below": (
-                "integer",
-                "float16",
-            )
-        },
-        "torch",
-    )
+    @with_unsupported_dtypes({"1.11.0 and below": ("integer", "float16")}, "torch")
     def addcdiv_(self, tensor1, tensor2, *, value=1):
         self.ivy_array = self.addcdiv(tensor1, tensor2, value=value).ivy_array
         return self
