@@ -777,7 +777,7 @@ def infer_device(fn: Callable) -> Callable:
 
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
-    handle_out_in_ivy = hasattr(fn, "mixed_function")
+    handle_out_in_ivy = "ivy.functional.ivy" in fn.__module__
 
     @functools.wraps(fn)
     def _handle_out_argument(*args, out=None, **kwargs):
