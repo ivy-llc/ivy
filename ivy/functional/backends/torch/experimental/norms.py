@@ -65,7 +65,6 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 @handle_mixed_function(
     lambda x, mean, variance, scale, offset, **kwargs: (
         x.ndim > 1
@@ -75,6 +74,7 @@ def batch_norm(
         and (offset is None or offset.ndim == 1)
     )
 )
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def instance_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
