@@ -9,7 +9,9 @@ def union(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.setunion1d(
+    return jnp.union1d(
         x1,
         x2,
     )
+
+
