@@ -85,11 +85,7 @@ valid_int_dtypes = {
     )
 }
 valid_float_dtypes = {"2.4.2 and below": (ivy.float16, ivy.float32, ivy.float64)}
-valid_uint_dtypes = {
-    "2.4.2 and below"(
-        ivy.uint8,
-    )
-}
+valid_uint_dtypes = {"2.4.2 and below": (ivy.uint8,)}
 valid_complex_dtypes = {"2.4.2 and below": (ivy.complex64, ivy.complex128)}
 
 # leave these untouched
