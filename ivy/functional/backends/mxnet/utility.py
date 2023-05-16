@@ -1,6 +1,8 @@
 from typing import Union, Optional, Sequence
 import mxnet as mx
 
+from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def all(
     x: Union[(None, mx.ndarray.NDArray)],
@@ -10,7 +12,7 @@ def all(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.all Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def any(
@@ -21,4 +23,4 @@ def any(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.any Not Implemented")
+    raise IvyNotImplementedException()
