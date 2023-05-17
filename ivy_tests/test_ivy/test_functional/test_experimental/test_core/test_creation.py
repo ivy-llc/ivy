@@ -410,3 +410,39 @@ def test_ndindex(dtype_x_shape):
     shape = dtype_x_shape[2]
     for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
         assert index1 == index2
+
+
+# indices
+@handle_test(
+    fn_tree="functional.ivy.experimental.indices",
+    ground_truth_backend="numpy",
+    shape=helpers.get_shape(min_num_dims=1),
+    dtype=helpers.get_dtypes('integer', full=False),
+    sparse=st.booleans(),
+    container_flags=st.just([False]),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_indices(
+    *,
+    shape,
+    dtype,
+    sparse,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    helpers.test_function(
+        input_dtypes=[],
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        dimensions=shape,
+        dtype=dtype[0],
+        sparse=sparse,
+    )

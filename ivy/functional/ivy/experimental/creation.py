@@ -1,7 +1,7 @@
 # global
 from __future__ import annotations
 from math import sqrt, pi, cos
-from typing import Union, Tuple, Optional, Iterable, Generator
+from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
 
 # local
 import ivy
@@ -734,3 +734,53 @@ def ndindex(
     """
     args = [range(k) for k in shape]
     return _iter_product(*args)
+
+
+@handle_exceptions
+def indices(
+    dimensions: Sequence,
+    dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
+    sparse: bool = False,
+) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+    """
+    Return an array representing the indices of a grid.
+
+    Parameters
+    ----------
+    dimensions
+        The shape of the grid.
+    dtype
+        The data type of the result.
+    sparse
+        Return a sparse representation of the grid instead of a dense representation.
+
+    Returns
+    -------
+    ret
+        If sparse is False, returns one grid indices array of shape
+        (len(dimensions),) + tuple(dimensions).
+        If sparse is True, returns a tuple of arrays each of shape
+        (1, ..., 1, dimensions[i], 1, ..., 1) with dimensions[i] in the ith place.
+
+    Examples
+    --------
+    >>> ivy.indices((3, 2))
+    ivy.array([[[0 0]
+                [1 1]
+                [2 2]]
+               [[0 1]
+                [0 1]
+                [0 1]]])
+    >>> ivy.indices((3, 2), sparse=True)
+    (ivy.array([[0], [1], [2]]), ivy.array([[0, 1]]))
+    """
+    if sparse:
+        return tuple(
+            ivy.arange(dim).expand_dims(
+                axis=[j for j in range(len(dimensions)) if i != j],
+            ).astype(dtype)
+            for i, dim in enumerate(dimensions)
+        )
+    else:
+        grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing='ij')
+        return ivy.stack(grid, axis=0).astype(dtype)
