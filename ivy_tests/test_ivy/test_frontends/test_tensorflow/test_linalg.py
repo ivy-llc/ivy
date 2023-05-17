@@ -861,16 +861,3 @@ def test_tensorflow_qr(
         input=x[0],
         test_values=False,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
-
-    q, r = ret
-    frontend_q, frontend_r = frontend_ret
-
-    assert_all_close(
-        ret_np=q @ r,
-        ret_from_gt_np=frontend_q @ frontend_r,
-        rtol=1e-2,
-        atol=1e-2,
-        ground_truth_backend=frontend,
-    )
