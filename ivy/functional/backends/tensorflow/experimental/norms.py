@@ -1,7 +1,7 @@
 import tensorflow as tf
 from typing import Union, Optional, Tuple
 from ivy.func_wrapper import with_unsupported_dtypes
-
+from . import backend_version
 
 def l2_normalize(
     x: Union[tf.Tensor, tf.Variable],
@@ -15,7 +15,7 @@ def l2_normalize(
     return tf.math.divide(x, denorm)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
     mean: Union[tf.Tensor, tf.Variable],
