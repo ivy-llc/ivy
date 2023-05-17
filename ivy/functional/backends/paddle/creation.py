@@ -185,6 +185,16 @@ def empty_like(
     return to_device(paddle.empty_like(x=x.cast("float32")).cast(dtype), device)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint8",
+                                 "int8",
+                                 "int16",
+                                 "float16",
+                                 "complex64",
+                                 "complex128",
+                                 "bool")}},
+    backend_version
+)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -198,14 +208,35 @@ def eye(
 ) -> paddle.Tensor:
     if n_cols is None:
         n_cols = n_rows
-    i = paddle.eye(n_rows, n_cols)
     if batch_shape is None:
-        return to_device(i.astype(dtype), device)
+        batch_shape = []
+    i = paddle.eye(n_rows, n_cols, dtype=dtype)
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
-    i = paddle_backend.broadcast_to(i, reshape_dims)
-    return_mat = paddle.tile(i, tile_dims)
-    return to_device(return_mat.astype(dtype), device)
+
+    # handle index of the diagonal k
+    if k == 0:
+        return paddle.reshape(i, reshape_dims)
+
+    elif -n_rows < k < 0:
+        mat = paddle.concat(
+            [paddle.zeros([-k, n_cols], dtype=dtype), i[: n_rows + k]],
+            0,
+        )
+        return paddle.tile(paddle.reshape(mat, reshape_dims), tile_dims)
+
+    elif 0 < k < n_cols:
+        mat = paddle.concat(
+            [
+                paddle.zeros([n_rows, k], dtype=dtype),
+                i[:, : n_cols - k],
+            ],
+            1,
+        )
+        return paddle.tile(paddle.reshape(mat, reshape_dims), tile_dims)
+    else:
+        return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
+
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
