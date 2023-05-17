@@ -588,8 +588,6 @@ def test_ones(
     fn_tree="functional.ivy.ones_like",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        min_dim_size=1,
     ),
 )
 def test_ones_like(
@@ -637,10 +635,10 @@ def test_tril(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -673,10 +671,10 @@ def test_triu(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
