@@ -117,6 +117,15 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def addmm(self, mat1, mat2, *, beta=1, alpha=1):
+        return torch_frontend.addmm(self, mat1, mat2, beta=beta, alpha=alpha)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def addmm_(self, mat1, mat2, *, beta=1, alpha=1):
+        self.ivy_array = self.addmm(mat1, mat2, beta=beta, alpha=alpha).ivy_array
+        return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def addbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.addbmm(self, batch1, batch2, beta=beta, alpha=alpha)
 
@@ -509,7 +518,7 @@ class Tensor:
             else:
                 size = args
 
-        return torch_frontend.tensor(ivy.expand(self, tuple(size)))
+        return torch_frontend.tensor(ivy.expand(self.ivy_array, tuple(size)))
 
     def expand_as(self, other):
         return self.expand(
@@ -520,6 +529,10 @@ class Tensor:
         return torch_frontend.tensor(
             ivy.stop_gradient(self.ivy_array, preserve_type=False)
         )
+
+    def detach_(self):
+        self.ivy_array = self.detach().ivy_array
+        return self
 
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
@@ -1035,6 +1048,13 @@ class Tensor:
     def exp(self):
         return torch_frontend.exp(self)
 
+    # fmt: off
+    @with_unsupported_dtypes({"1.11.0 and below": ("int8", "int16", "int32", "int64", "uint8", "bool", "float16",)},"torch",)  # noqa
+    def exp_(self):
+        self.ivy_array = self.exp().ivy_array
+        return self
+    # fmt: on
+
     def mul(self, other):
         return torch_frontend.mul(self, other)
 
@@ -1127,6 +1147,10 @@ class Tensor:
 
     def tolist(self):
         return self._ivy_array.to_list()
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def multiply(self, other, *, out=None):
+        return torch_frontend.multiply(self, other, out=out)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
     def topk(self, k, dim=None, largest=True, sorted=True):

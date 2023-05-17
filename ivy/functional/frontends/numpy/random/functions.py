@@ -79,10 +79,10 @@ def beta(a, b, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def shuffle(x, /):
+def shuffle(x, axis=0, /):
     if isinstance(x, int):
         x = ivy.arange(x)
-    return ivy.shuffle(x)
+    return ivy.shuffle(x, axis)
 
 
 @to_ivy_arrays_and_back
@@ -110,3 +110,10 @@ def chisquare(df, size=None):
         df = df * ivy.ones(size)
 
     return ivy.gamma(df / 2, 2, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def lognormal(mean=0.0, sigma=1.0, size=None):
+    ret = ivy.exp(ivy.random_normal(mean=mean, std=sigma, shape=size, dtype="float64"))
+    return ret
