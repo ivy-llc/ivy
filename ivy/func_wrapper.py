@@ -1160,7 +1160,9 @@ def _dtype_device_wrapper_creator(attrib, t):
             else:
                 setattr(func, attrib, val)
                 setattr(func, "dictionary_info", version_dict)
-
+            if "frontends" in func.__module__:
+                # it's a frontend func, no casting modes for this
+                return func
             return casting_modes_ops(func)
 
         return _wrapped
