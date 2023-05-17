@@ -1931,3 +1931,39 @@ def test_tensorflow_unique(
         fn_tree=fn_tree,
         on_device=on_device,
     )
+
+
+@st.composite
+def bitcast_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
+    return dtype, x
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.bitcast",
+    dtype_x_axis=bitcast_helper(),
+)
+def test_tensorflow_bitcast(
+    *,
+    dtype_x_axis,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    dtype, x = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        type=dtype[0],
+    )

@@ -511,3 +511,8 @@ def unique(x, out_idx=ivy.int32, name=None):
     y = ret[0]
     idx = ivy.astype(ret[2], out_idx)
     return y, idx
+
+
+@to_ivy_arrays_and_back
+def bitcast(tensor, type, name=None):
+    return tf_frontend.bitcast(tensor=tensor, type=type)
