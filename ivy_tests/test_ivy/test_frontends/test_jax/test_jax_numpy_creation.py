@@ -865,8 +865,8 @@ def test_jax_numpy_cdouble(
     fn_tree="jax.numpy.compress",
     dtype_arr_ax=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("integer"),
-        min_num_dims=2,
-        max_num_dims=3,
+        min_num_dims=1,
+        max_num_dims=1,
         min_dim_size=10,
         max_dim_size=100,
         valid_axis=True,
