@@ -237,3 +237,27 @@ def test_paddle_full_like(
         fill_value=fill,
         dtype=dtype_to_cast,
     )
+
+
+# empty
+@handle_frontend_test(
+    fn_tree="paddle.empty",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("valid"),
+)
+def test_empty(
+    fn_tree,
+    shape,
+    dtype,
+):
+    helpers.test_frontend_function(
+        dtype=dtype,
+        fn_tree=fn_tree,
+        shape=shape,
+    )

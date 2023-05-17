@@ -55,3 +55,8 @@ def full(shape, fill_value, /, *, dtype=None, name=None):
 def full_like(x, fill_value, /, *, dtype=None, name=None):
     dtype = x.dtype if dtype is None else dtype
     return ivy.full_like(x, fill_value, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def empty(shape, /, *, dtype=None, name=None):
+    return ivy.empty(shape, dtype)
