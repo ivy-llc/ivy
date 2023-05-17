@@ -8246,12 +8246,13 @@ def test_torch_instance_multiply(
     init_tree="torch.tensor",
     method_name="unique",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         force_int_axis=True,
         valid_axis=True,
     ),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
+    sorted=st.booleans(),
 )
 def test_torch_instance_unique(
     dtype_x_axis,
@@ -8262,15 +8263,15 @@ def test_torch_instance_unique(
     on_device,
     return_inverse,
     return_counts,
+    sorted,
 ):
     input_dtypes, x, axis = dtype_x_axis
-
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
-            "sorted": True,
+            "sorted": sorted,
             "return_inverse": return_inverse,
             "return_counts": return_counts,
             "dim": axis,
