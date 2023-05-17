@@ -106,11 +106,11 @@ class Tensor:
         """
         if isinstance(self._ivy_array, list):
             # If the input is a list, compute the absolute value
-            abs_value = [paddle_frontend.abs(num) for num in self._ivy_array]
+            abs_value = [abs(num) for num in self._ivy_array]
             return abs_value
         elif isinstance(self._ivy_array, (int, float)):
             # If the input is an int or float, compute its absolute value
-            abs_value = paddle_frontend.abs(self._ivy_array)
+            abs_value = abs(self._ivy_array)
             return abs_value
         else:
             # Raise an exception if the input type is not supported
