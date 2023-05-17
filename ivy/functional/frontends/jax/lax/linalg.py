@@ -71,6 +71,10 @@ def qdwh(x, *, is_hermitian=False, max_iterations=None, eps=None, dynamic_shape=
         num_iters += 1
         x = np_frontend.linalg.norm(delta_h)
         y = np_frontend.linalg.norm(h) * (4 * eps) ** (1 / 3)
+        if is_hermitian:
+            # Check if h is Hermitian
+            assert_all_close(h, h.conj().T, atol=1e-6)
+
         if eps:
             if x < y:
                 is_converged = True

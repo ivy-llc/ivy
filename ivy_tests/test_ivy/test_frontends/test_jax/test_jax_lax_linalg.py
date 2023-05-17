@@ -191,6 +191,7 @@ def test_jax_lax_eigh(
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
+    is_hermitian=st.booleans(),
     test_with_out=st.just(False),
 )
 
@@ -206,7 +207,7 @@ def test_jax_lax_qdwh(
     if dynamic_shape:
         m, n = dynamic_shape
         x_pad = np.zeros((m, n), dtype=x.dtype)
-        x_pad[:x.shape[0], :x.shape[1]] = x
+        x_pad[: x.shape[0], : x.shape[1]] = x
         x = x_pad
 
     # Compute the SVD of x using the reference implementation
@@ -246,4 +247,3 @@ def test_jax_lax_qdwh(
         # Check if the maximum number of iterations is reached
         if num_iters >= max_iterations:
             assert not is_converged
-
