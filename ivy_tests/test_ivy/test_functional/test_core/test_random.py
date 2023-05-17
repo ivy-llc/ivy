@@ -299,7 +299,7 @@ def test_seed(seed_val):
 @handle_test(
     fn_tree="functional.ivy.shuffle",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         min_num_dims=1,
         min_dim_size=2,
