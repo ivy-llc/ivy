@@ -46,6 +46,9 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
+    def astype(self, dtype):
+        return jax_frontend.numpy.asarray(self._ivy_array, dtype=dtype)
+
     def all(self, *, axis=None, out=None, keepdims=False):
         return jax_frontend.numpy.all(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out
