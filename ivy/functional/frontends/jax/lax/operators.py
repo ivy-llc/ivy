@@ -8,6 +8,7 @@ import math
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_unsupported_dtypes
 
 _min = builtins.min
 _slice = builtins.slice
@@ -357,11 +358,13 @@ def full_like(x, fill_value, dtype=None, shape=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def ge(x, y):
     return ivy.greater_equal(x, y)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def gt(x, y):
     return ivy.greater(x, y)

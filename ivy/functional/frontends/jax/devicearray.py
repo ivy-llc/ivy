@@ -93,7 +93,7 @@ class DeviceArray:
             size=size,
             fill_value=fill_value,
         )
-    
+
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 
