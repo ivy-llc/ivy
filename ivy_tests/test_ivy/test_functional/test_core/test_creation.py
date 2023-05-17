@@ -270,9 +270,7 @@ def test_asarray(
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_instance_method=st.just(False),
@@ -331,7 +329,6 @@ def test_empty_like(
         x=x[0],
         dtype=dtype[0],
         device=on_device,
-        test_values=False,
         ground_truth_backend=ground_truth_backend,
         return_flat_np_arrays=True,
     )
@@ -386,9 +383,7 @@ def test_eye(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
     ),
     test_gradients=st.just(False),
 )
@@ -401,9 +396,9 @@ def test_from_dlpack(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -558,9 +553,7 @@ def test_meshgrid(
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_instance_method=st.just(False),
@@ -595,9 +588,7 @@ def test_ones(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
     ),
 )
 def test_ones_like(
@@ -701,11 +692,9 @@ def test_triu(
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -736,11 +725,9 @@ def test_zeros(
 @handle_test(
     fn_tree="functional.ivy.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
     ),
 )
 def test_zeros_like(
