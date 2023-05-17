@@ -554,7 +554,9 @@ def test_meshgrid(
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=1,
+        max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_instance_method=st.just(False),
