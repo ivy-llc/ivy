@@ -217,12 +217,12 @@ def test_jax_lax_qdwh(
     # Compute the SVD of x using the qdwh function
     u, h, num_iters, is_converged = qdwh(
         x,
-        is_hermitian = is_hermitian,
-        max_iterations = max_iterations,
-        eps = eps,
-        dynamic_shape = dynamic_shape,
+        is_hermitian=is_hermitian,
+        max_iterations=max_iterations,
+        eps=eps,
+        dynamic_shape=dynamic_shape,
     )
-    v = u.conj().T
+    u.conj().T
 
     # Compute the weighted average of u and v using the reference implementation
     alpha = 0.5
