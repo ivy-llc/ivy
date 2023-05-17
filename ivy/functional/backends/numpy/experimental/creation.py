@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Sequence, Union
 
 import numpy as np
 
@@ -63,8 +63,11 @@ def hann_window(
 ) -> np.ndarray:
     if size == 1:
         return np.array([1], dtype=dtype)
-    if size == 2 and periodic is False:
-        return np.array([0, 1], dtype=dtype)
+    if size == 2:
+        if periodic:
+            return np.array([0, 0], dtype=dtype)
+        else:
+            return np.array([0, 1], dtype=dtype)
     if periodic is False:
         return np.array(np.hanning(size), dtype=dtype)
     else:
@@ -89,3 +92,11 @@ def kaiser_window(
 
 
 kaiser_window.support_native_out = False
+
+
+def indices(
+    dimensions: Sequence,
+    dtype: np.dtype = np.int64,
+    sparse: bool = False,
+) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
+    return np.indices(dimensions, dtype=dtype, sparse=sparse)

@@ -184,5 +184,6 @@ def shuffle(
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
 
-    #jax.random.shuffle is deprecated; identical behaviour reproduced with jax.random.permutation
+    # jax.random.shuffle is deprecated; identical behaviour reproduced with
+    # jax.random.permutation
     return jax.random.permutation(key=rng_input, x=x, axis=axis, independent=True)
