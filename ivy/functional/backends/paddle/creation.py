@@ -10,7 +10,6 @@ import ivy.functional.backends.paddle as paddle_backend
 # local
 import ivy
 from ivy.func_wrapper import (
-    with_unsupported_dtypes,
     with_unsupported_device_and_dtypes,
     _get_first_array,
 )
@@ -29,9 +28,6 @@ from ivy.functional.backends.paddle.device import to_device
 # -------------------#
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def arange(
     start: float,
     /,
@@ -86,9 +82,6 @@ def _stack_tensors(x, dtype):
     return x
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
@@ -171,9 +164,6 @@ def asarray(
         return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -184,9 +174,6 @@ def empty(
     return to_device(paddle.empty(shape=shape).cast(dtype), device)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def empty_like(
     x: paddle.Tensor,
     /,
@@ -199,7 +186,14 @@ def empty_like(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint8",
+                                 "int8",
+                                 "int16",
+                                 "float16",
+                                 "complex64",
+                                 "complex128",
+                                 "bool")}},
+    backend_version
 )
 def eye(
     n_rows: int,
@@ -214,14 +208,35 @@ def eye(
 ) -> paddle.Tensor:
     if n_cols is None:
         n_cols = n_rows
-    i = paddle.eye(n_rows, n_cols)
     if batch_shape is None:
-        return to_device(i.astype(dtype), device)
+        batch_shape = []
+    i = paddle.eye(n_rows, n_cols, dtype=dtype)
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
-    i = paddle_backend.broadcast_to(i, reshape_dims)
-    return_mat = paddle.tile(i, tile_dims)
-    return to_device(return_mat.astype(dtype), device)
+
+    # handle index of the diagonal k
+    if k == 0:
+        return paddle.reshape(i, reshape_dims)
+
+    elif -n_rows < k < 0:
+        mat = paddle.concat(
+            [paddle.zeros([-k, n_cols], dtype=dtype), i[: n_rows + k]],
+            0,
+        )
+        return paddle.tile(paddle.reshape(mat, reshape_dims), tile_dims)
+
+    elif 0 < k < n_cols:
+        mat = paddle.concat(
+            [
+                paddle.zeros([n_rows, k], dtype=dtype),
+                i[:, : n_cols - k],
+            ],
+            1,
+        )
+        return paddle.tile(paddle.reshape(mat, reshape_dims), tile_dims)
+    else:
+        return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
+
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
@@ -229,9 +244,6 @@ def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
     return paddle.utils.dlpack.from_dlpack(x_d)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float, bool],
@@ -249,9 +261,6 @@ def full(
     )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def full_like(
     x: paddle.Tensor,
     /,
@@ -420,19 +429,19 @@ def linspace(
     return to_device(ans.cast(dtype), device)
 
 
-@with_unsupported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
     },
     backend_version,
 )
@@ -467,9 +476,6 @@ def meshgrid(
     return res
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -480,9 +486,6 @@ def ones(
     return to_device(paddle.ones(shape=shape).cast(dtype), device)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def ones_like(
     x: paddle.Tensor,
     /,
@@ -501,8 +504,6 @@ def ones_like(
                 "int8",
                 "int16",
                 "uint8",
-                "uint16",
-                "bfloat16",
                 "complex64",
                 "complex128",
             )
@@ -523,8 +524,6 @@ def tril(
                 "int8",
                 "int16",
                 "uint8",
-                "uint16",
-                "bfloat16",
                 "complex64",
                 "complex128",
             )
@@ -538,9 +537,6 @@ def triu(
     return paddle.triu(x=x, diagonal=k)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -551,9 +547,6 @@ def zeros(
     return to_device(paddle.zeros(shape=shape).cast(dtype), device)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def zeros_like(
     x: paddle.Tensor,
     /,
@@ -574,9 +567,6 @@ def zeros_like(
 array = asarray
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def copy_array(
     x: paddle.Tensor,
     *,
@@ -588,9 +578,6 @@ def copy_array(
     return x.clone()
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def one_hot(
     indices: paddle.Tensor,
     depth: int,
@@ -643,16 +630,14 @@ def one_hot(
     return to_device(res.cast(dtype), device)
 
 
-@with_unsupported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "bfloat16",
-            "complex64",
-            "complex128",
-            "uint16",
-            "uint32",
-            "uint64",
-        )
+        "2.4.2 and below": {
+            "cpu": (
+                "complex64",
+                "complex128",
+            )
+        }
     },
     backend_version,
 )
