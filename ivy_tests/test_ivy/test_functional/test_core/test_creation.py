@@ -693,7 +693,9 @@ def test_triu(
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=1,
+        max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
@@ -728,7 +730,9 @@ def test_zeros(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=1,
+        max_dim_size=5,
     ),
 )
 def test_zeros_like(
