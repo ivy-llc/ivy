@@ -1574,7 +1574,7 @@ class MaxPool2D(Module):
             -------
             The output of the layer.
             """
-            return ivy.max_pool3d(
+            return ivy.MaxPool3D(
                 inputs,
                 self._kernel_size,
                 self._stride,
