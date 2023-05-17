@@ -56,7 +56,7 @@ def test_paddle_cos(
         x=x[0],
     )
 
-    
+
 # acos
 @handle_frontend_test(
     fn_tree="paddle.acos",
@@ -112,7 +112,6 @@ def test_paddle_tanh(
     )
 
 
-
 # exp
 @handle_frontend_test(
     fn_tree="paddle.exp",
@@ -137,4 +136,3 @@ def test_paddle_exp(
         on_device=on_device,
         x=x[0],
     )
-
