@@ -329,6 +329,7 @@ def test_empty_like(
         x=x[0],
         dtype=dtype[0],
         device=on_device,
+        test_values=False,
         ground_truth_backend=ground_truth_backend,
         return_flat_np_arrays=True,
     )
