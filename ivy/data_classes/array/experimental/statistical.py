@@ -356,6 +356,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
             A new array holding the result. If the input contains integers
 
         Examples
+        
         --------
         With :class:`ivy.array` input and default backend set as `numpy`:
 
