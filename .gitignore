@@ -25,10 +25,8 @@ with_time_logs/
 *.gif
 .hypothesis
 .array_api_tests_k_flag*
-internal_automation_tools/
+internal_automation_tools/4
 .vscode/*
-.idea/*
 .ivy/*
 .DS_Store*
-.idea
-.gitignore
+
