@@ -204,7 +204,7 @@ def test_jax_lax_qdwh(
     fn_tree,
     frontend,
     test_flags,
-    np_frontend=None
+    np_frontend=None,
 ):
     dtype, x = dtype_and_x
     ret, frontend_ret = helpers.test_frontend_function(
@@ -218,7 +218,6 @@ def test_jax_lax_qdwh(
         max_iterations=max_iterations,
         eps=eps,
         dynamic_shape=dynamic_shape,
-        is_hermitian=is_hermitian,
     )
     ret = [ivy.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
@@ -232,7 +231,6 @@ def test_jax_lax_qdwh(
     )
 
     x = np.array([[1, 2], [3, 4]], dtype=np.complex128)
-    is_hermitian = False
     max_iterations = 10
     eps = 1e-6
     dynamic_shape = None
