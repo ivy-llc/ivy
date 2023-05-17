@@ -289,15 +289,15 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
 # ---------------#
 
 
-def handle_array_function(func):
+def handle_array_function(fn):
     """
-    Wrap a function `func` to be passed to array_function method.
+    Wrap a function `fn` to be passed to array_function method.
 
     Wrap a function to extract the relevant argument types to be passed
     to array_function method.
     """
 
-    @functools.wraps(func)
+    @functools.wraps(fn)
     def _handle_array_function(*args, **kwargs):
         overloaded_types = []
         overloaded_args = []
@@ -342,11 +342,11 @@ def handle_array_function(func):
                             overloaded_args.insert(index, arg)
 
         success, value = try_array_function_override(
-            ivy.__dict__[func.__name__], overloaded_args, overloaded_types, args, kwargs
+            ivy.__dict__[fn.__name__], overloaded_args, overloaded_types, args, kwargs
         )
         if success:
             return value
-        return func(*args, **kwargs)
+        return fn(*args, **kwargs)
 
     _handle_array_function.handle_array_function = True
     return _handle_array_function
@@ -1160,7 +1160,9 @@ def _dtype_device_wrapper_creator(attrib, t):
             else:
                 setattr(func, attrib, val)
                 setattr(func, "dictionary_info", version_dict)
-
+            if "frontends" in func.__module__:
+                # it's a frontend func, no casting modes for this
+                return func
             return casting_modes_ops(func)
 
         return _wrapped

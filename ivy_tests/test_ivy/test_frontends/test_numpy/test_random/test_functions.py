@@ -451,8 +451,12 @@ def test_numpy_chisquare(
 @handle_frontend_test(
     fn_tree="numpy.random.lognormal",
     input_dtypes=helpers.get_dtypes("float", index=2),
-    mean=st.floats(allow_nan=False, allow_infinity=False, width=32, min_value=-5, max_value=5),
-    sigma=st.floats(allow_nan=False, allow_infinity=False, width=32, min_value=0, max_value=5),
+    mean=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=-5, max_value=5
+    ),
+    sigma=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, max_value=5
+    ),
     size=st.tuples(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
