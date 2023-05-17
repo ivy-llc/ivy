@@ -55,7 +55,8 @@ def nanpercentile(
     q = ivy.array(q)
     
     if not _quantile_is_valid(q):
-        raise ValueError("percentile s must be in the range [0, 100]")
+        ivy.logging.warning("percentile s must be in the range [0, 100]")
+        return []
     
     if axis is None:
         resultarray = []
