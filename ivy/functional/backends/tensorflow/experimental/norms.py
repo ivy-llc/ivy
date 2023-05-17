@@ -3,6 +3,7 @@ from typing import Union, Optional, Tuple
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
+
 def l2_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,

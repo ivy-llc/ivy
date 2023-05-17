@@ -259,7 +259,7 @@ def matmul(
         if ret_dtype in [paddle.int16]:
             ret = ret.cast(paddle.int32)
         return ret.squeeze().astype(ret_dtype)
-    
+
     return ret
 
 
