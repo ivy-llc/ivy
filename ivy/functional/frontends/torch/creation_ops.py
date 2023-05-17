@@ -1,5 +1,6 @@
 # local
 import ivy
+from torch import polar as torch_polar
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
@@ -297,3 +298,8 @@ def frombuffer(
     requires_grad=False,
 ):
     return ivy.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+
+
+@to_ivy_arrays_and_back
+def polar(abs, angle, *, out=None):
+    return torch_polar(abs, angle, out=out)

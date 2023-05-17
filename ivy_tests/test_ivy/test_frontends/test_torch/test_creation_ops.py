@@ -734,3 +734,35 @@ def test_torch_frombuffer(
         count=count,
         offset=offset,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.polar",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=2, shared_dtype=True, available_dtypes=helpers.get_dtypes("float")
+    ),
+)
+def test_torch_polar(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    inputs_dtype, inputs = dtype_and_x
+
+    # Torch doesn't suppoer the bfloat16 type for the polar function
+    # So we convert it to float32
+    if inputs_dtype[0] == "bfloat16":
+        inputs_dtype = [ivy.as_ivy_dtype("float32"), ivy.as_ivy_dtype("float32")]
+        inputs = [inputs[0].astype("float32"), inputs[1].astype("float32")]
+
+    helpers.test_frontend_function(
+        input_dtypes=inputs_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        abs=inputs[0],
+        angle=inputs[1],
+    )
