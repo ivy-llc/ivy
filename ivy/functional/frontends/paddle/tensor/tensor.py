@@ -90,3 +90,28 @@ class Tensor:
 
     def dim(self):
         return self.ivy_array.ndim
+
+    def abs(self):
+        """
+        Compute the absolute value of the input tensor.
+
+        Args:
+            None
+
+        Returns:
+            abs_value (list or float): The absolute value of the input tensor.
+
+        Raises:
+            ValueError: If the input type is not a list, int, or float.
+        """
+        if isinstance(self._ivy_array, list):
+            # If the input is a list, compute the absolute value
+            abs_value = [abs(num) for num in self._ivy_array]
+            return abs_value
+        elif isinstance(self._ivy_array, (int, float)):
+            # If the input is an int or float, directly compute its absolute value
+            abs_value = abs(self._ivy_array)
+            return abs_value
+        else:
+            # Raise an exception if the input type is not supported
+            raise ValueError("Invalid input type. Must be a list, int, or float.")
