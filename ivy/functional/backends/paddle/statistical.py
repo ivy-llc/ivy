@@ -4,7 +4,6 @@ torch_scatter = None
 
 from typing import Union, Optional, Sequence, Tuple
 
-import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
