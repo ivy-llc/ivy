@@ -12,9 +12,13 @@ from . import backend_version
 
 @_scalar_output_to_0d_array
 def abs(
-    x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
+    x: Union[float, np.ndarray],
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.absolute(x, out=out)
+    return ivy.where(where, np.absolute(x, out=out), x)
 
 
 abs.support_native_out = True
@@ -747,7 +751,7 @@ minimum.support_native_out = True
 def reciprocal(
     x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    numerator = np.ones((1,), dtype=x.dtype)
+    numerator = np.ones_like(x)
     return np.true_divide(numerator, x, out=out)
 
 
