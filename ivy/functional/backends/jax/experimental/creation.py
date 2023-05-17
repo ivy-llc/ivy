@@ -57,8 +57,11 @@ def hann_window(
 ) -> JaxArray:
     if size == 1:
         return jnp.array([1], dtype=dtype)
-    if size == 2 and periodic is False:
-        return jnp.array([0, 1], dtype=dtype)
+    if size == 2:
+        if periodic:
+            return jnp.array([0, 0], dtype=dtype)
+        else:
+            return jnp.array([0, 1], dtype=dtype)
     if periodic is False:
         return jnp.array(jnp.hanning(size), dtype=dtype)
     else:
