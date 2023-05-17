@@ -213,7 +213,13 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     },
     backend_version,
 )
-def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def asin(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -223,8 +229,8 @@ def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.asin(x.astype("float32")).astype(ret_dtype)
-    return paddle.asin(x)
+        return ivy.where(where, paddle.asin(x.astype("float32")).astype(ret_dtype), x)
+    return ivy.where(where, paddle.asin(x), x)
 
 
 @with_unsupported_device_and_dtypes(
@@ -235,7 +241,13 @@ def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     },
     backend_version,
 )
-def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def asinh(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -245,8 +257,8 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.asinh(x.astype("float32")).astype(ret_dtype)
-    return paddle.asinh(x)
+        return ivy.where(where, paddle.asinh(x.astype("float32")).astype(ret_dtype), x)
+    return ivy.where(where, paddle.asinh(x), x)
 
 
 @with_unsupported_device_and_dtypes(
@@ -927,7 +939,13 @@ def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     },
     backend_version,
 )
-def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def atan(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -937,8 +955,8 @@ def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.atan(x.astype("float32")).astype(ret_dtype)
-    return paddle.atan(x)
+        return ivy.where(where, paddle.atan(x.astype("float32")).astype(ret_dtype), x)
+    return ivy.where(where, paddle.atan(x), x)
 
 
 @with_unsupported_device_and_dtypes(

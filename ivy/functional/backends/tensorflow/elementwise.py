@@ -61,27 +61,30 @@ def asin(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.asin(x)
+    return ivy.where(where, tf.asin(x), x)
 
 
 def asinh(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.asinh(x)
+    return ivy.where(where, tf.asinh(x), x)
 
 
 def atan(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.atan(x)
+    return ivy.where(where, tf.math.atan(x), x)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)

@@ -60,24 +60,42 @@ add.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def asin(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.arcsin(x, out=out)
+def asin(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.arcsin(x, out=out), x)
 
 
 asin.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def asinh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.arcsinh(x, out=out)
+def asinh(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.arcsin(x, out=out), x)
 
 
 asinh.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def atan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.arctan(x, out=out)
+def atan(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.arctan(x, out=out), x)
 
 
 atan.support_native_out = True

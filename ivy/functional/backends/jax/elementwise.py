@@ -48,16 +48,34 @@ def add(
     return jnp.add(x1, x2)
 
 
-def asin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.arcsin(x)
+def asin(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.arcsin(x), x)
 
 
-def asinh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.arcsinh(x)
+def asinh(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.arcsinh(x), x)
 
 
-def atan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.arctan(x)
+def atan(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.arctan(x), x)
 
 
 def atan2(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

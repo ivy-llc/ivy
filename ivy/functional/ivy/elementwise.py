@@ -402,8 +402,9 @@ def asin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Calculate an implementation-dependent approximation of the principal value of
     the inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each
     element ``x_i`` of the input array ``x``. Each element-wise result is expressed in
@@ -423,6 +424,8 @@ def asin(
     ----------
     x
         input array. Should have a floating-point data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -472,7 +475,7 @@ def asin(
     >>> print(y)
     {a:ivy.array([0.,0.1,0.201]),b:ivy.array([0.305,0.412,0.524])}
     """
-    return ivy.current_backend(x).asin(x, out=out)
+    return ivy.current_backend(x).asin(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -486,8 +489,9 @@ def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Calculate an implementation-dependent approximation to the inverse hyperbolic
     sine, having domain ``[-infinity, +infinity]`` and codomain
     ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
@@ -507,6 +511,8 @@ def asinh(
     x
         input array whose elements each represent the area of a hyperbolic sector.
         Should have a floating-point data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -561,7 +567,7 @@ def asinh(
     }
 
     """
-    return ivy.current_backend(x).asinh(x, out=out)
+    return ivy.current_backend(x).asinh(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -574,8 +580,9 @@ def atan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Calculate an implementation-dependent approximation of the principal value of
     the inverse tangent, having domain ``[-infinity, +infinity]`` and codomain
     ``[-π/2, +π/2]``, for each element ``x_i`` of the input array ``x``. Each
@@ -597,6 +604,8 @@ def atan(
     ----------
     x
         input array. Should have a floating-point data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -643,7 +652,7 @@ def atan(
     }
 
     """
-    return ivy.current_backend(x).atan(x, out=out)
+    return ivy.current_backend(x).atan(x, out=out, where=where)
 
 
 @handle_exceptions

@@ -162,25 +162,43 @@ floor.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def asin(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def asin(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.asin(x, out=out)
+    return ivy.where(where, torch.asin(x, out=out), x)
 
 
 asin.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def asinh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def asinh(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.asinh(x, out=out)
+    return ivy.where(where, torch.asinh(x, out=out), x)
 
 
 asinh.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def sign(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def sign(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sign(x, out=out)
 
@@ -557,9 +575,15 @@ tan.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def atan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def atan(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.atan(x, out=out)
+    return ivy.where(where, torch.atan(x, out=out), x)
 
 
 atan.support_native_out = True

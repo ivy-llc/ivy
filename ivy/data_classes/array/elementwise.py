@@ -153,7 +153,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.add(self._data, x2, alpha=alpha, out=out)
 
-    def asin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def asin(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.asin. This method simply wraps the
         function, and so the docstring for ivy.asin also applies to this method with
@@ -163,6 +168,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a real-valued floating-point data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -188,9 +195,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([nan, -1.12, nan, nan])
         """
-        return ivy.asin(self._data, out=out)
+        return ivy.asin(self._data, out=out, where=where)
 
-    def asinh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def asinh(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.asinh. This method simply wraps the
         function, and so the docstring for ivy.asinh also applies to this method with
@@ -201,6 +213,8 @@ class _ArrayWithElementwise(abc.ABC):
         self
             input array whose elements each represent the area of a hyperbolic sector.
             Should have a floating-point data type.
+        where
+            optional boolean mask, apply the function only to the values that are
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -219,9 +233,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([-0.881,  0.   ,  1.82 ])
         """
-        return ivy.asinh(self._data, out=out)
+        return ivy.asinh(self._data, where=where, out=out)
 
-    def atan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def atan(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.atan. This method simply wraps the
         function, and so the docstring for ivy.atan also applies to this method with
@@ -231,6 +250,9 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a real-valued floating-point data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
+
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -248,7 +270,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([ 0.785,  0.464, -0.464])
         """
-        return ivy.atan(self._data, out=out)
+        return ivy.atan(self._data, where=where, out=out)
 
     def atan2(
         self: ivy.Array,
