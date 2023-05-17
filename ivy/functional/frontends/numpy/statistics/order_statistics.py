@@ -17,7 +17,7 @@ def _quantile_is_valid(q):
 
 
 
-def cpercentile(N, percent, key=lambda x: x):
+def _cpercentile(N, percent, key=lambda x: x):
     """
     Find the percentile   of a list of values.
 
@@ -66,7 +66,7 @@ def nanpercentile(
                     nanlessarray.append(i)
 
         for i in q:
-            resultarray.append(cpercentile(nanlessarray, i))
+            resultarray.append(_cpercentile(nanlessarray, i))
         return resultarray
     elif axis == 1:
         resultarray = []
@@ -80,7 +80,7 @@ def nanpercentile(
         for i in q:
             arrayofpercentiles = []
             for ii in nanlessarrayofarrays:
-                arrayofpercentiles.append(cpercentile(ii, i))
+                arrayofpercentiles.append(_cpercentile(ii, i))
             resultarray.append(arrayofpercentiles)
         return resultarray
     elif axis == 0:
@@ -102,6 +102,6 @@ def nanpercentile(
             for i in q:
                 arrayofpercentiles = []
                 for ii in nanlessarrayofarrays:
-                    arrayofpercentiles.append(cpercentile(ii, i))
+                    arrayofpercentiles.append(_cpercentile(ii, i))
                 resultarray.append(arrayofpercentiles)
         return resultarray
