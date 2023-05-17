@@ -203,8 +203,8 @@ def test_jax_lax_qdwh(
         on_device,
         fn_tree,
         frontend,
-        test_flags
-):
+        test_flags,
+        np_frontend=None):
     dtype, x = dtype_and_x
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
