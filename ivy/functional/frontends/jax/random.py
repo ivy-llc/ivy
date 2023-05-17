@@ -199,3 +199,28 @@ def permutation(key, x, axis=0, independent=False):
     rand = ivy.arange(x.shape[axis])
     ind = ivy.shuffle(rand, 0, seed=seed)
     return ivy.gather(x, ind, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def shuffle(key, x, axis=0):
+    seed = _get_seed(key)
+    x = ivy.flip(x, axis=axis)
+    return ivy.shuffle(x, seed=seed)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def exponential(key, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    uniform = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    exp = -ivy.log(1 - uniform)
+    return exp
