@@ -231,7 +231,6 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         """
         return ivy.selu(self._data, out=out)
 
-
     def silu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.silu. This method simply wraps the

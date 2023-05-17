@@ -868,7 +868,11 @@ def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def abs(
-    x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
+    x: Union[float, paddle.Tensor],
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
@@ -877,8 +881,10 @@ def abs(
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle.abs(x.astype("float32")).astype(x.dtype)
-    return paddle.abs(x)
+
+        return ivy.where(where, paddle.abs(x.astype("float32")).astype(x.dtype), x)
+    return ivy.where(where, paddle.abs(x), x)
+
 
 
 @with_unsupported_device_and_dtypes(
