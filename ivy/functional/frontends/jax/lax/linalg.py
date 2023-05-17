@@ -1,5 +1,6 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+import numpy as np_frontend
 
 
 @to_ivy_arrays_and_back

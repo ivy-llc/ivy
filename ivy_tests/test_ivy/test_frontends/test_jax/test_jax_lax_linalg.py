@@ -196,99 +196,54 @@ def test_jax_lax_eigh(
 
 def test_jax_lax_qdwh(
     *,
-    dtype_and_x,
+    x,
+    is_hermitian,
     max_iterations,
     eps,
     dynamic_shape,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    np_frontend=None,
 ):
-    dtype, x = dtype_and_x
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        x=x,
-        max_iterations=max_iterations,
-        eps=eps,
-        dynamic_shape=dynamic_shape,
-    )
-    ret = [ivy.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
-
-    L, Q = ret
-    frontend_Q, frontend_L = frontend_ret
-    assert_all_close(
-        ret_np=Q @ np.diag(L) @ Q.T,
-        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
-        atol=1e-2,
-    )
-
-    x = np.array([[1, 2], [3, 4]], dtype=np.complex128)
-    max_iterations = 10
-    eps = 1e-6
-    dynamic_shape = None
-
+    # Pad x if dynamic_shape is provided
     if dynamic_shape:
         m, n = dynamic_shape
-        x_pad = np_frontend.zeros((m, n), dtype=x.dtype)
-        x_pad[: x.shape[0], : x.shape[1]] = x
+        x_pad = np.zeros((m, n), dtype=x.dtype)
+        x_pad[:x.shape[0], :x.shape[1]] = x
         x = x_pad
 
-    # Compute the SVD of x
-    u, s, vh = np_frontend.linalg.svd(x, full_matrices=False)
-    v = vh.T.conj()
+    # Compute the SVD of x using the reference implementation
+    u_ref, s_ref, vh_ref = np.linalg.svd(x, full_matrices=False)
+    v_ref = vh_ref.T.conj()
 
-    # Compute the weighted average of u and v
+    # Compute the SVD of x using the qdwh function
+    u, h, num_iters, is_converged = qdwh(x, is_hermitian=is_hermitian, max_iterations=max_iterations, eps=eps, dynamic_shape=dynamic_shape)
+    v = u.conj().T
+
+    # Compute the weighted average of u and v using the reference implementation
     alpha = 0.5
-    u_avg = alpha * u + (1 - alpha) * v
+    u_avg_ref = alpha * u_ref + (1 - alpha) * v_ref
 
-    # Compute the diagonal matrix h = u_avg^H * x
-    h = u_avg.conj().T @ x
+    # Compute the diagonal matrix h_ref = u_avg_ref^H * x
+    h_ref = u_avg_ref.conj().T @ x
 
-    # Apply the Halley iteration
-    num_iters = 0
-    while True:
-        h_prev = h.copy()
-        h2 = h @ h_prev
-        h3 = h2 @ h_prev
-        g = 1.5 * h_prev - 0.5 * h_prev @ h2
-        delta_h = np_frontend.linalg.solve(2 * g - h3, h2 - 2 * g @ h_prev + g @ h3)
-        h += delta_h
-        num_iters += 1
-        x_norm = np_frontend.linalg.norm(delta_h)
-        y_norm = np_frontend.linalg.norm(h) * (4 * eps) ** (1 / 3)
-        if eps:
-            # Check for convergence
-            if x_norm < y_norm:
-                is_converged = True
-                break
+    # Compare u and u_ref
+    assert_all_close(u, u_ref, atol=1e-6)
 
-        if max_iterations and num_iters >= max_iterations:
-            is_converged = False
-            break
+    # Compare h and h_ref
+    assert_all_close(h, h_ref, atol=1e-6)
 
-    h_sqrt = np_frontend.sqrt(h.conj().T @ h)
-    u = u_avg @ np_frontend.linalg.inv(h_sqrt)
+    # Perform additional checks based on the specified conditions
+    if is_hermitian:
+        # Check if h is Hermitian
+        assert_all_close(h, h.conj().T, atol=1e-6)
 
-    # Perform assertions to test the function
-    u_expected = np.array(
-        [[-0.1578729, -0.53064006], [-0.41119322, 0.32657397]]
-    )
-    h_expected = np.array(
-        [[1.75487767 + 0.j, 2.28987494 + 0.j], [0.57655308 + 0.j, 1.64767303 + 0.j]]
-    )
-    num_iters_expected = 5
-    is_converged_expected = True
+    if eps:
+        # Check convergence based on epsilon
+        x_norm = np.linalg.norm(x)
+        y = np.linalg.norm(h) * (4 * eps) ** (1 / 3)
+        if x_norm < y:
+            assert is_converged
 
-    assert np.allclose(u, u_expected)
-    assert np.allclose(h, h_expected)
-    assert num_iters == num_iters_expected
-    assert is_converged == is_converged_expected
-    assert is_converged == is_converged_expected
+    if max_iterations:
+        # Check if the maximum number of iterations is reached
+        if num_iters >= max_iterations:
+            assert not is_converged
+
