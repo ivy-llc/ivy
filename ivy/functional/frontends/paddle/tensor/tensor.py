@@ -92,18 +92,6 @@ class Tensor:
         return self.ivy_array.ndim
 
     def abs(self):
-        """
-        Compute the absolute value of the input tensor.
-
-        Args:
-            None
-
-        Returns:
-            abs_value (list or float): The absolute value of the input tensor.
-
-        Raises:
-            ValueError: If the input type is not a list, int, or float.
-        """
         if isinstance(self._ivy_array, list):
             # If the input is a list, compute the absolute value
             abs_value = [abs(num) for num in self._ivy_array]
