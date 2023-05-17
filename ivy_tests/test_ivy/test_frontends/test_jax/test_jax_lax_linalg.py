@@ -204,8 +204,7 @@ def test_jax_lax_qdwh(
     fn_tree,
     frontend,
     test_flags,
-    np_frontend=None,
-    is_hermitian,
+    np_frontend=None
 ):
     dtype, x = dtype_and_x
     ret, frontend_ret = helpers.test_frontend_function(
@@ -281,7 +280,9 @@ def test_jax_lax_qdwh(
     u = u_avg @ np_frontend.linalg.inv(h_sqrt)
 
     # Perform assertions to test the function
-    u_expected = np.array([[-0.1578729, -0.53064006], [-0.41119322, 0.32657397]])
+    u_expected = np.array(
+        [[-0.1578729, -0.53064006], [-0.41119322, 0.32657397]]
+    )
     h_expected = np.array(
         [[1.75487767 + 0.j, 2.28987494 + 0.j], [0.57655308 + 0.j, 1.64767303 + 0.j]]
     )
