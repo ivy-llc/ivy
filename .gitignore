@@ -29,9 +29,4 @@ internal_automation_tools/4
 .vscode/*
 .ivy/*
 .DS_Store*
-<<<<<<< HEAD
 
-=======
-.idea
-.gitignore
->>>>>>> master
