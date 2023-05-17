@@ -58,13 +58,13 @@ def test_jax_tree_leaves(
     on_device,
 ):
     # Apply the tree_leaves function to obtain the leaves of the tree
-    result = ivy.asarray(tree_leaves(tree))
+    result = tree_leaves(tree)
 
     # compute the expected result
-    expected = ivy.asarray(jax.tree_util.tree_leaves(tree))
+    expected = jax.tree_util.tree_leaves(tree)
 
     # value test
-    assert ivy.equal(result, expected)
+    assert result == expected
 
 
 # tree_map
