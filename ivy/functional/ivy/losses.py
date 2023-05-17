@@ -84,6 +84,114 @@ def cross_entropy(
     return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
+# @handle_exceptions
+# @handle_nestable
+# @handle_array_like_without_promotion
+# @inputs_to_ivy_arrays
+# @handle_array_function
+# def binary_cross_entropy(
+#     true: Union[ivy.Array, ivy.NativeArray],
+#     pred: Union[ivy.Array, ivy.NativeArray],
+#     /,
+#     *,
+#     epsilon: float = 1e-7,
+#     reduction: str = "none",
+#     out: Optional[ivy.Array] = None,
+# ) -> ivy.Array:
+#     """
+#     Compute the binary cross entropy loss.
+
+#     Parameters
+#     ----------
+#     true
+#         input array containing true labels.
+#     pred
+#         input array containing Predicted labels.
+#     epsilon
+#         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+#         loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+#     out
+#         optional output array, for writing the result to. It must have a shape
+#         that the inputs broadcast to.
+
+#     Returns
+#     -------
+#     ret
+#         The binary cross entropy between the given distributions.
+
+
+#     Functional Examples
+#     -------------------
+
+#     With :class:`ivy.Array` input:
+
+#     >>> x = ivy.array([0, 1, 0, 0])
+#     >>> y = ivy.array([0.2, 0.8, 0.3, 0.8])
+#     >>> z = ivy.binary_cross_entropy(x, y)
+#     >>> print(z)
+#     ivy.array([0.223,0.223,0.357,1.61])
+
+#     >>> x = ivy.array([[0, 1, 0, 0]])
+#     >>> y = ivy.array([[0.6, 0.2, 0.7, 0.3]])
+#     >>> z = ivy.binary_cross_entropy(x, y, epsilon=1e-3)
+#     >>> print(z)
+#     ivy.array([[0.916,1.61,1.2,0.357]])
+
+#     With :class:`ivy.NativeArray` input:
+
+#     >>> x = ivy.native_array([0, 1, 0, 1])
+#     >>> y = ivy.native_array([0.2, 0.7, 0.2, 0.6])
+#     >>> z = ivy.binary_cross_entropy(x, y)
+#     >>> print(z)
+#     ivy.array([0.223,0.357,0.223,0.511])
+
+#     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+
+#     >>> x = ivy.array([0, 0, 1, 1])
+#     >>> y = ivy.native_array([0.1, 0.2, 0.8, 0.6])
+#     >>> z = ivy.binary_cross_entropy(x, y)
+#     >>> print(z)
+#     ivy.array([0.105,0.223,0.223,0.511])
+
+#     With :class:`ivy.Container` input:
+
+#     >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
+#     >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
+#     >>> z = ivy.binary_cross_entropy(x, y)
+#     >>> print(z)
+#     {a:ivy.array([0.511,0.223,0.357]),b:ivy.array([1.61,0.223,1.61])}
+
+#     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+#     >>> x = ivy.array([1 , 1, 0])
+#     >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]))
+#     >>> z = ivy.binary_cross_entropy(x, y)
+#     >>> print(z)
+#     {
+#        a: ivy.array([0.357, 0.223, 0.223])
+#     }
+
+#     Instance Method Examples
+#     ------------------------
+
+#     Using :class:`ivy.Array` instance method:
+
+#     >>> x = ivy.array([1, 0, 0, 0])
+#     >>> y = ivy.array([0.8, 0.2, 0.2, 0.2])
+#     >>> z = ivy.binary_cross_entropy(x, y)
+#     >>> print(z)
+#     ivy.array([0.223, 0.223, 0.223, 0.223])
+#     """
+#     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+#     pred = ivy.clip(pred, epsilon, 1 - epsilon)
+#     return _reduce_loss(
+#         reduction,
+#         ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true)),
+#         None,
+#         out,
+#     )
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -94,102 +202,48 @@ def binary_cross_entropy(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    epsilon: float = 1e-7,
+    from_logits: bool = False,
+    pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    epsilon: float = 0.0,
     reduction: str = "none",
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the binary cross entropy loss.
-
-    Parameters
-    ----------
-    true
-        input array containing true labels.
-    pred
-        input array containing Predicted labels.
-    epsilon
-        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
-        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
-    out
-        optional output array, for writing the result to. It must have a shape
-        that the inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        The binary cross entropy between the given distributions.
-
-
-    Functional Examples
-    -------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([0, 1, 0, 0])
-    >>> y = ivy.array([0.2, 0.8, 0.3, 0.8])
-    >>> z = ivy.binary_cross_entropy(x, y)
-    >>> print(z)
-    ivy.array([0.223,0.223,0.357,1.61])
-
-    >>> x = ivy.array([[0, 1, 0, 0]])
-    >>> y = ivy.array([[0.6, 0.2, 0.7, 0.3]])
-    >>> z = ivy.binary_cross_entropy(x, y, epsilon=1e-3)
-    >>> print(z)
-    ivy.array([[0.916,1.61,1.2,0.357]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, 1, 0, 1])
-    >>> y = ivy.native_array([0.2, 0.7, 0.2, 0.6])
-    >>> z = ivy.binary_cross_entropy(x, y)
-    >>> print(z)
-    ivy.array([0.223,0.357,0.223,0.511])
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.array([0, 0, 1, 1])
-    >>> y = ivy.native_array([0.1, 0.2, 0.8, 0.6])
-    >>> z = ivy.binary_cross_entropy(x, y)
-    >>> print(z)
-    ivy.array([0.105,0.223,0.223,0.511])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
-    >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
-    >>> z = ivy.binary_cross_entropy(x, y)
-    >>> print(z)
-    {a:ivy.array([0.511,0.223,0.357]),b:ivy.array([1.61,0.223,1.61])}
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
-
-    >>> x = ivy.array([1 , 1, 0])
-    >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]))
-    >>> z = ivy.binary_cross_entropy(x, y)
-    >>> print(z)
-    {
-       a: ivy.array([0.357, 0.223, 0.223])
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 0, 0, 0])
-    >>> y = ivy.array([0.8, 0.2, 0.2, 0.2])
-    >>> z = ivy.binary_cross_entropy(x, y)
-    >>> print(z)
-    ivy.array([0.223, 0.223, 0.223, 0.223])
-    """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    return _reduce_loss(
-        reduction,
-        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true)),
-        None,
-        out,
-    )
+
+    if not (0.0 <= epsilon <= 1.0):
+        raise ValueError("epsilon should be a float in [0, 1]")
+
+    true = true.astype(pred.dtype)
+    epsilon = ivy.asarray(epsilon, dtype=pred.dtype)
+
+    true = true * (1.0 - epsilon) + 0.5 * epsilon
+
+    if from_logits:
+        if pos_weight is not None:
+            epsilon_ = 1e-7
+            pred = ivy.sigmoid(pred)
+            pred = ivy.clip(pred, epsilon_, 1 - epsilon_)
+            loss = -(
+                true * -ivy.log(pred) * pos_weight + (1 - true) * -ivy.log(1 - pred)
+            )
+        else:
+            zeros = ivy.zeros_like(pred, dtype=pred.dtype)
+            cond = pred >= zeros
+            relu_logits = ivy.where(cond, pred, zeros)
+            neg_abs_logits = ivy.where(cond, -pred, pred)
+            loss = (
+                ivy.add(relu_logits - pred * true, ivy.log1p(ivy.exp(neg_abs_logits)))
+                * -1
+            )
+    else:
+        epsilon_ = 1e-7
+        pred = ivy.clip(pred, epsilon_, 1 - epsilon_)
+        loss = true * ivy.log(pred + epsilon_) + (1 - true) * ivy.log(
+            1 - pred + epsilon_
+        )
+
+    return _reduce_loss(reduction, loss, axis, out)
 
 
 @handle_exceptions
