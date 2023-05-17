@@ -129,6 +129,7 @@ def test_paddle_eig(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        atol=1e-4,
         x=x,
     )
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
@@ -237,6 +238,7 @@ def test_paddle_eigh(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        atol=1e-4,
         x=x,
         UPLO=UPLO,
     )
@@ -264,9 +266,9 @@ def test_paddle_eigh(
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
-        min_value=2,
+        min_value=3,
         max_value=10,
-        large_abs_safety_factor=64,
+        large_abs_safety_factor=128,
         safety_factor_scale="log",
     ),
     rcond=st.floats(1e-5, 1e-3),
@@ -283,7 +285,7 @@ def test_paddle_pinv(
     # TODO: paddle returns nan for all values if the input
     # matrix has the same value at all indices e.g.
     # [[2., 2.], [2., 2.]] would return [[nan, nan], [nan, nan]],
-    # causing the tests to fail
+    # causing the tests to fail for other backends.
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,

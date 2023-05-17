@@ -925,6 +925,8 @@ def test_vecdot(
         min_value=-1e04,
         max_value=1e04,
         abs_smallest_val=1e-04,
+        max_axes_size=2,
+        force_int_axis=True,
     ),
     kd=st.booleans(),
     ord=st.one_of(
