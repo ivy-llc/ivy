@@ -367,6 +367,7 @@ class _ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -381,6 +382,8 @@ class _ArrayWithElementwise(abc.ABC):
         x2
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have an integer or boolean data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -406,13 +409,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(z)
         ivy.array([[2],[8],[8]])
         """
-        return ivy.bitwise_and(self._data, x2, out=out)
+        return ivy.bitwise_and(self._data, x2, out=out, where=where)
 
     def bitwise_left_shift(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -428,6 +432,8 @@ class _ArrayWithElementwise(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -439,10 +445,13 @@ class _ArrayWithElementwise(abc.ABC):
             The returned array must have a data type determined
             by :ref:`type-promotion`.
         """
-        return ivy.bitwise_left_shift(self._data, x2, out=out)
+        return ivy.bitwise_left_shift(self._data, x2, out=out, where=where)
 
     def bitwise_invert(
-        self: ivy.Array, *, out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.bitwise_invert. This method simply
@@ -453,7 +462,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have an integer or boolean data type.
-
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -476,7 +486,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([True, False])
         """
-        return ivy.bitwise_invert(self._data, out=out)
+        return ivy.bitwise_invert(self._data, out=out, where=where)
 
     def bitwise_or(
         self: ivy.Array,

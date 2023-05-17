@@ -58,9 +58,13 @@ def expm1(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 def bitwise_invert(
-    x: Union[int, bool, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
+    x: Union[int, bool, paddle.Tensor],
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.bitwise_not(x)
+    return ivy.where(where, paddle.bitwise_not(x), x)
 
 
 @with_unsupported_dtypes(
@@ -157,10 +161,11 @@ def bitwise_and(
     x2: Union[int, bool, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.bitwise_and(x1, x2)
+    return ivy.where(where, paddle.bitwise_and(x1, x2), (x1, x2))
 
 
 @with_unsupported_device_and_dtypes(
@@ -1074,11 +1079,16 @@ def bitwise_left_shift(
     x2: Union[int, bool, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.floor(x1.astype("float64") * 2 ** x2.astype("float64")).astype(
-        ret_dtype
+    return ivy.where(
+        where,
+        paddle.floor(x1.astype("float64") * 2 ** x2.astype("float64")).astype(
+            ret_dtype
+        ),
+        (x1, x2),
     )
 
 

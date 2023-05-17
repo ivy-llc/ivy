@@ -111,13 +111,14 @@ def bitwise_and(
     x2: Union[int, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
-        return tf.math.logical_and(x1, x2)
+        return ivy.where(where, tf.math.logical_and(x1, x2), (x1, x2))
     else:
-        return tf.bitwise.bitwise_and(x1, x2)
+        return ivy.where(where, tf.bitwise.bitwise_and(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
@@ -125,12 +126,13 @@ def bitwise_invert(
     x: Union[int, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" not in str(x.dtype):
-        return tf.logical_not(x)
+        return ivy.where(where, tf.logical_not(x), x)
     else:
-        return tf.bitwise.invert(x)
+        return ivy.where(where, tf.bitwise.invert(x), x)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
@@ -139,10 +141,11 @@ def bitwise_left_shift(
     x2: Union[int, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return tf.bitwise.left_shift(x1, x2)
+    return ivy.where(where, tf.bitwise.left_shift(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)

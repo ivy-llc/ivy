@@ -110,10 +110,11 @@ def bitwise_and(
     x2: Union[int, bool, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return np.bitwise_and(x1, x2, out=out)
+    return ivy.where(where, np.bitwise_and(x1, x2, out=out), (x1, x2))
 
 
 bitwise_and.support_native_out = True
@@ -122,9 +123,13 @@ bitwise_and.support_native_out = True
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_invert(
-    x: Union[int, bool, np.ndarray], /, *, out: Optional[np.ndarray] = None
+    x: Union[int, bool, np.ndarray],
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.invert(x, out=out)
+    return ivy.where(where, np.invert(x, out=out), x)
 
 
 bitwise_invert.support_native_out = True
@@ -137,10 +142,11 @@ def bitwise_left_shift(
     x2: Union[int, bool, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return np.left_shift(x1, x2, out=out)
+    return ivy.where(where, np.left_shift(x1, x2, out=out), (x1, x2))
 
 
 bitwise_left_shift.support_native_out = True

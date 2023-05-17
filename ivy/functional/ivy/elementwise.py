@@ -900,8 +900,9 @@ def bitwise_and(
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Compute the bitwise AND of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
@@ -913,6 +914,8 @@ def bitwise_and(
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have an integer or boolean data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -978,7 +981,7 @@ def bitwise_and(
         b: ivy.array([False, True])
     }
     """
-    return ivy.current_backend(x1, x2).bitwise_and(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).bitwise_and(x1, x2, out=out, where=where)
 
 
 @handle_exceptions
@@ -991,14 +994,17 @@ def bitwise_invert(
     x: Union[int, bool, ivy.Array, ivy.NativeArray, ivy.Container],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Inverts (flips) each bit for each element ``x_i`` of the input array ``x``.
 
     Parameters
     ----------
     x
         input array. Should have an integer or boolean data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1052,7 +1058,7 @@ def bitwise_invert(
     >>> print(y)
     ivy.array(True)
     """
-    return ivy.current_backend(x).bitwise_invert(x, out=out)
+    return ivy.current_backend(x).bitwise_invert(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -1065,6 +1071,7 @@ def bitwise_left_shift(
     x2: Union[int, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by
@@ -1079,6 +1086,8 @@ def bitwise_left_shift(
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have an integer data type. Each element must be greater than or equal to
         ``0``.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1100,7 +1109,7 @@ def bitwise_left_shift(
     instances in place of any of the arguments
 
     """
-    return ivy.current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out, where=where)
 
 
 @handle_exceptions

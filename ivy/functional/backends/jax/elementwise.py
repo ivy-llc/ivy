@@ -75,17 +75,22 @@ def bitwise_and(
     x2: Union[int, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return jnp.bitwise_and(x1, x2)
+    return ivy.where(where, jnp.bitwise_and(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_invert(
-    x: Union[int, JaxArray], /, *, out: Optional[JaxArray] = None
+    x: Union[int, JaxArray],
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.bitwise_not(x)
+    return ivy.where(where, jnp.bitwise_not(x), x)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
@@ -94,10 +99,11 @@ def bitwise_left_shift(
     x2: Union[int, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return jnp.left_shift(x1, x2)
+    return ivy.where(where, jnp.left_shift(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
