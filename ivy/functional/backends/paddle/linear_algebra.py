@@ -250,9 +250,17 @@ def matmul(
         x1 = paddle.moveaxis(x1, -2, -1).conj()
     if adjoint_b:
         x2 = paddle.moveaxis(x2, -2, -1).conj()
-    return paddle.matmul(x1, x2, transpose_x=transpose_a, transpose_y=transpose_b).cast(
+    ret = paddle.matmul(x1, x2, transpose_x=transpose_a, transpose_y=transpose_b).cast(
         ret_dtype
     )
+    # handle case where ret should be 0d.
+    if x1.ndim == 1 and x2.ndim == 1:
+        ret_dtype = ret.dtype
+        if ret_dtype in [paddle.int16]:
+            ret = ret.cast(paddle.int32)
+        return ret.squeeze().astype(ret_dtype)
+
+    return ret
 
 
 @with_unsupported_device_and_dtypes(

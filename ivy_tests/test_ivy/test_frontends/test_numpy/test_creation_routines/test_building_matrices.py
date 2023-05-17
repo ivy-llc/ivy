@@ -161,3 +161,27 @@ def test_numpy_vander(
         N=N,
         increasing=increasing,
     )
+
+
+# diagflat
+@handle_frontend_test(
+    fn_tree="numpy.diagflat",
+    dtype_and_x_k=_diag_helper(),
+)
+def test_numpy_diagflat(
+    dtype_and_x_k,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, k = dtype_and_x_k
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        v=x[0],
+        k=k,
+    )

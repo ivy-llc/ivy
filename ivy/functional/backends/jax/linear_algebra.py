@@ -195,8 +195,12 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(axis, tuple):
-        axis = tuple(axis)
+    if hasattr(axis, "__iter__"):
+        if not isinstance(axis, tuple):
+            axis = tuple(axis)
+    else:
+        if not isinstance(axis, tuple):
+            axis = (axis,)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
