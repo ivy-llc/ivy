@@ -516,10 +516,10 @@ class ndarray:
         return np_frontend.subtract(xmax, xmin)
 
     def item(self, *args):
-        if len(args) == 0 or args == (None):
+        if len(args) == 0 or args[0] is None:
             return self[0].ivy_array.to_scalar()
-        elif len(args) == 1:
-            index = args
+        elif len(args) == 1 and type(args[0]) == int:
+            index = args[0]
             return self.ivy_array.flatten()[index].to_scalar()
         else:
             out = self

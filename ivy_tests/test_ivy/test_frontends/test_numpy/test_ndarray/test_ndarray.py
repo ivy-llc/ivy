@@ -22,7 +22,6 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.te
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_sums_products_differences import (  # noqa
     _get_castable_dtypes_values,
 )
-import random
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
@@ -2978,19 +2977,26 @@ def test_numpy_instance_ptp(
         on_device=on_device,
     )
 
-#item
+
+# item
 @st.composite
 def _item_helper(draw):
-    input_dtype, x = draw(
-        helpers.dtype_and_values(
+    input_dtype, x, index = draw(
+        helpers.dtype_array_index(
             available_dtypes=helpers.get_dtypes("numeric"),
-            min_num_dims=1
+            min_num_dims=1,
+            allow_slices=False,
         )
     )
-    arg = random.randint(0, len(x) - 1)
-    method_all_as_kwargs_np = {"arg": arg}
-    method_num_positional_args = 1
-    return input_dtype, x, method_num_positional_args, method_all_as_kwargs_np
+    index_samples = [index, draw(helpers.ints(min_value=0, max_value=x.size - 1))]
+
+    if x.size == 1:
+        index_samples.append(None)
+
+    sampled_index = draw(st.sampled_from(index_samples))
+
+    method_all_as_kwargs_np = {"args": sampled_index}
+    return input_dtype, x, method_all_as_kwargs_np
 
 
 @handle_frontend_method(
@@ -3000,25 +3006,18 @@ def _item_helper(draw):
     args_kwargs=_item_helper(),
 )
 def test_numpy_instance_item(
-    args_kwargs,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device
+    args_kwargs, frontend_method_data, init_flags, method_flags, frontend, on_device
 ):
-    input_dtype, x, method_num_positional_args, method_all_as_kwargs_np = args_kwargs
-    method_flags.num_positional_args = method_num_positional_args
-    print("attention here")
-    print(args_kwargs)
+    input_dtype, x, method_all_as_kwargs_np = args_kwargs
+    method_flags.num_positional_args = 1
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={ "object": x[0] },
+        init_all_as_kwargs_np={"object": x},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np=method_all_as_kwargs_np,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
-        on_device=on_device
+        on_device=on_device,
     )
