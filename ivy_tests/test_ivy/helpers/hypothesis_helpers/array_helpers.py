@@ -1632,9 +1632,9 @@ def dtype_array_index(
     )
     index = ()
     for s in shape:
-        index_type = st.sampled_from(["int", "ellipsis", "slice"])
+        index_type = draw(st.sampled_from(["int", "ellipsis", "slice"]))
         if not allow_slices or index_type == "int":
-            index += draw(st.integers(min_value=-s + 1, max_value=s - 1))
+            index += (draw(st.integers(min_value=-s + 1, max_value=s - 1)),)
         if index_type == "ellipsis" and Ellipsis not in index:
             index += (Ellipsis,)
         elif index_type == "slice":

@@ -9,6 +9,18 @@ import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
+unsupported_dtypes = [
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "float16",
+    "complex64",
+    "complex128",
+    "bool",
+]
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
@@ -81,3 +93,14 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             )
             return ret
     return F.selu(x.cast("float32")).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
+def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if ivy.as_ivy_dtype(x.dtype) in unsupported_dtypes:
+        if paddle.is_complex(x):
+            return x * (1 / (1 + ivy.exp(-x)))
+        return F.silu(x.cast("float32")).cast(x.dtype)
+    return F.silu(x)

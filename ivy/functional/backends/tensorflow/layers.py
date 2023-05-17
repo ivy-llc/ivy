@@ -299,67 +299,38 @@ def conv_general_dilated(
         dilations = (
             [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
         )
+    if filters.shape[-2] != (x.shape[-1] // feature_group_count):
+        raise ivy.utils.exceptions.IvyError(
+            f"given feature_group_count {feature_group_count} expected input channel of"
+            f" the filter to be {x.shape[-1] // feature_group_count} but got"
+            f" {filters.shape[-2]}"
+        )
     if dims == 1:
-        res = tf.concat(
-            [
-                tf.nn.conv1d(
-                    x[:, :, i : i + filters.shape[-2]],
-                    filters[:, :, j : j + filters.shape[-1] // feature_group_count],
-                    strides,
-                    "VALID",
-                    df,
-                    dilations,
-                )
-                for i, j in zip(
-                    range(0, x.shape[-1], filters.shape[-2]),
-                    range(
-                        0, filters.shape[-1], filters.shape[-1] // feature_group_count
-                    ),
-                )
-            ],
-            axis=-1,
+        res = tf.nn.conv1d(
+            x,
+            filters,
+            strides,
+            "VALID",
+            df,
+            dilations,
         )
     elif dims == 2:
-        res = tf.concat(
-            [
-                tf.nn.conv2d(
-                    x[:, :, :, i : i + filters.shape[-2]],
-                    filters[:, :, :, j : j + filters.shape[-1] // feature_group_count],
-                    strides,
-                    "VALID",
-                    df,
-                    dilations,
-                )
-                for i, j in zip(
-                    range(0, x.shape[-1], filters.shape[-2]),
-                    range(
-                        0, filters.shape[-1], filters.shape[-1] // feature_group_count
-                    ),
-                )
-            ],
-            axis=-1,
+        res = tf.nn.conv2d(
+            x,
+            filters,
+            strides,
+            "VALID",
+            df,
+            dilations,
         )
     else:
-        res = tf.concat(
-            [
-                tf.nn.conv3d(
-                    x[:, :, :, :, i : i + filters.shape[-2]],
-                    filters[
-                        :, :, :, :, j : j + filters.shape[-1] // feature_group_count
-                    ],
-                    strides,
-                    "VALID",
-                    df,
-                    dilations,
-                )
-                for i, j in zip(
-                    range(0, x.shape[-1], filters.shape[-2]),
-                    range(
-                        0, filters.shape[-1], filters.shape[-1] // feature_group_count
-                    ),
-                )
-            ],
-            axis=-1,
+        res = tf.nn.conv3d(
+            x,
+            filters,
+            strides,
+            "VALID",
+            df,
+            dilations,
         )
     res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":

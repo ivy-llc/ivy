@@ -63,6 +63,11 @@ def hann_window(
 ) -> np.ndarray:
     if size == 1:
         return np.array([1], dtype=dtype)
+    if size == 2:
+        if periodic:
+            return np.array([0, 0], dtype=dtype)
+        else:
+            return np.array([0, 1], dtype=dtype)
     if periodic is False:
         return np.array(np.hanning(size), dtype=dtype)
     else:
@@ -87,14 +92,3 @@ def kaiser_window(
 
 
 kaiser_window.support_native_out = False
-
-
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[np.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
-) -> np.ndarray:
-    if isinstance(dtype, list):
-        dtype = np.dtype(dtype[0])
-    return np.frombuffer(buffer, dtype=dtype, count=count, offset=offset)

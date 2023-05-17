@@ -1,5 +1,8 @@
+from ivy.utils.exceptions import IvyNotImplementedException
+
+
 def is_native_sparse_array(x):
-    raise NotImplementedError("mxnet.is_native_sparse_array Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def native_sparse_array(
@@ -14,7 +17,7 @@ def native_sparse_array(
     dense_shape=None,
     format="coo"
 ):
-    raise NotImplementedError("mxnet.native_sparse_array Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def native_sparse_array_to_indices_values_and_shape(x):

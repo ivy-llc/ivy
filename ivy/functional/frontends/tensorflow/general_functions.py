@@ -238,7 +238,7 @@ def is_tensor(x, name=None):
 
 
 @to_ivy_arrays_and_back
-def gather(params, indices, axis=None, batch_dims=0, name=None):
+def gather(params, indices, validate_indices=None, axis=None, batch_dims=0, name=None):
     if axis is None:
         axis = batch_dims
     else:
