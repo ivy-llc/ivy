@@ -7,7 +7,6 @@ import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-import numpy as np
 
 # Array API Standard #
 # -------------------#
@@ -181,37 +180,6 @@ def cumprod(
     {"2.9.1 and below": ("float16", "bfloat16", "complex128", "complex64")},
     backend_version,
 )
-def cummax(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: int = 0,
-    reverse: bool = False,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if reverse:
-        x = tf.reverse(x, axis=[axis])
-    x_unstacked = tf.unstack(x, axis=axis)
-    cummax_x_unstacked = []
-    cummax_x_unstacked.append(x_unstacked[0])
-    for i, x_sub in enumerate(x_unstacked[1:]):
-        cummax_x_sub = tf.maximum(cummax_x_unstacked[i], x_sub)
-        cummax_x_unstacked.append(cummax_x_sub)
-    cummax_x = tf.stack(cummax_x_unstacked, axis=axis)
-    if reverse:
-        cummax_x = tf.reverse(cummax_x, axis=[axis])
-    if dtype is None:
-        return cummax_x
-    else:
-        return tf.cast(cummax_x, dtype)
-
-
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("float16", "bfloat16", "complex128", "complex64")},
-    backend_version,
-)
 def cummin(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -269,12 +237,13 @@ def cummax(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
-    if x.dtype == tf.bool:
+    if x.dtype == tf.bool or x.dtype == tf.float16:
         x = tf.cast(x, tf.float64)
-    elif x.dtype == tf.int16 or x.dtype == tf.int8:
+    elif x.dtype == tf.int16 or x.dtype == tf.int8 or x.dtype == tf.uint8:
         x = tf.cast(x, tf.int64)
     elif x.dtype == tf.complex128 or x.dtype == tf.complex64:
         x = tf.cast(tf.math.real(x), tf.float64)
+
     if exclusive or reverse:
         if exclusive and reverse:
             x, indices = __find_cummax(tf.experimental.numpy.flip(x, axis=axis),
@@ -320,12 +289,10 @@ def __find_cummax(
                 values.append(value)
         else:
             x_list = x.numpy()
-            it = np.nditer(x_list, flags=['multi_index'])
-            indices, values, z_list, n1 = x_list.copy(), x_list.copy(), [], {}
+            z_list = __get_index(x_list.tolist())
+            indices, values, n1 = x_list.copy(), x_list.copy(), {}
             indices.fill(0)
             values.fill(0)
-            for p in it:
-                z_list.append((p, it.multi_index))
             z_list = sorted(z_list, key=lambda i: i[1])
             for y, y_index in z_list:
                 multi_index = y_index
@@ -351,6 +318,21 @@ def __find_cummax(
 
     return tf.convert_to_tensor(values, dtype=x.dtype), \
         tf.cast(tf.convert_to_tensor(indices), dtype=tf.int64)
+
+
+def __get_index(lst, indices=None, prefix=None):
+    if indices is None:
+        indices = []
+    if prefix is None:
+        prefix = []
+
+    if isinstance(lst, list):
+        for i, sub_lst in enumerate(lst):
+            sub_indices = prefix + [i]
+            __get_index(sub_lst, indices, sub_indices)
+    else:
+        indices.append((lst, tuple(prefix)))
+    return indices
 
 
 def einsum(

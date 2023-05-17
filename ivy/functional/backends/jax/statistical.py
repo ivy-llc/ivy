@@ -10,7 +10,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from jaxlib.xla_extension import ArrayImpl
 from . import backend_version
-import numpy as np
 
 # Array API Standard #
 # -------------------#
@@ -179,27 +178,6 @@ def cumprod(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
-def cummax(
-    x: JaxArray,
-    /,
-    *,
-    axis: int = 0,
-    reverse: bool = False,
-    dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if axis < 0:
-        axis = axis + len(x.shape)
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is jnp.bool_:
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
-    return jlax.cummax(x, axis, reverse=reverse).astype(dtype)
-
-
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def cummin(
     x: JaxArray,
     /,
@@ -264,12 +242,13 @@ def cummax(
         *,
         out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray, JaxArray]:
-    if x.dtype == jnp.bool_:
+    if x.dtype == jnp.bool_ or x.dtype == jnp.float16:
         x = x.astype(jnp.float64)
-    elif x.dtype == jnp.int16 or x.dtype == jnp.int8:
+    elif x.dtype == jnp.int16 or x.dtype == jnp.int8 or x.dtype == jnp.uint8:
         x = x.astype(jnp.int64)
     elif x.dtype == jnp.complex128 or x.dtype == jnp.complex64:
         x = jnp.real(x).astype(jnp.float64)
+
     if exclusive or (reverse and exclusive):
         if exclusive and reverse:
             indices = __find_cummax_indices(jnp.flip(x, axis=axis), axis=axis)
@@ -312,11 +291,9 @@ def __find_cummax_indices(
                 indice = __find_cummax_indices(ret1, axis=axis - 1)
                 indices.append(indice)
         else:
-            it = np.nditer(x, flags=['multi_index'])
-            indices, z_list, n1 = x.copy(), [], {}
-            indices = jnp.zeros(np.array(indices.shape), dtype=x.dtype)
-            for p in it:
-                z_list.append((p, it.multi_index))
+            z_list = __get_index(x.tolist())
+            indices, n1 = x.copy(), {}
+            indices = jnp.zeros(jnp.asarray(indices.shape), dtype=x.dtype)
             z_list = sorted(z_list, key=lambda i: i[1])
             for y, y_index in z_list:
                 multi_index = y_index
@@ -337,6 +314,21 @@ def __find_cummax_indices(
             indices.append(n)
 
     return jnp.asarray(indices, dtype='int64')
+
+
+def __get_index(lst, indices=None, prefix=None):
+    if indices is None:
+        indices = []
+    if prefix is None:
+        prefix = []
+
+    if isinstance(lst, list):
+        for i, sub_lst in enumerate(lst):
+            sub_indices = prefix + [i]
+            __get_index(sub_lst, indices, sub_indices)
+    else:
+        indices.append((lst, tuple(prefix)))
+    return indices
 
 
 def einsum(

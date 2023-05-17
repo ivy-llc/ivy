@@ -270,38 +270,6 @@ cumprod.support_native_out = True
     },
     backend_version,
 )
-def cummax(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: int = 0,
-    reverse: bool = False,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if not (reverse):
-        ret = torch.cummax(x, axis)[0]
-    else:
-        ret = torch.cummax(torch.flip(x, dims=(axis,)), axis)[0]
-        ret = torch.flip(ret, (axis,))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret.to(dtype))
-    return ret.to(dtype)
-
-
-cummax.support_native_out = True
-
-
-@with_unsupported_dtypes(
-    {
-        "1.12.0 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
-    },
-    backend_version,
-)
 def cummin(
     x: torch.Tensor,
     /,
@@ -389,9 +357,9 @@ def cummax(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    if x.dtype == torch.bool:
+    if x.dtype == torch.bool or x.dtype == torch.float16:
         x = x.to(dtype=torch.float64)
-    elif x.dtype == torch.int16 or x.dtype == torch.int8:
+    elif x.dtype == torch.int16 or x.dtype == torch.int8 or x.dtype == torch.uint8:
         x = x.to(dtype=torch.int64)
     elif x.dtype == torch.complex64 or x.dtype == torch.complex128:
         x = x.real.to(dtype=torch.float64)

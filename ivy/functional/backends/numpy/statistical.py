@@ -208,31 +208,6 @@ cumprod.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
-def cummax(
-    x: np.ndarray,
-    /,
-    *,
-    axis: int = 0,
-    reverse: bool = False,
-    dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if dtype is None:
-        if x.dtype == "bool":
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
-    if not (reverse):
-        return np.maximum.accumulate(x, axis, dtype=dtype, out=out)
-    elif reverse:
-        x = np.maximum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=dtype)
-        return np.flip(x, axis=axis)
-
-
-cummax.support_native_out = True
-
-
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def cummin(
     x: np.ndarray,
     /,
@@ -301,15 +276,15 @@ def cummax(
         exclusive: bool = False,
         reverse: bool = False,
         *,
-        input_dtypes: Optional[np.dtype] = None,
         out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    if x.dtype == np.bool_:
+    if x.dtype == np.bool_ or x.dtype == np.float16:
         x = x.astype(np.float64)
-    elif x.dtype == np.int16 or x.dtype == np.int8:
+    elif x.dtype == np.int16 or x.dtype == np.int8 or x.dtype == np.uint8:
         x = x.astype(np.int64)
     elif x.dtype == np.complex128 or x.dtype == np.complex64:
         x = np.real(x).astype(np.float64)
+
     if exclusive or reverse:
         if exclusive and reverse:
             indices = __find_cummax_indices(np.flip(x, axis=axis), axis=axis)
@@ -349,17 +324,16 @@ def __find_cummax_indices(
     if type(x[0]) == np.ndarray:
         if axis >= 1:
             for ret1 in x:
-                indice = __find_cummax_indices(ret1, axis=axis - 1)
+                indice = __find_cummax_indices(ret1,
+                                               axis=axis - 1)
                 indices.append(indice)
 
         else:
-            it = np.nditer(x, flags=['multi_index'])
-            indices, z_list, n1 = x.copy(), [], {}
+            indice_list = __get_index(x.tolist())
+            indices, n1 = x.copy(), {}
             indices.fill(0)
-            for p in it:
-                z_list.append((p, it.multi_index))
-            z_list = sorted(z_list, key=lambda i: i[1])
-            for y, y_index in z_list:
+            indice_list = sorted(indice_list, key=lambda i: i[1])
+            for y, y_index in indice_list:
                 multi_index = y_index
                 if tuple(multi_index[1:]) not in n1:
                     n1[tuple(multi_index[1:])] = multi_index[0]
@@ -377,6 +351,21 @@ def __find_cummax_indices(
                 n = index1
             indices.append(n)
     return np.array(indices, dtype=np.int64)
+
+
+def __get_index(lst, indices=None, prefix=None):
+    if indices is None:
+        indices = []
+    if prefix is None:
+        prefix = []
+
+    if isinstance(lst, list):
+        for i, sub_lst in enumerate(lst):
+            sub_indices = prefix + [i]
+            __get_index(sub_lst, indices, sub_indices)
+    else:
+        indices.append((lst, tuple(prefix)))
+    return indices
 
 
 @_scalar_output_to_0d_array
