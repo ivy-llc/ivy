@@ -95,7 +95,7 @@ def test_numpy_fttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
 @handle_frontend_test(
     fn_tree="numpy.fft.rfft",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         shape=(2,),
         min_axis=-1,
         force_int_axis=True,
