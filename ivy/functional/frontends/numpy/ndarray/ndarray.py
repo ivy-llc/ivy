@@ -210,6 +210,27 @@ class ndarray:
             subok=subok,
         )
 
+    def conjugate(
+        self,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    ):
+        return np_frontend.conjugate(
+            self.ivy_array,
+            out=out,
+            where=where,
+            casting=casting,
+            order=order,
+            dtype=dtype,
+            subok=subok,
+        )
+
     def conj(
         self,
         /,
