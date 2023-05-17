@@ -677,8 +677,7 @@ def _convert_numpy_arrays_to_torch(*args):
 
 def handle_numpy_array_in_torch(fn: Callable) -> Callable:
     """
-    Wrap `fn` and converts all `numpy.ndarray` inputs to `torch.Tensor`
-    instances.
+    Wrap `fn` and converts all `numpy.ndarray` inputs to `torch.Tensor` instances.
 
     Used for functional backends (PyTorch). Converts all `numpy.ndarray`
     inputs to `torch.Tensor` instances.
