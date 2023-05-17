@@ -7,6 +7,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
+    _get_castable_dtype,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
     statistical_dtype_values as statistical_dtype_values_experimental,
@@ -245,8 +246,7 @@ def test_torch_any(
 
 @handle_frontend_test(
     fn_tree="torch.sum",
-    dtype_and_x=statistical_dtype_values(
-        function="sum",
+    dtype_and_x=_get_castable_dtype(
         min_value=-1e04,
         max_value=1e04,
     ),
@@ -261,7 +261,10 @@ def test_torch_sum(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, castable_dtype = dtype_and_x
+    if test_flags.as_variable:
+        castable_dtype = input_dtype
+    input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -271,6 +274,7 @@ def test_torch_sum(
         input=x[0],
         dim=axis,
         keepdim=keepdims,
+        dtype=castable_dtype,
     )
 
 
@@ -903,4 +907,44 @@ def test_torch_norm(
         p=p,
         dim=axis,
         keepdim=keepdim,
+    )
+
+
+# known bug of returning empty tensors when ret_inv or ret_counts is passed positionally
+# https://github.com/pytorch/pytorch/issues/68610
+# ToDo: activate test_values when this is resolved
+@handle_frontend_test(
+    fn_tree="torch.unique_consecutive",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=2,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    ret_inv=st.booleans(),
+    ret_counts=st.booleans(),
+)
+def test_torch_unique_consecutive(
+    *,
+    dtype_x_axis,
+    ret_inv,
+    ret_counts,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        return_inverse=ret_inv,
+        return_counts=ret_counts,
+        dim=axis,
+        test_values=False,
     )

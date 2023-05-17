@@ -718,36 +718,38 @@ def test_torch_kthvalue(
     )
 
 
+@st.composite
+def _topk_helper(draw):
+    dtype, x, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            force_int_axis=True,
+            valid_axis=True,
+        )
+    )
+    k = draw(st.integers(min_value=1, max_value=x[0].shape[axis]))
+    return dtype, x, axis, k
+
+
 # topk
 # TODO: add value test after the stable sorting is added to torch
 # https://github.com/pytorch/pytorch/issues/88184
 @handle_frontend_test(
     fn_tree="torch.topk",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
-        min_dim_size=4,
-        max_dim_size=10,
-    ),
-    dim=helpers.ints(min_value=-1, max_value=0),
-    k=helpers.ints(min_value=1, max_value=4),
+    dtype_x_axis_k=_topk_helper(),
     largest=st.booleans(),
     sorted=st.booleans(),
 )
 def test_torch_topk(
-    dtype_and_x,
-    k,
-    dim,
+    dtype_x_axis_k,
     largest,
     sorted,
     frontend,
     test_flags,
     fn_tree,
 ):
-    input_dtype, input = dtype_and_x
+    input_dtype, input, axis, k = dtype_x_axis_k
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -755,9 +757,8 @@ def test_torch_topk(
         fn_tree=fn_tree,
         input=input[0],
         k=k,
-        dim=dim,
+        dim=axis,
         largest=largest,
         sorted=sorted,
-        out=None,
         test_values=False,
     )

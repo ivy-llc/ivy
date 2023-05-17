@@ -14,10 +14,10 @@ from ivy.utils.exceptions import handle_exceptions
 #       Bins as str is not defined (check Numpy implementation).
 #       Permit multiple axis.
 #       Modify documentation to match the above modifications.
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -144,10 +144,10 @@ def histogram(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def median(
     input: ivy.Array,
     /,
@@ -188,11 +188,11 @@ def median(
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def nanmean(
     a: ivy.Array,
     /,
@@ -242,10 +242,10 @@ def nanmean(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -325,10 +325,10 @@ def quantile(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def corrcoef(
     x: ivy.Array,
     /,
@@ -340,10 +340,10 @@ def corrcoef(
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def nanmedian(
     input: ivy.Array,
     /,
@@ -387,23 +387,34 @@ def nanmedian(
     ret
         A new array holding the result. If the input contains integers
 
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
     Examples
     --------
-    >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
-    >>> a.nanmedian(a)
-        3.0
-    >>> a.nanmedian(a, axis=0)
-        array([6.5, 2. , 2.5])
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[12.0, 10.0, 34.0], [45.0, 23.0, ivy.nan]])
+    >>> ivy.nanmedian(x)
+        ivy.array(23.)
+    With a mix of :class:`ivy.Container` and :class:`ivy.Array` input:
+    >>> x = ivy.Container(a=ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]]),
+            b=ivy.array([[12, 10, 34], [45, 23, ivy.nan]]))
+    >>> ivy.nanmedian(x)
+    {
+        a: ivy.array(3.),
+        b: ivy.array(23.)
+    }
     """
     return ivy.current_backend().nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def bincount(
     x: ivy.Array,
     /,
