@@ -8,6 +8,11 @@ import copy as python_copy
 from types import FunctionType
 from typing import Callable
 import inspect
+import torch
+import numpy as np
+
+
+# Function Wrappers
 
 
 # for wrapping (sequence matters)
@@ -658,6 +663,35 @@ def handle_view_indexing(fn: Callable) -> Callable:
 
     _handle_view_indexing.handle_view_indexing = True
     return _handle_view_indexing
+
+
+def _convert_numpy_arrays_to_torch(*args):
+    torch_tensors = []
+    for array in args:
+        if isinstance(array, np.ndarray):
+            torch_tensors.append(torch.from_numpy(array))
+        else:
+            torch_tensors.append(array)
+    return tuple(torch_tensors)
+
+
+def handle_numpy_array_in_torch(fn: Callable) -> Callable:
+    """
+    Wrap `fn` and converts all `numpy.ndarray` inputs to `torch.Tensor`
+    instances.
+
+    Used for functional backends (PyTorch). Converts all `numpy.ndarray`
+    inputs to `torch.Tensor` instances.
+    """
+
+    @functools.wraps(fn)
+    def _handle_numpy_array_in_torch(*args, **kwargs):
+        args = _convert_numpy_arrays_to_torch(*args)
+        ret = fn(*args, **kwargs)
+        return ret
+
+    _handle_numpy_array_in_torch.handle_numpy_array_in_torch = True
+    return _handle_numpy_array_in_torch
 
 
 # Data Type Handling #
