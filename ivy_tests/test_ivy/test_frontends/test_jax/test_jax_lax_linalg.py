@@ -290,4 +290,8 @@ def test_jax_lax_qdwh(
     assert np.allclose(u, u_expected)
     assert np.allclose(h, h_expected)
     assert num_iters == num_iters_expected
+<<<<<<< HEAD
     assert is_converged == is_converged_expected
+=======
+    assert is_converged == is_converged_expected
+>>>>>>> 01c72e8a370a93c420eec69a149855c2dd8d3223
