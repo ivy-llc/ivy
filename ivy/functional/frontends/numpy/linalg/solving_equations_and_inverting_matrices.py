@@ -1,3 +1,5 @@
+# global
+
 # local
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
@@ -26,8 +28,8 @@ def inv(a):
 # TODO: add hermitian functionality
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
-def pinv(a, rtol=1e-15, hermitian=False):
-    return ivy.pinv(a, rtol=rtol)
+def pinv(a, rcond=1e-15, hermitian=False):
+    return ivy.pinv(a, rtol=rcond)
 
 
 @to_ivy_arrays_and_back
@@ -47,6 +49,8 @@ def tensorinv(a, ind=2):
     return ivy.reshape(ia, shape=new_shape)
 
 
+# TODO: replace this with function from API
+# As the compositon provides unstable results
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 def lstsq(a, b, rcond="warn"):
