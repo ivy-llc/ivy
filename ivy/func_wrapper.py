@@ -1017,7 +1017,7 @@ def casting_modes_ops(fn):
                 x = ivy.to_native(ivy.astype(x, ivy.as_native_dtype(dtype)))
             return x
 
-        args = ivy.nested_map(args, mini_helper)
+        args = ivy.nested_map(args, mini_helper, include_derived=True)
         kwargs = ivy.nested_map(kwargs, mini_helper)
         return fn(*args, **kwargs)
 
