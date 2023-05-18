@@ -1122,8 +1122,9 @@ def bitwise_or(
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Compute the bitwise OR of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
@@ -1135,6 +1136,8 @@ def bitwise_or(
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have an integer or boolean data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1196,7 +1199,7 @@ def bitwise_or(
     }
 
     """
-    return ivy.current_backend(x1, x2).bitwise_or(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).bitwise_or(x1, x2, out=out, where=where)
 
 
 @handle_exceptions
@@ -1209,6 +1212,7 @@ def bitwise_right_shift(
     x2: Union[int, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1227,6 +1231,8 @@ def bitwise_right_shift(
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have an integer data type. Each element must be greater than or equal
         to ``0``.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1309,7 +1315,7 @@ def bitwise_right_shift(
         c: ivy.array([12, 7, 3])
     }
     """
-    return ivy.current_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).bitwise_right_shift(x1, x2, out=out, where=where)
 
 
 @handle_exceptions
@@ -1322,6 +1328,7 @@ def bitwise_xor(
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the bitwise XOR of the underlying binary representation of each element
@@ -1340,6 +1347,8 @@ def bitwise_xor(
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have an integer or boolean data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1412,7 +1421,7 @@ def bitwise_xor(
         a: ivy.array([-79, 24])
     }
     """
-    return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out, where=where)
 
 
 @handle_exceptions

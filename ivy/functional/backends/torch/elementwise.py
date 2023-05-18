@@ -39,10 +39,11 @@ def bitwise_xor(
     x2: Union[int, bool, torch.Tensor],
     /,
     *,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return torch.bitwise_xor(x1, x2, out=out)
+    return ivy.where(where, torch.bitwise_xor(x1, x2, out=out), (x1, x2))
 
 
 bitwise_xor.support_native_out = True
@@ -450,10 +451,11 @@ def bitwise_or(
     x2: Union[int, bool, torch.Tensor],
     /,
     *,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return torch.bitwise_or(x1, x2, out=out)
+    return ivy.where(where, torch.bitwise_or(x1, x2, out=out), (x1, x2))
 
 
 bitwise_or.support_native_out = True
@@ -660,11 +662,12 @@ def bitwise_right_shift(
     x2: Union[int, bool, torch.Tensor],
     /,
     *,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     x2 = torch.clamp(x2, min=0, max=torch.iinfo(x2.dtype).bits - 1)
-    return torch.bitwise_right_shift(x1, x2, out=out)
+    return ivy.where(where, torch.bitwise_right_shift(x1, x2, out=out), (x1, x2))
 
 
 bitwise_right_shift.support_native_out = True

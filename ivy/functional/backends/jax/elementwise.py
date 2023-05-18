@@ -112,10 +112,11 @@ def bitwise_or(
     x2: Union[int, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return jnp.bitwise_or(x1, x2)
+    return ivy.where(where, jnp.bitwise_or(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
@@ -124,10 +125,11 @@ def bitwise_right_shift(
     x2: Union[int, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return jnp.right_shift(x1, x2)
+    return ivy.where(where, jnp.right_shift(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
@@ -136,10 +138,11 @@ def bitwise_xor(
     x2: Union[int, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return jnp.bitwise_xor(x1, x2)
+    return ivy.where(where, jnp.bitwise_xor(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)

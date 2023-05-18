@@ -159,10 +159,11 @@ def bitwise_or(
     x2: Union[int, bool, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return np.bitwise_or(x1, x2, out=out)
+    return ivy.where(where, np.bitwise_or(x1, x2, out=out), (x1, x2))
 
 
 bitwise_or.support_native_out = True
@@ -175,10 +176,11 @@ def bitwise_right_shift(
     x2: Union[int, bool, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return np.right_shift(x1, x2, out=out)
+    return ivy.where(where, np.right_shift(x1, x2, out=out), (x1, x2))
 
 
 bitwise_right_shift.support_native_out = True
@@ -191,10 +193,11 @@ def bitwise_xor(
     x2: Union[int, bool, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    return np.bitwise_xor(x1, x2, out=out)
+    return ivy.where(where, np.bitwise_xor(x1, x2, out=out), (x1, x2))
 
 
 bitwise_xor.support_native_out = True

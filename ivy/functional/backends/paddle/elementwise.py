@@ -42,10 +42,11 @@ def bitwise_xor(
     x2: Union[int, bool, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.bitwise_xor(x1, x2)
+    return ivy.where(where, paddle.bitwise_xor(x1, x2), (x1, x2))
 
 
 @with_unsupported_device_and_dtypes(
@@ -724,10 +725,11 @@ def bitwise_or(
     x2: Union[int, bool, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.bitwise_or(x1, x2)
+    return ivy.where(where, paddle.bitwise_or(x1, x2), (x1, x2))
 
 
 @with_unsupported_device_and_dtypes(
@@ -1066,11 +1068,16 @@ def bitwise_right_shift(
     x2: Union[int, bool, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.floor(x1.astype("float64") / 2 ** x2.astype("float64")).astype(
-        ret_dtype
+    return ivy.where(
+        where,
+        paddle.floor(x1.astype("float64") / 2 ** x2.astype("float64")).astype(
+            ret_dtype
+        ),
+        (x1, x2),
     )
 
 

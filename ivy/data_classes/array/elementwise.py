@@ -493,6 +493,7 @@ class _ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -506,6 +507,8 @@ class _ArrayWithElementwise(abc.ABC):
             input array. Should have an integer or boolean data type.
         x2
             second input array. Must be compatible with ``self``
+        where
+            optional boolean mask, apply the function only to the values that are True
 
         out
             optional output array, for writing the result to. It must have a shape that
@@ -525,13 +528,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(z)
         ivy.array([5, 7, 7])
         """
-        return ivy.bitwise_or(self._data, x2, out=out)
+        return ivy.bitwise_or(self._data, x2, where=where, out=out)
 
     def bitwise_right_shift(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -546,6 +550,8 @@ class _ArrayWithElementwise(abc.ABC):
         x2
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have an integer or boolean data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -566,13 +572,14 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[ 2,  1,  1],
                     [ 5,  5, 16]])
         """
-        return ivy.bitwise_right_shift(self._data, x2, out=out)
+        return ivy.bitwise_right_shift(self._data, x2, where=where, out=out)
 
     def bitwise_xor(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -588,6 +595,8 @@ class _ArrayWithElementwise(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -607,7 +616,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([[[74,41,59],[24,5,7]]])
         """
-        return ivy.bitwise_xor(self._data, x2, out=out)
+        return ivy.bitwise_xor(self._data, x2, where=where, out=out)
 
     def ceil(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
