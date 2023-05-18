@@ -3866,7 +3866,6 @@ def test_tensorflow_Zeta(
     fn_tree="tensorflow.raw_ops.Where",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=1,
         min_value=0,
         max_value=10,
         min_num_dims=1,
