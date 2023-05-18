@@ -92,14 +92,20 @@ class Tensor:
         return self.ivy_array.ndim
 
     def abs(self):
+        return paddle_frontend.abs(self)
+
+
+"""
+    def abs(self):
         if isinstance(self._ivy_array, list):
-            # If the input is a list, compute the absolute value
+            # If the input is a list, compute the absolute value.
             abs_value = [abs(num) for num in self._ivy_array]
             return abs_value
         elif isinstance(self._ivy_array, (int, float)):
-            # If the input is an int or float, compute its absolute value
+            # If the input is an int or float, compute its absolute value.
             abs_value = abs(self._ivy_array)
             return abs_value
         else:
-            # Raise an exception if the input type is not supported
+            # Raise an exception if the input type is not supported.
             raise ValueError("Invalid input type. Must be a list, int, or float.")
+"""
