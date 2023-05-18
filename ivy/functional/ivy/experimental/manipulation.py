@@ -1156,7 +1156,7 @@ def pad(
                 left_index, right_index, padded = _set_wrap_both(
                     padded, axis, (left_index, right_index)
                 )
-    return padded.astype(input.dtype)
+    return padded
 
 
 pad.mixed_function = True
