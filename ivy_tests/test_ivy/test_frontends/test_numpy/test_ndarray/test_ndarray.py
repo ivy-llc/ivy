@@ -2995,8 +2995,14 @@ def _item_helper(draw):
 
     sampled_index = draw(st.sampled_from(index_samples))
 
-    method_all_as_kwargs_np = {"args": sampled_index}
-    return input_dtype, x, method_all_as_kwargs_np
+    if sampled_index is None:
+        method_all_as_kwargs_np = {}
+        num_positional_args = 0
+    else:
+        method_all_as_kwargs_np = {"args": sampled_index}
+        num_positional_args = 1
+
+    return input_dtype, x, method_all_as_kwargs_np, num_positional_args
 
 
 @handle_frontend_method(
@@ -3008,8 +3014,8 @@ def _item_helper(draw):
 def test_numpy_instance_item(
     args_kwargs, frontend_method_data, init_flags, method_flags, frontend, on_device
 ):
-    input_dtype, x, method_all_as_kwargs_np = args_kwargs
-    method_flags.num_positional_args = 1
+    input_dtype, x, method_all_as_kwargs_np, num_positional_args = args_kwargs
+    method_flags.num_positional_args = num_positional_args
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={"object": x},
