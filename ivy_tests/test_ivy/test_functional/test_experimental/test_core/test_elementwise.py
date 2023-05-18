@@ -21,7 +21,6 @@ from ivy_tests.test_ivy.helpers import handle_test
         small_abs_safety_factor=4,
     ),
     test_gradients=st.just(False),
-    ground_truth_backend=st.just("jax"),
 )
 def test_sinc(
     *,
@@ -59,7 +58,6 @@ def test_sinc(
         allow_nan=False,
     ),
     test_gradients=st.just(False),
-    ground_truth_backend=st.just("numpy"),
 )
 def test_lcm(
     dtype_and_x,
@@ -98,7 +96,6 @@ def test_lcm(
         allow_nan=True,
     ),
     test_gradients=st.just(False),
-    ground_truth_backend=st.just("jax"),
 )
 def test_fmax(
     dtype_and_x,
@@ -338,7 +335,6 @@ def test_exp2(
         shared_dtype=False,
     ),
     test_gradients=st.just(False),
-    ground_truth_backend=st.just("torch"),
 )
 def test_copysign(
     dtype_x1_x2,
@@ -539,7 +535,6 @@ def test_gcd(
     atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True),
     equal_nan=st.booleans(),
     test_gradients=st.just(False),
-    ground_truth_backend=st.just("numpy"),
 )
 def test_isclose(
     *,

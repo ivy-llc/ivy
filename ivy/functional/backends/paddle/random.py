@@ -2,6 +2,7 @@
 
 # global
 import paddle
+import ivy.functional.backends.paddle as paddle_backend
 from typing import Optional, Union, Sequence
 
 # local
@@ -14,15 +15,15 @@ from ivy.functional.ivy.random import (
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
 # Extra #
 # ------#
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8",)},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def random_uniform(
@@ -46,12 +47,14 @@ def random_uniform(
     if seed:
         _ = paddle.seed(seed)
     random_base = paddle.uniform(shape, min=0.0, max=1.0)
-    with ivy.ArrayMode(False):
-        return ivy.add(ivy.multiply(random_base, rng), low).cast(dtype)
+
+    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(
+        dtype
+    )
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def random_normal(
@@ -91,8 +94,8 @@ def multinomial(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8",)},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def randint(
@@ -129,11 +132,9 @@ def seed(*, seed_value: int = 0) -> None:
     _ = paddle.seed(seed_value)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def shuffle(
     x: paddle.Tensor,
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,
@@ -155,6 +156,6 @@ def shuffle(
         if paddle.is_complex(x):
             shuffled_real = paddle.index_select(x.real(), indices)
             shuffled_imag = paddle.index_select(x.imag(), indices)
-            return shuffled_real + 1j * shuffled_imag
+            return paddle.complex(shuffled_real, shuffled_imag)
         return paddle.index_select(x.cast("float32"), indices).cast(x.dtype)
     return paddle.index_select(x, indices)
