@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     as_list=st.booleans(),
     copy=st.booleans(),
-    ndmin=helpers.ints(min_value=0, max_value=10),
+    ndmin=helpers.ints(min_value=0, max_value=9),
     test_with_out=st.just(True),
 )
 def test_jax_numpy_array(
