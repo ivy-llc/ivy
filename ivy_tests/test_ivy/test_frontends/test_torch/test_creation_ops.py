@@ -217,7 +217,9 @@ def test_torch_zeros_like(
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=1,
+        max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )
