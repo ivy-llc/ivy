@@ -4,7 +4,6 @@ from typing import (
     Tuple,
     Iterable,
     Sequence,
-    Generator,
     Callable,
     Any,
     Literal,
