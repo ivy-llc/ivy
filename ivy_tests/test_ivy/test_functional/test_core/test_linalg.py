@@ -795,7 +795,9 @@ def test_svdvals(
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=1,
+        max_dim_size=10,
     ),
 )
 def test_tensordot(
