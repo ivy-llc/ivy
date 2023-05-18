@@ -3869,6 +3869,7 @@ def test_tensorflow_Zeta(
         num_arrays=1,
         min_value=0,
         max_value=10,
+        min_num_dims=1,
     ),
 )
 def test_tensorflow_Where(
@@ -3886,5 +3887,5 @@ def test_tensorflow_Where(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        condition=condition,
+        condition=condition[0],
     )

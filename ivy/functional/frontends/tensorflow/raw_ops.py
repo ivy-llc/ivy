@@ -801,4 +801,8 @@ Zeta = to_ivy_arrays_and_back(
 )
 
 
-Where = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.where))
+Where = to_ivy_arrays_and_back(
+    with_unsupported_dtypes(
+        {"2.10.0 and below": ("bfloat16", "float16")}, "tensorflow"
+    )(map_raw_ops_alias(tf_frontend.general_functions.where))
+)
