@@ -496,7 +496,7 @@ def diag(
     return torch.diag(x, diagonal=k)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def vander(
     x: torch.tensor,
     /,

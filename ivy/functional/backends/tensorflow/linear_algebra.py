@@ -750,7 +750,7 @@ def diag(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "complex", "unsigned")},
+    {"2.12.0 and below": ("bfloat16", "float16", "complex", "unsigned")},
     backend_version,
 )
 def vander(
