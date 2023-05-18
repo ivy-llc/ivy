@@ -241,7 +241,9 @@ def test_numpy_trace(
 @handle_frontend_test(
     fn_tree="numpy.linalg.cond",
     p=st.sampled_from([ivy.inf, -ivy.inf, "fro", None, 1, -1, 2, -2]),
-    dtype_and_x=helpers.dtype_and_values(min_num_dims=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_dim_size=2, min_num_dims=2
+    ),
 )
 def test_numpy_cond(
     dtype_and_x,
