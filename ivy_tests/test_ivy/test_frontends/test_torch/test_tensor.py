@@ -8268,7 +8268,11 @@ def test_torch_instance_norm(
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "p": p, "dim": axis, "keepdim": keepdim, "dtype": dtype[0]},
+            "p": p,
+            "dim": axis,
+            "keepdim": keepdim,
+            "dtype": dtype[0],
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

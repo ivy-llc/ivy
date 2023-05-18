@@ -1145,7 +1145,7 @@ class Tensor:
         self.ivy_array = self.fmod(other).ivy_array
         return self
 
-    def norm(self, p='fro', dim=None, keepdim=False, dtype=None):
+    def norm(self, p="fro", dim=None, keepdim=False, dtype=None):
         return torch_frontend.norm(self, p=p, dim=dim, keepdim=keepdim, dtype=dtype)
 
     def tolist(self):
