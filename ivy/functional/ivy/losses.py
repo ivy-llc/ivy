@@ -203,9 +203,9 @@ def binary_cross_entropy(
     /,
     *,
     from_logits: bool = False,
-    pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     epsilon: float = 0.0,
     reduction: str = "none",
+    pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -214,6 +214,11 @@ def binary_cross_entropy(
     if not (0.0 <= epsilon <= 1.0):
         raise ValueError("epsilon should be a float in [0, 1]")
 
+    if not from_logits and pos_weight is not None:
+        raise ValueError("pos_weight is only allowed when from_logits is set to True")
+
+    true = true.astype(pred.dtype)
+
     true = true.astype(pred.dtype)
     epsilon = ivy.asarray(epsilon, dtype=pred.dtype)
 
@@ -221,6 +226,11 @@ def binary_cross_entropy(
 
     if from_logits:
         if pos_weight is not None:
+            if pos_weight.shape[0] != pred.shape[1]:
+                raise ValueError(
+                    "pos_weight must have the same size as the number of classes in"
+                    " pred at non-singleton dimension 1"
+                )
             epsilon_ = 1e-7
             pred = ivy.sigmoid(pred)
             pred = ivy.clip(pred, epsilon_, 1 - epsilon_)
