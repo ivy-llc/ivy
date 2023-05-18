@@ -41,7 +41,7 @@ def batch_norm(
     eps: float = 1e-5,
     momentum: float = 1e-1,
     data_format: str = "NSC",
-    out: Optional[torch.Tensor] = None,
+    out: Optional[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     xdims = x.ndim
     if data_format == "NSC":
@@ -68,15 +68,6 @@ def batch_norm(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
-@handle_mixed_function(
-    lambda x, mean, variance, scale, offset, **kwargs: (
-        x.ndim > 1
-        and mean.ndim == 1
-        and variance.ndim == 1
-        and (scale is None or scale.ndim == 1)
-        and (offset is None or offset.ndim == 1)
-    )
-)
 def instance_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
@@ -88,7 +79,8 @@ def instance_norm(
     training: bool = False,
     eps: float = 0e-5,
     momentum: float = 1e-1,
-    out: Optional[torch.Tensor] = None,
+    data_format: str = "NSC",
+    out: Optional[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mean.requires_grad = False
     variance.requires_grad = False
@@ -98,7 +90,8 @@ def instance_norm(
     runningvariance = variance.clone()
     # reshape  from  N, *S, C to N, C, *S
     xdims = x.ndim
-    x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
+    if data_format == "NSC":
+        x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
 
     xnormalized = torch.nn.functional.instance_norm(
         x,
@@ -110,7 +103,8 @@ def instance_norm(
         eps=eps,
         momentum=momentum,
     )
-    xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
+    if data_format == "NSC":
+        xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
     return xnormalized, runningmean, runningvariance
 
 

@@ -188,6 +188,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
             optional output arrays, for writing the result to.
         key_chains
@@ -281,8 +285,12 @@ class _ContainerWithNormsExperimental(ContainerBase):
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
-            optional output array, for writing the result to.
+            optional output arrays, for writing the result to.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -330,6 +338,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -350,37 +359,31 @@ class _ContainerWithNormsExperimental(ContainerBase):
         Parameters
         ----------
         x
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of shape default (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
+            Mean array of size C used for input's normalization.
         variance
-            Variance array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
+            Variance array of size C used for input's normalization.
         offset
-            An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
+            An offset array of size C. If present, will be added
+             to the normalized input.
         scale
-            A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
+            A scale array of size C. If present, the scale
+             is applied to the normalized input.
         training
-            If true, calculate and use the mean and variance of `x`. Otherwise, use the
-            provided `mean` and `variance`.
+            If true, calculate and use the mean and variance of `x`.
+             Otherwise, use the provided `mean` and `variance`.
         eps
             A small float number to avoid dividing by 0.
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
             optional output arrays, for writing the result to.
         key_chains
@@ -412,6 +415,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
             eps=eps,
             momentum=momentum,
             out=out,
+            data_format=data_format,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -429,6 +433,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -449,29 +454,19 @@ class _ContainerWithNormsExperimental(ContainerBase):
         Parameters
         ----------
         self
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of shape default (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
+            Mean array of size C used for input's normalization.
         variance
-            Variance array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
+            Variance array of size C used for input's normalization.
         offset
-            An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
+            An offset array of size C. If present, will be added
+            to the normalized input.
         scale
-            A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
+            A scale array of size C. If present, the scale is
+            applied to the normalized input.
         training
             If true, calculate and use the mean and variance of `x`. Otherwise, use the
             provided `mean` and `variance`.
@@ -480,8 +475,12 @@ class _ContainerWithNormsExperimental(ContainerBase):
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
-            optional output array, for writing the result to.
+            optional output arrays, for writing the result to.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -510,6 +509,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
             eps=eps,
             momentum=momentum,
             out=out,
+            data_format=data_format,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

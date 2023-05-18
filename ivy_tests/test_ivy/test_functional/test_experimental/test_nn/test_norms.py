@@ -15,11 +15,11 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
         )
     )
     shape = helpers.broadcast_shapes(shape1, shape2, shape3, shape4)
-    if data_format == "NCS":
-        shape = (shape[0], shape[-1], *shape[1:-1])
-
     if test_function == "instance_norm":
         shape1 = shape2 = shape3 = shape4 = (shape[-1],)
+
+    if data_format == "NCS":
+        shape = (shape[0], shape[-1], *shape[1:-1])
 
     x_dtype, x = draw(
         helpers.dtype_and_values(
@@ -97,6 +97,7 @@ def test_instance_norm(
     on_device,
     ground_truth_backend,
 ):
+    test_flags.with_out = False
     x_dtype, x, scale, offset, mean, variance, eps, momentum, data_format = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -116,6 +117,7 @@ def test_instance_norm(
         eps=eps,
         training=training,
         momentum=momentum,
+        data_format=data_format,
     )
 
 

@@ -29,7 +29,13 @@ def batch_norm(
     eps: float = 1e-5,
     momentum: float = 1e-1,
     data_format: str = "NSC",
-    out: Optional[tf.Tensor] = None,
+    out: Optional[
+        Tuple[
+            Union[tf.Tensor, tf.Variable],
+            Union[tf.Tensor, tf.Variable],
+            Union[tf.Tensor, tf.Variable],
+        ]
+    ],
 ) -> Tuple[
     Union[tf.Tensor, tf.Variable],
     Union[tf.Tensor, tf.Variable],
@@ -76,7 +82,14 @@ def instance_norm(
     training: bool = False,
     eps: float = 1e-5,
     momentum: float = 1e-1,
-    out: Optional[tf.Tensor] = None,
+    data_format: str = "NSC",
+    out: Optional[
+        Tuple[
+            Union[tf.Tensor, tf.Variable],
+            Union[tf.Tensor, tf.Variable],
+            Union[tf.Tensor, tf.Variable],
+        ]
+    ],
 ) -> Tuple[
     Union[tf.Tensor, tf.Variable],
     Union[tf.Tensor, tf.Variable],
@@ -84,10 +97,16 @@ def instance_norm(
 ]:
     # Instance Norm with (N,H,W,C) is the same as BatchNorm with (1, H, W, N*C)
     xdims = len(x.shape)
-    N = x.shape[0]
+    if data_format == "NCS":
+        x = tf.transpose(x, perm=(*range(2, xdims), 0, 1))
+    elif data_format == "NSC":
+        x = tf.transpose(x, perm=(*range(1, xdims - 1), 0, xdims - 1))
+    else:
+        raise ValueError(f"Invalid data_format: {data_format}.")
+
+    N = x.shape[-2]
     C = x.shape[-1]
-    S = x.shape[1:-1]
-    x = tf.transpose(x, perm=(*range(1, xdims - 1), 0, xdims - 1))
+    S = x.shape[0:-2]
     x = tf.reshape(x, (1, *S, N * C))
     mean = tf.tile(mean, [N])
     variance = tf.tile(variance, [N])
@@ -105,8 +124,17 @@ def instance_norm(
         out=out,
     )
     xnormalized = tf.reshape(xnormalized, (*S, N, C))
+    if data_format == "NCS":
+        xnormalized = tf.transpose(
+            xnormalized, perm=(xdims - 2, xdims - 1, *range(0, xdims - 2))
+        )
+    else:
+        xnormalized = tf.transpose(
+            xnormalized, perm=(xdims - 2, *range(0, xdims - 2), xdims - 1)
+        )
+
     return (
-        tf.transpose(xnormalized, perm=(xdims - 2, *range(0, xdims - 2), xdims - 1)),
+        xnormalized,
         tf.reduce_mean(tf.reshape(runningmean, (N, C)), axis=0),
         tf.reduce_mean(tf.reshape(runningvariance, (N, C)), axis=0),
     )
