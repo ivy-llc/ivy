@@ -140,7 +140,7 @@ def test_torch_ones(
     )
 
 
-# zeros 
+# zeros
 @handle_frontend_test(
     fn_tree="torch.zeros",
     size=helpers.ints(min_value=1, max_value=3),
