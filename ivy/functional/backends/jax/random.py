@@ -171,7 +171,12 @@ def seed(*, seed_value: int = 0) -> None:
 
 
 def shuffle(
-    x: JaxArray, /, *, seed: Optional[int] = None, out: Optional[JaxArray] = None
+    x: JaxArray,
+    axis: Optional[int] = 0,
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if seed:
         rng_input = jax.random.PRNGKey(seed)
@@ -179,4 +184,6 @@ def shuffle(
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
 
-    return jax.random.shuffle(rng_input, x)
+    # jax.random.shuffle is deprecated; identical behaviour reproduced with
+    # jax.random.permutation
+    return jax.random.permutation(key=rng_input, x=x, axis=axis, independent=True)

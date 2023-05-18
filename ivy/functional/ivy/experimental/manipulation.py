@@ -4,7 +4,6 @@ from typing import (
     Tuple,
     Iterable,
     Sequence,
-    Generator,
     Callable,
     Any,
     Literal,
@@ -28,11 +27,11 @@ from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
 def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -172,11 +171,11 @@ def flatten(
 flatten.mixed_function = True
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
 def moveaxis(
     a: Union[ivy.Array, ivy.NativeArray],
     source: Union[int, Sequence[int]],
@@ -218,92 +217,10 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
 
 
-def _iter_product(*args, repeat=1):
-    # itertools.product
-    pools = [tuple(pool) for pool in args] * repeat
-    result = [[]]
-    for pool in pools:
-        result = [x + [y] for x in result for y in pool]
-    for prod in result:
-        yield tuple(prod)
-
-
-@inputs_to_ivy_arrays
-@handle_exceptions
-def ndenumerate(
-    input: Iterable,
-) -> Generator:
-    """
-    Multidimensional index iterator.
-
-    Parameters
-    ----------
-    input
-        Input array to iterate over.
-
-    Returns
-    -------
-    ret
-        An iterator yielding pairs of array coordinates and values.
-
-    Examples
-    --------
-    >>> a = ivy.array([[1, 2], [3, 4]])
-    >>> for index, x in ivy.ndenumerate(a):
-    >>>     print(index, x)
-    (0, 0) 1
-    (0, 1) 2
-    (1, 0) 3
-    (1, 1) 4
-    """
-
-    def _ndenumerate(input):
-        if ivy.is_ivy_array(input) and input.shape == ():
-            yield (), ivy.to_scalar(input)
-        else:
-            i = [range(k) for k in input.shape]
-            for idx in _iter_product(*i):
-                yield idx, input[idx]
-
-    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
-    return _ndenumerate(input)
-
-
-@handle_exceptions
-def ndindex(
-    shape: Tuple,
-) -> Generator:
-    """
-    Multidimensional index iterator.
-
-    Parameters
-    ----------
-    shape
-        The shape of the array to iterate over.
-
-    Returns
-    -------
-    ret
-        An iterator yielding array coordinates.
-
-    Examples
-    --------
-    >>> a = ivy.array([[1, 2], [3, 4]])
-    >>> for index in ivy.ndindex(a):
-    >>>     print(index)
-    (0, 0)
-    (0, 1)
-    (1, 0)
-    (1, 1)
-    """
-    args = [range(k) for k in shape]
-    return _iter_product(*args)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def heaviside(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -346,11 +263,11 @@ def heaviside(
     return ivy.current_backend().heaviside(x1, x2, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
 def flipud(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -386,9 +303,9 @@ def flipud(
     return ivy.current_backend().flipud(m, copy=copy, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def vstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -429,9 +346,9 @@ def vstack(
     return ivy.current_backend().vstack(arrays, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def hstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -468,12 +385,12 @@ def hstack(
     return ivy.current_backend().hstack(arrays, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
 def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -549,18 +466,19 @@ def rot90(
     return ivy.current_backend(m).rot90(m, copy=copy, k=k, axes=axes, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def top_k(
     x: Union[ivy.Array, ivy.NativeArray],
     k: int,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """
@@ -576,6 +494,8 @@ def top_k(
         The axis along which we must return the top elements default value is 1.
     largest
         If largest is set to False we return k smallest elements of the array.
+    sorted
+        If sorted is set to True we return the elements in sorted order.
     out:
         Optional output tuple, for writing the result to. Must have two arrays inside,
         with a shape that the returned tuple broadcast to.
@@ -623,14 +543,16 @@ def top_k(
         ]
     }
     """
-    return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)
+    return current_backend(x).top_k(
+        x, k, axis=axis, largest=largest, sorted=sorted, out=out
+    )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
 def fliplr(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -667,10 +589,10 @@ def fliplr(
     return ivy.current_backend().fliplr(m, copy=copy, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def i0(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -755,7 +677,7 @@ def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
         )
     else:
         right_ramp = ivy.empty((0,))
-    return left_ramp.to_numpy(), right_ramp.to_numpy()
+    return left_ramp, right_ramp
 
 
 def _get_stats(padded, axis, width_pair, length_pair, stat_func):
@@ -768,13 +690,13 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
     if right_length is None or max_length < right_length:
         right_length = max_length
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
-    left_chunk = ivy.array(padded[left_slice])
+    left_chunk = padded[left_slice]
     left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
     left_stat = ivy.round(left_stat) if "int" in left_chunk.dtype else left_stat
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
-    right_chunk = ivy.array(padded[right_slice])
+    right_chunk = padded[right_slice]
     right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
     right_stat = ivy.round(right_stat) if "int" in right_chunk.dtype else right_stat
     return left_stat, right_stat
@@ -867,8 +789,7 @@ def _pad_simple(array, pad_width, fill_value=None):
     original_area_slice = tuple(
         slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
     )
-    padded = padded.to_numpy()
-    padded[original_area_slice] = array.to_numpy()
+    padded[original_area_slice] = array
     return padded, original_area_slice
 
 
@@ -888,6 +809,7 @@ def _to_pairs(x, n):
             ),
         )
     return x
+
 
 def _to_dilated(x, n):
     if ivy.isscalar(x):
@@ -981,10 +903,10 @@ def _check_arguments(
     )
 
 
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
 @to_native_arrays_and_back
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
@@ -1163,15 +1085,15 @@ def pad(
         end_values,
         reflect_type,
     )
-    input = ivy.asarray(input, dtype=input.dtype)
-
     if mode == "dilated":
         pad_width = _to_dilated(pad_width, input.ndim)
-        padded = _interior_pad(input, constant_values, pad_width)
-        return ivy.native_array(padded)
-
+        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
+            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
+        else:
+            padding_value = constant_values
+        padded = _interior_pad(input, padding_value, pad_width)
+        return padded
     pad_width = _to_pairs(pad_width, input.ndim)
-
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
@@ -1214,7 +1136,6 @@ def pad(
             )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
-            stat_pair = ivy.to_numpy(stat_pair)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
@@ -1235,17 +1156,16 @@ def pad(
                 left_index, right_index, padded = _set_wrap_both(
                     padded, axis, (left_index, right_index)
                 )
-    padded = ivy.array(padded).to_native()
-    return padded
+    return padded.astype(input.dtype)
 
 
 pad.mixed_function = True
 
 
-@to_native_arrays_and_back
-@handle_view
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@to_native_arrays_and_back
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Tuple[int, ...]],
@@ -1285,10 +1205,10 @@ def vsplit(
     return ivy.current_backend(ary).vsplit(ary, indices_or_sections, copy=copy)
 
 
-@to_native_arrays_and_back
-@handle_view
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@to_native_arrays_and_back
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Tuple[int, ...]],
@@ -1332,10 +1252,10 @@ def dsplit(
     return ivy.current_backend(ary).dsplit(ary, indices_or_sections, copy=copy)
 
 
-@to_native_arrays_and_back
-@handle_view
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@to_native_arrays_and_back
 def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
@@ -1369,9 +1289,9 @@ def atleast_1d(
     return ivy.current_backend().atleast_1d(*arys, copy=copy)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def dstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -1409,10 +1329,10 @@ def dstack(
     return ivy.current_backend().dstack(arrays)
 
 
-@to_native_arrays_and_back
-@handle_view
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@to_native_arrays_and_back
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
     copy: Optional[bool] = None,
@@ -1448,8 +1368,8 @@ def atleast_2d(
     return ivy.current_backend().atleast_2d(*arys, copy=copy)
 
 
-@to_native_arrays_and_back
 @handle_nestable
+@to_native_arrays_and_back
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
@@ -1494,11 +1414,11 @@ def atleast_3d(
     return ivy.current_backend().atleast_3d(*arys, copy=copy)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def take_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1544,10 +1464,10 @@ def take_along_axis(
     )
 
 
-@to_native_arrays_and_back
-@handle_view
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@to_native_arrays_and_back
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Tuple[int, ...]],
@@ -1621,13 +1541,13 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return ivy.current_backend().broadcast_shapes(*shapes)
 
 
-@to_native_arrays_and_back
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
 def expand(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape],
@@ -1666,11 +1586,11 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
     )
 
 
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
 @inputs_to_native_shapes
 @inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
-@handle_exceptions
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
@@ -1730,10 +1650,10 @@ def as_strided(
 as_strided.mixed_function = True
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_array_function
 def concat_from_sequence(
     input_sequence: Union[
@@ -1804,8 +1724,6 @@ def _interior_pad(operand, padding_value, padding_config):
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
             index_tuple[axis] = dst_indices
-            new_array = ivy.to_numpy(new_array)
-            operand = ivy.to_numpy(operand)
             new_array[tuple(index_tuple)] = operand
             operand = new_array
 
@@ -1843,9 +1761,9 @@ def _interleave(a, b, axis):
     return ivy.add(a, b)
 
 
-@inputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
 def associative_scan(
     x: Union[ivy.Array, ivy.NativeArray],
     fn: Callable,
@@ -1921,3 +1839,53 @@ def associative_scan(
         scans = [ivy.flip(scanned, axis=[axis]) for scanned in scans]
 
     return ivy.reshape(ivy.asarray(scans), elems[0].shape)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+def unique_consecutive(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[
+    Union[ivy.Array, ivy.NativeArray],
+    Union[ivy.Array, ivy.NativeArray],
+    Union[ivy.Array, ivy.NativeArray],
+]:
+    """Eliminates all but the first element from every consecutive group of equivalent
+    elements in ``x``.
+
+    Parameters
+    ----------
+    x
+        input array.
+
+    axis
+        the axis to apply unique on. If None, unique is applied on flattened ``x``.
+
+    Returns
+    -------
+    ret
+        a namedtuple ``(output, inverse_indices, counts)`` whose
+        - first element has the field name ``output`` and is an array
+          containing ``x`` with its equivalent consecutive elements eliminated.
+        - second element has the field name ``inverse_indices`` and is an
+          array containing the indices of ``output`` that reconstruct ``x``.
+        - third element has the field name ``counts`` and is an array
+          containing the number of occurrences for each unique value or array in ``x``.
+
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([1, 1, 2, 2, 3, 1, 1, 2])
+    >>> ivy..unique_consecutive(x)
+    Results(values=ivy.array([1, 2, 3, 1, 2]),
+        inverse_indices=ivy.array([0, 0, 1, 1, 2, 3, 3, 4]),
+        counts=ivy.array([2, 2, 1, 2, 1]))
+    """
+    return ivy.current_backend(x).unique_consecutive(x, axis=axis)

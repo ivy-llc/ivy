@@ -1,7 +1,8 @@
+from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 from .. import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
 import ivy
 
@@ -69,8 +70,8 @@ _i0B = [
 ]
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16")},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}},
     backend_version,
 )
 def moveaxis(
@@ -85,19 +86,19 @@ def moveaxis(
     return paddle.moveaxis(a, source, destination)
 
 
-@with_unsupported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
     },
     backend_version,
 )
@@ -111,9 +112,6 @@ def heaviside(
     return paddle.heaviside(x1, x2)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def flipud(
     m: paddle.Tensor,
     /,
@@ -128,8 +126,8 @@ def flipud(
     return paddle.flip(m, axis=0)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int16", "uint16", "bfloat16", "float16")},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int16", "float16")}},
     backend_version,
 )
 def vstack(
@@ -145,9 +143,6 @@ def vstack(
             return ivy.stack(arrays, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def hstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -161,9 +156,6 @@ def hstack(
             return ivy.concat(arrays, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def rot90(
     m: paddle.Tensor,
     /,
@@ -180,8 +172,8 @@ def rot90(
     return paddle.rot90(m, k=k, axes=axes)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128")},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -189,23 +181,24 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     largest: Optional[bool] = True,
+    sorted: bool = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    k = min(k, x.shape[axis])
     topk_res = NamedTuple(
         "top_k", [("values", paddle.Tensor), ("indices", paddle.Tensor)]
     )
     with ivy.ArrayMode(False):
         indices = ivy.argsort(x, axis=axis, descending=largest)
         indices = paddle.index_select(indices, paddle.arange(end=k), axis)
+        if not sorted:
+            indices = paddle.sort(indices, axis=axis)
         val = ivy.take_along_axis(x, indices, axis)
         return topk_res(val, indices)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def fliplr(
     m: paddle.Tensor,
     /,
@@ -532,9 +525,6 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return tuple(result)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def expand(
     x: paddle.Tensor,
     shape: Union[List[int], List[Tuple]],
@@ -572,9 +562,6 @@ def expand(
         return paddle.expand(x, shape)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def concat_from_sequence(
     input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
     /,
@@ -588,3 +575,66 @@ def concat_from_sequence(
             return ivy.concat(input_sequence, axis=axis)
         elif new_axis == 1:
             return ivy.stack(input_sequence, axis=axis)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+)
+def unique_consecutive(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    x_shape = None
+    if axis is None:
+        x_shape = x.shape
+        x = x.flatten()
+        axis = -1
+    if axis < 0:
+        axis += x.ndim
+    split_indices = paddle.flatten(
+        paddle.where(
+            ivy.current_backend().any(
+                paddle.abs(paddle.diff(x, axis=axis)) > 1e-50,
+                axis=tuple(i for i in paddle.arange(x.ndim) if i != axis),
+            )
+        )[0]
+        + 1,
+    )
+    if len(split_indices) > 0:
+        split_sizes = (
+            [split_indices[0]]
+            + [
+                split_indices[i] - split_indices[i - 1]
+                for i in range(1, len(split_indices))
+            ]
+            + [x.shape[axis] - split_indices[-1]]
+        )
+        sub_arrays = paddle.split(
+            x,
+            split_sizes,
+            axis=axis,
+        )
+    else:
+        sub_arrays = [x]
+    output = paddle.concat(
+        [
+            ivy.current_backend().unique_all(sub_array, axis=axis)[0]
+            for sub_array in sub_arrays
+        ],
+        axis=axis,
+    )
+    counts = paddle.to_tensor([sub_array.shape[axis] for sub_array in sub_arrays])
+    inverse_indices = paddle.repeat_interleave(paddle.arange(len(counts)), counts)
+    if x_shape:
+        inverse_indices = paddle.reshape(inverse_indices, x_shape)
+    return Results(
+        output.astype(x.dtype),
+        inverse_indices,
+        counts,
+    )

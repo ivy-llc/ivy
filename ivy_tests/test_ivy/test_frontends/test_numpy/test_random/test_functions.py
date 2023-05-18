@@ -444,3 +444,41 @@ def test_numpy_chisquare(
         df=df,
         size=size,
     )
+
+
+# lognormal
+# min value is set 0
+@handle_frontend_test(
+    fn_tree="numpy.random.lognormal",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    mean=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=-5, max_value=5
+    ),
+    sigma=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, max_value=5
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_lognormal(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    mean,
+    sigma,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mean=mean,
+        sigma=sigma,
+        size=size,
+    )

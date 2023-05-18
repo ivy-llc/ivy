@@ -12,11 +12,17 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def abs(
+    x: Union[float, JaxArray],
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if "bool" in str(x.dtype):
         return x
     # jnp.where is used for consistent gradients
-    return jnp.where(x != 0, jnp.absolute(x), 0)
+    return ivy.where(where, jnp.where(x != 0, jnp.absolute(x), 0), x)
 
 
 def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

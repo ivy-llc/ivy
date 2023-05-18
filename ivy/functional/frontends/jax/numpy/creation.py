@@ -8,6 +8,8 @@ from ivy.functional.frontends.jax.func_wrapper import (
     handle_jax_dtype,
 )
 
+from ivy.func_wrapper import handle_out_argument
+
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
@@ -122,12 +124,12 @@ def ndim(a):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-def empty_like(a, dtype=None, shape=None):
+def empty_like(prototype, dtype=None, shape=None):
     # XLA cannot create uninitialized arrays
     # jax.numpy.empty_like returns an array initialized with zeros.
     if shape:
         return ivy.zeros(shape, dtype=dtype)
-    return ivy.zeros_like(a, dtype=dtype)
+    return ivy.zeros_like(prototype, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
@@ -213,3 +215,24 @@ def csingle(x):
 @to_ivy_arrays_and_back
 def cdouble(x):
     return ivy.astype(x, ivy.complex128)
+
+
+@to_ivy_arrays_and_back
+@handle_out_argument
+def compress(condition, a, *, axis=None, out=None):
+    condition_arr = ivy.asarray(condition).astype(bool)
+    if condition_arr.ndim != 1:
+        raise ivy.utils.exceptions.IvyException("Condition must be a 1D array")
+    if axis is None:
+        arr = ivy.asarray(a).flatten()
+        axis = 0
+    else:
+        arr = ivy.moveaxis(a, axis, 0)
+
+    condition_arr, extra = condition_arr[: arr.shape[0]], condition_arr[arr.shape[0] :]
+    if any(extra):
+        raise ivy.utils.exceptions.IvyException(
+            "Condition contains entries that are out of bounds"
+        )
+    arr = arr[: condition_arr.shape[0]]
+    return ivy.moveaxis(arr[condition_arr], 0, axis)
