@@ -93,7 +93,3 @@ class Tensor:
 
     def abs(self):
         return paddle_frontend.abs(self)
-
-    def abs_(self):
-        self.ivy_array = self.abs().ivy_array
-        return self
