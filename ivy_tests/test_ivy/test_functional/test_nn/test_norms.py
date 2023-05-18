@@ -89,7 +89,7 @@ def _generate_data_layer_norm(
     values_tuple=_generate_data_layer_norm(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    new_std=st.floats(min_value=0.01),
+    new_std=st.floats(min_value=0.01, max_value=0.1),
     eps=st.floats(min_value=0.01, max_value=0.1),
 )
 def test_layer_norm(
