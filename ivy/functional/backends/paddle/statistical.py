@@ -17,9 +17,6 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def min(
     x: paddle.Tensor,
     /,
@@ -57,9 +54,6 @@ def min(
     return ret.astype(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def max(
     x: paddle.Tensor,
     /,
@@ -98,9 +92,6 @@ def max(
     return ret.astype(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def mean(
     x: paddle.Tensor,
     /,
@@ -134,9 +125,6 @@ def mean(
     return ret.astype(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def prod(
     x: paddle.Tensor,
     /,
@@ -170,9 +158,6 @@ def _std(x, axis, correction, keepdim):
     return out
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def std(
     x: paddle.Tensor,
     /,
@@ -185,9 +170,6 @@ def std(
     return _std(x, axis, correction, keepdims).cast(x.dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def sum(
     x: paddle.Tensor,
     /,
@@ -213,9 +195,6 @@ def sum(
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def var(
     x: paddle.Tensor,
     /,
@@ -232,7 +211,7 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int16")}},
+    {"2.4.2 and below": {"cpu": ("uint8", "int16")}},
     backend_version,
 )
 def cumprod(
@@ -285,7 +264,7 @@ def cumprod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int8", "int16")}},
+    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},
     backend_version,
 )
 def cummin(
@@ -313,7 +292,7 @@ def cummin(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def cumsum(
