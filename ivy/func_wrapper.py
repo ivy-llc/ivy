@@ -962,11 +962,7 @@ def _wrap_function(
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
-            if (
-                attr.startswith("_")
-                or hasattr(ivy, attr)
-                or (not compositional and attr == "mixed_function")
-            ):
+            if attr.startswith("_") or hasattr(ivy, attr):
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
         # Copy docstring
