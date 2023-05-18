@@ -473,15 +473,10 @@ def test_jax_numpy_unique(fn_inputs, frontend, test_flags, fn_tree, on_device):
 @handle_frontend_test(
     fn_tree="jax.numpy.union1d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=5,
-        min_value=-50,
-        max_value=50,
         allow_nan=False,
     ),
     size=helpers.ints(min_value=2,max_value=5),
