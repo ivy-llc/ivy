@@ -300,47 +300,79 @@ def cov(
     ddof: Optional[int] = None,
     fweights: Optional[paddle.Tensor] = None,
     aweights: Optional[paddle.Tensor] = None,
-    dtype: Optional[paddle.dtype] = None,
 ) -> paddle.Tensor:
+    if ddof is not None and ddof != int(ddof):
+        raise ValueError("ddof must be an integer")
+
+    if len(x1.shape) > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
     if x2 is not None:
-        x = paddle.concat([x1, x2], axis=0)
-    else:
-        x = x1
+        if len(x2.shape) > 2:
+            raise ValueError("x2 has more than 2 dimensions")
 
     if ddof is None:
-        if bias:
-            ddof = 0
-        else:
+        if bias == 0:
             ddof = 1
+        else:
+            ddof = 0
 
+    X = x1.astype("float64")
+    if not rowVar and X.shape[0] != 1:
+        X = paddle.transpose(X, perm=[i for i in range(x.shape[1] - 1, -1, -1)])
+
+    if x2 is not None:
+        X = paddle.concat([X, x2], axis=0)
+
+    w = None
     if fweights is not None:
-        if fweights.ndim != 1:
-            raise ValueError("fweights must be 1-D tensor")
-        if fweights.shape[0] != x.shape[0]:
-            raise ValueError("fweights and x must have the same length")
+        if not paddle.all(fweights == paddle.round(fweights)):
+            raise TypeError("fweights must be an integer")
+        if len(fweights.shape) > 1:
+            raise RuntimeError("fweights must be 1-dimensional")
+        if fweights.shape[0] != X.shape[1]:
+            raise RuntimeError("incompatible numbers of samples and fweights")
+        if paddle.any(fweights < 0):
+            raise ValueError("fweights cannot be negative")
 
-        fweights = paddle.unsqueeze(fweights, axis=1)
-        x = x * fweights
+        w = fweights
 
     if aweights is not None:
-        if aweights.ndim != 1:
-            raise ValueError("aweights must be 1-D tensor")
-        if aweights.shape[0] != x.shape[0]:
-            raise ValueError("aweights and x must have the same length")
+        if len(aweights.shape) > 1:
+            raise RuntimeError("aweights must be 1-dimensional")
+        if aweights.shape[0] != X.shape[1]:
+            raise RuntimeError("incompatible numbers of samples and aweights")
+        if paddle.any(aweights < 0):
+            raise ValueError("aweights cannot be negative")
 
-        aweights = paddle.unsqueeze(aweights, axis=1)
-        x = x * aweights
+        if w is None:
+            w = aweights
+        else:
+            w = w * aweights
 
-    mean = paddle.mean(x, axis=0, dtype=dtype)
-    x_centered = x - mean
+    avg = paddle.mean(X, axis=1)
+    if w is not None:
+        w_sum = paddle.sum(w)
 
-    if rowVar:
-        covariance_matrix = paddle.matmul(x_centered, x_centered, transpose_x=True) / (
-            x.shape[0] - ddof
-        )
+    if w is None:
+        fact = X.shape[1] - ddof
+    elif ddof == 0:
+        fact = w_sum
+    elif aweights is None:
+        fact = w_sum - ddof
     else:
-        covariance_matrix = paddle.matmul(x_centered, x_centered, transpose_y=True) / (
-            x.shape[0] - ddof
-        )
+        fact = w_sum - ddof * paddle.sum(w * aweights) / w_sum
 
-    return covariance_matrix
+    if fact <= 0:
+        fact = 0.0
+
+    X -= avg.unsqueeze(1)
+    if w is None:
+        X_T = paddle.transpose(X, perm=[i for i in range(X.shape[1] - 1, -1, -1)])
+    else:
+        X = X * w
+        X_T = paddle.transpose(X, perm=[i for i in range(X.shape[1] - 1, -1, -1)])
+
+    c = paddle.matmul(X, X_T)
+    result = paddle.divide(c, paddle.to_tensor(fact, dtype="float64"))
+    return result.astype(x1.dtype)
