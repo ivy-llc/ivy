@@ -9,7 +9,7 @@ from collections import namedtuple
 # local
 import ivy
 from ivy import inf
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 
@@ -187,7 +187,7 @@ def matmul(
 matmul.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_supported_dtypes({"1.11.0 and below": ("float", "complex")}, backend_version)
 def matrix_norm(
     x: torch.Tensor,
     /,
