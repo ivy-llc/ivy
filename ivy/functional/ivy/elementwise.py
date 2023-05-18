@@ -5549,9 +5549,6 @@ def trunc_divide(
     return ivy.trunc(ivy.divide(x1, x2), out=out)
 
 
-trunc_divide.mixed_function = True
-
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion

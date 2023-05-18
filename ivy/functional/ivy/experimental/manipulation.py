@@ -169,9 +169,6 @@ def flatten(
     return ivy.reshape(x, tuple(lst), order=order)
 
 
-flatten.mixed_function = True
-
-
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1249,9 +1246,6 @@ def pad(
     return padded
 
 
-pad.mixed_function = True
-
-
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1735,9 +1729,6 @@ def as_strided(
         ivy.frombuffer(buffer, dtype=x.dtype, count=numel),
         shape,
     )
-
-
-as_strided.mixed_function = True
 
 
 @handle_exceptions
