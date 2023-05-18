@@ -26,7 +26,6 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
 )
 from ivy.functional.frontends.torch import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
 )
