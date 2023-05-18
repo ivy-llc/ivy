@@ -466,7 +466,8 @@ def unique_consecutive(
                 np.diff(x, axis=axis) != 0,
                 axis=tuple(i for i in np.arange(x.ndim) if i != axis),
             )
-        )[0] + 1,
+        )[0]
+        + 1,
         axis=axis,
     )
     output = np.concatenate(
