@@ -969,29 +969,15 @@ def _wrap_function(
         docstring_attr = ["__annotations__", "__doc__"]
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
-        # to_native_arrays_and_back must be added
-        # to the primary implementation (if it exists)
-        # of mixed functions.
-        if original != to_wrap:
-            if not (
-                hasattr(original, "output_to_ivy_arrays")
-                and hasattr(original, "input_to_native_arrays")
-            ) and not hasattr(original, "to_native_arrays_and_back"):
-                # add as an attribute temporarily so that decorators can be applied
-                # in the correct sequence below
-                setattr(original, "to_native_arrays_and_back", True)
 
+        mixed_fn = original != to_wrap and hasattr(original, "inputs_to_ivy_arrays")
         for attr in FN_DECORATORS:
-            if hasattr(original, attr) and not hasattr(to_wrap, attr):
-                if attr == "inputs_to_ivy_arrays" and hasattr(
-                    original, "to_native_arrays_and_back"
-                ):
-                    continue
+            if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
+                mixed_fn and attr == "to_native_arrays_and_back"
+            ):
                 to_wrap = getattr(ivy, attr)(to_wrap)
 
         if hasattr(to_wrap, "partial_mixed_handler"):
-            # remove temporary attribute
-            delattr(original, "to_native_arrays_and_back")
             to_wrap.compos = original
             to_wrap = handle_mixed_function(getattr(to_wrap, "partial_mixed_handler"))(
                 to_wrap
