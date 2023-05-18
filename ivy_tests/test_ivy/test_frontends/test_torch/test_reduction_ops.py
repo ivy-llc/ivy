@@ -813,10 +813,10 @@ def test_torch_logsumexp(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
         valid_axis=True,
+        min_num_dims=1,
     ),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
-    test_with_out=st.just(False),
 )
 def test_torch_unique(
     *,
@@ -829,7 +829,6 @@ def test_torch_unique(
     test_flags,
 ):
     input_dtypes, x, axis = dtype_x_axis
-
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
