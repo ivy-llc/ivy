@@ -290,24 +290,40 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ord == 'fro':
-        ret = tf.norm(x, ord='euclidean', axis=axis, keepdims=keepdims)
-    elif ord == 'nuc':
-        ret = tf.reduce_sum(tf.linalg.svd(x)[0], keepdims=keepdims)
+    if ord == 'nuc':
+        x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
+        ret = tf.reduce_sum(
+            tf.linalg.svd(x, compute_uv=False),
+            axis=-1,
+        )
+        if keepdims:
+            ret = tf.reshape(ret, (*ret.shape, 1, 1))
     elif ord == -1:
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True),
+            axis=axis,
             keepdims=keepdims,
         )
     elif ord == -2:
-        ret = tf.reduce_min(tf.linalg.svd(x)[0], keepdims=keepdims)
+        x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
+        ret = tf.reduce_min(
+            tf.linalg.svd(x, compute_uv=False),
+            axis=-1,
+        )
+        if keepdims:
+            ret = tf.reshape(ret, (*ret.shape, 1, 1))
     elif ord == float('-inf'):
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True),
-            keepdims=keepdims
+            axis=axis,
+            keepdims=keepdims,
         )
     else:
-        ret = tf.linalg.norm(x, ord, axis, keepdims)
+        ret = tf.norm(x, ord=ord, axis=axis, keepdims=keepdims)
+        if ret.dtype is tf.complex64:
+            ret = tf.cast(ret, tf.float32)
+        elif ret.dtype is tf.complex128:
+            ret = tf.cast(ret, tf.float64)
     return ret
 
 
