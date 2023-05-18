@@ -8246,9 +8246,10 @@ def test_torch_instance_multiply(
     init_tree="torch.tensor",
     method_name="unique",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
         valid_axis=True,
+        min_num_dims=1,
     ),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
