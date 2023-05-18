@@ -663,7 +663,7 @@ def _iter_product(*args, repeat=1):
     for prod in result:
         yield tuple(prod)
 
-
+        
 @handle_exceptions
 @inputs_to_ivy_arrays
 def ndenumerate(
@@ -776,13 +776,11 @@ def indices(
     """
     if sparse:
         return tuple(
-            ivy.arange(dim)
-            .expand_dims(
+            ivy.arange(dim).expand_dims(
                 axis=[j for j in range(len(dimensions)) if i != j],
-            )
-            .astype(dtype)
+            ).astype(dtype)
             for i, dim in enumerate(dimensions)
         )
     else:
-        grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
+        grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing='ij')
         return ivy.stack(grid, axis=0).astype(dtype)

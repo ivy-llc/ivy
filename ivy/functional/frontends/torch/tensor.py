@@ -1140,7 +1140,7 @@ class Tensor:
         return torch_frontend.std(
             self, dim=dim, unbiased=unbiased, keepdim=keepdim, out=out
         )
-
+    
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def fmod(self, other, *, out=None):
         return torch_frontend.fmod(self, other, out=out)
