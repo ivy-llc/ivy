@@ -1093,7 +1093,7 @@ def pad(
             padding_value = constant_values
         padded = _interior_pad(input, padding_value, pad_width)
         return padded
-    pad_width = _to_pairs(pad_width, input.ndim)
+    pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
