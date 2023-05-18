@@ -270,7 +270,9 @@ def test_asarray(
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=1,
+        max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_instance_method=st.just(False),
@@ -384,7 +386,9 @@ def test_eye(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=1,
+        max_dim_size=5,
     ),
     test_gradients=st.just(False),
 )
