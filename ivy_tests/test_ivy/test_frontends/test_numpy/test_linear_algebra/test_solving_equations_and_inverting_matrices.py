@@ -177,20 +177,22 @@ def _get_lstsq_matrices(draw):
         helpers.array_values(
             dtype=input_dtype,
             shape=(shape1, shape2),
-            min_value=10,
-            max_value=20,
-            exclude_min=False,
-            exclude_max=False,
+            min_value=-1e4,
+            max_value=1e4,
+            large_abs_safety_factor=10,
+            small_abs_safety_factor=10,
+            safety_factor_scale="log",
         )
     )
     b = draw(
         helpers.array_values(
             dtype=input_dtype,
             shape=(shape1, 1),
-            min_value=10,
-            max_value=20,
-            exclude_min=False,
-            exclude_max=False,
+            min_value=-1e4,
+            max_value=1e4,
+            large_abs_safety_factor=10,
+            small_abs_safety_factor=10,
+            safety_factor_scale="log",
         )
     )
     return input_dtype, a, b
@@ -210,7 +212,7 @@ def test_numpy_lstsq(
     on_device,
 ):
     input_dtype, fir, sec = params
-    helpers.test_frontend_function(
+    ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=[input_dtype, input_dtype],
         frontend=frontend,
         test_flags=test_flags,
@@ -218,4 +220,16 @@ def test_numpy_lstsq(
         on_device=on_device,
         a=fir,
         b=sec,
+        test_values=False,
     )
+    assert 0 == 1, f"ret: {ret}, ret_gt: {ret_gt}"
+    for ret_f, ret_gtt in zip(ret, ret_gt):
+        frontend_ret = ret_f
+        frontend_ret_gt = ret_gtt
+        ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret)
+        ret_gt_flattened = helpers.flatten_fw_and_to_np(ret=frontend_ret_gt, fw="numpy")
+        helpers.value_test(
+            ret_np_flat=ret_flattened,
+            ret_np_from_gt_flat=ret_gt_flattened,
+            ground_truth_backend="numpy",
+        )
