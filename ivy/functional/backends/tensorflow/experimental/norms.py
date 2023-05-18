@@ -28,23 +28,27 @@ def batch_norm(
     training: bool = False,
     eps: float = 1e-5,
     momentum: float = 1e-1,
+    data_format: str = "NSC",
     out: Optional[tf.Tensor] = None,
 ) -> Tuple[
     Union[tf.Tensor, tf.Variable],
     Union[tf.Tensor, tf.Variable],
     Union[tf.Tensor, tf.Variable],
 ]:
-    ndims = len(x.shape)
+    xdims = len(x.shape)
+    if data_format == "NCS":
+        x = tf.transpose(x, perm=(0, *range(2, xdims), 1))
+
     runningmean = mean
     runningvariance = variance
     if training:
         n = (
             tf.size(x)
-            if ndims == 1
+            if xdims == 1
             else tf.cast(tf.divide(tf.size(x), tf.shape(x)[-1]), x.dtype)
         )
         n = tf.cast(n, x.dtype)
-        dims = (0, *range(1, ndims - 1))
+        dims = (0, *range(1, xdims - 1))
         mean = tf.math.reduce_mean(x, axis=dims)
         variance = tf.math.reduce_variance(x, axis=dims)
         runningmean = (1 - momentum) * runningmean + momentum * mean
@@ -52,6 +56,12 @@ def batch_norm(
             n - 1
         )
     xnormalized = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
+
+    if data_format == "NCS":
+        xnormalized = tf.transpose(
+            xnormalized, perm=(0, xdims - 1, *range(1, xdims - 1))
+        )
+
     return xnormalized, runningmean, runningvariance
 
 

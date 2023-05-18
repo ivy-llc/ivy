@@ -40,11 +40,12 @@ def batch_norm(
     training: bool = False,
     eps: float = 1e-5,
     momentum: float = 1e-1,
+    data_format: str = "NSC",
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    # reshape to N,C,H,W
     xdims = x.ndim
-    x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
+    if data_format == "NSC":
+        x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
     mean.requires_grad = False
     variance.requires_grad = False
     scale.requires_grad = False
@@ -61,7 +62,8 @@ def batch_norm(
         eps=eps,
         momentum=momentum,
     )
-    xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
+    if data_format == "NSC":
+        xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
     return xnormalized, runningmean, runningvariance
 
 

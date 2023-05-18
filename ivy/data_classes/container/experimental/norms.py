@@ -144,6 +144,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -164,29 +165,21 @@ class _ContainerWithNormsExperimental(ContainerBase):
         Parameters
         ----------
         x
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of default shape (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
             C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
+            Mean array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
         variance
-            Variance array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
+            Variance array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
         offset
             An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
+            It can be of any shape broadcastable to (N,*S,C).
         scale
             A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
+            It can be of any shape broadcastable to (N,*S,C).
         training
             If true, calculate and use the mean and variance of `x`. Otherwise, use the
             provided `mean` and `variance`.
@@ -225,6 +218,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
             training=training,
             eps=eps,
             momentum=momentum,
+            data_format=data_format,
             out=out,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -243,6 +237,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -263,29 +258,21 @@ class _ContainerWithNormsExperimental(ContainerBase):
         Parameters
         ----------
         x
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of default shape (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
+            Mean array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
         variance
-            Variance array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
+            Variance array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
         offset
             An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
+            It can be of any shape broadcastable to (N,*S,C).
         scale
             A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
+            It can be of any shape broadcastable to (N,*S,C).
         training
             If true, calculate and use the mean and variance of `x`. Otherwise, use the
             provided `mean` and `variance`.
@@ -323,6 +310,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
             training=training,
             eps=eps,
             momentum=momentum,
+            data_format=data_format,
             out=out,
             key_chains=key_chains,
             to_apply=to_apply,
