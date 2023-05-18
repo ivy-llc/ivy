@@ -1157,7 +1157,7 @@ def test_svd(
     fn_tree="functional.ivy.matrix_norm",
     ground_truth_backend="torch",
     dtype_value_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         valid_axis=True,
         min_axes_size=2,

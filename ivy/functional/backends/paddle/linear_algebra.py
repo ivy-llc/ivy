@@ -251,36 +251,57 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if ord == -float("inf"):
-        ret = paddle.amin(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+    if ord == 'nuc':
+        x = paddle.moveaxis(x, axis, [-2, -1])
+        ret = paddle.sum(
+            paddle.linalg.svd(x)[1],
+            axis=-1,
+        )
+    elif ord == 1:
+        ret = paddle.amax(
+            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
+            axis=axis,
             keepdim=keepdims,
         )
     elif ord == -1:
         ret = paddle.amin(
             paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
-            keepdim=keepdims,
-        )
-    elif ord == -2:
-        ret = paddle.amin(paddle.linalg.svd(x)[1], keepdim=keepdims)
-    elif ord == "nuc":
-        ret = paddle.sum(paddle.linalg.svd(x)[1], keepdim=keepdims)
-    elif ord == "fro":
-        ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
-    elif ord == float("inf"):
-        ret = paddle.amax(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
-            keepdim=keepdims,
-        )
-    elif ord == 1:
-        ret = paddle.amax(
-            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
+            axis=axis,
             keepdim=keepdims,
         )
     elif ord == 2:
-        ret = paddle.amax(paddle.linalg.svd(x)[1], keepdim=keepdims)
+        x = paddle.moveaxis(x, axis, [-2, -1])
+        ret = paddle.amax(
+            paddle.linalg.svd(x)[1],
+            axis=-1,
+        )
+    elif ord == -2:
+        x = paddle.moveaxis(x, axis, [-2, -1])
+        ret = paddle.amin(
+            paddle.linalg.svd(x)[1],
+            axis=-1,
+        )
+    elif ord == float('inf'):
+        ret = paddle.amax(
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
+        )
+    elif ord == float('-inf'):
+        ret = paddle.amin(
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
+        )
     else:
-        raise ValueError("Unsupported ord value: {}".format(ord))
+        ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
+    if x.ndim == 2 and not keepdims:
+        ret = paddle.squeeze(ret)
+    elif keepdims and ord in ["nuc", -2, 2]:
+        if x.ndim == 2:
+            ret = ret.unsqueeze(-1)
+        else:
+            ret = ret.unsqueeze(-2, -1)
     return ret
 
 
