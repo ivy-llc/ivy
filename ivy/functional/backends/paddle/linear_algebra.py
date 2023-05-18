@@ -618,7 +618,10 @@ def diag(
         return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
     return paddle.diag(x, offset=k)
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},
+    backend_version,
+)
 def vander(
     x: paddle.Tensor,
     /,

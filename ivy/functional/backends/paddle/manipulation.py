@@ -50,11 +50,19 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.ndim >= 6:
-        # Paddle unsqueeze sets a maximum limit of 6 dims in the output
-        x_shape = x.shape
-        x_shape.insert(axis, 1)
-        return x.reshape(x_shape)
+    if isinstance(axis, int):
+        if x.ndim >= 6:
+            # Paddle unsqueeze sets a maximum limit of 6 dims in the output
+            x_shape = x.shape
+            x_shape.insert(axis, 1)
+            return x.reshape(x_shape)
+    elif isinstance(axis, (list, tuple)):
+        if x.ndim + len(axis) > 6:
+            x_shape = x.shape
+            for a in axis:
+                x_shape.insert(a, 1)
+            # TODO: reshape doesn't support >9 dims, find a workaround for consistency.
+            return x.reshape(x_shape)
     if x.dtype == paddle.float16:
         return paddle.unsqueeze(x.cast("float32"), axis).cast(x.dtype)
     return paddle.unsqueeze(x, axis)

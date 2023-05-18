@@ -98,10 +98,12 @@ def empty(shape, dtype=None):
 
 @to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
+    if x.ndim != 1:
+        raise ValueError("x must be a one-dimensional array")
     if N == 0:
-        return ivy.array([], dtype=x.dtype)
+        return ivy.array([], dtype=x.dtype).reshape((x.shape[0], 0))
     else:
-        return ivy.vander(x, N=N, increasing=increasing, out=None)
+        return ivy.vander(x, N=N, increasing=increasing)
 
 
 @to_ivy_arrays_and_back
