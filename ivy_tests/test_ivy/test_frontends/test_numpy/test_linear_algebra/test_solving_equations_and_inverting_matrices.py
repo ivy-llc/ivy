@@ -168,41 +168,7 @@ def test_numpy_tensorinv(
     )
 
 
-@st.composite
-def _get_lstsq_matrices(draw):
-    shape1 = draw(helpers.ints(min_value=2, max_value=10))
-    shape2 = draw(helpers.ints(min_value=2, max_value=10))
-    input_dtype = draw(
-        helpers.get_dtypes("float"),
-    )
-    a = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=(shape1, shape2),
-            min_value=-1e4,
-            max_value=1e4,
-            large_abs_safety_factor=10,
-            small_abs_safety_factor=10,
-            safety_factor_scale="log",
-        )
-    )
-    b = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=(shape1, 1),
-            min_value=-1e4,
-            max_value=1e4,
-            large_abs_safety_factor=10,
-            small_abs_safety_factor=10,
-            safety_factor_scale="log",
-        )
-    )
-    return input_dtype, a, b
-
-
 # lstsq
-# TODO: Perform Value test once the function
-# is implemented on the API side
 @handle_frontend_test(
     fn_tree="numpy.linalg.lstsq",
     x=_get_first_matrix(),
