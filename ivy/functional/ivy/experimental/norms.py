@@ -131,7 +131,7 @@ def batch_norm(
     runningvariance = variance
 
     if training:
-        numel = x.size if ivy.current_backend_str() != "torch" else x.numel()
+        numel = int(ivy.prod(x.shape))
         n = numel if xdims == 1 else numel / x.shape[-1]
         dims = (0, *range(1, xdims - 1))
         mean = ivy.mean(x, axis=dims)
