@@ -340,6 +340,7 @@ def dropout(
         0,
         1,
     )
+    mask = ivy.astype(mask, dtype)
     x = x * mask
     if scale:
         x = ivy.multiply(x, 1 / (1 - prob), out=out)
