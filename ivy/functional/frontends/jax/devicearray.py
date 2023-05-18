@@ -99,7 +99,7 @@ class DeviceArray:
             self,
             order=order,
         )
-    
+
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 
