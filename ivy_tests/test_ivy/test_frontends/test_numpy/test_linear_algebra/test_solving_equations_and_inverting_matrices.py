@@ -230,16 +230,15 @@ def test_numpy_lstsq(
         test_values=False,
     )
     for ret_f, ret_gtt in zip(ret, ret_gt):
-        for ret_in, ret_gt_in in zip(ret_f, ret_gtt):
-            frontend_ret = ret_in
-            frontend_ret_gt = ret_gt_in
-            ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret)
-            ret_gt_flattened = helpers.flatten_fw_and_to_np(
-                ret=frontend_ret_gt, fw="numpy"
-            )
-            return  # TODO: Remove this once the function is implemented on the API side
-            helpers.value_test(
-                ret_np_flat=ret_flattened,
-                ret_np_from_gt_flat=ret_gt_flattened,
-                ground_truth_backend="numpy",
-            )
+        # TODO: Uncomment this once the function is implemented on the API side
+        # frontend_ret = ret_f
+        # frontend_ret_gt = ret_gt
+        # ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret)
+        # ret_gt_flattened = helpers.flatten_fw_and_to_np(
+        #       ret=frontend_ret_gt, fw="numpy")
+        # helpers.value_test(
+        #     ret_np_flat=ret_flattened,
+        #     ret_np_from_gt_flat=ret_gt_flattened,
+        #     ground_truth_backend="numpy",
+        # )
+        return
