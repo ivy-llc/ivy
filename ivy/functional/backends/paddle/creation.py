@@ -186,14 +186,20 @@ def empty_like(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8",
-                                 "int8",
-                                 "int16",
-                                 "float16",
-                                 "complex64",
-                                 "complex128",
-                                 "bool")}},
-    backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "uint8",
+                "int8",
+                "int16",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def eye(
     n_rows: int,
@@ -236,7 +242,6 @@ def eye(
         return paddle.tile(paddle.reshape(mat, reshape_dims), tile_dims)
     else:
         return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
-
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
