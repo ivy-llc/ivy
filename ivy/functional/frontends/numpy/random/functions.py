@@ -1,6 +1,7 @@
+#global
+import math
 # local
 import ivy
-import math
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
