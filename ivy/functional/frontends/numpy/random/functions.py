@@ -128,7 +128,7 @@ def negative_binomial(n, p, size=None):
         raise ValueError("n must be strictly positive")
     # numpy implementation uses scale = (1 - p) / p
     scale = (1 - p) / p
-    # poisson requires shape to be tuple
+    # poisson requires shape to be a tuple
     if isinstance(size, int):
         size = (size,)
     lambda_ = ivy.gamma(n, scale, shape=size)

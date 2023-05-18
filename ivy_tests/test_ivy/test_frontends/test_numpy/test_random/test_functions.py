@@ -489,7 +489,8 @@ def test_numpy_lognormal(
     fn_tree="numpy.random.negative_binomial",
     input_dtypes=helpers.get_dtypes("float", index=2),
     # max value for n and min value for p are restricted in testing
-    # as they can blow up poisson lambda, which will cause error (lam value too large).
+    # as they can blow up poisson lambda, which will cause an
+    # error (lam value too large).
     n=st.floats(
         allow_nan=False,
         allow_infinity=False,
