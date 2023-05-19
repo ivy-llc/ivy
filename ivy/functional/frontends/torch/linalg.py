@@ -196,8 +196,9 @@ def solve(input, other, *, out=None):
 
 
 
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+
+@ivy.to_ivy_arrays_and_back
+@ivy.with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def solve_ex(A, B, left=True, check_errors=False, out=None):
     result = ivy.linalg.solve(A, B)
 
@@ -211,7 +212,7 @@ def solve_ex(A, B, left=True, check_errors=False, out=None):
         out[0] = result
         out[1] = info
 
-    named_tuple = type("SolveExOutput", (object,), {"result": result, "info": info})
+    named_tuple = ivy.namedtuple("SolveExOutput", ["result", "info"])
     return named_tuple(result, info)
 
 
