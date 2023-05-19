@@ -44,12 +44,12 @@ relu6.unsupported_dtypes = (
 )
 
 
-@with_unsupported_dtypes({"1.13.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def logsigmoid(input: torch.Tensor) -> torch.Tensor:
     return torch.nn.functional.logsigmoid(input)
 
 
-@with_unsupported_dtypes({"1.13.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     ret = torch.nn.functional.selu(x)
     if ivy.exists(out):

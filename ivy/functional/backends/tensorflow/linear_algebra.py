@@ -280,7 +280,7 @@ def matmul(
 
 
 @with_supported_dtypes(
-    {"2.9.1 and below": ("float32", "float64", "float16", "complex")}, backend_version
+    {"2.12.0 and below": ("float32", "float64", "float16", "complex")}, backend_version
 )
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
