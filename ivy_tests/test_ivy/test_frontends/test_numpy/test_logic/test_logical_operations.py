@@ -14,7 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
                 num_arrays=2,
             )
         ],
-        get_dtypes_kind="bool",
+        special=True,
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -63,7 +63,7 @@ def test_numpy_logical_and(
                 num_arrays=2,
             )
         ],
-        get_dtypes_kind="bool",
+        special=True,
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -110,7 +110,7 @@ def test_numpy_logical_or(
                 available_dtypes=("bool",),
             )
         ],
-        get_dtypes_kind="bool",
+        special=True,
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -157,7 +157,7 @@ def test_numpy_logical_not(
                 num_arrays=2,
             )
         ],
-        get_dtypes_kind="bool",
+        special=True,
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(

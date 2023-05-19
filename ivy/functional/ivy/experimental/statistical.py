@@ -9,10 +9,145 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
+# TODO: Make bins optional by offering an automatic bins creation like numpy.
+#       Make density argument work in tensorflow
+#       Bins as str is not defined (check Numpy implementation).
+#       Permit multiple axis.
+#       Modify documentation to match the above modifications.
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def histogram(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    bins: Optional[Union[int, ivy.Array, ivy.NativeArray, str]] = None,
+    axis: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    density: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the histogram of the array ``a``.
+
+    .. note::
+        Given bins = [c0, ..., cK], defining intervals I0 = [c0, c1), I1 = [c1, c2),
+        ..., I_{K-1} = [c_{K-1}, cK].
+
+    Parameters
+    ----------
+    a
+        input array.
+    bins
+        if ``bins`` is an int, it defines the number of equal-width bins in the given
+        range.
+        if ``bins`` is an array, it defines a monotonically increasing array of bin
+        edges, including the rightmost edge, allowing for non-uniform bin widths.
+    axis
+        dimension along which maximum values must be computed. By default, the maximum
+        value must be computed over the entire array. Default: ``None``.
+    extend_lower_interval
+        if True, extend the lowest interval I0 to (-inf, c1].
+    extend_upper_interval
+        ff True, extend the upper interval I_{K-1} to [c_{K-1}, +inf).
+    dtype
+        the output type.
+    range
+        the lower and upper range of the bins. The first element of the range must be
+        less than or equal to the second.
+    weights
+        each value in ``a`` only contributes its associated weight towards the bin count
+        (instead of 1). Must be of the same shape as a.
+    density
+        if True, the result is the value of the probability density function at the
+        bin, normalized such that the integral over the range of bins is 1.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        a tuple containing the values of the histogram and the bin edges.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
+    >>> z = ivy.histogram(x, bins=y)
+    >>> print(z)
+    (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [4.4, 5.5, .6]])
+    >>> bins = 4
+    >>> range = (0., 5.)
+    >>> dtype = ivy.int32
+    >>> y = ivy.histogram(x, bins=bins, range=range, dtype=dtype)
+    >>> print(y)
+    (ivy.array([0, 0, 0, 0]), ivy.array([0.   , 0.125, 0.25 , 0.375, 0.5  ]))
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
+    >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
+    >>> axis = 1
+    >>> extend_lower_interval = True
+    >>> extend_upper_interval = True
+    >>> dtype = ivy.float32
+    >>> weights = ivy.array([[1., 1., 1.], [1., 1., 1.]])
+    >>> z = ivy.histogram(
+    >>>                     x,
+    >>>                     bins=y,
+    >>>                     axis=axis,
+    >>>                     extend_lower_interval=extend_lower_interval,
+    >>>                     extend_upper_interval=extend_upper_interval,
+    >>>                     dtype=dtype,
+    >>>                     weights=weights)
+    >>> print(z)
+    (ivy.array([[0., 3.],
+    [1., 0.],
+    [1., 0.],
+    [1., 0.],
+    [0., 0.]]), ivy.array([0., 1., 2., 3., 4., 5.]))
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
+    >>> dtype = ivy.int32
+    >>> z = ivy.histogram(x, bins=y, dtype=dtype)
+    >>> print(z.a)
+    >>> print(z.b)
+    (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    """
+    return ivy.current_backend(a).histogram(
+        a,
+        bins=bins,
+        axis=axis,
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        dtype=dtype,
+        range=range,
+        weights=weights,
+        density=density,
+        out=out,
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def median(
     input: ivy.Array,
     /,
@@ -21,7 +156,8 @@ def median(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the median along the specified axis.
+    """
+    Compute the median along the specified axis.
 
     Parameters
     ----------
@@ -52,11 +188,11 @@ def median(
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def nanmean(
     a: ivy.Array,
     /,
@@ -66,7 +202,8 @@ def nanmean(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the mean of all non-NaN elements along the specified dimensions.
+    """
+    Compute the mean of all non-NaN elements along the specified dimensions.
 
     Parameters
     ----------
@@ -105,10 +242,10 @@ def nanmean(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -119,7 +256,8 @@ def quantile(
     interpolation: str = "linear",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the q-th quantile of the data along the specified axis.
+    """
+    Compute the q-th quantile of the data along the specified axis.
 
     Parameters
     ----------
@@ -187,10 +325,10 @@ def quantile(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def corrcoef(
     x: ivy.Array,
     /,
@@ -202,10 +340,10 @@ def corrcoef(
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def nanmedian(
     input: ivy.Array,
     /,
@@ -215,9 +353,10 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """ivy.Array instance method variant of ivy.nanmedian. This method simply
-    wraps the function, and so the docstring for ivy.nanmedian also applies to
-    this method with minimal changes.
+    """
+    ivy.Array instance method variant of ivy.nanmedian. This method simply wraps the
+    function, and so the docstring for ivy.nanmedian also applies to this method with
+    minimal changes.
 
     Parameters
     ----------
@@ -248,23 +387,34 @@ def nanmedian(
     ret
         A new array holding the result. If the input contains integers
 
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
     Examples
     --------
-    >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
-    >>> a.nanmedian(a)
-        3.0
-    >>> a.nanmedian(a, axis=0)
-        array([6.5, 2. , 2.5])
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[12.0, 10.0, 34.0], [45.0, 23.0, ivy.nan]])
+    >>> ivy.nanmedian(x)
+        ivy.array(23.)
+    With a mix of :class:`ivy.Container` and :class:`ivy.Array` input:
+    >>> x = ivy.Container(a=ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]]),
+            b=ivy.array([[12, 10, 34], [45, 23, ivy.nan]]))
+    >>> ivy.nanmedian(x)
+    {
+        a: ivy.array(3.),
+        b: ivy.array(23.)
+    }
     """
     return ivy.current_backend().nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def bincount(
     x: ivy.Array,
     /,

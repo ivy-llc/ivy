@@ -9,7 +9,7 @@ from collections import namedtuple
 # local
 import ivy
 from ivy import inf
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 
@@ -54,7 +54,6 @@ def cross(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     if axis is None:
         axis = -1
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -188,7 +187,7 @@ def matmul(
 matmul.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_supported_dtypes({"1.11.0 and below": ("float", "complex")}, backend_version)
 def matrix_norm(
     x: torch.Tensor,
     /,
@@ -374,7 +373,6 @@ def solve(
 def svd(
     x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
-
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
 
@@ -498,7 +496,7 @@ def diag(
     return torch.diag(x, diagonal=k)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def vander(
     x: torch.tensor,
     /,
@@ -512,14 +510,17 @@ def vander(
     start, stop, step = N - 1, -1, -1
     if increasing:
         start, stop, step = 0, N, 1
-    return torch.pow(
+    ret = torch.pow(
         torch.transpose(torch.unsqueeze(x, 0), 0, 1),
         torch.arange(start, stop, step),
         out=out,
     )
+    if ret.dtype != x.dtype:
+        return ret.to(x.dtype)
+    return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def vector_to_skew_symmetric_matrix(
     vector: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:

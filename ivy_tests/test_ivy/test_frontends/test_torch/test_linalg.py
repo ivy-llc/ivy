@@ -29,6 +29,34 @@ def _get_dtype_and_square_matrix(draw):
 
 
 @st.composite
+def _get_dtype_and_matrix_non_singular(draw):
+    while True:
+        matrix = draw(
+            helpers.dtype_and_values(
+                available_dtypes=(
+                    ivy.float64,
+                    ivy.double,
+                ),
+                min_value=-10,
+                max_value=10,
+                min_num_dims=2,
+                max_num_dims=2,
+                min_dim_size=1,
+                max_dim_size=5,
+                shape=st.tuples(st.integers(1, 5), st.integers(1, 5)).filter(
+                    lambda x: x[0] == x[1]
+                ),
+                allow_inf=False,
+                allow_nan=False,
+            )
+        )
+        if np.linalg.det(matrix[1][0]) != 0:
+            break
+
+    return matrix[0], matrix[1]
+
+
+@st.composite
 def _get_dtype_and_matrix(draw):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
     random_size = draw(st.integers(min_value=1, max_value=4))
@@ -47,14 +75,18 @@ def _get_dtype_and_matrix(draw):
 @handle_frontend_test(
     fn_tree="torch.linalg.vector_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         min_value=-1e04,
         max_value=1e04,
     ),
     kd=st.booleans(),
-    ord=helpers.ints(min_value=1, max_value=2),
-    dtype=helpers.get_dtypes("valid"),
+    ord=st.one_of(
+        helpers.ints(min_value=0, max_value=5),
+        helpers.floats(min_value=1.0, max_value=5.0),
+        st.sampled_from((float("inf"), -float("inf"))),
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_vector_norm(
     *,
@@ -334,11 +366,8 @@ def test_torch_eigvals(
         input=x[0],
         test_values=False,
     )
-
-    """
-    In "ret" we have out eigenvalues calculated with our backend and
-    in "frontend_ret" are our eigenvalues calculated with the specified frontend
-    """
+    """In "ret" we have out eigenvalues calculated with our backend and in
+    "frontend_ret" are our eigenvalues calculated with the specified frontend."""
 
     """
     Depending on the chosen framework there may be small differences between our
@@ -410,6 +439,27 @@ def test_torch_eigvalsh(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.linalg.cond",
+    dtype_and_x=_get_dtype_and_matrix_non_singular(),
+    p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+)
+def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x[0],
+        rtol=1e-2,
+        atol=1e-3,
+        p=p,
+    )
+
+
 # matrix_power
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_power",
@@ -442,22 +492,16 @@ def test_torch_matrix_power(
 # matrix_norm
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
-    dtype_and_x=helpers.dtype_and_values(
-        num_arrays=1,
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_value_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=5,
-        min_value=-1e20,
-        max_value=1e20,
-        large_abs_safety_factor=10,
-        small_abs_safety_factor=10,
-        safety_factor_scale="log",
+        valid_axis=True,
+        min_axes_size=2,
+        max_axes_size=2,
+        force_tuple_axis=True,
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
-    axis=st.just((-2, -1)),
     dtype=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_torch_matrix_norm(
@@ -904,7 +948,6 @@ def test_torch_tensorinv(
     frontend,
     test_flags,
 ):
-
     dtype, x, ind = dtype_input_ind
     helpers.test_frontend_function(
         input_dtypes=dtype,

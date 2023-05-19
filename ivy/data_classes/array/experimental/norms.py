@@ -12,7 +12,8 @@ class _ArrayWithNormsExperimental(abc.ABC):
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Normalizes the array to have unit L2 norm.
+        """
+        Normalize the array to have unit L2 norm.
 
         Parameters
         ----------
@@ -50,50 +51,46 @@ class _ArrayWithNormsExperimental(abc.ABC):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.batch_norm. This method
-        simply wraps the function, and so the docstring for ivy.batch_norm
-        also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.batch_norm. This method simply wraps
+        the function, and so the docstring for ivy.batch_norm also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
         self
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of default shape (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
-        mean
-            Array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
-        variance
-            Array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
-        offset
-            An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
-        scale
-            A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
         training
             If true, calculate and use the mean and variance of `x`. Otherwise, use the
             provided `mean` and `variance`.
+        mean
+            Mean array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
+        variance
+            Variance array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
+        offset
+            An offset array. If present, will be added to the normalized input.
+            It can be of any shape broadcastable to (N,*S,C).
+        scale
+            A scale array. If present, the scale is applied to the normalized input.
+            It can be of any shape broadcastable to (N,*S,C).
         eps
             A small float number to avoid dividing by 0.
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
-            optional output array, for writing the result to.
-            Parameters
+            optional output arrays, for writing the result to.
 
         Returns
         -------
@@ -110,6 +107,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
             training=training,
             eps=eps,
             momentum=momentum,
+            data_format=data_format,
             out=out,
         )
 
@@ -124,39 +122,30 @@ class _ArrayWithNormsExperimental(abc.ABC):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.instance_norm. This method
-        simply wraps the function, and so the docstring for ivy.instance_norm
-        also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.instance_norm. This method simply wraps
+        the function, and so the docstring for ivy.instance_norm also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
         self
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of shape default (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
+            Mean array of size C used for input's normalization.
         variance
-            Variance array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
+            Variance array of size C used for input's normalization.
         offset
-            An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
+            An offset array of size C. If present, will be added
+            to the normalized input.
         scale
-            A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
+            A scale array of size C. If present, the scale is
+            applied to the normalized input.
         training
             If true, calculate and use the mean and variance of `x`. Otherwise, use the
             provided `mean` and `variance`.
@@ -165,9 +154,12 @@ class _ArrayWithNormsExperimental(abc.ABC):
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
             optional output array, for writing the result to.
-            Parameters
 
         Returns
         -------
@@ -185,6 +177,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
             eps=eps,
             momentum=momentum,
             out=out,
+            data_format=data_format,
         )
 
     def lp_normalize(
@@ -195,7 +188,8 @@ class _ArrayWithNormsExperimental(abc.ABC):
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Normalizes the array to have Lp norm.
+        """
+        Normalize the array to have Lp norm.
 
         Parameters
         ----------

@@ -1,4 +1,7 @@
-"""Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
+"""
+TensorFlow random functions.
+
+Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
 signature.
 """
 
@@ -153,6 +156,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 def shuffle(
     x: Union[tf.Tensor, tf.Variable],
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,

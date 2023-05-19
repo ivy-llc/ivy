@@ -1,5 +1,8 @@
-"""Collection of PyTorch activation functions, wrapped to fit Ivy syntax and
-signature.
+"""
+PyTorch activation functions.
+
+Collection of PyTorch activation functions, wrapped to fit Ivy syntax
+and signature.
 """
 from typing import Optional, Union
 
@@ -95,6 +98,8 @@ def log_softmax(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ):
+    if axis is None:
+        axis = -1
     return torch.nn.functional.log_softmax(x, axis)
 
 

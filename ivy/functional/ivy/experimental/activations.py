@@ -15,11 +15,11 @@ from ivy.func_wrapper import (
 )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def logit(
     x: Union[float, int, ivy.Array],
     /,
@@ -28,7 +28,9 @@ def logit(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes the logit of x, i.e. logit(x) = log(x / (1 - x)).
+    Compute the logit of x.
+
+    logit(x) = log(x / (1 - x)).
 
     Parameters
     ----------
@@ -57,16 +59,15 @@ def logit(
     >>> z = ivy.logit(x, eps=0.2)
     >>> print(z)
     ivy.array([ 1.38629448,  1.38629448, -1.38629436])
-
     """
     return current_backend(x).logit(x, eps=eps, out=out)
 
 
-@inputs_to_ivy_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_ivy_arrays
 def prelu(
     x: Union[ivy.NativeArray, ivy.Array],
     slope: Union[float, ivy.NativeArray, ivy.Array],
@@ -76,6 +77,7 @@ def prelu(
 ) -> ivy.Array:
     """
     Prelu takes input data (Array) and slope array as input,
+
     and produces one output data (array) where the function
     f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
     to the data array elementwise. This operator supports unidirectional
@@ -101,7 +103,7 @@ def prelu(
         return ivy.where(x > 0, x, x * slope, out=out)
     except ivy.utils.exceptions.IvyError(
         f"The shape {slope.shape} is not Unidirectional Broadcastable\n"
-        f"as per ONNX standards"
+        "as per ONNX standards"
     ) as IvyException:
         if len(slope.shape) == 1:
             dim = slope.shape[0]
@@ -119,11 +121,11 @@ def prelu(
         raise IvyException
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -131,7 +133,8 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the rectified linear unit function with custom threshold.
+    """
+    Apply the rectified linear unit function with custom threshold.
 
     Parameters
     ----------
@@ -177,16 +180,17 @@ def thresholded_relu(
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the rectified linear unit 6 function element-wise.
+    """
+    Apply the rectified linear unit 6 function element-wise.
 
     Parameters
     ----------
@@ -233,16 +237,18 @@ def relu6(
     return current_backend(x).relu6(x, out=out)
 
 
-@handle_out_argument
-@handle_nestable
-@to_native_arrays_and_back
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array],
 ) -> ivy.Array:
     """
-    Applies element-wise Log-sigmoid of x i.e. logsigmoid(x) = log(1 / (1 + exp(-x)).
+    Apply element-wise Log-sigmoid of x.
+
+    logsigmoid(x) = log(1 / (1 + exp(-x)).
 
     Parameters
     ----------
@@ -280,16 +286,17 @@ def logsigmoid(
     return ivy.current_backend(input).logsigmoid(input)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_array_function
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the scaled exponential linear unit function element-wise.
+    """
+    Apply the scaled exponential linear unit function element-wise.
 
     Parameters
     ----------
@@ -335,3 +342,51 @@ def selu(
     }
     """
     return current_backend(x).selu(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def silu(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Apply the silu function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the silu activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.silu(x)
+    >>> print(y)
+    ivy.array([-0.2689,  0.7310,  1.7615])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.silu()
+    >>> print(y)
+    ivy.array([-0.2689,  0.7310,  1.7615])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.silu(x)
+    >>> print(y)
+    ivy.array([[-0.2784,  3.7168,  1.8708], [ 1.4374,  4.1379, -0.0089]])
+    """
+    return current_backend(x).silu(x, out=out)

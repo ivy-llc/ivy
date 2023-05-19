@@ -384,3 +384,151 @@ def test_numpy_standard_gamma(
         shape=shape,
         size=size,
     )
+
+
+# chisquare
+# The test values are restricted to (0, 1000] because df<=0 is invalid
+# and very large df can cause problems with type conversions
+@handle_frontend_test(
+    fn_tree="numpy.random.chisquare",
+    dtypes=helpers.get_dtypes("float", full=False),
+    df=st.one_of(
+        st.floats(
+            min_value=0,
+            max_value=1000,
+            exclude_min=True,
+            allow_subnormal=False,
+            width=32,
+        ),
+        st.integers(min_value=1, max_value=1000),
+        st.lists(
+            st.one_of(
+                st.floats(
+                    min_value=0,
+                    max_value=1000,
+                    exclude_min=True,
+                    allow_subnormal=False,
+                    width=32,
+                )
+                | st.integers(min_value=1, max_value=1000)
+            ),
+            min_size=1,
+        ),
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_chisquare(
+    dtypes,
+    df,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    # make sure `size` is something `df` can be broadcast to
+    if (
+        hasattr(df, "__len__")
+        and size is not None
+        and (len(size) == 0 or size[-1] != len(df))
+    ):
+        size = (*size, len(df))
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        df=df,
+        size=size,
+    )
+
+
+# lognormal
+# min value is set 0
+@handle_frontend_test(
+    fn_tree="numpy.random.lognormal",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    mean=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=-5, max_value=5
+    ),
+    sigma=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, max_value=5
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_lognormal(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    mean,
+    sigma,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mean=mean,
+        sigma=sigma,
+        size=size,
+    )
+
+
+# negative_binomial
+@handle_frontend_test(
+    fn_tree="numpy.random.negative_binomial",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    # max value for n and min value for p are restricted in testing
+    # as they can blow up poisson lambda, which will cause an
+    # error (lam value too large).
+    n=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=100000,
+        exclude_min=True,
+    ),
+    p=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=9.999999747378752e-06,
+        exclude_min=True,
+        max_value=1,
+        exclude_max=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_negative_binomial(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    n,
+    p,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        n=n,
+        p=p,
+        size=size,
+    )

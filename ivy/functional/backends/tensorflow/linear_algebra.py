@@ -11,7 +11,7 @@ from tensorflow.python.framework.dtypes import DType
 # local
 import ivy
 from ivy import inf
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 
@@ -279,7 +279,8 @@ def matmul(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_supported_dtypes(
+    {"2.9.1 and below": ("float32", "float64", "float16", "complex")}, backend_version)
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -289,18 +290,14 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    _expand_dims = False
-    if len(tuple(x.shape)) == 2:  # ndim doesn't work for tf.Variable
-        x = tf.expand_dims(x, axis=0)
-        _expand_dims = True
-
-    if ord == -float("inf"):
-        reduce_min = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True),
-            axis=axis,
-            keepdims=keepdims,
+    if ord == 'nuc':
+        x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
+        ret = tf.reduce_sum(
+            tf.linalg.svd(x, compute_uv=False),
+            axis=-1,
         )
-        ret = reduce_min
+        if keepdims:
+            ret = tf.reshape(ret, (*ret.shape, 1, 1))
     elif ord == -1:
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True),
@@ -308,24 +305,25 @@ def matrix_norm(
             keepdims=keepdims,
         )
     elif ord == -2:
+        x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
         ret = tf.reduce_min(
-            tf.linalg.svd(x, compute_uv=False), axis=axis[1], keepdims=keepdims
+            tf.linalg.svd(x, compute_uv=False),
+            axis=-1,
         )
         if keepdims:
-            ret = tf.expand_dims(ret, -1)
-    elif ord == "nuc":
-        if tf.size(x).numpy() == 0:
-            ret = x
-        else:
-            ret = tf.reduce_sum(
-                tf.linalg.svd(x, compute_uv=False), axis=-1, keepdims=keepdims
-            )
-            if keepdims:
-                ret = tf.expand_dims(ret, -1)
+            ret = tf.reshape(ret, (*ret.shape, 1, 1))
+    elif ord == float('-inf'):
+        ret = tf.reduce_min(
+            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True),
+            axis=axis,
+            keepdims=keepdims,
+        )
     else:
-        ret = tf.linalg.norm(x, ord, axis, keepdims)
-    if _expand_dims:
-        ret = tf.squeeze(ret, axis=0)
+        ret = tf.norm(x, ord=ord, axis=axis, keepdims=keepdims)
+        if ret.dtype is tf.complex64:
+            ret = tf.cast(ret, tf.float32)
+        elif ret.dtype is tf.complex128:
+            ret = tf.cast(ret, tf.float64)
     return ret
 
 
@@ -713,16 +711,24 @@ def vector_norm(
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype and x.dtype != dtype:
         x = tf.cast(x, dtype)
-    if ord == -float("inf"):
-        tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
-    elif ord == float("inf"):
-        tn_normalized_vector = tf.reduce_max(tf.abs(x), axis, keepdims)
-    elif ord == 0:
-        tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
+    # Mathematical Norms
+    if ord > 0:
+        tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
     else:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
-            1.0 / ord
+        if ord == -float("inf"):
+            tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
+        elif ord == 0:
+            tn_normalized_vector = tf.reduce_sum(
+                tf.cast(x != 0, x.dtype), axis, keepdims
+            )
+        else:
+            tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
+                1.0 / ord
+            )
+        tn_normalized_vector = tf.cast(
+            tn_normalized_vector, tn_normalized_vector.dtype.real_dtype
         )
+
     return tn_normalized_vector
 
 
@@ -742,7 +748,7 @@ def diag(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    {"2.12.0 and below": ("bfloat16", "float16", "complex", "unsigned")},
     backend_version,
 )
 def vander(
