@@ -46,6 +46,9 @@
 			"installDockerBuildx": true,
 			"version": "20.10",
 			"dockerDashComposeVersion": "v2"
+		},
+		"ghcr.io/devcontainers/features/sshd:1": {
+			"version": "latest"
 		}
     }
 }
