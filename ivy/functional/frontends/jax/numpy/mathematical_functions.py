@@ -630,22 +630,16 @@ def polyint(p, m=1, k=None):
 )
 @to_ivy_arrays_and_back
 def polydiv(u, v, *, trim_leading_zeros=False):
-    dtypeu = u.dtype
-    dtypev = v.dtype
-    u = ivy.asarray(u)
-    v = ivy.asarray(v)
-    m = u.size - 1
-    n = v.size - 1
+    m = len(u) - 1
+    n = len(v) - 1
     scale = 1. / v[0]
-    q = ivy.zeros(max(m - n + 1, 1), dtype=u.dtype)
+    q = ivy.zeros((max(m - n + 1, 1),), dtype=u.dtype)
     for k in range(0, m - n + 1):
         d = scale * u[k]
         q[k] = d
-        u[k:k+n+1] += (-d * v)
+        u[k:k+n+1] -= (d * v)
     if trim_leading_zeros:
         u = trim_zeros(u, trim='f')
-    q = ivy.asarray(q, dtype=dtypev)
-    u = ivy.asarray(u, dtype=dtypeu)
     return q, u
 
 
