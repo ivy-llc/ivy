@@ -492,7 +492,7 @@ def stft(
     pad_end: Optional[bool] = True,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = True,
-    return_complex : Optional[bool] = True, 
+    return_complex: Optional[bool] = True, 
 ) -> torch.Tensor:
     return torch.stft(
         input,

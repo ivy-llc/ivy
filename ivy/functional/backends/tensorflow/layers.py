@@ -455,8 +455,6 @@ def stft(
     window_fn: Union[int, Tuple[int]] = None,
     pad_end: Union[int, Tuple[int]] = None,
     name: str = None,
-    norm: str = "backward",
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tensor:
     return tf.signal.stft(
         signals, 
@@ -465,5 +463,6 @@ def stft(
         fft_length, 
         window_fn, 
         pad_end,
+        name,
     )
     

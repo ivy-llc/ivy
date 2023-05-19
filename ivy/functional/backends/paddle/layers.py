@@ -302,7 +302,7 @@ def conv_general_transpose(
 
 
 def stft(
-    X: paddle.Tensor,
+    x: paddle.Tensor,
     n_fft: Union[int, Tuple[int]],
     /,
     *,
@@ -325,6 +325,6 @@ def stft(
         pad_mode,
         normalized,
         onesided,
-        name
+        name,
     )
     
