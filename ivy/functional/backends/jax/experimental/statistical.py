@@ -119,7 +119,7 @@ def histogram(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("complex64", "complex128")}, backend_version
+    {"2.0.1 and below": ("complex64", "complex128")}, backend_version
 )
 def median(
     input: JaxArray,

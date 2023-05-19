@@ -5,7 +5,7 @@ from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def l2_normalize(
     x: torch.Tensor,
     /,
@@ -28,7 +28,7 @@ l2_normalize.support_native_out = True
         and (offset is None or offset.ndim == 1)
     )
 )
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def batch_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
@@ -67,7 +67,7 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def instance_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
@@ -108,7 +108,7 @@ def instance_norm(
     return xnormalized, runningmean, runningvariance
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def lp_normalize(
     x: torch.Tensor,
     /,
