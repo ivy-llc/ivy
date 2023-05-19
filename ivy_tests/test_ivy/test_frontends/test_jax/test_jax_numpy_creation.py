@@ -399,7 +399,7 @@ def test_jax_numpy_empty(
 @handle_frontend_test(
     fn_tree="jax.numpy.vander",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.tuples(
             st.integers(min_value=1, max_value=5),
         ),

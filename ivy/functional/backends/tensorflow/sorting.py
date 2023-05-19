@@ -8,7 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def argsort(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -27,7 +27,7 @@ def argsort(
     return tf.cast(ret, dtype=tf.int64)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def sort(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -51,7 +51,7 @@ def sort(
 
 
 # msort
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[tf.Tensor, tf.Variable, list, tuple],
     /,
@@ -61,7 +61,7 @@ def msort(
     return tf.sort(a, axis=0)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def searchsorted(
     x: Union[tf.Tensor, tf.Variable],
     v: Union[tf.Tensor, tf.Variable],
