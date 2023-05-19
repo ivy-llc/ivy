@@ -668,3 +668,8 @@ def greater_equal(x, y, name=None):
 def in_top_k(target, pred, k, name=None):
     top_k = ivy.top_k(target, k)
     return ivy.array([val in top_k.values for val in target])
+
+
+@to_ivy_arrays_and_back
+def conj(x, name=None):
+    return ivy.conj(x)

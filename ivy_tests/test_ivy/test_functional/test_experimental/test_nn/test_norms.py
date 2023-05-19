@@ -11,18 +11,25 @@ import ivy
 def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance_norm"):
     mixed_fn_compos = draw(st.booleans())
     is_torch_backend = ivy.current_backend_str() == "torch"
-
+    data_format = draw(st.sampled_from(["NSC", "NCS"]))
     shape1, shape2, shape3, shape4 = draw(
-        helpers.mutually_broadcastable_shapes(4, min_dims=min_dims, min_side=2)
+        helpers.mutually_broadcastable_shapes(
+            num_shapes=4, min_dims=min_dims, min_side=2
+        )
     )
     shape = helpers.broadcast_shapes(shape1, shape2, shape3, shape4)
+
     if (test_function == "instance_norm") or (is_torch_backend and not mixed_fn_compos):
         shape1 = shape2 = shape3 = shape4 = (shape[-1],)
+
+    if data_format == "NCS":
+        shape = (shape[0], shape[-1], *shape[1:-1])
 
     x_dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes(
-                "float", mixed_fn_compos=mixed_fn_compos
+                "float",
+                mixed_fn_compos=mixed_fn_compos,
             ),
             large_abs_safety_factor=24,
             small_abs_safety_factor=24,
@@ -71,7 +78,17 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
     momentum = draw(
         helpers.floats(min_value=0.0, max_value=1.0, mixed_fn_compos=mixed_fn_compos)
     )
-    return x_dtype, x[0], mean[0], variance[0], offset[0], scale[0], eps, momentum
+    return (
+        x_dtype,
+        x[0],
+        mean[0],
+        variance[0],
+        offset[0],
+        scale[0],
+        eps,
+        momentum,
+        data_format,
+    )
 
 
 @handle_test(
@@ -89,7 +106,8 @@ def test_instance_norm(
     on_device,
     ground_truth_backend,
 ):
-    x_dtype, x, mean, variance, offset, scale, eps, momentum = data
+    test_flags.with_out = False
+    x_dtype, x, scale, offset, mean, variance, eps, momentum, data_format = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
@@ -108,6 +126,7 @@ def test_instance_norm(
         eps=eps,
         training=training,
         momentum=momentum,
+        data_format=data_format,
     )
 
 
@@ -127,7 +146,8 @@ def test_batch_norm(
     on_device,
     ground_truth_backend,
 ):
-    x_dtype, x, mean, variance, offset, scale, eps, momentum = data
+    test_flags.with_out = False
+    x_dtype, x, scale, offset, mean, variance, eps, momentum, data_format = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
@@ -146,4 +166,5 @@ def test_batch_norm(
         eps=eps,
         training=training,
         momentum=momentum,
+        data_format=data_format,
     )

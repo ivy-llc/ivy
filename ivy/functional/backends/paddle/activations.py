@@ -11,10 +11,6 @@ import paddle
 import paddle.nn.functional as F
 import ivy.functional.backends.paddle as paddle_backend
 
-# local
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from . import backend_version
-
 unsupported_dtypes = [
     paddle.int8,
     paddle.int16,
@@ -28,9 +24,6 @@ unsupported_dtypes = [
 ]
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
@@ -39,9 +32,6 @@ def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return F.relu(x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def leaky_relu(
     x: paddle.Tensor,
     /,
@@ -59,9 +49,6 @@ def leaky_relu(
     return F.leaky_relu(x, negative_slope=alpha)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def gelu(
     x: paddle.Tensor,
     /,
@@ -85,9 +72,6 @@ def gelu(
     return F.gelu(x, approximate=approximate)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def sigmoid(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -98,9 +82,6 @@ def sigmoid(
     return F.sigmoid(x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def softmax(
     x: paddle.Tensor,
     /,
@@ -118,9 +99,6 @@ def softmax(
     )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def softplus(
     x: paddle.Tensor,
     /,
@@ -148,9 +126,6 @@ def softplus(
     return res.astype(x.dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def log_softmax(
     x: paddle.Tensor,
     /,
@@ -174,9 +149,6 @@ def log_softmax(
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
