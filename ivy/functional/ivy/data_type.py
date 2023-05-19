@@ -18,6 +18,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
+    to_native_shapes_and_back,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -406,6 +407,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@to_native_shapes_and_back
 @handle_array_function
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -2386,8 +2388,8 @@ def promote_types_of_inputs(
         promoted = promote_types(
             x1.dtype, x2.dtype, array_api_promotion=array_api_promotion
         )
-        x1 = ivy.asarray(x1, dtype=promoted)
-        x2 = ivy.asarray(x2, dtype=promoted)
+        x1 = ivy.astype(x1, promoted, copy=False)
+        x2 = ivy.astype(x2, promoted, copy=False)
 
     ivy.utils.assertions._check_jax_x64_flag(x1.dtype)
     return ivy.to_native(x1), ivy.to_native(x2)

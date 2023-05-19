@@ -525,18 +525,21 @@ def seed(*, seed_value: int = 0) -> None:
 @handle_array_function
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Shuffles the given array along axis 0.
+    Shuffles the given array along a given axis.
 
     Parameters
     ----------
     x
         Input array. Should have a numeric data type.
+    axis
+        The axis which x is shuffled along. Default is 0.
     seed
         A python integer. Used to create a random seed distribution
     out
@@ -546,7 +549,7 @@ def shuffle(
     Returns
     -------
     ret
-        An array object, shuffled along the first dimension.
+        An array object, shuffled along the specified axis.
 
     Examples
     --------
@@ -599,4 +602,4 @@ def shuffle(
         b: ivy.array([3, 0, 9])
     }
     """
-    return ivy.current_backend(x).shuffle(x, seed=seed, out=out)
+    return ivy.current_backend(x).shuffle(x, axis, seed=seed, out=out)

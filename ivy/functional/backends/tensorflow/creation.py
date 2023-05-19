@@ -109,7 +109,7 @@ def asarray(
                 except (TypeError, ValueError):
                     dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -119,7 +119,7 @@ def asarray(
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -133,7 +133,9 @@ def asarray(
 
                 dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 return tf.convert_to_tensor(
-                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype), shallow=False),
+                    ivy.nested_map(
+                        obj, lambda x: tf.convert_to_tensor(x, dtype), shallow=False
+                    ),
                     dtype=dtype,
                 )
             else:
@@ -142,7 +144,7 @@ def asarray(
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.cast(tensor, dtype)
@@ -438,3 +440,24 @@ def one_hot(
     return tf.one_hot(
         indices, depth, on_value=on_value, off_value=off_value, axis=axis, dtype=dtype
     )
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("uint32", "uint64")}, backend_version)
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[tf.DType] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(buffer, bytearray):
+        buffer = bytes(buffer)
+    ret = tf.io.decode_raw(buffer, dtype)
+    dtype = tf.dtypes.as_dtype(dtype)
+    if offset > 0:
+        offset = int(offset / dtype.size)
+    if count > -1:
+        ret = ret[offset : offset + count]
+    else:
+        ret = ret[offset:]
+
+    return ret

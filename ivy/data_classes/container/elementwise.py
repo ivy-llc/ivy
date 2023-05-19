@@ -16,8 +16,9 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> ivy.Container:  # noqa
         """
         ivy.Container static method variant of ivy.abs. This method simply wraps the
         function, and so the docstring for ivy.abs also applies to this method with
@@ -41,6 +42,8 @@ class _ContainerWithElementwise(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        where
+            optional output container,  where would be a boolean mask.
 
         Returns
         -------
@@ -59,6 +62,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([4.5, 5.3, 0, 2.3])
         }
         """
+
         return ContainerBase.cont_multi_map_in_function(
             "abs",
             x,
@@ -66,6 +70,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -76,6 +81,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -98,9 +104,12 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
 
         Returns
         -------
@@ -125,6 +134,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
