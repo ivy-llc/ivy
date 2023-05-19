@@ -1,3 +1,5 @@
+import numpy as np
+
 import ivy
 
 
@@ -135,14 +137,14 @@ def check_shape(x1, x2, message=""):
 
 
 def check_same_dtype(x1, x2, message=""):
-    message = (
-        message
-        if message != ""
-        else "{} and {} must have the same dtype ({} vs {})".format(
-            x1, x2, ivy.dtype(x1), ivy.dtype(x2)
-        )
-    )
     if ivy.dtype(x1) != ivy.dtype(x2):
+        message = (
+            message
+            if message != ""
+            else "{} and {} must have the same dtype ({} vs {})".format(
+                x1, x2, ivy.dtype(x1), ivy.dtype(x2)
+            )
+        )
         raise ivy.utils.exceptions.IvyException(message)
 
 
@@ -161,7 +163,7 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
         )
         and not (
             ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, float)
+            and isinstance(fill_value, (float, np.float32))
             or isinstance(fill_value, bool)
         )
     ):
@@ -266,6 +268,13 @@ def check_kernel_padding_size(kernel_size, padding_size):
                     kernel_size, padding_size
                 )
             )
+
+
+def check_dev_correct_formatting(device):
+    assert device[0:3] in ["gpu", "tpu", "cpu"]
+    if device != "cpu":
+        assert device[3] == ":"
+        assert device[4:].isnumeric()
 
 
 # Jax Specific #

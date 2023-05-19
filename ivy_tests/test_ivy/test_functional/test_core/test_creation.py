@@ -2,6 +2,7 @@
 
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
 
 # local
 import ivy
@@ -43,7 +44,7 @@ def test_native_array(
 # linspace
 @handle_test(
     fn_tree="functional.ivy.linspace",
-    dtype_and_start_stop=helpers.dtype_and_values(
+    dtype_and_start_stop_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-1e5,
@@ -57,24 +58,28 @@ def test_native_array(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        valid_axis=True,
+        force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("float", full=False),
     num=helpers.ints(min_value=1, max_value=5),
-    axis=st.none(),
+    endpoint=st.booleans(),
 )
 def test_linspace(
     *,
-    dtype_and_start_stop,
+    dtype_and_start_stop_axis,
     num,
-    axis,
+    endpoint,
+    dtype,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, start_stop = dtype_and_start_stop
+    input_dtypes, start_stop, axis = dtype_and_start_stop_axis
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -85,8 +90,9 @@ def test_linspace(
         stop=start_stop[1],
         num=num,
         axis=axis,
-        device=on_device,
+        endpoint=endpoint,
         dtype=dtype[0],
+        device=on_device,
         ground_truth_backend=ground_truth_backend,
     )
 
@@ -863,5 +869,55 @@ def test_one_hot(
         off_value=off_value,
         axis=axis,
         dtype=dtype,
+        ground_truth_backend=ground_truth_backend,
+    )
+
+
+@st.composite
+def _get_dtype_buffer_count_offset(draw):
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+        )
+    )
+    value = np.array(value)
+    length = value.size
+    value = value.tobytes()
+
+    offset = draw(helpers.ints(min_value=0, max_value=length - 1))
+    count = draw(helpers.ints(min_value=-(2**30), max_value=length - offset))
+    if count == 0:
+        count = -1
+    offset = offset * np.dtype(dtype[0]).itemsize
+
+    return dtype, value, count, offset
+
+
+@handle_test(
+    fn_tree="functional.ivy.frombuffer",
+    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_frombuffer(
+    dtype_buffer_count_offset,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, buffer, count, offset = dtype_buffer_count_offset
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        buffer=buffer,
+        dtype=input_dtype[0],
+        count=count,
+        offset=offset,
         ground_truth_backend=ground_truth_backend,
     )

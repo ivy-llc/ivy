@@ -13,6 +13,7 @@ def abs(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not tf.is_tensor(x):
@@ -20,7 +21,7 @@ def abs(
     x_dtype = ivy.dtype(x)
     if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
-    return tf.abs(x)
+    return ivy.where(where, tf.abs(x), x)
 
 
 def acos(

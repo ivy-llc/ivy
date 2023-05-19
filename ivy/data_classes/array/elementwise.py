@@ -8,7 +8,13 @@ import ivy
 
 # noinspection PyUnresolvedReferences
 class _ArrayWithElementwise(abc.ABC):
-    def abs(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def abs(
+        self: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:  # noqa
         """
         ivy.Array instance method variant of ivy.abs. This method simply wraps the
         function, and so the docstring for ivy.abs also applies to this method with
@@ -18,6 +24,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -35,7 +43,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([ 2.6, 6.6, 1.6, 0.])
         """
-        return ivy.abs(self, out=out)
+        return ivy.abs(self, where=where, out=out)
 
     def acosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

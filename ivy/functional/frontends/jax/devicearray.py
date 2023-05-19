@@ -46,6 +46,11 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
+    def all(self, *, axis=None, out=None, keepdims=False):
+        return jax_frontend.numpy.all(
+            self._ivy_array, axis=axis, keepdims=keepdims, out=out
+        )
+
     def argmax(
         self,
         /,
@@ -72,6 +77,27 @@ class DeviceArray:
             out=out,
             keepdims=keepdims,
             where=where,
+        )
+
+    def cumprod(self, axis=None, dtype=None, out=None):
+        return jax_frontend.numpy.cumprod(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
+
+    def nonzero(self, *, size=None, fill_value=None):
+        return jax_frontend.numpy.nonzero(
+            self,
+            size=size,
+            fill_value=fill_value,
+        )
+
+    def ravel(self, order="C"):
+        return jax_frontend.numpy.ravel(
+            self,
+            order=order,
         )
 
     def __add__(self, other):
