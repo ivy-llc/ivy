@@ -196,9 +196,15 @@ def solve(input, other, *, out=None):
 
 
 
-
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def solve_ex(A, B, left=True, check_errors=False, out=None):
-    result, info = ivy.linalg.solve(A, B)
+    result = ivy.linalg.solve(A, B)
+
+    info = ivy.zeros(result.shape[:-2], dtype=ivy.int32)
+
+    if check_errors and ivy.any(info != 0):
+        raise RuntimeError("Error occurred while solving the system.")
 
     if out is not None:
         assert isinstance(out, tuple) and len(out) == 2, "Invalid 'out' argument"
@@ -207,7 +213,6 @@ def solve_ex(A, B, left=True, check_errors=False, out=None):
 
     named_tuple = type("SolveExOutput", (object,), {"result": result, "info": info})
     return named_tuple(result, info)
-
 
 
 @to_ivy_arrays_and_back
