@@ -397,7 +397,7 @@ def nancumprod(a, axis=None, dtype=None, out=None):
 
 
 @handle_jax_dtype
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "jax")
+@with_unsupported_dtypes({"0.4.10 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
