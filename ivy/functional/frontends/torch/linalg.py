@@ -195,6 +195,19 @@ def solve(input, other, *, out=None):
     return ivy.solve(input, other, out=out)
 
 
+
+def solve_ex(A, B, left=True, check_errors=False, out=None):
+    result, info = ivy.linalg.solve(A, B)
+
+    if out is not None:
+        assert isinstance(out, tuple) and len(out) == 2, "Invalid 'out' argument"
+        out[0] = result
+        out[1] = info
+
+    named_tuple = type('SolveExOutput', (object,), {'result': result, 'info': info})
+    return named_tuple(result, info)
+
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def tensorsolve(A, B, dims=None, *, out=None):
