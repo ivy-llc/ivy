@@ -289,15 +289,15 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
 # ---------------#
 
 
-def handle_array_function(func):
+def handle_array_function(fn):
     """
-    Wrap a function `func` to be passed to array_function method.
+    Wrap a function `fn` to be passed to array_function method.
 
     Wrap a function to extract the relevant argument types to be passed
     to array_function method.
     """
 
-    @functools.wraps(func)
+    @functools.wraps(fn)
     def _handle_array_function(*args, **kwargs):
         overloaded_types = []
         overloaded_args = []
@@ -342,11 +342,11 @@ def handle_array_function(func):
                             overloaded_args.insert(index, arg)
 
         success, value = try_array_function_override(
-            ivy.__dict__[func.__name__], overloaded_args, overloaded_types, args, kwargs
+            ivy.__dict__[fn.__name__], overloaded_args, overloaded_types, args, kwargs
         )
         if success:
             return value
-        return func(*args, **kwargs)
+        return fn(*args, **kwargs)
 
     _handle_array_function.handle_array_function = True
     return _handle_array_function
@@ -1017,7 +1017,7 @@ def casting_modes_ops(fn):
                 x = ivy.to_native(ivy.astype(x, ivy.as_native_dtype(dtype)))
             return x
 
-        args = ivy.nested_map(args, mini_helper)
+        args = ivy.nested_map(args, mini_helper, include_derived=True)
         kwargs = ivy.nested_map(kwargs, mini_helper)
         return fn(*args, **kwargs)
 
@@ -1058,8 +1058,8 @@ def _dtype_from_version(dic, version):
         if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split("."))):
             return dic[key]
 
-    # if no version is found, return the last version
-    return dic[list(dic.keys())[-1]]
+    # if no version is found, we return empty tuple
+    return ()
 
 
 def _versioned_attribute_factory(attribute_function, base):
@@ -1160,7 +1160,9 @@ def _dtype_device_wrapper_creator(attrib, t):
             else:
                 setattr(func, attrib, val)
                 setattr(func, "dictionary_info", version_dict)
-
+            if "frontends" in func.__module__:
+                # it's a frontend func, no casting modes for this
+                return func
             return casting_modes_ops(func)
 
         return _wrapped

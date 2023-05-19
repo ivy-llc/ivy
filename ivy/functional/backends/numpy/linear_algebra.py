@@ -451,7 +451,7 @@ def diag(
     return np.diag(x, k=k)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.24.0 and below": ("complex",)}, backend_version)
 def vander(
     x: np.ndarray,
     /,

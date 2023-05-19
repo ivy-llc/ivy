@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Sequence, Union
 
 import numpy as np
 
@@ -92,3 +92,11 @@ def kaiser_window(
 
 
 kaiser_window.support_native_out = False
+
+
+def indices(
+    dimensions: Sequence,
+    dtype: np.dtype = np.int64,
+    sparse: bool = False,
+) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
+    return np.indices(dimensions, dtype=dtype, sparse=sparse)
