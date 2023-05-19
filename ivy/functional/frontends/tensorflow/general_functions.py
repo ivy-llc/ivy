@@ -511,3 +511,18 @@ def unique(x, out_idx=ivy.int32, name=None):
     y = ret[0]
     idx = ivy.astype(ret[2], out_idx)
     return y, idx
+
+
+@to_ivy_arrays_and_back
+def while_loop(
+    cond,
+    body,
+    loop_vars,
+    shape_invariants=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    maximum_iterations=None,
+    name=None,
+):
+    return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
