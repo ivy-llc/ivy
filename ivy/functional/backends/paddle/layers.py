@@ -118,8 +118,24 @@ def conv2d(
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+):
+    if data_format == "NCHW":
+        x = paddle.transpose(x, perm=(0, 2, 3, 1))
+    df = "NHWC"
+    x = _pad_before_conv(x, filters, strides, padding, 2, dilations, df)
+    filters = paddle.transpose(filters, perm=(3, 2, 0, 1))
+    padding = "VALID"
+    res = paddle.nn.functional.conv2d(
+        x,
+        filters,
+        data_format=df,
+        stride=strides,
+        padding=padding,
+        dilation=dilations,
+    )
+    if data_format == "NCHW":
+        res = paddle.transpose(res, perm=(0, 3, 1, 2))
+    return res
 
 
 # noinspection PyUnresolvedReferences
