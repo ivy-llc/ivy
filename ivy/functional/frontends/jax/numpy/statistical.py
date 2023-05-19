@@ -467,3 +467,40 @@ def nanmedian(
     return ivy.nanmedian(
         a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
     )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+def correlate(a, v, mode="valid", precision=None):
+    if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
+        raise ValueError("correlate() only support 1-dimensional inputs.")
+    if a.shape[0] == 0 or v.shape[0] == 0:
+        raise ValueError(
+            f"correlate: inputs cannot be empty, got shapes {a.shape} and {v.shape}."
+        )
+    if v.shape[0] > a.shape[0]:
+        need_flip = True
+        a, v = v, a
+    else:
+        need_flip = False
+
+    out_order = slice(None)
+
+    if mode == "valid":
+        padding = [(0, 0)]
+    elif mode == "same":
+        padding = [(v.shape[0] // 2, v.shape[0] - v.shape[0] // 2 - 1)]
+    elif mode == "full":
+        padding = [(v.shape[0] - 1, v.shape[0] - 1)]
+    else:
+        raise ValueError("mode must be one of ['full', 'same', 'valid']")
+
+    result = ivy.conv_general_dilated(
+        a[None, None, :],
+        v[:, None, None],
+        (1,),
+        padding,
+        dims=1,
+        data_format="channel_first",
+    )
+    return ivy.flip(result[0, 0, out_order]) if need_flip else result[0, 0, out_order]

@@ -1,7 +1,7 @@
 # global
 from __future__ import annotations
 from math import sqrt, pi, cos
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
 
 # local
 import ivy
@@ -636,8 +636,8 @@ def eye_like(
     if dim <= 1:
         cols = dim
     else:
-        cols = shape[-1]
-    rows = 0 if dim < 1 else shape[0]
+        cols = int(shape[-1])
+    rows = 0 if dim < 1 else int(shape[0])
     return ivy.eye(
         rows,
         cols,
@@ -646,3 +646,137 @@ def eye_like(
         device=device,
         out=out,
     )
+
+
+def _iter_product(*args, repeat=1):
+    # itertools.product
+    pools = [tuple(pool) for pool in args] * repeat
+    result = [[]]
+    for pool in pools:
+        result = [x + [y] for x in result for y in pool]
+    for prod in result:
+        yield tuple(prod)
+
+
+@handle_exceptions
+@inputs_to_ivy_arrays
+def ndenumerate(
+    input: Iterable,
+) -> Generator:
+    """
+    Multidimensional index iterator.
+
+    Parameters
+    ----------
+    input
+        Input array to iterate over.
+
+    Returns
+    -------
+    ret
+        An iterator yielding pairs of array coordinates and values.
+
+    Examples
+    --------
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> for index, x in ivy.ndenumerate(a):
+    >>>     print(index, x)
+    (0, 0) 1
+    (0, 1) 2
+    (1, 0) 3
+    (1, 1) 4
+    """
+
+    def _ndenumerate(input):
+        if ivy.is_ivy_array(input) and input.shape == ():
+            yield (), ivy.to_scalar(input)
+        else:
+            i = [range(k) for k in input.shape]
+            for idx in _iter_product(*i):
+                yield idx, input[idx]
+
+    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
+    return _ndenumerate(input)
+
+
+@handle_exceptions
+def ndindex(
+    shape: Tuple,
+) -> Generator:
+    """
+    Multidimensional index iterator.
+
+    Parameters
+    ----------
+    shape
+        The shape of the array to iterate over.
+
+    Returns
+    -------
+    ret
+        An iterator yielding array coordinates.
+
+    Examples
+    --------
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> for index in ivy.ndindex(a):
+    >>>     print(index)
+    (0, 0)
+    (0, 1)
+    (1, 0)
+    (1, 1)
+    """
+    args = [range(k) for k in shape]
+    return _iter_product(*args)
+
+
+@handle_exceptions
+def indices(
+    dimensions: Sequence,
+    dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
+    sparse: bool = False,
+) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+    """
+    Return an array representing the indices of a grid.
+
+    Parameters
+    ----------
+    dimensions
+        The shape of the grid.
+    dtype
+        The data type of the result.
+    sparse
+        Return a sparse representation of the grid instead of a dense representation.
+
+    Returns
+    -------
+    ret
+        If sparse is False, returns one grid indices array of shape
+        (len(dimensions),) + tuple(dimensions).
+        If sparse is True, returns a tuple of arrays each of shape
+        (1, ..., 1, dimensions[i], 1, ..., 1) with dimensions[i] in the ith place.
+
+    Examples
+    --------
+    >>> ivy.indices((3, 2))
+    ivy.array([[[0 0]
+                [1 1]
+                [2 2]]
+               [[0 1]
+                [0 1]
+                [0 1]]])
+    >>> ivy.indices((3, 2), sparse=True)
+    (ivy.array([[0], [1], [2]]), ivy.array([[0, 1]]))
+    """
+    if sparse:
+        return tuple(
+            ivy.arange(dim)
+            .expand_dims(
+                axis=[j for j in range(len(dimensions)) if i != j],
+            )
+            .astype(dtype)
+            for i, dim in enumerate(dimensions)
+        )
+    else:
+        grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
+        return ivy.stack(grid, axis=0).astype(dtype)

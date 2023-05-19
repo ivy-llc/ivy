@@ -195,8 +195,12 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(axis, tuple):
-        axis = tuple(axis)
+    if hasattr(axis, "__iter__"):
+        if not isinstance(axis, tuple):
+            axis = tuple(axis)
+    else:
+        if not isinstance(axis, tuple):
+            axis = (axis,)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
@@ -498,7 +502,7 @@ def diag(
 
 
 @with_unsupported_dtypes(
-    {"0.3.14 and below": ("bfloat16", "float16", "complex")},
+    {"0.4.10 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def vander(
