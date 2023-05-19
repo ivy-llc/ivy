@@ -100,7 +100,7 @@ def sum(
     if dtype is None:
         dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
-    # TODO: promote_integers is only supported from JAX v0.3.14
+    # TODO: promote_integers is only supported from JAX v0.4.10
     if dtype is None and promote_integers:
         if ivy.is_bool_dtype(dtype):
             dtype = ivy.default_int_dtype()
@@ -397,7 +397,7 @@ def nancumprod(a, axis=None, dtype=None, out=None):
 
 
 @handle_jax_dtype
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "jax")
+@with_unsupported_dtypes({"0.4.10 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -470,7 +470,7 @@ def nanmedian(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, "jax")
 def correlate(a, v, mode="valid", precision=None):
     if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
         raise ValueError("correlate() only support 1-dimensional inputs.")

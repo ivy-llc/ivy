@@ -499,7 +499,7 @@ def gradient(
     axis: Optional[Union[int, list, tuple]] = None,
     edge_order: Optional[int] = 1,
 ) -> Union[paddle.Tensor, List[paddle.Tensor]]:
-    """Https://github.com/numpy/numpy/blob/v1.23.0/numpy/lib/
+    """Https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/
     function_base.py#L969-L1312."""
     # TODO: Remove % x.shape[axis] once scatter_nd supports negative indices
     with ivy.ArrayMode(False):
