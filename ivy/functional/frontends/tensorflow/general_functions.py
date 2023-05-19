@@ -511,7 +511,3 @@ def unique(x, out_idx=ivy.int32, name=None):
     idx = ivy.astype(ret[2], out_idx)
     return y, idx
 
-
-@to_ivy_arrays_and_back
-def meshgrid(*arrays, sparse=False, indexing):
-    return ivy.meshgrid(*arrays, sparse=sparse, indexing=indexing)
