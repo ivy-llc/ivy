@@ -30,6 +30,8 @@ website:
         contents:
           - "guides/01_transpiling_a_torch_model.ipynb"
       - section: "Examples and Demos"
+        contents:
+          - "examples_and_demos/01_using_ivy_resnet18.ipynb"
 
 format:
   html:
