@@ -199,3 +199,21 @@ def permutation(key, x, axis=0, independent=False):
     rand = ivy.arange(x.shape[axis])
     ind = ivy.shuffle(rand, 0, seed=seed)
     return ivy.gather(x, ind, axis=axis)
+
+
+# loggamma
+@to_ivy_arrays_and_back
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def loggamma(key, a, shape=None, dtype="float64"):
+    seed = _get_seed(key)
+    return ivy.log(ivy.gamma(a, 1.0, shape=shape, dtype=dtype, seed=seed))
