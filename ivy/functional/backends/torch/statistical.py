@@ -14,7 +14,7 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def min(
     x: torch.Tensor,
     /,
@@ -36,7 +36,7 @@ def min(
 min.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def max(
     x: torch.Tensor,
     /,
@@ -92,8 +92,7 @@ def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
 # the function to break the upcasting rule defined in the Array API Standard
 @with_unsupported_dtypes(
     {
-        "1.12.0 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
     },
     backend_version,
 )
@@ -121,7 +120,7 @@ def prod(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("int8", "int16", "int32", "int64", "float16")},
+    {"2.0.1 and below": ("int8", "int16", "int32", "int64", "float16")},
     backend_version,
 )
 def std(
@@ -158,7 +157,7 @@ def std(
 
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
-@with_unsupported_dtypes({"1.11.0": ("uint8",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1": ("uint8",)}, backend_version)
 def sum(
     x: torch.Tensor,
     /,
@@ -220,7 +219,7 @@ def var(
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "1.12.0 and below": ("uint8", "float16", "bfloat16"),
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
         "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,
@@ -265,7 +264,7 @@ cumprod.support_native_out = True
 
 @with_unsupported_dtypes(
     {
-        "1.12.0 and below": ("uint8", "float16", "bfloat16"),
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
         "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,
@@ -300,7 +299,7 @@ cummin.support_native_out = True
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "1.12.0 and below": ("uint8", "float16", "bfloat16"),
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
         "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,

@@ -76,7 +76,7 @@ def gamma(
     return to_device(jax.random.gamma(rng_input, alpha, shape, dtype) / beta, device)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.10 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, JaxArray],
     *,
