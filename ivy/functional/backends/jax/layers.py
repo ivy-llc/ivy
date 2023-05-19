@@ -370,32 +370,4 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
-
-
-def stft(
-    x: JaxArray,
-    /,
-    *,
-    fs: Optional[float] = 1.0,
-    window: Optional[JaxArray] = nperseg,
-    nperseg: Optional[int] = 256,
-    noverlap: Optional[int] = None,
-    nfft: Optional[int] = None,
-    detrend: Optional[str] = None,
-    return_onesided: Optional[bool] = True,
-    boundary: Optional[str] = None,
-    padded: Optional[bool] = True,
-    axis: Optional[int] = -1,
-) -> JaxArray:
-    return jlax.scipy.signal.stft(
-        x, 
-        fs, 
-        window, 
-        nperseg, 
-        noverlap, 
-        nfft,
-        detrend,
-        return_onesided,
-        boundary,
-        padded,axis,
-    ) 
+   

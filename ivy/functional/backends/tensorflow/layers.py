@@ -443,26 +443,4 @@ def conv_general_transpose(
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
-
-
-def stft(
-    signals: Union[tf.Tensor, tf.Variable],
-    frame_length: Union[int, Tuple[int]],
-    frame_step: Union[int, Tuple[int]],
-    /,
-    *,
-    fft_length: Union[int, Tuple[int]] = None,
-    window_fn: Union[int, Tuple[int]] = None,
-    pad_end: Union[int, Tuple[int]] = None,
-    name: str = None,
-) -> Tensor:
-    return tf.signal.stft(
-        signals, 
-        frame_length, 
-        frame_step, 
-        fft_length, 
-        window_fn, 
-        pad_end,
-        name,
-    )
     

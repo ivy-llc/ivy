@@ -479,30 +479,3 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)
     return res
-
-
-def stft(
-    input: torch.Tensor,
-    n_fft: Union[int, Tuple[int]],
-    /,
-    *,
-    hop_length: Optional[Union[int, Tuple[int]]] = None,
-    win_length: Optional[Union[int, Tuple[int]]] = None,
-    window: Optional[torch.Tensor] = None,
-    pad_end: Optional[bool] = True,
-    pad_mode: Optional[str] = "reflect",
-    normalized: Optional[bool] = True,
-    return_complex: Optional[bool] = True, 
-) -> torch.Tensor:
-    return torch.stft(
-        input,
-        n_fft,
-        hop_length,
-        win_length,
-        window,
-        pad_end, 
-        pad_mode,
-        normalized,
-        return_complex,
-    )
-    

@@ -299,32 +299,3 @@ def conv_general_transpose(
     out: Optional[paddle.Tensor] = None,
 ):
     raise IvyNotImplementedException()
-
-
-def stft(
-    x: paddle.Tensor,
-    n_fft: Union[int, Tuple[int]],
-    /,
-    *,
-    hop_length: Optional[Union[int, Tuple[int]]] = None,
-    win_length: Optional[Union[int, Tuple[int]]] = None,
-    window: Optional[paddle.Tensor] = None,
-    center: Optional[bool] = True,
-    pad_mode: Optional[str] = "reflect",
-    normalized: Optional[bool] = False,
-    onesided: Optional[bool] = True,
-    name: Optional[str] = None,
-) -> paddle.Tensor:
-    return paddle.signal.stft(
-        input,
-        n_fft,
-        hop_length,
-        win_length,
-        window,
-        center, 
-        pad_mode,
-        normalized,
-        onesided,
-        name,
-    )
-    

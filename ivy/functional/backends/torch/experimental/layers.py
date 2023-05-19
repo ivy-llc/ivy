@@ -751,3 +751,30 @@ def adaptive_avg_pool1d(input, output_size):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool2d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
+
+
+def stft(
+    input: torch.Tensor,
+    n_fft: Union[int, Tuple[int]],
+    /,
+    *,
+    hop_length: Optional[Union[int, Tuple[int]]] = None,
+    win_length: Optional[Union[int, Tuple[int]]] = None,
+    window: Optional[torch.Tensor] = None,
+    pad_end: Optional[bool] = True,
+    pad_mode: Optional[str] = "reflect",
+    normalized: Optional[bool] = True,
+    return_complex: Optional[bool] = True, 
+) -> torch.Tensor:
+    return torch.stft(
+        input,
+        n_fft,
+        hop_length,
+        win_length,
+        window,
+        pad_end, 
+        pad_mode,
+        normalized,
+        return_complex,
+    )
+    

@@ -734,3 +734,26 @@ def interpolate(
     if remove_dim:
         ret = tf.squeeze(ret, axis=-2)
     return ret
+
+
+def stft(
+    signals: Union[tf.Tensor, tf.Variable],
+    frame_length: Union[int, Tuple[int]],
+    frame_step: Union[int, Tuple[int]],
+    /,
+    *,
+    fft_length: Union[int, Tuple[int]] = None,
+    window_fn: Union[int, Tuple[int]] = None,
+    pad_end: Union[int, Tuple[int]] = None,
+    name: str = None,
+) -> Tensor:
+    return tf.signal.stft(
+        signals, 
+        frame_length, 
+        frame_step, 
+        fft_length, 
+        window_fn, 
+        pad_end,
+        name,
+    )
+    
