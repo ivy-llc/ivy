@@ -1416,8 +1416,9 @@ def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Round each element ``x_i`` of the input array ``x`` to the smallest (i.e.,
     closest to ``-infinity``) integer-valued number that is not less than ``x_i``.
 
@@ -1437,6 +1438,8 @@ def ceil(
     ----------
     x
         input array. Should have a numeric data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1490,7 +1493,7 @@ def ceil(
         b: ivy.array([6., -3., 0., 6.])
     }
     """
-    return ivy.current_backend(x).ceil(x, out=out)
+    return ivy.current_backend(x).ceil(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -1670,8 +1673,9 @@ def divide(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """
     Calculate the division for each element x1_i of the input array x1 with the
     respective element x2_i of the input array x2.
@@ -1683,6 +1687,8 @@ def divide(
     x2
         divisor input array. Must be compatible with x1 (see Broadcasting). Should have
         a numeric data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1743,7 +1749,7 @@ def divide(
         b: ivy.array([0.698, 0.333, 0.18])
     }
     """
-    return ivy.current_backend(x1, x2).divide(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).divide(x1, x2, where=where, out=out)
 
 
 @handle_exceptions
@@ -1756,6 +1762,7 @@ def equal(
     x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1769,6 +1776,8 @@ def equal(
     x2
         second input array. Must be compatible with x1 (with Broadcasting). May have any
         data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1830,7 +1839,7 @@ def equal(
         b: ivy.array([True, True, True])
     }
     """
-    return ivy.current_backend(x1, x2).equal(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).equal(x1, x2, where=where, out=out)
 
 
 @handle_exceptions
@@ -1844,6 +1853,7 @@ def exp(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculate an implementation-dependent approximation to the exponential function,
@@ -1865,6 +1875,8 @@ def exp(
     ----------
     x
         input array. Should have a floating-point data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1928,7 +1940,7 @@ def exp(
         b: ivy.array([24.53253174, 2.71828175])
     }
     """
-    return ivy.current_backend(x).exp(x, out=out)
+    return ivy.current_backend(x).exp(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -1942,8 +1954,9 @@ def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Calculate an implementation-dependent approximation to ``exp(x)-1``, having
     domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element
     ``x_i`` of the input array ``x``.
@@ -1969,6 +1982,8 @@ def expm1(
     ----------
     x
         input array. Should have a numeric data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2012,7 +2027,7 @@ def expm1(
         b: ivy.array([2.20e+04, 1.72e+00])
     }
     """
-    return ivy.current_backend(x).expm1(x, out=out)
+    return ivy.current_backend(x).expm1(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -2025,6 +2040,7 @@ def floor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Round each element ``x_i`` of the input array ``x`` to the greatest (i.e.,
@@ -2046,6 +2062,8 @@ def floor(
     ----------
     x
         input array. Should have a numeric data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2101,7 +2119,7 @@ def floor(
     }
 
     """
-    return ivy.current_backend(x).floor(x, out=out)
+    return ivy.current_backend(x).floor(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -2114,8 +2132,9 @@ def floor_divide(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """
     Round the result of dividing each element x1_i of the input array x1 by the
     respective element x2_i of the input array x2 to the greatest (i.e., closest to
@@ -2128,6 +2147,8 @@ def floor_divide(
     x2
         second input array. Must be compatible with x1 (with Broadcasting). Must have a
         numeric data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2189,7 +2210,7 @@ def floor_divide(
         b: ivy.array([3., 4., 4.])
     }
     """
-    return ivy.current_backend(x1, x2).floor_divide(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).floor_divide(x1, x2, where=where, out=out)
 
 
 @handle_exceptions
@@ -2202,8 +2223,9 @@ def greater(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """
     Compute the truth value of x1_i < x2_i for each element x1_i of the input array x1
     with the respective element x2_i of the input array x2.
@@ -2214,6 +2236,8 @@ def greater(
         Input array.
     x2
         Input array.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2285,7 +2309,7 @@ def greater(
         b: ivy.array([False, False, False])
     }
     """
-    return ivy.current_backend(x1, x2).greater(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).greater(x1, x2, out=out, where=where)
 
 
 @handle_exceptions
@@ -2298,8 +2322,9 @@ def greater_equal(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """
     Compute the truth value of x1_i >= x2_i for each element x1_i of the input array x1
     with the respective element x2_i of the input array x2.
@@ -2311,6 +2336,8 @@ def greater_equal(
     x2
         second input array. Must be compatible with x1 (with Broadcasting). May have any
         data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2385,7 +2412,7 @@ def greater_equal(
         b:ivy.array([False,False,False])
     }
     """
-    return ivy.current_backend(x1, x2).greater_equal(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).greater_equal(x1, x2, where=where, out=out)
 
 
 @handle_exceptions
@@ -2576,6 +2603,7 @@ def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Test each element ``x_i`` of the input array ``x`` to determine if finite (i.e.,
@@ -2585,6 +2613,8 @@ def isfinite(
     ----------
     x
         input array. Should have a numeric data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2640,7 +2670,7 @@ def isfinite(
         b: ivy.array([True, False])
     }
     """
-    return ivy.current_backend(x).isfinite(x, out=out)
+    return ivy.current_backend(x).isfinite(x, out=out, where=where)
 
 
 @handle_exceptions
