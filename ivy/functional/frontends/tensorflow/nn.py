@@ -146,7 +146,7 @@ def conv3d_transpose(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def depthwise_conv2d(
     input,
@@ -174,7 +174,7 @@ def depthwise_conv2d(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def separable_conv2d(
     input,
@@ -219,7 +219,7 @@ def dropout(x, rate, noise_shape=None, seed=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "int8",
             "int16",
             "int32",
@@ -238,7 +238,7 @@ def silu(features, beta: float = 1.0):
 
 @with_unsupported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "int8",
             "int16",
             "int32",
@@ -261,7 +261,7 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "int8",
             "int16",
             "int32",
