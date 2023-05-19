@@ -2100,8 +2100,8 @@ def stft(
         The Short-time Fourier Transform of the input vector.If onesided is true,
         the output has the shape: [batch_size][frames][dft_unique_bins][2],where
         dft_unique_bins is frame_length // 2 + 1 (the unique components of the DFT) 
-        If onesided is false, the output has the shape: [batch_size][frames][frame_length][2],
-        where frame_length is the length of the DFT.
+        If onesided is false, the output has the shape: [batch_size][frames]
+        [frame_length][2],where frame_length is the length of the DFT.
     """
     return current_backend(signal).stft(
         signal,
@@ -2112,5 +2112,6 @@ def stft(
         norm=norm,
         out=out,
     )
+
 
 stft.mixed_function = True

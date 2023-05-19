@@ -312,7 +312,7 @@ def stft(
     center: Optional[bool] = True,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
-    onesided : Optional[bool] = True,
+    onesided: Optional[bool] = True,
     name: Optional[str] = None,
 ) -> paddle.Tensor:
     return paddle.signal.stft(
@@ -326,4 +326,5 @@ def stft(
         normalized,
         onesided,
         name
-        )
+    )
+    

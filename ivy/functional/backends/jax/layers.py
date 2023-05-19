@@ -377,7 +377,7 @@ def stft(
     /,
     *,
     fs: Optional[float] = 1.0,
-    window: Optional[JaxArra] = nperseg,
+    window: Optional[JaxArray] = nperseg,
     nperseg: Optional[int] = 256,
     noverlap: Optional[int] = None,
     nfft: Optional[int] = None,
@@ -387,7 +387,7 @@ def stft(
     padded: Optional[bool] = True,
     axis: Optional[int] = -1,
 ) -> JaxArray:
-    return jax.scipy.signal.stft(
+    return jlax.scipy.signal.stft(
         x, 
         fs, 
         window, 
@@ -397,6 +397,5 @@ def stft(
         detrend,
         return_onesided,
         boundary,
-        padded,
-        axis,
-        ) 
+        padded,axis,
+    ) 

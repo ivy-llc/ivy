@@ -504,4 +504,5 @@ def stft(
         pad_mode,
         normalized,
         return_complex,
-        )
+    )
+    

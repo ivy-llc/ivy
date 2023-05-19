@@ -531,7 +531,7 @@ def stft(
     norm: str = "backward",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if window == 0 :
+    if window == 0:
         nstfts = ((signal.shape[1] - length) // step) + 1
         for i in range(nstfts):
             start = i * step
@@ -542,3 +542,4 @@ def stft(
         return res
     else:
         return np.stft(signal, frame_step, window, frame_length)
+        
