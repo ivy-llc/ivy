@@ -673,3 +673,13 @@ def in_top_k(target, pred, k, name=None):
 @to_ivy_arrays_and_back
 def conj(x, name=None):
     return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def unsorted_segment_max(data, segment_ids, num_segments, name="unsorted_segment_max"):
+    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
+    for i in range((segment_ids).shape[0]):
+        x[segment_ids[i]] = ivy.maximum(x[segment_ids[i]], data[i])
+    return x
+
