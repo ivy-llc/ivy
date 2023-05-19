@@ -170,7 +170,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,
@@ -207,7 +207,7 @@ def cumprod(
 cumprod.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
 def cummax(
     x: np.ndarray,
     /,
@@ -232,7 +232,7 @@ def cummax(
 cummax.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
 def cummin(
     x: np.ndarray,
     /,

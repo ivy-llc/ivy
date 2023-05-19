@@ -12,7 +12,7 @@ def ifft(a, n=None, axis=-1, norm=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 def ifftshift(x, axes=None):
     x = ivy.asarray(x)
 
@@ -38,7 +38,7 @@ def fft(a, n=None, axis=-1, norm=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 def fftshift(x, axes=None):
     x = ivy.asarray(x)
 

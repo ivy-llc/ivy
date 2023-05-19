@@ -45,7 +45,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
     start: float,
@@ -94,7 +94,7 @@ def _stack_tensors(x, dtype):
     return x
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
@@ -201,7 +201,7 @@ def empty_like(
     return torch.empty_like(x, dtype=dtype, device=device)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -310,7 +310,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.0.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def linspace(
     start: Union[torch.Tensor, float],
