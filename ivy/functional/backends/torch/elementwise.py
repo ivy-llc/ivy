@@ -782,7 +782,7 @@ def isreal(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.T
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "complex")},
+    {"2.0.1 and below": ("bfloat16", "complex")},
     backend_version,
 )
 def fmod(
