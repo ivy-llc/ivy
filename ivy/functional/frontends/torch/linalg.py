@@ -196,6 +196,7 @@ def solve(input, other, *, out=None):
 
 
 
+
 def solve_ex(A, B, left=True, check_errors=False, out=None):
     result, info = ivy.linalg.solve(A, B)
 
@@ -204,8 +205,9 @@ def solve_ex(A, B, left=True, check_errors=False, out=None):
         out[0] = result
         out[1] = info
 
-    named_tuple = type('SolveExOutput', (object,), {'result': result, 'info': info})
+    named_tuple = type("SolveExOutput", (object,), {"result": result, "info": info})
     return named_tuple(result, info)
+
 
 
 @to_ivy_arrays_and_back
