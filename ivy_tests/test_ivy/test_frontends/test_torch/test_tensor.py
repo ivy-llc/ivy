@@ -568,6 +568,7 @@ def test_torch_instance_addbmm_(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=3,
+        abs_smallest_val=0.01,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
@@ -585,7 +586,6 @@ def test_torch_instance_addcdiv_(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    assume(not np.any(np.isclose(x[2], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -601,7 +601,7 @@ def test_torch_instance_addcdiv_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        atol_=1e-02,
+        atol_=1e-04,
         on_device=on_device,
     )
 
