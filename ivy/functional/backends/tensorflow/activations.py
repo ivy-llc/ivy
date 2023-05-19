@@ -18,21 +18,22 @@ from . import backend_version
 
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+
 def gelu(
     x: Tensor, /, *, approximate: bool = False, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.gelu(x, approximate)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def leaky_relu(
     x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 
@@ -43,14 +44,14 @@ def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.sigmoid(x)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.softmax(x, axis)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def softplus(
     x: Tensor,
     /,
@@ -70,7 +71,7 @@ def softplus(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def log_softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ):
@@ -104,7 +105,7 @@ def get(
         )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def mish(
     x: Tensor,
     /,

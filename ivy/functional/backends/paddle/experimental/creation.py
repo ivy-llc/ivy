@@ -1,5 +1,4 @@
 # global
-import struct
 from typing import Optional, Tuple
 import math
 import paddle
@@ -9,8 +8,7 @@ from ivy.functional.backends.paddle.device import to_device
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
+
 
 # noinspection PyProtectedMember
 # Helpers for calculating Window Functions
@@ -120,52 +118,3 @@ def tril_indices(
             paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
         )
     )
-
-
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "bfloat16",
-            "complex64",
-            "complex128",
-            "uint16",
-            "uint32",
-            "uint64",
-        )
-    },
-    backend_version,
-)
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[paddle.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
-) -> paddle.Tensor:
-    dtype_bytes = int(ivy.Dtype(dtype).dtype_bits / 8)
-    if str(dtype) == "bool":
-        dtype_bytes = 1
-    dtype_str = str(dtype)
-    struct_format = {
-        "bool": "?",
-        "int8": "b",
-        "int16": "h",
-        "int32": "i",
-        "int64": "q",
-        "uint8": "B",
-        "float16": "e",
-        "float32": "f",
-        "float64": "d",
-    }
-    ret = []
-    for i in range(0, len(buffer), dtype_bytes):
-        x = struct.unpack(struct_format[dtype_str], buffer[i : i + dtype_bytes])
-        ret = ret + list(x)
-    if offset > 0:
-        offset = int(offset / dtype_bytes)
-    if count > -1:
-        ret = ret[offset : offset + count]
-    else:
-        ret = ret[offset:]
-    ret = paddle.to_tensor(ret, dtype=dtype)
-
-    return ret

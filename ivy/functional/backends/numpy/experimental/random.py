@@ -66,7 +66,7 @@ def gamma(
     return np.asarray(np.random.gamma(alpha, beta, shape), dtype=dtype)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, np.ndarray],
     *,
