@@ -189,7 +189,7 @@ def ensure_shape(x, shape, name=None):
     return x
 
 
-@with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
@@ -416,7 +416,7 @@ def realdiv(x, y, name=None):
     return ivy.divide(x, y)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("uint16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("uint16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
@@ -465,7 +465,7 @@ def repeat(
     return ivy.repeat(input, repeats, axis=axis)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)

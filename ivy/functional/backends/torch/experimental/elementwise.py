@@ -31,7 +31,7 @@ def lcm(
 lcm.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def fmax(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -46,7 +46,7 @@ def fmax(
 fmax.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def fmin(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -423,7 +423,7 @@ def gradient(
 
 
 @with_supported_dtypes(
-    {"2.0.0 and below": ("float16", "float32", "float64")},
+    {"2.0.1 and below": ("float16", "float32", "float64")},
     backend_version,
 )
 def xlogy(

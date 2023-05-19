@@ -48,7 +48,7 @@ def fmax(
     return ret
 
 
-@with_supported_dtypes({"2.11.0 and below": ("float",)}, backend_version)
+@with_supported_dtypes({"2.12.0 and below": ("float",)}, backend_version)
 def fmin(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -358,7 +358,7 @@ def imag(
 
 @with_supported_dtypes(
     {
-        "2.11.0 and below": (
+        "2.12.0 and below": (
             "float32",
             "float64",
         )
@@ -599,7 +599,7 @@ def xlogy(
     return tf.math.xlogy(x, y)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, backend_version)
 def real(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -618,7 +618,7 @@ def conj(
     return tf.math.conj(x)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("unsigned",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
 def ldexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable, int],
@@ -640,7 +640,7 @@ def ldexp(
     return ret
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("unsigned",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
 def frexp(
     x: Union[tf.Tensor, tf.Variable],
     /,
