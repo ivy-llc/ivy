@@ -186,14 +186,20 @@ def empty_like(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8",
-                                 "int8",
-                                 "int16",
-                                 "float16",
-                                 "complex64",
-                                 "complex128",
-                                 "bool")}},
-    backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "uint8",
+                "int8",
+                "int16",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def eye(
     n_rows: int,
@@ -236,7 +242,6 @@ def eye(
         return paddle.tile(paddle.reshape(mat, reshape_dims), tile_dims)
     else:
         return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
-
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
@@ -362,7 +367,7 @@ def _differentiable_linspace(start, stop, num, *, dtype=None):
         increment_tiled,
         paddle.linspace(1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype),
     )
-    if start.ndim == 0:
+    if isinstance(start, int) or start.ndim == 0:
         start = paddle_backend.expand_dims(start, axis=0)
     res = paddle_backend.concat((start, paddle_backend.add(start, increments)), axis=0)
     return res.cast(dtype)

@@ -94,6 +94,12 @@ class DeviceArray:
             fill_value=fill_value,
         )
 
+    def ravel(self, order="C"):
+        return jax_frontend.numpy.ravel(
+            self,
+            order=order,
+        )
+
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 
