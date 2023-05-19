@@ -1,10 +1,10 @@
 # global
 import os
+import sys
+import multiprocessing as mp
 import pytest
 from typing import Dict
-import subprocess
 import importlib
-from .. import config as env_config
 
 mod_frontend = {
     "tensorflow": None,
@@ -16,15 +16,46 @@ mod_frontend = {
     "paddle": None,
 }  # multiversion
 mod_backend = {
-    "tensorflow": None,
     "numpy": None,
     "jax": None,
+    "tensorflow": None,
     "torch": None,
     "paddle": None,
     "mxnet": None,
 }  # multiversion
 
 ground_backend = None  # multiversion
+
+
+def backend_proc(queue):
+    # first argument is going to be the framework and its path
+
+    framework = queue.get()
+    path = "/opt/fw/" + framework
+    sys.path.insert(1, path)
+    framework = framework.split("/")[0]
+    framework = importlib.import_module(framework)
+    print(framework.__version__)
+    while True:
+        # subsequent arguments will be passed
+        data = queue.get()
+        if not data:
+            break
+        # process the data
+
+
+def frontend_proc(queue):
+    # first argument is going to be the framework and its path
+    framework = queue.get()
+    sys.path.insert(1, f"/opt/fw/{framework}")
+    importlib.import_module(framework.split("/")[0])
+    while True:
+        # subsequent arguments will be passed
+        data = queue.get()
+        if not data:
+            break
+        # process the data
+
 
 # local
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
@@ -53,6 +84,15 @@ def pytest_report_header(config):
     ]
 
 
+def default_framework_mapper(fw, set_too=False):
+    # do a path search, get the latest one
+    versions = os.listdir(f"/opt/fw/{fw}")
+    versions.sort()
+    if set_too:
+        sys.path.insert(1, f"/opt/fw/{fw}/{versions[-1]}")
+    return versions[-1]
+
+
 def pytest_configure(config):
     global available_frameworks
 
@@ -76,54 +116,56 @@ def pytest_configure(config):
     else:
         backend_strs = raw_value.split(",")
 
-    # env specification for multiversion backend
-    env_val = config.getoption("--env")
-    if env_val:
-        # check if multiversion format in backend argument
-        if [True if "/" in x else False for x in backend_strs][0]:
-            raise Exception("--env and '/' naming in backend can't be used together")
-        else:
-            env_val = env_val.split(",")
-            env_config.allow_global_framework_imports(fw=env_val)
+    no_mp = config.getoption("--no-mp")
+
+    if not no_mp:
+        # we go multiprocessing, if  multiversion
+        for fw in backend_strs:
+            if "/" in fw:
+                # spin up multiprocessing
+                # build mp process, queue, initiation etc
+                print(fw, "here")
+                queue = mp.Queue()
+                proc = mp.Process(target=backend_proc, args=(queue,))
+                # start the process so that it loads the framework
+                queue.put(fw)
+                proc.start()
+
+                # we have the process running, the framework imported within,
+                # we now pack the queue and the process and store it in dict
+                # for future access
+                mod_backend[fw] = (proc, queue)
+            else:
+                # this is usual testing, just set the latest version and move on
+                default_framework_mapper(fw, set_too=True)
+    else:
+        # no multiprocessing if multiversion
+        for fw in backend_strs:
+            if "/" in fw:
+                # multiversion, but without multiprocessing
+                sys.path.insert(1, f"/opt/fw/{fw}")
+            else:
+                # usual testing, set the latest version, move on
+                default_framework_mapper(fw, set_too=True)
 
     # frontend
     frontend = config.getoption("--frontend")
     if frontend:
         frontend_strs = frontend.split(",")
-        for i in frontend_strs:
-            process = subprocess.Popen(
-                [
-                    "/opt/miniconda/envs/multienv/bin/python",
-                    "multiversion_frontend_test.py",
-                    "numpy" + "/" + importlib.import_module("numpy").__version__,
-                    i,
-                ],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
-            mod_frontend[i.split("/")[0]] = [i, process]
-
-    # ground truth
-    ground_truth = config.getoption("--ground_truth")
-    global ground_backend
-    if ground_truth:
-        ground_backend = [
-            ground_truth,
-            subprocess.Popen(
-                [
-                    "/opt/miniconda/envs/multienv/bin/python",
-                    "multiversion_backend_test.py",
-                    "numpy" + "/" + importlib.import_module("numpy").__version__,
-                    ground_truth,
-                ],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            ),
-        ]
+        # if we are passing a frontend flag, it has to have a version with it
+        for frontend in frontend_strs:
+            # spin up multiprocessing
+            fw, ver = frontend.split("/")
+            # build mp process, queue, initiation etc
+            queue = mp.Queue()
+            proc = mp.Process(target=frontend_proc, args=(queue,))
+            # start the process so that it loads the framework
+            proc.start()
+            queue.put(fw + "/" + ver)
+            # we have the process running, the framework imported within,
+            # we now pack the queue and the process and store it in dict
+            # for future access
+            mod_frontend[fw] = (proc, queue)
 
     # compile_graph
     raw_value = config.getoption("--compile_graph")
@@ -153,13 +195,10 @@ def pytest_configure(config):
             for compile_graph in compile_modes:
                 for implicit in implicit_modes:
                     if "/" in backend_str:
-                        mod_backend[backend_str.split("/")[0]] = backend_str
                         TEST_PARAMS_CONFIG.append(
                             (
                                 device,
-                                test_globals.FWS_DICT[backend_str.split("/")[0]](
-                                    backend_str
-                                ),
+                                test_globals.FWS_DICT[backend_str.split("/")[0]](),
                                 compile_graph,
                                 implicit,
                             )
@@ -287,6 +326,7 @@ def process_cl_flags(config) -> Dict[str, bool]:
 
 
 def pytest_addoption(parser):
+    parser.addoption("--no-mp", action="store", default=None)
     parser.addoption("--device", action="store", default="cpu")
     parser.addoption("-B", "--backend", action="store", default="all")
     parser.addoption("--compile_graph", action="store_true")
