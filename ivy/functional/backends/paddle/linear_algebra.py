@@ -251,7 +251,7 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if ord == 'nuc':
+    if ord == "nuc":
         x = paddle.moveaxis(x, axis, [-2, -1])
         ret = paddle.sum(
             paddle.linalg.svd(x)[1],
@@ -281,13 +281,13 @@ def matrix_norm(
             paddle.linalg.svd(x)[1],
             axis=-1,
         )
-    elif ord == float('inf'):
+    elif ord == float("inf"):
         ret = paddle.amax(
             paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
             axis=axis,
             keepdim=keepdims,
         )
-    elif ord == float('-inf'):
+    elif ord == float("-inf"):
         ret = paddle.amin(
             paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
             axis=axis,
@@ -617,6 +617,7 @@ def diag(
             )
         return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
     return paddle.diag(x, offset=k)
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},

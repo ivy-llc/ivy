@@ -280,7 +280,8 @@ def matmul(
 
 
 @with_supported_dtypes(
-    {"2.9.1 and below": ("float32", "float64", "float16", "complex")}, backend_version)
+    {"2.9.1 and below": ("float32", "float64", "float16", "complex")}, backend_version
+)
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -290,7 +291,7 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ord == 'nuc':
+    if ord == "nuc":
         x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
         ret = tf.reduce_sum(
             tf.linalg.svd(x, compute_uv=False),
@@ -312,7 +313,7 @@ def matrix_norm(
         )
         if keepdims:
             ret = tf.reshape(ret, (*ret.shape, 1, 1))
-    elif ord == float('-inf'):
+    elif ord == float("-inf"):
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True),
             axis=axis,

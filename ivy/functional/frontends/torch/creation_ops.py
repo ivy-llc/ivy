@@ -133,10 +133,10 @@ def range(
         end = args[0]
         start = 0
         step = 1
-    elif len(args) == 2: 
+    elif len(args) == 2:
         end = args[1]
         start = args[0]
-        step = 1 
+        step = 1
     elif len(args) == 3:
         start, end, step = args
     else:
