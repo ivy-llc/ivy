@@ -15,7 +15,7 @@ from ivy.func_wrapper import (
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "0.4.10 and below": (
             "float16",
             "bfloat16",
         )
@@ -46,8 +46,7 @@ def argwhere(a, /, *, size=None, fill_value=None):
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
         logging.warning(
-            "'kind' argument to argsort is ignored; only 'stable' sorts "
-            "are supported."
+            "'kind' argument to argsort is ignored; only 'stable' sorts are supported."
         )
     if order is not None:
         raise ivy.utils.exceptions.IvyError(

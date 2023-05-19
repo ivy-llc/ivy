@@ -1,9 +1,10 @@
 from hypothesis import strategies as st
+import numpy as np
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-import numpy as np
 
 
 @handle_test(
@@ -172,6 +173,7 @@ def test_kaiser_window(
     beta=st.floats(min_value=1, max_value=5),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_kaiser_bessel_derived_window(
     *,
@@ -327,51 +329,120 @@ def test_eye_like(
     )
 
 
+# stft
 @st.composite
-def _get_dtype_buffer_count_offset(draw):
-    dtype, value = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-        )
+def valid_stft_params(draw):
+    # draw data types
+    dtype = draw(helpers.get_dtypes("numeric"))
+    # Draw values for the input signal x
+    x = draw(
+        st.lists(st.floats(min_value=-1e6, max_value=1e6), min_size=2, max_size=1000)
     )
-    value = np.array(value)
-    length = value.size
-    value = value.tobytes()
-
-    offset = draw(helpers.ints(min_value=0, max_value=length - 1))
-    count = draw(helpers.ints(min_value=-(2**30), max_value=length - offset))
-    if count == 0:
-        count = -1
-    offset = offset * np.dtype(dtype[0]).itemsize
-
-    return dtype, value, count, offset
+    # Draw values for the window function size
+    frame_length = draw(st.integers(min_value=2, max_value=1000))
+    # Draw values for the hop size between adjacent frames
+    frame_step = draw(st.integers(min_value=1, max_value=frame_length))
+    # Draw values for the window function type
+    window_fn = draw(
+        st.sampled_from(["hann", "hamming", "rectangle", "blackman", "bartlett"])
+    )
+    # Draw values for the FFT size
+    fft_length = draw(st.integers(min_value=frame_length, max_value=frame_length * 4))
+    return dtype, x, frame_length, frame_step, window_fn, fft_length
 
 
 @handle_test(
-    fn_tree="functional.ivy.experimental.frombuffer",
-    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
+    fn_tree="functional.ivy.experimental.stft",
+    dtype_x_and_args=valid_stft_params(),
+    test_with_out=st.just(False),
+)
+def test_stft(
+    *,
+    dtype_x_and_args,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, frame_length, frame_step, window_fn, fft_length = dtype_x_and_args
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        signals=x[0],
+        frame_length=frame_length,
+        frame_step=frame_step,
+        window_fn=window_fn,
+        fft_length=fft_length,
+        pad_end=True,
+        name=None,
+    )
+
+
+# ndenumerate
+@handle_test(
+    fn_tree="functional.ivy.experimental.ndenumerate",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+    ),
+)
+def test_ndenumerate(dtype_and_x):
+    values = dtype_and_x[1][0]
+    for (index1, x1), (index2, x2) in zip(
+        np.ndenumerate(values), ivy.ndenumerate(values)
+    ):
+        assert index1 == index2 and x1 == x2
+
+
+# ndindex
+@handle_test(
+    fn_tree="functional.ivy.experimental.ndindex",
+    dtype_x_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        ret_shape=True,
+    ),
+)
+def test_ndindex(dtype_x_shape):
+    shape = dtype_x_shape[2]
+    for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
+        assert index1 == index2
+
+
+# indices
+@handle_test(
+    fn_tree="functional.ivy.experimental.indices",
+    ground_truth_backend="numpy",
+    shape=helpers.get_shape(min_num_dims=1),
+    dtype=helpers.get_dtypes("integer", full=False),
+    sparse=st.booleans(),
+    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_frombuffer(
-    dtype_buffer_count_offset,
+def test_indices(
+    *,
+    shape,
+    dtype,
+    sparse,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, buffer, count, offset = dtype_buffer_count_offset
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[],
         test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        buffer=buffer,
-        dtype=input_dtype[0],
-        count=count,
-        offset=offset,
-        ground_truth_backend=ground_truth_backend,
+        dimensions=shape,
+        dtype=dtype[0],
+        sparse=sparse,
     )

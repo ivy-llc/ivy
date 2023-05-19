@@ -7,3 +7,8 @@ protobuf
 pydriller
 tqdm
 coverage
+scikit-learn # mod_name=sklearn
+pandas
+pyspark
+autoflake # for backend generation
+snakeviz # for profiling

@@ -5,15 +5,14 @@ from numbers import Number
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
-    with_unsupported_dtypes,
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
 )
-
-# local
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.paddle.elementwise import _elementwise_helper
+
+# local
 from .. import backend_version
 
 
@@ -122,9 +121,6 @@ def trapz(
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def float_power(
     x1: Union[paddle.Tensor, float, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
@@ -137,9 +133,6 @@ def float_power(
     return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def exp2(
     x: Union[paddle.Tensor, float, list, tuple],
     /,
@@ -150,9 +143,6 @@ def exp2(
         return ivy.pow(2, x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def copysign(
     x1: Union[paddle.Tensor, Number],
     x2: Union[paddle.Tensor, Number],
@@ -224,21 +214,21 @@ def angle(
     return result
 
 
-@with_unsupported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "float32",
-            "float64",
-            "bool",
-        )
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "float16",
+                "float32",
+                "float64",
+                "bool",
+            )
+        }
     },
     backend_version,
 )
@@ -251,10 +241,6 @@ def imag(
     return paddle.imag(val)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16")},
-    backend_version,
-)
 def nan_to_num(
     x: paddle.Tensor,
     /,
@@ -294,9 +280,6 @@ def nan_to_num(
             return x
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
-)
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
@@ -318,13 +301,15 @@ def diff(
     append: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x = paddle.to_tensor(x)
-    return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
+    ret_dtype = x.dtype
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        x = x.cast("float32")
+    prepend, append = [paddle.to_tensor(a, dtype=x.dtype) for a in [prepend, append]]
+    return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append).cast(
+        ret_dtype
+    )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
@@ -345,21 +330,21 @@ def hypot(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
     },
     backend_version,
 )
@@ -427,8 +412,6 @@ _BERNOULLI_COEFS = [
     {
         "2.4.2 and below": {
             "cpu": (
-                "uint16",
-                "bfloat16",
                 "int8",
                 "int16",
                 "int32",
@@ -516,7 +499,7 @@ def gradient(
     axis: Optional[Union[int, list, tuple]] = None,
     edge_order: Optional[int] = 1,
 ) -> Union[paddle.Tensor, List[paddle.Tensor]]:
-    """Https://github.com/numpy/numpy/blob/v1.23.0/numpy/lib/
+    """Https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/
     function_base.py#L969-L1312."""
     # TODO: Remove % x.shape[axis] once scatter_nd supports negative indices
     with ivy.ArrayMode(False):
@@ -734,9 +717,6 @@ def gradient(
         return outvals
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def xlogy(
     x: paddle.Tensor, y: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -750,21 +730,21 @@ def xlogy(
         ).cast(ret_dtype)
 
 
-@with_unsupported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "float32",
-            "float64",
-            "bool",
-        )
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "float16",
+                "float32",
+                "float64",
+                "bool",
+            )
+        }
     },
     backend_version,
 )
@@ -772,9 +752,6 @@ def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.real(x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def count_nonzero(
     a: paddle.Tensor,
     /,

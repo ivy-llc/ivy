@@ -24,7 +24,7 @@ from . import backend_version
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.12.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -77,6 +77,7 @@ def asarray(
     obj: Union[
         tf.Tensor,
         tf.Variable,
+        tf.TensorShape,
         bool,
         int,
         float,
@@ -92,6 +93,12 @@ def asarray(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
+        if isinstance(obj, tf.TensorShape):
+            if dtype is None:
+                return tf.convert_to_tensor(obj.as_list())
+            else:
+                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+                return tf.convert_to_tensor(obj.as_list(), dtype=dtype)
         if copy:
             if dtype is None and isinstance(obj, tf.Tensor):
                 return tf.identity(obj)
@@ -102,7 +109,7 @@ def asarray(
                 except (TypeError, ValueError):
                     dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -112,7 +119,7 @@ def asarray(
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -126,7 +133,9 @@ def asarray(
 
                 dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 return tf.convert_to_tensor(
-                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype), shallow=False),
+                    ivy.nested_map(
+                        obj, lambda x: tf.convert_to_tensor(x, dtype), shallow=False
+                    ),
                     dtype=dtype,
                 )
             else:
@@ -135,25 +144,19 @@ def asarray(
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.cast(tensor, dtype)
 
 
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     with tf.device(device):
         return tf.experimental.numpy.empty(shape, dtype)
 
@@ -170,7 +173,7 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -284,8 +287,8 @@ def linspace(
     if axis is None:
         axis = -1
     with tf.device(device):
-        start = tf.constant(start, dtype=dtype)
-        stop = tf.constant(stop, dtype=dtype)
+        start = tf.cast(tf.constant(start), dtype=dtype)
+        stop = tf.cast(tf.constant(stop), dtype=dtype)
         if not endpoint:
             ans = tf.linspace(start, stop, num + 1, axis=axis)
             if axis < 0:
@@ -300,7 +303,7 @@ def linspace(
         return tf.cast(ans, dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
 def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
@@ -324,18 +327,12 @@ def meshgrid(
 
 
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     with tf.device(device):
         return tf.ones(shape, dtype)
 
@@ -362,7 +359,7 @@ def tril(
     return tf.experimental.numpy.tril(x, k)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
 def triu(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -374,18 +371,12 @@ def triu(
 
 
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     with tf.device(device):
         return tf.zeros(shape, dtype)
 
@@ -449,3 +440,24 @@ def one_hot(
     return tf.one_hot(
         indices, depth, on_value=on_value, off_value=off_value, axis=axis, dtype=dtype
     )
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("uint32", "uint64")}, backend_version)
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[tf.DType] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(buffer, bytearray):
+        buffer = bytes(buffer)
+    ret = tf.io.decode_raw(buffer, dtype)
+    dtype = tf.dtypes.as_dtype(dtype)
+    if offset > 0:
+        offset = int(offset / dtype.size)
+    if count > -1:
+        ret = ret[offset : offset + count]
+    else:
+        ret = ret[offset:]
+
+    return ret

@@ -15,8 +15,6 @@ from . import backend_version
                 "int8",
                 "int16",
                 "uint8",
-                "uint16",
-                "bfloat16",
                 "float16",
                 "complex64",
                 "complex128",
@@ -44,11 +42,7 @@ def median(
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("float16", "complex64", "complex128")}},
     backend_version,
 )
 def nanmean(
@@ -195,8 +189,6 @@ def _compute_quantile(
                 "int8",
                 "int16",
                 "uint8",
-                "uint16",
-                "bfloat16",
                 "float16",
                 "complex64",
                 "complex128",
@@ -242,10 +234,16 @@ def nanmedian(
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
     keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
     overwrite_input: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        if dtype is None:
+            dtype = input.dtype
+        input = input.cast("float32")
+        paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
+    return paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -255,8 +253,6 @@ def nanmedian(
                 "int8",
                 "int16",
                 "uint8",
-                "uint16",
-                "bfloat16",
                 "float16",
                 "complex64",
                 "complex128",

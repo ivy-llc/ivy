@@ -11,7 +11,9 @@ from typing import (
     List,
 )
 import jax.numpy as jnp
+import jax.lax as jlax
 from numbers import Number
+from collections import namedtuple
 
 # local
 import ivy
@@ -89,16 +91,18 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[JaxArray, JaxArray]] = None,
 ) -> Tuple[JaxArray, JaxArray]:
+    k = min(k, x.shape[axis])
     if not largest:
         indices = jnp.argsort(x, axis=axis)
         indices = jnp.take(indices, jnp.arange(k), axis=axis)
     else:
-        x = -x
-        indices = jnp.argsort(x, axis=axis)
+        indices = jnp.argsort(-x, axis=axis)
         indices = jnp.take(indices, jnp.arange(k), axis=axis)
-        x = -x
+    if not sorted:
+        indices = jnp.sort(indices, axis=axis)
     topk_res = NamedTuple("top_k", [("values", JaxArray), ("indices", JaxArray)])
     val = jnp.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
@@ -148,6 +152,7 @@ def pad(
     mode: Union[
         Literal[
             "constant",
+            "dilated",
             "edge",
             "linear_ramp",
             "maximum",
@@ -172,8 +177,15 @@ def pad(
     constant_values = _to_nested_tuple(constant_values)
     end_values = _to_nested_tuple(end_values)
     input_dtype = input.dtype
-    if jnp.issubdtype(input_dtype, jnp.integer) and mode in ["mean", "median"]:
-        input = input.astype(jnp.float64)
+
+    if mode == "dilated":
+        if ivy.as_ivy_dtype(type(constant_values)) != input_dtype:
+            padding_value = ivy.native_array(constant_values, dtype=input_dtype)
+        else:
+            padding_value = constant_values
+        padded = jlax.pad(input, padding_value, pad_width)
+        return padded
+
     if callable(mode):
         ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
@@ -332,3 +344,46 @@ def concat_from_sequence(
     elif new_axis == 1:
         ret = jnp.stack(input_sequence, axis=axis)
         return ret
+
+
+def unique_consecutive(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[JaxArray, JaxArray, JaxArray]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    x_shape = None
+    if axis is None:
+        x_shape = x.shape
+        x = x.flatten()
+        axis = -1
+    if axis < 0:
+        axis += x.ndim
+    sub_arrays = jnp.split(
+        x,
+        jnp.where(
+            jnp.any(
+                jnp.diff(x, axis=axis) != 0,
+                axis=tuple(i for i in jnp.arange(x.ndim) if i != axis),
+            )
+        )[0]
+        + 1,
+        axis=axis,
+    )
+    output = jnp.concatenate(
+        [jnp.unique(sub_array, axis=axis) for sub_array in sub_arrays],
+        axis=axis,
+    )
+    counts = jnp.array([sub_array.shape[axis] for sub_array in sub_arrays])
+    inverse_indices = jnp.repeat(jnp.arange(len(counts)), counts)
+    if x_shape:
+        inverse_indices = jnp.reshape(inverse_indices, x_shape)
+    return Results(
+        output.astype(x.dtype),
+        inverse_indices,
+        counts,
+    )

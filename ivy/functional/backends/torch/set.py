@@ -6,11 +6,12 @@ from collections import namedtuple
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+import ivy
 
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16", "complex"),
+        "2.0.1 and below": ("float16", "complex"),
     },
     backend_version,
 )
@@ -19,6 +20,7 @@ def unique_all(
     /,
     *,
     axis: Optional[int] = None,
+    by_value: bool = True,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     Results = namedtuple(
         "Results",
@@ -55,6 +57,17 @@ def unique_all(
         tot_counts = torch.cat((counts.new_zeros(1), counts.cumsum(dim=0)))[:-1]
         indices = inv_sorted[tot_counts].to(idx_dtype)
 
+    if not by_value:
+        sort_idx = torch.argsort(indices)
+        ivy_torch = ivy.current_backend()
+        values = ivy_torch.gather(values, sort_idx, axis=axis)
+        counts = ivy_torch.gather(counts, sort_idx)
+        indices = ivy_torch.gather(indices, sort_idx)
+        inv_sort_idx = ivy_torch.invert_permutation(sort_idx)
+        inverse_indices = torch.vmap(lambda y: torch.gather(inv_sort_idx, 0, y))(
+            inverse_indices
+        )
+
     return Results(
         values.to(x.dtype),
         indices,
@@ -65,7 +78,7 @@ def unique_all(
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16",),
+        "2.0.1 and below": ("float16",),
     },
     backend_version,
 )
@@ -79,7 +92,7 @@ def unique_counts(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16",),
+        "2.0.1 and below": ("float16",),
     },
     backend_version,
 )
@@ -95,7 +108,7 @@ def unique_inverse(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16", "complex"),
+        "2.0.1 and below": ("float16", "complex"),
     },
     backend_version,
 )
