@@ -133,8 +133,8 @@ class BatchNorm2D(Module):
             the variables for each submodule in the sequence,
             constructed internally by default.
         training
-            Turn on dropout if training, turn off otherwise. Default is ``True``.
-            Default is ``None``.
+            If true, calculate and use the mean and variance of `x`. Otherwise, use the
+            internal `mean` and `variance` when affine is True.
         """
         self.num_features = num_features
         self._affine = affine
