@@ -184,6 +184,7 @@ def empty_like(
 ) -> paddle.Tensor:
     return to_device(paddle.empty_like(x=x.cast("float32")).cast(dtype), device)
 
+
 @with_unsupported_device_and_dtypes(
     {
         "2.4.2 and below": {
@@ -366,7 +367,7 @@ def _differentiable_linspace(start, stop, num, *, dtype=None):
         increment_tiled,
         paddle.linspace(1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype),
     )
-    if start.ndim == 0:
+    if isinstance(start, int) or start.ndim == 0:
         start = paddle_backend.expand_dims(start, axis=0)
     res = paddle_backend.concat((start, paddle_backend.add(start, increments)), axis=0)
     return res.cast(dtype)

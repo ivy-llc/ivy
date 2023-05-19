@@ -140,7 +140,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, backend_version)
 def cumprod(
     x: JaxArray,
     /,
@@ -176,7 +176,7 @@ def cumprod(
         return jnp.flip(x, axis=axis)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, backend_version)
 def cummax(
     x: JaxArray,
     /,
@@ -197,7 +197,7 @@ def cummax(
     return jlax.cummax(x, axis, reverse=reverse).astype(dtype)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, backend_version)
 def cummin(
     x: JaxArray,
     /,

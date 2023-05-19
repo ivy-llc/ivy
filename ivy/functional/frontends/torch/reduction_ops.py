@@ -103,7 +103,7 @@ def std(input, dim=None, unbiased=True, keepdim=False, *, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -263,7 +263,7 @@ def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "complex",
         )
