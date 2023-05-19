@@ -79,7 +79,7 @@ def test_binary_cross_entropy_with_logits(
 
 #mse
 @handle_test(
-    fn_tree="mse_loss",
+    fn_tree="functional.ivy.experimental.mse_loss",
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -104,6 +104,11 @@ def test_mse_loss(
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
+    # Add dimension handling
+    if len(pred.shape) > len(true.shape):
+        pred = pred[: true.ndim]
+    elif len(pred.shape) < len(true.shape):
+        true = true[: pred.ndim]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=true_dtype + pred_dtype,
@@ -111,14 +116,14 @@ def test_mse_loss(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        true=true[0],
-        pred=pred[0],
+        true=true,
+        pred=pred,
         reduction=reduction,
     )
 
 #mae
 @handle_test(
-    fn_tree="mae_loss",
+    fn_tree="functional.ivy.experimental.mae_loss",
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -143,6 +148,11 @@ def test_mae_loss(
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
+    # Add dimension handling
+    if len(pred.shape) > len(true.shape):
+        pred = pred[: true.ndim]
+    elif len(pred.shape) < len(true.shape):
+        true = true[: pred.ndim]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=true_dtype + pred_dtype,
@@ -150,7 +160,7 @@ def test_mae_loss(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        true=true[0],
-        pred=pred[0],
+        true=true,
+        pred=pred,
         reduction=reduction,
     )
