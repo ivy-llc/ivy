@@ -45,10 +45,18 @@ def bitwise_xor(
     return paddle.bitwise_xor(x1, x2)
 
 
-def expm1(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def expm1(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [paddle.float16, paddle.float32, paddle.float64]:
-        return paddle.expm1(x)
-    return paddle_backend.subtract(paddle_backend.exp(x), 1.0).astype(x.dtype)
+        return ivy.where(where, paddle.expm1(x), x)
+    return ivy.where(
+        where, paddle_backend.subtract(paddle_backend.expm1(x), 1.0).astype(x.dtype), x
+    )
 
 
 def bitwise_invert(
@@ -73,9 +81,13 @@ def bitwise_invert(
     backend_version,
 )
 def isfinite(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.isfinite(x)
+    return ivy.where(where, paddle.isfinite(x), x)
 
 
 def isinf(
@@ -103,6 +115,7 @@ def equal(
     x2: Union[float, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
@@ -111,10 +124,16 @@ def equal(
         paddle_backend.less_equal(diff, 0), paddle_backend.greater_equal(diff, 0)
     )
     # ret result is sufficient for all cases except where the value is +/-INF of NaN
-    return paddle_backend.where(
-        paddle_backend.isnan(diff),
-        ~paddle_backend.logical_or(paddle_backend.isnan(x1), paddle_backend.isnan(x2)),
-        ret,
+    return ivy.where(
+        where,
+        paddle_backend.where(
+            paddle_backend.isnan(diff),
+            ~paddle_backend.logical_or(
+                paddle_backend.isnan(x1), paddle_backend.isnan(x2)
+            ),
+            ret,
+        ),
+        (x1, x2),
     )
 
 
@@ -148,7 +167,13 @@ def bitwise_and(
     return paddle.bitwise_and(x1, x2)
 
 
-def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def ceil(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -161,12 +186,20 @@ def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.complex(paddle.ceil(x.real()), paddle.ceil(x.imag()))
-        return paddle.ceil(x.astype("float32")).astype(x.dtype)
-    return paddle.ceil(x)
+            return ivy.where(
+                where, paddle.complex(paddle.ceil(x.real()), paddle.ceil(x.imag())), x
+            )
+        return ivy.where(where, paddle.ceil(x.astype("float32")).astype(x.dtype), x)
+    return ivy.where(where, paddle.ceil(x), x)
 
 
-def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def floor(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -179,9 +212,11 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.complex(paddle.floor(x.real()), paddle.floor(x.imag()))
-        return paddle.floor(x.astype("float32")).astype(x.dtype)
-    return paddle.floor(x)
+            return ivy.where(
+                where, paddle.complex(paddle.floor(x.real()), paddle.floor(x.imag())), x
+            )
+        return ivy.where(where, paddle.floor(x.astype("float32")).astype(x.dtype), x)
+    return ivy.where(where, paddle.floor(x), x)
 
 
 @with_unsupported_device_and_dtypes(
@@ -415,6 +450,7 @@ def divide(
     x2: Union[float, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
@@ -422,7 +458,7 @@ def divide(
         x1, x2 = x1.astype("float32"), x2.astype("float32")
     if not (ivy.is_float_dtype(ret_dtype) or ivy.is_complex_dtype(ret_dtype)):
         ret_dtype = ivy.default_float_dtype(as_native=True)
-    return (x1 / x2).astype(ret_dtype)
+    return ivy.where(where, (x1 / x2).astype(ret_dtype), x1 / x2)
 
 
 def greater(
@@ -430,6 +466,7 @@ def greater(
     x2: Union[float, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
@@ -438,9 +475,13 @@ def greater(
             if paddle.is_complex(x1):
                 real = paddle.greater_than(x1.real(), x2.real())
                 imag = paddle.greater_than(x1.imag(), x2.imag())
-                return paddle.logical_and(real, imag)
-        return paddle.greater_than(x1.astype("float32"), x2.astype("float32"))
-    return paddle.greater_than(x1, x2)
+                return ivy.where(where, paddle.logical_and(real, imag), (real, imag))
+        return ivy.where(
+            where,
+            paddle.greater_than(x1.astype("float32"), x2.astype("float32")),
+            (x1, x2),
+        )
+    return ivy.where(where, paddle.greater_than(x1, x2), (x1, x2))
 
 
 def greater_equal(
@@ -448,6 +489,7 @@ def greater_equal(
     x2: Union[float, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
@@ -456,9 +498,13 @@ def greater_equal(
             if paddle.is_complex(x1):
                 real = paddle.greater_equal(x1.real(), x2.real())
                 imag = paddle.greater_equal(x1.imag(), x2.imag())
-                return paddle.logical_and(real, imag)
-        return paddle.greater_equal(x1.astype("float32"), x2.astype("float32"))
-    return paddle.greater_equal(x1, x2)
+                return ivy.where(where, paddle.logical_and(real, imag), (x1, x2))
+        return ivy.where(
+            where,
+            paddle.greater_equal(x1.astype("float32"), x2.astype("float32")),
+            (x1, x2),
+        )
+    return ivy.where(where, paddle.greater_equal(x1, x2), (x1, x2))
 
 
 @with_unsupported_device_and_dtypes(
@@ -598,12 +644,17 @@ def floor_divide(
     x2: Union[float, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if x1.dtype in [paddle.int32, paddle.int64]:
-        return paddle.floor_divide(x1, x2)
-    return paddle_backend.floor(paddle_backend.divide(x1, x2)).astype(ret_dtype)
+        return ivy.where(where, paddle.floor_divide(x1, x2), (x1, x2))
+    return ivy.where(
+        where,
+        paddle_backend.floor(paddle_backend.divide(x1, x2)).astype(ret_dtype),
+        (x1, x2),
+    )
 
 
 def bitwise_or(
@@ -831,10 +882,16 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.log(x)
 
 
-def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def exp(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
-        return paddle.exp(x)
-    return pow(math.e, x).astype(x.dtype)
+        return ivy.where(where, paddle.exp(x), x)
+    return ivy.where(where, pow(math.e, x).astype(x.dtype), x)
 
 
 def subtract(

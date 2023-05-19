@@ -49,9 +49,15 @@ bitwise_xor.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
-def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def expm1(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.expm1(x, out=out)
+    return ivy.where(where, torch.expm1(x, out=out), x)
 
 
 expm1.support_native_out = True
@@ -136,26 +142,38 @@ bitwise_and.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
-def ceil(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def ceil(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
         return x
-    return torch.ceil(x, out=out)
+    return ivy.where(where, torch.ceil(x, out=out), x)
 
 
 ceil.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
-def floor(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def floor(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
         return x
-    return torch.floor(x, out=out)
+    return ivy.where(where, torch.floor(x, out=out), x)
 
 
 floor.support_native_out = True
@@ -288,14 +306,19 @@ def divide(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = torch.div(x1, x2)
     if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
-        ret = ivy.astype(ret, x1.dtype, copy=False)
+        ret = ivy.where(where, ivy.astype(ret, x1.dtype, copy=False), (x1, x2))
     else:
-        ret = ivy.astype(ret, ivy.default_float_dtype(as_native=True), copy=False)
+        ret = ivy.where(
+            where,
+            ivy.astype(ret, ivy.default_float_dtype(as_native=True), copy=False),
+            (x1, x2),
+        )
     return ret
 
 
@@ -308,10 +331,11 @@ def greater(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.greater(x1, x2, out=out)
+    return ivy.where(where, torch.greater(x1, x2, out=out), (x1, x2))
 
 
 greater.support_native_out = True
@@ -323,10 +347,11 @@ def greater_equal(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.greater_equal(x1, x2, out=out)
+    return ivy.where(where, torch.greater_equal(x1, x2, out=out), (x1, x2))
 
 
 greater_equal.support_native_out = True
@@ -425,15 +450,20 @@ def floor_divide(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if ivy.exists(out):
         if not ivy.is_float_dtype(out):
-            return ivy.inplace_update(
-                out, torch.floor(torch.div(x1, x2)).type(out.dtype)
+            return ivy.where(
+                where,
+                ivy.inplace_update(out, torch.floor(torch.div(x1, x2)).type(out.dtype)),
+                (x1, x2),
             )
-    return torch.floor(torch.div(x1, x2), out=out).type(x1.dtype)
+    return ivy.where(
+        where, torch.floor(torch.div(x1, x2), out=out).type(x1.dtype), (x1, x2)
+    )
 
 
 floor_divide.support_native_out = True
@@ -588,9 +618,15 @@ log.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def exp(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def exp(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.exp(x, out=out)
+    return ivy.where(where, torch.exp(x, out=out), x)
 
 
 exp.support_native_out = True

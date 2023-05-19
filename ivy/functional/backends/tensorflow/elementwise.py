@@ -192,12 +192,13 @@ def ceil(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
     else:
-        return tf.math.ceil(x)
+        return ivy.where(where, tf.math.ceil(x), x)
 
 
 def cos(
@@ -224,14 +225,17 @@ def divide(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = tf.experimental.numpy.divide(x1, x2)
     if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
-        ret = tf.cast(ret, dtype=x1.dtype)
+        ret = ivy.where(where, tf.cast(ret, dtype=x1.dtype), (x1, x2))
     else:
-        ret = tf.cast(ret, dtype=ivy.default_float_dtype(as_native=True))
+        ret = ivy.where(
+            where, tf.cast(ret, dtype=ivy.default_float_dtype(as_native=True)), (x1, x2)
+        )
     return ret
 
 
@@ -240,28 +244,31 @@ def equal(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.equal(x1, x2)
+    return ivy.where(where, tf.math.equal(x1, x2), (x1, x2))
 
 
 def exp(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.exp(x)
+    return ivy.where(where, tf.math.exp(x), x)
 
 
 def expm1(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.expm1(x)
+    return ivy.where(where, tf.math.expm1(x), x)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
@@ -269,12 +276,13 @@ def floor(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
     else:
-        return tf.math.floor(x)
+        return ivy.where(where, tf.math.floor(x), x)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
@@ -283,10 +291,11 @@ def floor_divide(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.floor_divide(x1, x2)
+    return ivy.where(where, tf.experimental.numpy.floor_divide(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
@@ -295,10 +304,11 @@ def greater(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.greater(x1, x2)
+    return ivy.where(where, tf.math.greater(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
@@ -307,22 +317,26 @@ def greater_equal(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.greater_equal(x1, x2)
+    return ivy.where(where, tf.math.greater_equal(x1, x2), (x1, x2))
 
 
 def isfinite(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
-        return tf.ones_like(x, tf.bool)
+        ivy.where(where, tf.ones_like(x, tf.bool), x)
+
+        return ivy.where(where, tf.ones_like(x, tf.bool), x)
     else:
-        return tf.math.is_finite(x)
+        return ivy.where(where, tf.math.is_finite(x), x)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
@@ -377,10 +391,11 @@ def less_equal(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.less_equal(x1, x2)
+    return ivy.where(where, tf.math.less_equal(x1, x2), (x1, x2))
 
 
 def log(

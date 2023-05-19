@@ -137,11 +137,17 @@ def bitwise_xor(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
-def ceil(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def ceil(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
-        return jnp.ceil(x)
+        return ivy.where(where, jnp.ceil(x), x)
 
 
 def cos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -158,14 +164,17 @@ def divide(
     x2: Union[float, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ret = jax.numpy.divide(x1, x2)
+    ret = ivy.where(where, jax.numpy.divide(x1, x2), (x1, x2))
     if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
-        ret = jnp.asarray(ret, dtype=x1.dtype)
+        ret = ivy.where(where, jnp.asarray(ret, dtype=x1.dtype), x1)
     else:
-        ret = jnp.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
+        ret = ivy.where(
+            where, jnp.asarray(ret, dtype=ivy.default_float_dtype(as_native=True)), x1
+        )
     return ret
 
 
@@ -174,26 +183,45 @@ def equal(
     x2: Union[float, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.equal(x1, x2)
+    return ivy.where(where, jnp.equal(x1, x2), (x1, x2))
 
 
-def exp(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.exp(x)
+def exp(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.exp(x), x)
 
 
-def expm1(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.expm1(x)
+def expm1(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.expm1(x), x)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
-def floor(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def floor(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
-        return jnp.floor(x)
+        return ivy.where(where, jnp.floor(x), x)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
@@ -202,10 +230,11 @@ def floor_divide(
     x2: Union[float, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.floor(jnp.divide(x1, x2)).astype(x1.dtype)
+    return ivy.where(where, jnp.floor(jnp.divide(x1, x2)).astype(x1.dtype), (x1, x2))
 
 
 def greater(
@@ -213,10 +242,11 @@ def greater(
     x2: Union[float, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.greater(x1, x2)
+    return ivy.where(where, jnp.greater(x1, x2), (x1, x2))
 
 
 def greater_equal(
@@ -224,14 +254,21 @@ def greater_equal(
     x2: Union[float, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.greater_equal(x1, x2)
+    return ivy.where(where, jnp.greater_equal(x1, x2), (x1, x2))
 
 
-def isfinite(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.isfinite(x)
+def isfinite(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.isfinite(x), x)
 
 
 def isinf(

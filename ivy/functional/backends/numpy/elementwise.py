@@ -196,13 +196,19 @@ bitwise_xor.support_native_out = True
 
 @with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 @_scalar_output_to_0d_array
-def ceil(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def ceil(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     if "int" in str(x.dtype):
-        ret = np.copy(x)
+        ret = ivy.where(where, np.copy(x), x)
     else:
-        return np.ceil(x, out=out)
+        return ivy.where(where, np.ceil(x, out=out), x)
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        return ivy.where(where, ivy.inplace_update(out, ret), x)
     return ret
 
 
@@ -232,14 +238,19 @@ def divide(
     x2: Union[float, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ret = np.divide(x1, x2, out=out)
+    ret = ivy.where(where, np.divide(x1, x2, out=out), (x1, x2))
     if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
-        ret = np.asarray(ret, dtype=x1.dtype)
+        ret = ivy.where(where, np.asarray(ret, dtype=x1.dtype), (x1, x2))
     else:
-        ret = np.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
+        ret = ivy.where(
+            where,
+            np.asarray(ret, dtype=ivy.default_float_dtype(as_native=True)),
+            (x1, x2),
+        )
     return ret
 
 
@@ -252,26 +263,39 @@ def equal(
     x2: Union[float, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.equal(x1, x2, out=out)
+    return ivy.where(where, np.equal(x1, x2, out=out), (x1, x2))
 
 
 equal.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def exp(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.exp(x, out=out)
+def exp(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.exp(x, out=out), x)
 
 
 exp.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def expm1(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.expm1(x, out=out)
+def expm1(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.expm1(x, out=out), x)
 
 
 expm1.support_native_out = True
@@ -279,13 +303,19 @@ expm1.support_native_out = True
 
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
-def floor(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def floor(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     if "int" in str(x.dtype):
-        ret = np.copy(x)
+        ret = ivy.where(where, np.copy(x), x)
     else:
-        return np.floor(x, out=out)
+        return ivy.where(where, np.floor(x, out=out), x)
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        return ivy.where(where, ivy.inplace_update(out, ret), x)
     return ret
 
 
@@ -299,10 +329,11 @@ def floor_divide(
     x2: Union[float, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.floor(np.divide(x1, x2)).astype(x1.dtype)
+    return ivy.where(where, np.floor(np.divide(x1, x2)).astype(x1.dtype), (x1, x2))
 
 
 @_scalar_output_to_0d_array
@@ -311,10 +342,11 @@ def greater(
     x2: Union[float, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.greater(x1, x2, out=out)
+    return ivy.where(where, np.greater(x1, x2, out=out), (x1, x2))
 
 
 greater.support_native_out = True
@@ -326,18 +358,25 @@ def greater_equal(
     x2: Union[float, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.greater_equal(x1, x2, out=out)
+    return ivy.where(where, np.greater_equal(x1, x2, out=out), (x1, x2))
 
 
 greater_equal.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def isfinite(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.isfinite(x, out=out)
+def isfinite(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.isfinite(x, out=out), x)
 
 
 isfinite.support_native_out = True

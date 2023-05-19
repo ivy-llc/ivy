@@ -599,7 +599,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.bitwise_xor(self._data, x2, out=out)
 
-    def ceil(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def ceil(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.ceil. This method simply wraps the
         function, and so the docstring for ivy.ceil also applies to this method with
@@ -609,6 +614,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -712,6 +719,7 @@ class _ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -727,6 +735,8 @@ class _ArrayWithElementwise(abc.ABC):
             divisor input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -756,13 +766,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([1., 3.5, 4.5])
         """
-        return ivy.divide(self._data, x2, out=out)
+        return ivy.divide(self._data, x2, where=where, out=out)
 
     def equal(
         self: ivy.Array,
         x2: Union[float, ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -778,6 +789,8 @@ class _ArrayWithElementwise(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             May have any data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -825,9 +838,14 @@ class _ArrayWithElementwise(abc.ABC):
             b: ivy.array([True, True, True])
         }
         """
-        return ivy.equal(self._data, x2, out=out)
+        return ivy.equal(self._data, x2, where=where, out=out)
 
-    def exp(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def exp(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.exp. This method simply wraps the
         function, and so the docstring for ivy.exp also applies to this method with
@@ -837,6 +855,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a floating-point data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -854,9 +874,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(x.exp())
         ivy.array([ 2.71828198,  7.38905573, 20.08553696])
         """
-        return ivy.exp(self._data, out=out)
+        return ivy.exp(self._data, out=out, where=where)
 
-    def expm1(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def expm1(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.expm1. This method simply wraps the
         function, and so the docstring for ivy.expm1 also applies to this method with
@@ -866,6 +891,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -890,9 +917,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([147.,   0.])
         """
-        return ivy.expm1(self._data, out=out)
+        return ivy.expm1(self._data, out=out, where=where)
 
-    def floor(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def floor(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.floor. This method simply wraps the
         function, and so the docstring for ivy.floor also applies to this method with
@@ -902,6 +934,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -919,13 +953,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([ 5., -3.,  1.,  0.])
         """
-        return ivy.floor(self._data, out=out)
+        return ivy.floor(self._data, where=where, out=out)
 
     def floor_divide(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -941,6 +976,8 @@ class _ArrayWithElementwise(abc.ABC):
             divisor input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -970,13 +1007,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([4., 3., 1.])
         """
-        return ivy.floor_divide(self._data, x2, out=out)
+        return ivy.floor_divide(self._data, x2, where=where, out=out)
 
     def greater(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -992,6 +1030,8 @@ class _ArrayWithElementwise(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1010,13 +1050,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([False,  True,  True])
         """
-        return ivy.greater(self._data, x2, out=out)
+        return ivy.greater(self._data, x2, where=where, out=out)
 
     def greater_equal(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -1032,6 +1073,8 @@ class _ArrayWithElementwise(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1050,9 +1093,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(z)
         ivy.array([False,False,False])
         """
-        return ivy.greater_equal(self._data, x2, out=out)
+        return ivy.greater_equal(self._data, x2, where=where, out=out)
 
-    def isfinite(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def isfinite(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.isfinite. This method simply wraps the
         function, and so the docstring for ivy.isfinite also applies to this method with
@@ -1062,9 +1110,12 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a real-valued data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
 
         Returns
         -------
@@ -1080,7 +1131,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([ True, False, False, False])
         """
-        return ivy.isfinite(self._data, out=out)
+        return ivy.isfinite(self._data, out=out, where=where)
 
     def isinf(
         self: ivy.Array,

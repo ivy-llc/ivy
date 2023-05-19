@@ -1250,8 +1250,9 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> ivy.Container:  # noqa
         """
         ivy.Container static method variant of ivy.bitwise_and. This method simply wraps
         the function, and so the docstring for ivy.bitwise_and also applies to this
@@ -1277,6 +1278,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1323,6 +1326,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -1335,6 +1339,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1362,6 +1367,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1391,6 +1398,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -1404,6 +1412,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1431,6 +1440,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1450,6 +1461,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -1462,6 +1474,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1489,6 +1502,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1506,6 +1521,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -1518,6 +1534,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1540,6 +1557,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1575,6 +1594,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -1585,6 +1605,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1607,6 +1628,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1642,6 +1665,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -1782,8 +1806,9 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> ivy.Container:  # noqa
         """
         ivy.Container static method variant of ivy.bitwise_or. This method simply wraps
         the function, and so the docstring for ivy.bitwise_or also applies to this
@@ -1804,6 +1829,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+         where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1847,6 +1874,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -1859,6 +1887,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1881,6 +1910,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1913,6 +1944,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -1926,6 +1958,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1952,6 +1985,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+         where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1995,6 +2030,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2007,6 +2043,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2033,6 +2070,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2061,6 +2100,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2074,6 +2114,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2101,6 +2142,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2131,6 +2174,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2143,6 +2187,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2170,6 +2215,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2199,6 +2246,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2211,6 +2259,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2233,6 +2282,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2261,6 +2312,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2271,8 +2323,9 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> ivy.Container:  # noqa
         """
         ivy.Container instance method variant of ivy.ceil. This method simply wraps the
         function, and so the docstring for ivy.ceil also applies to this method with
@@ -2293,6 +2346,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2320,6 +2375,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2480,6 +2536,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2506,6 +2563,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2538,6 +2597,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2550,6 +2610,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2577,6 +2638,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2619,6 +2682,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2632,8 +2696,9 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> ivy.Container:  # noqa
         """
         ivy.Container static method variant of ivy.equal. This method simply wraps the
         function, and so the docstring for ivy.equal also applies to this method with
@@ -2658,6 +2723,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2689,6 +2756,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2701,6 +2769,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2727,6 +2796,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2766,6 +2837,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2778,6 +2850,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2800,6 +2873,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2828,6 +2903,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2838,6 +2914,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2860,6 +2937,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2887,6 +2966,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2899,6 +2979,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2950,6 +3031,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -2960,6 +3042,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3018,6 +3101,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3030,6 +3114,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3052,6 +3137,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3080,6 +3167,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3090,6 +3178,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3112,6 +3201,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3139,6 +3230,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3152,6 +3244,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3178,6 +3271,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3221,6 +3316,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3233,6 +3329,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3260,6 +3357,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3302,6 +3401,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3315,6 +3415,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3341,6 +3442,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3372,6 +3475,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3384,6 +3488,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3410,6 +3515,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3440,6 +3547,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3453,6 +3561,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3479,6 +3588,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3510,6 +3621,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3522,6 +3634,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3548,6 +3661,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3578,6 +3693,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3590,6 +3706,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3612,6 +3729,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3641,6 +3760,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
@@ -3651,6 +3771,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3673,6 +3794,8 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        where
+            optional output container,  where would be a boolean mask.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -3701,6 +3824,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            where=where,
             out=out,
         )
 
