@@ -521,12 +521,16 @@ trunc.support_native_out = True
 
 
 def abs(
-    x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+    x: Union[float, torch.Tensor],
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if x.dtype is torch.bool:
         return x
-    return torch.abs(x, out=out)
+    return ivy.where(where, torch.abs(x, out=out), x)
 
 
 abs.support_native_out = True

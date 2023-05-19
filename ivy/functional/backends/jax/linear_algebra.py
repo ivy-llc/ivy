@@ -195,8 +195,12 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(axis, tuple):
-        axis = tuple(axis)
+    if hasattr(axis, "__iter__"):
+        if not isinstance(axis, tuple):
+            axis = tuple(axis)
+    else:
+        if not isinstance(axis, tuple):
+            axis = (axis,)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
@@ -467,21 +471,18 @@ def vector_norm(
 ) -> JaxArray:
     if dtype and x.dtype != dtype:
         x = x.astype(dtype)
+
+    ret_scalar = False
+    if x.ndim == 0:
+        x = jnp.expand_dims(x, 0)
+        ret_scalar = True
+
     if isinstance(axis, list):
         axis = tuple(axis)
-    if axis is None:
-        jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), ord, axis, keepdims)
-    else:
-        if ord == jnp.inf:
-            jnp_normalized_vector = jnp.abs(x).max(axis=axis, keepdims=keepdims)
-        elif ord == -jnp.inf:
-            jnp_normalized_vector = jnp.abs(x).min(axis=axis, keepdims=keepdims)
-        elif isinstance(ord, (int, float)) and ord != 0:
-            jnp_normalized_vector = jnp.sum(
-                jnp.abs(x) ** ord, axis=axis, keepdims=keepdims
-            ) ** (1.0 / ord)
-        else:
-            jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
+
+    jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
+    if ret_scalar:
+        jnp_normalized_vector = jnp.squeeze(jnp_normalized_vector)
     return jnp_normalized_vector
 
 
@@ -501,7 +502,7 @@ def diag(
 
 
 @with_unsupported_dtypes(
-    {"0.3.14 and below": ("bfloat16", "float16", "complex")},
+    {"0.4.10 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def vander(
