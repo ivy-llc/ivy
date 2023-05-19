@@ -949,7 +949,7 @@ def test_function_unsupported_dtypes(*, func):
             {
                 "torch": {
                     "cumsum": {
-                        "1.11.0": {"bfloat16", "uint8", "float16"},
+                        "2.0.1": {"bfloat16", "uint8", "float16"},
                         "1.12.1": set(),
                     }
                 }
@@ -992,7 +992,7 @@ def test_function_dtype_versioning(
             {
                 "torch": {
                     "cumsum": {
-                        "1.11.0": {"bfloat16", "uint8", "float16"},
+                        "2.0.1": {"bfloat16", "uint8", "float16"},
                         "1.12.1": set(),
                     }
                 }

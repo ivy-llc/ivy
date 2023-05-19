@@ -1062,7 +1062,6 @@ def _dtype_from_version(dic, version):
     return ()
 
 
-
 def _versioned_attribute_factory(attribute_function, base):
     class VersionedAttributes(base):
         """

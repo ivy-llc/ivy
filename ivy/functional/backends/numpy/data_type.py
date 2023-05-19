@@ -130,7 +130,7 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
     return np.broadcast_arrays(*arrays)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("complex",)}, backend_version)
 def broadcast_to(
     x: np.ndarray,
     /,
@@ -212,7 +212,7 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("bfloat16",)}, backend_version)
 def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> np.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)

@@ -23,7 +23,7 @@ def manual_seed(seed: int):
 
 @with_supported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float32",
             "float64",
         )
@@ -44,7 +44,7 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
 
 @with_supported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float32",
             "float64",
         )
@@ -101,7 +101,7 @@ def rand(
 
 @with_supported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float32",
             "float64",
         )
@@ -177,7 +177,7 @@ def randn_like(
 
 @with_supported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float32",
             "float64",
         )
