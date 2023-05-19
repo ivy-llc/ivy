@@ -142,6 +142,7 @@ class Dropout(Module):
             Whether to scale the output by 1/(1-prob), default is ``True``.
         dtype
             the desired data type of the internal variables to be created.
+            Default is ``None``.
         training
             Turn on dropout if training, turn off otherwise. Default is ``True``.
         """
