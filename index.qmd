@@ -23,7 +23,7 @@ listing:
     - id: examples-and-demos
       template: assets/ejs/gallery.ejs
       contents:
-        - "examples_and_demos/todo"
+        - "examples_and_demos/01_using_ivy_resnet18.ipynb"
       sort: "false"
 ---
 
