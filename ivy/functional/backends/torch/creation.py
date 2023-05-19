@@ -309,9 +309,6 @@ def _slice_at_axis(sl, axis):
     return (slice(None),) * axis + (sl,) + (...,)
 
 
-@with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
-)
 def linspace(
     start: Union[torch.Tensor, float],
     stop: Union[torch.Tensor, float],
