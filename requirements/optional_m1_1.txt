@@ -12,4 +12,4 @@ tensorflow-macos # mod_name=tensorflow_macos
 tensorflow-addons # mod_name=tensorflow_addons
 tensorflow-probability # mod_name=tensorflow_probability
 torch
-padddlepaddle # unpinned , mod_name=paddle
+paddlepaddle # unpinned , mod_name=paddle

@@ -143,6 +143,7 @@ valid_complex_dtypes = {"0.4.10 and below": (ivy.complex64, ivy.complex128)}
 # leave these untouched
 valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
 valid_numeric_dtypes = _dtype_from_version(valid_numeric_dtypes, backend_version)
+valid_int_dtypes = _dtype_from_version(valid_int_dtypes, backend_version)
 valid_float_dtypes = _dtype_from_version(valid_float_dtypes, backend_version)
 valid_uint_dtypes = _dtype_from_version(valid_uint_dtypes, backend_version)
 valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version)

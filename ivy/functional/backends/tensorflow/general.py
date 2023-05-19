@@ -311,7 +311,7 @@ def scatter_nd(
             ivy.as_native_dtype(dtype)
             if ivy.exists(out)
             else ivy.default_dtype(item=updates)
-        )
+        ),
     )
     contains_slices = (
         any(isinstance(idx, slice) for idx in indices)
