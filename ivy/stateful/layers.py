@@ -144,7 +144,6 @@ class Dropout(Module):
             the desired data type of the internal variables to be created.
         training
             Turn on dropout if training, turn off otherwise. Default is ``True``.
-            Default is ``None``.
         """
         self._prob = prob
         self._scale = scale
