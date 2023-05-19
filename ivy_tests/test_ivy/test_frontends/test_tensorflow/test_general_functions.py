@@ -1934,3 +1934,34 @@ def test_tensorflow_unique(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.meshgrid",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=2, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    sparse=st.booleans(),
+    indexing=st.sampled_from(["xy", "ij"]),
+    test_with_out=st.just(False),
+)
+def test_meshgrid(
+    *,
+    input_dtypes,
+    dtype_and_arrays,
+    test_flags,
+    sparse,
+    indexing,
+    fn_tree,
+    on_device,
+):
+    dtype, arrays = dtype_and_arrays
+    return helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        sparse=sparse,
+        indexing=indexing,
+    )
