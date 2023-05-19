@@ -2388,8 +2388,8 @@ def promote_types_of_inputs(
         promoted = promote_types(
             x1.dtype, x2.dtype, array_api_promotion=array_api_promotion
         )
-        x1 = ivy.asarray(x1, dtype=promoted)
-        x2 = ivy.asarray(x2, dtype=promoted)
+        x1 = ivy.astype(x1, promoted, copy=False)
+        x2 = ivy.astype(x2, promoted, copy=False)
 
     ivy.utils.assertions._check_jax_x64_flag(x1.dtype)
     return ivy.to_native(x1), ivy.to_native(x2)

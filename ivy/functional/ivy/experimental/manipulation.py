@@ -4,7 +4,6 @@ from typing import (
     Tuple,
     Iterable,
     Sequence,
-    Generator,
     Callable,
     Any,
     Literal,
@@ -1094,7 +1093,7 @@ def pad(
             padding_value = constant_values
         padded = _interior_pad(input, padding_value, pad_width)
         return padded
-    pad_width = _to_pairs(pad_width, input.ndim)
+    pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
@@ -1157,7 +1156,7 @@ def pad(
                 left_index, right_index, padded = _set_wrap_both(
                     padded, axis, (left_index, right_index)
                 )
-    return padded.astype(input.dtype)
+    return padded
 
 
 pad.mixed_function = True
