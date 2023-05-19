@@ -1,7 +1,8 @@
 # local
 import ivy
+import jax
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy.functional.frontends.jax._src.tree_util import tree_map
+from ivy.functional.frontends.jax._src.tree_util import tree_leaves, tree_map
 import hypothesis.strategies as st
 
 
@@ -41,6 +42,29 @@ def tree_strategy(max_depth=2):
 @st.composite
 def tree_dict_strategy(draw):
     return draw(tree_strategy())
+
+
+# tree_leaves
+@handle_frontend_test(
+    fn_tree="jax._src.tree_util.tree_leaves",
+    tree=tree_dict_strategy(),
+)
+def test_jax_tree_leaves(
+    *,
+    tree,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    # Apply the tree_leaves function to obtain the leaves of the tree
+    result = tree_leaves(tree)
+
+    # compute the expected result
+    expected = jax.tree_util.tree_leaves(tree)
+
+    # value test
+    assert result == expected
 
 
 # tree_map

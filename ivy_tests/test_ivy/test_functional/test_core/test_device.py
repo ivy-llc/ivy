@@ -535,7 +535,8 @@ def test_percent_used_mem_on_dev():
         used = ivy.percent_used_mem_on_dev(ivy.Device(device))
         assert 0 <= used <= 100
 
-        # Same as test_used_mem_on_dev, but using percent of total memory as metric function
+        # Same as test_used_mem_on_dev, but using percent of total memory as metric
+        # function
         _ram_array_and_clear_test(
             lambda: ivy.percent_used_mem_on_dev(device, process_specific=True),
             device=device,
@@ -618,7 +619,7 @@ def test_clear_cached_mem_on_dev():
         # Testing on only GPU since clearing cache mem is relevant
         # for only CUDA devices
         if "gpu" in device:
-            arr = ivy.random_normal(
+            arr = ivy.random_normal(  # noqa: F841
                 shape=(10000, 10000), dtype="float32", device=device
             )
             del arr
@@ -630,7 +631,7 @@ def test_clear_cached_mem_on_dev():
 
 def get_cpu_percent():
     output = subprocess.check_output(["top", "-bn1"])
-    cpu_percent = float(re.search(b"%Cpu\(s\):\s+([\d.]+)\s+us", output).group(1))
+    cpu_percent = float(re.search(r"%Cpu\(s\):\s+([\d.]+)\s+us", output).group(1))
     return cpu_percent
 
 
@@ -638,13 +639,13 @@ def get_cpu_percent():
 def test_dev_util():
     devices = _get_possible_devices()
     for device in devices:
-        # The internally called psutil.cpu_percent() has a unique behavior where it returns 0
-        # as usage when run the second time in same line so simple
+        # The internally called psutil.cpu_percent() has a unique behavior where it
+        # returns 0 as usage when run the second time in same line so simple
         # assert psutil.cpu_percent() == ivy.dev_util(device) isn't possible
         if "cpu" in device:
             assert 100 > ivy.dev_util(device) > 0
-            # Comparing CPU utilization using top. Two percentiles won't be directly equal
-            # but absolute difference should be below a safe threshold
+            # Comparing CPU utilization using top. Two percentiles won't be directly
+            # equal but absolute difference should be below a safe threshold
             assert abs(get_cpu_percent() - ivy.dev_util(device)) < 10
         elif "gpu" in device:
             handle = _get_nvml_gpu_handle(device)

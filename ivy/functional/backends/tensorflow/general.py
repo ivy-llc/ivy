@@ -303,18 +303,12 @@ def scatter_nd(
             else out
         )
     # handle numeric updates
-    updates = tf.constant(
-        updates,
-        dtype=(
-            ivy.dtype(out, as_native=True)
-            if ivy.exists(out)
-            else ivy.default_dtype(item=updates)
-        ),
-    )
+    if ivy.exists(out):
+        dtype = ivy.promote_types(out.dtype, updates.dtype)
     updates = tf.cast(
         updates,
         (
-            ivy.dtype(out, as_native=True)
+            ivy.as_native_dtype(dtype)
             if ivy.exists(out)
             else ivy.default_dtype(item=updates)
         ),

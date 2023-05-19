@@ -2,7 +2,7 @@ from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 from .. import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
 import ivy
 
@@ -70,8 +70,8 @@ _i0B = [
 ]
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16")},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}},
     backend_version,
 )
 def moveaxis(
@@ -86,19 +86,19 @@ def moveaxis(
     return paddle.moveaxis(a, source, destination)
 
 
-@with_unsupported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
     },
     backend_version,
 )
@@ -112,9 +112,6 @@ def heaviside(
     return paddle.heaviside(x1, x2)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def flipud(
     m: paddle.Tensor,
     /,
@@ -129,8 +126,8 @@ def flipud(
     return paddle.flip(m, axis=0)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int16", "uint16", "bfloat16", "float16")},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int16", "float16")}},
     backend_version,
 )
 def vstack(
@@ -146,9 +143,6 @@ def vstack(
             return ivy.stack(arrays, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def hstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -162,9 +156,6 @@ def hstack(
             return ivy.concat(arrays, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def rot90(
     m: paddle.Tensor,
     /,
@@ -181,8 +172,8 @@ def rot90(
     return paddle.rot90(m, k=k, axes=axes)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128")},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -208,9 +199,6 @@ def top_k(
         return topk_res(val, indices)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def fliplr(
     m: paddle.Tensor,
     /,
@@ -537,9 +525,6 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return tuple(result)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def expand(
     x: paddle.Tensor,
     shape: Union[List[int], List[Tuple]],
@@ -577,9 +562,6 @@ def expand(
         return paddle.expand(x, shape)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def concat_from_sequence(
     input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
     /,
