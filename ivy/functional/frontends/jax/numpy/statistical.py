@@ -470,7 +470,7 @@ def nanmedian(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, "jax")
 def correlate(a, v, mode="valid", precision=None):
     if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
         raise ValueError("correlate() only support 1-dimensional inputs.")
