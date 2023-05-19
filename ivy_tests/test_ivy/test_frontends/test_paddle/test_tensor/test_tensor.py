@@ -254,7 +254,7 @@ def test_paddle_instance_dim(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_abs(
+def test_paddle_instance_abs(
     dtype_and_x,
     frontend_method_data,
     init_flags,
