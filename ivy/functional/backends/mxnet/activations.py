@@ -37,14 +37,30 @@ def softmax(
 
 
 def softplus(
-    x: None,
+    x: Union[(int, float, mx.nd.NDArray)],
     /,
     *,
     beta: Optional[Union[(int, float)]] = None,
     threshold: Optional[Union[(int, float)]] = None,
     out: Optional[None] = None,
 ) -> None:
-    raise IvyNotImplementedException()
+    if beta is not None and beta != 1:
+        x_beta = x * beta
+        res = (
+                  mx.nd.add(
+                      mx.nd.log1p(mx.nd.exp(-mx.nd.abs(x_beta))),
+                      mx.nd.maximum(x_beta, 0),
+                  )
+              ) / beta
+    else:
+        x_beta = x
+        res = mx.nd.add(
+            mx.nd.log1p(mx.nd.exp(-mx.nd.abs(x_beta))),
+            mx.nd.maximum(x_beta, 0)
+        )
+    if threshold is not None:
+        return mx.nd.where(x_beta > threshold, x, res).astype(x.dtype)
+    return res.astype(x.dtype)
 
 
 def log_softmax(x: None, /, *, axis: Optional[int] = None, out: Optional[None] = None):
