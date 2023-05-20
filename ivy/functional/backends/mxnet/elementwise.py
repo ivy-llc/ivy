@@ -3,6 +3,7 @@ from typing import Union, Optional
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
+import ivy
 
 
 def abs(
@@ -530,7 +531,11 @@ def subtract(
     alpha: Optional[Union[(int, float)]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    if alpha not in (1, None):
+        ivy.set_array_mode(False)
+        x2 = multiply(x2, alpha)
+        ivy.unset_array_mode()
+    return mx.nd.subtract(x1, x2)
 
 
 def tan(
