@@ -73,7 +73,7 @@ def gpu_is_available() -> bool:
 
 
 def tpu_is_available() -> bool:
-    raise IvyNotImplementedException()
+    return False
 
 
 class Profiler(BaseProfiler):
