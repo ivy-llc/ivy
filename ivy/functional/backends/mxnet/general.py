@@ -30,15 +30,6 @@ def cross(
     raise IvyNotImplementedException()
 
 
-def det(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def diagonal(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
@@ -340,3 +331,15 @@ def strides(x: mx.ndarray.NDArray, /) -> Tuple[int]:
 
 def container_types():
     return []
+
+
+def gather(
+    x: mx.ndarray.NDArray,
+    indices: mx.ndarray.NDArray,
+    /,
+    *,
+    axis: int = -1,
+    batch_dims: int = 0,
+    out: Optional[mx.ndarray.NDArray] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
