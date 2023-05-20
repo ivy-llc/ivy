@@ -30,15 +30,6 @@ def cross(
     raise IvyNotImplementedException()
 
 
-def det(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def diagonal(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
