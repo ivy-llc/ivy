@@ -346,7 +346,7 @@ def test_quantile(
 @handle_test(
     fn_tree="functional.ivy.experimental.corrcoef",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["int"],
+        available_dtypes=["float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
         abs_smallest_val=1e-5,
