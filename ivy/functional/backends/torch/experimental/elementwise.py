@@ -16,7 +16,7 @@ from ivy.func_wrapper import (
 from .. import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float",)}, backend_version)
 def lcm(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -31,7 +31,7 @@ def lcm(
 lcm.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def fmax(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -46,7 +46,7 @@ def fmax(
 fmax.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def fmin(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -60,7 +60,7 @@ def fmin(
 fmin.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sinc(x, out=out)
@@ -179,7 +179,7 @@ def count_nonzero(
 count_nonzero.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def nansum(
     x: torch.Tensor,
     /,
@@ -274,7 +274,7 @@ def nan_to_num(
         return x
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def logaddexp2(
     x1: Union[torch.Tensor, float, list, tuple],
     x2: Union[torch.Tensor, float, list, tuple],
@@ -331,7 +331,7 @@ def signbit(
 signbit.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def hypot(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -356,7 +356,7 @@ def allclose(
     return torch.tensor(ret)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def fix(
     x: torch.Tensor,
     /,
@@ -423,7 +423,7 @@ def gradient(
 
 
 @with_supported_dtypes(
-    {"2.0.0 and below": ("float16", "float32", "float64")},
+    {"2.0.1 and below": ("float16", "float32", "float64")},
     backend_version,
 )
 def xlogy(
@@ -490,7 +490,7 @@ def _are_suitable_types_for_torch_lerp(input, end, weight):
     return True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 @handle_mixed_function(
     lambda input, end, weight, **kwargs: (
         _are_suitable_types_for_torch_lerp(input, end, weight)
@@ -513,4 +513,5 @@ def frexp(
     *,
     out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    return torch.frexp(x, out=out)
+    mantissa, exponent = torch.frexp(x, out=out)
+    return mantissa, exponent

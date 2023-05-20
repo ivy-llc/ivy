@@ -460,7 +460,7 @@ def scatter_nd(
     updates = paddle.to_tensor(
         updates,
         dtype=(
-            ivy.dtype(out, as_native=True)
+            ivy.promote_types(out.dtype, updates.dtype)
             if ivy.exists(out)
             else ivy.default_dtype(item=updates)
         ),

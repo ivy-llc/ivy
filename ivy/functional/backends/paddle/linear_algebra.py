@@ -3,15 +3,15 @@
 import paddle
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
+
+
+# local
 import ivy
 from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-
-# local
-
 from . import backend_version
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from .elementwise import _elementwise_helper
 
 # Array API Standard #
@@ -251,57 +251,57 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    _expand_dims = False
-    if x.ndim == 2:
-        x = paddle.unsqueeze(x, axis=0)
-        _expand_dims = True
-
-    if ord == -float("inf"):
-        ret = paddle.amin(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
-            axis=axis,
-            keepdim=keepdims,
+    if ord == "nuc":
+        x = paddle.moveaxis(x, axis, [-2, -1])
+        ret = paddle.sum(
+            paddle.linalg.svd(x)[1],
+            axis=-1,
         )
-
-    elif ord == -1:
-        ret = paddle.amin(
-            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
-            axis=axis,
-            keepdim=keepdims,
-        )
-    elif ord == -2:
-        ret = paddle.amin(paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims)
-        if keepdims:
-            ret = ret.unsqueeze(-1)
-    elif ord == "nuc":
-        if x.size == 0:
-            ret = x
-        else:
-            ret = paddle.sum(paddle.linalg.svd(x)[1], axis=-1, keepdim=keepdims)
-            if keepdims:
-                ret = ret.unsqueeze(-1)
-    elif ord == "fro":
-        ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
-    elif ord == float("inf"):
-        ret = paddle.amax(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
-            axis=axis,
-            keepdim=keepdims,
-        )
-
     elif ord == 1:
         ret = paddle.amax(
             paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
             axis=axis,
             keepdim=keepdims,
         )
+    elif ord == -1:
+        ret = paddle.amin(
+            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
+        )
     elif ord == 2:
-        ret = paddle.amax(paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims)
-        if keepdims:
+        x = paddle.moveaxis(x, axis, [-2, -1])
+        ret = paddle.amax(
+            paddle.linalg.svd(x)[1],
+            axis=-1,
+        )
+    elif ord == -2:
+        x = paddle.moveaxis(x, axis, [-2, -1])
+        ret = paddle.amin(
+            paddle.linalg.svd(x)[1],
+            axis=-1,
+        )
+    elif ord == float("inf"):
+        ret = paddle.amax(
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
+        )
+    elif ord == float("-inf"):
+        ret = paddle.amin(
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
+        )
+    else:
+        ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
+    if x.ndim == 2 and not keepdims:
+        ret = paddle.squeeze(ret)
+    elif keepdims and ord in ["nuc", -2, 2]:
+        if x.ndim == 2:
             ret = ret.unsqueeze(-1)
-
-    if _expand_dims:
-        ret = paddle.squeeze(ret, axis=0)
+        else:
+            ret = ret.unsqueeze(-2, -1)
     return ret
 
 
@@ -617,6 +617,7 @@ def diag(
             )
         return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
     return paddle.diag(x, offset=k)
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},
