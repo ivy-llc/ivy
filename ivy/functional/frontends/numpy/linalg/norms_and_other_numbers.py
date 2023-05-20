@@ -70,7 +70,7 @@ def trace(a, offset=0, axis1=0, axis2=1, out=None):
 
 # cond
 @from_zero_dim_arrays_to_scalar
-@with_unsupported_dtypes({"1.24.0 and below": ("complex",)}, "numpy")
+@inputs_to_ivy_arrays
 def cond(x, p=None):
     ret = ivy.cond(x, p=p)
     return ret
