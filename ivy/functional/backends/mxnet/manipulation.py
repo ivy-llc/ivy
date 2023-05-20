@@ -162,7 +162,7 @@ def clip(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.clip(x, x_min, x_max)
 
 
 def unstack(
