@@ -327,7 +327,7 @@ def log1p(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.log1p(x)
 
 
 def log2(
@@ -336,7 +336,7 @@ def log2(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.log2(x)
 
 
 def logaddexp(
@@ -346,7 +346,7 @@ def logaddexp(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.logaddexp(x1, x2)
 
 
 def logical_and(
