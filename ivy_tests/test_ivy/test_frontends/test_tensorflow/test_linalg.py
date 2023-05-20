@@ -840,15 +840,7 @@ def test_tensorflow_adjoint(
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.tensor_diag",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=(
-            ivy.float16,
-            ivy.float32,
-            ivy.float64,
-            ivy.int32,
-            ivy.int64,
-            ivy.complex64,
-            ivy.complex128,
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,

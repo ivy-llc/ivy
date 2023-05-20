@@ -255,6 +255,20 @@ def adjoint(matrix, name=None):
     return ivy.adjoint(matrix)
 
 
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def tensor_diag(diagonal, name=None):
     return ivy.diagflat(diagonal)
