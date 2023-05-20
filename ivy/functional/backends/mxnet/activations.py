@@ -19,21 +19,21 @@ def gelu(x: None, /, *, approximate: bool = False, out: Optional[None] = None) -
 
 
 def leaky_relu(x: None, /, *, alpha: float = 0.2, out: Optional[None] = None) -> None:
-    raise IvyNotImplementedException()
+    mx.nd.LeakyReLU(x, slope=alpha)
 
 
 def relu(x: None, /, *, out: Optional[None] = None) -> None:
-    raise IvyNotImplementedException()
+    return mx.nd.relu(x)
 
 
 def sigmoid(x: None, /, *, out: Optional[None] = None) -> None:
-    raise IvyNotImplementedException()
+    raise mx.nd.sigmoid(x)
 
 
 def softmax(
     x: None, /, *, axis: Optional[int] = None, out: Optional[None] = None
 ) -> None:
-    raise IvyNotImplementedException()
+    raise mx.nd.softmax(x, axis=axis)
 
 
 def softplus(
