@@ -663,7 +663,7 @@ def _iter_product(*args, repeat=1):
     for prod in result:
         yield tuple(prod)
 
-
+        
 @handle_exceptions
 @inputs_to_ivy_arrays
 def ndenumerate(
