@@ -241,7 +241,7 @@ def greater(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.greater(x1, x2)
 
 
 def greater_equal(
@@ -251,7 +251,7 @@ def greater_equal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.greater_equal(x1, x2)
 
 
 def isfinite(
@@ -290,7 +290,7 @@ def less(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.less(x1, x2)
 
 
 def less_equal(
@@ -300,7 +300,7 @@ def less_equal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.less_equal(x1, x2)
 
 
 def log(
