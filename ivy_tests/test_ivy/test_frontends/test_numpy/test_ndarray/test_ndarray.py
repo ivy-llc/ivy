@@ -2629,11 +2629,8 @@ def test_numpy_instance_abs__(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="__invert__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_num_dims=0,
-    ),
 )
+@st.composite
 def test_numpy_instance_invert__(
     dtype_and_x,
     frontend_method_data,
@@ -2641,20 +2638,24 @@ def test_numpy_instance_invert__(
     method_flags,
     frontend,
     on_device,
+    matrix_size=st.integers(min_value=2, max_value=10)  # Adjust the matrix size range as needed
 ):
     input_dtypes, x = dtype_and_x
+
+    # Generate square matrices as input
+    x = x.reshape(matrix_size, matrix_size)
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": x,
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={},
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
 
