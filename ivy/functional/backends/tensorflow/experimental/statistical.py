@@ -195,3 +195,9 @@ def bincount(
         ret = tf.math.bincount(x, minlength=minlength)
         ret = tf.cast(ret, x.dtype)
     return ret
+
+
+def igamma(
+    a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
+) -> tf.Tensor:
+    return tf.math.igamma(a, x)
