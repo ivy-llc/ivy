@@ -395,7 +395,7 @@ def multiply(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.multiply(x1, x2)
 
 
 def negative(
@@ -404,7 +404,7 @@ def negative(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.negative(x)
 
 
 def not_equal(
@@ -433,7 +433,7 @@ def pow(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.power(x1, x2)
 
 
 def remainder(
@@ -519,7 +519,7 @@ def square(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.square(x)
 
 
 def subtract(
