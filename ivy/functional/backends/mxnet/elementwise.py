@@ -185,7 +185,13 @@ def divide(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    ret = mx.nd.divide(x1, x2)
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
+        ret = mx.nd.array(ret, dtype=x1.dtype)
+    else:
+        ret = mx.nd.array(ret,
+                          dtype=ivy.default_float_dtype(as_native=True))
+    return ret
 
 
 def equal(
@@ -602,7 +608,7 @@ def reciprocal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.reciprocal(x)
 
 
 def deg2rad(
