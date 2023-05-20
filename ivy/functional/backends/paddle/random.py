@@ -91,7 +91,15 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    
+    if seed is not None:
+        paddle.seed(seed)
+    if probs is None:
+        probs = paddle.full([population_size], 1 / population_size, dtype='float32')
+
+    multinom = paddle.distribution.Multinomial(probs=probs, total_count=num_samples)
+    return multinom.sample([batch_size]).to(device)
+
 
 
 @with_unsupported_device_and_dtypes(
