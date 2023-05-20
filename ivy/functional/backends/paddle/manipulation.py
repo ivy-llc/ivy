@@ -3,6 +3,7 @@ from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
 import paddle
+import ivy.functional.backends.paddle as paddle_backend
 
 # local
 import ivy
@@ -16,9 +17,6 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def concat(
     xs: Union[Tuple[paddle.Tensor, ...], List[paddle.Tensor]],
     /,
@@ -44,9 +42,6 @@ def concat(
         return paddle.concat(xs, axis)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def expand_dims(
     x: paddle.Tensor,
     /,
@@ -55,14 +50,24 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if isinstance(axis, int):
+        if x.ndim >= 6:
+            # Paddle unsqueeze sets a maximum limit of 6 dims in the output
+            x_shape = x.shape
+            x_shape.insert(axis, 1)
+            return x.reshape(x_shape)
+    elif isinstance(axis, (list, tuple)):
+        if x.ndim + len(axis) > 6:
+            x_shape = x.shape
+            for a in axis:
+                x_shape.insert(a, 1)
+            # TODO: reshape doesn't support >9 dims, find a workaround for consistency.
+            return x.reshape(x_shape)
     if x.dtype == paddle.float16:
         return paddle.unsqueeze(x.cast("float32"), axis).cast(x.dtype)
     return paddle.unsqueeze(x, axis)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def flip(
     x: paddle.Tensor,
     /,
@@ -78,9 +83,6 @@ def flip(
     return paddle.flip(x, axis)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def permute_dims(
     x: paddle.Tensor,
     /,
@@ -95,17 +97,13 @@ def permute_dims(
 
 
 def _reshape_fortran_paddle(x, shape):
-    with ivy.ArrayMode(False):
-        if len(x.shape) > 0:
-            x = permute_dims(x, list(reversed(range(len(x.shape)))))
-        return permute_dims(
-            paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
-        )
+    if len(x.shape) > 0:
+        x = paddle_backend.permute_dims(x, list(reversed(range(x.ndim))))
+    return paddle_backend.permute_dims(
+        paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
+    )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def reshape(
     x: paddle.Tensor,
     /,
@@ -133,31 +131,27 @@ def reshape(
         if order == "F":
             ret = _reshape_fortran_paddle(newarr, shape)
             if out_scalar:
-                return ivy.to_native(squeeze(ret, 0))
+                return paddle_backend.squeeze(ret, 0)
 
             return ret
         ret = paddle.reshape(newarr, shape)
         if out_scalar:
-            return ivy.to_native(squeeze(ret, 0))
+            return paddle_backend.squeeze(ret, 0)
 
         return ret
     if order == "F":
         ret = _reshape_fortran_paddle(x, shape)
         if out_scalar:
-            return ivy.to_native(squeeze(ret, 0))
+            return paddle_backend.squeeze(ret, 0)
 
         return ret
     ret = paddle.reshape(x, shape)
     if out_scalar:
-        return ivy.to_native(squeeze(ret, 0))
+        return paddle_backend.squeeze(ret, 0)
 
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}},
-    backend_version,
-)
 def roll(
     x: paddle.Tensor,
     /,
@@ -177,9 +171,6 @@ def roll(
     return paddle.roll(x, shift, axis)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def squeeze(
     x: paddle.Tensor,
     /,
@@ -196,17 +187,18 @@ def squeeze(
         raise ivy.utils.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
+    if x.ndim > 6:
+        # Paddle squeeze sets a maximum limit of 6 dims in the input
+        x_shape = x.shape
+        x_shape.pop(axis)
+        return x.reshape(x_shape)
     if x.dtype in [paddle.int16, paddle.float16]:
         return paddle.squeeze(x.cast("float32"), axis=axis).cast(x.dtype)
     return paddle.squeeze(x, axis=axis)
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": ("uint16", "bfloat16", "int16", "uint8", "int8", "float16")
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
     backend_version,
 )
 def stack(
@@ -239,7 +231,7 @@ def stack(
         imag_list = list(map(lambda x: x.imag(), arrays))
         re_stacked = paddle.stack(real_list, axis=axis)
         imag_stacked = paddle.stack(imag_list, axis=axis)
-        return re_stacked + imag_stacked * 1j
+        return paddle.complex(re_stacked, imag_stacked)
     else:
         return paddle.stack(arrays, axis=axis)
 
@@ -248,10 +240,6 @@ def stack(
 # ------#
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}},
-    backend_version,
-)
 def split(
     x: paddle.Tensor,
     /,
@@ -295,15 +283,12 @@ def split(
         if paddle.is_complex(x):
             imag_list = paddle.split(x.imag(), num_or_size_splits, axis)
             real_list = paddle.split(x.real(), num_or_size_splits, axis)
-            return [(a + b * 1j) for a, b in zip(real_list, imag_list)]
+            return [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
         ret = paddle.split(x.cast("int32"), num_or_size_splits, axis)
         return [tensor.cast(x.dtype) for tensor in ret]
     return paddle.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def repeat(
     x: paddle.Tensor,
     /,
@@ -331,9 +316,10 @@ def repeat(
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.repeat_interleave(
-                x.real(), repeats=repeats, axis=axis
-            ) + 1j * paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis)
+            return paddle.complex(
+                paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),
+                paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis),
+            )
 
         return paddle.repeat_interleave(
             x.cast("float32"), repeats=repeats, axis=axis
@@ -342,36 +328,31 @@ def repeat(
     return paddle.repeat_interleave(x, repeats=repeats, axis=axis)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if ivy.min(repeats) == 0:
-        with ivy.ArrayMode(False):
-            # This logic is to mimic other backends behaviour when a 0 in repeat
-            # is received since paddle doesn't natively support it
-            if len(repeats) < x.ndim:
-                shape = x.shape
-                shape[-len(repeat) :] = ivy.multiply(
-                    shape[-len(repeat) :], repeats
-                ).to_list()
-            elif len(repeats) > x.ndim:
-                shape = repeats
-                shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
-            else:
-                shape = ivy.multiply(x.shape, repeats).tolist()
-            return ivy.zeros(shape).cast(x.dtype)
+        # This logic is to mimic other backends behaviour when a 0 in repeat
+        # is received since paddle doesn't natively support it
+        if len(repeats) < x.ndim:
+            shape = x.shape
+            shape[-len(repeat) :] = paddle_backend.multiply(
+                shape[-len(repeat) :], repeats
+            ).to_list()
+        elif len(repeats) > x.ndim:
+            shape = repeats
+            shape[-x.ndim :] = paddle_backend.multiply(
+                shape[-x.ndim :], repeats
+            ).to_list()
+        else:
+            shape = paddle_backend.multiply(x.shape, repeats).tolist()
+        return paddle.zeros(shape).cast(x.dtype)
 
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.tile(x.cast("float32"), repeats).cast(x.dtype)
     return paddle.tile(x, repeats)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def constant_pad(
     x: paddle.Tensor,
     /,
@@ -401,9 +382,6 @@ def constant_pad(
     return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def zero_pad(
     x: paddle.Tensor,
     /,
@@ -411,13 +389,9 @@ def zero_pad(
     *,
     out: Optional[paddle.Tensor] = None,
 ):
-    with ivy.ArrayMode(False):
-        return constant_pad(x, pad_width=pad_width, value=0)
+    return paddle_backend.constant_pad(x, pad_width=pad_width, value=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def swapaxes(
     x: paddle.Tensor,
     axis0: int,
@@ -429,13 +403,9 @@ def swapaxes(
 ) -> paddle.Tensor:
     axes = [x for x in range(x.ndim)]
     axes[axis0], axes[axis1] = axes[axis1], axes[axis0]
-    with ivy.ArrayMode(False):
-        return permute_dims(x, axes)
+    return paddle_backend.permute_dims(x, axes)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def clip(
     x: paddle.Tensor,
     x_min: Union[Number, paddle.Tensor],
@@ -444,13 +414,9 @@ def clip(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        return ivy.minimum(ivy.maximum(x, x_min), x_max)
+    return paddle_backend.minimum(paddle_backend.maximum(x, x_min), x_max)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def unstack(
     x: paddle.Tensor,
     /,
@@ -476,7 +442,7 @@ def unstack(
         if paddle.is_complex(x):
             real_list = paddle.unbind(x.real(), axis)
             imag_list = paddle.unbind(x.imag(), axis)
-            ret = [(a + 1j * b) for a, b in zip(real_list, imag_list)]
+            ret = [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
         else:
             ret = paddle.unbind(x.cast("float32"), axis)
             ret = list(map(lambda a: a.cast(x.dtype), ret))
@@ -484,6 +450,5 @@ def unstack(
     else:
         ret = paddle.unbind(x, axis)
     if keepdims:
-        with ivy.ArrayMode(False):
-            return [ivy.expand_dims(r, axis=axis) for r in ret]
+        return [paddle_backend.expand_dims(r, axis=axis) for r in ret]
     return ret

@@ -123,7 +123,13 @@ class Linear(Module):
 
 
 class Dropout(Module):
-    def __init__(self, prob, scale=True, dtype=None):
+    def __init__(
+        self,
+        prob,
+        scale: bool = True,
+        dtype=None,
+        training: bool = True,
+    ):
         """
         Dropout layer. The layer randomly zeroes some of the elements of the input
         tensor with probability p using samples from a Bernoull distribution.
@@ -134,15 +140,15 @@ class Dropout(Module):
             The probability of zeroing out each array element.
         scale
             Whether to scale the output by 1/(1-prob), default is ``True``.
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created.
             Default is ``None``.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
         """
         self._prob = prob
         self._scale = scale
+        self.training = training
         Module.__init__(self, device=None, v=None, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
@@ -178,7 +184,9 @@ class Dropout(Module):
             The outputs following the linear operation and bias addition
             *[batch_shape, out]*
         """
-        return ivy.dropout(inputs, self._prob, scale=self._scale, dtype=dtype)
+        return ivy.dropout(
+            inputs, self._prob, scale=self._scale, training=self.training, dtype=dtype
+        )
 
 
 # Attention #
@@ -474,17 +482,14 @@ class Conv1D(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_w,d_out]*
         """
-        return (
-            ivy.conv1d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv1d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv1DTranspose(Module):
@@ -611,18 +616,15 @@ class Conv1DTranspose(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_w,d_out]*
         """
-        return (
-            ivy.conv1d_transpose(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                output_shape=self._output_shape,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv1d_transpose(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            output_shape=self._output_shape,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv2D(Module):
@@ -747,17 +749,14 @@ class Conv2D(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv2d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv2d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv2DTranspose(Module):
@@ -886,18 +885,15 @@ class Conv2DTranspose(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv2d_transpose(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                output_shape=self._output_shape,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv2d_transpose(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            output_shape=self._output_shape,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class DepthwiseConv2D(Module):
@@ -986,8 +982,8 @@ class DepthwiseConv2D(Module):
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
-                self._output_channels,
-                self._input_channels,
+                self._num_channels,
+                self._num_channels,
                 dtype=dtype,
             )
         }
@@ -997,8 +993,8 @@ class DepthwiseConv2D(Module):
                 b=self._b_init.create_variables(
                     self._b_shape,
                     device,
-                    self._output_channels,
-                    self._input_channels,
+                    self._num_channels,
+                    self._num_channels,
                     dtype=dtype,
                 ),
             )
@@ -1018,17 +1014,14 @@ class DepthwiseConv2D(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return (
-            ivy.depthwise_conv2d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.depthwise_conv2d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv3D(Module):
@@ -1154,17 +1147,14 @@ class Conv3D(Module):
             The outputs following the conv1d layer
             *[batch_size,new_d,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv3d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv3d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv3DTranspose(Module):
@@ -1295,18 +1285,15 @@ class Conv3DTranspose(Module):
             The outputs following the conv1d layer
             *[batch_size,new_d,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv3d_transpose(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                output_shape=self._output_shape,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + (self.v.b if self._with_bias else 0)
-        )
+        return ivy.conv3d_transpose(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            output_shape=self._output_shape,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 # LSTM #

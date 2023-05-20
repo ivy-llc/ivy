@@ -66,7 +66,7 @@ def _output_shape(
     return output_shape
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -87,7 +87,7 @@ def conv1d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv1d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -120,7 +120,7 @@ def conv1d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -141,7 +141,7 @@ def conv2d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv2d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -174,7 +174,7 @@ def conv2d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def depthwise_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -200,7 +200,7 @@ def depthwise_conv2d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv3d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -225,7 +225,7 @@ def conv3d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv3d_transpose(
     x: Tensor,
     filters: Tensor,
@@ -262,7 +262,7 @@ def conv3d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv_general_dilated(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -299,67 +299,38 @@ def conv_general_dilated(
         dilations = (
             [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
         )
+    if filters.shape[-2] != (x.shape[-1] // feature_group_count):
+        raise ivy.utils.exceptions.IvyError(
+            f"given feature_group_count {feature_group_count} expected input channel of"
+            f" the filter to be {x.shape[-1] // feature_group_count} but got"
+            f" {filters.shape[-2]}"
+        )
     if dims == 1:
-        res = tf.concat(
-            [
-                tf.nn.conv1d(
-                    x[:, :, i : i + filters.shape[-2]],
-                    filters[:, :, j : j + filters.shape[-1] // feature_group_count],
-                    strides,
-                    "VALID",
-                    df,
-                    dilations,
-                )
-                for i, j in zip(
-                    range(0, x.shape[-1], filters.shape[-2]),
-                    range(
-                        0, filters.shape[-1], filters.shape[-1] // feature_group_count
-                    ),
-                )
-            ],
-            axis=-1,
+        res = tf.nn.conv1d(
+            x,
+            filters,
+            strides,
+            "VALID",
+            df,
+            dilations,
         )
     elif dims == 2:
-        res = tf.concat(
-            [
-                tf.nn.conv2d(
-                    x[:, :, :, i : i + filters.shape[-2]],
-                    filters[:, :, :, j : j + filters.shape[-1] // feature_group_count],
-                    strides,
-                    "VALID",
-                    df,
-                    dilations,
-                )
-                for i, j in zip(
-                    range(0, x.shape[-1], filters.shape[-2]),
-                    range(
-                        0, filters.shape[-1], filters.shape[-1] // feature_group_count
-                    ),
-                )
-            ],
-            axis=-1,
+        res = tf.nn.conv2d(
+            x,
+            filters,
+            strides,
+            "VALID",
+            df,
+            dilations,
         )
     else:
-        res = tf.concat(
-            [
-                tf.nn.conv3d(
-                    x[:, :, :, :, i : i + filters.shape[-2]],
-                    filters[
-                        :, :, :, :, j : j + filters.shape[-1] // feature_group_count
-                    ],
-                    strides,
-                    "VALID",
-                    df,
-                    dilations,
-                )
-                for i, j in zip(
-                    range(0, x.shape[-1], filters.shape[-2]),
-                    range(
-                        0, filters.shape[-1], filters.shape[-1] // feature_group_count
-                    ),
-                )
-            ],
-            axis=-1,
+        res = tf.nn.conv3d(
+            x,
+            filters,
+            strides,
+            "VALID",
+            df,
+            dilations,
         )
     res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
@@ -367,7 +338,7 @@ def conv_general_dilated(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv_general_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],

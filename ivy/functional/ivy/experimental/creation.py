@@ -1,7 +1,7 @@
 # global
 from __future__ import annotations
 from math import sqrt, pi, cos
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
 
 # local
 import ivy
@@ -217,34 +217,42 @@ def stft(
     out: Optional[ivy.Array] = None,
 ):
     """
-    Computes the [Short-time Fourier Transform][stft] of `signals`.
+    Compute the Short-time Fourier Transform of `signals`.
 
     Implemented with TPU/GPU-compatible ops and supports gradients.
 
-    Args:
-      signals: A `[..., samples]` `float32`/`float64` `Tensor` of real-valued
-        signals.
-      frame_length: An integer scalar `Tensor`. The window length in samples.
-      frame_step: An integer scalar `Tensor`. The number of samples to step.
-      fft_length: An integer scalar `Tensor`. The size of the FFT to apply.
+    Parameters
+    ----------
+      signals
+        A `[..., samples]` `float32`/`float64` `Tensor` of real-valued signals.
+      frame_length
+        An integer scalar `Tensor`. The window length in samples.
+      frame_step
+        An integer scalar `Tensor`. The number of samples to step.
+      fft_length
+        An integer scalar `Tensor`. The size of the FFT to apply.
         If not provided, uses the smallest power of 2 enclosing `frame_length`.
-      window_fn: A callable that takes a window length and a `dtype` keyword
-        argument and returns a `[window_length]` `Tensor` of samples in the
-        provided datatype. If set to `None`, no windowing is used.
-      pad_end: Whether to pad the end of `signals` with zeros when the provided
+      window_fn
+        A callable that takes a window length and a `dtype` keyword argument and returns
+        a `[window_length]` `Tensor` of samples in the provided datatype. If set to
+        `None`, no windowing is used.
+      pad_end
+        Whether to pad the end of `signals` with zeros when the provided
         frame length and step produces a frame that lies partially past its end.
-      name: An optional name for the operation.
+      name
+        An optional name for the operation.
 
-    Returns:
+    Returns
+    -------
       A `[..., frames, fft_unique_bins]` `Tensor` of `complex64`/`complex128`
       STFT values where `fft_unique_bins` is `fft_length // 2 + 1` (the unique
       components of the FFT).
 
-    Raises:
-      ValueError: If `signals` is not at least rank 1, `frame_length` is
-        not scalar, or `frame_step` is not scalar.
-
-    [stft]: https://en.wikipedia.org/wiki/Short-time_Fourier_transform
+    Raises
+    ------
+      ValueError
+        If `signals` is not at least rank 1, `frame_length` is not scalar, or
+        `frame_step` is not scalar.
     """
     return ivy.current_backend().stft(
         signals,
@@ -355,6 +363,9 @@ def kaiser_bessel_derived_window(
     """
     window_length = window_length // 2
     w = ivy.kaiser_window(window_length + 1, periodic, beta)
+
+    if window_length == 0:
+        return ivy.array([1], dtype=dtype, out=out)
 
     sum_i_N = sum([w[i] for i in range(0, window_length + 1)])
 
@@ -631,8 +642,8 @@ def eye_like(
     if dim <= 1:
         cols = dim
     else:
-        cols = shape[-1]
-    rows = 0 if dim < 1 else shape[0]
+        cols = int(shape[-1])
+    rows = 0 if dim < 1 else int(shape[0])
     return ivy.eye(
         rows,
         cols,
@@ -641,3 +652,137 @@ def eye_like(
         device=device,
         out=out,
     )
+
+
+def _iter_product(*args, repeat=1):
+    # itertools.product
+    pools = [tuple(pool) for pool in args] * repeat
+    result = [[]]
+    for pool in pools:
+        result = [x + [y] for x in result for y in pool]
+    for prod in result:
+        yield tuple(prod)
+
+
+@handle_exceptions
+@inputs_to_ivy_arrays
+def ndenumerate(
+    input: Iterable,
+) -> Generator:
+    """
+    Multidimensional index iterator.
+
+    Parameters
+    ----------
+    input
+        Input array to iterate over.
+
+    Returns
+    -------
+    ret
+        An iterator yielding pairs of array coordinates and values.
+
+    Examples
+    --------
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> for index, x in ivy.ndenumerate(a):
+    >>>     print(index, x)
+    (0, 0) 1
+    (0, 1) 2
+    (1, 0) 3
+    (1, 1) 4
+    """
+
+    def _ndenumerate(input):
+        if ivy.is_ivy_array(input) and input.shape == ():
+            yield (), ivy.to_scalar(input)
+        else:
+            i = [range(k) for k in input.shape]
+            for idx in _iter_product(*i):
+                yield idx, input[idx]
+
+    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
+    return _ndenumerate(input)
+
+
+@handle_exceptions
+def ndindex(
+    shape: Tuple,
+) -> Generator:
+    """
+    Multidimensional index iterator.
+
+    Parameters
+    ----------
+    shape
+        The shape of the array to iterate over.
+
+    Returns
+    -------
+    ret
+        An iterator yielding array coordinates.
+
+    Examples
+    --------
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> for index in ivy.ndindex(a):
+    >>>     print(index)
+    (0, 0)
+    (0, 1)
+    (1, 0)
+    (1, 1)
+    """
+    args = [range(k) for k in shape]
+    return _iter_product(*args)
+
+
+@handle_exceptions
+def indices(
+    dimensions: Sequence,
+    dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
+    sparse: bool = False,
+) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+    """
+    Return an array representing the indices of a grid.
+
+    Parameters
+    ----------
+    dimensions
+        The shape of the grid.
+    dtype
+        The data type of the result.
+    sparse
+        Return a sparse representation of the grid instead of a dense representation.
+
+    Returns
+    -------
+    ret
+        If sparse is False, returns one grid indices array of shape
+        (len(dimensions),) + tuple(dimensions).
+        If sparse is True, returns a tuple of arrays each of shape
+        (1, ..., 1, dimensions[i], 1, ..., 1) with dimensions[i] in the ith place.
+
+    Examples
+    --------
+    >>> ivy.indices((3, 2))
+    ivy.array([[[0 0]
+                [1 1]
+                [2 2]]
+               [[0 1]
+                [0 1]
+                [0 1]]])
+    >>> ivy.indices((3, 2), sparse=True)
+    (ivy.array([[0], [1], [2]]), ivy.array([[0, 1]]))
+    """
+    if sparse:
+        return tuple(
+            ivy.arange(dim)
+            .expand_dims(
+                axis=[j for j in range(len(dimensions)) if i != j],
+            )
+            .astype(dtype)
+            for i, dim in enumerate(dimensions)
+        )
+    else:
+        grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
+        return ivy.stack(grid, axis=0).astype(dtype)

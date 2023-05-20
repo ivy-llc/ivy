@@ -65,7 +65,7 @@ def random_normal(
         return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -156,6 +156,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 def shuffle(
     x: Union[tf.Tensor, tf.Variable],
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,

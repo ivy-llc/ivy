@@ -25,7 +25,7 @@ def logit(
     return tf.cast(tf.math.log(x / (1 - x)), x_dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex", "bool")}, backend_version)
 def thresholded_relu(
     x: Tensor,
     /,
@@ -37,19 +37,32 @@ def thresholded_relu(
     return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def relu6(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu6(x)
 
 
-@with_supported_dtypes({"2.9.1 and below": ("float",)}, backend_version)
+@with_supported_dtypes({"2.12.0 and below": ("float",)}, backend_version)
 def logsigmoid(input: Tensor) -> Tensor:
     return tf.math.log_sigmoid(input)
 
 
-@with_supported_dtypes({"2.9.1 and below": ("float",)}, backend_version)
+@with_supported_dtypes({"2.12.0 and below": ("float",)}, backend_version)
 def selu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     ret = tf.nn.selu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+def silu(
+    x: Tensor,
+    /,
+    *,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.nn.silu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
