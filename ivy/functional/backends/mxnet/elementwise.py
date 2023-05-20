@@ -219,7 +219,7 @@ def expm1(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return (mx.nd.exp(x) - 1).astype(x.dtype)
 
 
 def floor(
