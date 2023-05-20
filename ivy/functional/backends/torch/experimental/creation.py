@@ -8,6 +8,7 @@ import torch
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
+    with_unsupported_device_and_dtypes,
 )
 from .. import backend_version
 
@@ -34,6 +35,10 @@ def triu_indices(
     )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.0.1 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,

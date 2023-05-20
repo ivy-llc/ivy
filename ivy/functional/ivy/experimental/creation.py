@@ -202,70 +202,6 @@ def hann_window(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-def stft(
-    signals,
-    frame_length,
-    frame_step,
-    fft_length=None,
-    window_fn=hann_window,
-    pad_end=False,
-    name=None,
-    out: Optional[ivy.Array] = None,
-):
-    """
-    Compute the Short-time Fourier Transform of `signals`.
-
-    Implemented with TPU/GPU-compatible ops and supports gradients.
-
-    Parameters
-    ----------
-      signals
-        A `[..., samples]` `float32`/`float64` `Tensor` of real-valued signals.
-      frame_length
-        An integer scalar `Tensor`. The window length in samples.
-      frame_step
-        An integer scalar `Tensor`. The number of samples to step.
-      fft_length
-        An integer scalar `Tensor`. The size of the FFT to apply.
-        If not provided, uses the smallest power of 2 enclosing `frame_length`.
-      window_fn
-        A callable that takes a window length and a `dtype` keyword argument and returns
-        a `[window_length]` `Tensor` of samples in the provided datatype. If set to
-        `None`, no windowing is used.
-      pad_end
-        Whether to pad the end of `signals` with zeros when the provided
-        frame length and step produces a frame that lies partially past its end.
-      name
-        An optional name for the operation.
-
-    Returns
-    -------
-      A `[..., frames, fft_unique_bins]` `Tensor` of `complex64`/`complex128`
-      STFT values where `fft_unique_bins` is `fft_length // 2 + 1` (the unique
-      components of the FFT).
-
-    Raises
-    ------
-      ValueError
-        If `signals` is not at least rank 1, `frame_length` is not scalar, or
-        `frame_step` is not scalar.
-    """
-    return ivy.current_backend().stft(
-        signals,
-        frame_length,
-        frame_step,
-        fft_length=fft_length,
-        window_fn=window_fn,
-        pad_end=pad_end,
-        name=name,
-        out=out,
-    )
-
-
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -321,7 +257,6 @@ def kaiser_window(
 @infer_dtype
 def kaiser_bessel_derived_window(
     window_length: int,
-    periodic: bool = True,
     beta: float = 12.0,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -335,9 +270,6 @@ def kaiser_bessel_derived_window(
     ----------
     window_length
         an int defining the length of the window.
-    periodic
-        If True, returns a periodic window suitable for use in spectral analysis.
-        If False, returns a symmetric window suitable for use in filter design.
     beta
         a float used as shape parameter for the window.
     dtype
@@ -353,35 +285,20 @@ def kaiser_bessel_derived_window(
     Functional Examples
     -------------------
     >>> ivy.kaiser_bessel_derived_window(5)
-    ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])
-
-    >>> ivy.kaiser_bessel_derived_window(5, False)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
-    >>> ivy.kaiser_bessel_derived_window(5, False, 5)
+    >>> ivy.kaiser_bessel_derived_window(5, 5)
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
-    window_length = window_length // 2
-    w = ivy.kaiser_window(window_length + 1, periodic, beta)
 
-    if window_length == 0:
-        return ivy.array([1], dtype=dtype, out=out)
-
-    sum_i_N = sum([w[i] for i in range(0, window_length + 1)])
-
-    def sum_i_n(n):
-        return sum([w[i] for i in range(0, n + 1)])
-
-    dn_low = [sqrt(sum_i_n(i) / sum_i_N) for i in range(0, window_length)]
-
-    def sum_2N_1_n(n):
-        return sum([w[i] for i in range(0, 2 * window_length - n)])
-
-    dn_mid = [
-        sqrt(sum_2N_1_n(i) / sum_i_N) for i in range(window_length, 2 * window_length)
-    ]
-
-    return ivy.array(dn_low + dn_mid, dtype=dtype, out=out)
+    if window_length < 2:
+        return ivy.array([], dtype=dtype)
+    half_len = window_length // 2
+    kaiser_w = ivy.kaiser_window(half_len + 1, False, beta, dtype=dtype)
+    kaiser_w_csum = ivy.cumsum(kaiser_w)
+    half_w = ivy.sqrt(kaiser_w_csum[:-1] / kaiser_w_csum[-1:])
+    window = ivy.concat((half_w, half_w[::-1]), axis=0)
+    return window.astype(dtype)
 
 
 kaiser_bessel_derived_window.mixed_function = True
@@ -434,30 +351,17 @@ def hamming_window(
     >>> ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)
     ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])
     """
-    if window_length == 0:
-        return ivy.array([])
-    elif window_length == 1:
-        return ivy.array([1])
+
+    if window_length < 2:
+        return ivy.ones([window_length], dtype=dtype, out=out)
+    if periodic:
+        count = ivy.arange(window_length) / window_length
     else:
-        if periodic is True:
-            window_length = window_length + 1
-            return ivy.array(
-                [
-                    alpha - beta * cos((2 * n * pi) / (window_length - 1))
-                    for n in range(0, window_length)
-                ][:-1],
-                dtype=dtype,
-                out=out,
-            )
-        else:
-            return ivy.array(
-                [
-                    alpha - beta * cos((2 * n * pi) / (window_length - 1))
-                    for n in range(0, window_length)
-                ],
-                dtype=dtype,
-                out=out,
-            )
+        count = ivy.linspace(0, window_length, window_length)
+    result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
+    if ivy.exists(out):
+        ivy.inplace_update(out, result)
+    return result
 
 
 hamming_window.mixed_function = True
