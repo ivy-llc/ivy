@@ -1062,11 +1062,11 @@ class Tensor:
     def addcdiv(self, tensor1, tensor2, *, value=1):
         return torch_frontend.addcdiv(self, tensor1, tensor2, value=value)
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addcmul(self, tensor1, tensor2, *, value=1):
         return torch_frontend.addcmul(self, tensor1, tensor2, value=value)
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addcmul_(self, tensor1, tensor2, *, value=1):
         self.ivy_array = self.addcmul(tensor1, tensor2, value=value).ivy_array
         return self
