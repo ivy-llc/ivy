@@ -156,7 +156,7 @@ def ceil(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.ceil(x)
 
 
 def cos(
@@ -221,7 +221,7 @@ def floor(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.floor(x)
 
 
 def floor_divide(
@@ -231,7 +231,7 @@ def floor_divide(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.floor(mx.nd.divide(x1, x2))
 
 
 def greater(
