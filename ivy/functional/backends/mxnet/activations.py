@@ -67,20 +67,5 @@ def log_softmax(x: None, /, *, axis: Optional[int] = None, out: Optional[None] =
     raise IvyNotImplementedException()
 
 
-def deserialize(
-    name: Union[(str, None)], /, *, custom_objects: Optional[ivy.Dict] = None
-) -> Union[(ivy.Callable, None)]:
-    raise IvyNotImplementedException()
-
-
-def get(
-    identifier: Union[(str, ivy.Callable, None)],
-    /,
-    *,
-    custom_objects: Optional[ivy.Dict] = None,
-) -> Union[(ivy.Callable, None)]:
-    raise IvyNotImplementedException()
-
-
 def mish(x: None, /, *, out: Optional[None] = None) -> None:
     raise IvyNotImplementedException()
