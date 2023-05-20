@@ -131,7 +131,7 @@ def max_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -176,7 +176,7 @@ def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
     return padding, pad_specific, c
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float64")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
@@ -246,7 +246,7 @@ def avg_pool1d(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool2d(
     x: Union[tf.Tensor, tf.Variable],
@@ -338,7 +338,7 @@ def avg_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
