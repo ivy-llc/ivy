@@ -1506,4 +1506,20 @@ def zero_pad(
         b: ivy.array([0., 0., 3., 4., 5., 0., 0., 0.])
     }
     """
+    
+    if not isinstance(x, (ivy.Array, ivy.NativeArray)):
+        raise Exception('Input must be an ivy array')
+    if not isinstance(pad_width, Iterable):
+        raise Exception('pad_width must be an iterable')
+    if not isinstance(out, (ivy.Array, ivy.NativeArray)) and out is not None:
+        raise Exception('out must be an ivy array')
+    
+
+    if not isinstance(x, ivy.Container):
+        x = ivy.expand_dims(x, 0)
+    if not isinstance(pad_width, ivy.Container):
+        pad_width = ivy.expand_dims(pad_width, 0)
+    if out is not None and not isinstance(out, ivy.Container):
+        out = ivy.expand_dims(out, 0)
+    
     return current_backend(x).zero_pad(x, pad_width, out=out)
