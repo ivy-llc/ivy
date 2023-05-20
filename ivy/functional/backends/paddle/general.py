@@ -496,9 +496,7 @@ def scatter_nd(
         shape = (
             shape
             if ivy.exists(shape)
-            else out.shape
-            if ivy.exists(out)
-            else updates.shape
+            else out.shape if ivy.exists(out) else updates.shape
         )
         indices = _parse_ellipsis(indices, len(shape))
         indices = paddle_backend.stack(
@@ -531,9 +529,7 @@ def scatter_nd(
         shape = (
             shape
             if ivy.exists(shape)
-            else out.shape
-            if ivy.exists(out)
-            else updates.shape
+            else out.shape if ivy.exists(out) else updates.shape
         )
         if isinstance(indices, (tuple, list)):
             indices = _parse_index(indices, len(shape)) if -1 in indices else indices
