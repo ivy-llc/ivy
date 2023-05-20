@@ -1169,8 +1169,7 @@ class Tensor:
             torch_frontend.log(torch_frontend.real(torch_frontend.diagonal(chol)))
         )
     
-    def divide(self, other, *, rounding_mode=None):
-        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+    divide = div
 
 
 class Size(tuple):
