@@ -143,7 +143,7 @@ def full(shape, fill_value, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.10 and below": (
             "float16",
             "bfloat16",
         )
@@ -168,7 +168,7 @@ def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.10 and below": (
             "float16",
             "bfloat16",
         )

@@ -53,7 +53,7 @@ def abs(
     x
         input array. Should have a numeric data type
     where
-        optional output array, a boolean mask
+        optional boolean mask
 
     out
         optional output array, for writing the result to. It must have a shape that the

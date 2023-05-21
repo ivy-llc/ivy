@@ -129,7 +129,7 @@ def tensordot(a, b, axes, name=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.12.0 and below": (
             "float16",
             "bfloat16",
             "int8",

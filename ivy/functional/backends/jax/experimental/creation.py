@@ -55,17 +55,13 @@ def hann_window(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if size == 1:
-        return jnp.array([1], dtype=dtype)
-    if size == 2:
-        if periodic:
-            return jnp.array([0, 0], dtype=dtype)
-        else:
-            return jnp.array([0, 1], dtype=dtype)
-    if periodic is False:
-        return jnp.array(jnp.hanning(size), dtype=dtype)
+    if size < 2:
+        return jnp.ones([size], dtype=dtype)
+    if periodic:
+        count = jnp.arange(size) / size
     else:
-        return jnp.array(jnp.hanning(size + 1)[:-1], dtype=dtype)
+        count = jnp.linspace(start = 0, stop = size,num=size)
+    return (0.5 - 0.5 * jnp.cos(2 * jnp.pi * count)).astype(dtype)
 
 
 def kaiser_window(
@@ -76,10 +72,12 @@ def kaiser_window(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if window_length < 2:
+        return jnp.ones([window_length], dtype=dtype)
     if periodic is False:
-        return jnp.array(jnp.kaiser(M=window_length, beta=beta), dtype=dtype)
+        return jnp.kaiser(M=window_length, beta=beta).astype(dtype)
     else:
-        return jnp.array(jnp.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
+        return jnp.kaiser(M=window_length + 1, beta=beta)[:-1].astype(dtype)
 
 
 def tril_indices(
