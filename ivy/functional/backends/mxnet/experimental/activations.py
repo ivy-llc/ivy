@@ -1,6 +1,8 @@
 from typing import Optional, Union
 import mxnet as mx
 
+from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def logit(
     x: Union[(None, mx.ndarray.NDArray)],
@@ -9,22 +11,26 @@ def logit(
     eps: Optional[float] = None,
     out: Optional[None] = None,
 ) -> None:
-    raise NotImplementedError("mxnet.logit Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def thresholded_relu(
     x: None, /, *, threshold: Union[(int, float)] = 0, out: Optional[None] = None
 ) -> None:
-    raise NotImplementedError("mxnet.thresholded_relu Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def relu6(x: None, /, *, out: Optional[None] = None) -> None:
-    raise NotImplementedError("mxnet.relu6 Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def logsigmoid(input: None) -> None:
-    raise NotImplementedError("mxnet.logsigmoid Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def selu(x: None, /, *, out: Optional[None] = None) -> None:
-    raise NotImplementedError("mxnet.selu Not Implemented")
+    raise IvyNotImplementedException()
+
+
+def silu(x: None, /, *, out: Optional[None] = None) -> None:
+    raise IvyNotImplementedException()

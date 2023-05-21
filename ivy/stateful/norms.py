@@ -95,10 +95,12 @@ class BatchNorm2D(Module):
         *,
         eps: float = 1e-5,
         momentum: float = 0.1,
+        data_format: str = "NSC",
         affine: bool = True,
         track_running_stats: bool = True,
         device=None,
         v=None,
+        training: bool = True,
         dtype=None,
     ):
         """
@@ -111,6 +113,10 @@ class BatchNorm2D(Module):
         epsilon
             small constant to add to the denominator,
             use global ivy._MIN_BASE by default.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         affine
             Whether to include learnable affine parameters, default is ``True``.
         track_running_stats
@@ -126,10 +132,14 @@ class BatchNorm2D(Module):
         v
             the variables for each submodule in the sequence,
             constructed internally by default.
+        training
+            If true, calculate and use the mean and variance of `x`. Otherwise, use the
+            internal `mean` and `variance` when affine is True.
         """
         self.num_features = num_features
         self._affine = affine
-        self.training = True
+        self.training = training
+        self.data_format = data_format
         self._epsilon = eps
         self._momentum = momentum
         self._track_running_stats = track_running_stats
@@ -182,6 +192,7 @@ class BatchNorm2D(Module):
             self.v.running_var,
             eps=self._epsilon,
             momentum=self._momentum,
+            data_format=self.data_format,
             training=self.training,
             scale=self.v.w if self._affine else None,
             offset=self.v.b if self._affine else None,
