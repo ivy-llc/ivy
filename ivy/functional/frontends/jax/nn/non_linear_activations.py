@@ -70,9 +70,7 @@ def _canonicalize_axis(axis, ndim):
 
 def _len(x):
     shape = ivy.shape(x)
-    if len(shape) == 0:
-        return 0
-    return shape[0]
+    return 0 if len(shape) == 0 else shape[0]
 
 
 def _reduction_dims(a, axis):
@@ -246,10 +244,7 @@ def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
 
 @to_ivy_arrays_and_back
 def one_hot(x, num_classes, *, dtype=None, axis=-1):
-    if dtype is None:
-        dtype = ivy.float64
-    else:
-        dtype = ivy.as_ivy_dtype(dtype)
+    dtype = ivy.float64 if dtype is None else ivy.as_ivy_dtype(dtype)
     ret = ivy.one_hot(x, num_classes, axis=axis, dtype=dtype)
     return ret
 
