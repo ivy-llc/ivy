@@ -341,6 +341,21 @@ def acos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 acos.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float",)}, backend_version)
+def lcm(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return torch.abs(torch.lcm(x1, x2, out=out))
+
+
+lcm.support_native_out = True
+
+
 def logical_xor(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
