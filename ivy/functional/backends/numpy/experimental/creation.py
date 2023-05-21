@@ -66,7 +66,7 @@ def hann_window(
     if periodic:
         count = np.arange(size) / size
     else:
-        count = np.linspace(start = 0, stop = size,num=size)
+        count = np.linspace(start=0, stop=size, num=size)
     return (0.5 - 0.5 * np.cos(2 * np.pi * count)).astype(dtype)
 
 

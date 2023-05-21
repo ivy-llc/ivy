@@ -1,6 +1,5 @@
 # global
 from __future__ import annotations
-from math import sqrt, pi, cos
 from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
 
 # local

@@ -189,8 +189,7 @@ def divide(
     if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
         ret = mx.nd.array(ret, dtype=x1.dtype)
     else:
-        ret = mx.nd.array(ret,
-                          dtype=ivy.default_float_dtype(as_native=True))
+        ret = mx.nd.array(ret, dtype=ivy.default_float_dtype(as_native=True))
     return ret
 
 

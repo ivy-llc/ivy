@@ -249,11 +249,8 @@ def i0(
             )
         return paddle_backend.multiply(0.5, paddle_backend.subtract(b0, b2))
 
-
     x = paddle_backend.abs(x)
-    return paddle_backend.where(
-        paddle_backend.less_equal(x, 8.0), _i0_1(x), _i0_2(x)
-    )
+    return paddle_backend.where(paddle_backend.less_equal(x, 8.0), _i0_1(x), _i0_2(x))
 
 
 def flatten(

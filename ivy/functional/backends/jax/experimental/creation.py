@@ -60,7 +60,7 @@ def hann_window(
     if periodic:
         count = jnp.arange(size) / size
     else:
-        count = jnp.linspace(start = 0, stop = size,num=size)
+        count = jnp.linspace(start=0, stop=size, num=size)
     return (0.5 - 0.5 * jnp.cos(2 * jnp.pi * count)).astype(dtype)
 
 
