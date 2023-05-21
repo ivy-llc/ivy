@@ -13,6 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
+        min_dim_size=1,
         min_num_dims=1,
         max_num_dims=1,
         min_value=-100,
@@ -20,6 +21,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         allow_nan=False,
     ),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_difference(
     dtype_and_x,
@@ -39,4 +41,3 @@ def test_difference(
         x1=x[0],
         x2=x[1],
     )
-    

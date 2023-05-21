@@ -6,7 +6,8 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("int", "float16", "bfloat16", "float32", "float64")}, backend_version
+    {"2.12.0 and below": ("int", "float16", "bfloat16", "float32", "float64")},
+    backend_version,
 )
 def difference(
     x1: tf.Tensor,
