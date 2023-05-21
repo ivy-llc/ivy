@@ -83,6 +83,7 @@ def test_paddle_acos(
         x=x[0],
     )
 
+    
 # cosh
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.cosh",
@@ -109,6 +110,7 @@ def test_paddle_cosh(
         x=x[0],
     )
 
+    
 # tanh
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.tanh",
@@ -162,4 +164,4 @@ def test_paddle_acosh(
         atol=1e-2,
         x=x[0],
     )
-    
+ 
