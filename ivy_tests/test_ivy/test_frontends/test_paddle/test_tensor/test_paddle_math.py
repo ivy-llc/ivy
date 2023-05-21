@@ -55,7 +55,7 @@ def test_paddle_cos(
         on_device=on_device,
         x=x[0],
     )
-
+    
 
 # acos
 @handle_frontend_test(
@@ -82,8 +82,8 @@ def test_paddle_acos(
         atol=1e-2,
         x=x[0],
     )
-
     
+
 # cosh
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.cosh",
@@ -109,8 +109,8 @@ def test_paddle_cosh(
         atol=1e-2,
         x=x[0],
     )
-
     
+
 # tanh
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.tanh",
@@ -137,7 +137,7 @@ def test_paddle_tanh(
         atol=1e-2,
         x=x[0],
     )
-  
+    
 
 # acosh
 @handle_frontend_test(
@@ -164,4 +164,3 @@ def test_paddle_acosh(
         atol=1e-2,
         x=x[0],
     )
- 
