@@ -1805,7 +1805,7 @@ _composition_2.test_unsupported_devices_and_dtypes = {
     [_composition_1, _composition_2],
 )
 def test_function_supported_device_and_dtype(func):
-    res = ivy.function_supported_devices_and_dtypes(func)
+    res = ivy.function_supported_devices_and_dtypes(func, recurse=True)
     exp = {"cpu": func.test_unsupported_devices_and_dtypes.copy()["cpu"]}
     for dev in exp:
         exp[dev] = tuple(

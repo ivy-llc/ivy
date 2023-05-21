@@ -8,7 +8,7 @@ from . import backend_version
 
 
 @with_unsupported_dtypes(
-    {"1.23.0 and below": ("bfloat16",)},
+    {"0.4.10 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -119,7 +119,7 @@ def histogram(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("complex64", "complex128")}, backend_version
+    {"0.4.10 and below": ("complex64", "complex128")}, backend_version
 )
 def median(
     input: JaxArray,

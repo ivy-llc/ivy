@@ -16,25 +16,6 @@ from ivy.functional.backends.paddle.elementwise import _elementwise_helper
 from .. import backend_version
 
 
-def lcm(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    x1_dtype = x1.dtype
-    x2_dtype = x2.dtype
-    if (x1_dtype, x2_dtype) == (paddle.int16, paddle.int16):
-        return paddle.cast(
-            paddle.lcm(paddle.cast(x1, paddle.int32), paddle.cast(x2, paddle.int32)),
-            paddle.int16,
-        )
-    elif x1_dtype != x2_dtype:
-        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return paddle.lcm(x1, x2)
-
-
 @with_supported_dtypes(
     {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
     backend_version,
@@ -499,7 +480,7 @@ def gradient(
     axis: Optional[Union[int, list, tuple]] = None,
     edge_order: Optional[int] = 1,
 ) -> Union[paddle.Tensor, List[paddle.Tensor]]:
-    """Https://github.com/numpy/numpy/blob/v1.23.0/numpy/lib/
+    """Https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/
     function_base.py#L969-L1312."""
     # TODO: Remove % x.shape[axis] once scatter_nd supports negative indices
     with ivy.ArrayMode(False):
