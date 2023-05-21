@@ -5,6 +5,7 @@ from .. import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 
 # Code from cephes for i0
 
@@ -220,16 +221,20 @@ def i0(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     def _i0_1(x):
-        return ivy.multiply(
-            ivy.exp(x), _chbevl(ivy.subtract(ivy.divide(x, 2.0), 2), _i0A)
+        return paddle_backend.multiply(
+            paddle_backend.exp(x),
+            _chbevl(paddle_backend.subtract(paddle_backend.divide(x, 2.0), 2.0), _i0A),
         )
 
     def _i0_2(x):
-        return ivy.divide(
-            ivy.multiply(
-                ivy.exp(x), _chbevl(ivy.subtract(ivy.divide(32.0, x), 2), _i0B)
+        return paddle_backend.divide(
+            paddle_backend.multiply(
+                paddle_backend.exp(x),
+                _chbevl(
+                    paddle_backend.subtract(paddle_backend.divide(32.0, x), 2.0), _i0B
+                ),
             ),
-            ivy.sqrt(x),
+            paddle_backend.sqrt(x),
         )
 
     def _chbevl(x, vals):
@@ -239,12 +244,13 @@ def i0(
         for i in range(1, len(vals)):
             b2 = b1
             b1 = b0
-            b0 = ivy.add(ivy.subtract(ivy.multiply(x, b1), b2), vals[i])
-        return ivy.multiply(0.5, ivy.subtract(b0, b2))
+            b0 = paddle_backend.add(
+                paddle_backend.subtract(paddle_backend.multiply(x, b1), b2), vals[i]
+            )
+        return paddle_backend.multiply(0.5, paddle_backend.subtract(b0, b2))
 
-    with ivy.ArrayMode(False):
-        x = ivy.abs(x)
-        return ivy.where(ivy.less_equal(x, 8.0), _i0_1(x), _i0_2(x))
+    x = paddle_backend.abs(x)
+    return paddle_backend.where(paddle_backend.less_equal(x, 8.0), _i0_1(x), _i0_2(x))
 
 
 def flatten(
