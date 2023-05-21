@@ -32,7 +32,7 @@ def _batch_promotion(*args, default_dtype="float64"):
     for arg in args:
         if args is None:
             continue
-        if isinstance(arg, float) or isinstance(arg, int):
+        if isinstance(arg, (float, int)):
             continue
         promote_types.add(ivy.dtype(arg))
 
@@ -42,11 +42,8 @@ def _batch_promotion(*args, default_dtype="float64"):
     if "float32" in promote_types:
         return "float32"
 
-    if "float16" in promote_types and "bfloat16" in promote_types:
-        return "float32"
-
     if "float16" in promote_types:
-        return "float16"
+        return "float32" if "bfloat16" in promote_types else "float16"
 
     if "bfloat16" in promote_types:
         return "bfloat16"
