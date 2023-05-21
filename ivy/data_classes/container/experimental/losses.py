@@ -59,7 +59,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         }
         """
         return ContainerBase.cont_multi_map_in_function(
-            "static_binary_cross_entropy_with_logits",
+            "binary_cross_entropy_with_logits",
             true,
             pred,
             epsilon=epsilon,
