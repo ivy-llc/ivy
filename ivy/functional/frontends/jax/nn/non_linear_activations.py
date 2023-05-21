@@ -12,10 +12,7 @@ def _type_conversion(x):
     x = ivy.asarray(x)
     dtype = ivy.as_ivy_dtype(x.dtype)
     if "float" not in dtype:
-        if "64" in dtype[-2:]:
-            dtype = "float64"
-        else:
-            dtype = "float32"
+        dtype = "float64" if "64" in dtype[-2:] else "float32"
 
     return ivy.astype(x, dtype)
 
@@ -25,15 +22,11 @@ def _type_conversion_64(x):
     # everything else to float64
     x = ivy.asarray(x)
     dtype = ivy.as_ivy_dtype(x.dtype)
-    if "float" in dtype:
-        return ivy.astype(x, dtype)
-
-    return ivy.astype(x, "float64")
+    return ivy.astype(x, dtype) if "float" in dtype else ivy.astype(x, "float64")
 
 
 def _batch_promotion(*args, default_dtype="float64"):
     # Promote all types
-
     promote_types = set()
 
     for arg in args:
