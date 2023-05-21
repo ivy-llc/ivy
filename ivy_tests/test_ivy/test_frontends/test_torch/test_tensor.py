@@ -8402,31 +8402,40 @@ def test_torch_instance_norm(
     
     
 @handle_frontend_method(
-fn_tree="torch.not_equal",
-dtype_and_x=helpers.dtype_and_values(
-    available_dtypes=helpers.get_dtypes("float"),
-        ),
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="not_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
-def test_torch_not_equal(
-    *,
+def test_torch_instance_not_equal(
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    on_device,
-    fn_tree,
+    alpha,
     frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+            "alpha": alpha,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
+        atol_=1e-02,
     )
