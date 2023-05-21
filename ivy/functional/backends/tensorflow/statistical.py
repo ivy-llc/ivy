@@ -237,11 +237,11 @@ def cummax(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
-    if x.dtype == tf.bool or x.dtype == tf.float16:
+    if x.dtype in (tf.bool, tf.float16):
         x = tf.cast(x, tf.float64)
-    elif x.dtype == tf.int16 or x.dtype == tf.int8 or x.dtype == tf.uint8:
+    elif x.dtype in (tf.int16, tf.int8, tf.uint8):
         x = tf.cast(x, tf.int64)
-    elif x.dtype == tf.complex128 or x.dtype == tf.complex64:
+    elif x.dtype in (tf.complex128, tf.complex64):
         x = tf.cast(tf.math.real(x), tf.float64)
 
     if exclusive or reverse:

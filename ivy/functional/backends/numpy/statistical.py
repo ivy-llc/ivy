@@ -278,11 +278,11 @@ def cummax(
         *,
         out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    if x.dtype == np.bool_ or x.dtype == np.float16:
+    if x.dtype in (np.bool_, np.float16):
         x = x.astype(np.float64)
-    elif x.dtype == np.int16 or x.dtype == np.int8 or x.dtype == np.uint8:
+    elif x.dtype in (np.int16, np.int8, np.uint8):
         x = x.astype(np.int64)
-    elif x.dtype == np.complex128 or x.dtype == np.complex64:
+    elif x.dtype in (np.complex128, np.complex64):
         x = np.real(x).astype(np.float64)
 
     if exclusive or reverse:

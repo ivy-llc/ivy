@@ -359,11 +359,11 @@ def cummax(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    if x.dtype == paddle.bool or x.dtype == paddle.float16:
+    if x.dtype in (paddle.bool, paddle.float16):
         x = paddle.cast(x, "float64")
-    elif x.dtype in [paddle.int16, paddle.int8, paddle.uint8]:
+    elif x.dtype in (paddle.int16, paddle.int8, paddle.uint8):
         x = paddle.cast(x, "int64")
-    elif x.dtype == paddle.complex128 or x.dtype == paddle.complex64:
+    elif x.dtype in (paddle.complex128, paddle.complex64):
         x = paddle.cast(paddle.real(x), "float64")
 
     if not (exclusive or reverse):

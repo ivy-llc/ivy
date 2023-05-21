@@ -242,11 +242,11 @@ def cummax(
         *,
         out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray, JaxArray]:
-    if x.dtype == jnp.bool_ or x.dtype == jnp.float16:
+    if x.dtype in (jnp.bool_, jnp.float16):
         x = x.astype(jnp.float64)
-    elif x.dtype == jnp.int16 or x.dtype == jnp.int8 or x.dtype == jnp.uint8:
+    elif x.dtype in (jnp.int16, jnp.int8, jnp.uint8):
         x = x.astype(jnp.int64)
-    elif x.dtype == jnp.complex128 or x.dtype == jnp.complex64:
+    elif x.dtype in (jnp.complex128, jnp.complex64):
         x = jnp.real(x).astype(jnp.float64)
 
     if exclusive or (reverse and exclusive):
