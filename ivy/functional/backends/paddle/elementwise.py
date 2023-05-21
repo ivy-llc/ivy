@@ -744,6 +744,10 @@ def abs(
     where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if not isinstance(where, paddle.Tensor):
+        where = paddle.to_tensor(where, dtype="bool")
+    if not isinstance(x, paddle.Tensor):
+        x = paddle.to_tensor(x).squeeze().cast(ivy.default_dtype(item=x))
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -751,8 +755,10 @@ def abs(
         paddle.float16,
         paddle.bool,
     ]:
-        return ivy.where(where, paddle.abs(x.astype("float32")).astype(x.dtype), x)
-    return ivy.where(where, paddle.abs(x), x)
+        return paddle_backend.where(
+            where, paddle.abs(x.astype("float32")).astype(x.dtype), x
+        )
+    return paddle_backend.where(where, paddle.abs(x), x)
 
 
 def logaddexp(
