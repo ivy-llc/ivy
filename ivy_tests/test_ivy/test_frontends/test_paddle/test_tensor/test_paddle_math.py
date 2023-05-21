@@ -137,7 +137,7 @@ def test_paddle_tanh(
         atol=1e-2,
         x=x[0],
     )
-    
+
 
 # acosh
 @handle_frontend_test(
