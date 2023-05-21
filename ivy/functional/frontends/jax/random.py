@@ -214,18 +214,17 @@ def permutation(key, x, axis=0, independent=False):
     },
     "jax",
 )
-
 def loggamma(key, a, shape=None, dtype="float64"):
     seed = _get_seed(key)
     return ivy.log(ivy.gamma(a, 1.0, shape=shape, dtype=dtype, seed=seed))
-  
-  
+
+
 @to_ivy_arrays_and_back
 def shuffle(key, x, axis=0):
     seed = _get_seed(key)
     x = ivy.flip(x, axis=axis)
     return ivy.shuffle(x, seed=seed)
-  
+
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
@@ -243,5 +242,3 @@ def exponential(key, shape=(), dtype="float64"):
     uniform = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
     exp = -ivy.log(1 - uniform)
     return exp
-
-  
