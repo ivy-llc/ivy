@@ -123,7 +123,7 @@ def cross_entropy(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def binary_cross_entropy(
     input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):
@@ -156,7 +156,7 @@ def binary_cross_entropy_with_logits(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def cosine_embedding_loss(
     input1, input2, target, margin=0.0, size_average=None, reduce=None, reduction="mean"
 ):
@@ -232,7 +232,7 @@ def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def smooth_l1_loss(
     input,
     target,
@@ -332,7 +332,6 @@ def nll_loss(
 
 @to_ivy_arrays_and_back
 def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
-
     if var.shape != input.shape:
         if input.shape[:-1] == var.shape:
             var = torch_frontend.unsqueeze(var, dim=2)
@@ -361,7 +360,7 @@ def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def soft_margin_loss(
     input,
     target,
@@ -376,7 +375,7 @@ def soft_margin_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def kl_div(
     input, target, size_average=None, reduce=None, reduction="mean", log_target=False
 ):
@@ -410,7 +409,7 @@ def kl_div(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def margin_ranking_loss(
     input1,
     input2,
@@ -427,7 +426,7 @@ def margin_ranking_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def poisson_nll_loss(
     input,
     target,
@@ -453,7 +452,7 @@ def poisson_nll_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def hinge_embedding_loss(
     input,
@@ -478,7 +477,7 @@ def hinge_embedding_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def triplet_margin_loss(
     anchor,
     positive,
@@ -513,7 +512,7 @@ def triplet_margin_loss(
     ivy.assertions.check_true(
         a_dim == p_dim and p_dim == n_dim,
         lambda: (
-            f"The anchor, positive, and negative tensors are expected to have "
+            "The anchor, positive, and negative tensors are expected to have "
             f"the same number of dimensions, but got: anchor {a_dim}D, "
             f"positive {p_dim}D, and negative {n_dim}D inputs"
         ),
@@ -533,7 +532,7 @@ def triplet_margin_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def multilabel_soft_margin_loss(
     input,
     target,
@@ -562,7 +561,7 @@ def multilabel_soft_margin_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def triplet_margin_with_distance_loss(
     anchor,
     positive,
@@ -572,7 +571,6 @@ def triplet_margin_with_distance_loss(
     swap=False,
     reduction="mean",
 ):
-
     reduction = _get_reduction(reduction)
 
     a_dim = anchor.ndim
@@ -582,7 +580,7 @@ def triplet_margin_with_distance_loss(
     ivy.assertions.check_true(
         a_dim == p_dim and p_dim == n_dim,
         lambda: (
-            f"The anchor, positive, and negative tensors are expected to have "
+            "The anchor, positive, and negative tensors are expected to have "
             f"the same number of dimensions, but got: anchor {a_dim}D, "
             f"positive {p_dim}D, and negative {n_dim}D inputs"
         ),

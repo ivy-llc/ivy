@@ -11,8 +11,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
-    _get_split_locations,
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
+    _get_splits,
 )
 
 
@@ -965,7 +965,7 @@ def test_torch_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1),
+    indices_or_sections=_get_splits(min_num_dims=1),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1036,7 +1036,7 @@ def test_torch_unbind(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
+    indices_or_sections=_get_splits(min_num_dims=3, axis=2),
 )
 def test_torch_dsplit(
     *,
@@ -1066,7 +1066,7 @@ def test_torch_dsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
+    indices_or_sections=_get_splits(min_num_dims=1, axis=1),
 )
 def test_torch_hsplit(
     *,
@@ -1105,7 +1105,7 @@ def test_torch_hsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
+    indices_or_sections=_get_splits(min_num_dims=2, axis=0),
 )
 def test_torch_vsplit(
     *,
@@ -1342,48 +1342,70 @@ def test_torch_index_copy(
 
 
 @st.composite
-def _dtype_input_idx_axis(draw):
-    dtype_x_axis_shape = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
-            force_int_axis=True,
-            ret_shape=True,
-            valid_axis=True,
-            min_num_dims=1,
+def _dtypes_input_mask(draw):
+    _shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    _mask = draw(helpers.array_values(dtype=helpers.get_dtypes("bool"), shape=_shape))
+    _dtype, _x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            shape=_shape,
         )
     )
 
-    input_dtype, x, axis, shape = dtype_x_axis_shape
-    max_idx = 0
-    if shape:
-        max_idx = shape[axis] - 1
-    idx = draw(helpers.ints(min_value=0, max_value=max_idx))
-    x = x[0]
-
-    return input_dtype, x, idx, axis
+    return _dtype, _x, _mask
 
 
 @handle_frontend_test(
-    fn_tree="torch.select",
-    dtype_x_idx_axis=_dtype_input_idx_axis(),
+    fn_tree="torch.masked_select",
+    dtype_input_mask=_dtypes_input_mask(),
 )
-def test_torch_select(
+def test_torch_masked_select(
     *,
-    dtype_x_idx_axis,
+    dtype_input_mask,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x, idx, axis = dtype_x_idx_axis
+    (
+        input_dtype,
+        x,
+        mask,
+    ) = dtype_input_mask
 
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtype + ["bool"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
-        dim=axis,
-        index=idx,
+        input=x[0],
+        mask=mask,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.take",
+    dtype_and_x=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes(), indices_dtypes=["int64"]
+    ),
+)
+def test_torch_take(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtypes, xs, indices, _, _ = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs,
+        index=indices,
     )

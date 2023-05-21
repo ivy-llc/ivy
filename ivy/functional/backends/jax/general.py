@@ -7,17 +7,10 @@ import jax.numpy as jnp
 from numbers import Number
 from operator import mul
 from functools import reduce
-from typing import Iterable, Optional, Union, Sequence, Callable
+from typing import Iterable, Optional, Union, Sequence, Callable, Tuple
 import multiprocessing as _multiprocessing
+import importlib
 
-
-# necessary import, because stateful imports jax as soon as you import ivy, however,
-# during multiversion # jax is not there, and therefore a later import results in some
-# sort of circular import, so haiku is needed
-import haiku  # NOQA
-
-
-from haiku._src.data_structures import FlatMapping
 
 # local
 import ivy
@@ -28,6 +21,13 @@ from . import backend_version
 
 
 def container_types():
+    flat_mapping_spec = importlib.util.find_spec(
+        "FlatMapping", "haiku._src.data_structures"
+    )
+    if not flat_mapping_spec:
+        from haiku._src.data_structures import FlatMapping
+    else:
+        FlatMapping = importlib.util.module_from_spec(flat_mapping_spec)
     return [FlatMapping]
 
 
@@ -57,6 +57,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
+@with_unsupported_dtypes({"0.4.8 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -282,31 +283,22 @@ def scatter_flat(
     if ivy.exists(size) and ivy.exists(target):
         ivy.utils.assertions.check_equal(len(target.shape), 1)
         ivy.utils.assertions.check_equal(target.shape[0], size)
+    if not target_given:
+        reduction = "replace"
     if reduction == "sum":
-        if not target_given:
-            target = jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].add(updates)
     elif reduction == "replace":
         if not target_given:
             target = jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].set(updates)
     elif reduction == "min":
-        if not target_given:
-            target = jnp.ones([size], dtype=updates.dtype) * 1e12
         target = target.at[indices].min(updates)
-        if not target_given:
-            target = jnp.where(target == 1e12, 0.0, target)
     elif reduction == "max":
-        if not target_given:
-            target = jnp.ones([size], dtype=updates.dtype) * -1e12
         target = target.at[indices].max(updates)
-        if not target_given:
-            target = jnp.where(target == -1e12, 0.0, target)
     else:
         raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
+            "reduction is {}, but it must be one of "
+            '"sum", "min", "max" or "replace"'.format(reduction)
         )
     return _to_device(target)
 
@@ -325,9 +317,10 @@ def scatter_nd(
 ) -> JaxArray:
     # parse numeric inputs
     if (
-        len(indices) != 0
-        and indices != Ellipsis
-        and not (isinstance(indices, Iterable) and Ellipsis in indices)
+        indices != Ellipsis
+        and not (
+            isinstance(indices, Iterable) and (Ellipsis in indices or len(indices) != 0)
+        )
         and not isinstance(indices, slice)
         and not (
             isinstance(indices, Iterable) and any(isinstance(k, slice) for k in indices)
@@ -342,9 +335,11 @@ def scatter_nd(
 
     updates = jnp.array(
         updates,
-        dtype=ivy.dtype(out, as_native=True)
-        if ivy.exists(out)
-        else ivy.default_dtype(item=updates),
+        dtype=(
+            ivy.dtype(out, as_native=True)
+            if ivy.exists(out)
+            else ivy.default_dtype(item=updates)
+        ),
     )
 
     # handle Ellipsis
@@ -371,35 +366,22 @@ def scatter_nd(
     if ivy.exists(shape) and ivy.exists(target):
         ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
+    if not target_given:
+        reduction = "replace"
     if reduction == "sum":
-        if not target_given:
-            target = jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].add(updates)
     elif reduction == "replace":
         if not target_given:
             target = jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].set(updates)
     elif reduction == "min":
-        if not target_given:
-            target = jnp.ones(shape, dtype=updates.dtype) * 1e12
         target = target.at[indices_tuple].min(updates)
-        if not target_given:
-            target = jnp.asarray(
-                jnp.where(target == 1e12, 0.0, target), dtype=updates.dtype
-            )
     elif reduction == "max":
-        if not target_given:
-            target = jnp.ones(shape, dtype=updates.dtype) * -1e12
         target = target.at[indices_tuple].max(updates)
-        if not target_given:
-            target = jnp.asarray(
-                jnp.where(target == -1e12, 0.0, target), dtype=updates.dtype
-            )
     else:
         raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
+            "reduction is {}, but it must be one of "
+            '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, _to_device(target))
@@ -432,7 +414,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,
@@ -446,3 +428,8 @@ def isin(
 
 def itemsize(x: JaxArray) -> int:
     return x.itemsize
+
+
+@with_unsupported_dtypes({"0.4.10 and below": ("bfloat16",)}, backend_version)
+def strides(x: JaxArray) -> Tuple[int]:
+    return to_numpy(x).strides

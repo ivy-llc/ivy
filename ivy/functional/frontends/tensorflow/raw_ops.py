@@ -239,9 +239,7 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
-@to_ivy_arrays_and_back
-def Reciprocal(*, x, name=None):
-    return ivy.reciprocal(x)
+Reciprocal = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.reciprocal))
 
 
 @to_ivy_arrays_and_back
@@ -570,7 +568,7 @@ def Xdivy(*, x, y, name="Xdivy"):
     return ivy.divide(x, y)
 
 
-@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def Xlog1py(*, x, y, name="Xlog1py"):
     if (x == 0).all():

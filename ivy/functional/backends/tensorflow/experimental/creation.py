@@ -6,8 +6,8 @@ import tensorflow as tf
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from . import backend_version
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from .. import backend_version
 
 # Array API Standard #
 # -------------------#
@@ -40,7 +40,10 @@ def triu_indices(
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
 
-@with_supported_dtypes({"1.11.0 and below": ("int32")}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {"2.12.0 and below": {"cpu": ("bfloat16",)}},
+    backend_version,
+)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -49,32 +52,22 @@ def kaiser_window(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if window_length < 2:
+        return tf.ones([window_length], dtype=dtype)
     if periodic is False:
-        return tf.signal.kaiser_window(
-            window_length, beta, dtype=tf.dtypes.float32, name=None
-        )
+        return tf.signal.kaiser_window(window_length, beta, dtype=dtype)
     else:
-        return tf.signal.kaiser_window(window_length + 1, beta, dtype=dtype, name=None)[
-            :-1
-        ]
+        return tf.signal.kaiser_window(window_length + 1, beta, dtype=dtype)[:-1]
 
 
 def kaiser_bessel_derived_window(
     window_length: int,
-    periodic: bool = True,
     beta: float = 12.0,
     *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if periodic is True:
-        return tf.signal.kaiser_bessel_derived_window(
-            window_length + 1, beta, dtype, name=None
-        )[:-1]
-    else:
-        return tf.signal.kaiser_bessel_derived_window(
-            window_length, beta, dtype, name=None
-        )
+    return tf.signal.kaiser_bessel_derived_window(window_length, beta, dtype)
 
 
 def vorbis_window(
@@ -94,7 +87,12 @@ def hann_window(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.signal.hann_window(size, periodic=periodic, dtype=dtype, name=None)
+    if size < 2:
+        return tf.ones([size], dtype=dtype)
+    if periodic:
+        return tf.signal.hann_window(size + 1, periodic=False, dtype=dtype)[:-1]
+    else:
+        return tf.signal.hann_window(size, periodic=False, dtype=dtype)
 
 
 def tril_indices(
@@ -122,24 +120,3 @@ def tril_indices(
             return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
-
-
-@with_unsupported_dtypes({"1.11.0 and below": ("uint32", "uint64")}, backend_version)
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[tf.DType] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
-) -> Union[tf.Tensor, tf.Variable]:
-    if isinstance(buffer, bytearray):
-        buffer = bytes(buffer)
-    ret = tf.io.decode_raw(buffer, dtype)
-    dtype = tf.dtypes.as_dtype(dtype)
-    if offset > 0:
-        offset = int(offset / dtype.size)
-    if count > -1:
-        ret = ret[offset : offset + count]
-    else:
-        ret = ret[offset:]
-
-    return ret

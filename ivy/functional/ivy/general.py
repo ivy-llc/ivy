@@ -31,6 +31,8 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
+    outputs_to_ivy_shapes,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -141,7 +143,6 @@ def get_referrers_recursive(
          (Default value = None)
     local_set
          (Default value = None`)
-
     """
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
@@ -189,7 +190,7 @@ def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
     """
-    Determines whether the input x is an :class:`ivy.NativeArray` instance.
+    Determine whether the input x is an :class:`ivy.NativeArray` instance.
 
     Parameters
     ----------
@@ -225,7 +226,7 @@ def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
     """
-    Determines whether the input x is a valid Ivy Array.
+    Determine whether the input x is a valid Ivy Array.
 
     Parameters
     ----------
@@ -256,7 +257,7 @@ def is_ivy_array(
 @handle_exceptions
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """
-    Determines whether the input x is either an Ivy Array or a Native Array.
+    Determine whether the input x is either an Ivy Array or a Native Array.
 
     Parameters
     ----------
@@ -293,7 +294,7 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
 @handle_exceptions
 def is_ivy_container(x: Any, /) -> bool:
     """
-    Determines whether the input x is an Ivy Container.
+    Determine whether the input x is an Ivy Container.
 
     Parameters
     ----------
@@ -314,7 +315,6 @@ def is_ivy_container(x: Any, /) -> bool:
     >>> x = [2, 3]
     >>> print(ivy.is_ivy_container(x))
     False
-
     """
     return isinstance(x, ivy.Container)
 
@@ -322,8 +322,8 @@ def is_ivy_container(x: Any, /) -> bool:
 @handle_exceptions
 def set_array_mode(mode: bool) -> None:
     """
-    Set the mode of whether to convert inputs to ivy.NativeArray, then convert
-    outputs back to ivy.Array
+    Set the mode of whether to convert inputs to ivy.NativeArray, then convert outputs
+    back to ivy.Array.
 
     Parameter
     ---------
@@ -348,8 +348,8 @@ def set_array_mode(mode: bool) -> None:
 @handle_exceptions
 def unset_array_mode() -> None:
     """
-    Reset the mode of converting inputs to ivy.NativeArray, then converting
-    outputs back to ivy.Array to the previous state
+    Reset the mode of converting inputs to ivy.NativeArray, then converting outputs back
+    to ivy.Array to the previous state.
 
     Examples
     --------
@@ -369,7 +369,7 @@ def unset_array_mode() -> None:
 @handle_exceptions
 def get_array_mode() -> bool:
     """
-    Get the current state of array_mode
+    Get the current state of array_mode.
 
     Examples
     --------
@@ -389,7 +389,7 @@ def get_array_mode() -> bool:
 @handle_exceptions
 def set_nestable_mode(mode: bool) -> None:
     """
-    Set the mode of whether to check if function inputs are ivy.Container
+    Set the mode of whether to check if function inputs are ivy.Container.
 
     Parameter
     ---------
@@ -414,8 +414,8 @@ def set_nestable_mode(mode: bool) -> None:
 @handle_exceptions
 def unset_nestable_mode() -> None:
     """
-    Reset the mode of whether to check if function inputs are ivy.Container
-    to the previous state
+    Reset the mode of whether to check if function inputs are ivy.Container to the
+    previous state.
 
     Examples
     --------
@@ -456,8 +456,8 @@ def get_nestable_mode() -> bool:
 @handle_exceptions
 def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     """
-    Set the mode of whether to show frontend-truncated exception stack traces,
-    ivy-truncated exception stack traces or full exception stack traces
+    Set the mode of whether to show frontend-truncated exception stack traces, ivy-
+    truncated exception stack traces or full exception stack traces.
 
     Parameter
     ---------
@@ -485,7 +485,7 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
 @handle_exceptions
 def unset_exception_trace_mode() -> None:
     """
-    Reset the trace mode to the previously set mode
+    Reset the trace mode to the previously set mode.
 
     Examples
     --------
@@ -505,7 +505,7 @@ def unset_exception_trace_mode() -> None:
 @handle_exceptions
 def get_exception_trace_mode() -> str:
     """
-    Get the current state of exception_trace_mode
+    Get the current state of exception_trace_mode.
 
     Examples
     --------
@@ -522,8 +522,7 @@ def get_exception_trace_mode() -> str:
 @handle_exceptions
 def set_show_func_wrapper_trace_mode(mode: bool) -> None:
     """
-    Set the mode of whether to show the full stack trace with function
-    wrapping traces
+    Set the mode of whether to show the full stack trace with function wrapping traces.
 
     Parameter
     ---------
@@ -548,8 +547,8 @@ def set_show_func_wrapper_trace_mode(mode: bool) -> None:
 @handle_exceptions
 def unset_show_func_wrapper_trace_mode() -> None:
     """
-    Reset the mode of whether to show the full stack trace with function
-    wrapping traces
+    Reset the mode of whether to show the full stack trace with function wrapping
+    traces.
 
     Examples
     --------
@@ -569,8 +568,8 @@ def unset_show_func_wrapper_trace_mode() -> None:
 @handle_exceptions
 def get_show_func_wrapper_trace_mode() -> bool:
     """
-    Get the current state of whether to show the full stack trace with function
-    wrapping traces. Default is True (function wrapping traces are shown)
+    Get the current state of whether to show the full stack trace with function wrapping
+    traces. Default is True (function wrapping traces are shown)
 
     Examples
     --------
@@ -587,18 +586,18 @@ def get_show_func_wrapper_trace_mode() -> bool:
     return show_func_wrapper_trace_mode_stack[-1]
 
 
-@handle_array_function
-@inputs_to_native_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_native_arrays
+@handle_array_function
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> bool:
     """
-    Determines whether two input arrays are equal across all elements.
+    Determine whether two input arrays are equal across all elements.
 
     Parameters
     ----------
@@ -631,20 +630,19 @@ def array_equal(
     >>> k = ivy.array_equal(i,j)
     >>> print(k)
     False
-
     """
     return current_backend(x0).array_equal(x0, x1)
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
 def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, ivy.Array, ivy.NativeArray]:
     """
-    Determines whether the inputs are all equal.
+    Determine whether the inputs are all equal.
 
     Parameters
     ----------
@@ -703,7 +701,6 @@ def all_equal(
         a: true,
         b: false
     }
-
     """
     equality_fn = ivy.array_equal if ivy.is_array(xs[0]) else lambda a, b: a == b
     if equality_matrix:
@@ -728,16 +725,16 @@ def all_equal(
     return True
 
 
-@handle_array_function
-@inputs_to_native_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_native_arrays
+@handle_array_function
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
     """
-    Converts an array into a numpy array.
+    Convert an array into a numpy array.
 
     Parameters
     ----------
@@ -789,25 +786,24 @@ def to_numpy(
                   [1, 0, 1],
                   [1, 1, 1]], dtype=int32)
     }
-
     """
     return current_backend(x).to_numpy(x, copy=copy)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def isscalar(x: Any, /) -> bool:
     return np.isscalar(x)
 
 
-@handle_array_function
-@inputs_to_native_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_native_arrays
+@handle_array_function
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """
-    Converts an array with a single element into a scalar.
+    Convert an array with a single element into a scalar.
 
     Parameters
     ----------
@@ -856,14 +852,14 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     return current_backend(x).to_scalar(x)
 
 
-@handle_array_function
-@inputs_to_native_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_native_arrays
+@handle_array_function
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """
-    Creates a (possibly nested) list from input array.
+    Create a (possibly nested) list from input array.
 
     Parameters
     ----------
@@ -924,15 +920,14 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     {
         a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
     }
-
     """
     return current_backend(x).to_list(x)
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -1006,7 +1001,6 @@ def clip_vector_norm(
         a: ivy.array([0., 0.894, 1.79]),
         b: ivy.array([0.849, 1.13, 1.41])
     }
-
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
@@ -1019,10 +1013,10 @@ def clip_vector_norm(
     return ret
 
 
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_function
+@inputs_to_ivy_arrays
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -1101,11 +1095,11 @@ def clip_matrix_norm(
     return ivy.multiply(ratios, x, out=out)
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, ivy.Array, ivy.NativeArray],
@@ -1117,7 +1111,7 @@ def fourier_encode(
     flatten: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Tuple]:
     """
-    Pads an array with fourier encodings.
+    Pad an array with fourier encodings.
 
     Parameters
     ----------
@@ -1207,11 +1201,11 @@ def fourier_encode(
     return sin_x, cos_x
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def value_is_nan(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1219,7 +1213,7 @@ def value_is_nan(
     include_infs: bool = True,
 ) -> bool:
     """
-    Determines whether the single valued array or scalar is of nan type.
+    Determine whether the single valued array or scalar is of nan type.
 
     Parameters
     ----------
@@ -1269,11 +1263,11 @@ def value_is_nan(
     return False
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def has_nans(
     x: Union[ivy.Array, ivy.NativeArray], /, *, include_infs: bool = True
 ) -> bool:
@@ -1332,7 +1326,6 @@ def has_nans(
         a: false,
         b: false
     }
-
     """
     return ivy.value_is_nan(ivy.sum(x), include_infs=include_infs)
 
@@ -1340,7 +1333,7 @@ def has_nans(
 @handle_exceptions
 def exists(x: Any) -> bool:
     """
-    Simple check as to whether the input is None or not.
+    Check as to whether the input is None or not.
 
     Parameters
     ----------
@@ -1407,8 +1400,6 @@ def exists(x: Any) -> bool:
     >>> y = ivy.exists(x)
     >>> print(y)
     True
-
-
     """
     return x is not None
 
@@ -1424,7 +1415,7 @@ def default(
     with_callable: bool = False,
 ) -> Any:
     """
-    Returns x provided it exists (is not None), else returns default value.
+    Return x provided it exists (is not None), else returns default value.
 
     Parameters
     ----------
@@ -1492,7 +1483,6 @@ def default(
     ...                 catch_exceptions=True, rev=True)
     >>> print(y)
     ivy.array([1, 2, 3])
-
     """
     with_callable = catch_exceptions or with_callable
     if rev:
@@ -1519,7 +1509,7 @@ def default(
 @handle_exceptions
 def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
     """
-    Returns the input shape in ivy.Shape form
+    Return the input shape in ivy.Shape form.
 
     Parameters
     ----------
@@ -1530,7 +1520,6 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
     -------
      ret
         the input in ivy.Shape form
-
     """
     if isinstance(shape, ivy.Shape):
         return shape
@@ -1538,9 +1527,11 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
 
 
 @handle_exceptions
-def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape:
+def to_native_shape(
+    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list]
+) -> ivy.NativeShape:
     """
-    Returns the input shape in its native backend framework form
+    Return the input shape in its native backend framework form.
 
     Parameters
     ----------
@@ -1551,27 +1542,36 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
     -------
      ret
         the input in its native framework form
-
     """
     if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
         return shape
-    ivy.utils.assertions.check_isinstance(shape, (int, list, tuple))
+    ivy.utils.assertions.check_isinstance(
+        shape, (int, list, tuple, ivy.Array, ivy.NativeArray, ivy.Shape)
+    )
     if isinstance(shape, int):
         shape = (shape,)
     elif isinstance(shape, list):
         shape = tuple(shape)
+    elif is_array(shape):
+        shape = ivy.to_numpy(shape).tolist()
+    elif isinstance(shape, ivy.Shape):
+        shape = shape.shape
     ivy.utils.assertions.check_all(
-        [isinstance(v, int) for v in shape], "shape must take integers only"
+        [isinstance(v, int) for v in shape if not is_array(v)],
+        "shape must take integers only",
+    )
+    ivy.utils.assertions.check_true(
+        not is_array(shape) or ivy.is_int_dtype(shape), "shape must take integers only"
     )
     return ivy.NativeShape(shape) if len(backend_stack) != 0 else ivy.Shape(shape)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, None]:
     """
-    Try and return the function, otherwise return None
-    if an exception was raised during function execution.
+    Try and return the function, otherwise return None if an exception was raised during
+    function execution.
 
     Parameters
     ----------
@@ -1604,7 +1604,6 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     >>> z = ivy.try_else_none(ivy.add,x, y)
     >>> print(z)
     None
-
     """
     try:
         _ = fn(*args, **kwargs)
@@ -1616,7 +1615,7 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
 @handle_exceptions
 def arg_names(receiver):
     """
-    Gets the expected keyword arguments for a function or class constructor.
+    Get the expected keyword arguments for a function or class constructor.
 
     Parameters
     ----------
@@ -1638,7 +1637,6 @@ def arg_names(receiver):
     >>> print(x)
     ['lr', 'beta1', 'beta2', 'epsilon', 'inplace',
     'stop_gradients', 'compile_on_next_step', 'device']
-
     """
     return list(inspect.signature(receiver).parameters.keys())
 
@@ -1678,7 +1676,6 @@ def match_kwargs(
     >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
     >>> print(x)
     [{'out': ivy.array([0., 0., 0.]), 'bias': ivy.array([0, 1, 2])}, {}]
-
     """
     split_kwargs = list()
     for receiver in receivers:
@@ -1696,8 +1693,10 @@ def match_kwargs(
 @handle_exceptions
 def cache_fn(func: Callable) -> Callable:
     """
-    Decorator to wrap a function, such that computed outputs are cached
-    to avoid recalculating them later.
+    Cache function outputs.
+
+    A decorator to wrap a function, such that computed outputs are cached to avoid
+    recalculating them later.
 
     Parameters
     ----------
@@ -1747,7 +1746,6 @@ def cache_fn(func: Callable) -> Callable:
 
     >>> print(cached_line_eq(5)) # Output is re-computed
     10
-
     """
     global FN_CACHE
     if func not in FN_CACHE:
@@ -1773,13 +1771,12 @@ def cache_fn(func: Callable) -> Callable:
 @handle_exceptions
 def current_backend_str() -> Union[str, None]:
     """
-    Return framework string
+    Return framework string.
 
     Returns
     -------
     ret
         The framework string.
-
     """
     fw = current_backend()
     if not backend_stack:
@@ -1787,11 +1784,11 @@ def current_backend_str() -> Union[str, None]:
     return fw.current_backend_str()
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1912,11 +1909,11 @@ def einops_rearrange(
     return ret
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1973,7 +1970,6 @@ def einops_reduce(
         a: ivy.array([-2.29333329, 10.53000069]),
         b: ivy.array([-1.39666676, 6.20666695])
     }
-
     """
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
@@ -1986,11 +1982,11 @@ def einops_reduce(
 einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1999,7 +1995,8 @@ def einops_repeat(
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
-    """Perform einops repeat operation on input array x.
+    """
+    Perform einops repeat operation on input array x.
 
     Parameters
     ----------
@@ -2045,7 +2042,6 @@ def einops_repeat(
         b: ivy.array([[9, 10, 9, 10],
                       [4, 2, 4, 2]])
     }
-
     """
     ret = einops.repeat(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
@@ -2057,7 +2053,7 @@ def einops_repeat(
 @handle_exceptions
 def get_min_denominator() -> float:
     """
-    Gets the global minimum denominator used by ivy for numerically stable division.
+    Get the global minimum denominator used by ivy for numerically stable division.
 
     Returns
     -------
@@ -2069,13 +2065,12 @@ def get_min_denominator() -> float:
     >>> x = ivy.get_min_denominator()
     >>> print(x)
     1e-12
-
     """
     return ivy._MIN_DENOMINATOR
 
 
-@handle_array_function
 @handle_exceptions
+@handle_array_function
 def set_min_denominator(val: float) -> None:
     """
     Set the global minimum denominator used by ivy for numerically stable division.
@@ -2095,7 +2090,6 @@ def set_min_denominator(val: float) -> None:
     >>> y = ivy.get_min_denominator()
     >>> print(y)
     1e-13
-
     """
     ivy._MIN_DENOMINATOR = val
 
@@ -2103,7 +2097,7 @@ def set_min_denominator(val: float) -> None:
 @handle_exceptions
 def get_min_base() -> float:
     """
-    Gets the global minimum base used by ivy for numerically stable power raising.
+    Get the global minimum base used by ivy for numerically stable power raising.
 
     Returns
     -------
@@ -2115,14 +2109,13 @@ def get_min_base() -> float:
     >>> x = ivy.get_min_base()
     >>> print(x)
     1e-05
-
     """
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
 
 
-@handle_array_function
 @handle_exceptions
+@handle_array_function
 def set_min_base(val: float) -> None:
     """
     Set the global minimum base used by ivy for numerically stable power raising.
@@ -2142,16 +2135,15 @@ def set_min_base(val: float) -> None:
     >>> y = ivy.get_min_base()
     >>> print(y)
     1e-04
-
     """
     ivy._MIN_BASE = val
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def stable_divide(
     numerator: Union[Number, ivy.Array, ivy.NativeArray],
     denominator: Union[Number, ivy.Array, ivy.NativeArray],
@@ -2248,10 +2240,10 @@ def stable_divide(
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
 def stable_pow(
     base: Union[Number, ivy.Array, ivy.NativeArray],
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
@@ -2260,8 +2252,8 @@ def stable_pow(
     min_base: float = None,
 ) -> Any:
     """
-    Raise the base by the power, with MIN_BASE added to the base when exponent > 1
-    for numerical stability.
+    Raise the base by the power, with MIN_BASE added to the base when exponent > 1 for
+    numerical stability.
 
     Parameters
     ----------
@@ -2276,8 +2268,6 @@ def stable_pow(
     -------
     ret
         The new item following the numerically stable power.
-
-
     """
     return_dtype = ivy.promote_types(
         ivy.default_dtype(item=base),
@@ -2294,7 +2284,7 @@ stable_pow.unsupported_dtypes = ("bfloat16",)
 @handle_exceptions
 def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
     """
-    Gets all arrays which are currently alive.
+    Get all arrays which are currently alive.
 
     Returns
     -------
@@ -2330,7 +2320,7 @@ def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
 @handle_exceptions
 def num_arrays_in_memory() -> int:
     """
-    Returns the number of arrays which are currently alive.
+    Return the number of arrays which are currently alive.
 
     Returns
     -------
@@ -2354,19 +2344,24 @@ def num_arrays_in_memory() -> int:
 @handle_exceptions
 def print_all_arrays_in_memory():
     """
-    Gets all the native Ivy arrays which are currently alive(in the garbage collector)
-    from get_all_arrays_in_memory() function and prints them to the console.
+    Print all native Ivy arrays in memory to the console.
+
+    Gets all the native Ivy arrays which are currently alive(in the
+    garbage collector) from get_all_arrays_in_memory() function and
+    prints them to the console.
     """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
 
-@handle_array_function
 @handle_exceptions
+@handle_array_function
 def set_queue_timeout(timeout: float):
     """
-    Set the global queue timeout value (in seconds)
-    Default value without this function being called is 15 seconds.
+    Set a timeout value (in seconds) for the global queue.
+
+    Set the global queue timeout value (in seconds) Default value without this function
+    being called is 15 seconds.
 
     Parameters
     ----------
@@ -2385,7 +2380,6 @@ def set_queue_timeout(timeout: float):
     >>> y = ivy.get_queue_timeout()
     >>> print(y)
     30
-
     """
     global queue_timeout_stack
     ivy.utils.assertions.check_isinstance(timeout, (int, float))
@@ -2396,6 +2390,7 @@ def set_queue_timeout(timeout: float):
 def get_queue_timeout() -> float:
     """
     Get the global queue timeout value (in seconds).
+
     The default value without this function being called is 15 seconds.
 
     Returns
@@ -2409,7 +2404,6 @@ def get_queue_timeout() -> float:
     >>> y = ivy.get_queue_timeout()
     >>> print(y)
     10.0
-
     """
     global queue_timeout_stack
     if not queue_timeout_stack:
@@ -2420,7 +2414,7 @@ def get_queue_timeout() -> float:
 @handle_exceptions
 def unset_queue_timeout() -> None:
     """
-    Reset the global queue timeout value (in seconds) to the previous state
+    Reset the global queue timeout value (in seconds) to the previous state.
 
     Examples
     --------
@@ -2447,7 +2441,6 @@ def get_tmp_dir():
     -------
     ret
         The path of directory that saves temporary files.
-
     """
     return TMP_DIR
 
@@ -2487,7 +2480,6 @@ def container_types():
     ret
         a key-value structure, and exposes public methods .keys(), .values() and
         items().
-
     """
     # noinspection PyBroadException
     try:
@@ -2505,7 +2497,6 @@ def inplace_arrays_supported() -> bool:
     -------
     ret
         Boolean, whether or not inplace arrays are supported.
-
     """
     return current_backend().inplace_arrays_supported()
 
@@ -2513,26 +2504,26 @@ def inplace_arrays_supported() -> bool:
 @handle_exceptions
 def inplace_variables_supported() -> bool:
     """
-    Determine whether inplace variables are supported for the current backend
-    framework.
+    Determine whether inplace variables are supported for the current backend framework.
 
     Returns
     -------
     ret
         Boolean, whether or not inplace variables are supported.
-
     """
     return current_backend().inplace_variables_supported()
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
 def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
-    Determines whether in-place operations are supported for x's data type,
-    by the current backend framework setting.
+    Return if in-place operations are supported for x's data type.
+
+    Determine whether in-place operations are supported for x's data type, by the
+    current backend framework setting.
 
     Parameters
     ----------
@@ -2580,7 +2571,6 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     >>> ret = x.supports_inplace_updates()
     >>> print(ret)
     False
-
     """
     if _is_variable(x):
         return ivy.inplace_variables_supported()
@@ -2591,14 +2581,13 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     )
 
 
-@handle_array_function
-@inputs_to_native_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_native_arrays
+@handle_array_function
 def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
-    Asserts that inplace operations are supported for x, else 
-    raises IvyBackendException.
+    Assert that inplace operations are supported for x.
 
     Parameters
     ----------
@@ -2643,7 +2632,6 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     >>> print(x.assert_supports_inplace())
     IvyBackendException: jax: assert_supports_inplace: Inplace operations \
     are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
-
     """
     ivy.utils.assertions.check_true(
         ivy.supports_inplace_updates(x),
@@ -2654,10 +2642,10 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     return True
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_view_indexing
 @handle_nestable
+@handle_view_indexing
+@to_native_arrays_and_back
+@handle_array_function
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2666,7 +2654,7 @@ def get_item(
     copy: Optional[bool] = None,
 ) -> ivy.Array:
     """
-     Gather slices from x according to query array, identical to x[query].
+    Gather slices from x according to query array, identical to x[query].
 
     Parameters
     ----------
@@ -2692,15 +2680,14 @@ def get_item(
     >>> query = ivy.array([[True, False], [False, False], [True, True]])
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
-
     """
     return current_backend(x).get_item(x, query, copy=copy)
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2710,11 +2697,13 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     """
-    Perform in-place update for the input array. This will always be performed on
-    ivy.Array instances pass in the input, and will also be performed on the native
-    array classes in the backend when the backend supports this. If the backend does
-    not natively support inplace updates, and x is an ivy.NativeArray instance,
-    then an exception will be thrown.
+    Perform in-place update for the input array.
+
+    This will always be performed on ivy.Array instances pass in the input, and will
+    also be performed on the native array classes in the backend when the backend
+    supports this. If the backend does not natively support inplace updates, and x is an
+    ivy.NativeArray instance, then an
+    exception will be thrown.
 
     Parameters
     ----------
@@ -2784,7 +2773,6 @@ def inplace_update(
         a: ivy.array([1, 2]),
         b: ivy.array([1, 2])
     }
-
     """
     return current_backend(x).inplace_update(
         x,
@@ -2797,10 +2785,10 @@ def inplace_update(
 inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2863,15 +2851,14 @@ def inplace_decrement(
         a: ivy.array([1., 1.5, 3.]),
         b: ivy.array([0., 50., 3.5])
     }
-
     """
     return current_backend(x).inplace_decrement(x, val)
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2921,17 +2908,16 @@ def inplace_increment(
         a: ivy.array([0., 30., 60.]),
         b: ivy.array([0., 50., 100.])
     }
-
     """
     return current_backend(x).inplace_increment(x, val)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3009,17 +2995,17 @@ def scatter_flat(
         a: ivy.array([4, 9, 5, 9, 0, 0, 0, 0]),
         b: ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
     }
-
     """
     return current_backend(indices).scatter_flat(
         indices, updates, size=size, reduction=reduction, out=out
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+@handle_array_function
+@inputs_to_native_shapes
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3097,12 +3083,12 @@ def scatter_nd(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3169,13 +3155,13 @@ def gather(
           [[ 8.,  9.],
            [10., 11.]]]])
 
-    >>> x = ivy.array([[0, 0, 1, 0, 2],
-    ...                [3, 0, 0, 0, 4],
-    ...                [0, 5, 0, 6, 0]])
-    >>> y = ivy.array([[1, 2],[3, 4],[5, 6]])
+    >>> x = ivy.array([[0, 10, 20, 0, 0],
+    ...                [0, 0, 0, 30, 40],
+    ...                [0, 10, 0, 0, 40]])
+    >>> y = ivy.array([[1, 2],[3, 4],[1, 4]])
     >>> z = ivy.gather(x, y, batch_dims=1)
     >>> print(z)
-    ivy.array([[1, 2],[3, 4],[5, 6]])
+    ivy.array([[10, 20], [30, 40],[10, 40]])
 
     With :class:`ivy.Container` input:
 
@@ -3199,19 +3185,18 @@ def gather(
         a: ivy.array([0., 1.]),
         b: ivy.array([4., 5.])
     }
-
     """
     return current_backend(params, indices).gather(
         params, indices, axis=axis, batch_dims=batch_dims, out=out
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3284,9 +3269,9 @@ def gather_nd(
     return res
 
 
-@handle_array_function
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_function
 def multiprocessing(context: Optional[str] = None):
     """
     Return backend-specific multiprocessing module.
@@ -3301,16 +3286,16 @@ def multiprocessing(context: Optional[str] = None):
     -------
     ret
         Multiprocessing module
-
     """
     return current_backend().multiprocessing(context)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@outputs_to_ivy_shapes
+@to_native_arrays_and_back
+@handle_array_function
 def shape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3318,7 +3303,7 @@ def shape(
     as_array: bool = False,
 ) -> Union[ivy.Shape, ivy.NativeShape]:
     """
-    Returns the shape of the array ``x``.
+    Return the shape of the array ``x``.
 
     Parameters
     ----------
@@ -3351,7 +3336,7 @@ def shape(
 @handle_exceptions
 def set_shape_array_mode(mode: bool) -> None:
     """
-    Set the mode of returning shape as ivy.Array to the given mode instance
+    Set the mode of returning shape as ivy.Array to the given mode instance.
 
     Parameter
     ---------
@@ -3376,7 +3361,7 @@ def set_shape_array_mode(mode: bool) -> None:
 @handle_exceptions
 def unset_shape_array_mode() -> None:
     """
-    Reset the mode of returning shape as ivy.Array to the previous state
+    Reset the mode of returning shape as ivy.Array to the previous state.
 
     Examples
     --------
@@ -3396,7 +3381,7 @@ def unset_shape_array_mode() -> None:
 @handle_exceptions
 def shape_array_mode() -> bool:
     """
-    Get the current state of shape_array_mode
+    Get the current state of shape_array_mode.
 
     Examples
     --------
@@ -3413,15 +3398,15 @@ def shape_array_mode() -> bool:
     return shape_array_mode_stack[-1]
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
 def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:
     """
-    Returns the number of dimensions of the array x.
+    Return the number of dimensions of the array x.
 
     Parameters
     ----------
@@ -3506,8 +3491,10 @@ def _valid_attrib_combinations(fn, backend, dnd_dict, first_attr_name, other_att
             attr_list = attr_list.get(backend, ())
     ivy.utils.assertions.check_false(
         dnd_dict and attr_list,
-        f"Cannot specify both {first_attr_name} and {other_attr_name} "
-        "cannot both be defined for the same function",
+        (
+            f"Cannot specify both {first_attr_name} and {other_attr_name} "
+            "cannot both be defined for the same function"
+        ),
     )
 
 
@@ -3528,8 +3515,10 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
 
     ivy.utils.assertions.check_false(
         fn_unsupported_dnd and fn_supported_dnd,
-        "unsupported_device_and_dtype and supported_device_and_dtype \
-        cannot both be defined for the same function",
+        (
+            "unsupported_device_and_dtype and supported_device_and_dtype cannot"
+            " both be defined for the same function"
+        ),
     )
 
     us = "unsupported_device_and_dtype"
@@ -3633,12 +3622,12 @@ def _get_devices_and_dtypes(fn, complement=True):
     return supported
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
-    Returns the supported combination of devices and dtypes
-    of the current backend's function.
+    Return the supported combination of devices and dtypes of the current backend's
+    function.
 
     Parameters
     ----------
@@ -3655,8 +3644,10 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
-        "supported_device_and_dtypes and unsupported_device_and_dtypes \
-         attributes cannot both exist in a particular backend",
+        (
+            "supported_device_and_dtypes and unsupported_device_and_dtypes "
+            "attributes cannot both exist in a particular backend"
+        ),
     )
     supported_devices_dtype = _get_devices_and_dtypes(fn, complement=False)
 
@@ -3672,12 +3663,12 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
     return supported_devices_dtype
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
-    Returns the unsupported combination of devices and dtypes
-    of the current backend's function.
+    Return the unsupported combination of devices and dtypes of the current backend's
+    function.
 
     Parameters
     ----------
@@ -3694,8 +3685,10 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
-        "supported_device_and_dtypes and unsupported_device_and_dtypes \
-         attributes cannot both exist in a particular backend",
+        (
+            "supported_device_and_dtypes and unsupported_device_and_dtypes "
+            "attributes cannot both exist in a particular backend"
+        ),
     )
     unsupported_devices_dtype = _get_devices_and_dtypes(fn, complement=True)
 
@@ -3769,9 +3762,9 @@ def vmap(
     return current_backend().vmap(func, in_axes, out_axes)
 
 
-@to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
 def isin(
     elements: Union[ivy.Array, ivy.NativeArray],
     test_elements: Union[ivy.Array, ivy.NativeArray],
@@ -3780,7 +3773,8 @@ def isin(
     assume_unique: bool = False,
     invert: bool = False,
 ) -> ivy.Array:
-    """Tests if each element of elements is in test_elements.
+    """
+    Test if each element of elements is in test_elements.
 
     Parameters
     ----------
@@ -3818,14 +3812,15 @@ def isin(
     )
 
 
-@to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@inputs_to_native_arrays
 def itemsize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> int:
-    """Returns the size of the input array's elements.
+    """
+    Return the size of the input array's elements.
 
     Parameters
     ----------
@@ -3848,3 +3843,32 @@ def itemsize(
     16
     """
     return ivy.current_backend().itemsize(x)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def strides(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> Tuple[int]:
+    """
+    Return the input array's strides across each dimension.
+
+    Parameters
+    ----------
+    x
+       The input array.
+
+    Returns
+    -------
+    ret
+        A tuple containing the strides.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1, 5, 9], [2, 6, 10]])
+    >>> ivy.strides(x)
+    (4, 8)
+    """
+    return ivy.current_backend().strides(x)

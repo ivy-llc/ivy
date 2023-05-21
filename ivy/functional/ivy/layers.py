@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -24,12 +25,12 @@ from ivy.utils.exceptions import handle_exceptions
 # Linear #
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_ivy_arrays
+@handle_array_function
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -38,7 +39,7 @@ def linear(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
+    """Apply a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
     batch of different network parameters are to be represented.
 
@@ -155,7 +156,6 @@ def linear(
     )
 
     if ivy.exists(bias):
-
         # OBS x [1]*len(IBS) x OF
         bias_broadcast = ivy.reshape(
             bias, outer_batch_shape + [1] * num_inner_batch_dims + [num_out_feats]
@@ -175,11 +175,11 @@ linear.mixed_function = True
 # Dropout #
 
 
-@handle_array_function
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
 @inputs_to_ivy_arrays
+@handle_array_function
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -193,7 +193,8 @@ def dropout(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Randomly setting a fraction of input tensor to zeroes with probability
+    Randomly setting a fraction of input tensor to zeroes with probability.
+
     `prob` at each update during training time to prevent possible overfitting.
     The inputs not set to 0 are scaled up `1 / (1 - prob)` by default, so that
     overall sum is unchanged at training time and inference time.
@@ -336,21 +337,21 @@ def dropout(
     mask = ivy.where(
         ivy.random_uniform(shape=noise_shape, device=ivy.dev(x), dtype=dtype, seed=seed)
         < prob,
-        0,
-        1,
+        0.,
+        1.,
     )
     x = x * mask
     if scale:
-        x = ivy.multiply(x, 1 / (1 - prob), out=out)
+        x = ivy.multiply(x, 1. / (1. - prob), out=out)
     return x if not ivy.exists(out) else ivy.inplace_update(out, x)
 
 
 # Attention #
 
 
-@handle_array_function
-@handle_array_like_without_promotion
 @handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -361,7 +362,8 @@ def scaled_dot_product_attention(
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies scaled dot product attention to inputs x using optional mask.
+    """
+    Apply scaled dot product attention to inputs x using optional mask.
 
     Parameters
     ----------
@@ -538,7 +540,6 @@ def scaled_dot_product_attention(
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
 
     if ivy.exists(mask):
-
         # BS x Q x K
         sim = ivy.where(
             ivy.logical_not(mask),
@@ -556,10 +557,10 @@ def scaled_dot_product_attention(
 scaled_dot_product_attention.mixed_function = True
 
 
-@handle_array_function
-@handle_array_like_without_promotion
 @handle_exceptions
+@handle_array_like_without_promotion
 @inputs_to_ivy_arrays
+@handle_array_function
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale: float,
@@ -576,7 +577,8 @@ def multi_head_attention(
     to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Applies multi-head attention to inputs x.
+    """
+    Apply multi-head attention to inputs x.
 
     Parameters
     ----------
@@ -742,8 +744,6 @@ def multi_head_attention(
     ivy.array([[[1.5678761 , 0.65441847],
     ...         [2.18969631, 0.40131447],
     ...         [2.19991851, 0.40000153]]])
-
-
     """
     # BS x Q x (HxF)
     q = to_q_fn(x, v=to_q_v) if ivy.exists(to_q_fn) else x
@@ -790,12 +790,12 @@ def multi_head_attention(
 # Convolutions #
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -807,7 +807,8 @@ def conv1d(
     dilations: Union[int, Tuple[int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 1-D convolution given 3-D input x and filters arrays.
+    """
+    Compute a 1-D convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -884,12 +885,13 @@ def conv1d(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
+@handle_array_function
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -902,7 +904,8 @@ def conv1d_transpose(
     dilations: Union[int, Tuple[int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
+    """
+    Compute a 1-D transpose convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1017,11 +1020,11 @@ def conv1d_transpose(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1033,7 +1036,8 @@ def conv2d(
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 2-D convolution given 4-D input x and filters arrays.
+    """
+    Compute a 2-D convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1131,7 +1135,6 @@ def conv2d(
         a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
         b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
     }
-
     """
     return current_backend(x).conv2d(
         x,
@@ -1144,12 +1147,13 @@ def conv2d(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
+@handle_array_function
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1162,7 +1166,8 @@ def conv2d_transpose(
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
+    """
+    Compute a 2-D transpose convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1262,12 +1267,12 @@ def conv2d_transpose(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1280,7 +1285,7 @@ def depthwise_conv2d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Computes a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
+    Compute a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
 
     Parameters
     ----------
@@ -1400,12 +1405,12 @@ def depthwise_conv2d(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1417,7 +1422,8 @@ def conv3d(
     dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 3-D convolution given 5-D input x and filters arrays.
+    """
+    Compute a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1503,7 +1509,6 @@ def conv3d(
         b: [1,5,32,32,3],
         c: [1,32,32,32,3]
     }
-
     """
     return current_backend(x).conv3d(
         x,
@@ -1516,12 +1521,13 @@ def conv3d(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
+@handle_array_function
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1534,7 +1540,8 @@ def conv3d_transpose(
     dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
+    """
+    Compute a 3-D transpose convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1624,12 +1631,12 @@ def conv3d_transpose(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1645,8 +1652,9 @@ def conv_general_dilated(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D
-    input x respectively and filters arrays.
+    """
+    Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x respectively
+    and filters arrays.
 
     Parameters
     ----------
@@ -1699,12 +1707,13 @@ def conv_general_dilated(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
+@handle_array_function
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1720,8 +1729,9 @@ def conv_general_transpose(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D
-    input x respectively and filters arrays.
+    """
+    Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D input x
+    respectively and filters arrays.
 
     Parameters
     ----------
@@ -1772,10 +1782,11 @@ def conv_general_transpose(
     )
 
 
-@handle_array_function
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_exceptions
+@handle_array_like_without_promotion
+@handle_out_argument
+@handle_array_function
+@inputs_to_native_shapes
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1793,8 +1804,9 @@ def conv(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and
-    5-D input x respectively and filters arrays.
+    """
+    Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -1871,11 +1883,11 @@ def conv(
 # LSTM #
 
 
-@handle_array_function
-@inputs_to_ivy_arrays
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],
@@ -1887,7 +1899,8 @@ def lstm_update(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """Perform long-short term memory update by unrolling time dimension of input array.
+    """
+    Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters
     ----------
@@ -1911,7 +1924,6 @@ def lstm_update(
     ret
         hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
         timestep *[batch_shape,out]*
-
     """
     # get shapes
     x_shape = list(x.shape)
@@ -2023,7 +2035,6 @@ def _get_num_padded_values(i, p, n, k, s):
     Returns
     -------
         number of padded values in a particular window represented by i
-
     """
     current_index = s * i
     left_padding = p // 2

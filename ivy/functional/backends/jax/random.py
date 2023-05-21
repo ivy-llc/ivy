@@ -93,7 +93,7 @@ def random_normal(
     )
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.10 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -106,7 +106,6 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     RNG_, rng_input = jax.random.split(_getRNG())
     _setRNG(RNG_)
     if seed:
@@ -172,13 +171,19 @@ def seed(*, seed_value: int = 0) -> None:
 
 
 def shuffle(
-    x: JaxArray, /, *, seed: Optional[int] = None, out: Optional[JaxArray] = None
+    x: JaxArray,
+    axis: Optional[int] = 0,
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if seed:
         rng_input = jax.random.PRNGKey(seed)
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
 
-    return jax.random.shuffle(rng_input, x)
+    # jax.random.shuffle is deprecated; identical behaviour reproduced with
+    # jax.random.permutation
+    return jax.random.permutation(key=rng_input, x=x, axis=axis, independent=True)

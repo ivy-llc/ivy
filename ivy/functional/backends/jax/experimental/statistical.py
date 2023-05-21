@@ -8,7 +8,7 @@ from . import backend_version
 
 
 @with_unsupported_dtypes(
-    {"1.23.0 and below": ("bfloat16",)},
+    {"0.4.10 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -119,7 +119,7 @@ def histogram(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("complex64", "complex128")}, backend_version
+    {"0.4.10 and below": ("complex64", "complex128")}, backend_version
 )
 def median(
     input: JaxArray,
@@ -145,6 +145,7 @@ def median(
         return ret.astype(jnp.float32)
 
 
+# Jax doesn't support overwrite_input=True and out!=None
 def nanmean(
     a: JaxArray,
     /,
@@ -169,7 +170,6 @@ def quantile(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     if isinstance(axis, list):
         axis = tuple(axis)
 
@@ -198,8 +198,19 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if overwrite_input:
+        copied_input = input.copy()
+        overwrite_input = False
+        out = None
+        return jnp.nanmedian(
+            copied_input,
+            axis=axis,
+            keepdims=keepdims,
+            overwrite_input=overwrite_input,
+            out=out,
+        )
     return jnp.nanmedian(
-        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+        input, axis=axis, keepdims=keepdims, overwrite_input=False, out=None
     )
 
 

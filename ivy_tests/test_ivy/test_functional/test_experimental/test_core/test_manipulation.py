@@ -1,13 +1,15 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
-import math
+import numpy as np
+from typing import Sequence
 
 # local
-import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy.functional.ivy.experimental.manipulation import _check_bounds
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
 
 
 # Helpers #
@@ -86,37 +88,6 @@ def test_moveaxis(
         source=source,
         destination=destination,
     )
-
-
-# ndenumerate
-@handle_test(
-    fn_tree="functional.ivy.experimental.ndenumerate",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-    ),
-)
-def test_ndenumerate(dtype_and_x):
-    values = dtype_and_x[1][0]
-    for (index1, x1), (index2, x2) in zip(
-        np.ndenumerate(values), ivy.ndenumerate(values)
-    ):
-        assert index1 == index2 and x1 == x2
-
-
-# ndindex
-@handle_test(
-    fn_tree="functional.ivy.experimental.ndindex",
-    dtype_x_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        ret_shape=True,
-    ),
-)
-def test_ndindex(dtype_x_shape):
-    shape = dtype_x_shape[2]
-    for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
-        assert index1 == index2
 
 
 # heaviside
@@ -346,33 +317,30 @@ def test_rot90(
 # top_k
 @handle_test(
     fn_tree="functional.ivy.experimental.top_k",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
-        min_dim_size=4,
-        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
     ),
-    axis=helpers.ints(min_value=-1, max_value=0),
     k=helpers.ints(min_value=1, max_value=4),
     largest=st.booleans(),
+    sorted=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_top_k(
     *,
-    dtype_and_x,
-    axis,
+    dtype_x_axis,
     k,
     largest,
+    sorted,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, axis = dtype_x_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -384,6 +352,7 @@ def test_top_k(
         k=k,
         axis=axis,
         largest=largest,
+        sorted=sorted,
     )
 
 
@@ -526,6 +495,7 @@ def _pad_helper(draw):
         st.sampled_from(
             [
                 "constant",
+                "dilated",
                 "edge",
                 "linear_ramp",
                 "maximum",
@@ -538,7 +508,7 @@ def _pad_helper(draw):
             ]
         )
     )
-    if mode == "median":
+    if mode in ["median", "minimum", "maximum", "linear_ramp"]:
         dtypes = "float"
     else:
         dtypes = "numeric"
@@ -552,9 +522,29 @@ def _pad_helper(draw):
         ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
     )
     ndim = len(shape)
-    pad_width = draw(_st_tuples_or_int(ndim))
+    min_dim = min(shape)
+    if mode == "dilated":
+        pad_width = draw(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=-min_dim, max_value=min_dim),
+                    st.integers(min_value=-min_dim, max_value=min_dim),
+                    st.integers(min_value=0, max_value=min_dim),
+                ),
+                min_size=ndim,
+                max_size=ndim,
+            )
+        )
+        constant_values = draw(
+            helpers.number(
+                min_value=0,
+                max_value=100,
+            ).filter(lambda _x: ivy.as_ivy_dtype(type(_x)) == dtype[0])
+        )
+    else:
+        pad_width = draw(_st_tuples_or_int(ndim))
+        constant_values = draw(_st_tuples_or_int(ndim))
     stat_length = draw(_st_tuples_or_int(ndim, min_val=2))
-    constant_values = draw(_st_tuples_or_int(ndim))
     end_values = draw(_st_tuples_or_int(ndim))
     return dtype, input[0], pad_width, stat_length, constant_values, end_values, mode
 
@@ -603,61 +593,14 @@ def test_pad(
     )
 
 
-@st.composite
-def _get_split_locations(draw, min_num_dims, axis=None):
-    """
-    Generate valid splits, either by generating an integer that evenly divides the axis
-    or a list of split locations.
-    """
-    shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
-    )
-    if len(shape) == 1:
-        axis = draw(st.just(0))
-    elif ivy.exists(axis):
-        axis = draw(st.just(axis))
-    else:
-        axis = draw(
-            st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
-        )
-
-    @st.composite
-    def get_int_split(draw):
-        if shape[axis] == 0:
-            return 0
-        factors = []
-        for i in range(1, shape[axis] + 1):
-            if shape[axis] % i == 0:
-                factors.append(i)
-        return draw(st.sampled_from(factors))
-
-    @st.composite
-    def get_list_split(draw):
-        return draw(
-            st.lists(
-                st.integers(min_value=0, max_value=shape[axis]),
-                min_size=0,
-                max_size=shape[axis],
-                unique=True,
-            ).map(sorted)
-        )
-
-    return draw(get_list_split() | get_int_split())
-
-
 # vsplit
 @handle_test(
     fn_tree="functional.ivy.experimental.vsplit",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=helpers.get_shape(
-        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
-    ),
+    indices_or_sections=_get_splits(allow_none=False, min_num_dims=2, axis=0),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
 )
@@ -671,7 +614,8 @@ def test_vsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    indices_or_sections = sorted(indices_or_sections)
+    if isinstance(indices_or_sections, Sequence):
+        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -691,7 +635,7 @@ def test_vsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
+    indices_or_sections=_get_splits(allow_none=False, min_num_dims=3, axis=2),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
 )
@@ -705,6 +649,8 @@ def test_dsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
+    if isinstance(indices_or_sections, Sequence):
+        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -897,17 +843,10 @@ def test_take_along_axis(
 @handle_test(
     fn_tree="functional.ivy.experimental.hsplit",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=helpers.get_shape(
-        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
-    ),
+    indices_or_sections=_get_splits(allow_none=False, min_num_dims=2, axis=1),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
 )
@@ -921,7 +860,8 @@ def test_hsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    indices_or_sections = sorted(indices_or_sections)
+    if isinstance(indices_or_sections, Sequence):
+        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -1019,52 +959,21 @@ def test_expand(
     )
 
 
-def _factorize(n):
-    factors = []
-    for i in range(2, int(math.sqrt(n)) + 1):
-        if n == 1:
-            break
-        while n % i == 0:
-            factors.append(i)
-            n //= i
-    if n > 1:
-        factors.append(n)
-    return factors
-
-
-@st.composite
-def _get_reshape(draw, shape):
-    size = 1 if len(shape) == 0 else math.prod(shape)
-    new_shape = draw(st.permutations(_factorize(size)))
-    reduct = draw(st.integers(min_value=1, max_value=len(new_shape)))
-    new_shape = (math.prod(new_shape[:reduct]), *new_shape[reduct:])
-    if shape == new_shape:
-        ones = draw(st.integers(min_value=1, max_value=5))
-        new_shape = tuple(draw(st.permutations(new_shape + (1,) * ones)))
-    return new_shape
-
-
 @st.composite
 def _as_strided_helper(draw):
-    dtype, x, x_shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=2,
-            min_dim_size=2,
-            ret_shape=True,
-        )
-    )
-    shape = draw(_get_reshape(x_shape))
+    dtype, x = draw(helpers.dtype_and_values(min_num_dims=1, max_num_dims=5))
+    x = x[0]
+    itemsize = x.itemsize
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=5))
     new_ndim = len(shape)
-    itemsize = x[0].itemsize
-    # the ground truth numpy results for strides greater than itemsize are inconsistent
     strides = draw(
         st.lists(
-            st.integers(min_value=1, max_value=itemsize),
+            st.integers(min_value=1, max_value=16),
             min_size=new_ndim,
             max_size=new_ndim,
-        )
+        ).filter(lambda x: all(x[i] % itemsize == 0 for i in range(new_ndim)))
     )
+    assume(_check_bounds(x.shape, shape, strides, itemsize))
     return dtype, x, shape, strides
 
 
@@ -1092,7 +1001,7 @@ def test_as_strided(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
+        x=x,
         shape=shape,
         strides=strides,
     )
@@ -1216,5 +1125,45 @@ def test_associative_scan(
         elems=elems,
         fn=fn,
         reverse=reverse,
+        axis=axis,
+    )
+
+
+# unique_consecutive
+@handle_test(
+    fn_tree="unique_consecutive",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=2,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    none_axis=st.booleans(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_unique_consecutive(
+    *,
+    dtype_x_axis,
+    none_axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, axis = dtype_x_axis
+    if none_axis:
+        axis = None
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
         axis=axis,
     )

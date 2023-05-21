@@ -3,7 +3,7 @@
 # local
 import ivy
 from ivy import with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow.func_wrapper import (
+from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 
@@ -99,7 +99,7 @@ def avg_pool2d(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def max_pool2d(
     input,
@@ -133,7 +133,7 @@ def max_pool2d(
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "bfloat16",
             "float16",
         )
@@ -147,7 +147,7 @@ def adaptive_avg_pool1d(input, output_size):
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -161,7 +161,7 @@ def adaptive_avg_pool2d(input, output_size):
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -170,7 +170,6 @@ def adaptive_avg_pool2d(input, output_size):
 )
 @to_ivy_arrays_and_back
 def lp_pool1d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
-
     data_format = "NCW"
     padding = "VALID"
     if stride is not None:
@@ -197,7 +196,6 @@ def lp_pool1d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
 
 @to_ivy_arrays_and_back
 def lp_pool2d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
-
     data_format = "NCHW"
     padding = "VALID"
     if stride is not None:

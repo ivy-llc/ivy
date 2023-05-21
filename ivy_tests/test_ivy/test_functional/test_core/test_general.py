@@ -623,7 +623,7 @@ def values_and_ndindices(
         )
     ),
     reduction=st.sampled_from(["sum", "min", "max", "replace"]),
-    ground_truth_backend="torch",
+    ground_truth_backend="tensorflow",
 )
 def test_scatter_flat(
     x,
@@ -1060,7 +1060,7 @@ def test_explicit_ivy_framework_handles():
     ivy.previous_backend()
 
     # set with explicit handle caught
-    ivy_exp = ivy.get_backend(fw_str)
+    ivy_exp = ivy.with_backend(fw_str)
     assert ivy_exp.current_backend_str() == fw_str
 
     # assert backend implemented function is accessible
@@ -1805,7 +1805,7 @@ _composition_2.test_unsupported_devices_and_dtypes = {
     [_composition_1, _composition_2],
 )
 def test_function_supported_device_and_dtype(func):
-    res = ivy.function_supported_devices_and_dtypes(func)
+    res = ivy.function_supported_devices_and_dtypes(func, recurse=True)
     exp = {"cpu": func.test_unsupported_devices_and_dtypes.copy()["cpu"]}
     for dev in exp:
         exp[dev] = tuple(
@@ -2201,6 +2201,33 @@ def test_isin(
     test_gradients=st.just(False),
 )
 def test_itemsize(
+    x_and_dtype,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x = x_and_dtype
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.strides",
+    x_and_dtype=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_strides(
     x_and_dtype,
     test_flags,
     backend_fw,

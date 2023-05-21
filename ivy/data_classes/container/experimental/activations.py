@@ -16,9 +16,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logit.
-        This method simply wraps the function, and so the
-        docstring for ivy.logit  also applies to this method with
+        ivy.Container static method variant of ivy.logit. This method simply wraps the
+        function, and so the docstring for ivy.logit  also applies to this method with
         minimal changes.
 
         Parameters
@@ -74,9 +73,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.logit.
-        This method simply wraps the function, and so the
-        docstring for ivy.logit  also applies to this method with
+        ivy.Container instance method variant of ivy.logit. This method simply wraps the
+        function, and so the docstring for ivy.logit  also applies to this method with
         minimal changes.
 
         Parameters
@@ -116,7 +114,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([-0.84729779, 1.38629448, 1.38629448]),
             b: ivy.array([-1.38629436, 1.38629448, -1.38629436])
         }
-
         """
         return self.static_logit(self, eps=eps, out=out)
 
@@ -133,9 +130,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.thresholded_relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.thresholded_relu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.thresholded_relu. This method simply
+        wraps the function, and so the docstring for ivy.thresholded_relu also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -173,7 +170,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([1., 0.]),
             b: ivy.array([0., 0.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "thresholded_relu",
@@ -198,9 +194,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.thresholded_relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.thresholded_relu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.thresholded_relu. This method
+        simply wraps the function, and so the docstring for ivy.thresholded_relu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -238,7 +234,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([1., 0.]),
             b: ivy.array([0., 0.])
         }
-
         """
         return self.static_thresholded_relu(
             self,
@@ -328,9 +323,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.relu6.
-        This method simply wraps the function, and so the docstring
-        for ivy.relu6 also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.relu6. This method simply wraps the
+        function, and so the docstring for ivy.relu6 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -369,7 +364,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
             b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "relu6",
@@ -392,9 +386,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.relu6.
-        This method simply wraps the function, and so the docstring
-        for ivy.relu6 also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.relu6. This method simply wraps the
+        function, and so the docstring for ivy.relu6 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -433,7 +427,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
             b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
         }
-
         """
         return self.static_relu6(
             self,
@@ -455,10 +448,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logsigmoid.
-        This method simply wraps the function, and so the
-        docstring for ivy.logsigmoid also applies to this method with
-        minimal changes.
+        ivy.Container static method variant of ivy.logsigmoid. This method simply wraps
+        the function, and so the docstring for ivy.logsigmoid also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -521,7 +513,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        Applies element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
+        Apply element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
 
         Parameters
         ----------
@@ -542,7 +534,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([-0.31326163, -1.46328258]),
             b: ivy.array([-0.51301527, -0.79813886])
         }
-
         """
         return self.static_logsigmoid(
             self,
@@ -564,9 +555,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.selu.
-        This method simply wraps the function, and so the docstring
-        for ivy.selu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.selu. This method simply wraps the
+        function, and so the docstring for ivy.selu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -602,7 +593,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([1.05070102, -1.22856998]),
             b: ivy.array([0.42028043, -0.31868932])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "selu",
@@ -625,9 +615,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.selu.
-        This method simply wraps the function, and so the docstring
-        for ivy.selu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.selu. This method simply wraps the
+        function, and so the docstring for ivy.selu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -663,9 +653,128 @@ class _ContainerWithActivationExperimental(ContainerBase):
             a: ivy.array([1.05070102, -1.22856998]),
             b: ivy.array([0.42028043, -0.31868932])
         }
-
         """
         return self.static_selu(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def _static_silu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.silu. This method simply wraps the
+        function, and so the docstring for ivy.silu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the rectified linear activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = ivy.Container.static_silu(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.73105854, -0.27777028]),
+            b: ivy.array([0.23947507, -0.0900332])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "silu",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def silu(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.silu. This method simply wraps the
+        function, and so the docstring for ivy.silu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the rectified linear activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = x.silu()
+        >>> print(y)
+        {
+            a: ivy.array([0.73105854, -0.27777028]),
+            b: ivy.array([0.23947507, -0.0900332])
+        }
+        """
+        return self._static_silu(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

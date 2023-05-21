@@ -1,9 +1,12 @@
-"""Collection of TensorFlow general functions, wrapped to fit Ivy syntax and
-signature.
+"""
+Tensorflow general functions.
+
+Collection of TensorFlow general functions, wrapped to fit Ivy syntax
+and signature.
 """
 
 # global
-from typing import Optional, Union, Sequence, Callable
+from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -47,7 +50,7 @@ def current_backend_str() -> str:
 
 # tensorflow does not support uint indexing
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def get_item(x: tf.Tensor, /, query: tf.Tensor, *, copy: bool = None) -> tf.Tensor:
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
@@ -260,45 +263,30 @@ def scatter_flat(
     if ivy.exists(size) and ivy.exists(target):
         ivy.utils.assertions.check_equal(len(target.shape), 1)
         ivy.utils.assertions.check_equal(target.shape[0], size)
-    dtype = updates.dtype
-    if reduction == "sum":
-        if target_given:
+    if not target_given:
+        target = tf.zeros([size], dtype=updates.dtype)
+        return tf.tensor_scatter_nd_update(target, tf.expand_dims(indices, -1), updates)
+    else:
+        if reduction == "sum":
             return tf.tensor_scatter_nd_add(out, tf.expand_dims(indices, -1), updates)
-        return tf.scatter_nd(tf.expand_dims(indices, -1), updates, [size])
-    elif reduction == "min":
-        if not target_given:
-            target = tf.fill([size], tf.cast(1e12, dtype))
-        res = tf.tensor_scatter_nd_min(target, tf.expand_dims(indices, -1), updates)
-        if not target_given:
-            res = tf.where(res == tf.cast(1e12, dtype), 0, res)
-    elif reduction == "max":
-        if not target_given:
-            target = tf.fill([size], tf.cast(-1e12, dtype))
-        res = tf.tensor_scatter_nd_max(target, tf.expand_dims(indices, -1), updates)
-        if not target_given:
-            res = tf.where(res == tf.cast(-1e12, dtype), 0, res)
-    elif reduction == "replace":
-        if target_given:
+        elif reduction == "min":
+            res = tf.tensor_scatter_nd_min(target, tf.expand_dims(indices, -1), updates)
+        elif reduction == "max":
+            res = tf.tensor_scatter_nd_max(target, tf.expand_dims(indices, -1), updates)
+        elif reduction == "replace":
             res = tf.tensor_scatter_nd_update(out, tf.expand_dims(indices, -1), updates)
         else:
-            res = tf.tensor_scatter_nd_update(
-                tf.zeros([size], dtype=updates.dtype),
-                tf.expand_dims(indices, -1),
-                updates,
+            raise ivy.utils.exceptions.IvyException(
+                "reduction is {}, but it must be one of "
+                '"sum", "min", "max" or "replace"'.format(reduction)
             )
-    else:
-        raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
-        )
     return res
 
 
 scatter_flat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -315,12 +303,15 @@ def scatter_nd(
             else out
         )
     # handle numeric updates
-    updates = tf.constant(updates)
+    if ivy.exists(out):
+        dtype = ivy.promote_types(out.dtype, updates.dtype)
     updates = tf.cast(
         updates,
-        ivy.dtype(out, as_native=True)
-        if ivy.exists(out)
-        else ivy.default_dtype(item=updates),
+        (
+            ivy.as_native_dtype(dtype)
+            if ivy.exists(out)
+            else ivy.default_dtype(item=updates)
+        ),
     )
     contains_slices = (
         any(isinstance(idx, slice) for idx in indices)
@@ -350,9 +341,7 @@ def scatter_nd(
         shape = (
             shape
             if ivy.exists(shape)
-            else out.shape
-            if ivy.exists(out)
-            else updates.shape
+            else out.shape if ivy.exists(out) else updates.shape
         )
         indices = _parse_ellipsis(indices, len(shape))
         indices = tf.stack(
@@ -360,15 +349,20 @@ def scatter_nd(
                 tf.reshape(value, (-1,))
                 for value in tf.meshgrid(
                     *[
-                        tf.range(s)
-                        if idx == slice(None, None, None)
-                        else tf.range(
-                            ivy.default(idx.start, 0),
-                            ivy.default(idx.stop, shape[0]),
-                            ivy.default(idx.step, 1),
+                        (
+                            tf.range(s)
+                            if idx == slice(None, None, None)
+                            else (
+                                tf.range(
+                                    ivy.default(idx.start, 0),
+                                    ivy.default(idx.stop, s),
+                                    ivy.default(idx.step, 1),
+                                )
+                                if isinstance(idx, slice)
+                                and (idx != slice(None, None, None))
+                                else tf.constant([idx % s])
+                            )
                         )
-                        if isinstance(idx, slice) and (idx != slice(None, None, None))
-                        else tf.constant([idx % s])
                         for s, idx in zip(shape, indices)
                     ],
                     indexing="ij",
@@ -380,9 +374,7 @@ def scatter_nd(
         shape = (
             shape
             if ivy.exists(shape)
-            else out.shape
-            if ivy.exists(out)
-            else updates.shape
+            else out.shape if ivy.exists(out) else updates.shape
         )
         if isinstance(indices, (tuple, list)):
             indices = _parse_index(indices, len(shape)) if -1 in indices else indices
@@ -391,16 +383,20 @@ def scatter_nd(
                     tf.reshape(value, (-1,))
                     for value in tf.meshgrid(
                         *[
-                            tf.range(s)
-                            if idx == slice(None, None, None)
-                            else tf.range(
-                                ivy.default(idx.start, 0),
-                                ivy.default(idx.stop, shape[0]),
-                                ivy.default(idx.step, 1),
+                            (
+                                tf.range(s)
+                                if idx == slice(None, None, None)
+                                else (
+                                    tf.range(
+                                        ivy.default(idx.start, 0),
+                                        ivy.default(idx.stop, s),
+                                        ivy.default(idx.step, 1),
+                                    )
+                                    if isinstance(idx, slice)
+                                    and (idx != slice(None, None, None))
+                                    else tf.constant([idx % s])
+                                )
                             )
-                            if isinstance(idx, slice)
-                            and (idx != slice(None, None, None))
-                            else tf.constant([idx % s])
                             for s, idx in zip(shape, indices)
                         ],
                         indexing="ij",
@@ -439,16 +435,20 @@ def scatter_nd(
                         tf.reshape(value, (-1,))
                         for value in tf.meshgrid(
                             *[
-                                tf.range(s)
-                                if idx == slice(None, None, None)
-                                else tf.range(
-                                    ivy.default(idx.start, 0),
-                                    ivy.ivy.default(idx.stop, shape[0]),
-                                    ivy.default(idx.step, 1),
+                                (
+                                    tf.range(s)
+                                    if idx == slice(None, None, None)
+                                    else (
+                                        tf.range(
+                                            ivy.default(idx.start, 0),
+                                            ivy.ivy.default(idx.stop, s),
+                                            ivy.default(idx.step, 1),
+                                        )
+                                        if isinstance(idx, slice)
+                                        and idx != slice(None, None, None)
+                                        else tf.constant([idx % s])
+                                    )
                                 )
-                                if isinstance(idx, slice)
-                                and idx != slice(None, None, None)
-                                else tf.constant([idx % s])
                                 for s, idx in zip(shape, index)
                             ],
                             indexing="xy",
@@ -467,8 +467,8 @@ def scatter_nd(
     )
     if sum(updates.shape) < sum(expected_shape):
         updates = ivy.broadcast_to(updates, expected_shape)._data
-    elif sum(updates.shape) > sum(expected_shape):
-        indices_shape = updates.shape[:1] + indices.shape[-1]
+    elif sum(updates.shape) >= sum(expected_shape):
+        indices_shape = updates.shape[:1] + indices.shape[-1:]
         if sum(indices.shape) < sum(indices_shape):
             indices = ivy.broadcast_to(indices, indices_shape)._data
         else:
@@ -479,69 +479,23 @@ def scatter_nd(
     if ivy.exists(shape) and ivy.exists(target):
         ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
-    dtype = updates.dtype
-    if reduction == "sum":
-        if target_given:
+    if not target_given:
+        target = tf.zeros(shape, dtype=updates.dtype)
+        res = tf.tensor_scatter_nd_update(target, indices, updates)
+    else:
+        if reduction == "sum":
             res = tf.tensor_scatter_nd_add(out, indices, updates)
-        else:
-            res = tf.scatter_nd(indices, updates, shape)
-    elif reduction == "min":
-        if not target_given:
-            if "int" in dtype.name:
-                max_value = tf.cast(
-                    min(
-                        tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).max,
-                        1e12,
-                    ),
-                    updates.dtype,
-                )
-            else:
-                max_value = tf.cast(
-                    min(
-                        tf.experimental.numpy.finfo(updates.dtype.as_numpy_dtype).max,
-                        1e12,
-                    ),
-                    updates.dtype,
-                )
-            target = tf.fill(shape, max_value)
-        res = tf.tensor_scatter_nd_min(target, indices, updates)
-        if not target_given:
-            res = tf.where(res == max_value, 0, res)
-    elif reduction == "max":
-        if not target_given:
-            if "int" in dtype.name:
-                min_value = tf.cast(
-                    max(
-                        tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).min,
-                        -1e12,
-                    ),
-                    updates.dtype,
-                )
-            else:
-                min_value = tf.cast(
-                    max(
-                        tf.experimental.numpy.finfo(updates.dtype.as_numpy_dtype).min,
-                        -1e12,
-                    ),
-                    updates.dtype,
-                )
-            target = tf.fill(shape, min_value)
-        res = tf.tensor_scatter_nd_max(target, indices, updates)
-        if not target_given:
-            res = tf.where(res == min_value, 0, res)
-    elif reduction == "replace":
-        if target_given:
+        elif reduction == "min":
+            res = tf.tensor_scatter_nd_min(target, indices, updates)
+        elif reduction == "max":
+            res = tf.tensor_scatter_nd_max(target, indices, updates)
+        elif reduction == "replace":
             res = tf.tensor_scatter_nd_update(out, indices, updates)
         else:
-            res = tf.tensor_scatter_nd_update(
-                tf.zeros(shape, dtype=dtype), indices, updates
+            raise ivy.utils.exceptions.IvyException(
+                "reduction is {}, but it must be one of "
+                '"sum", "min", "max" or "replace"'.format(reduction)
             )
-    else:
-        raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
-        )
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
     return res
@@ -646,7 +600,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def isin(
     elements: tf.Tensor,
     test_elements: tf.Tensor,
@@ -675,3 +629,7 @@ def isin(
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
     return x.dtype.size
+
+
+def strides(x: Union[tf.Tensor, tf.Variable]) -> Tuple[int]:
+    return x.numpy().strides

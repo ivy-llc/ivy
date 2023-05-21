@@ -97,7 +97,7 @@ def zeros_like(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def arange(
     *args,
     out=None,
@@ -121,7 +121,7 @@ def arange(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def range(
     *args,
     dtype=None,
@@ -132,6 +132,10 @@ def range(
     if len(args) == 1:
         end = args[0]
         start = 0
+        step = 1
+    elif len(args) == 2:
+        end = args[1]
+        start = args[0]
         step = 1
     elif len(args) == 3:
         start, end, step = args
@@ -157,7 +161,7 @@ def range(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def linspace(
     start,
     end,
@@ -174,7 +178,7 @@ def linspace(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def logspace(
     start,
     end,

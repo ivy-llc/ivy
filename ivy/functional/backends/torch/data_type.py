@@ -91,7 +91,7 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64", "complex")},
+    {"2.0.1 and below": ("uint8", "uint16", "uint32", "uint64", "complex")},
     backend_version,
 )
 def broadcast_to(
@@ -180,7 +180,7 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("uint16",)}, backend_version)
 def as_native_dtype(
     dtype_in: Union[torch.dtype, str, bool, int, float, np.dtype]
 ) -> torch.dtype:
@@ -200,8 +200,7 @@ def as_native_dtype(
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(
-            "Cannot convert to PyTorch dtype."
-            f" {dtype_in} is not supported by PyTorch."
+            f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
         )
 
 
@@ -226,6 +225,8 @@ def dtype_bits(dtype_in: Union[torch.dtype, str, np.dtype], /) -> int:
 
 
 def is_native_dtype(dtype_in: Union[torch.dtype, str], /) -> bool:
+    if dtype_in.__hash__ is None:
+        return False
     if dtype_in in ivy_dtype_dict:
         return True
     else:

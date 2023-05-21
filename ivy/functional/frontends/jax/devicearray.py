@@ -3,7 +3,6 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-from ivy.functional.frontends.numpy import dtype
 
 
 class DeviceArray:
@@ -15,9 +14,9 @@ class DeviceArray:
 
     def __repr__(self):
         main = (
-            str(self.ivy_array.__repr__()).replace(
-                "ivy.array", "ivy.frontends.jax.DeviceArray"
-            )
+            str(self.ivy_array.__repr__())
+            .replace("ivy.array", "ivy.frontends.jax.DeviceArray")
+            .replace(")", "")
             + ", dtype="
             + str(self.ivy_array.dtype)
         )
@@ -47,6 +46,11 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
+    def all(self, *, axis=None, out=None, keepdims=False):
+        return jax_frontend.numpy.all(
+            self._ivy_array, axis=axis, keepdims=keepdims, out=out
+        )
+
     def argmax(
         self,
         /,
@@ -60,6 +64,40 @@ class DeviceArray:
             axis=axis,
             out=out,
             keepdims=keepdims,
+        )
+
+    def conj(self, /):
+        return jax_frontend.numpy.conj(self._ivy_array)
+
+    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=None):
+        return jax_frontend.numpy.mean(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            where=where,
+        )
+
+    def cumprod(self, axis=None, dtype=None, out=None):
+        return jax_frontend.numpy.cumprod(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
+
+    def nonzero(self, *, size=None, fill_value=None):
+        return jax_frontend.numpy.nonzero(
+            self,
+            size=size,
+            fill_value=fill_value,
+        )
+
+    def ravel(self, order="C"):
+        return jax_frontend.numpy.ravel(
+            self,
+            order=order,
         )
 
     def __add__(self, other):
@@ -176,6 +214,12 @@ class DeviceArray:
 
     def __setitem__(self, idx, val):
         raise ivy.utils.exceptions.IvyException(
-            "ivy.functional.frontends.jax.DeviceArray object "
-            "doesn't support assignment"
+            "ivy.functional.frontends.jax.DeviceArray object doesn't support assignment"
         )
+
+    def __iter__(self):
+        ndim = len(self.shape)
+        if ndim == 0:
+            raise TypeError("iteration over a 0-d devicearray not supported")
+        for i in range(ndim):
+            yield self[i]

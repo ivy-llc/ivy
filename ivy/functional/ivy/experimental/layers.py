@@ -17,9 +17,9 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -30,7 +30,8 @@ def max_pool1d(
     data_format: str = "NWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 1-D max pool given 3-D input x.
+    """
+    Compute a 1-D max pool given 3-D input x.
 
     Parameters
     ----------
@@ -79,9 +80,9 @@ def max_pool1d(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -94,7 +95,8 @@ def max_pool2d(
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 2-D max pool given 4-D input x.
+    """
+    Compute a 2-D max pool given 4-D input x.
 
     Parameters
     ----------
@@ -159,9 +161,9 @@ def max_pool2d(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -172,7 +174,8 @@ def max_pool3d(
     data_format: str = "NDHWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 3-D max pool given 5-D input x.
+    """
+    Compute a 3-D max pool given 5-D input x.
 
     Parameters
     ----------
@@ -222,16 +225,15 @@ def max_pool3d(
 
 
         [[[46., 47.]]]]])
-
     """
     return ivy.current_backend(x).max_pool3d(
         x, kernel, strides, padding, data_format=data_format, out=out
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -245,7 +247,8 @@ def avg_pool1d(
     division_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 1-D avg pool given 3-D input x.
+    """
+    Compute a 1-D avg pool given 3-D input x.
 
     Parameters
     ----------
@@ -309,9 +312,9 @@ def avg_pool1d(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def avg_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -324,7 +327,8 @@ def avg_pool2d(
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 2-D average pool given 4-D input x.
+    """
+    Compute a 2-D average pool given 4-D input x.
 
     Parameters
     ----------
@@ -379,7 +383,6 @@ def avg_pool2d(
        [[[32., 33.]],
 
         [[38., 39.]]]])
-
     """
     return ivy.current_backend(x).avg_pool2d(
         x,
@@ -393,9 +396,9 @@ def avg_pool2d(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def avg_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -409,7 +412,8 @@ def avg_pool3d(
     divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 3-D avg pool given 5-D input x.
+    """
+    Compute a 3-D avg pool given 5-D input x.
 
     Parameters
     ----------
@@ -465,7 +469,6 @@ def avg_pool3d(
 
 
             [[[43., 44.]]]]])
-
     """
     return ivy.current_backend(x).avg_pool3d(
         x,
@@ -480,11 +483,11 @@ def avg_pool3d(
     )
 
 
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
 def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -495,7 +498,8 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Computes the 1D Discrete Cosine Tranformation of a given signal.
+    """
+    Compute the 1D Discrete Cosine Tranformation of a given signal.
 
     Parameters
     ----------
@@ -578,10 +582,10 @@ def dct(
     return ivy.current_backend(x).dct(x, type=type, n=n, axis=axis, norm=norm, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_exceptions
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -591,8 +595,9 @@ def fft(
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Computes the one dimensional discrete Fourier transform given input at least
-    1-D input x.
+    r"""
+    Compute the one dimensional discrete Fourier transform given input at least 1-D
+    input x.
 
     Parameters
     ----------
@@ -644,10 +649,10 @@ def fft(
     return ivy.current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
 
 
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -657,10 +662,11 @@ def dropout1d(
     data_format: str = "NWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Randomly zero out entire channels with probability prob using samples from
-     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
-     In this case, dropout1d performs a channel-wise dropout but assumes
-     a channel is a 1D feature map.
+    """
+    Randomly zero out entire channels with probability prob using samples from a
+    Bernoulli distribution and the remaining channels are scaled by (1/1-prob). In this
+    case, dropout1d performs a channel-wise dropout but assumes a channel is a 1D
+    feature map.
 
     Parameters
     ----------
@@ -716,10 +722,10 @@ def dropout1d(
     )
 
 
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -729,10 +735,11 @@ def dropout3d(
     data_format: str = "NDHWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Randomly zero out entire channels with probability prob using samples from
-     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
-     In this case, dropout3d performs a channel-wise dropout but assumes
-     a channel is a 1D feature map.
+    """
+    Randomly zero out entire channels with probability prob using samples from a
+    Bernoulli distribution and the remaining channels are scaled by (1/1-prob). In this
+    case, dropout3d performs a channel-wise dropout but assumes a channel is a 1D
+    feature map.
 
     Parameters
     ----------
@@ -758,18 +765,17 @@ def dropout3d(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return ivy.current_backend(x).dropout3d(
         x, prob, training=training, data_format=data_format, out=out
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -778,8 +784,9 @@ def ifft(
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Computes the one dimensional discrete Fourier transform given input at least
-    1-D input x.
+    r"""
+    Compute the one dimensional discrete Fourier transform given input at least 1-D
+    input x.
 
     Parameters
     ----------
@@ -831,9 +838,9 @@ def ifft(
     return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
 
 
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -842,7 +849,8 @@ def embedding(
     max_norm: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Embeds a given tensor of indices using a given tensor of weights.
+    """
+    Embeds a given tensor of indices using a given tensor of weights.
 
     Parameters
     ----------
@@ -880,7 +888,6 @@ def embedding(
         indices = ivy.array(indices, dtype=ivy.int32)
 
     for i, x in ivy.ndenumerate(indices):
-
         if ivy.exists(max_norm):
             ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
         else:
@@ -891,10 +898,10 @@ def embedding(
 embedding.mixed_function = True
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -907,7 +914,7 @@ def dft(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-        Computes the discrete Fourier transform of input.
+    Compute the discrete Fourier transform of input.
 
     Parameters
     ----------
@@ -956,7 +963,6 @@ def dft(
         If axis=N-1 and onesided is True, the following shape is expected:
         [batch_idx][signal_dim1][signal_dim2]…[floor(signal_dimN/2)+1][2].
         The signal_dim at the specified axis is equal to the dft_length.
-
     """
     if inverse:
         res = ifft(x, axis, norm=norm, n=dft_length, out=out)
@@ -970,10 +976,10 @@ def dft(
     return res
 
 
-@inputs_to_ivy_arrays
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@inputs_to_ivy_arrays
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
@@ -1311,8 +1317,8 @@ def _upsample_bicubic2d_default(
     return result
 
 
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],
@@ -1340,8 +1346,8 @@ def interpolate(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Down/up samples the input to the given size.
-    The algorithm used for interpolation is determined by mode.
+    Down/up samples the input to the given size. The algorithm used for interpolation is
+    determined by mode.
 
     Parameters
     ----------
@@ -1383,7 +1389,6 @@ def interpolate(
     Returns
     -------
         resized array
-
     """
     input_shape = ivy.shape(x)
     dims = len(input_shape) - 2
@@ -1609,9 +1614,6 @@ def _get_size(scale_factor, size, dims, x_shape):
     return size
 
 
-interpolate.mixed_function = True
-
-
 def _output_ceil_shape(w, f, p, s):
     return math.ceil((w - f + p) / s) + 1
 
@@ -1695,7 +1697,7 @@ def adaptive_avg_pool1d(
     output_size: int,
 ) -> ivy.Array:
     """
-    Applies a 1D adaptive average pooling over an input signal composed of several input
+    Apply a 1D adaptive average pooling over an input signal composed of several input
     planes.
 
     Parameters
@@ -1711,7 +1713,6 @@ def adaptive_avg_pool1d(
     -------
         The result of the pooling operation. Will have shape (N, C, L_out) or
         (C, L_out), where L_out = `output_size`
-
     """
     squeeze = False
     if len(input.shape) == 2:
@@ -1766,7 +1767,7 @@ def adaptive_avg_pool2d(
     output_size: Union[Sequence[int], int],
 ) -> ivy.Array:
     """
-    Applies a 2D adaptive average pooling over an input signal composed of several input
+    Apply a 2D adaptive average pooling over an input signal composed of several input
     planes.
 
     Parameters
@@ -1782,7 +1783,6 @@ def adaptive_avg_pool2d(
     -------
         The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
         (C, S_0, S_1), where S = `output_size`
-
     """
     squeeze = False
     if len(input.shape) == 3:

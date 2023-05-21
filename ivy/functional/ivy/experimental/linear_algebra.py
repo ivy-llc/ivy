@@ -21,10 +21,10 @@ def _check_valid_dimension_size(std):
     ivy.utils.assertions.check_dimensions(std)
 
 
-@handle_array_function
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_array_function
 def eigh_tridiagonal(
     alpha: Union[ivy.Array, ivy.NativeArray],
     beta: Union[ivy.Array, ivy.NativeArray],
@@ -38,8 +38,7 @@ def eigh_tridiagonal(
     tol: Optional[float] = None,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
     """
-    Computes the eigenvalues and eigenvectors of a Hermitian
-    tridiagonal matrix.
+    Compute the eigenvalues and eigenvectors of a Hermitian tridiagonal matrix.
 
     Parameters
     ----------
@@ -163,11 +162,11 @@ def eigh_tridiagonal(
 eigh_tridiagonal.mixed_function = True
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -179,7 +178,8 @@ def diagflat(
     num_cols: int = -1,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Returns a two-dimensional array with the flattened input as a diagonal.
+    """
+    Return a two-dimensional array with the flattened input as a diagonal.
 
     Parameters
     ----------
@@ -228,11 +228,11 @@ def diagflat(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -240,8 +240,9 @@ def kron(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Kronecker product, a composite array
-    made of blocks of the second array scaled by the first.
+    """
+    Compute the Kronecker product, a composite array made of blocks of the second array
+    scaled by the first.
 
     Parameters
     ----------
@@ -268,18 +269,19 @@ def kron(
     return current_backend(a, b).kron(a, b, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the matrix exponential of a square matrix.
+    """
+    Compute the matrix exponential of a square matrix.
 
     Parameters
     ----------
@@ -309,16 +311,17 @@ def matrix_exp(
     return current_backend(x).matrix_exp(x, out=out)
 
 
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[ivy.Array]:
-    """Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:
-    first is the set of eigenvalues, second is the set of eigenvectors.
+    """Compute eigenvalies and eigenvectors of x. Returns a tuple with two
+    elements: first is the set of eigenvalues, second is the set of
+    eigenvectors.
 
     Parameters
     ----------
@@ -370,15 +373,16 @@ def eig(
     return current_backend(x).eig(x)
 
 
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> ivy.Array:
-    """Computes eigenvalues of x. Returns a set of eigenvalues.
+    """
+    Compute eigenvalues of x. Returns a set of eigenvalues.
 
     Parameters
     ----------
@@ -411,18 +415,19 @@ def eigvals(
     return current_backend(x).eigvals(x)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the complex conjugate transpose of x.
+    """
+    Compute the complex conjugate transpose of x.
 
     Parameters
     ----------
@@ -449,9 +454,9 @@ def adjoint(
     return current_backend(x).adjoint(x, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_exceptions
 def multi_dot(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
@@ -459,8 +464,9 @@ def multi_dot(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the dot product of two or more matrices in a single function call,
-    while selecting the fastest evaluation order.
+    """
+    Compute the dot product of two or more matrices in a single function call, while
+    selecting the fastest evaluation order.
 
     Parameters
     ----------
@@ -499,11 +505,11 @@ def multi_dot(
     return current_backend(x).multi_dot(x, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -511,7 +517,8 @@ def cond(
     p: Optional[Union[int, float, str]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the condition number of x.
+    """
+    Compute the condition number of x.
 
     Parameters
     ----------
@@ -543,11 +550,11 @@ def cond(
     return current_backend(x).cond(x, p=p, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def cov(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray] = None,
@@ -560,7 +567,8 @@ def cov(
     aweights: Optional[ivy.Array] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
 ) -> ivy.Array:
-    """Computes the covariance of matrix x1, or variables x1 and x2.
+    """
+    Compute the covariance of matrix x1, or variables x1 and x2.
 
     Parameters
     ----------
