@@ -28,24 +28,6 @@ def _kaiser_window(window_length, beta):
 # -------------------#
 
 
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
-    /,
-    *,
-    device: Place,
-) -> Tuple[paddle.Tensor]:
-    # special case due to inconsistent behavior when n_cols=1 and n_rows=0
-    if not (n_cols and n_rows):
-        return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
-    return tuple(
-        to_device(
-            paddle.triu_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
-        )
-    )
-
-
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
