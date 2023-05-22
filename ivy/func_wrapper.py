@@ -415,7 +415,7 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with native arrays passed in the arguments.
         """
-        if not ivy.get_array_mode():
+        if not ivy.array_mode:
             return fn(*args, **kwargs)
         # check if kwargs contains an out argument, and if so, remove it
         has_out = False
@@ -476,9 +476,7 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
     def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
@@ -491,9 +489,7 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
@@ -536,7 +532,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         # convert all arrays in the return to `ivy.Array` instances
         return (
             ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
-            if ivy.get_array_mode()
+            if ivy.array_mode
             else ret
         )
 
@@ -1211,7 +1207,7 @@ def handle_nans(fn: Callable) -> Callable:
             The return of the function, with handling of inputs based
             on the selected `nan_policy`.
         """
-        nan_policy = ivy.get_nan_policy()
+        nan_policy = ivy.nan_policy
         # skip the check if the current nan policy is `nothing``
         if nan_policy == "nothing":
             return fn(*args, **kwargs)
