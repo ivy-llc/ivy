@@ -181,6 +181,7 @@ def test_numpy_moveaxis(
         destination=destination,
     )  
 
+
 # resize  
 @st.composite
 def dtype_and_resize(draw):
@@ -231,6 +232,7 @@ def test_numpy_resize(
         newshape=new_shape,
     )
 
+
 # asarray_chkfinite
 @handle_frontend_test(
     fn_tree="numpy.asarray_chkfinite",
@@ -247,7 +249,6 @@ def test_numpy_asarray_chkfinite(
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
-       
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
