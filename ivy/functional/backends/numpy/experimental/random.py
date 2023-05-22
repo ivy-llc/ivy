@@ -4,8 +4,6 @@ import numpy as np
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
-from .. import backend_version
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _check_shapes_broadcastable,
@@ -66,7 +64,6 @@ def gamma(
     return np.asarray(np.random.gamma(alpha, beta, shape), dtype=dtype)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, np.ndarray],
     *,

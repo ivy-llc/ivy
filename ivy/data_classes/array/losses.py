@@ -102,6 +102,73 @@ class _ArrayWithLosses(abc.ABC):
             self._data, pred, epsilon=epsilon, reduction=reduction, out=out
         )
 
+    def binary_cross_entropy_with_logits(
+        self: ivy.Array,
+        pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        epsilon: float = 1e-7,
+        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        reduction: str = "none",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the binary cross entropy with logits loss.
+
+        Parameters
+        ----------
+        self
+            input array containing true labels.
+        pred
+            input array containing predicted labels as logits.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+            loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+        pos_weight
+            a weight for positive examples. Must be an array with length equal to the number
+            of classes.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The binary cross entropy with logits loss between the given distributions.
+
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([0, 1, 0, 1])
+        >>> y = ivy.array([1.2, 3.8, 5.3, 2.8])
+        >>> z = x.binary_cross_entropy_with_logits(y)
+        >>> print(z)
+        ivy.array([1.463, 0.022, 5.305, 0.059])
+
+        >>> x = ivy.array([[0, 1, 0, 0]])
+        >>> y = ivy.array([[6.6, 4.2, 1.7, 7.3]])
+        >>> z = x.binary_cross_entropy_with_logits(y, epsilon=1e-3)
+        >>> print(z)
+        ivy.array([[6.601, 0.015, 1.868, 6.908]])
+
+        >>> x = ivy.array([[0, 1, 1, 0]])
+        >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+        >>> pos_weight = ivy.array([1.2])
+        >>> z = x.binary_cross_entropy_with_logits(y, pos_weight=pos_weight)
+        >>> print(z)
+        ivy.array([[2.672, 0.002, 0.029, 5.305]])
+        """
+        return ivy.binary_cross_entropy_with_logits(
+            self._data,
+            pred,
+            epsilon=epsilon,
+            pos_weight=pos_weight,
+            reduction=reduction,
+            out=out,
+        )
+
     def sparse_cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],

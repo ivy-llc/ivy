@@ -8,6 +8,8 @@ from ivy.functional.frontends.jax.func_wrapper import (
     handle_jax_dtype,
 )
 
+from ivy.func_wrapper import handle_out_argument
+
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
@@ -96,10 +98,12 @@ def empty(shape, dtype=None):
 
 @to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
+    if x.ndim != 1:
+        raise ValueError("x must be a one-dimensional array")
     if N == 0:
-        return ivy.array([], dtype=x.dtype)
+        return ivy.array([], dtype=x.dtype).reshape((x.shape[0], 0))
     else:
-        return ivy.vander(x, N=N, increasing=increasing, out=None)
+        return ivy.vander(x, N=N, increasing=increasing)
 
 
 @to_ivy_arrays_and_back
@@ -139,7 +143,7 @@ def full(shape, fill_value, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.10 and below": (
             "float16",
             "bfloat16",
         )
@@ -164,7 +168,7 @@ def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.10 and below": (
             "float16",
             "bfloat16",
         )
@@ -213,3 +217,24 @@ def csingle(x):
 @to_ivy_arrays_and_back
 def cdouble(x):
     return ivy.astype(x, ivy.complex128)
+
+
+@to_ivy_arrays_and_back
+@handle_out_argument
+def compress(condition, a, *, axis=None, out=None):
+    condition_arr = ivy.asarray(condition).astype(bool)
+    if condition_arr.ndim != 1:
+        raise ivy.utils.exceptions.IvyException("Condition must be a 1D array")
+    if axis is None:
+        arr = ivy.asarray(a).flatten()
+        axis = 0
+    else:
+        arr = ivy.moveaxis(a, axis, 0)
+
+    condition_arr, extra = condition_arr[: arr.shape[0]], condition_arr[arr.shape[0] :]
+    if any(extra):
+        raise ivy.utils.exceptions.IvyException(
+            "Condition contains entries that are out of bounds"
+        )
+    arr = arr[: condition_arr.shape[0]]
+    return ivy.moveaxis(arr[condition_arr], 0, axis)
