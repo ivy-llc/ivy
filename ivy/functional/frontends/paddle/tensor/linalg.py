@@ -26,7 +26,8 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
         ret = ivy.vector_norm(x.flatten(), ord=p, axis=-1)
         if keepdim:
             ret = ret.reshape([1] * len(x.shape))
-        if len(ret.shape) == 0: return ivy.array([ret])
+        if len(ret.shape) == 0:
+            return ivy.array([ret])
         return ret
 
     if isinstance(axis, tuple):
@@ -40,27 +41,28 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
         if p in [0, 1, 2, ivy.inf, -ivy.inf]:
             ret = ivy.vector_norm(x, ord=p, axis=axis, keepdims=keepdim)
         elif isinstance(p, (int, float)):
-            ret = ivy.vector_norm(x.flatten(), ord=p, axis=-1, keepdims=keepdim)
-            if keepdim:
-                ret = ret.reshape([1] * len(x.shape))
+            ret = ivy.pow(ivy.sum(ivy.pow(ivy.abs(x), p), axis=axis, keepdims=keepdim), float(1.0 / p))
 
     elif isinstance(axis, list) and len(axis) == 2:
         if p == 0: raise ValueError
         elif p == 1:
             ret = ivy.sum(ivy.abs(x), axis=axis, keepdims=keepdim)
-        elif p in ["fro", 2]:
-            ret = ivy.matrix_norm(x, ord=p, axis=axis, keepdims=keepdim)
+        elif p == 2 or p == "fro":
+            ret = ivy.matrix_norm(x, ord="fro", axis=axis, keepdims=keepdim)
         elif p == ivy.inf:
             ret = ivy.max(ivy.abs(x), axis=axis, keepdims=keepdim)
         elif p == -ivy.inf:
             ret = ivy.min(ivy.abs(x), axis=axis, keepdims=keepdim)
+        elif isinstance(p, (int, float)) and p > 0:
+            ret = ivy.pow(ivy.sum(ivy.pow(ivy.abs(x), p), axis=axis, keepdims=keepdim), float(1.0 / p))
         else:
             raise ValueError
 
     else:
         raise ValueError
 
-    if len(ret.shape) == 0: ret = ivy.array([ret])
+    if len(ret.shape) == 0:
+        ret = ivy.array([ret]) # this is done so as to match shape of output from paddle
     return ret
 
 
