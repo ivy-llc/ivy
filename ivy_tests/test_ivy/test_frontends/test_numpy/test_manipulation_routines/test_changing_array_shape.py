@@ -222,7 +222,7 @@ def test_numpy_resize(
     test_flags,
 ):
     dtype, x, new_shape = dtypes_x_shape
-    out = helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
