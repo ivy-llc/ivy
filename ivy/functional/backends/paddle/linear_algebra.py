@@ -361,7 +361,7 @@ def matrix_transpose(
     x: paddle.Tensor,
     /,
     *,
-    perm: Union[Tuple[List[int], List[int]]] = None,
+    perm: Optional[Union[Tuple[int], List[int]]] = None,
     conjugate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
