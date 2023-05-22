@@ -7,6 +7,88 @@ import ivy
 
 
 class _ArrayWithStatisticalExperimental(abc.ABC):
+    def histogram(
+        self: ivy.Array,
+        /,
+        *,
+        bins: Optional[Union[int, ivy.Array, ivy.NativeArray, str]] = None,
+        axis: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        extend_lower_interval: Optional[bool] = False,
+        extend_upper_interval: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        range: Optional[Tuple[float]] = None,
+        weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        density: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.histogram. This method simply wraps the
+        function, and so the docstring for ivy.histogram also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        bins
+            if ``bins`` is an int, it defines the number of equal-width bins in the
+            given range.
+            if ``bins`` is an array, it defines a monotonically increasing array of bin
+            edges, including the rightmost edge, allowing for non-uniform bin widths.
+        axis
+            dimension along which maximum values must be computed. By default, the
+            maximum value must be computed over the entire array. Default: ``None``.
+        extend_lower_interval
+            if True, extend the lowest interval I0 to (-inf, c1].
+        extend_upper_interval
+            ff True, extend the upper interval I_{K-1} to [c_{K-1}, +inf).
+        dtype
+            the output type.
+        range
+            the lower and upper range of the bins. The first element of the range must
+            be less than or equal to the second.
+        weights
+            each value in ``a`` only contributes its associated weight towards the bin
+            count (instead of 1). Must be of the same shape as a.
+        density
+            if True, the result is the value of the probability density function at the
+            bin, normalized such that the integral over the range of bins is 1.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a tuple containing the values of the histogram and the bin edges.
+
+        Both the description and the type hints above assumes an array input for
+        simplicity, but this function is *nestable*, and therefore also accepts
+        :class:`ivy.Container` instances in place of any of the arguments.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([0, 1, 2])
+        >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
+        >>> z = ivy.histogram(x, bins=y)
+        >>> print(z)
+        (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+        """
+        return ivy.histogram(
+            self._data,
+            bins=bins,
+            axis=axis,
+            extend_lower_interval=extend_lower_interval,
+            extend_upper_interval=extend_upper_interval,
+            dtype=dtype,
+            range=range,
+            weights=weights,
+            density=density,
+            out=out,
+        )
+
     def median(
         self: ivy.Array,
         /,
@@ -15,9 +97,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.median. This method simply
-        wraps the function, and so the docstring for ivy.median also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.median. This method simply wraps the
+        function, and so the docstring for ivy.median also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -56,9 +139,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.nanmean. This method simply
-        wraps the function, and so the docstring for ivy.nanmean also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.nanmean. This method simply wraps the
+        function, and so the docstring for ivy.nanmean also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -106,10 +190,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         interpolation: str = "linear",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.quantile.
-        This method simply wraps the function, and so the docstring
-        for ivy.quantile also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.quantile. This method simply wraps the
+        function, and so the docstring for ivy.quantile also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -190,9 +274,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         rowvar: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.corrcoef. This method simply
-        wraps the function, and so the docstring for ivy.corrcoef also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.corrcoef. This method simply wraps the
+        function, and so the docstring for ivy.corrcoef also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -233,9 +318,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         overwrite_input: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.nanmedian. This method simply
-        wraps the function, and so the docstring for ivy.nanmedian also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.nanmedian. This method simply wraps the
+        function, and so the docstring for ivy.nanmedian also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -271,11 +357,13 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
-        >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
-        >>> a.nanmedian(a)
-            3.0
-        >>> a.nanmedian(a, axis=0)
-            array([6.5, 2. , 2.5])
+        With :class:`ivy.array` input and default backend set as `numpy`:
+
+        >>> a = ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]])
+        >>> a.nanmedian()
+            ivy.array(3.)
+        >>> a.nanmedian(axis=0)
+            ivy.array([6.5, 2. , 2.5])
         """
         return ivy.nanmedian(
             self._data,
@@ -293,9 +381,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         minlength: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.bincount. This method simply
-        wraps the function, and so the docstring for ivy.bincount also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.bincount. This method simply wraps the
+        function, and so the docstring for ivy.bincount also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

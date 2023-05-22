@@ -11,8 +11,8 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
     def sinc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sinc. This method simply wraps the
-        function, and so the docstring for ivy.sinc also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sinc also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -39,38 +39,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.sinc(self._data, out=out)
 
-    def lcm(
-        self: ivy.Array, x2: ivy.Array, *, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.lcm. This method simply wraps the
-        function, and so the docstring for ivy.lcm also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            first input array.
-        x2
-            second input array
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            an array that includes the element-wise least common multiples
-            of 'self' and x2
-
-        Examples
-        --------
-        >>> x1=ivy.array([2, 3, 4])
-        >>> x2=ivy.array([5, 8, 15])
-        >>> x1.lcm(x2)
-        ivy.array([10, 21, 60])
-        """
-        return ivy.lcm(self, x2, out=out)
-
     def fmod(
         self: ivy.Array,
         x2: ivy.Array,
@@ -78,9 +46,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.fmod. This method simply
-        wraps the function, and so the docstring for ivy.fmod also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.fmod. This method simply wraps the
+        function, and so the docstring for ivy.fmod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -117,9 +86,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.fmax. This method simply
-        wraps the function, and so the docstring for ivy.fmax also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.fmax. This method simply wraps the
+        function, and so the docstring for ivy.fmax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -156,9 +126,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.fmin. This method simply
-        wraps the function, and so the docstring for ivy.fmin also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.fmin. This method simply wraps the
+        function, and so the docstring for ivy.fmin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -197,9 +168,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         axis: int = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.trapz. This method simply
-        wraps the function, and so the docstring for ivy.trapz also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.trapz. This method simply wraps the
+        function, and so the docstring for ivy.trapz also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -246,9 +218,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.float_power. This method simply
-        wraps the function, and so the docstring for ivy.float_power also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.float_power. This method simply wraps
+        the function, and so the docstring for ivy.float_power also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -285,9 +258,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.exp2. This method simply
-        wraps the function, and so the docstring for ivy.exp2 also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.exp2. This method simply wraps the
+        function, and so the docstring for ivy.exp2 also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -319,9 +293,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.copysign. This method simply
-        wraps the function, and so the docstring for ivy.copysign also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.copysign. This method simply wraps the
+        function, and so the docstring for ivy.copysign also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -359,9 +334,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.count_nonzero. This method simply
-        wraps the function, and so the docstring for ivy.count_nonzero also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.count_nonzero. This method simply wraps
+        the function, and so the docstring for ivy.count_nonzero also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -413,9 +389,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.nansum. This method simply
-        wraps the function, and so the docstring for ivy.nansum also applies to
-        this method with minimal changes.
+        ivy.Array instance method variant of ivy.nansum. This method simply wraps the
+        function, and so the docstring for ivy.nansum also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -461,9 +437,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.gcd. This method simply
-        wraps the function, and so the docstring for ivy.gcd also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.gcd. This method simply wraps the
+        function, and so the docstring for ivy.gcd also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -502,9 +479,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.isclose. This method simply
-        wraps the function, and so the docstring for ivy.isclose also applies to
-        this method with minimal changes.
+        ivy.Array instance method variant of ivy.isclose. This method simply wraps the
+        function, and so the docstring for ivy.isclose also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -558,9 +535,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.angle. This method simply
-        wraps the function, and so the docstring for ivy.angle also applies to
-        this method with minimal changes.
+        ivy.Array instance method variant of ivy.angle. This method simply wraps the
+        function, and so the docstring for ivy.angle also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -599,9 +576,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.imag. This method simply
-        wraps the function, and so the docstring for ivy.imag also applies to
-        this method with minimal changes.
+        ivy.Array instance method variant of ivy.imag. This method simply wraps the
+        function, and so the docstring for ivy.imag also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -637,9 +614,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         neginf: Optional[Union[float, int]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.nan_to_num. This method simply
-        wraps the function, and so the docstring for ivy.nan_to_num also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.nan_to_num. This method simply wraps
+        the function, and so the docstring for ivy.nan_to_num also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -688,9 +666,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.logaddexp2. This method
-        simply wraps the function, and so the docstring for ivy.logaddexp2 also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.logaddexp2. This method simply wraps
+        the function, and so the docstring for ivy.logaddexp2 also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -721,9 +700,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.signbit. This method
-        simply wraps the function, and so the docstring for ivy.signbit also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.signbit. This method simply wraps the
+        function, and so the docstring for ivy.signbit also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -754,8 +734,8 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.hypot. This method simply wraps the
-        function, and so the docstring for ivy.hypot also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.hypot also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -793,9 +773,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Container] = None,
     ) -> bool:
         """
-        ivy.Array instance method variant of ivy.allclose. This method simply
-        wraps the function, and so the docstring for ivy.allclose also applies to
-        this method with minimal changes.
+        ivy.Array instance method variant of ivy.allclose. This method simply wraps the
+        function, and so the docstring for ivy.allclose also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -854,9 +834,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.diff. This method simply
-        wraps the function, and so the docstring for ivy.diff also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.diff. This method simply wraps the
+        function, and so the docstring for ivy.diff also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -896,9 +877,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.fix. This method
-        simply wraps the function, and so the docstring for ivy.fix also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.fix. This method simply wraps the
+        function, and so the docstring for ivy.fix also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -929,9 +911,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.nextafter. This method simply
-        wraps the function, and so the docstring for ivy.nextafter also applies to
-        this method with minimal changes.
+        ivy.Array instance method variant of ivy.nextafter. This method simply wraps the
+        function, and so the docstring for ivy.nextafter also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -965,9 +947,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.zeta. This method simply
-        wraps the function, and so the docstring for ivy.zeta also applies to
-        this method with minimal changes.
+        ivy.Array instance method variant of ivy.zeta. This method simply wraps the
+        function, and so the docstring for ivy.zeta also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1002,7 +984,8 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         edge_order: int = 1,
         axis: Optional[Union[int, list, tuple]] = None,
     ) -> Union[ivy.Array, List[ivy.Array]]:
-        """Calculates gradient of x with respect to (w.r.t.) spacing
+        """
+        Calculate gradient of x with respect to (w.r.t.) spacing.
 
         Parameters
         ----------
@@ -1075,9 +1058,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.xlogy. This method simply
-        wraps the function, and so the docstring for ivy.xlogy also applies to
-        this method with minimal changes.
+        ivy.Array instance method variant of ivy.xlogy. This method simply wraps the
+        function, and so the docstring for ivy.xlogy also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1110,9 +1093,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
     def real(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.real. This method simply wraps
-        the function, and so the docstring for ivy.real also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.real. This method simply wraps the
+        function, and so the docstring for ivy.real also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1141,8 +1124,8 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         self: ivy.Array, /, *, threshold: float = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        Maps the values of the input tensor to either 0 or 1, element-wise, based on
-        the outcome of a comparison against a threshold value.
+        Map the values of the input tensor to either 0 or 1, element-wise, based on the
+        outcome of a comparison against a threshold value.
 
         Parameters
         ----------
@@ -1164,9 +1147,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
     def conj(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.conj. This method simply wraps
-        the function, and so the docstring for ivy.conj also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.conj. This method simply wraps the
+        function, and so the docstring for ivy.conj also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1190,6 +1173,48 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.conj(self._data, out=out)
 
+    def lerp(
+        self: ivy.Array,
+        end: ivy.Array,
+        weight: Union[ivy.Array, float],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.lerp. This method simply wraps the
+        function, and so the docstring for ivy.lerp also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array of starting points
+        end
+            Array of ending points
+        weight
+            Weight for the interpolation formula  , array or scalar.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The linear interpolation between array self and array end based on
+            scalar or array weight
+            self + ((end - self) * weight)
+
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 2.0, 3.0, 4.0])
+        >>> end = ivy.array([10.0, 10.0, 10.0, 10.0])
+        >>> weight = 0.5
+        >>> x.lerp(end, weight)
+        ivy.array([5.5, 6. , 6.5, 7. ])
+        """
+        return ivy.lerp(self, end, weight, out=out)
+
     def ldexp(
         self: ivy.Array,
         x2: ivy.Array,
@@ -1198,9 +1223,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.ldexp. This method simply wraps
-        the function, and so the docstring for ivy.ldexp also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.ldexp. This method simply wraps the
+        function, and so the docstring for ivy.ldexp also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1230,9 +1255,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.frexp. This method simply wraps
-        the function, and so the docstring for ivy.frexp also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.frexp. This method simply wraps the
+        function, and so the docstring for ivy.frexp also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

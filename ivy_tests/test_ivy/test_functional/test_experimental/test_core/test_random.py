@@ -63,7 +63,7 @@ def test_dirichlet(
         assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         u, v = ivy.array(u), ivy.array(v)
         assert ivy.all(ivy.sum(u, axis=-1) == ivy.sum(v, axis=-1))
         assert ivy.all(u >= 0) and ivy.all(u <= 1)
@@ -100,7 +100,6 @@ def test_beta(
     ground_truth_backend,
     test_flags,
 ):
-
     dtype, alpha_beta = dtype_and_alpha_beta
     if "float16" in dtype:
         return
@@ -120,7 +119,7 @@ def test_beta(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert ivy.all(u >= 0) and ivy.all(u <= 1)
         assert ivy.all(v >= 0) and ivy.all(v <= 1)
 
@@ -168,7 +167,7 @@ def test_gamma(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert ivy.all(u >= 0)
         assert ivy.all(v >= 0)
 
@@ -230,7 +229,7 @@ def test_poisson(
         assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 

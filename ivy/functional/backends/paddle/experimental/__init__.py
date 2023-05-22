@@ -3,7 +3,6 @@ import paddle as paddle
 
 backend_version = {"version": paddle.version.full_version}
 
-# flake8: noqa
 from .activations import *
 from .converters import *
 from .creation import *

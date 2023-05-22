@@ -34,7 +34,9 @@ def random_uniform(
         torch.manual_seed(seed)
     if torch.is_tensor(shape):
         shape = shape.tolist()
-    return torch.rand(shape, device=device, dtype=dtype) * rand_range + low
+    return (
+        torch.rand(shape, device=device, dtype=torch.float) * rand_range + low
+    ).type(dtype)
 
 
 def random_normal(
@@ -60,7 +62,7 @@ def random_normal(
 random_normal.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -121,6 +123,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 def shuffle(
     x: torch.Tensor,
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,

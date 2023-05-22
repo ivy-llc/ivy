@@ -37,7 +37,7 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
-@with_supported_dtypes({"2.9.1 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.12.0 and below": ("float32",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     if use_norm is not None:
@@ -174,7 +174,22 @@ def shape_n(input, out_type=ivy.int32, name=None):
         return [ivy.array(ivy.shape(i), dtype="int64") for i in input]
 
 
-@with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def size(input, out_type=ivy.int32, name=None):
+    out_type = to_ivy_dtype(out_type)
+    shape = ivy.shape(input, as_array=True)
+    return ivy.astype(ivy.prod(shape), out_type, copy=False)
+
+
+@to_ivy_arrays_and_back
+def ensure_shape(x, shape, name=None):
+    x = EagerTensor(x)
+    x.set_shape(shape)
+
+    return x
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
@@ -208,6 +223,11 @@ def identity(input, name=None):
     return ivy.copy_array(input)
 
 
+@to_ivy_arrays_and_back
+def identity_n(input, name=None):
+    return [ivy.copy_array(x) for x in input]
+
+
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
 
@@ -218,7 +238,13 @@ def is_tensor(x, name=None):
 
 
 @to_ivy_arrays_and_back
-def gather(params, indices, axis=None, batch_dims=0, name=None):
+def gather(params, indices, validate_indices=None, axis=None, batch_dims=0, name=None):
+    if axis is None:
+        axis = batch_dims
+    else:
+        axis = axis % len(params.shape)
+    if axis < batch_dims:
+        axis = batch_dims
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -240,8 +266,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
             k + axis,
             n,
             allow_equal=True,
-            message="Value of axis must be \
-                                           such that axis + dim(mask) <= dim(tensor)",
+            message="Value of axis must be such that axis + dim(mask) <= dim(tensor)",
         )
         tensor_shape = ivy.shape(tensor)
         for i in range(axis - 1, -1, -1):
@@ -391,7 +416,7 @@ def realdiv(x, y, name=None):
     return ivy.divide(x, y)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("uint16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("uint16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
@@ -419,6 +444,7 @@ def where(condition: ivy.Array, x=None, y=None, name=None):
         return ivy.where(condition, x, y)
 
 
+@to_ivy_arrays_and_back
 def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
 
@@ -439,7 +465,7 @@ def repeat(
     return ivy.repeat(input, repeats, axis=axis)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
@@ -448,3 +474,40 @@ def unstack(value: ivy.Array, axis=0, num=None, name=None):
 @to_ivy_arrays_and_back
 def reverse(tensor, axis, name=None):
     return ivy.flip(tensor, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def scan(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    infer_shape=True,
+    reverse=False,
+    name=None,
+):
+    elems = ivy.asarray(elems)
+    return ivy.associative_scan(elems, fn, reverse=reverse)
+
+
+@to_ivy_arrays_and_back
+def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
+    return tf_frontend.linalg.norm(
+        tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
+    )
+
+
+norm.supported_dtypes = (
+    "float32",
+    "float64",
+)
+
+
+@to_ivy_arrays_and_back
+def unique(x, out_idx=ivy.int32, name=None):
+    ret = ivy.unique_all(x, by_value=False)
+    y = ret[0]
+    idx = ivy.astype(ret[2], out_idx)
+    return y, idx

@@ -181,7 +181,7 @@ This is another categorization which is **not** mutually exclusive, as outlined 
 
 Primary convenience functions include: `ivy.can_cast`_ which determines if one data type can be cast to another data type according to type-promotion rules, `ivy.dtype`_ which gets the data type for the input array, and `ivy.dev`_ which gets the device for the input array.
 
-Compositional convenience functions include: `ivy.set_default_dtype`_ which sets the global default data dtype, `ivy.default_dtype`_ which returns the correct data type to use, considering both the inputs and also the globally set default, and `ivy.get_all_arrays_on_dev`_ which gets all arrays which are currently on the specified device.
+Compositional convenience functions include: `ivy.set_default_dtype`_ which sets the global default data dtype, `ivy.default_dtype`_ which returns the correct data type to use, considering both the inputs and the globally set default data type, and `ivy.get_all_arrays_on_dev`_ which gets all arrays which are currently on the specified device.
 
 Standalone convenience functions include: `ivy.get_backend`_ which returns a local Ivy module with the associated backend framework.
 `ivy.nested_map`_ which enables an arbitrary function to be mapped across the leaves of an arbitrary nest, and `ivy.index_nest`_ which enables an arbitrary nest to be recursively indexed.

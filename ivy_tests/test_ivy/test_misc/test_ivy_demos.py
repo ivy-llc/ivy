@@ -11,9 +11,9 @@ import ivy.functional.backends.numpy
 # Tests #
 # ------#
 
+
 # training
 def test_training_demo(on_device):
-
     if ivy.current_backend_str() == "numpy":
         # numpy does not support gradients
         pytest.skip()

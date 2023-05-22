@@ -2,10 +2,10 @@
 import paddle
 from typing import Tuple, Optional
 from collections import namedtuple
+import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # local
-
 from . import backend_version
 
 
@@ -15,6 +15,9 @@ from . import backend_version
 def unique_all(
     x: paddle.Tensor,
     /,
+    *,
+    axis: Optional[int] = None,
+    by_value: bool = True,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     Results = namedtuple(
         "Results",
@@ -27,10 +30,14 @@ def unique_all(
         x_dtype = x.dtype
 
     values, indices, inverse_indices, counts = paddle.unique(
-        x, return_index=True, return_counts=True, return_inverse=True
+        x,
+        return_index=True,
+        return_counts=True,
+        return_inverse=True,
+        axis=axis,
     )
-    nan_count = paddle.sum(paddle.isnan(x))
 
+    nan_count = paddle.sum(paddle.isnan(x))
     if nan_count.item() > 0:
         nan = paddle.to_tensor([float("nan")] * nan_count.item(), dtype=values.dtype)
         values = paddle.concat((values, nan))
@@ -42,10 +49,20 @@ def unique_all(
         counts = paddle.concat(
             (counts, paddle.ones(shape=nan_count, dtype=counts.dtype))
         )
+
+    if not by_value:
+        sort_idx = paddle.argsort(indices)
+        values = paddle.gather(values, sort_idx, axis=axis)
+        counts = paddle.gather(counts, sort_idx)
+        inv_sort_idx = paddle_backend.invert_permutation(sort_idx)
+        inverse_indices = paddle_backend.vmap(lambda y: paddle.gather(inv_sort_idx, y))(
+            inverse_indices
+        )
+
     return Results(
         values.cast(x_dtype),
         indices,
-        paddle.reshape(inverse_indices, x.shape),
+        inverse_indices,
         counts,
     )
 

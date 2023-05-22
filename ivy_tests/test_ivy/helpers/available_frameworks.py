@@ -23,6 +23,8 @@ def ground_truth():
         g_truth = "jax"
     elif "paddle" in available_framework_lis:
         g_truth = "paddle"
+    elif "mxnet" in available_framework_lis:
+        g_truth = "mxnet"
     else:
         g_truth = "numpy"
     return g_truth

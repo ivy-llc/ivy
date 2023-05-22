@@ -22,9 +22,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.dirichlet. This method
-        simply wraps the function, and so the docstring for ivy.dirichlet also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.dirichlet. This method simply wraps
+        the function, and so the docstring for ivy.dirichlet also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -88,9 +89,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.dirichlet. This method
-        simply wraps the function, and so the docstring for ivy.shuffle also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.dirichlet. This method simply wraps
+        the function, and so the docstring for ivy.shuffle also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -156,9 +158,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.beta. This method
-        simply wraps the function, and so the docstring for ivy.beta also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.beta. This method simply wraps the
+        function, and so the docstring for ivy.beta also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -227,9 +230,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.beta. This method
-        simply wraps the function, and so the docstring for ivy.beta also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.beta. This method simply wraps the
+        function, and so the docstring for ivy.beta also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -296,9 +300,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.poisson. This method
-        simply wraps the function, and so the docstring for ivy.poisson also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.poisson. This method simply wraps the
+        function, and so the docstring for ivy.poisson also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -359,9 +364,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[int] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.poisson. This method
-        simply wraps the function, and so the docstring for ivy.poisson also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.poisson. This method simply wraps
+        the function, and so the docstring for ivy.poisson also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
