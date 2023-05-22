@@ -8399,6 +8399,7 @@ def test_torch_instance_norm(
         on_device=on_device,
     )
 
+
 # is_complex
 @handle_frontend_method(
     class_tree=CLASS_TREE,
