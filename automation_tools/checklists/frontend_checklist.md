@@ -17,7 +17,7 @@ The [Ivy Docs](https://unify.ai/docs/ivy/) represent the ground truth for the ta
        2. - [ ] ❌: The alias is added to the existing function/method's test in the `aliases` parameter of `handle_frontend_test`/`handle_frontend_method`.
 3. - [ ] ❌: The naming of the function/method and its arguments exactly matches the original.
 4. - [ ] ❌: No defined argument is being ignored in the function/method's implementation.
-5. - [ ] ❌: In special cases where an argument's implementation is pending due to an incomplete superset of an ivy function:
+5. - [ ] ❌: In special cases where an argument's implementation should be pending due to an incomplete superset of an ivy function:
        1. - [ ] ❌: A descriptive comment has been left under the `Implement superset behavior` ToDo list in https://github.com/unifyai/ivy/issues/6406.
        2. - [ ] ❌: A ToDo comment has been added prompting to pass the frontend argument to the ivy function whose behavior is to be extended.
 6. - [ ] ❌: In case a frontend function is being added:
@@ -29,13 +29,13 @@ The [Ivy Docs](https://unify.ai/docs/ivy/) represent the ground truth for the ta
        2. - [ ] ❌: If a required frontend function has not yet been added, the method may be implemented as a composition of ivy functions, making sure that:
               - [ ] ❌: `@to_ivy_arrays_and_back` has been added to the method.
               - [ ] ❌: A ToDo comment has been made prompting to remove the decorator and update the implementation as soon as the missing function has been added.
-8. - [ ] ❌: The added function/method's test has also been implemented:
-	   1. - [ ] ❌: All supported arguments are being generated in `handle_frontend_test`/`handle_frontend_method` and passed to `test_frontend_function`/`test_frontend_method`. 
+8. - [ ] ❌: The function/method's test has been added (except in the alias case mentioned in <2>):
+       1. - [ ] ❌: All supported arguments are being generated in `handle_frontend_test`/`handle_frontend_method` and passed to `test_frontend_function`/`test_frontend_method`. 
        2. - [ ] ❌: The argument generation covers all possible supported values. Array sizes, dimensions, and axes adhere to the full supported set of the original function/method.
        3. - [ ] ❌: The `available_dtypes` parameter passed to the helper generating the function/method's input array is set to `helpers.get_dtypes("valid")`. If there are unsupported dtypes that cause the test to fail, they should be handled by adding `@with_supported_dtypes`/`@with_unsupported_dtype` to the function/method.
 9. - [ ] ❌: The PR is not introducing any test failures.
        1. - [ ] ❌: The lint checks are passing.
        2. - [ ] ❌: The implemented test is passing for all backends.
-10. - [ ] ❌: The PR only contains changes relevant to the addressed subtask.
+10. - [ ] ❌: The PR `closes` a `Sub Task` issue linked to one of the open frontend ToDo lists.
 11. - [ ] ❌: The function/method and its test have been added to the correct `.py` files corresponding to the addressed ToDo list.
-12. - [ ] ❌: The PR `closes` a `Sub Task` issue linked to one of the open frontend ToDo lists.
+12. - [ ] ❌: The PR only contains changes relevant to the addressed subtask.
