@@ -179,8 +179,7 @@ def test_numpy_moveaxis(
         a=a[0],
         source=source,
         destination=destination,
-    )
-    
+    )  
 
 # resize  
 @st.composite
@@ -246,8 +245,8 @@ def test_numpy_asarray_chkfinite(
     frontend,
     test_flags,
 ):
-   dtype, a = dtype_and_a
-   helpers.test_frontend_function(
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
        
         input_dtypes=dtype,
         frontend=frontend,

@@ -4,6 +4,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 
+
 @to_ivy_arrays_and_back
 def reshape(x, /, newshape, order="C"):
     return ivy.reshape(x, shape=newshape, order=order)
@@ -11,13 +12,12 @@ def reshape(x, /, newshape, order="C"):
 
 @to_ivy_arrays_and_back
 def resize(x, newshape, /, refcheck=True):
-    x_new = ivy.reshape(x, shape=(-1,), order='C')
+    x_new = ivy.reshape(x, shape=(-1,), order="C")
     total_size = 1
     for diff_size in newshape:
         total_size *= diff_size
         if diff_size < 0:
             raise ValueError("values must not be negative")
-    
     
     if x_new.size == 0 or total_size == 0:
         return ivy.zeros_like(x_new) 
@@ -49,4 +49,3 @@ def asarray_chkfinite(a, dtype=None, order=None):
     if not ivy.all(ivy.isfinite(a)):
         raise ValueError("array must not contain infs or NaNs")
     return a
-
