@@ -61,7 +61,7 @@ def eigvalsh(input, UPLO="L", *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def eigh(a, /, UPLO="L", out=None):
     return ivy.eigh(a, UPLO=UPLO, out=out)
 
@@ -99,7 +99,7 @@ def matrix_power(input, n, *, out=None):
 
 
 @with_supported_dtypes(
-    {"1.11.0 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
+    {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
 @to_ivy_arrays_and_back
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
@@ -111,7 +111,7 @@ def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, ou
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def cross(input, other, *, dim=None, out=None):
     return torch_frontend.miscellaneous_ops.cross(input, other, dim=dim, out=out)
 
@@ -160,7 +160,7 @@ def inv_ex(input, *, check_errors=False, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def tensorinv(input, ind=2, *, out=None):
     not_invertible = "Reshaped tensor is not invertible"
     prod_cond = "Tensor shape must satisfy prod(A.shape[:ind]) == prod(A.shape[ind:])"
@@ -184,25 +184,25 @@ def tensorinv(input, ind=2, *, out=None):
     return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def eig(input, *, out=None):
     return ivy.eig(input, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def solve(input, other, *, out=None):
     return ivy.solve(input, other, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def lu_factor(A, *, pivot=True, out=None):
     return ivy.lu_factor(A, pivot=pivot, out=out)
 
@@ -213,7 +213,7 @@ def matmul(input, other, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def vander(x, N=None):
     if len(x.shape) < 1:
         raise RuntimeError("Input dim must be greater than or equal to 1.")
@@ -245,6 +245,6 @@ def vander(x, N=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def multi_dot(tensors, *, out=None):
     return ivy.multi_dot(tensors, out=out)

@@ -72,7 +72,7 @@ from .. import backend_version
 
 
 @with_supported_dtypes(
-    {"2.9.1 and below": ("float",)},
+    {"2.12.0 and below": ("float",)},
     backend_version,
 )
 def median(

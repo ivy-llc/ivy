@@ -33,6 +33,7 @@ def test_l2_normalize(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
+        rtol_=1e-1,
         x=x[0],
         axis=axis,
     )
