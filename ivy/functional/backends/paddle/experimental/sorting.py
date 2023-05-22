@@ -3,11 +3,16 @@ import paddle
 from typing import Optional, Union
 
 
-# msort
-def msort(
-    a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None
+# invert_permutation
+def invert_permutation(
+    x: Union[paddle.Tensor, list, tuple],
+    /,
 ) -> paddle.Tensor:
-    paddle.sort(a, axis=0)
+    sorted_indices = paddle.argsort(x)
+    inverse = paddle.zeros_like(sorted_indices)
+    inverse[sorted_indices] = paddle.arange(len(x))
+    inverse_permutation = paddle.argsort(inverse)
+    return inverse_permutation
 
 
 # lexsort
