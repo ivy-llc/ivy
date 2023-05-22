@@ -71,7 +71,7 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
     if len(ret.shape) == 0:
         ret = ivy.array(
             [ret]
-        ) # this is done so as to match shape of output from paddle
+        )  # this is done so as to match shape of output from paddle
     return ret
 
 
