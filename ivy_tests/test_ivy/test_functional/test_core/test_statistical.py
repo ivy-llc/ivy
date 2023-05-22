@@ -363,7 +363,7 @@ def test_cumsum(
         force_int_axis=True,
     ),
     exclusive=st.booleans(),
-    reverse=st.booleans()
+    reverse=st.booleans(),
 )
 def test_cummax(
     *,
