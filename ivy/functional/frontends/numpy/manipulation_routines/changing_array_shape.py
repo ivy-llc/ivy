@@ -19,6 +19,7 @@ def resize(x, newshape,/,refcheck=True):
         if diff_size < 0:
             raise ValueError('values must not be negative')
     
+    
     if x_new.size == 0 or total_size == 0:
         return ivy.zeros_like(x_new) 
     repetition = -(-total_size//x_new.size)
