@@ -319,6 +319,9 @@ def is_ivy_container(x: Any, /) -> bool:
     return isinstance(x, ivy.Container)
 
 
+ivy.array_mode = True
+
+
 @handle_exceptions
 def set_array_mode(mode: bool) -> None:
     """
@@ -344,7 +347,7 @@ def set_array_mode(mode: bool) -> None:
     ivy.utils.assertions.check_isinstance(mode, bool)
     array_mode_stack.append(mode)
     # global array_mode
-    ivy.array_mode = mode
+    ivy.__setattr__("array_mode", mode, True)
 
 
 @handle_exceptions
@@ -367,10 +370,11 @@ def unset_array_mode() -> None:
     if array_mode_stack:
         array_mode_stack.pop(-1)
     # global array_mode
-    ivy.array_mode = array_mode_stack[-1] if array_mode_stack else True
+    globals["array_mode"] = array_mode_stack[-1] if array_mode_stack else True
 
 
-ivy.array_mode = True
+# ivy.array_mode = True
+# globals()["array_mode"] = True
 
 
 @handle_exceptions
