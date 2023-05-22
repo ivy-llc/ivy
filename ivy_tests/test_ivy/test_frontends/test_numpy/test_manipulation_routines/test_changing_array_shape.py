@@ -199,12 +199,12 @@ def dtype_and_resize(draw):
     )
     new_shape = draw(
         helpers.get_shape(
-                allow_none=False,
-                min_num_dims=2,
-                max_num_dims=5,
-                min_dim_size=2,
-                max_dim_size=10,
-            ),
+            allow_none=False,
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+        ),
     )
     return dtype, x, new_shape
 
@@ -228,8 +228,8 @@ def test_numpy_resize(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x = x[0],
-        newshape = new_shape,
+        x=x[0],
+        newshape=new_shape,
     )
 
 # asarray_chkfinite
@@ -248,6 +248,7 @@ def test_numpy_asarray_chkfinite(
 ):
    dtype, a = dtype_and_a
    helpers.test_frontend_function(
+       
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
