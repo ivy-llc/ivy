@@ -8478,7 +8478,7 @@ def test_torch_instance_copysign(
         num_arrays=2,
     ),
 )
-def test_torch_instance_copysign(
+def test_torch_instance_not_equal(
     dtype_and_x,
     frontend_method_data,
     init_flags,
