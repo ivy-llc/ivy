@@ -745,7 +745,7 @@ def abs(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if not isinstance(where, paddle.Tensor):
-        where = paddle.to_tensor(where, dtype="bool")
+        where = paddle.to_tensor(where, dtype="bool").squeeze()
     if not isinstance(x, paddle.Tensor):
         x = paddle.to_tensor(x).squeeze().cast(ivy.default_dtype(item=x))
     if x.dtype in [
