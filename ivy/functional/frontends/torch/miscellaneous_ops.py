@@ -76,7 +76,7 @@ def tril_indices(row, col, offset=0, *, dtype=ivy.int64, device="cpu", layout=No
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("complex64", "complex128", "bool")}, "torch"
+    {"2.0.1 and below": ("complex64", "complex128", "bool", "float16")}, "torch"
 )
 @to_ivy_arrays_and_back
 def cummax(input, dim, *, out=None):
