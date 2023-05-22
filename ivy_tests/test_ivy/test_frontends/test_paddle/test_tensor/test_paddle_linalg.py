@@ -61,8 +61,9 @@ def _get_dtype_and_square_matrix(draw, real_and_complex_only=False):
 
 @st.composite
 def _dtype_values_axis(draw):
-    dtype_and_values = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
             max_num_dims=5,
             min_dim_size=2,
@@ -81,16 +82,26 @@ def _dtype_values_axis(draw):
     for i in range(-r, r):
         valid_axes.append(i)
         for j in range(-r, r):
-            if i != j and abs(i - j)!=r:
+            if i != j and abs(i - j) != r:
                 valid_axes.append([i, j])
 
     axis = draw(st.sampled_from(valid_axes))
 
     p_list = ["fro", 1, 2, ivy.inf, -ivy.inf]
     if isinstance(axis, list) and len(axis) == 2:
-        p = draw(st.one_of(st.sampled_from(p_list), st.floats(min_value=1.0, max_value=10.0, allow_infinity=False)))
+        p = draw(
+            st.one_of(
+                st.sampled_from(p_list),
+                st.floats(min_value=1.0, max_value=10.0, allow_infinity=False),
+            )
+        )
     else:
-        p = draw(st.one_of(st.sampled_from(p_list + [0]), st.floats(min_value=1.0, max_value=10.0, allow_infinity=False)))
+        p = draw(
+            st.one_of(
+                st.sampled_from(p_list + [0]),
+                st.floats(min_value=1.0, max_value=10.0, allow_infinity=False),
+            )
+        )
 
     return dtype, x, axis, p
 
