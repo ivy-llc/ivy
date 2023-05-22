@@ -59,6 +59,42 @@ def _get_dtype_and_square_matrix(draw, real_and_complex_only=False):
     return dtype, mat
 
 
+@st.composite
+def _dtype_values_axis(draw):
+    dtype_and_values = draw(helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=1000.0,
+        )
+    )
+
+    dtype, x = dtype_and_values
+    x = x[0]
+    r = len(x.shape)
+
+    valid_axes = [None]
+
+    for i in range(-r, r):
+        valid_axes.append(i)
+        for j in range(-r, r):
+            if i != j and abs(i - j)!=r:
+                valid_axes.append([i, j])
+
+    axis = draw(st.sampled_from(valid_axes))
+
+    p_list = ["fro", 1, 2, ivy.inf, -ivy.inf]
+    if isinstance(axis, list) and len(axis) == 2:
+        p = draw(st.one_of(st.sampled_from(p_list), st.floats(min_value=1.0, max_value=10.0, allow_infinity=False)))
+    else:
+        p = draw(st.one_of(st.sampled_from(p_list + [0]), st.floats(min_value=1.0, max_value=10.0, allow_infinity=False)))
+
+    return dtype, x, axis, p
+
+
 # Tests #
 # ----- #
 
@@ -103,70 +139,29 @@ def test_paddle_matmul(
     )
 
 
-@st.composite
-def _dtype_values_axis(draw):
-    # TODO: expand the tests for all the valid p values
-    dtype_and_values = draw(helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
-                min_num_dims=2,
-                max_num_dims=5,
-                min_dim_size=2,
-                max_dim_size=5
-            ))
-
-
-    dtype, x = dtype_and_values
-    x = x[0]
-    r = len(x.shape)
-
-    valid_axes = [None]
-
-    for i in range(-r, r):
-        valid_axes.append(i)
-        for j in range(-r, r):
-            if i != j and abs(i - j)!=r:
-                valid_axes.append([i, j])
-
-    axis = draw(st.sampled_from(valid_axes))
-
-#    p_list = ["fro", 1, 2, ivy.inf, -ivy.inf]
-#    if isinstance(axis, list) and len(axis) == 2:
-#        p = st.one_of(st.sampled_from(p_list), st.floats(min_value=1.0, max_value=ivy.inf, allow_infinity=False))
-#    else:
-#        p = st.one_of(st.sampled_from(p_list + [0]), st.floats(min_value=1.0, max_value=ivy.inf, allow_infinity=False))
-
-    return dtype, x, 0
-
-
 # norm
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.norm",
     dtype_values_axis = _dtype_values_axis(),
     keepdims=st.booleans(),
-    p = st.sampled_from(["fro", 1, 2, np.inf, -np.inf]),
     test_with_out=st.just(False),
 )
 def test_paddle_norm(
     dtype_values_axis,
     keepdims,
-    p,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x, axis = dtype_values_axis
-
-    if len(x.shape) == 1:
-        axis = None
-
+    dtype, x, axis, p = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        x=x,
         p=p,
         axis=axis,
         keepdim=keepdims,
