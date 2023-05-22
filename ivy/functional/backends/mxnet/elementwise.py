@@ -289,6 +289,16 @@ def isnan(
     raise IvyNotImplementedException()
 
 
+def lcm(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def less(
     x1: Union[(float, None, mx.ndarray.NDArray)],
     x2: Union[(float, None, mx.ndarray.NDArray)],
