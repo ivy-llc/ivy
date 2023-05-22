@@ -1,7 +1,7 @@
 # global
 import copy
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence, Tuple
 import numpy as np
 import torch
 from torch import Tensor
@@ -625,3 +625,19 @@ def frombuffer(
     dtype = ivy.as_native_dtype(dtype)
 
     return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: torch.device,
+) -> Tuple[torch.Tensor]:
+    n_cols = n_rows if n_cols is None else n_cols
+    return tuple(
+        torch.triu_indices(
+            row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
+        )
+    )
