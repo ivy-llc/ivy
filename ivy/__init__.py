@@ -1084,7 +1084,7 @@ vec_sig_fig = np.vectorize(_sf)
 vec_sig_fig.__name__ = "vec_sig_fig"
 
 
-def array_significant_figures(sig_figs=None):
+def _get_array_significant_figures(sig_figs=None):
     """
     Summary.
 
@@ -1108,6 +1108,9 @@ def array_significant_figures(sig_figs=None):
     return ret
 
 
+array_significant_figures = 10
+
+
 def set_array_significant_figures(sig_figs):
     """
     Summary.
@@ -1120,6 +1123,8 @@ def set_array_significant_figures(sig_figs):
     _assert_array_significant_figures_formatting(sig_figs)
     global array_significant_figures_stack
     array_significant_figures_stack.append(sig_figs)
+    global array_significant_figures
+    array_significant_figures = sig_figs
 
 
 def unset_array_significant_figures():
@@ -1127,6 +1132,11 @@ def unset_array_significant_figures():
     global array_significant_figures_stack
     if array_significant_figures_stack:
         array_significant_figures_stack.pop(-1)
+    global array_significant_figures
+    array_significant_figures = (
+        array_significant_figures_stack[-1] if array_significant_figures_stack else 10
+    )
+    # setattr(ivy, "array_significant_figures", array_significant_figures_stack[-1] if array_significant_figures_stack else 10)
 
 
 # Decimal Values #
@@ -1137,7 +1147,7 @@ def _assert_array_decimal_values_formatting(dec_vals):
     ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True)
 
 
-def array_decimal_values(dec_vals=None):
+def _get_array_decimal_values(dec_vals=None):
     """
     Summary.
 
@@ -1182,7 +1192,7 @@ def unset_array_decimal_values():
         array_decimal_values_stack.pop(-1)
 
 
-def warning_level():
+def _get_warning_level():
     """
     Summary.
 
@@ -1220,7 +1230,7 @@ def unset_warning_level():
 
 
 def warn(warning_message, stacklevel=0):
-    warn_level = warning_level()
+    warn_level = ivy.warning_level
     warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
     warnings.warn(warning_message, stacklevel=stacklevel)
 
@@ -1228,7 +1238,7 @@ def warn(warning_message, stacklevel=0):
 # nan policy #
 
 
-def get_nan_policy():
+def _get_nan_policy():
     """
     Summary.
 
@@ -1374,3 +1384,52 @@ def cast_data_types(val=True):
     upcast_dtypes = val
     downcast_dtypes = val
     crosscast_dtypes = val
+
+
+# global parameter properties
+# _array_significant_figures  = property(lambda self: _get_array_significant_figures())
+# array_significant_figures = _array_significant_figures.__get__(ivy)
+
+# _array_decimal_values  = property(lambda self: _get_array_decimal_values())
+# array_decimal_values = _array_decimal_values.__get__(ivy)
+
+# _warning_level  = property(lambda self: _get_warning_level())
+# warning_level = _warning_level.__get__(ivy)
+
+# _nan_policy  = property(lambda self: _get_nan_policy())
+# nan_policy = _nan_policy.__get__(ivy)
+
+# _array_mode  = property(lambda self: general._get_array_mode())
+# array_mode = _array_mode.__get__(ivy)
+
+
+# global parameter properties
+# class IvyWithProperties(sys.modules[__name__].__class__):
+# @property
+# def array_significant_figures(self):
+#     return _get_array_significant_figures()
+
+# @property
+# def array_decimal_values(self):
+#     return _get_array_decimal_values()
+
+# @property
+# def warning_level(self):
+#     return _get_warning_level()
+
+# @property
+# def nan_policy(self):
+#     return _get_nan_policy()
+
+# @property
+# def array_mode(self):
+#     return general._get_array_mode()
+
+
+# sys.modules[__name__].__class__ = IvyWithProperties
+
+# array_significant_figures = IvyWithProperties.array_significant_figures
+array_decimal_values = IvyWithProperties.array_decimal_values
+warning_level = IvyWithProperties.warning_level
+nan_policy = IvyWithProperties.nan_policy
+# array_mode = general.array_mode

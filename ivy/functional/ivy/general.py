@@ -333,16 +333,18 @@ def set_array_mode(mode: bool) -> None:
     Examples
     --------
     >>> ivy.set_array_mode(False)
-    >>> ivy.get_array_mode()
+    >>> ivy.array_mode
     False
 
     >>> ivy.set_array_mode(True)
-    >>> ivy.get_array_mode()
+    >>> ivy.array_mode
     True
     """
     global array_mode_stack
     ivy.utils.assertions.check_isinstance(mode, bool)
     array_mode_stack.append(mode)
+    # global array_mode
+    ivy.array_mode = mode
 
 
 @handle_exceptions
@@ -354,32 +356,25 @@ def unset_array_mode() -> None:
     Examples
     --------
     >>> ivy.set_array_mode(False)
-    >>> ivy.get_array_mode()
+    >>> ivy.array_mode
     False
 
     >>> ivy.unset_shape_array_mode()
-    >>> ivy.get_array_mode()
+    >>> ivy.array_mode
     True
     """
     global array_mode_stack
     if array_mode_stack:
         array_mode_stack.pop(-1)
+    # global array_mode
+    ivy.array_mode = array_mode_stack[-1] if array_mode_stack else True
+
+
+ivy.array_mode = True
 
 
 @handle_exceptions
-def get_array_mode() -> bool:
-    """
-    Get the current state of array_mode.
-
-    Examples
-    --------
-    >>> ivy.get_array_mode()
-    True
-
-    >>> ivy.set_array_mode(False)
-    >>> ivy.get_array_mode()
-    False
-    """
+def _get_array_mode() -> bool:
     global array_mode_stack
     if not array_mode_stack:
         return True
