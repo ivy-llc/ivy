@@ -318,7 +318,7 @@ For Backend Functions:
 
 .. code-block:: python
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
     def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
         x = _cast_for_unary_op(x)
         return torch.expm1(x, out=out)
@@ -330,7 +330,7 @@ For Frontend Functions:
 
 .. code-block:: python
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def trace(input):
         if "int" in input.dtype:
             input = input.astype("int64")
@@ -347,7 +347,7 @@ For example, using the decorator:
 
 .. code-block:: python
 
-    @with_unsupported_dtypes{{"1.11.0 and below": ("unsigned", "bfloat16", "float16")}, backend_version)
+    @with_unsupported_dtypes{{"2.0.1 and below": ("unsigned", "bfloat16", "float16")}, backend_version)
 
 would consider all the unsigned integer dtypes (``uint8``, ``uint16``, ``uint32``, ``uint64``), ``bfloat16`` and ``float16`` as unsupported for the function.
 
@@ -425,9 +425,9 @@ We also add the following comment above the :attr:`unsupported_dtypes` attribute
 
     # ToDo: re-add int32 support once
     # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-    @with_unsupported_dtypes({"1.11.0 and below": ("int32",)}, backend_version)
+    @with_unsupported_dtypes({"2.0.1 and below": ("int32",)}, backend_version)
 
-Similarly, the following code throws an error for torch version ``1.11.0``
+Similarly, the following code throws an error for torch version ``2.0.1``
 but not ``1.12.1``.
 
 .. code-block:: python
@@ -441,7 +441,7 @@ In such cases, we can explicitly flag which versions support which data types li
 .. code-block:: python
 
     @with_unsupported_dtypes(
-        {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, backend_version
+        {"2.0.1 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, backend_version
     )
     def cumsum(
         x: torch.Tensor,
@@ -460,6 +460,39 @@ The decorator assigns the version specific unsupported dtypes to the function an
 The same workflow has been implemented for :code:`supported_dtypes`, :code:`unsupported_devices` and :code:`supported_devices`.
 
 The slight downside of this approach is that there is less data type coverage for each version of each backend, but taking responsibility for patching this support for all versions would substantially inflate the implementational requirements for ivy, and so we have decided to opt out of this responsibility!
+
+
+
+Data Type Casting Modes
+-----------------------
+
+As discussed earlier, many backend functions have a set of unsupported dtypes which are otherwise supported by the
+backend itself. This raises a question that whether we should support these dtypes by casting them to some other but close dtype.
+This is where we have various dtype casting modes so as to give the users an option to automatically cast unsupported dtype operations to a supported and a nearly same dtype.
+
+There are currently four modes that accomplish this.
+
+1. `upcast_data_types`
+2. `downcast_data_types`
+3. `crosscast_data_types`
+4. `cast_data_types`
+
+`upcast_data_types` mode casts the unsupported dtype encountered to the next highest supported dtype in the same
+dtype group, i.e, if the unsupported dtype encountered is `uint8` , then this mode will try to upcast it to the next available supported `uint` dtype. If no
+higher `uint` dtype is avaiable, then there won't be any upcasting performed. You can set this mode by calling `ivy.upcast_data_types()` with an optional `val` keyword argument that defaults to `True`.
+
+Similarly, `downcast_data_dtypes` tries to downcast to the next lower supported dtype in the same dtype group. No casting is performed is no lower dtype is found in the same group.
+It can also be set by calling `ivy.downcast_data_types()` with the optional `val` keyword that defaults to boolean value `True`.
+
+`crosscast_data_types` is for cases when a function doesn't support `int` dtypes, but supports `float` and vice-versa. In such cases,
+we cast to the default supported `float` dtype if it's the unsupported integer case or we cast to the default supported `int` dtype if it's the unsupported `float` case.
+
+The `cast_data_types` mode is the combination of all the three modes that we discussed till now. It works it way from crosscasting to upcasting and finally to downcasting to provide support
+for any unsupported dtype that is encountered by the functions.
+
+Together with these modes we provide some level of flexibility to users when they encounter functions that don't support a dtype which is otherwise supported by the backend. However, it should
+be well understood that this may lead to loss of precision and/or increase in memory consumption.
+
 
 Superset Data Type Support
 --------------------------

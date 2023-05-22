@@ -2,6 +2,7 @@
 
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
 
 # local
 import ivy
@@ -869,4 +870,90 @@ def test_one_hot(
         axis=axis,
         dtype=dtype,
         ground_truth_backend=ground_truth_backend,
+    )
+
+
+@st.composite
+def _get_dtype_buffer_count_offset(draw):
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+        )
+    )
+    value = np.array(value)
+    length = value.size
+    value = value.tobytes()
+
+    offset = draw(helpers.ints(min_value=0, max_value=length - 1))
+    count = draw(helpers.ints(min_value=-(2**30), max_value=length - offset))
+    if count == 0:
+        count = -1
+    offset = offset * np.dtype(dtype[0]).itemsize
+
+    return dtype, value, count, offset
+
+
+@handle_test(
+    fn_tree="functional.ivy.frombuffer",
+    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_frombuffer(
+    dtype_buffer_count_offset,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, buffer, count, offset = dtype_buffer_count_offset
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        buffer=buffer,
+        dtype=input_dtype[0],
+        count=count,
+        offset=offset,
+        ground_truth_backend=ground_truth_backend,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.triu_indices",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=0,
+        num_arrays=3,
+        min_value=0,
+        max_value=10,
+    ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_triu_indices(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        n_rows=int(x[0]),
+        n_cols=int(x[1]),
+        k=int(x[2]),
     )

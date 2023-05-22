@@ -865,8 +865,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.nanmedian. This method simply wraps the
-        function, and so the docstring for ivy.nanmedian also applies to this method
+        ivy.Container instance method variant of ivy.nanmedian. This method simply wraps
+        the function, and so the docstring for ivy.nanmedian also applies to this method
         with minimal changes.
 
         Parameters
@@ -902,7 +902,6 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         Examples
         --------
-
         With :class:`ivy.Container` input and default backend set as `numpy`:
         >>> x = ivy.Container(a=ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]]),
                 b=ivy.array([[12, 10, 34], [45, 23, ivy.nan]]))

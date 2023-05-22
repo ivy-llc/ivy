@@ -392,7 +392,6 @@ def nanmedian(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[12.0, 10.0, 34.0], [45.0, 23.0, ivy.nan]])
@@ -406,7 +405,6 @@ def nanmedian(
         a: ivy.array(3.),
         b: ivy.array(23.)
     }
-
     """
     return ivy.current_backend().nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
