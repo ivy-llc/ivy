@@ -8438,6 +8438,7 @@ def test_torch_instance_is_complex(
     method_name="copysign",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
         num_arrays=2,
     ),
 )
