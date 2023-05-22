@@ -346,7 +346,6 @@ def nanstd(
 @to_ivy_arrays_and_back
 def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
     is_nan = ivy.isnan(a)
-    axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is None:
         dtype = "float16" if ivy.is_int_dtype(a) else a.dtype
     if ivy.any(is_nan):
