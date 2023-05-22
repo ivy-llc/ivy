@@ -4,7 +4,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 import sys
-import numpy as np
 
 @to_ivy_arrays_and_back
 def reshape(x, /, newshape, order="C"):
@@ -22,7 +21,7 @@ def resize(x, newshape,/,refcheck=True):
     
     if x_new.size == 0 or total_size == 0:
         return ivy.zeros_like(x_new) 
-    repetition = -(-total_size//len(x_new))
+    repetition = -(-total_size//x_new.size)
     conc = (x_new,) * repetition
     x_new = ivy.concat(conc)[:total_size]
     y = ivy.reshape(x_new,shape=newshape,order="C")
