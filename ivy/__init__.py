@@ -1136,7 +1136,6 @@ def unset_array_significant_figures():
     array_significant_figures = (
         array_significant_figures_stack[-1] if array_significant_figures_stack else 10
     )
-    # setattr(ivy, "array_significant_figures", array_significant_figures_stack[-1] if array_significant_figures_stack else 10)
 
 
 # Decimal Values #
@@ -1171,6 +1170,9 @@ def _get_array_decimal_values(dec_vals=None):
     return ret
 
 
+array_decimal_values = 8
+
+
 def set_array_decimal_values(dec_vals):
     """
     Summary.
@@ -1183,6 +1185,8 @@ def set_array_decimal_values(dec_vals):
     _assert_array_decimal_values_formatting(dec_vals)
     global array_decimal_values_stack
     array_decimal_values_stack.append(dec_vals)
+    global array_decimal_values
+    array_decimal_values = dec_vals
 
 
 def unset_array_decimal_values():
@@ -1190,6 +1194,10 @@ def unset_array_decimal_values():
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
+    global array_decimal_values
+    array_decimal_values = (
+        array_decimal_values_stack[-1] if array_decimal_values_stack else 8
+    )
 
 
 def _get_warning_level():
@@ -1429,7 +1437,7 @@ def cast_data_types(val=True):
 # sys.modules[__name__].__class__ = IvyWithProperties
 
 # array_significant_figures = IvyWithProperties.array_significant_figures
-array_decimal_values = IvyWithProperties.array_decimal_values
-warning_level = IvyWithProperties.warning_level
-nan_policy = IvyWithProperties.nan_policy
+# array_decimal_values = IvyWithProperties.array_decimal_values
+# warning_level = IvyWithProperties.warning_level
+# nan_policy = IvyWithProperties.nan_policy
 # array_mode = general.array_mode
