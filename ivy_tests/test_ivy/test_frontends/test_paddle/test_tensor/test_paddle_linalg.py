@@ -153,7 +153,7 @@ def test_paddle_matmul(
 # norm
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.norm",
-    dtype_values_axis = _dtype_values_axis(),
+    dtype_values_axis=_dtype_values_axis(),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
 )
