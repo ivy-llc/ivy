@@ -383,6 +383,16 @@ def clone(input):
     return ivy.copy_array(input)
 
 
-@to_ivy_arrays_and_back
-def histc(input, bins=10, min=None, max=None, *, out=None):
-    return ivy.histc(input, bins=bins, min=min, max=max, out=out)
+@with_supported_dtypes(ivy.array_naming_base)
+def histc(input, bins=100, range_min=0, range_max=0):
+    # If range_min and range_max are not specified, calculate them from the input data
+    if range_min == 0 and range_max == 0:
+        range_min = ivy.reduce_min(input)
+        range_max = ivy.reduce_max(input)
+
+    # Compute the histogram
+    bin_width = (range_max - range_min) / bins
+    bin_edges = ivy.arange(range_min, range_max, bin_width)
+    hist = ivy.histogram(input, bin_edges)
+
+    return hist

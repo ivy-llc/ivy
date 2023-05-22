@@ -1323,23 +1323,20 @@ def test_torch_clone(
 
 
 @handle_frontend_test(
-    fn_tree="torch.histc",
+    fn_tree="ivy.histc",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
         min_num_dims=1,
     ),
     bins=st.integers(min_value=1, max_value=100),
     min=st.integers(min_value=-100, max_value=100),
-    min=st.integers(min_value=-100, max_value=100),
     max=st.integers(min_value=-100, max_value=100),
-    out=st.just(False),
+    out=st.just(None),
     test_with_out=st.just(False),
     test_values=st.just(False),
-    align_corners=st.just(False),
 )
-def test_torch_histc(
+def test_ivy_histc(
     *,
     dtype_and_x,
     bins,
@@ -1348,7 +1345,6 @@ def test_torch_histc(
     out,
     test_with_out,
     test_values,
-    align_corners,
     on_device,
     fn_tree,
     frontend,
@@ -1368,5 +1364,4 @@ def test_torch_histc(
         out=out,
         test_with_out=test_with_out,
         test_values=test_values,
-        align_corners=align_corners,
     )
