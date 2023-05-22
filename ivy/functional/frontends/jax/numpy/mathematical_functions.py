@@ -505,6 +505,7 @@ def inner(a, b):
     return ivy.inner(a, b)
 
 
+@to_ivy_arrays_and_back
 def outer(a, b, out=None):
     return ivy.outer(a, b, out=out)
 
