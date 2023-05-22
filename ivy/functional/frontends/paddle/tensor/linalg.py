@@ -41,10 +41,14 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
         if p in [0, 1, 2, ivy.inf, -ivy.inf]:
             ret = ivy.vector_norm(x, ord=p, axis=axis, keepdims=keepdim)
         elif isinstance(p, (int, float)):
-            ret = ivy.pow(ivy.sum(ivy.pow(ivy.abs(x), p), axis=axis, keepdims=keepdim), float(1.0 / p))
+            ret = ivy.pow(
+                ivy.sum(ivy.pow(ivy.abs(x), p), axis=axis, keepdims=keepdim),
+                float(1.0 / p),
+            )
 
     elif isinstance(axis, list) and len(axis) == 2:
-        if p == 0: raise ValueError
+        if p == 0:
+            raise ValueError
         elif p == 1:
             ret = ivy.sum(ivy.abs(x), axis=axis, keepdims=keepdim)
         elif p == 2 or p == "fro":
@@ -54,7 +58,10 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
         elif p == -ivy.inf:
             ret = ivy.min(ivy.abs(x), axis=axis, keepdims=keepdim)
         elif isinstance(p, (int, float)) and p > 0:
-            ret = ivy.pow(ivy.sum(ivy.pow(ivy.abs(x), p), axis=axis, keepdims=keepdim), float(1.0 / p))
+            ret = ivy.pow(
+                ivy.sum(ivy.pow(ivy.abs(x), p), axis=axis, keepdims=keepdim),
+                float(1.0 / p),
+            )
         else:
             raise ValueError
 
@@ -62,7 +69,9 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
         raise ValueError
 
     if len(ret.shape) == 0:
-        ret = ivy.array([ret]) # this is done so as to match shape of output from paddle
+        ret = ivy.array(
+            [ret]
+        ) # this is done so as to match shape of output from paddle
     return ret
 
 
