@@ -187,3 +187,24 @@ def shuffle(
     # jax.random.shuffle is deprecated; identical behaviour reproduced with
     # jax.random.permutation
     return jax.random.permutation(key=rng_input, x=x, axis=axis, independent=True)
+
+
+def choice(
+    a: Union[int, JaxArray],
+    /,
+    *,
+    size: Optional[Union[int, Tuple[int, ...]]] = None,
+    replace: bool = True,
+    p: Optional[JaxArray] = None,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
+
+    if p is None:
+        p = jnp.ones(a.shape) / a.shape[0]
+    return jax.random.choice(rng_input, a, size, replace, p)

@@ -242,3 +242,9 @@ def exponential(key, shape=(), dtype="float64"):
     uniform = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
     exp = -ivy.log(1 - uniform)
     return exp
+
+
+def choice(key, a, shape=(), replace=True, p=None, axis=0, shuffle=True):
+    seed = _get_seed(key)
+    return ivy.choice(a, shape=shape, replace=replace, p=p, axis=axis, shuffle=shuffle, seed=seed)
+
