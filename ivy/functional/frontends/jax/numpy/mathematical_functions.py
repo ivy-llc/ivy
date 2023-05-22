@@ -24,7 +24,7 @@ abs = absolute
 
 
 @to_ivy_arrays_and_back
-def add(x1, x2):
+def add(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
@@ -56,12 +56,12 @@ def ediff1d(ary, to_end=None, to_begin=None):
 
 
 @to_ivy_arrays_and_back
-def arctan(x):
+def arctan(x, /):
     return ivy.atan(x)
 
 
 @to_ivy_arrays_and_back
-def arctan2(x1, x2):
+def arctan2(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.atan2(x1, x2)
 
@@ -100,12 +100,12 @@ def convolve(a, v, mode="full", *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def cos(x):
+def cos(x, /):
     return ivy.cos(x)
 
 
 @to_ivy_arrays_and_back
-def cosh(x):
+def cosh(x, /):
     return ivy.cosh(x)
 
 
@@ -140,27 +140,27 @@ def divmod(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-def sinh(x):
+def sinh(x, /):
     return ivy.sinh(x)
 
 
 @to_ivy_arrays_and_back
-def sin(x):
+def sin(x, /):
     return ivy.sin(x)
 
 
 @to_ivy_arrays_and_back
-def tan(x):
+def tan(x, /):
     return ivy.tan(x)
 
 
 @to_ivy_arrays_and_back
-def tanh(x):
+def tanh(x, /):
     return ivy.tanh(x)
 
 
 @to_ivy_arrays_and_back
-def arccos(x):
+def arccos(x, /):
     return ivy.acos(x)
 
 
@@ -170,12 +170,12 @@ def arccosh(x):
 
 
 @to_ivy_arrays_and_back
-def arcsin(x):
+def arcsin(x, /):
     return ivy.asin(x)
 
 
 @to_ivy_arrays_and_back
-def arcsinh(x):
+def arcsinh(x, /):
     return ivy.asinh(x)
 
 
@@ -191,28 +191,28 @@ def trunc(x):
 
 
 @to_ivy_arrays_and_back
-def ceil(x):
+def ceil(x, /):
     return ivy.ceil(x)
 
 
 @to_ivy_arrays_and_back
-def float_power(x1, x2):
+def float_power(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.float_power(x1, x2).astype(x1.dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
-def deg2rad(x):
+def deg2rad(x, /):
     return ivy.deg2rad(x)
 
 
 @to_ivy_arrays_and_back
-def radians(x):
+def radians(x, /):
     return ivy.deg2rad(x)
 
 
 @to_ivy_arrays_and_back
-def exp2(x):
+def exp2(x, /):
     return ivy.exp2(x)
 
 
@@ -261,7 +261,7 @@ def square(x, /):
 
 
 @to_ivy_arrays_and_back
-def arctanh(x):
+def arctanh(x, /):
     return ivy.atanh(x)
 
 

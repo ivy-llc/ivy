@@ -522,6 +522,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _sign,
     _sqrt,
     _square,
+    _lcm,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
@@ -703,3 +704,4 @@ conj = ufunc("_conj")
 rint = ufunc("_rint")
 nextafter = ufunc("_nextafter")
 conjugate = ufunc("_conjugate")
+lcm = ufunc("_lcm")
