@@ -357,7 +357,6 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
-
         With :class:`ivy.array` input and default backend set as `numpy`:
 
         >>> a = ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]])

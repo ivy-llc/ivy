@@ -854,10 +854,42 @@ def test_tensorflow_qr(
     input_dtype, x = dtype_and_input
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
+=======
+# diag
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["int64", "int32"],
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=5,
+        max_dim_size=10,
+        min_value=0,
+        max_value=10,
+    ),
+    k=st.just(0),
+)
+def test_tensorflow_diag(
+    dtype_and_x,
+    k,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+      
         input=x[0],
         test_values=False,
+=======
+        v=x[0],
+        k=k,
+
     )

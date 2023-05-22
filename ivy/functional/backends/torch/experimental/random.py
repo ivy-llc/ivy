@@ -13,7 +13,7 @@ from ivy.functional.ivy.random import (
 
 
 # dirichlet
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def dirichlet(
     alpha: Union[torch.tensor, float, Sequence[float]],
     /,
@@ -66,7 +66,6 @@ def gamma(
     return torch.distributions.gamma.Gamma(alpha, beta).sample(shape).to(device)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, torch.Tensor],
     *,

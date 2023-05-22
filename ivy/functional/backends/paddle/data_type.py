@@ -4,12 +4,8 @@ from typing import Optional, Union, Sequence, List
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import numpy as np
-
-# local
 import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-from . import backend_version
 
 
 ivy_dtype_dict = {
@@ -108,9 +104,6 @@ class Bfloat16Finfo:
 # -------------------#
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def astype(
     x: paddle.Tensor,
     dtype: paddle.dtype,
@@ -125,9 +118,6 @@ def astype(
     return x.cast(dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
     if len(arrays) > 1:
         desired_shape = paddle_backend.broadcast_shapes(
@@ -146,9 +136,6 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
     return result
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def broadcast_to(
     x: paddle.Tensor,
     /,
@@ -156,6 +143,7 @@ def broadcast_to(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]
@@ -182,9 +170,6 @@ def broadcast_to(
         return paddle.broadcast_to(x, shape)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 @_handle_nestable_dtype_info
 def finfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Finfo:
     if isinstance(type, paddle.Tensor):
@@ -198,9 +183,6 @@ def finfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Finfo:
     return Finfo(np.finfo(type))
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 @_handle_nestable_dtype_info
 def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
     if isinstance(type, paddle.Tensor):
@@ -211,9 +193,6 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
     return Iinfo(np.iinfo(type))
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
     return ivy.promote_types(arrays_and_dtypes[0].dtype, arrays_and_dtypes[1].dtype)
 
@@ -222,9 +201,6 @@ def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.D
 # ------#
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
@@ -245,9 +221,6 @@ def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def as_native_dtype(
     dtype_in: Union[paddle.dtype, str, bool, int, float]
 ) -> paddle.dtype:
@@ -269,18 +242,12 @@ def as_native_dtype(
         )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def dtype(x: paddle.Tensor, *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
     return as_ivy_dtype(x.dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
