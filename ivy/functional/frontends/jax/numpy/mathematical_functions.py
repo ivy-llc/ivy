@@ -24,7 +24,7 @@ abs = absolute
 
 
 @to_ivy_arrays_and_back
-def add(x1, x2):
+def add(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
@@ -635,7 +635,7 @@ def polysub(a1, a2):
 @to_ivy_arrays_and_back
 def polymul(a1, a2, *, trim_leading_zeros=False):
     a1, a2 = ivy.atleast_1d(a1), ivy.atleast_1d(a2)
-    if trim_leading_zeros and (len(a1) > 1 or len(a1) > 1):
+    if trim_leading_zeros and (len(a1) > 1 or len(a2) > 1):
         a1, a2 = trim_zeros(a1, trim="f"), trim_zeros(a2, trim="f")
     if len(a1) == 0:
         a1 = ivy.asarray([0], dtype=a1.dtype)

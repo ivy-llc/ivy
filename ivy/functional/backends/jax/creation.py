@@ -1,7 +1,7 @@
 # global
 from numbers import Number
 import numpy as np
-from typing import Union, Optional, List, Sequence
+from typing import Union, Optional, List, Sequence, Tuple
 
 import jax.dlpack
 import jax.numpy as jnp
@@ -372,3 +372,17 @@ def frombuffer(
     offset: Optional[int] = 0,
 ) -> JaxArray:
     return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: jaxlib.xla_extension.Device,
+) -> Tuple[JaxArray]:
+    return _to_device(
+        jnp.triu_indices(n=n_rows, k=k, m=n_cols),
+        device=device,
+    )

@@ -33,7 +33,7 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[Tensor] = None,
 ) -> Tensor:
-    x, threshold = ivy.promote_types_of_inputs(x, threshold)
+    threshold = tf.cast(threshold, x.dtype)
     return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
 
 
@@ -43,7 +43,7 @@ def relu6(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
 
 
 @with_supported_dtypes({"2.12.0 and below": ("float",)}, backend_version)
-def logsigmoid(input: Tensor) -> Tensor:
+def logsigmoid(input: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.math.log_sigmoid(input)
 
 
