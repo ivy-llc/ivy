@@ -337,12 +337,12 @@ def dropout(
     mask = ivy.where(
         ivy.random_uniform(shape=noise_shape, device=ivy.dev(x), dtype=dtype, seed=seed)
         < prob,
-        0,
-        1,
+        0.0,
+        1.0,
     )
     x = x * mask
     if scale:
-        x = ivy.multiply(x, 1 / (1 - prob), out=out)
+        x = ivy.multiply(x, 1.0 / (1.0 - prob), out=out)
     return x if not ivy.exists(out) else ivy.inplace_update(out, x)
 
 

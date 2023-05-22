@@ -4,6 +4,7 @@ import paddle as paddle
 
 # local
 import ivy
+from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": paddle.version.full_version}
 
@@ -45,56 +46,88 @@ native_bool = paddle.bool
 
 # valid data types
 # ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
-valid_dtypes = (
-    ivy.int8,
-    ivy.int16,
-    ivy.int32,
-    ivy.int64,
-    ivy.uint8,
-    ivy.float16,
-    ivy.float32,
-    ivy.float64,
-    ivy.complex64,
-    ivy.complex128,
-    ivy.bool,
-)
-valid_numeric_dtypes = (
-    ivy.int8,
-    ivy.int16,
-    ivy.int32,
-    ivy.int64,
-    ivy.uint8,
-    ivy.float16,
-    ivy.float32,
-    ivy.float64,
-)
-valid_int_dtypes = (
-    ivy.int8,
-    ivy.int16,
-    ivy.int32,
-    ivy.int64,
-    ivy.uint8,
-)
-valid_float_dtypes = (ivy.float16, ivy.float32, ivy.float64)
-valid_uint_dtypes = (ivy.uint8,)
-valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
-invalid_dtypes = (
-    ivy.uint16,
-    ivy.uint32,
-    ivy.uint64,
-    ivy.bfloat16,
-)
-invalid_numeric_dtypes = (
-    ivy.uint16,
-    ivy.uint32,
-    ivy.uint64,
-    ivy.bfloat16,
-)
-invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
-invalid_float_dtypes = (ivy.bfloat16,)
-invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
-invalid_complex_dtypes = ()
+# update these to add new dtypes
+valid_dtypes = {
+    "2.4.2 and below": (
+        ivy.int8,
+        ivy.int16,
+        ivy.int32,
+        ivy.int64,
+        ivy.uint8,
+        ivy.float16,
+        ivy.float32,
+        ivy.float64,
+        ivy.complex64,
+        ivy.complex128,
+        ivy.bool,
+    )
+}
+valid_numeric_dtypes = {
+    "2.4.2 and below": (
+        ivy.int8,
+        ivy.int16,
+        ivy.int32,
+        ivy.int64,
+        ivy.uint8,
+        ivy.float16,
+        ivy.float32,
+        ivy.float64,
+    )
+}
+valid_int_dtypes = {
+    "2.4.2 and below": (
+        ivy.int8,
+        ivy.int16,
+        ivy.int32,
+        ivy.int64,
+        ivy.uint8,
+    )
+}
+valid_float_dtypes = {"2.4.2 and below": (ivy.float16, ivy.float32, ivy.float64)}
+valid_uint_dtypes = {"2.4.2 and below": (ivy.uint8,)}
+valid_complex_dtypes = {"2.4.2 and below": (ivy.complex64, ivy.complex128)}
+
+# leave these untouched
+valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
+valid_numeric_dtypes = _dtype_from_version(valid_numeric_dtypes, backend_version)
+valid_int_dtypes = _dtype_from_version(valid_int_dtypes, backend_version)
+valid_float_dtypes = _dtype_from_version(valid_float_dtypes, backend_version)
+valid_uint_dtypes = _dtype_from_version(valid_uint_dtypes, backend_version)
+valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version)
+
+
+# update these to add new dtypes
+invalid_dtypes = {
+    "2.4.2 and below": (
+        ivy.uint16,
+        ivy.uint32,
+        ivy.uint64,
+        ivy.bfloat16,
+    )
+}
+
+invalid_numeric_dtypes = {
+    "2.4.2 and below": (
+        ivy.uint16,
+        ivy.uint32,
+        ivy.uint64,
+        ivy.bfloat16,
+    )
+}
+
+invalid_int_dtypes = {"2.4.2 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_float_dtypes = {"2.4.2 and below": (ivy.bfloat16,)}
+invalid_uint_dtypes = {"2.4.2 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_complex_dtypes = {"2.4.2 and below": ()}
+
+# leave these untouched
+invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
+invalid_numeric_dtypes = _dtype_from_version(invalid_numeric_dtypes, backend_version)
+invalid_float_dtypes = _dtype_from_version(invalid_float_dtypes, backend_version)
+invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes, backend_version)
+invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_version)
+
 
 native_inplace_support = False
 supports_gradients = True

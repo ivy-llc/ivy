@@ -10,7 +10,7 @@ import ivy
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "uint8",
             "int8",
             "int16",
@@ -137,7 +137,7 @@ def histogram(
 histogram.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bool")}, backend_version)
 def median(
     input: torch.Tensor,
     /,
@@ -184,7 +184,7 @@ nanmean.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
+    {"2.0.1 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
 )
 def quantile(
     a: torch.Tensor,
@@ -251,7 +251,7 @@ def corrcoef(
     return torch.corrcoef(xarr)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def nanmedian(
     input: torch.Tensor,
     /,

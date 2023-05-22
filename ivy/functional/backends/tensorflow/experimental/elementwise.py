@@ -22,18 +22,6 @@ def sinc(
     return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x), x.dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
-def lcm(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
-
-
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -48,7 +36,7 @@ def fmax(
     return ret
 
 
-@with_supported_dtypes({"2.11.0 and below": ("float",)}, backend_version)
+@with_supported_dtypes({"2.12.0 and below": ("float",)}, backend_version)
 def fmin(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -76,7 +64,7 @@ def trapz(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def float_power(
     x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
@@ -137,7 +125,7 @@ def count_nonzero(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -152,7 +140,7 @@ def nansum(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def gcd(
     x1: Union[tf.Tensor, tf.Variable, int, list, tuple],
@@ -204,7 +192,7 @@ def nan_to_num(
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.12.0 and below": (
             "uint8",
             "uint16",
             "uint32",
@@ -265,7 +253,7 @@ def allclose(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, backend_version)
 def fix(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -275,7 +263,7 @@ def fix(
     return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, backend_version)
 def nextafter(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -287,7 +275,7 @@ def nextafter(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def diff(
     x: Union[tf.Tensor, tf.Variable, list, tuple],
@@ -310,7 +298,7 @@ def diff(
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.12.0 and below": (
             "uint8",
             "uint16",
             "uint32",
@@ -336,7 +324,7 @@ def angle(
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.12.0 and below": (
             "uint8",
             "uint16",
             "uint32",
@@ -358,7 +346,7 @@ def imag(
 
 @with_supported_dtypes(
     {
-        "2.11.0 and below": (
+        "2.12.0 and below": (
             "float32",
             "float64",
         )
@@ -401,7 +389,7 @@ def gradient(
     axis: Optional[Union[int, list, tuple]] = None,
     edge_order: int = 1,
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
-    # https://github.com/numpy/numpy/blob/v1.23.0/numpy/lib/function_base.py#L969-L1312
+    # https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/function_base.py#L969-L1312
     device = x.device
     x = tf.experimental.numpy.asanyarray(x)
     N = x.ndim  # number of dimensions
@@ -599,7 +587,7 @@ def xlogy(
     return tf.math.xlogy(x, y)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, backend_version)
 def real(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -618,7 +606,7 @@ def conj(
     return tf.math.conj(x)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("unsigned",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
 def ldexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable, int],
@@ -640,7 +628,7 @@ def ldexp(
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("unsigned",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
 def frexp(
     x: Union[tf.Tensor, tf.Variable],
     /,
