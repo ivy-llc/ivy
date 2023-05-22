@@ -19,7 +19,6 @@ def matmul(x, y, transpose_x=False, transpose_y=False, name=None):
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def norm(x, p="fro", axis=None, keepdim=False, name=None):
-
     if axis is None and p is not None:
         if p == "fro":
             p = 2
