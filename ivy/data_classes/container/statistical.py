@@ -1371,12 +1371,12 @@ class _ContainerWithStatistical(ContainerBase):
         /,
         *,
         axis: int = 0,
+        exclusive: bool = False,
         reverse: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1407,8 +1407,6 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        dtype
-            Data type of the returned array. Default is ``None``.
         out
             Optional output container. Default is ``None``.
 
@@ -1446,12 +1444,12 @@ class _ContainerWithStatistical(ContainerBase):
             "cummax",
             x,
             axis=axis,
+            exclusive=exclusive,
             reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            dtype=dtype,
             out=out,
         )
 
@@ -1637,6 +1635,7 @@ class _ContainerWithStatistical(ContainerBase):
         /,
         *,
         axis: int = 0,
+        exclusive: bool = True,
         reverse: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1707,12 +1706,12 @@ class _ContainerWithStatistical(ContainerBase):
         return self._static_cummax(
             self,
             axis=axis,
+            exclusive=exclusive,
             reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            dtype=dtype,
             out=out,
         )
 
