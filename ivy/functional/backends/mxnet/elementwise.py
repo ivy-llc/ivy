@@ -3,6 +3,7 @@ from typing import Union, Optional
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
+import ivy
 
 
 def abs(
@@ -156,7 +157,7 @@ def ceil(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.ceil(x)
 
 
 def cos(
@@ -184,7 +185,12 @@ def divide(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    ret = mx.nd.divide(x1, x2)
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
+        ret = mx.nd.array(ret, dtype=x1.dtype)
+    else:
+        ret = mx.nd.array(ret, dtype=ivy.default_float_dtype(as_native=True))
+    return ret
 
 
 def equal(
@@ -212,7 +218,7 @@ def expm1(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return (mx.nd.exp(x) - 1).astype(x.dtype)
 
 
 def floor(
@@ -221,7 +227,7 @@ def floor(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.floor(x)
 
 
 def floor_divide(
@@ -231,7 +237,7 @@ def floor_divide(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.floor(mx.nd.divide(x1, x2))
 
 
 def greater(
@@ -241,7 +247,7 @@ def greater(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.greater(x1, x2)
 
 
 def greater_equal(
@@ -251,7 +257,7 @@ def greater_equal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.greater_equal(x1, x2)
 
 
 def isfinite(
@@ -283,6 +289,16 @@ def isnan(
     raise IvyNotImplementedException()
 
 
+def lcm(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def less(
     x1: Union[(float, None, mx.ndarray.NDArray)],
     x2: Union[(float, None, mx.ndarray.NDArray)],
@@ -290,7 +306,7 @@ def less(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.less(x1, x2)
 
 
 def less_equal(
@@ -300,7 +316,7 @@ def less_equal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.less_equal(x1, x2)
 
 
 def log(
@@ -327,7 +343,7 @@ def log1p(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.log1p(x)
 
 
 def log2(
@@ -336,7 +352,7 @@ def log2(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.log2(x)
 
 
 def logaddexp(
@@ -346,7 +362,7 @@ def logaddexp(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.logaddexp(x1, x2)
 
 
 def logical_and(
@@ -395,7 +411,7 @@ def multiply(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.multiply(x1, x2)
 
 
 def negative(
@@ -404,7 +420,7 @@ def negative(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.negative(x)
 
 
 def not_equal(
@@ -433,7 +449,7 @@ def pow(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.power(x1, x2)
 
 
 def remainder(
@@ -519,7 +535,7 @@ def square(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.square(x)
 
 
 def subtract(
@@ -530,7 +546,11 @@ def subtract(
     alpha: Optional[Union[(int, float)]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    if alpha not in (1, None):
+        ivy.set_array_mode(False)
+        x2 = multiply(x2, alpha)
+        ivy.unset_array_mode()
+    return mx.nd.subtract(x1, x2)
 
 
 def tan(
@@ -597,7 +617,7 @@ def reciprocal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.reciprocal(x)
 
 
 def deg2rad(

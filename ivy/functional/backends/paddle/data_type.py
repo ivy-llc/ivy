@@ -143,6 +143,7 @@ def broadcast_to(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]

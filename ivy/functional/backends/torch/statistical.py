@@ -379,6 +379,7 @@ def cummax(
             res1, res2 = torch.flip(x1, dims=(axis,)), torch.flip(x2, dims=(axis,))
         return res1, res2
     
+
     return torch.cummax(x, axis, out=out)
 
 

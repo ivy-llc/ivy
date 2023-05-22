@@ -84,6 +84,11 @@ def cummax(input, dim, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def cummax(input, dim, *, out=None):
+    return ivy.cummax(input, axis=dim, out=out)
+
+
+@to_ivy_arrays_and_back
 def cumprod(input, dim, *, dtype=None, out=None):
     if not dtype and "int" in input.dtype:
         dtype = ivy.int64
@@ -309,6 +314,7 @@ def lcm(input, other, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def einsum(equation, *operands):
     return ivy.einsum(equation, *operands)
 
