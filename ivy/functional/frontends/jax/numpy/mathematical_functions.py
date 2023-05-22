@@ -56,12 +56,12 @@ def ediff1d(ary, to_end=None, to_begin=None):
 
 
 @to_ivy_arrays_and_back
-def arctan(x):
+def arctan(x, /):
     return ivy.atan(x)
 
 
 @to_ivy_arrays_and_back
-def arctan2(x1, x2):
+def arctan2(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.atan2(x1, x2)
 
@@ -100,12 +100,12 @@ def convolve(a, v, mode="full", *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def cos(x):
+def cos(x, /):
     return ivy.cos(x)
 
 
 @to_ivy_arrays_and_back
-def cosh(x):
+def cosh(x, /):
     return ivy.cosh(x)
 
 
