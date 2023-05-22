@@ -43,7 +43,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
 
-
 CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
 
 
@@ -8430,6 +8429,7 @@ def test_torch_instance_is_complex(
         on_device=on_device,
     )
 
+
 # copysign
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8466,8 +8466,8 @@ def test_torch_instance_copysign(
         on_device=on_device,
     )
 
-    
-#not_equal
+
+# not_equal
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
