@@ -116,7 +116,7 @@ def dot(a, b, *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def floor(x):
+def floor(x, /):
     return ivy.floor(x)
 
 
@@ -240,7 +240,7 @@ def lcm(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def logaddexp2(x1, x2):
+def logaddexp2(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.logaddexp2(x1, x2)
 
@@ -266,7 +266,7 @@ def arctanh(x, /):
 
 
 @to_ivy_arrays_and_back
-def multiply(x1, x2):
+def multiply(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.multiply(x1, x2)
 
@@ -278,18 +278,18 @@ def matmul(a, b, *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def log10(x):
+def log10(x, /):
     return ivy.log10(x)
 
 
 @to_ivy_arrays_and_back
-def logaddexp(x1, x2):
+def logaddexp(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.logaddexp(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def degrees(x):
+def degrees(x, /):
     return ivy.rad2deg(x)
 
 
@@ -381,24 +381,24 @@ def fmin(x1, x2):
     "jax",
 )
 @to_ivy_arrays_and_back
-def fabs(x):
+def fabs(x, /):
     return ivy.abs(x)
 
 
 @to_ivy_arrays_and_back
-def fmod(x1, x2):
+def fmod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.fmod(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def maximum(x1, x2):
+def maximum(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.maximum(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def minimum(x1, x2):
+def minimum(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.minimum(x1, x2)
 
@@ -410,7 +410,7 @@ def heaviside(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def log(x):
+def log(x, /):
     return ivy.log(x)
 
 
@@ -454,7 +454,7 @@ def trace(a, offset=0, axis1=0, axis2=1, out=None):
 
 
 @to_ivy_arrays_and_back
-def log2(x):
+def log2(x, /):
     return ivy.log2(x)
 
 
@@ -505,6 +505,7 @@ def inner(a, b):
     return ivy.inner(a, b)
 
 
+@to_ivy_arrays_and_back
 def outer(a, b, out=None):
     return ivy.outer(a, b, out=out)
 
@@ -527,8 +528,6 @@ def subtract(x1, x2):
 
 @to_ivy_arrays_and_back
 def around(a, decimals=0, out=None):
-    if ivy.shape(a) == ():
-        a = ivy.expand_dims(a, axis=0)
     ret_dtype = a.dtype
     return ivy.round(a, decimals=decimals, out=out).astype(ret_dtype, copy=False)
 
