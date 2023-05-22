@@ -1,7 +1,5 @@
 import numpy as np
-from ivy.func_wrapper import with_unsupported_dtypes
 from typing import Optional
-from .. import backend_version
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def l1_normalize(
@@ -20,7 +18,6 @@ def l1_normalize(
     return np.divide(x, denorm)
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
 def l2_normalize(
     x: np.ndarray,
     /,

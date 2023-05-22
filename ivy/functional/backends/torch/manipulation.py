@@ -265,7 +265,9 @@ def split(
     return list(torch.split(x, num_or_size_splits, axis))
 
 
-@with_unsupported_dtypes({"2.0.1": ("int8", "int16", "uint8")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("int8", "int16", "uint8")}, backend_version
+)
 def repeat(
     x: torch.Tensor,
     /,

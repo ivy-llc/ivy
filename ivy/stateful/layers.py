@@ -123,7 +123,13 @@ class Linear(Module):
 
 
 class Dropout(Module):
-    def __init__(self, prob, scale=True, dtype=None):
+    def __init__(
+        self,
+        prob,
+        scale: bool = True,
+        dtype=None,
+        training: bool = True,
+    ):
         """
         Dropout layer. The layer randomly zeroes some of the elements of the input
         tensor with probability p using samples from a Bernoull distribution.
@@ -134,15 +140,15 @@ class Dropout(Module):
             The probability of zeroing out each array element.
         scale
             Whether to scale the output by 1/(1-prob), default is ``True``.
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created.
             Default is ``None``.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
         """
         self._prob = prob
         self._scale = scale
+        self.training = training
         Module.__init__(self, device=None, v=None, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
@@ -178,7 +184,9 @@ class Dropout(Module):
             The outputs following the linear operation and bias addition
             *[batch_shape, out]*
         """
-        return ivy.dropout(inputs, self._prob, scale=self._scale, dtype=dtype)
+        return ivy.dropout(
+            inputs, self._prob, scale=self._scale, training=self.training, dtype=dtype
+        )
 
 
 # Attention #
