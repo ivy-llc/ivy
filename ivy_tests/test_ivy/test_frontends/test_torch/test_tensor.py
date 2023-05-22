@@ -8421,6 +8421,7 @@ def test_torch_instance_not_equal(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -8438,4 +8439,5 @@ def test_torch_instance_not_equal(
         method_flags=method_flags,
         frontend=frontend,
         atol_=1e-02,
+        on_device=on_device
     )
