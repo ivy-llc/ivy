@@ -140,27 +140,27 @@ def divmod(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-def sinh(x):
+def sinh(x, /):
     return ivy.sinh(x)
 
 
 @to_ivy_arrays_and_back
-def sin(x):
+def sin(x, /):
     return ivy.sin(x)
 
 
 @to_ivy_arrays_and_back
-def tan(x):
+def tan(x, /):
     return ivy.tan(x)
 
 
 @to_ivy_arrays_and_back
-def tanh(x):
+def tanh(x, /):
     return ivy.tanh(x)
 
 
 @to_ivy_arrays_and_back
-def arccos(x):
+def arccos(x, /):
     return ivy.acos(x)
 
 
@@ -170,12 +170,12 @@ def arccosh(x):
 
 
 @to_ivy_arrays_and_back
-def arcsin(x):
+def arcsin(x, /):
     return ivy.asin(x)
 
 
 @to_ivy_arrays_and_back
-def arcsinh(x):
+def arcsinh(x, /):
     return ivy.asinh(x)
 
 
@@ -261,7 +261,7 @@ def square(x, /):
 
 
 @to_ivy_arrays_and_back
-def arctanh(x):
+def arctanh(x, /):
     return ivy.atanh(x)
 
 
