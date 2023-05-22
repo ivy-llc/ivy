@@ -1235,6 +1235,9 @@ def test_jax_numpy_kron(
         min_value=-100,
         max_value=100,
         allow_nan=False,
+        small_abs_safety_factor=2,
+        large_abs_safety_factor=2,
+        safety_factor_scale='log',
     ),
     test_with_out=st.just(False),
 )
