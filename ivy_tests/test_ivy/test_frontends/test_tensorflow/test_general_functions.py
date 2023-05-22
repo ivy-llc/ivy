@@ -1936,12 +1936,15 @@ def test_tensorflow_unique(
 @handle_frontend_test(
     fn_tree="tensorflow.while_loop",
     dtype_and_x=helpers.dtype_and_values(
-        num_arrays=2,
+        num_arrays=1,
         min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=10,
         shared_dtype=True,
         min_value=-100,
         max_value=100,
-        dtype=["float32"] * 2,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_tensorflow_while_loop(
@@ -1978,5 +1981,5 @@ def test_tensorflow_while_loop(
         on_device=on_device,
         cond=_test_cond_fn,
         body=_test_body_fn,
-        loop_vars=x[0],
+        loop_vars=(x[0],),
     )
