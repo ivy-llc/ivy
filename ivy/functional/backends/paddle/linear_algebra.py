@@ -335,11 +335,11 @@ def matrix_rank(
 ) -> paddle.Tensor:
     if x.ndim < 2:
         return paddle.to_tensor(0).squeeze().astype(x.dtype)
-    atol = atol if atol is not None else 0
-    rtol = rtol if rtol is not None else 0
-    svd_values = paddle_backend.svd(x)[1]
-    sigma = paddle_backend.max(svd_values)
-    tol = paddle_backend.maximum(atol, rtol * sigma)
+    atol = atol if atol is not None else 0.0
+    rtol = rtol if rtol is not None else 0.0
+    svd_values = ivy.svd(x, compute_uv=False)
+    sigma = ivy.max(svd_values)
+    tol = ivy.maximum(atol, rtol * sigma)
     if x.dtype in [
         paddle.int8,
         paddle.int16,
