@@ -1170,7 +1170,8 @@ def _get_array_decimal_values(dec_vals=None):
     return ret
 
 
-array_decimal_values = 8
+# array_decimal_values = 8
+ivy.array_decimal_values = 8
 
 
 def set_array_decimal_values(dec_vals):
@@ -1186,7 +1187,8 @@ def set_array_decimal_values(dec_vals):
     global array_decimal_values_stack
     array_decimal_values_stack.append(dec_vals)
     global array_decimal_values
-    array_decimal_values = dec_vals
+    # ivy.array_decimal_values = dec_vals
+    ivy.__setattr__("array_decimal_values", dec_vals, True)
 
 
 def unset_array_decimal_values():
@@ -1195,7 +1197,7 @@ def unset_array_decimal_values():
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
     global array_decimal_values
-    array_decimal_values = (
+    globals()["array_decimal_values"] = (
         array_decimal_values_stack[-1] if array_decimal_values_stack else 8
     )
 
@@ -1412,7 +1414,13 @@ def cast_data_types(val=True):
 
 
 # global parameter properties
-# class IvyWithProperties(sys.modules[__name__].__class__):
+class IvyWithProperties(sys.modules[__name__].__class__):
+    def __setattr__(self, name, value, internal=False):
+        if not internal and name in ["array_decimal_values", "array_mode"]:
+            raise Exception("Read-only!")
+        self.__dict__[name] = value
+
+
 # @property
 # def array_significant_figures(self):
 #     return _get_array_significant_figures()
@@ -1433,8 +1441,8 @@ def cast_data_types(val=True):
 # def array_mode(self):
 #     return general._get_array_mode()
 
-
-# sys.modules[__name__].__class__ = IvyWithProperties
+# globals()["array_mode"] = True
+sys.modules[__name__].__class__ = IvyWithProperties
 
 # array_significant_figures = IvyWithProperties.array_significant_figures
 # array_decimal_values = IvyWithProperties.array_decimal_values
