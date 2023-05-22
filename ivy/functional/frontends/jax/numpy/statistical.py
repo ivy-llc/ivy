@@ -249,10 +249,9 @@ def nanmax(
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
                 # introducing the initial in one dimension is enough
                 ax = axis[0] % len(s)
-                s[ax] = 1
             else:
                 ax = axis % len(s)
-                s[ax] = 1
+            s[ax] = 1
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -297,10 +296,9 @@ def nanmin(
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
                 # introducing the initial in one dimension is enough
                 ax = axis[0] % len(s)
-                s[ax] = 1
             else:
                 ax = axis % len(s)
-                s[ax] = 1
+            s[ax] = 1
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -433,8 +431,7 @@ def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
         not_nan_mask_count1,
         ivy.full_like(not_nan_mask_count1, ivy.nan),
     )
-    ret_nanmean = ivy.divide(array_sum1, count_zero_handel)
-    return ret_nanmean
+    return ivy.divide(array_sum1, count_zero_handel)
 
 
 @to_ivy_arrays_and_back
