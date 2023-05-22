@@ -240,7 +240,7 @@ def lcm(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def logaddexp2(x1, x2):
+def logaddexp2(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.logaddexp2(x1, x2)
 
@@ -278,12 +278,12 @@ def matmul(a, b, *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def log10(x):
+def log10(x, /):
     return ivy.log10(x)
 
 
 @to_ivy_arrays_and_back
-def logaddexp(x1, x2):
+def logaddexp(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.logaddexp(x1, x2)
 
@@ -410,7 +410,7 @@ def heaviside(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def log(x):
+def log(x, /):
     return ivy.log(x)
 
 
@@ -454,7 +454,7 @@ def trace(a, offset=0, axis1=0, axis2=1, out=None):
 
 
 @to_ivy_arrays_and_back
-def log2(x):
+def log2(x, /):
     return ivy.log2(x)
 
 
