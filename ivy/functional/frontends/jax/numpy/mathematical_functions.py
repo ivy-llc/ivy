@@ -116,7 +116,7 @@ def dot(a, b, *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def floor(x):
+def floor(x, /):
     return ivy.floor(x)
 
 
@@ -266,7 +266,7 @@ def arctanh(x, /):
 
 
 @to_ivy_arrays_and_back
-def multiply(x1, x2):
+def multiply(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.multiply(x1, x2)
 
@@ -289,7 +289,7 @@ def logaddexp(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def degrees(x):
+def degrees(x, /):
     return ivy.rad2deg(x)
 
 
@@ -381,24 +381,24 @@ def fmin(x1, x2):
     "jax",
 )
 @to_ivy_arrays_and_back
-def fabs(x):
+def fabs(x, /):
     return ivy.abs(x)
 
 
 @to_ivy_arrays_and_back
-def fmod(x1, x2):
+def fmod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.fmod(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def maximum(x1, x2):
+def maximum(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.maximum(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def minimum(x1, x2):
+def minimum(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.minimum(x1, x2)
 
