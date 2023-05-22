@@ -191,28 +191,28 @@ def trunc(x):
 
 
 @to_ivy_arrays_and_back
-def ceil(x):
+def ceil(x, /):
     return ivy.ceil(x)
 
 
 @to_ivy_arrays_and_back
-def float_power(x1, x2):
+def float_power(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.float_power(x1, x2).astype(x1.dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
-def deg2rad(x):
+def deg2rad(x, /):
     return ivy.deg2rad(x)
 
 
 @to_ivy_arrays_and_back
-def radians(x):
+def radians(x, /):
     return ivy.deg2rad(x)
 
 
 @to_ivy_arrays_and_back
-def exp2(x):
+def exp2(x, /):
     return ivy.exp2(x)
 
 
