@@ -21,9 +21,16 @@ def logit(
         x = jnp.clip(x, eps, 1 - eps)
     return jnp.log(x / (1 - x))
 
-@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
-def elu(x, alpha=1.0):
-    """Exponential Linear Unit activation function"""
+def elu(
+    x: jnp.ndarray,
+    alpha: float = 1.0,
+    out: Optional[jnp.ndarray] = None,
+    inplace: bool = False,
+) -> jnp.ndarray:
+    if out is not None:
+        raise ValueError("The 'out' parameter is not supported in Jax.")
+    if inplace:
+        raise ValueError("Inplace operation is not supported in Jax.")
     return jnp.where(x > 0, x, alpha * (jnp.exp(x) - 1))
 
 def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

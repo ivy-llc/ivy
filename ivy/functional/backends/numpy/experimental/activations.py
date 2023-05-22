@@ -41,10 +41,25 @@ def thresholded_relu(
 
 thresholded_relu.support_native_out = True
 
-def elu(x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
+def elu(
+    x: np.ndarray,
+    alpha: float = 1.0,
+    out: Optional[np.ndarray] = None,
+    inplace: bool = False,
 ) -> np.ndarray:
-    return np.where(x > 0, x, alpha * (np.exp(x) - 1))
-
+    if inplace and out is not None:
+        raise ValueError("Cannot specify both 'inplace' and 'out' parameters.")
+    if inplace:
+        np.multiply(x, x > 0, out=x)
+        np.multiply(alpha * (np.exp(x) - 1), x <= 0, out=x)
+        return x
+    else:
+        result = np.where(x > 0, x, alpha * (np.exp(x) - 1))
+        if out is not None:
+            np.copyto(out, result)
+            return out
+        else:
+            return result
 
 @_scalar_output_to_0d_array
 def relu6(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:

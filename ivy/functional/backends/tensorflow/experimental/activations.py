@@ -36,10 +36,15 @@ def thresholded_relu(
     threshold = tf.cast(threshold, x.dtype)
     return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex", "bool")}, backend_version)
 def elu(
-    x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None
-) -> Tensor:
+    x: tf.Tensor,
+    alpha: float = 1.0,
+    out: Optional[tf.Tensor] = None,
+    inplace: bool = False,
+) -> tf.Tensor:
+    if inplace:
+        raise ValueError("Inplace operation is not supported in TensorFlow.")
     return tf.keras.activations.elu(x, alpha=alpha)
 
 
