@@ -269,4 +269,3 @@ def test_paddle_arange(
         step=step,
         dtype=dtype[0],
     )
-
