@@ -359,7 +359,6 @@ def isnan(
         return tf.math.is_nan(x)
 
 
-
 @with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
 def lcm(
     x1: Union[tf.Tensor, tf.Variable],

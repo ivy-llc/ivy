@@ -103,14 +103,14 @@ class _ArrayWithLosses(abc.ABC):
         )
 
     def binary_cross_entropy_with_logits(
-            self: ivy.Array,
-            pred: Union[ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            epsilon: float = 1e-7,
-            pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            reduction: str = "none",
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        epsilon: float = 1e-7,
+        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        reduction: str = "none",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Compute the binary cross entropy with logits loss.
@@ -160,13 +160,14 @@ class _ArrayWithLosses(abc.ABC):
         >>> print(z)
         ivy.array([[2.672, 0.002, 0.029, 5.305]])
         """
-        return ivy.binary_cross_entropy_with_logits(self._data,
-                                                    pred,
-                                                    epsilon=epsilon,
-                                                    pos_weight=pos_weight,
-                                                    reduction=reduction,
-                                                    out=out)
-
+        return ivy.binary_cross_entropy_with_logits(
+            self._data,
+            pred,
+            epsilon=epsilon,
+            pos_weight=pos_weight,
+            reduction=reduction,
+            out=out,
+        )
 
     def sparse_cross_entropy(
         self: ivy.Array,
