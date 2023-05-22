@@ -24,7 +24,7 @@ abs = absolute
 
 
 @to_ivy_arrays_and_back
-def add(x1, x2):
+def add(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
