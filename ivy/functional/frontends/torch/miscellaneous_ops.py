@@ -84,11 +84,6 @@ def cummax(input, dim, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def cummax(input, dim, *, out=None):
-    return ivy.cummax(input, axis=dim, out=out)
-
-
-@to_ivy_arrays_and_back
 def cumprod(input, dim, *, dtype=None, out=None):
     if not dtype and "int" in input.dtype:
         dtype = ivy.int64
