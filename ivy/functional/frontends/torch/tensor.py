@@ -377,6 +377,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def not_equal(self, other, *, out=None):
         return torch_frontend.not_equal(self, other, out=out)
+    ne=not_equal
 
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
