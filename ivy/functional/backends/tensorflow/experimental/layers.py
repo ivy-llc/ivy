@@ -734,3 +734,70 @@ def interpolate(
     if remove_dim:
         ret = tf.squeeze(ret, axis=-2)
     return ret
+
+
+def _fft2_norm(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+):
+    n = tf.constant(x.shape[0] * x.shape[1])
+    if norm == "backward":
+        return x
+    elif norm == "ortho":
+        return x / tf.sqrt(n)
+    elif norm == "forward":
+        return x / n
+    else:
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+
+
+def fft2(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not all(isinstance(j, int) for j in dim):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {dim} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[dim[0]], x.shape[dim[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    for i in range(len(dim)):
+        if any([x.shape[dim[j]] != s[j] for j in range(len(s))]):
+            a = list(x.shape)
+            if any([a[dim[j]] > s[j] for j in range(len(s))]):
+                index = [slice(None)] * len(a)
+                index[1] = slice(0, 1, s[i])
+                x = x[tuple(index)]
+            else:
+                a[dim[i]] = s[i] - a[dim[i]]
+                z = tf.zeros(a, dtype=x.dtype)
+                x = tf.concat([x, z], axis=dim[i])
+    operation_name = f"{s} points FFT2d at dim {dim} with {norm} normalization"
+
+    xc1 = tf.cast(x, tf.complex128)
+    ret = tf.signal.fft2d(xc1, operation_name)
+    ret = _fft2_norm(ret, dim=dim, norm=norm)
+    return ret
