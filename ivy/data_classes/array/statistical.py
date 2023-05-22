@@ -643,8 +643,8 @@ class _ArrayWithStatistical(abc.ABC):
         /,
         *,
         axis: int = 0,
+        exclusive: bool = False,
         reverse: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -701,8 +701,8 @@ class _ArrayWithStatistical(abc.ABC):
         return ivy.cummax(
             self._data,
             axis=axis,
+            exclusive=exclusive,
             reverse=reverse,
-            dtype=dtype,
             out=out,
         )
 

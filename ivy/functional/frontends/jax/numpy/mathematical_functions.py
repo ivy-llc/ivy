@@ -24,7 +24,7 @@ abs = absolute
 
 
 @to_ivy_arrays_and_back
-def add(x1, x2):
+def add(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
@@ -56,12 +56,12 @@ def ediff1d(ary, to_end=None, to_begin=None):
 
 
 @to_ivy_arrays_and_back
-def arctan(x):
+def arctan(x, /):
     return ivy.atan(x)
 
 
 @to_ivy_arrays_and_back
-def arctan2(x1, x2):
+def arctan2(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.atan2(x1, x2)
 
@@ -100,12 +100,12 @@ def convolve(a, v, mode="full", *, precision=None):
 
 
 @to_ivy_arrays_and_back
-def cos(x):
+def cos(x, /):
     return ivy.cos(x)
 
 
 @to_ivy_arrays_and_back
-def cosh(x):
+def cosh(x, /):
     return ivy.cosh(x)
 
 
@@ -635,7 +635,7 @@ def polysub(a1, a2):
 @to_ivy_arrays_and_back
 def polymul(a1, a2, *, trim_leading_zeros=False):
     a1, a2 = ivy.atleast_1d(a1), ivy.atleast_1d(a2)
-    if trim_leading_zeros and (len(a1) > 1 or len(a1) > 1):
+    if trim_leading_zeros and (len(a1) > 1 or len(a2) > 1):
         a1, a2 = trim_zeros(a1, trim="f"), trim_zeros(a2, trim="f")
     if len(a1) == 0:
         a1 = ivy.asarray([0], dtype=a1.dtype)
