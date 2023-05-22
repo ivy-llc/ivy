@@ -132,6 +132,10 @@ def Concat(*, concat_dim, values, name="Concat"):
 
 Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 
+@to_ivy_arrays_and_back
+def Cross(*, a, b, name='Cross'):
+    a, b = check_tensorflow_casting(a, b)
+    return ivy.cross(a, b)
 
 @to_ivy_arrays_and_back
 def Cosh(*, x, name="Cosh"):

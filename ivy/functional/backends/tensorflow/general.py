@@ -383,7 +383,11 @@ def scatter_nd(
                     *[
                         tf.range(s)
                         if idx == slice(None, None, None)
-                        else tf.range(idx.start, idx.stop)
+                        else tf.range(
+                            ivy.default(idx.start, 0),
+                            ivy.default(idx.stop, shape[0]),
+                            ivy.default(idx.step, 1),
+                        )
                         if isinstance(idx, slice) and (idx != slice(None, None, None))
                         else tf.constant([idx % s])
                         for s, idx in zip(shape, indices)
@@ -410,7 +414,11 @@ def scatter_nd(
                         *[
                             tf.range(s)
                             if idx == slice(None, None, None)
-                            else tf.range(idx.start, idx.stop)
+                            else tf.range(
+                                ivy.default(idx.start, 0),
+                                ivy.default(idx.stop, shape[0]),
+                                ivy.default(idx.step, 1),
+                            )
                             if isinstance(idx, slice)
                             and (idx != slice(None, None, None))
                             else tf.constant([idx % s])
@@ -426,7 +434,13 @@ def scatter_nd(
                 [
                     tf.reshape(value, (-1,))
                     for value in tf.meshgrid(
-                        *[tf.range(indices.start, indices.stop)],
+                        *[
+                            tf.range(
+                                ivy.default(indices.start, 0),
+                                ivy.default(indices.stop, shape[0]),
+                                ivy.default(indices.step, 1),
+                            )
+                        ],
                         indexing="ij",
                     )
                 ],
@@ -448,7 +462,11 @@ def scatter_nd(
                             *[
                                 tf.range(s)
                                 if idx == slice(None, None, None)
-                                else tf.range(idx.start, idx.stop)
+                                else tf.range(
+                                    ivy.default(idx.start, 0),
+                                    ivy.ivy.default(idx.stop, shape[0]),
+                                    ivy.default(idx.step, 1),
+                                )
                                 if isinstance(idx, slice)
                                 and idx != slice(None, None, None)
                                 else tf.constant([idx % s])

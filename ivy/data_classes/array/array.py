@@ -352,6 +352,9 @@ class Array(
     def __dir__(self):
         return self._data.__dir__()
 
+    def __getattribute__(self, item):
+        return super().__getattribute__(item)
+
     def __getattr__(self, item):
         try:
             attr = self._data.__getattribute__(item)
