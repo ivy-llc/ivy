@@ -290,7 +290,7 @@ def unravel_index(
     return tuple(reversed(coord))
 
 
-def cov(
+def cov_paddle(
     x1: paddle.Tensor,
     x2: paddle.Tensor = None,
     /,
@@ -300,6 +300,7 @@ def cov(
     ddof: Optional[int] = None,
     fweights: Optional[paddle.Tensor] = None,
     aweights: Optional[paddle.Tensor] = None,
+    dtype: Optional[type] = None,
 ) -> paddle.Tensor:
     if ddof is not None and ddof != int(ddof):
         raise ValueError("ddof must be an integer")
@@ -319,13 +320,17 @@ def cov(
 
     X = x1.astype("float64")
     if not rowVar and X.shape[0] != 1:
-        X = paddle.transpose(X, perm=[i for i in range(x.shape[1] - 1, -1, -1)])
+        X = paddle.transpose(X, perm=tuple(range(len(X.shape)-1, -1, -1)))
 
+    x2 = x2.astype(("float64"))
     if x2 is not None:
+        if not rowVar and x2.shape[0] != 1:
+            x2 = paddle.transpose(x2, perm=tuple(range(len(X.shape)-1, -1, -1)))
         X = paddle.concat([X, x2], axis=0)
 
     w = None
     if fweights is not None:
+        fweights = fweights.astype("float64")
         if not paddle.all(fweights == paddle.round(fweights)):
             raise TypeError("fweights must be an integer")
         if len(fweights.shape) > 1:
@@ -338,6 +343,7 @@ def cov(
         w = fweights
 
     if aweights is not None:
+        aweights = aweights.astype("float64")
         if len(aweights.shape) > 1:
             raise RuntimeError("aweights must be 1-dimensional")
         if aweights.shape[0] != X.shape[1]:
@@ -350,10 +356,17 @@ def cov(
         else:
             w = w * aweights
 
-    avg = paddle.mean(X, axis=1)
+
+    # print('w: ',w)
+    # Calculate weighted average
+    # print('before avg: ',X)
+    temp_avg = paddle.multiply(X, w)
+    avg = temp_avg.sum(axis=1)/paddle.sum(w)
+
     if w is not None:
         w_sum = paddle.sum(w)
-
+    # print('avg', avg)
+    # print('w_sum', w_sum)
     if w is None:
         fact = X.shape[1] - ddof
     elif ddof == 0:
@@ -367,12 +380,14 @@ def cov(
         fact = 0.0
 
     X -= avg.unsqueeze(1)
+    # print('X: ', X)
     if w is None:
-        X_T = paddle.transpose(X, perm=[i for i in range(X.shape[1] - 1, -1, -1)])
+        X_T = paddle.transpose(X, perm=tuple(range(len(X.shape)-1, -1, -1)))
     else:
-        X = X * w
-        X_T = paddle.transpose(X, perm=[i for i in range(X.shape[1] - 1, -1, -1)])
-
+        X_temp = X * w
+        X_T = paddle.transpose(X_temp, perm=tuple(range(len(X_temp.shape)-1, -1, -1)))
+    # print('X_T: ', X_T)
     c = paddle.matmul(X, X_T)
+    # print('c: ', c)
     result = paddle.divide(c, paddle.to_tensor(fact, dtype="float64"))
-    return result.astype(x1.dtype)
+    return result

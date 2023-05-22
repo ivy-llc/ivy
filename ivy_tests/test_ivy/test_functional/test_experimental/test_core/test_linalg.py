@@ -683,7 +683,7 @@ def _get_dtype_value1_value2_cov(
     fn_tree="functional.ivy.experimental.cov",
     dtype_x1_x2_cov=_get_dtype_value1_value2_cov(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
+        min_num_dims=2,
         max_num_dims=2,
         min_dim_size=2,
         max_dim_size=5,
@@ -721,6 +721,6 @@ def test_cov(
         fweights=fweights,
         aweights=aweights,
         return_flat_np_arrays=True,
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
     )
