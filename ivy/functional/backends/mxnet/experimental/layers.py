@@ -6,6 +6,7 @@ import mxnet as mx
 from ivy.func_wrapper import handle_mixed_function
 from ivy.utils.exceptions import IvyNotImplementedException
 
+
 def general_pool(
     inputs,
     init,
@@ -47,6 +48,7 @@ def max_pool2d(
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     raise IvyNotImplementedException()
+
 
 def max_pool3d(
     x: mx.nd.NDArray,
@@ -91,6 +93,7 @@ def avg_pool2d(
 ) -> mx.nd.NDArray:
     raise IvyNotImplementedException()
 
+
 def avg_pool3d(
     x: mx.nd.NDArray,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -118,6 +121,7 @@ def dct(
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     raise IvyNotImplementedException()
+
 
 def fft(
     x: mx.nd.NDArray,
@@ -164,6 +168,7 @@ def ifft(
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     raise IvyNotImplementedException()
+
 
 @handle_mixed_function(
     lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501

@@ -39,7 +39,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.sinc(self._data, out=out)
 
-
     def fmod(
         self: ivy.Array,
         x2: ivy.Array,
