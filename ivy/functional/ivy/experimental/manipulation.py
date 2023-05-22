@@ -4,7 +4,6 @@ from typing import (
     Tuple,
     Iterable,
     Sequence,
-    Generator,
     Callable,
     Any,
     Literal,
@@ -216,88 +215,6 @@ def moveaxis(
     (5, 3, 4)
     """
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
-
-
-def _iter_product(*args, repeat=1):
-    # itertools.product
-    pools = [tuple(pool) for pool in args] * repeat
-    result = [[]]
-    for pool in pools:
-        result = [x + [y] for x in result for y in pool]
-    for prod in result:
-        yield tuple(prod)
-
-
-@handle_exceptions
-@inputs_to_ivy_arrays
-def ndenumerate(
-    input: Iterable,
-) -> Generator:
-    """
-    Multidimensional index iterator.
-
-    Parameters
-    ----------
-    input
-        Input array to iterate over.
-
-    Returns
-    -------
-    ret
-        An iterator yielding pairs of array coordinates and values.
-
-    Examples
-    --------
-    >>> a = ivy.array([[1, 2], [3, 4]])
-    >>> for index, x in ivy.ndenumerate(a):
-    >>>     print(index, x)
-    (0, 0) 1
-    (0, 1) 2
-    (1, 0) 3
-    (1, 1) 4
-    """
-
-    def _ndenumerate(input):
-        if ivy.is_ivy_array(input) and input.shape == ():
-            yield (), ivy.to_scalar(input)
-        else:
-            i = [range(k) for k in input.shape]
-            for idx in _iter_product(*i):
-                yield idx, input[idx]
-
-    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
-    return _ndenumerate(input)
-
-
-@handle_exceptions
-def ndindex(
-    shape: Tuple,
-) -> Generator:
-    """
-    Multidimensional index iterator.
-
-    Parameters
-    ----------
-    shape
-        The shape of the array to iterate over.
-
-    Returns
-    -------
-    ret
-        An iterator yielding array coordinates.
-
-    Examples
-    --------
-    >>> a = ivy.array([[1, 2], [3, 4]])
-    >>> for index in ivy.ndindex(a):
-    >>>     print(index)
-    (0, 0)
-    (0, 1)
-    (1, 0)
-    (1, 1)
-    """
-    args = [range(k) for k in shape]
-    return _iter_product(*args)
 
 
 @handle_nestable
@@ -1176,7 +1093,7 @@ def pad(
             padding_value = constant_values
         padded = _interior_pad(input, padding_value, pad_width)
         return padded
-    pad_width = _to_pairs(pad_width, input.ndim)
+    pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
@@ -1239,7 +1156,7 @@ def pad(
                 left_index, right_index, padded = _set_wrap_both(
                     padded, axis, (left_index, right_index)
                 )
-    return padded.astype(input.dtype)
+    return padded
 
 
 pad.mixed_function = True
