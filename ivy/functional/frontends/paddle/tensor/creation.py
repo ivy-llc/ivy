@@ -61,4 +61,3 @@ def full_like(x, fill_value, /, *, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def arange(start, end=None, step=1, dtype=None, name=None):
     return ivy.arange(start, end, step=step, dtype=dtype)
-
