@@ -8429,45 +8429,34 @@ def test_torch_instance_is_complex(
 
         on_device=on_device,
     )
-    
-    @handle_frontend_method(
+	
+	
+#not_equal_test    
+@handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="not_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
-    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
 def test_torch_instance_not_equal(
     dtype_and_x,
-    alpha,
-    frontend,
     frontend_method_data,
     init_flags,
     method_flags,
-    on_device
+    frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
+        init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "other": x[1],
-            "alpha": alpha,
-        },
+        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        atol_=1e-02,
-	  on_device=on_device
+        on_device=on_device,
     )
-    
