@@ -133,17 +133,6 @@ def cholesky(input, *, upper=False, out=None):
 
 
 @to_ivy_arrays_and_back
-def cholesky_inverse(input, upper=False, *, out=None):
-    cholesky_factor = ivy.cholesky(input, False, True)
-    cholesky_factor_transpose = ivy.matrix_transpose(cholesky_factor)
-    if not upper:
-        inv = ivy.inv(ivy.matmul(cholesky_factor, cholesky_factor_transpose))
-    else:
-        inv = ivy.inv(ivy.matmul(cholesky_factor_transpose, cholesky_factor))
-    return inv
-
-
-@to_ivy_arrays_and_back
 def svd(A, /, *, full_matrices=True, driver=None, out=None):
     # TODO: add handling for driver and out
     return ivy.svd(A, compute_uv=True, full_matrices=full_matrices)
