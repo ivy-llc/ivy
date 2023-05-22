@@ -442,6 +442,45 @@ def test_torch_cholesky(
     )
 
 
+# cholesky_inverse
+@handle_frontend_test(
+    fn_tree="torch.cholesky_inverse",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1])) != 0
+    ),
+    upper=st.booleans(),
+)
+def test_torch_cholesky_inverse(
+    dtype_and_x,
+    upper,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    x = x[0]
+    x = (
+        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    )  # make symmetric positive-definite
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-02,
+        input=x,
+        upper=upper,
+    )
+
+
 # ger
 @handle_frontend_test(
     fn_tree="torch.ger",
