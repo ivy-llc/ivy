@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence
+from typing import Union, Optional, List, Sequence, Tuple
 
 import numpy as np
 
@@ -284,3 +284,16 @@ def frombuffer(
     if isinstance(dtype, list):
         dtype = np.dtype(dtype[0])
     return np.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: str,
+) -> Tuple[np.ndarray]:
+    return tuple(
+        _to_device(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)), device=device)
+    )
