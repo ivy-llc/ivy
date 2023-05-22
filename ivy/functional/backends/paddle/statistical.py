@@ -349,7 +349,8 @@ def cumsum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "int8",
+                                 "int16", "uint16", "float16")}}, backend_version
 )
 def cummax(
     x: paddle.Tensor,
