@@ -1,15 +1,12 @@
 # global
-from hypothesis import given, strategies as st
-
-# import numpy as np
+from hypothesis import strategies as st
 
 # local
 import ivy
 from ivy.functional.frontends.numpy.ma.MaskedArray import MaskedArray
 import ivy_tests.test_ivy.helpers as helpers
 
-# from ivy_tests.test_ivy.helpers import handle_frontend_test
-# import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @st.composite
@@ -25,23 +22,32 @@ def _array_mask(draw):
 
 
 # data
-@given(dtype_x_mask=_array_mask())
-def test_numpy_maskedarray_property_data(dtype_x_mask):
-    dtype, data = dtype_x_mask
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    args=_array_mask(),
+)
+def test_numpy_maskedarray_property_data(
+    args,
+):
+    dtype, data = args
     x = MaskedArray(data[0], mask=data[1], dtype=dtype)
     assert ivy.all(x.data == ivy.array(data[0]))
 
 
 # mask
-@given(dtype_x_mask=_array_mask())
-def test_numpy_maskedarray_property_mask(dtype_x_mask):
-    dtype, data = dtype_x_mask
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    args=_array_mask(),
+)
+def test_numpy_maskedarray_property_mask(args):
+    dtype, data = args
     x = MaskedArray(data[0], mask=ivy.array(data[1]), dtype=dtype, shrink=False)
     assert ivy.all(x.mask == ivy.array(data[1]))
 
 
 # fill_value
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
     dtype_x_mask=_array_mask(),
     fill=st.integers(),
 )
@@ -55,7 +61,8 @@ def test_numpy_maskedarray_property_fill_value(
 
 
 # hardmask
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
     dtype_x_mask=_array_mask(),
     hard=st.booleans(),
 )
@@ -66,7 +73,7 @@ def test_numpy_maskedarray_property_hardmask(dtype_x_mask, hard):
 
 
 # dtype
-@given(dtype_x_mask=_array_mask())
+@handle_frontend_test(fn_tree="numpy.add", dtype_x_mask=_array_mask())  # dummy fn_tree
 def test_numpy_maskedarray_property_dtype(dtype_x_mask):
     dtype, data = dtype_x_mask
     x = MaskedArray(data[0], mask=data[1], dtype=dtype)

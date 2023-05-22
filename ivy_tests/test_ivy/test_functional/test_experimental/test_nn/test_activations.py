@@ -46,7 +46,10 @@ def test_logit(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    threshold=st.floats(min_value=-0.10, max_value=10.0),
+    threshold=st.one_of(
+        st.floats(min_value=-0.10, max_value=10.0),
+        st.integers(min_value=0, max_value=10),
+    ),
 )
 def test_thresholded_relu(
     *,
