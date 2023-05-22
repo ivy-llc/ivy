@@ -1193,6 +1193,10 @@ class Tensor:
         return 2 * torch_frontend.sum(
             torch_frontend.log(torch_frontend.real(torch_frontend.diagonal(chol)))
         )
+    
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def copysign(self, other, *, out=None):
+        return torch_frontend.copysign(self, other, out=out)
 
 
 class Size(tuple):

@@ -287,11 +287,10 @@ def mul(input, other, *, out=None):
 multiply = mul
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def div(input, other, *, rounding_mode=None, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     if rounding_mode is not None:
-        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
         promoted = input.dtype
         if rounding_mode == "trunc":
             return ivy.trunc_divide(input, other, out=out).astype(promoted)
