@@ -213,6 +213,32 @@ def test_paddle_full(
     )
 
 
+# full_like
+@handle_frontend_test(
+    fn_tree="paddle.full_like",
+    input_fill_dtype=_input_fill_and_dtype(),
+    test_with_out=st.just(False),
+)
+def test_paddle_full_like(
+    input_fill_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, fill, dtype_to_cast = input_fill_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        fill_value=fill,
+        dtype=dtype_to_cast,
+    )
+    
+    
 # arange
 @handle_frontend_test(
     fn_tree="paddle.arange",
