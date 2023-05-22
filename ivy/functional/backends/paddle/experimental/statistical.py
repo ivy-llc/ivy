@@ -290,7 +290,7 @@ def unravel_index(
     return tuple(reversed(coord))
 
 
-def cov_paddle(
+def cov(
     x1: paddle.Tensor,
     x2: paddle.Tensor = None,
     /,
