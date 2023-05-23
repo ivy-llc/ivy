@@ -51,7 +51,8 @@ bitwise_xor.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.expm1(x, out=out)
 
@@ -60,7 +61,8 @@ expm1.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef bitwise_invert(
+@handle_numpy_array_in_torch
+def bitwise_invert(
     x: Union[int, bool, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -111,7 +113,8 @@ equal.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef less_equal(
+@handle_numpy_array_in_torch
+def less_equal(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     /,
@@ -126,7 +129,8 @@ less_equal.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef bitwise_and(
+@handle_numpy_array_in_torch
+def bitwise_and(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
     /,
@@ -141,7 +145,8 @@ bitwise_and.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef ceil(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def ceil(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if "int" in str(x.dtype):
         if ivy.exists(out):
@@ -154,7 +159,8 @@ ceil.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef floor(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def floor(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if "int" in str(x.dtype):
         if ivy.exists(out):
@@ -167,7 +173,8 @@ floor.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef asin(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def asin(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.asin(x, out=out)
 
@@ -176,7 +183,8 @@ asin.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef asinh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def asinh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.asinh(x, out=out)
 
@@ -185,7 +193,8 @@ asinh.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef sign(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def sign(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sign(x, out=out)
 
@@ -194,7 +203,8 @@ sign.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef sqrt(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def sqrt(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sqrt(x, out=out)
 
@@ -203,7 +213,8 @@ sqrt.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef cosh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def cosh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.cosh(x, out=out)
 
@@ -212,7 +223,8 @@ cosh.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef log10(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def log10(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.log10(x, out=out)
 
@@ -221,13 +233,15 @@ log10.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef log2(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def log2(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.log2(x, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef log1p(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def log1p(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.log1p(x, out=out)
 
@@ -242,7 +256,8 @@ def isnan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef less(
+@handle_numpy_array_in_torch
+def less(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     /,
@@ -272,7 +287,8 @@ multiply.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef cos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def cos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.cos(x, out=out)
 
@@ -312,7 +328,8 @@ divide.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef greater(
+@handle_numpy_array_in_torch
+def greater(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     /,
@@ -327,7 +344,8 @@ greater.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef greater_equal(
+@handle_numpy_array_in_torch
+def greater_equal(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     /,
@@ -342,7 +360,8 @@ greater_equal.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-@handle_numpy_array_in_torchdef acos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@handle_numpy_array_in_torch
+def acos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.acos(x, out=out)
 
