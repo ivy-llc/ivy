@@ -64,3 +64,33 @@ def test_paddle_var(
         correction=correction,
         keepdims=keepdims,
     )
+
+#nanmedian
+@handle_frontend_test(
+    fn_tree="paddle.nanmedian",
+    dtype_and_x=statistical_dtype_values(function="nanmedian"),
+    keepdims=st.booleans(),
+    overwrite_input=st.booleans(),
+)
+def test_paddle_nanmedian(
+    *,
+    dtype_and_x,
+    correction,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        axis=axis,
+        overwrite_input=overwrite_input,
+        keepdims=keepdims,
+    )
