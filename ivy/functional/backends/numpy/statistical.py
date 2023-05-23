@@ -1,4 +1,5 @@
 # global
+import math
 import numpy as np
 from typing import Union, Optional, Sequence
 
@@ -303,3 +304,24 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+
+def igamma(
+    a: np.ndarray,
+    /,
+    *,
+    x: np.ndarray,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    def igamma_cal(a, x):
+        t = np.linspace(0, x)
+        y = np.exp(-t) * (t ** (a - 1))
+        integral = np.trapz(y, t)
+        div = 1 if x <= 1 else math.gamma(x - 1)
+        return np.float32(integral / div)
+
+    igamma_vec = np.vectorize(igamma_cal)
+    return igamma_vec(a, x)
+
+
+igamma.support_native_out = True
