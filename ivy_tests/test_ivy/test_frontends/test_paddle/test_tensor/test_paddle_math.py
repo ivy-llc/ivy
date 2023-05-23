@@ -165,6 +165,7 @@ def test_paddle_acosh(
         x=x[0],
     )
 
+
 # asin
 @handle_frontend_test(
     fn_tree="paddle.asin",
@@ -190,3 +191,6 @@ def test_paddle_asin(
         atol=1e-2,
         x=x[0],
     )
+
+
+    
