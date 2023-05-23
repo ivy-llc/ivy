@@ -93,45 +93,6 @@ def sinc(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-def lcm(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Compute the element-wise least common multiple (LCM) of x1 and x2.
-
-    Parameters
-    ----------
-    x1
-        first input array, must be integers
-    x2
-        second input array, must be integers
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        an array that includes the element-wise least common multiples of x1 and x2
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x1=ivy.array([2, 3, 4])
-    >>> x2=ivy.array([5, 8, 15])
-    >>> x1.lcm(x1, x2)
-    ivy.array([10, 21, 60])
-    """
-    return ivy.current_backend().lcm(x1, x2, out=out)
-
-
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
 def fmax(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
