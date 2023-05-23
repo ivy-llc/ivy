@@ -3,8 +3,6 @@ from hypothesis import strategies as st  # NOQA
 from . import globals as test_globals
 from .pipeline_helper import update_backend
 
-from ivy.functional.ivy.gradients import _variable  # TODO remove
-
 
 @st.composite
 def _gradient_strategy(draw):
@@ -108,7 +106,7 @@ class FunctionTestFlags(TestFlags):
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
-                    x = _variable(x)  # TODO update to backend dependent
+                    x = backend.gradients._variable(x)
                 if self.native_arrays[i]:
                     x = backend.to_native(x)
                 if self.container[i]:
@@ -183,7 +181,7 @@ class FrontendFunctionTestFlags(TestFlags):
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
-                    x = _variable(x)  # TODO update to backend dependent
+                    x = backend.gradients._variable(x)
                 if self.native_arrays[i]:
                     x = backend.to_native(x)
                 ret.append(x)
@@ -244,7 +242,7 @@ class InitMethodTestFlags(TestFlags):
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
-                    x = _variable(x)  # TODO update to backend dependent
+                    x = backend.gradients._variable(x)
                 if self.native_arrays[i]:
                     x = backend.to_native(x)
                 ret.append(x)
@@ -298,7 +296,7 @@ class MethodTestFlags(TestFlags):
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
-                    x = _variable(x)  # TODO update to backend dependent
+                    x = backend.gradients._variable(x)
                 if self.native_arrays[i]:
                     x = backend.to_native(x)
                 if self.container[i]:
@@ -355,7 +353,7 @@ class FrontendMethodTestFlags(TestFlags):
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
-                    x = _variable(x)  # TODO update to backend dependent
+                    x = backend.gradients._variable(x)
                 if self.native_arrays[i]:
                     x = backend.to_native(x)
                 ret.append(x)
