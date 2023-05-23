@@ -1,8 +1,8 @@
-# global
+# local
 import ivy.functional.frontends.tensorflow.ragged as ragged_tf
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 import ivy
 
-# local
 
 # try:
 #     import tensorflow as tf
@@ -34,6 +34,7 @@ def _flatten_composite_array(x, expand_composites=False):
         return ivy.native_sparse_array_to_indices_values_and_shape(x)
 
 
+@to_ivy_arrays_and_back
 def flatten(structure, expand_composites=False):
     if expand_composites and _is_composite_array(structure):
         return _flatten_composite_array(structure, expand_composites=expand_composites)
