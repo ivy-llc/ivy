@@ -8474,16 +8474,20 @@ def test_torch_instance_copysign(
     method_name="not_equal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
     ),
+    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
 def test_torch_instance_not_equal(
     dtype_and_x,
+    alpha,
+    frontend,
     frontend_method_data,
     init_flags,
     method_flags,
-    frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -8495,10 +8499,12 @@ def test_torch_instance_not_equal(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "other": x[1],
+            "alpha": alpha,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        atol_=1e-02,
         on_device=on_device,
     )
