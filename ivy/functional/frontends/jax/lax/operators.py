@@ -582,7 +582,7 @@ def top_k(operand, k):
     return [values, indices]
 
 
-def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
+def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
     def _pad(arr, pads, pad_value):
         out = ivy.astype(
             ivy.pad(
@@ -633,7 +633,7 @@ def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
     return view, view_axes, rhs_axes, out_axes
 
 
-def _dilate(operand, factors, fill_value=0):
+def _dilate(operand, factors, fill_value):
     outspace = list(operand.shape[:2]) + [
         shape + (factors[i] - 1) * (shape - 1)
         for i, shape in enumerate(operand.shape[2:])
@@ -675,6 +675,25 @@ def _custom_reduce(operand, init_val, func):
     return result
 
 
+identities = {
+    "max": -float("inf"),
+    "min": float("inf"),
+    "add": 0,
+    "mul": 1,
+    "multiply": 1,
+    "logical_and": True,
+    "logical_or": False,
+}
+
+
+def _get_identity(func, init):
+    func_name = func.__name__
+    if func_name in identities:
+        return identities[func_name]
+    return init
+
+
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def reduce_window(
     operand,
@@ -688,15 +707,15 @@ def reduce_window(
 ):
     # ToDo: add support for window_dilation
     op, dims, strides = operand, window_dimensions, window_strides
-
+    identity = _get_identity(computation, init_value)
     if isinstance(padding, str):
         pads = _padtype_to_pads(op.shape, dims, strides, padding)
     else:
         pads = padding
     op = op.reshape((1, 1) + op.shape)
     if base_dilation:
-        op = _dilate(op, base_dilation)
-    view = _conv_view(op, [1, 1] + list(dims), strides, pads)[0]
+        op = _dilate(op, base_dilation, identity)
+    view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
     view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
     ret = _custom_reduce(view, init_value, computation)
     return ret.astype(operand.dtype)
