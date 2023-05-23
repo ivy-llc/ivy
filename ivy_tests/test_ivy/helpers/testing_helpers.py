@@ -3,7 +3,7 @@ import pytest
 import importlib
 import inspect
 import functools
-from typing import List
+from typing import List, Callable
 
 from hypothesis import given, strategies as st
 
@@ -48,6 +48,9 @@ cmd_line_args_lists = (
     "native_array",
     "container",
 )
+
+
+update_backend: Callable = ivy.utils.backend.ContextManager
 
 
 @st.composite
