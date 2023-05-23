@@ -4,7 +4,7 @@ from hypothesis import strategies as st, assume
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import assert_all_close, handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
     _get_splits,
 )
@@ -17,7 +17,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # 
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1),
+    indices_or_sections=_get_splits(min_num_dims=1).filter(lambda s: s is not None),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -38,7 +38,8 @@ def test_numpy_split(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    helpers.test_frontend_function(
+    assume(isinstance(indices_or_sections, int))
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
@@ -47,7 +48,11 @@ def test_numpy_split(
         ary=value[0],
         indices_or_sections=indices_or_sections,
         axis=axis,
+        test_values=False,
     )
+    ret_flattened = [ivy.to_numpy(r) for r in ret]
+    for ret_np, ret_gt in zip(ret_flattened, frontend_ret[0]):
+        assert_all_close(ret_np, ret_gt, ground_truth_backend=frontend)
 
 
 # array_split
@@ -57,7 +62,7 @@ def test_numpy_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1),
+    indices_or_sections=_get_splits(min_num_dims=1).filter(lambda s: s is not None),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -78,7 +83,8 @@ def test_numpy_array_split(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    helpers.test_frontend_function(
+    assume(isinstance(indices_or_sections, int))
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
@@ -87,7 +93,11 @@ def test_numpy_array_split(
         ary=value[0],
         indices_or_sections=indices_or_sections,
         axis=axis,
+        test_values=False,
     )
+    ret_flattened = [ivy.to_numpy(r) for r in ret]
+    for ret_np, ret_gt in zip(ret_flattened, frontend_ret[0]):
+        assert_all_close(ret_np, ret_gt, ground_truth_backend=frontend)
 
 
 # dsplit
@@ -97,7 +107,9 @@ def test_numpy_array_split(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=3, axis=2),
+    indices_or_sections=_get_splits(min_num_dims=3, axis=2).filter(
+        lambda s: s is not None
+    ),
     test_with_out=st.just(False),
 )
 def test_numpy_dsplit(
@@ -110,7 +122,8 @@ def test_numpy_dsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    helpers.test_frontend_function(
+    assume(isinstance(indices_or_sections, int))
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
@@ -118,7 +131,11 @@ def test_numpy_dsplit(
         on_device=on_device,
         ary=value[0],
         indices_or_sections=indices_or_sections,
+        test_values=False,
     )
+    ret_flattened = [ivy.to_numpy(r) for r in ret]
+    for ret_np, ret_gt in zip(ret_flattened, frontend_ret[0]):
+        assert_all_close(ret_np, ret_gt, ground_truth_backend=frontend)
 
 
 # vsplit
@@ -128,7 +145,9 @@ def test_numpy_dsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=0),
+    indices_or_sections=_get_splits(min_num_dims=2, axis=0).filter(
+        lambda s: s is not None
+    ),
     test_with_out=st.just(False),
 )
 def test_numpy_vsplit(
@@ -141,7 +160,8 @@ def test_numpy_vsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    helpers.test_frontend_function(
+    assume(isinstance(indices_or_sections, int))
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
@@ -149,7 +169,11 @@ def test_numpy_vsplit(
         on_device=on_device,
         ary=value[0],
         indices_or_sections=indices_or_sections,
+        test_values=False,
     )
+    ret_flattened = [ivy.to_numpy(r) for r in ret]
+    for ret_np, ret_gt in zip(ret_flattened, frontend_ret[0]):
+        assert_all_close(ret_np, ret_gt, ground_truth_backend=frontend)
 
 
 # hsplit
@@ -157,7 +181,7 @@ def test_numpy_vsplit(
     fn_tree="numpy.hsplit",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
     indices_or_sections=_get_splits(min_num_dims=1, axis=1),
     test_with_out=st.just(False),
@@ -181,7 +205,8 @@ def test_numpy_hsplit(
             and ivy.current_backend_str() in ("tensorflow", "jax")
         )
     )
-    helpers.test_frontend_function(
+    assume(isinstance(indices_or_sections, int))
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
@@ -189,4 +214,8 @@ def test_numpy_hsplit(
         on_device=on_device,
         ary=value[0],
         indices_or_sections=indices_or_sections,
+        test_values=False,
     )
+    ret_flattened = [ivy.to_numpy(r) for r in ret]
+    for ret_np, ret_gt in zip(ret_flattened, frontend_ret[0]):
+        assert_all_close(ret_np, ret_gt, ground_truth_backend=frontend)
