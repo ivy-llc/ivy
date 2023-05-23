@@ -90,7 +90,7 @@ def cholesky(input, upper=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def cholesky_inverse(input, upper=False, *, out=None):
+def cholesky_inverse(input, upper=True, *, out=None):
     cholesky_factor = ivy.cholesky(input, upper=upper, out=None)
     cholesky_factor_transpose = ivy.matrix_transpose(cholesky_factor)
     if not upper:
