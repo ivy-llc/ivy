@@ -285,8 +285,6 @@ def linspace(
     if axis is None:
         axis = -1
     with tf.device(device):
-        start = tf.cast(start, dtype=dtype)
-        stop = tf.cast(stop, dtype=dtype)
         start = tf.cast(tf.constant(start), dtype=dtype)
         stop = tf.cast(tf.constant(stop), dtype=dtype)
         if not endpoint:
