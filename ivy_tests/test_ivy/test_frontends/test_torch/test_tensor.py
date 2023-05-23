@@ -8507,4 +8507,5 @@ def test_torch_instance_not_equal(
         frontend=frontend,
         atol_=1e-02,
         on_device=on_device,
+        out=None,
     )
