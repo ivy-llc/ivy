@@ -575,7 +575,9 @@ def test_repeat(
 
 
 @st.composite
-def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
+def _get_splits(
+    draw, allow_none=True, min_num_dims=1, axis=None, generate_native_array=False
+):
     """Generate valid splits, either by generating an integer that evenly divides the
     axis or a list of splits that sum to the length of the axis being split."""
     shape = draw(
@@ -607,6 +609,9 @@ def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
                 )
             )
             num_or_size_splits.append(split_value)
+        generate_native_array = draw(st.booleans())
+        if generate_native_array:
+            return np.asarray(num_or_size_splits)
         return num_or_size_splits
 
     if allow_none:
