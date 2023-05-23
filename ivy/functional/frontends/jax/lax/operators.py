@@ -640,8 +640,8 @@ def _dilate(operand, factors, fill_value):
     ]
     out = ivy.full(
         outspace,
-        ivy.to_scalar(ivy.array(fill_value, dtype=operand.dtype)),
-        dtype=operand.dtype,
+        ivy.to_scalar(fill_value),
+        dtype=fill_value.dtype,
     )
     lhs_slices = tuple(_slice(None, None, step) for step in factors)
     out[(_slice(None),) * 2 + lhs_slices] = operand
@@ -686,10 +686,21 @@ identities = {
 }
 
 
-def _get_identity(func, init):
+def _cast_init(init, dtype):
+    if ivy.isinf(init):
+        if ivy.is_float_dtype(dtype):
+            info = ivy.finfo(dtype)
+        else:
+            info = ivy.iinfo(dtype)
+        init = info.max if init > 0 else info.min
+    return ivy.array(init, dtype=dtype)
+
+
+def _get_identity(func, dtype, init):
     func_name = func.__name__
     if func_name in identities:
-        return identities[func_name]
+        identity = identities[func_name]
+        return _cast_init(identity, dtype)
     return init
 
 
@@ -707,7 +718,8 @@ def reduce_window(
 ):
     # ToDo: add support for window_dilation
     op, dims, strides = operand, window_dimensions, window_strides
-    identity = _get_identity(computation, init_value)
+    init_value = _cast_init(init_value, op.dtype)
+    identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
         pads = _padtype_to_pads(op.shape, dims, strides, padding)
     else:
