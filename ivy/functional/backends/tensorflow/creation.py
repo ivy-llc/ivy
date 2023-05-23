@@ -109,7 +109,7 @@ def asarray(
                 except (TypeError, ValueError):
                     dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -119,7 +119,7 @@ def asarray(
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -133,9 +133,7 @@ def asarray(
 
                 dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 return tf.convert_to_tensor(
-                    ivy.nested_map(
-                        obj, lambda x: tf.convert_to_tensor(x, dtype), shallow=False
-                    ),
+                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype), shallow=False),
                     dtype=dtype,
                 )
             else:
@@ -144,7 +142,7 @@ def asarray(
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.cast(tensor, dtype)
