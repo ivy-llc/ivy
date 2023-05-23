@@ -168,7 +168,7 @@ def test_paddle_acosh(
 
 # asin
 @handle_frontend_test(
-    fn_tree="paddle.asin",
+    fn_tree="paddle.tensor.math.asin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
