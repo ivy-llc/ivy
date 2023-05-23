@@ -48,40 +48,19 @@ def thresholded_relu(
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
 
 
-def batch_norm(
-    x: JaxArray,
-    mean: JaxArray,
-    variance: JaxArray,
-    /,
-    *,
-    scale: Optional[JaxArray] = None,
-    offset: Optional[JaxArray] = None,
-    training: bool = False,
-    eps: float = 1e-5,
-):
-    ndims = len(x.shape)
-    if training:
-        dims = (0, *range(2, ndims))
-        mean = jnp.mean(x, axis=dims)
-        variance = jnp.var(x, axis=dims)
-    x = jnp.transpose(x, (0, *range(2, ndims), 1))
-    inv = 1.0 / jnp.sqrt(variance + eps)
-    if scale is not None:
-        inv *= scale
-
-    ret = x * inv.astype(x.dtype) + (
-        offset - mean * inv if offset is not None else -mean * inv
-    ).astype(x.dtype)
-
-    return jnp.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
-
-
-def logsigmoid(input: JaxArray) -> JaxArray:
+def logsigmoid(input: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.nn.log_sigmoid(input)
 
 
 def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jax.nn.selu(x).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jax.nn.silu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret

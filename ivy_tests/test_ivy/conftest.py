@@ -11,6 +11,9 @@ mod_frontend = {
     "numpy": None,
     "jax": None,
     "torch": None,
+    "mindspore": None,
+    "scipy": None,
+    "paddle": None,
 }  # multiversion
 mod_backend = {
     "tensorflow": None,
@@ -18,6 +21,7 @@ mod_backend = {
     "jax": None,
     "torch": None,
     "paddle": None,
+    "mxnet": None,
 }  # multiversion
 
 ground_backend = None  # multiversion
@@ -43,6 +47,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 def pytest_report_header(config):
     return [
+        f"backend(s): {config.getoption('backend')}",
         f"device: {config.getoption('device')}",
         f"number of Hypothesis examples: {config.getoption('num_examples')}",
     ]
@@ -182,18 +187,22 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
                     backend_fw.backend,
                     ground_backend,
                     on_device,
-                    request.function.test_data
-                    if hasattr(request.function, "test_data")
-                    else None,
+                    (
+                        request.function.test_data
+                        if hasattr(request.function, "test_data")
+                        else None
+                    ),
                 )
             else:
                 test_globals.setup_api_test(
                     backend_fw.backend,
                     request.function.ground_truth_backend,
                     on_device,
-                    request.function.test_data
-                    if hasattr(request.function, "test_data")
-                    else None,
+                    (
+                        request.function.test_data
+                        if hasattr(request.function, "test_data")
+                        else None
+                    ),
                 )
 
         except Exception as e:
@@ -207,9 +216,22 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
 
 
 def pytest_generate_tests(metafunc):
-    metafunc.parametrize(
-        "on_device,backend_fw,compile_graph,implicit", TEST_PARAMS_CONFIG
-    )
+    # Skip backend test against groud truth backend
+    # This redundant and wastes resources, as we going to be comparing
+    # The backend against it self
+    if hasattr(metafunc.function, "ground_truth_backend"):
+        test_paramters = TEST_PARAMS_CONFIG.copy()
+        # Find the entries that contains the ground truth backend as it's backend
+        for entry in test_paramters.copy():
+            if entry[1].backend == metafunc.function.ground_truth_backend:
+                test_paramters.remove(entry)
+        metafunc.parametrize(
+            "on_device,backend_fw,compile_graph,implicit", test_paramters
+        )
+    else:
+        metafunc.parametrize(
+            "on_device,backend_fw,compile_graph,implicit", TEST_PARAMS_CONFIG
+        )
 
 
 def process_cl_flags(config) -> Dict[str, bool]:
@@ -248,13 +270,13 @@ def process_cl_flags(config) -> Dict[str, bool]:
         # when both flags are true
         if v[0] and v[1]:
             raise Exception(
-                f"--skip-{k}--testing and --with-{k}--testing flags cannot be used \
-                    together"
+                f"--skip-{k}--testing and --with-{k}--testing flags cannot be used "
+                "together"
             )
         if v[1] and no_extra_testing:
             raise Exception(
-                f"--with-{k}--testing and --no-extra-testing flags cannot be used \
-                    together"
+                f"--with-{k}--testing and --no-extra-testing flags cannot be used "
+                "together"
             )
         # skipping a test
         if v[0] or no_extra_testing:

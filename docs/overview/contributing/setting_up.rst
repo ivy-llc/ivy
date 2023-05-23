@@ -18,7 +18,7 @@ This page explains the main steps to get started!
 Forking and cloning the repo
 ----------------------------
 
-#. You first need to fork the Ivy repository from the repository page here `repo`_ by using the fork button on the top right. This creates a copy of Ivy repository in your GitHub account.
+#. You will first need to fork the Ivy repository from the repository page here `repo`_ by using the fork button on the top right. This creates a copy of Ivy repository in your GitHub account.
 #. Clone your forked repo to your local machine.
 
 Depending on your preferred mode of cloning, any of the below should work:
@@ -41,6 +41,32 @@ Then add Ivy original repository as upstream, to easily sync with latest changes
 
     git remote add upstream https://github.com/unifyai/ivy.git
 
+
+Pre-Commit
+----------
+
+Our development team also make use of the :code:`pre-commit` PyPI `package <https://pypi.org/project/pre-commit/>`_.
+
+Check out their `page <https://pre-commit.com/>`_ for more details.
+
+In a nutshell, this enables us to add pre-commit hooks which check for lint errors before a commit is accepted, and then also (in most cases) automatically make the necessary fixes.
+If the lint tests fail when a commit is attempted, then the commit will not succeed, and the problematic lines are printed to the terminal.
+Fixes are then applied automatically where possible.
+To proceed with the commit, the modified files must be re-added using git, and the commit will then succeed on the next attempt.
+
+In order to install and properly set up pre-commit, these steps should be followed:
+
+1. Run :code:`python3 -m pip install pre-commit`
+
+2. Enter into your cloned ivy folder, for example :code:`cd ~/ivy`
+
+3. Run :code:`pre-commit install`
+
+That's it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.
+
+For questions, please reach out on `discord`_ in the `pre-commit channel`_!
+
+
 PyCharm
 -------
 
@@ -58,7 +84,7 @@ Many people seem to miss this option, so we thought we would add an explicit rem
 For questions, please reach out on `discord`_ in the `pycharm channel`_!
 
 Virtual environments - No Docker
--------------------------------
+--------------------------------
 
 Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest ivy package from GitHub source, as explained below.
 This is to ensure the contributors' code and examples are as aligned and in accordance with the latest as possible.
@@ -80,32 +106,52 @@ Using miniconda
 #. Open conda terminal
 #. Create the environment by running the command (:code:`ivy_dev` is the name of the environment)
 
-    .. code-block:: none
-
-        conda create --name ivy_dev python=3.8.10
+   .. code-block:: none
+      
+      conda create --name ivy_dev python=3.8.10
 
 #. Activate the environment by:
 
-    .. code-block:: none
+   .. code-block:: none
 
-        conda activate ivy_dev
+      conda activate ivy_dev
 
-#.  Now install ivy package from GitHub by running:
+#. Now install ivy package from GitHub by running:
 
-    .. code-block:: none
+   .. code-block:: none
 
-        pip install git+https://github.com/unifyai/ivy.git
+      pip install git+https://github.com/unifyai/ivy.git
 
-#. Setup the interpreter from you environment in Pycharm by:
+#. Setup the interpreter by:
 
-   a. Going to settings -> project -> Python Interpreter
+   #. Pycharm
 
-   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+      a. Going to settings -> project -> Python Interpreter
 
-   c. Choosing "conda environment" from the left panel.
-    Choose existing environment and select the drop down and you should find the path python in the environment.
-If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
+      b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+      
+      c. Choosing "conda environment" from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.
 
+   #. VSCode
+
+      a. Go to the command palette (Ctrl+Shift+P) or (⌘+shift+p) for Mac and type "Python: Select Interpreter" and select the environment you created.
+      
+   If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
+
+#. Installing the development dependencies.
+
+   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   
+      .. code-block:: none
+   
+         pip install -r requirements/requirements.txt
+   
+   b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
+   
+      .. code-block:: none
+   
+         pip install -r requirements/optional_m1_1.txt
+         pip install -r requirements/optional_m1_2.txt
 
 Using venv
 **********
@@ -113,58 +159,81 @@ Using venv
 This is a builtin package and doesn't require explicit installation.
 
 #. Open your terminal/cmd in the directory where you would like to have the folder with the environment files.
+
 #. Create the environment by running the command below with a new environment name.
    We named it :code:`ivy_dev` like above.
 
-    .. code-block:: none
+   .. code-block:: none
 
-        python -m venv ivy_dev
+      python -m venv ivy_dev
 
-    Try :code:`python3` if :code:`python` doesn't work.
+   Try :code:`python3` if :code:`python` doesn't work.
 
 #. Activate the created environment by running (in the same working directory as the environment folder):
 
-    .. code-block:: none
+   .. code-block:: none
 
-        ivy_dev\Scripts\activate.bat
+      ivy_dev\Scripts\activate.bat
 
-    (on Windows)
+   (on Windows)
 
-    OR
+   OR
 
-    .. code-block:: none
+   .. code-block:: none
 
-        source ivy_dev/bin/activate
+      source ivy_dev/bin/activate
 
-    (on Mac/Linux)
+   (on Mac/Linux)
 
 #. Now install ivy package from GitHub by running:
 
-    .. code-block:: none
+   .. code-block:: none
 
-        pip install git+https://github.com/unifyai/ivy.git
+      pip install git+https://github.com/unifyai/ivy.git
 
-#. Setup the interpreter from you environment in Pycharm by:
+#. Setup the interpreter by:
 
-   a. Going to settings -> project -> Python Interpreter
+   #. Pycharm
 
-   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+      a. Going to settings -> project -> Python Interpreter
 
-   c. Choosing "virtualenv environment" from the left panel
-    Choose existing environment and add the path to python.
-The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
+      b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
 
-Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any future projects.
+      c. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python. The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
 
-To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/test_array_api` in your cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+      Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any future projects.
 
-    .. code-block:: none
+   #. VSCode
 
-        pip install -r requirements.txt
+      a. Go to the command palette (Ctrl+Shift+P) or (⌘+shift+p) for Mac and type `Python: Select Interpreter` and select the environment you created.
 
-This will install packages required for running the tests in Array API suite.
+#. Installing the development dependencies.
+   
+   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   
+      .. code-block:: none
+   
+         pip install -r requirements/requirements.txt
+   
+   b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
+   
+      .. code-block:: none
+   
+         pip install -r requirements/optional_m1_1.txt
+         pip install -r requirements/optional_m1_2.txt
+
+#. Installing array API testing dependencies.
+
+   To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/array_api_testing/test_array_api` in your cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+
+   .. code-block:: none
+
+      pip install -r requirements.txt
+
+   This will install packages required for running the tests in Array API suite.
 
 Here are the visual guides for setting up a `virtualenv environment <https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0>`_ OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html>`_ in pycharm from JetBrains.
+For VSCode, you can follow the instructions `virtual environments <https://code.visualstudio.com/docs/python/environments#_creating-environments>`_.
 
 Docker Interpreter with PyCharm
 -------------------------------
@@ -185,11 +254,6 @@ Windows
 #. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_.
    For most, it will only require running the command :code:`wsl --install` in powershell admin mode.
    Visit the link if it doesn't.
-#. Get the latest Docker Image for Ivy by:
-
-   a. Running Docker desktop.
-   b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
-   
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_, make sure to only install the Professional version of PyCharm, not the Community version.
 #. Open pycharm with your cloned Ivy repository.
    Add the remote python interpreter by:
@@ -197,10 +261,19 @@ Windows
    a. Going to the settings -> Build, Execution, Deployment -> Docker
       Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
-   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   d. Choosing "Docker" from the left panel.
-      Type python3 (with the number) in python interpreter path and press ok.
-   e. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
+   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new small drop down menu. Select "On Docker...". A         window will open which will have three steps.
+#. It will ask to create a new Docker target, at this step you have to select the following:
+
+   a. Docker image -> Docker
+   b. Image -> Pull
+   c. Image tag -> unifyai/ivy:latest
+   d. Select "Next"
+#. The image will start pulling. It will take a respectible amount of time to complete. Once you see "Introspection Completed" message, select "Next".
+#. Another window will appear, at this step select the following:
+
+   a. In the left panel select "System Interpreter".
+   b. For Interpreter, select the default option which will be "/usr/bin/python3" the select "Create".
+#. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
@@ -257,45 +330,45 @@ When setting up on an M1 Mac, you would have to update the Dockerfile to install
 
 
 Ubuntu
-****
+******
 
 
 #. Install Docker by running the commands below one by one in the Linux terminal.
    You may visit `Docker Ubuntu Installation Page <https://docs.docker.com/engine/install/ubuntu/>`_ for the details.
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get update
+       sudo apt-get update
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get install \
-        ca-certificates \
-        curl \
-        gnupg \
-        lsb-release
+       sudo apt-get install \
+       ca-certificates \
+       curl \
+       gnupg \
+       lsb-release
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo mkdir -p /etc/apt/keyrings
+       sudo mkdir -p /etc/apt/keyrings
 
-    .. code-block:: none
+   .. code-block:: none
 
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-    .. code-block:: none
+   .. code-block:: none
 
-        echo \
-        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+       echo \
+       "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+       $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get update
+       sudo apt-get update
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+       sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 #. Get the latest Docker Image for Ivy by:
 
@@ -316,8 +389,20 @@ Ubuntu
    d. Choosing "Docker" from the left panel.
       Type python3 (with the number) in python interpreter path and press ok.
 
-For questions, please reach out on `discord`_ in the `docker channel`_!
+**Docker Connection not Successfull**
 
+This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
+    
+.. code-block:: none
+        
+   sudo chmod a+rwx /var/run/docker.sock
+        
+.. code-block:: none
+    
+   sudo chmod a+rwx /var/run/docker.pid  
+
+
+For questions, please reach out on `discord`_ in the `docker channel`_!
 
 **Video**
 
@@ -327,8 +412,9 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
     src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
     </iframe>
 
-Setting Up Testing
-******************
+Setting Up Testing in PyCharm
+-----------------------------
+
 There are a couple of options to choose from when running ivy tests in PyCharm.
 To run a single unit test, e.g. `test_abs`, you can avail of the context menu in the PyCharm code editor by pressing the green ▶️ symbol which appears to the left of `def test_abs(`.
 
@@ -375,6 +461,8 @@ There are a number of such shell scripts in `ivy/run_tests_CLI`_:
     test_ivy_nn.sh
     test_ivy_stateful.sh
 
+**For Unix-based systems (Linux and macOS):**
+
 * :code:`run_tests.sh` is run by typing :code:`./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
 * :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`.
@@ -387,12 +475,29 @@ There are a number of such shell scripts in `ivy/run_tests_CLI`_:
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true
   :width: 420
 
+
+**For Windows users:**
+
+For Windows users, you may need to specify that the shell scripts should be run by :code:`sh`, which comes with Git. In the Terminal, prepend sh to the script commands like so:
+
+
+* To run :code:`run_tests.sh` on Windows, type :code:`sh ./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
+  This runs all tests in :code:`ivy/ivy_tests`.
+* To run :code:`test_array_api.sh` on Windows, type :code:`sh ./test_array_api.sh [backend] test_[submodule]`.
+  This runs all array-api tests for a certain submodule in a certain backend.
+* To run :code:`test_ivy_core.sh` on Windows, type :code:`sh ./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
+  This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
+* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh` on Windows.
+  Make sure to check the submodule names in the source code before running.
+
+The above instructions for running tests on Windows assume that you have installed Git and have access to the Git Bash terminal. If you do not have Git Bash, you can download it from the `official Git website <https://git-scm.com/downloads>`_.
+
 If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_stateful`, there are :code:`.py` available in :code:`run_tests_CLI`.
 All are run like: :code:`python run_tests_CLI/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.
 
 
-More Detailed Hypothesis Logs
-*****************************
+More Detailed Hypothesis Logs in PyCharm
+---------------------------------------
 
 For testing, we use the `Hypothesis <https://hypothesis.readthedocs.io/en/latest/#>`_ module for data generation.
 During testing, if Hypothesis detects an error, it will do its best to find the simplest values that are causing the error.
@@ -444,7 +549,7 @@ Windows
    e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name". Opening the container may take a long time, as the Docker image is very large (5+ GB).
 
 Ubuntu
-*******
+******
 
 #. Install `Docker Engine <https://docs.docker.com/engine/install/ubuntu/>`_
 #. Install `Visual Studio Code <https://code.visualstudio.com/>`_
@@ -464,7 +569,7 @@ Ubuntu
 For windows users, the file path should be entered with "/" (forward-slashes), for other OS it would be the regular "\\" (back-slashes).
 
 GitHub Codespaces
-*******
+*****************
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
 Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`.
@@ -523,7 +628,7 @@ Log of container being built would look like below:
    :width: 420
 
 5. That's it, you have just setup GitHub codespaces and can start developing Ivy.
-The configuration files installs all the required packages, extensions for you to get started quickly.
+The configuration files install all the required packages, extensions for you to get started quickly.
 
 **Opening an existing Codespace**
 
@@ -588,30 +693,6 @@ Note: Currently you do not need to comment out the :code:`conftest.py` file in t
     src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 
-
-Pre-Commit
-----------
-
-In addition to the docker interpreter, our development team also make use of the :code:`pre-commit` PyPI `package <https://pypi.org/project/pre-commit/>`_.
-
-Check out their `page <https://pre-commit.com/>`_ for more details.
-
-In a nutshell, this enables us to add pre-commit hooks which check for lint errors before a commit is accepted, and then also (in most cases) automatically make the necessary fixes.
-If the lint tests fail when a commit is attempted, then the commit will not succeed, and the problematic lines are printed to the terminal.
-Fixes are then applied automatically where possible.
-To proceed with the commit, the modified files must be re-added using git, and the commit will then succeed on the next attempt.
-
-In order to install and properly set up pre-commit, these steps should be followed:
-
-1. Run :code:`python3 -m pip install pre-commit`
-
-2. Enter into your cloned ivy folder, for example :code:`cd ~/ivy`
-
-3. Run :code:`pre-commit install`
-
-That's it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.
-
-For questions, please reach out on `discord`_ in the `pre-commit channel`_!
 
 **Round Up**
 

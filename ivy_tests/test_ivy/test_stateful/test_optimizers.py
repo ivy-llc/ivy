@@ -59,7 +59,7 @@ def test_sgd_optimizer(
         atol_=1e-2,
         test_gradients=test_gradients,
         xs_grad_idxs=xs_grad_idxs,
-        device_=on_device,
+        on_device=on_device,
     )
 
 
@@ -110,7 +110,7 @@ def test_lars_optimizer(
         atol_=1e-1,
         test_gradients=test_gradients,
         xs_grad_idxs=xs_grad_idxs,
-        device_=on_device,
+        on_device=on_device,
     )
 
 
@@ -172,7 +172,7 @@ def test_adam_optimizer(
         atol_=1e-1,
         test_gradients=test_gradients,
         xs_grad_idxs=xs_grad_idxs,
-        device_=on_device,
+        on_device=on_device,
     )
 
 
@@ -242,5 +242,5 @@ def test_lamb_optimizer(
         atol_=1e-1,
         test_gradients=test_gradients,
         xs_grad_idxs=xs_grad_idxs,
-        device_=on_device,
+        on_device=on_device,
     )

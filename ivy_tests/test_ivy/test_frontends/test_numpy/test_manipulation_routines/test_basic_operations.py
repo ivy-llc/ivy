@@ -12,16 +12,18 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @st.composite
 def generate_copyto_args(draw):
-    input_dtypes, xs, casting, _ = draw(np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func=[
-            lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("valid"),
-                num_arrays=2,
-                shared_dtype=True,
-                min_num_dims=1,
-            )
-        ],
-    ))
+    input_dtypes, xs, casting, _ = draw(
+        np_frontend_helpers.dtypes_values_casting_dtype(
+            arr_func=[
+                lambda: helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("valid"),
+                    num_arrays=2,
+                    shared_dtype=True,
+                    min_num_dims=1,
+                )
+            ],
+        )
+    )
     where = draw(np_frontend_helpers.where(shape=xs[0].shape))
     return input_dtypes, xs, casting, where
 
@@ -30,7 +32,7 @@ def generate_copyto_args(draw):
 @handle_frontend_test(
     fn_tree="numpy.copyto",
     test_with_out=st.just(False),
-    copyto_args=generate_copyto_args()
+    copyto_args=generate_copyto_args(),
 )
 def test_numpy_copyto(
     copyto_args,
@@ -38,7 +40,7 @@ def test_numpy_copyto(
     _, xs, casting, where = copyto_args
     if isinstance(where, list) or isinstance(where, tuple):
         where = where[0]
-        
+
     src_ivy = ivy_np.array(xs[0])
     dst_ivy = ivy_np.array(xs[1])
     ivy_np.copyto(dst_ivy, src_ivy, where=where, casting=casting)

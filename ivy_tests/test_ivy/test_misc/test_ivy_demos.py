@@ -11,9 +11,9 @@ import ivy.functional.backends.numpy
 # Tests #
 # ------#
 
+
 # training
 def test_training_demo(on_device):
-
     if ivy.current_backend_str() == "numpy":
         # numpy does not support gradients
         pytest.skip()
@@ -57,3 +57,6 @@ def test_array(on_device):
     import torch
 
     assert ivy.concat((torch.ones((1,)), torch.ones((1,))), axis=-1).shape == (2,)
+    import paddle
+
+    assert ivy.concat((paddle.ones((1,)), paddle.ones((1,))), axis=-1).shape == (2,)

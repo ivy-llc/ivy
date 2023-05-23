@@ -146,7 +146,7 @@ def conv3d_transpose(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def depthwise_conv2d(
     input,
@@ -174,7 +174,7 @@ def depthwise_conv2d(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def separable_conv2d(
     input,
@@ -201,9 +201,7 @@ def separable_conv2d(
 
 @to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
-    ndims = len(x.shape)
-    x = ivy.permute_dims(x, axes=(0, *range(2, ndims), 1))
-    ret = ivy.batch_norm(
+    xnormalized, _, _ = ivy.batch_norm(
         x,
         mean,
         variance,
@@ -211,7 +209,7 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
         scale=scale,
         eps=variance_epsilon,
     )
-    return ivy.permute_dims(ret, axes=(0, ndims - 1, *range(1, ndims - 1)))
+    return xnormalized
 
 
 @to_ivy_arrays_and_back
@@ -221,7 +219,7 @@ def dropout(x, rate, noise_shape=None, seed=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "int8",
             "int16",
             "int32",
@@ -240,7 +238,7 @@ def silu(features, beta: float = 1.0):
 
 @with_unsupported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "int8",
             "int16",
             "int32",
@@ -263,7 +261,7 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "int8",
             "int16",
             "int32",
@@ -330,9 +328,14 @@ def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
 
 
 @to_ivy_arrays_and_back
+def max_pool2d(input, ksize, strides, padding, data_format="NHWC", name=None):
+    return ivy.max_pool2d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
 def moments(x, axes, shift=None, keepdims=False, name=None):
-    return ivy.mean(x, axis=axes, keepdims=keepdims), ivy.var(
-        x, axis=axes, keepdims=keepdims
+    return ivy.mean(x, axis=ivy.to_list(axes), keepdims=keepdims), ivy.var(
+        x, axis=ivy.to_list(axes), keepdims=keepdims
     )
 
 
@@ -393,65 +396,25 @@ def convolution(
     dilations=None,
     name=None,
 ):
-    # Tensorflow backend doesn't support NCW, NCHW or NCDHW on CPU
-    DATA_FORMATS = ["NWC", "NHWC", "NDHWC"]
-    ALLOWED_NUM_SPATIAL_DIMS = [1, 2, 3]
-    PADDINGS = ["VALID", "SAME"]
-
-    # Perform necessary assertions first
-
-    # Figure out input dims N
-    input_rank = input.ndim
-    filters_rank = filters.ndim
-
-    if filters_rank:
-        num_spatial_dims = int(filters_rank - 2)
-    elif input_rank:
-        num_spatial_dims = int(input_rank - 2)
-
-    # Incompatible N-D convolution
-    if num_spatial_dims not in ALLOWED_NUM_SPATIAL_DIMS:
-        raise ValueError(
-            "`num_spatial_dims` must be 1, 2, or 3. "
-            f"Received: num_spatial_dims={num_spatial_dims}."
-        )
-
-    # Incompatible padding
-    if padding not in PADDINGS:
-        raise ValueError(
-            f"Value for attr `padding` is not in the list of allowed values: {PADDINGS}"
-        )
-
-    # The number of dimensions corresponding to num_batches
-    if input_rank:
-        num_batch_dims = int(input_rank - num_spatial_dims - 1)
-    elif filters_rank:
-        num_batch_dims = 1
-
-    # Figure out the channel_index
-    if data_format is None or data_format in DATA_FORMATS:
-        channel_index = num_batch_dims + num_spatial_dims
-    else:
-        channel_index = num_batch_dims
-
-    input_shape = ivy.array(ivy.shape(input))
-    filters_shape = ivy.array(ivy.shape(filters))
-    input_depth = input_shape[channel_index]
-    filters_depth = filters_shape[-2]
-
-    # Inconsistent input and filter depths
-    if input_depth != filters_depth:
-        raise ValueError(
-            f"`input` and `filter` must have the same depth: "
-            f"{input_depth} vs {filters_depth}."
-        )
-
-    if data_format.startswith("NC"):
-        data_format = "channel_first"
-    else:
+    num_spatial_dims = input.ndim - 2
+    if data_format is None or not data_format.startswith("NC"):
         data_format = "channel_last"
+    else:
+        data_format = "channel_first"
 
-    output = ivy.conv_general_dilated(
+    channel_index = -1 if data_format == "channel_last" else 1
+    input_depth = ivy.shape(input)[channel_index]
+    filters_depth = ivy.shape(filters)[-2]
+
+    feature_group_count = 1
+    if input_depth != filters_depth:
+        if input_depth % filters_depth != 0:
+            raise ValueError(
+                "input depth must be evenly divisible by filter depth: "
+                f"{input_depth} vs {filters_depth}"
+            )
+        feature_group_count = input_depth // filters_depth
+    return ivy.conv_general_dilated(
         input,
         filters,
         strides,
@@ -459,9 +422,8 @@ def convolution(
         dims=num_spatial_dims,
         data_format=data_format,
         dilations=dilations,
+        feature_group_count=feature_group_count,
     )
-
-    return output
 
 
 @to_ivy_arrays_and_back
@@ -482,3 +444,29 @@ def relu6(features, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
+
+
+@with_unsupported_dtypes({"2.9.0 and below": "float16"}, "tensorflow")
+@to_ivy_arrays_and_back
+def leaky_relu(features, alpha, name=None):
+    return ivy.leaky_relu(features, alpha=alpha)
+
+
+@to_ivy_arrays_and_back
+def crelu(features, axis=-1, name=None):
+    c = ivy.concat([features, -features], axis=axis)
+    return ivy.relu(c)
+
+
+@to_ivy_arrays_and_back
+def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
+    if len(ivy.shape(input)) == 3:
+        return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+    elif len(ivy.shape(input)) == 4:
+        return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
+def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)

@@ -8,7 +8,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False):
-
     in_channels = input.shape[1]
     out_channels = weight.shape[0] if not transpose else weight.shape[1] * groups
 
@@ -81,7 +80,7 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -95,7 +94,7 @@ def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -109,7 +108,7 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -163,7 +162,7 @@ def _conv_transpose(
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose1d(
     input,
@@ -187,7 +186,7 @@ def conv_transpose1d(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose2d(
     input,
@@ -211,7 +210,7 @@ def conv_transpose2d(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose3d(
     input,
@@ -235,10 +234,6 @@ def conv_transpose3d(
     )
 
 
-# ToDo: both for fold and unfold, the conversion to numpy and back to ivy can be removed
-#  as soon as scatter_nd stops failing for jax and tensorflow when given slices.
-
-
 @to_ivy_arrays_and_back
 def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
     if input.ndim != 4:
@@ -258,8 +253,6 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
         input,
         ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2),
     )
-    ret = ret.to_numpy()
-    input_padded = input_padded.to_numpy()
     for i in range(output_shape[0]):
         for j in range(output_shape[1]):
             i_in = i * stride[0]
@@ -302,15 +295,12 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
         output,
         ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2),
     )
-    output_padded = ivy.to_numpy(output_padded)
     k = 0
     for i in range(input_shape[0]):
         for j in range(input_shape[1]):
             i_in = i * stride[0]
             j_in = j * stride[1]
-            patch = ivy.to_numpy(
-                input[:, :, k].reshape((n_batches, n_channels, *kernel_size))
-            )
+            patch = input[:, :, k].reshape((n_batches, n_channels, *kernel_size))
             output_padded[
                 :,
                 :,

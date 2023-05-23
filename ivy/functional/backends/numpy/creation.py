@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence
+from typing import Union, Optional, List, Sequence, Tuple
 
 import numpy as np
 
@@ -46,7 +46,9 @@ def arange(
 @asarray_infer_device
 @asarray_handle_nestable
 def asarray(
-    obj: Union[np.ndarray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    obj: Union[
+        np.ndarray, bool, int, float, tuple, NestedSequence, SupportsBufferProtocol
+    ],
     /,
     *,
     copy: Optional[bool] = None,
@@ -170,6 +172,7 @@ def meshgrid(
     *arrays: np.ndarray,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[np.ndarray] = None,
 ) -> List[np.ndarray]:
     return np.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
@@ -210,9 +213,6 @@ def zeros(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.zeros(shape, dtype), device=device)
-
-
-zeros.support_native_out = True
 
 
 def zeros_like(
@@ -273,3 +273,27 @@ def one_hot(
         res = np.moveaxis(res, -1, axis)
 
     return res
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[np.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> np.ndarray:
+    if isinstance(dtype, list):
+        dtype = np.dtype(dtype[0])
+    return np.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: str,
+) -> Tuple[np.ndarray]:
+    return tuple(
+        _to_device(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)), device=device)
+    )

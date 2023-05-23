@@ -61,13 +61,13 @@ This is to reduce repetition and the creation of similar exception classes.
 Configurable Mode for Stack Trace
 ---------------------------------
 
-Due to the transpilation nature of Ivy, user can code in the frontend framework
-which they are familiar with, then run their code with another backend
-framework. For instance, someone who is familiar with NumPy can run their code
-with a JAX backend via Ivy's NumPy frontend. Given their total lack of
-familiarity of certain backend frameworks (which is JAX in the above scenario),
-they might not want to see stack traces which go right down through Ivy
-functions and through JAX functions.
+Ivy's transpilation nature allows users to write code in their preferred frontend 
+framework and then execute it with a different backend framework. For example, a 
+user who is comfortable with NumPy can use Ivy's NumPy frontend to run their code 
+with a JAX backend. However, since they may have no prior experience with JAX or 
+other backend frameworks, they may not want to encounter stack traces that traverse 
+Ivy and JAX functions. In such cases, it may be preferable for the user to avoid 
+encountering stack traces that extend through Ivy and JAX functions.
 
 Therefore, options are made available for the stack traces to either truncate
 at the frontend or ivy level, or in other cases, no truncation at all.

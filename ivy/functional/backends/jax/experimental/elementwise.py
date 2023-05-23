@@ -8,33 +8,14 @@ from ivy import (
     is_float_dtype,
 )
 from ivy.functional.backends.jax import JaxArray
-from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
 import jax.numpy as jnp
 import jax.scipy as js
 
 jax_ArrayLike = Union[JaxArray, Number]
 
 
-def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.lcm(x1, x2)
-
-
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
-
-
-@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
-def fmod(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.fmod(x1, x2)
 
 
 def fmax(

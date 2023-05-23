@@ -129,3 +129,22 @@ def separable_conv2d(
         data_format=data_format,
         dilations=dilations,
     )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("float16",)},
+    "tensorflow",
+)
+def max_pool(value, ksize, strides, padding, data_format="NHWC", name=None, input=None):
+    if input is not None and value is not None:
+        raise ivy.utils.exceptions.IvyException(
+            "Cannot specify both 'value' and 'input'."
+        )
+    return tf_nn.max_pool2d(
+        input if input is not None else value,
+        ksize,
+        strides,
+        padding,
+        data_format=data_format,
+    )

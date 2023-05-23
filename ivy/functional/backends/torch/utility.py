@@ -11,7 +11,7 @@ def all(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = torch.as_tensor(x).type(torch.bool)
+    x = x.type(torch.bool)
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))

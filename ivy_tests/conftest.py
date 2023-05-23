@@ -10,7 +10,6 @@ from hypothesis.database import (
 from hypothesis.extra.redis import RedisExampleDatabase
 
 
-
 hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
 redis_connect_dev = None
 redis_connect_master = None
@@ -67,6 +66,16 @@ def pytest_addoption(parser):
         type=str,
         help="ivy traceback",
     )
+    parser.addoption(
+        "-D",
+        "--deterministic",
+        action="store_true",
+        default=False,
+        help=(
+            "Use hash of the test function as a seed, "
+            "disables Redis database if exists."
+        ),
+    )
 
 
 def pytest_configure(config):
@@ -108,6 +117,10 @@ def pytest_configure(config):
     if deadline:
         profile_settings["deadline"] = deadline
 
+    if config.getoption("deterministic"):
+        profile_settings["database"] = None
+        profile_settings["derandomize"] = True
+
     settings.register_profile(
         "ivy_profile",
         **profile_settings,
@@ -115,6 +128,3 @@ def pytest_configure(config):
         print_blob=True,
     )
     settings.load_profile("ivy_profile")
-
-
-

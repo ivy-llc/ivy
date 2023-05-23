@@ -143,3 +143,35 @@ def test_tensorflow_separable_conv2d(
         name=None,
         data_format=data_format,
     )
+
+
+# max_pool
+@handle_frontend_test(
+    fn_tree="tensorflow.compat.v1.nn.max_pool",
+    data_format=st.just("NHWC"),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_max_pool(
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+    )

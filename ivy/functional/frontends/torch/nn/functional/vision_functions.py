@@ -10,7 +10,6 @@ from ivy.utils.exceptions import IvyNotImplementedException
 
 @to_ivy_arrays_and_back
 def pixel_shuffle(input, upscale_factor):
-
     input_shape = ivy.shape(input)
 
     ivy.utils.assertions.check_equal(
@@ -49,15 +48,13 @@ def pixel_shuffle(input, upscale_factor):
 
 @to_ivy_arrays_and_back
 def pixel_unshuffle(input, downscale_factor):
-
     input_shape = ivy.shape(input)
 
     ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
         message=(
-            f"pixel_unshuffle expects 4D input, "
-            f"but got input with sizes {input_shape}"
+            f"pixel_unshuffle expects 4D input, but got input with sizes {input_shape}"
         ),
     ),
 
@@ -71,7 +68,7 @@ def pixel_unshuffle(input, downscale_factor):
         [h % downscale_factor, w % downscale_factor],
         [0, 0],  # Assert h % downscale_factor == 0 and w % downscale_factor == 0
         message=(
-            f"pixel_unshuffle expects input height and width to be divisible by "
+            "pixel_unshuffle expects input height and width to be divisible by "
             f"downscale_factor, but got input with sizes {input_shape}"
             f", downscale_factor= {downscale_factor}"
             f", and either self.size(2)= {h}"
@@ -147,7 +144,7 @@ def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "bfloat16",
             "float16",
         )
@@ -168,8 +165,10 @@ def interpolate(
         ivy.utils.assertions.check_exists(
             align_corners,
             inverse=True,
-            message="align_corners option can only be set with the interpolating modes:"
-            " linear | bilinear | bicubic | trilinear",
+            message=(
+                "align_corners option can only be set with the interpolating modes:"
+                " linear | bilinear | bicubic | trilinear"
+            ),
         )
     else:
         if not ivy.exists(align_corners):
@@ -190,12 +189,14 @@ def interpolate(
                 len(size),
                 dim,
                 inverse=False,
-                message=f"Input and output must have the "
-                f"same number of spatial dimensions,"
-                f" but got input with spatial dimensions of {list(input.shape[2:])}"
-                f" and output size of {size}. "
-                f"Please provide input tensor in (N, C, d1, d2, ...,dK) format"
-                f" and output size in (o1, o2, ...,oK) format.",
+                message=(
+                    "Input and output must have the "
+                    "same number of spatial dimensions,"
+                    f" but got input with spatial dimensions of {list(input.shape[2:])}"
+                    f" and output size of {size}. "
+                    "Please provide input tensor in (N, C, d1, d2, ...,dK) format"
+                    " and output size in (o1, o2, ...,oK) format."
+                ),
             )
             output_size = size
         else:
@@ -209,12 +210,14 @@ def interpolate(
                 len(scale_factor),
                 dim,
                 inverse=False,
-                message=f"Input and scale_factor must have the "
-                f"same number of spatial dimensions,"
-                f" but got input with spatial dimensions of {list(input.shape[2:])}"
-                f" and scale_factor of shape {scale_factor}. "
-                f"Please provide input tensor in (N, C, d1, d2, ...,dK) format"
-                f" and scale_factor in (s1, s2, ...,sK) format.",
+                message=(
+                    "Input and scale_factor must have the "
+                    "same number of spatial dimensions,"
+                    f" but got input with spatial dimensions of {list(input.shape[2:])}"
+                    f" and scale_factor of shape {scale_factor}. "
+                    "Please provide input tensor in (N, C, d1, d2, ...,dK) format"
+                    " and scale_factor in (s1, s2, ...,sK) format."
+                ),
             )
             scale_factors = scale_factor
         else:
@@ -273,9 +276,11 @@ def interpolate(
     ivy.utils.assertions.check_elem_in_list(
         ivy.get_num_dims(input),
         range(3, 6),
-        message=f"Input Error: Only 3D, 4D and 5D input Tensors supported "
-        f"(got {ivy.get_num_dims(input)}D) for the modes: nearest | linear | bilinear "
-        f"| bicubic | trilinear | area | nearest-exact (got {mode})",
+        message=(
+            "Input Error: Only 3D, 4D and 5D input Tensors supported (got"
+            f" {ivy.get_num_dims(input)}D) for the modes: nearest | linear | bilinear |"
+            f" bicubic | trilinear | area | nearest-exact (got {mode})"
+        ),
     )
 
     return ivy.interpolate(
@@ -283,7 +288,7 @@ def interpolate(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample(
     input,
@@ -292,7 +297,6 @@ def upsample(
     mode="nearest",
     align_corners=None,
 ):
-
     return interpolate(
         input,
         size=size,
@@ -302,17 +306,15 @@ def upsample(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_nearest(input, size=None, scale_factor=None):
-
     return interpolate(input, size=size, scale_factor=scale_factor, mode="nearest")
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_bilinear(input, size=None, scale_factor=None):
-
     return interpolate(
         input, size=size, scale_factor=scale_factor, mode="bilinear", align_corners=True
     )

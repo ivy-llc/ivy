@@ -23,6 +23,7 @@ def max_value_as_shape_prod(draw):
             available_dtypes=["int32", "int64"],
             min_value=0,
             max_value=np.prod(shape) - 1,
+            min_num_dims=1,
         )
     )
     return dtype_and_x, shape

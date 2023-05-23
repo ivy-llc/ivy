@@ -18,9 +18,8 @@ def empty(
 ):
     if args and size:
         raise TypeError("empty() got multiple values for argument 'shape'")
-    if size is not None:
-        return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
-    size = args[0] if isinstance(args[0], (tuple, list)) else args
+    if size is None:
+        size = args[0] if isinstance(args[0], (tuple, list)) else args
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -45,9 +44,8 @@ def full(
 def ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
     if args and size:
         raise TypeError("ones() got multiple values for argument 'shape'")
-    if size is not None:
-        return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
-    size = args[0] if isinstance(args[0], (tuple, list)) else args
+    if size is None:
+        size = args[0] if isinstance(args[0], (tuple, list)) else args
     return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -79,9 +77,8 @@ def ones_like_v_0p4p0_and_above(
 def zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
     if args and size:
         raise TypeError("zeros() got multiple values for argument 'shape'")
-    if size is not None:
-        return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
-    size = args[0] if isinstance(args[0], (tuple, list)) else args
+    if size is None:
+        size = args[0] if isinstance(args[0], (tuple, list)) else args
     return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -100,7 +97,7 @@ def zeros_like(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def arange(
     *args,
     out=None,
@@ -124,7 +121,7 @@ def arange(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def range(
     *args,
     dtype=None,
@@ -135,6 +132,10 @@ def range(
     if len(args) == 1:
         end = args[0]
         start = 0
+        step = 1
+    elif len(args) == 2:
+        end = args[1]
+        start = args[0]
         step = 1
     elif len(args) == 3:
         start, end, step = args
@@ -160,7 +161,7 @@ def range(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def linspace(
     start,
     end,
@@ -177,7 +178,7 @@ def linspace(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def logspace(
     start,
     end,
@@ -202,6 +203,11 @@ def eye(
 ):
     ret = ivy.eye(n_rows=n, n_columns=m, dtype=dtype, device=device, out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def from_dlpack(ext_tensor):
+    return ivy.from_dlpack(ext_tensor)
 
 
 @to_ivy_arrays_and_back
@@ -276,10 +282,22 @@ def tensor(
 
 @to_ivy_arrays_and_back
 def asarray(
-    obj, 
+    obj,
     *,
     dtype=None,
     device=None,
-    copy=None, 
+    copy=None,
 ):
     return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)
+
+
+@to_ivy_arrays_and_back
+def frombuffer(
+    buffer,
+    *,
+    dtype,
+    count=-1,
+    offset=0,
+    requires_grad=False,
+):
+    return ivy.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
