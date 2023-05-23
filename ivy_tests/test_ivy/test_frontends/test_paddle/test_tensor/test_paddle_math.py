@@ -188,9 +188,6 @@ def test_paddle_asin(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-2,
         x=x[0],
     )
 
-
-    
