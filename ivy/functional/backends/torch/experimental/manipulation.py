@@ -1,10 +1,13 @@
+# global
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List, Literal, Callable, Any
 from numbers import Number
+from collections import namedtuple
+import torch
 
+# local
 import numpy as np
 from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
-import torch
 import ivy
 
 
@@ -100,8 +103,10 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
+    k = min(k, x.shape[axis])
     topk_res = NamedTuple(
         "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
     )
@@ -109,10 +114,10 @@ def top_k(
         indices = torch.argsort(x, dim=axis)
         indices = torch.index_select(indices, axis, torch.arange(k))
     else:
-        x = -x
-        indices = torch.argsort(x, dim=axis)
+        indices = torch.argsort(-x, dim=axis)
         indices = torch.index_select(indices, axis, torch.arange(k))
-        x = -x
+    if not sorted:
+        indices = torch.sort(indices, dim=axis)[0]
     val = torch.gather(x, axis, indices)
     return topk_res(val, indices)
 
@@ -132,7 +137,7 @@ def fliplr(
 fliplr.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def i0(
     x: torch.Tensor,
     /,
@@ -233,7 +238,7 @@ def atleast_3d(
     return transformed
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def take_along_axis(
     arr: torch.Tensor,
     indices: torch.Tensor,
@@ -332,6 +337,30 @@ def concat_from_sequence(
         return ret
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
+def unique_consecutive(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    output, inverse_indices, counts = torch.unique_consecutive(
+        x,
+        return_inverse=True,
+        return_counts=True,
+        dim=axis,
+    )
+    return Results(
+        output.to(x.dtype),
+        inverse_indices,
+        counts,
+    )
+  
+  
 def _can_handle_padding(input_shape, pad, mode):
     n_dims = len(input_shape)
     if n_dims == 0:
@@ -396,7 +425,7 @@ def _check(*args, **kwargs):
         elif _can_handle_padding(inp.shape, pad, mode):
             return True
         else:
-            if kwargs['mode'] == 'replicate':
+	   if kwargs['mode'] == 'replicate':
                 kwargs['mode'] = 'edge'
             elif kwargs['mode'] == 'circular':
                 kwargs['mode'] = 'wrap'
@@ -432,4 +461,3 @@ def pad(
         mode=mode,
         value=constant_values,
         )
-        

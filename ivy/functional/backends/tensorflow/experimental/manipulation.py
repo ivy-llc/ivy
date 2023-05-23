@@ -1,13 +1,16 @@
+# global
+from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List, Literal, Callable, Any
 from numbers import Number
+import tensorflow as tf
 
+# local
 import numpy as np
 from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
-from .. import backend_version
-import tensorflow as tf
-import ivy
 
 from ivy.functional.backends.torch.experimental.manipulation import _check_tuple
+from .. import backend_version
+import ivy
 
 
 def moveaxis(
@@ -22,7 +25,7 @@ def moveaxis(
     return tf.experimental.numpy.moveaxis(a, source, destination)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, backend_version)
 def heaviside(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -73,6 +76,7 @@ def rot90(
     return tf.experimental.numpy.rot90(m, k, axes)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("unsigned", "complex")}, backend_version)
 def top_k(
     x: tf.Tensor,
     k: int,
@@ -80,8 +84,10 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
+    k = min(k, x.shape[axis])
     if not largest:
         indices = tf.experimental.numpy.argsort(x, axis=axis)
         indices = tf.experimental.numpy.take(
@@ -89,13 +95,13 @@ def top_k(
         )
         indices = tf.dtypes.cast(indices, tf.int32)
     else:
-        x = -x
-        indices = tf.experimental.numpy.argsort(x, axis=axis)
+        indices = tf.experimental.numpy.argsort(-x, axis=axis)
         indices = tf.experimental.numpy.take(
             indices, tf.experimental.numpy.arange(k), axis=axis
         )
         indices = tf.dtypes.cast(indices, tf.int32)
-        x = -x
+    if not sorted:
+        indices = tf.sort(indices, axis=axis)
     topk_res = NamedTuple("top_k", [("values", tf.Tensor), ("indices", tf.Tensor)])
     val = tf.experimental.numpy.take_along_axis(x, indices, axis=axis)
     indices = tf.dtypes.cast(indices, tf.int64)
@@ -112,7 +118,7 @@ def fliplr(
     return tf.experimental.numpy.fliplr(m)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, backend_version)
 def i0(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -277,6 +283,59 @@ def concat_from_sequence(
         return ret
 
 
+def unique_consecutive(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    x_shape = None
+    if axis is None:
+        x_shape = x.shape
+        x = tf.reshape(x, -1)
+        axis = -1
+    ndim = len(x.shape)
+    if axis < 0:
+        axis += ndim
+    splits = (
+        tf.where(
+            tf.math.reduce_any(
+                tf.experimental.numpy.diff(x, axis=axis) != 0,
+                axis=tuple(i for i in tf.range(ndim) if i != axis),
+            )
+        )
+        + 1
+    )
+    if tf.size(splits) > 0:
+        sub_arrays = tf.experimental.numpy.split(x, tf.reshape(splits, -1), axis=axis)
+    else:
+        sub_arrays = [x]
+    output = tf.concat(
+        [
+            tf.raw_ops.UniqueV2(x=sub_array, axis=tf.constant([axis]))[0]
+            for sub_array in sub_arrays
+        ],
+        axis=axis,
+    )
+    counts = tf.convert_to_tensor([sub_array.shape[axis] for sub_array in sub_arrays])
+    inverse_indices = tf.repeat(tf.range(len(counts)), counts)
+    if x_shape:
+        inverse_indices = tf.reshape(inverse_indices, x_shape)
+    return Results(
+        tf.cast(output, x.dtype),
+        tf.cast(inverse_indices, tf.int64),
+        tf.cast(counts, tf.int64),
+    )
+  
+  
 def _check_dimension(tensor, padding, mode):
     if mode == 'reflect':
 
@@ -324,7 +383,6 @@ def _check(*args, **kwargs):
                     return False
             elif isinstance(pad, int):
                 return False
-
 
 @handle_mixed_function(lambda *args, **kwargs: _check(*args, **kwargs))
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16", "complex64", "complex128")}, backend_version)

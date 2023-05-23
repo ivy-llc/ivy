@@ -74,7 +74,7 @@ def statistical_dtype_values(draw, *, function):
 
 
 @st.composite
-def test_histogram_helper(draw):
+def _histogram_helper(draw):
     dtype_input = draw(st.sampled_from(draw(helpers.get_dtypes("float"))))
     bins = draw(
         helpers.array_values(
@@ -199,7 +199,7 @@ def test_histogram_helper(draw):
 #       the commit when it merges.
 @handle_test(
     fn_tree="functional.ivy.experimental.histogram",
-    values=test_histogram_helper(),
+    values=_histogram_helper(),
     test_gradients=st.just(False),
 )
 def test_histogram(

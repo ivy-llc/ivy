@@ -75,14 +75,18 @@ def _get_dtype_and_matrix(draw):
 @handle_frontend_test(
     fn_tree="torch.linalg.vector_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         min_value=-1e04,
         max_value=1e04,
     ),
     kd=st.booleans(),
-    ord=helpers.ints(min_value=1, max_value=2),
-    dtype=helpers.get_dtypes("valid"),
+    ord=st.one_of(
+        helpers.ints(min_value=0, max_value=5),
+        helpers.floats(min_value=1.0, max_value=5.0),
+        st.sampled_from((float("inf"), -float("inf"))),
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_vector_norm(
     *,
@@ -488,22 +492,16 @@ def test_torch_matrix_power(
 # matrix_norm
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
-    dtype_and_x=helpers.dtype_and_values(
-        num_arrays=1,
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_value_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=5,
-        min_value=-1e20,
-        max_value=1e20,
-        large_abs_safety_factor=10,
-        small_abs_safety_factor=10,
-        safety_factor_scale="log",
+        valid_axis=True,
+        min_axes_size=2,
+        max_axes_size=2,
+        force_tuple_axis=True,
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
-    axis=st.just((-2, -1)),
     dtype=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_torch_matrix_norm(

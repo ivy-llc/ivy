@@ -21,7 +21,6 @@ from ivy_tests.test_ivy.helpers import handle_test
         small_abs_safety_factor=4,
     ),
     test_gradients=st.just(False),
-    ground_truth_backend=st.just("jax"),
 )
 def test_sinc(
     *,
@@ -45,43 +44,6 @@ def test_sinc(
     )
 
 
-# lcm
-@handle_test(
-    fn_tree="functional.ivy.experimental.lcm",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["int16", "int32", "int64"],
-        num_arrays=2,
-        shared_dtype=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_value=-100,
-        max_value=100,
-        allow_nan=False,
-    ),
-    test_gradients=st.just(False),
-    ground_truth_backend=st.just("numpy"),
-)
-def test_lcm(
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        ground_truth_backend=ground_truth_backend,
-        fw=backend_fw,
-        fn_name=fn_name,
-        x1=x[0],
-        x2=x[1],
-    )
-
-
 # fmax
 @handle_test(
     fn_tree="functional.ivy.experimental.fmax",
@@ -98,7 +60,6 @@ def test_lcm(
         allow_nan=True,
     ),
     test_gradients=st.just(False),
-    ground_truth_backend=st.just("jax"),
 )
 def test_fmax(
     dtype_and_x,
@@ -338,7 +299,6 @@ def test_exp2(
         shared_dtype=False,
     ),
     test_gradients=st.just(False),
-    ground_truth_backend=st.just("torch"),
 )
 def test_copysign(
     dtype_x1_x2,
@@ -539,7 +499,6 @@ def test_gcd(
     atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True),
     equal_nan=st.booleans(),
     test_gradients=st.just(False),
-    ground_truth_backend=st.just("numpy"),
 )
 def test_isclose(
     *,
