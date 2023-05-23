@@ -187,17 +187,16 @@ def _get_method_supported_devices_dtypes(
     """
     supported_device_dtypes = {}
     backends = available_frameworks()
-    for b in backends:  # ToDo can optimize this ?
-        ivy.set_backend(b)
-        _fn = getattr(class_module.__dict__[class_name], method_name)
-        devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
-        organized_dtypes = {}
-        for device in devices_and_dtypes.keys():
-            organized_dtypes[device] = _partition_dtypes_into_kinds(
-                ivy, devices_and_dtypes[device]
-            )
-        supported_device_dtypes[b] = organized_dtypes
-        ivy.previous_backend()
+    for backend_str in backends:
+        with update_backend(backend_str) as backend:
+            _fn = getattr(class_module.__dict__[class_name], method_name)
+            devices_and_dtypes = backend.function_supported_devices_and_dtypes(_fn)
+            organized_dtypes = {}
+            for device in devices_and_dtypes.keys():
+                organized_dtypes[device] = _partition_dtypes_into_kinds(
+                    backend, devices_and_dtypes[device]
+                )
+            supported_device_dtypes[backend_str] = organized_dtypes
     return supported_device_dtypes
 
 
@@ -228,26 +227,25 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             fn_name = "_" + fn_name
 
     backends = available_frameworks()
-    for b in backends:  # ToDo can optimize this ?
-        ivy.set_backend(b)
-        _tmp_mod = importlib.import_module(fn_module)
-        _fn = _tmp_mod.__dict__[fn_name]
-        devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
-        try:
-            # Issue with bfloat16 and tensorflow
-            if "bfloat16" in devices_and_dtypes["gpu"]:
-                tmp = list(devices_and_dtypes["gpu"])
-                tmp.remove("bfloat16")
-                devices_and_dtypes["gpu"] = tuple(tmp)
-        except KeyError:
-            pass
-        organized_dtypes = {}
-        for device in devices_and_dtypes.keys():
-            organized_dtypes[device] = _partition_dtypes_into_kinds(
-                ivy, devices_and_dtypes[device]
-            )
-        supported_device_dtypes[b] = organized_dtypes
-        ivy.previous_backend()
+    for backend_str in backends:  # ToDo can optimize this ?
+        with update_backend(backend_str) as backend:
+            _tmp_mod = importlib.import_module(fn_module)  # TODO use dynamic import?
+            _fn = _tmp_mod.__dict__[fn_name]
+            devices_and_dtypes = backend.function_supported_devices_and_dtypes(_fn)
+            try:
+                # Issue with bfloat16 and tensorflow
+                if "bfloat16" in devices_and_dtypes["gpu"]:
+                    tmp = list(devices_and_dtypes["gpu"])
+                    tmp.remove("bfloat16")
+                    devices_and_dtypes["gpu"] = tuple(tmp)
+            except KeyError:
+                pass
+            organized_dtypes = {}
+            for device in devices_and_dtypes.keys():
+                organized_dtypes[device] = _partition_dtypes_into_kinds(
+                    backend, devices_and_dtypes[device]
+                )
+            supported_device_dtypes[backend_str] = organized_dtypes
     return supported_device_dtypes
 
 
