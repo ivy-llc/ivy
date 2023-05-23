@@ -179,7 +179,7 @@ def test_numpy_moveaxis(
         a=a[0],
         source=source,
         destination=destination,
-    )  
+    )
 
 
 # resize
