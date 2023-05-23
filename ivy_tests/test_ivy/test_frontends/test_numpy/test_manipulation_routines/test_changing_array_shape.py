@@ -182,7 +182,7 @@ def test_numpy_moveaxis(
     )  
 
 
-# resize  
+# resize
 @st.composite
 def dtype_and_resize(draw):
     dtype, x = draw(
