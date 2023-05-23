@@ -32,6 +32,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
+@inputs_to_ivy_arrays
 def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

@@ -153,20 +153,20 @@ def flatten(
     x: torch.Tensor,
     /,
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
     start_dim: int = 0,
     end_dim: int = -1,
     order: str = "C",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         x = torch.clone(x)
-    if order == "F":
-        return ivy.functional.experimental.flatten(
-            x, start_dim=start_dim, end_dim=end_dim, order=order
-        )
     return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
+
+
+flatten.partial_mixed_handler = (
+    lambda *args, copy=None, start_dim=0, end_dim=1, order="C", **kwargs: order == "C"
+)
 
 
 def vsplit(
