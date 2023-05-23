@@ -7,12 +7,11 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
 
-@handle_mixed_function(lambda x, weight, **kwargs: weight.ndim == 2)
 @with_unsupported_dtypes(
     {"2.0.1 and below": ("float16", "bfloat16", "complex")},
     backend_version,
@@ -26,6 +25,9 @@ def linear(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.linear(x, weight, bias)
+
+
+linear.partial_mixed_handler = lambda x, weight, **kwargs: weight.ndim == 2
 
 
 def _pad_before_conv(x, filters, strides, padding, dims, dilations):
