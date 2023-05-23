@@ -62,8 +62,8 @@ def full_like(x, fill_value, /, *, dtype=None, name=None):
 def arange(start, end=None, step=1, dtype=None, name=None):
     return ivy.arange(start, end, step=step, dtype=dtype)
 
-
+@with_unsupported_dtypes({"2.4.2 and below": ("uint8", "int8", "complex64", "complex128")}, "paddle")
 @to_ivy_arrays_and_back
 def empty(shape, /, *, dtype=None, name=None):
-    dtype = "float32" if dtype is None else dtype
+    dtype = ivy.default_dtype() if dtype is None else dtype
     return ivy.empty(shape, dtype=dtype)
