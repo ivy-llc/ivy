@@ -91,12 +91,12 @@ def cholesky(input, upper=False, *, out=None):
 
 @to_ivy_arrays_and_back
 def cholesky_inverse(input, upper=False, *, out=None):
-    cholesky_factor = ivy.cholesky(input, upper=False, out=out)
+    cholesky_factor = ivy.cholesky(input, upper=upper, out=None)
     cholesky_factor_transpose = ivy.matrix_transpose(cholesky_factor)
     if not upper:
-        inv = ivy.inv(ivy.matmul(cholesky_factor, cholesky_factor_transpose))
+        inv = ivy.inv(ivy.matmul(cholesky_factor, cholesky_factor_transpose, out=None))
     else:
-        inv = ivy.inv(ivy.matmul(cholesky_factor_transpose, cholesky_factor))
+        inv = ivy.inv(ivy.matmul(cholesky_factor_transpose, cholesky_factor, out=None))
     return inv
 
 

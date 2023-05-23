@@ -5,7 +5,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_method
 
 
 # helpers
@@ -467,7 +467,7 @@ def test_torch_cholesky_inverse(
     dtype, x = dtype_and_x
     x = x[0]
     x = (
-        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+        np.matmul(x, x.T) + np.identity(x.shape[0]) * 1e-3
     )  # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
