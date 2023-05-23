@@ -2130,7 +2130,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_hsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -2151,8 +2151,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2210,7 +2210,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def hsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         copy: Optional[bool] = None,
         /,
     ) -> List[ivy.Container]:
@@ -2226,8 +2226,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
 
         Returns
         -------

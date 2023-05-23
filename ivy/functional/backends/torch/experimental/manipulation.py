@@ -288,7 +288,9 @@ def hsplit(
 ) -> List[torch.Tensor]:
     if copy:
         ary = torch.clone(ary)
-    return list(torch.hsplit(ary, indices_or_sections))
+    if len(ary.shape) == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 take_along_axis.support_native_out = True

@@ -230,7 +230,9 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.experimental.numpy.hsplit(ary, indices_or_sections)
+    if len(ary.shape) == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 def broadcast_shapes(

@@ -394,7 +394,9 @@ def hsplit(
 ) -> List[np.ndarray]:
     if copy:
         ary = ary.copy()
-    return np.hsplit(ary, indices_or_sections)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 take_along_axis.support_native_out = False

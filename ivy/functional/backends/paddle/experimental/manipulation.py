@@ -474,25 +474,9 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    with ivy.ArrayMode(False):
-        if isinstance(indices_or_sections, Sequence):
-            indices_or_sections = (
-                [
-                    None,
-                ]
-                + indices_or_sections
-                + [
-                    None,
-                ]
-            )
-            slices = []
-            for i, idx in enumerate(indices_or_sections[:-1]):
-                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
-            results = []
-            for i in slices:
-                results.append(ivy.get_item(ary, (slice(None, None, None), i)))
-            return results
-        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=1)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
