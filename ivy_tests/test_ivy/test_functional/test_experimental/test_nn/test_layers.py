@@ -57,6 +57,7 @@ def test_max_pool2d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
 ):
     dtype, x, kernel, stride, pad, dilation = x_k_s_p
     assume(
@@ -77,6 +78,7 @@ def test_max_pool2d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         x=x[0],
