@@ -7,6 +7,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _diag_helper
 
+
 # tril
 @handle_frontend_test(
     fn_tree="numpy.tril",
@@ -162,10 +163,31 @@ def test_numpy_vander(
     )
 
 
+@st.composite
+def _diag_flat_helper(draw):
+    x_shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=2, min_dim_size=1, max_dim_size=10
+        )
+    )
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=x_shape,
+            small_abs_safety_factor=2,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+        )
+    )
+    k = draw(helpers.ints(min_value=-5, max_value=5))
+
+    return dtype_and_x[0], dtype_and_x[1], k
+
+
 # diagflat
 @handle_frontend_test(
     fn_tree="numpy.diagflat",
-    dtype_and_x_k=_diag_helper(),
+    dtype_and_x_k=_diag_flat_helper(),
 )
 def test_numpy_diagflat(
     dtype_and_x_k,

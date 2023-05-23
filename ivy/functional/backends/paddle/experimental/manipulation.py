@@ -2,9 +2,10 @@ from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 from .. import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 
 # Code from cephes for i0
 
@@ -70,8 +71,8 @@ _i0B = [
 ]
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16")},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}},
     backend_version,
 )
 def moveaxis(
@@ -86,19 +87,19 @@ def moveaxis(
     return paddle.moveaxis(a, source, destination)
 
 
-@with_unsupported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
     },
     backend_version,
 )
@@ -112,9 +113,6 @@ def heaviside(
     return paddle.heaviside(x1, x2)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def flipud(
     m: paddle.Tensor,
     /,
@@ -129,8 +127,8 @@ def flipud(
     return paddle.flip(m, axis=0)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int16", "uint16", "bfloat16", "float16")},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int16", "float16")}},
     backend_version,
 )
 def vstack(
@@ -146,9 +144,6 @@ def vstack(
             return ivy.stack(arrays, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def hstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -162,9 +157,6 @@ def hstack(
             return ivy.concat(arrays, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def rot90(
     m: paddle.Tensor,
     /,
@@ -181,8 +173,8 @@ def rot90(
     return paddle.rot90(m, k=k, axes=axes)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128")},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -208,9 +200,6 @@ def top_k(
         return topk_res(val, indices)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def fliplr(
     m: paddle.Tensor,
     /,
@@ -232,16 +221,20 @@ def i0(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     def _i0_1(x):
-        return ivy.multiply(
-            ivy.exp(x), _chbevl(ivy.subtract(ivy.divide(x, 2.0), 2), _i0A)
+        return paddle_backend.multiply(
+            paddle_backend.exp(x),
+            _chbevl(paddle_backend.subtract(paddle_backend.divide(x, 2.0), 2.0), _i0A),
         )
 
     def _i0_2(x):
-        return ivy.divide(
-            ivy.multiply(
-                ivy.exp(x), _chbevl(ivy.subtract(ivy.divide(32.0, x), 2), _i0B)
+        return paddle_backend.divide(
+            paddle_backend.multiply(
+                paddle_backend.exp(x),
+                _chbevl(
+                    paddle_backend.subtract(paddle_backend.divide(32.0, x), 2.0), _i0B
+                ),
             ),
-            ivy.sqrt(x),
+            paddle_backend.sqrt(x),
         )
 
     def _chbevl(x, vals):
@@ -251,12 +244,13 @@ def i0(
         for i in range(1, len(vals)):
             b2 = b1
             b1 = b0
-            b0 = ivy.add(ivy.subtract(ivy.multiply(x, b1), b2), vals[i])
-        return ivy.multiply(0.5, ivy.subtract(b0, b2))
+            b0 = paddle_backend.add(
+                paddle_backend.subtract(paddle_backend.multiply(x, b1), b2), vals[i]
+            )
+        return paddle_backend.multiply(0.5, paddle_backend.subtract(b0, b2))
 
-    with ivy.ArrayMode(False):
-        x = ivy.abs(x)
-        return ivy.where(ivy.less_equal(x, 8.0), _i0_1(x), _i0_2(x))
+    x = paddle_backend.abs(x)
+    return paddle_backend.where(paddle_backend.less_equal(x, 8.0), _i0_1(x), _i0_2(x))
 
 
 def flatten(
@@ -537,9 +531,6 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return tuple(result)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def expand(
     x: paddle.Tensor,
     shape: Union[List[int], List[Tuple]],
@@ -577,9 +568,6 @@ def expand(
         return paddle.expand(x, shape)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def concat_from_sequence(
     input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
     /,

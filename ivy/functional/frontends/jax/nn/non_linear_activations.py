@@ -12,10 +12,7 @@ def _type_conversion(x):
     x = ivy.asarray(x)
     dtype = ivy.as_ivy_dtype(x.dtype)
     if "float" not in dtype:
-        if "64" in dtype[-2:]:
-            dtype = "float64"
-        else:
-            dtype = "float32"
+        dtype = "float64" if "64" in dtype[-2:] else "float32"
 
     return ivy.astype(x, dtype)
 
@@ -25,21 +22,17 @@ def _type_conversion_64(x):
     # everything else to float64
     x = ivy.asarray(x)
     dtype = ivy.as_ivy_dtype(x.dtype)
-    if "float" in dtype:
-        return ivy.astype(x, dtype)
-
-    return ivy.astype(x, "float64")
+    return ivy.astype(x, dtype) if "float" in dtype else ivy.astype(x, "float64")
 
 
 def _batch_promotion(*args, default_dtype="float64"):
     # Promote all types
-
     promote_types = set()
 
     for arg in args:
         if args is None:
             continue
-        if isinstance(arg, float) or isinstance(arg, int):
+        if isinstance(arg, (float, int)):
             continue
         promote_types.add(ivy.dtype(arg))
 
@@ -49,11 +42,8 @@ def _batch_promotion(*args, default_dtype="float64"):
     if "float32" in promote_types:
         return "float32"
 
-    if "float16" in promote_types and "bfloat16" in promote_types:
-        return "float32"
-
     if "float16" in promote_types:
-        return "float16"
+        return "float32" if "bfloat16" in promote_types else "float16"
 
     if "bfloat16" in promote_types:
         return "bfloat16"
@@ -80,9 +70,7 @@ def _canonicalize_axis(axis, ndim):
 
 def _len(x):
     shape = ivy.shape(x)
-    if len(shape) == 0:
-        return 0
-    return shape[0]
+    return 0 if len(shape) == 0 else shape[0]
 
 
 def _reduction_dims(a, axis):
@@ -256,12 +244,8 @@ def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
 
 @to_ivy_arrays_and_back
 def one_hot(x, num_classes, *, dtype=None, axis=-1):
-    if dtype is None:
-        dtype = ivy.float64
-    else:
-        dtype = ivy.as_ivy_dtype(dtype)
-    ret = ivy.one_hot(x, num_classes, axis=axis, dtype=dtype)
-    return ret
+    dtype = ivy.float64 if dtype is None else ivy.as_ivy_dtype(dtype)
+    return ivy.one_hot(x, num_classes, axis=axis, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
@@ -283,7 +267,7 @@ def sigmoid(x):
 
 
 @with_supported_dtypes(
-    {"0.3.14 and below": ("complex", "float")},
+    {"0.4.10 and below": ("complex", "float")},
     "jax",
 )
 @to_ivy_arrays_and_back

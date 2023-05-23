@@ -2,7 +2,6 @@
 
 import paddle
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
-
 from collections import namedtuple
 
 
@@ -28,8 +27,6 @@ from .elementwise import _elementwise_helper
                 "int32",
                 "int64",
                 "uint8",
-                "uint16",
-                "bfloat16",
                 "float16",
                 "complex64",
                 "complex128",
@@ -45,9 +42,6 @@ def cholesky(
     return paddle.linalg.cholesky(x, upper=upper)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def cross(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -94,7 +88,7 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -111,9 +105,6 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.linalg.det(x).squeeze()
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def diagonal(
     x: paddle.Tensor,
     /,
@@ -142,9 +133,6 @@ def diagonal(
     return paddle.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def eigh(
     x: paddle.Tensor,
     /,
@@ -159,9 +147,6 @@ def eigh(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def eigvalsh(
     x: paddle.Tensor,
     /,
@@ -172,9 +157,6 @@ def eigvalsh(
     return paddle.linalg.eigvalsh(x, UPLO=UPLO)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def inner(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -193,7 +175,7 @@ def inner(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def inv(
@@ -219,9 +201,6 @@ def inv(
     return paddle.inverse(x).cast(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def matmul(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -259,13 +238,10 @@ def matmul(
         if ret_dtype in [paddle.int16]:
             ret = ret.cast(paddle.int32)
         return ret.squeeze().astype(ret_dtype)
-    
+
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def matrix_norm(
     x: paddle.Tensor,
     /,
@@ -275,63 +251,60 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    _expand_dims = False
-    if x.ndim == 2:
-        x = paddle.unsqueeze(x, axis=0)
-        _expand_dims = True
-
-    if ord == -float("inf"):
-        ret = paddle.amin(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
-            axis=axis,
-            keepdim=keepdims,
+    if ord == "nuc":
+        x = paddle.moveaxis(x, axis, [-2, -1])
+        ret = paddle.sum(
+            paddle.linalg.svd(x)[1],
+            axis=-1,
         )
-
-    elif ord == -1:
-        ret = paddle.amin(
-            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
-            axis=axis,
-            keepdim=keepdims,
-        )
-    elif ord == -2:
-        ret = paddle.amin(paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims)
-        if keepdims:
-            ret = ret.unsqueeze(-1)
-    elif ord == "nuc":
-        if x.size == 0:
-            ret = x
-        else:
-            ret = paddle.sum(paddle.linalg.svd(x)[1], axis=-1, keepdim=keepdims)
-            if keepdims:
-                ret = ret.unsqueeze(-1)
-    elif ord == "fro":
-        ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
-    elif ord == float("inf"):
-        ret = paddle.amax(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
-            axis=axis,
-            keepdim=keepdims,
-        )
-
     elif ord == 1:
         ret = paddle.amax(
             paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
             axis=axis,
             keepdim=keepdims,
         )
+    elif ord == -1:
+        ret = paddle.amin(
+            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
+        )
     elif ord == 2:
-        ret = paddle.amax(paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims)
-        if keepdims:
+        x = paddle.moveaxis(x, axis, [-2, -1])
+        ret = paddle.amax(
+            paddle.linalg.svd(x)[1],
+            axis=-1,
+        )
+    elif ord == -2:
+        x = paddle.moveaxis(x, axis, [-2, -1])
+        ret = paddle.amin(
+            paddle.linalg.svd(x)[1],
+            axis=-1,
+        )
+    elif ord == float("inf"):
+        ret = paddle.amax(
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
+        )
+    elif ord == float("-inf"):
+        ret = paddle.amin(
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
+        )
+    else:
+        ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
+    if x.ndim == 2 and not keepdims:
+        ret = paddle.squeeze(ret)
+    elif keepdims and ord in ["nuc", -2, 2]:
+        if x.ndim == 2:
             ret = ret.unsqueeze(-1)
-
-    if _expand_dims:
-        ret = paddle.squeeze(ret, axis=0)
+        else:
+            ret = ret.unsqueeze(-2, -1)
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def eig(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> Tuple[paddle.Tensor]:
@@ -342,9 +315,6 @@ def eig(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def matrix_power(
     x: paddle.Tensor, n: int, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -352,7 +322,7 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_rank(
@@ -365,11 +335,11 @@ def matrix_rank(
 ) -> paddle.Tensor:
     if x.ndim < 2:
         return paddle.to_tensor(0).squeeze().astype(x.dtype)
-    atol = atol if atol is not None else 0
-    rtol = rtol if rtol is not None else 0
-    svd_values = paddle_backend.svd(x)[1]
-    sigma = paddle_backend.max(svd_values)
-    tol = paddle_backend.maximum(atol, rtol * sigma)
+    atol = atol if atol is not None else 0.0
+    rtol = rtol if rtol is not None else 0.0
+    svd_values = ivy.svd(x, compute_uv=False)
+    sigma = ivy.max(svd_values)
+    tol = ivy.maximum(atol, rtol * sigma)
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -387,14 +357,11 @@ def matrix_rank(
     return paddle.linalg.matrix_rank(x, tol=tol).squeeze().cast(x.dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def matrix_transpose(
     x: paddle.Tensor,
     /,
     *,
-    perm: Union[Tuple[List[int], List[int]]] = None,
+    perm: Optional[Union[Tuple[int], List[int]]] = None,
     conjugate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -405,9 +372,6 @@ def matrix_transpose(
     return paddle.transpose(x, perm=perm)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def outer(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -425,9 +389,6 @@ def outer(
     return paddle.outer(x1, x2).cast(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def pinv(
     x: paddle.Tensor,
     /,
@@ -440,9 +401,6 @@ def pinv(
     return paddle.linalg.pinv(x, rcond=rtol)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def tensorsolve(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -455,9 +413,6 @@ def tensorsolve(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def qr(
     x: paddle.Tensor,
     /,
@@ -470,9 +425,6 @@ def qr(
     return res(q, r)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def slogdet(
     x: paddle.Tensor,
     /,
@@ -484,9 +436,6 @@ def slogdet(
     return results(sign.squeeze(), logabsdet.squeeze())
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def solve(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -512,7 +461,7 @@ def solve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def svd(
@@ -541,7 +490,7 @@ def svd(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def svdvals(
@@ -550,9 +499,6 @@ def svdvals(
     return paddle_backend.svd(x)[1]
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def tensordot(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -577,9 +523,6 @@ def tensordot(
     return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def trace(
     x: paddle.Tensor,
     /,
@@ -593,9 +536,6 @@ def trace(
     return ret.squeeze() if x.ndim <= 2 else ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def vecdot(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -609,9 +549,6 @@ def vecdot(
     paddle_backend.tensordot(x1, x2, axes=axes)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def vector_norm(
     x: paddle.Tensor,
     /,
@@ -659,9 +596,6 @@ def vector_norm(
 # ----- #
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def diag(
     x: paddle.Tensor,
     /,
@@ -686,7 +620,8 @@ def diag(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},
+    backend_version,
 )
 def vander(
     x: paddle.Tensor,
@@ -706,9 +641,6 @@ def vander(
     )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def vector_to_skew_symmetric_matrix(
     vector: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
