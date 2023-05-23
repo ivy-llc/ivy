@@ -13,4 +13,4 @@ def mean(input, axis=None, keepdims=False, out=None):
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def var(input, axis=None, correction=0, keepdims=False, out=None):
-    return ivy.std(input, axis=axis, correction, keepdims=keepdims, out=None)
+    return ivy.var(input, axis=axis, correction, keepdims=keepdims, out=None)
