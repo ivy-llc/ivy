@@ -37,17 +37,17 @@ def _log_softmax(input_x, dim=None):
 
 
 @to_ivy_arrays_and_back
-def _mish_(input_x):
+def _mish(input_x):
     return ivy.multiply(input_x, ivy.tanh(ivy.softplus(input_x)))
 
 
 @to_ivy_arrays_and_back
-def _relu_(input_x):
+def _relu(input_x):
     return ivy.relu(input_x)
 
 
 @to_ivy_arrays_and_back
-def _selu_(input_x, inplace=False):
+def _selu(input_x, inplace=False):
     ret_val = ivy.selu(input_x)
     alpha = 1.6732632423543772848170429916717
     scale = 1.0507009873554804934193349852946
@@ -63,12 +63,12 @@ def _selu_(input_x, inplace=False):
 
 
 @to_ivy_arrays_and_back
-def _sigmoid_(input_x):
+def _sigmoid(input_x):
     return ivy.sigmoid(input_x)
 
 
 @to_ivy_arrays_and_back
-def _silu_(input_x, inplace=False):
+def _silu(input_x, inplace=False):
     sigmoid_func = 1.0 / (1.0 + ivy.exp(-input_x))
     ret = ivy.multiply(input_x, sigmoid_func)
     if inplace:
@@ -78,19 +78,19 @@ def _silu_(input_x, inplace=False):
 
 
 @to_ivy_arrays_and_back
-def _softmax_(input_x, dim=None):
+def _softmax(input_x, dim=None):
     if dim is None:
         dim = -1
     return ivy.softmax(input_x, axis=dim)
 
 
 @to_ivy_arrays_and_back
-def _softplus_(input_x):
+def _softplus(input_x):
     return ivy.softplus(input_x)
 
 
 @to_ivy_arrays_and_back
-def _thresholded_relu_(input_x, threshold, inplace=False):
+def _thresholded_relu(input_x, threshold, inplace=False):
     ret = ivy.where(ivy.greater(input_x, threshold), input_x, 0)
     if inplace:
         return ivy.inplace_update(input_x, ret)
