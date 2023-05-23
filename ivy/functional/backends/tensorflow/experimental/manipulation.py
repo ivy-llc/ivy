@@ -127,12 +127,16 @@ def i0(
 
 def vsplit(
     ary: Union[tf.Tensor, tf.Variable],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], tf.Tensor, tf.Variable],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.experimental.numpy.vsplit(ary, indices_or_sections)
+    if len(ary.shape) < 2:
+        raise ivy.utils.exceptions.IvyError(
+            "dsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(

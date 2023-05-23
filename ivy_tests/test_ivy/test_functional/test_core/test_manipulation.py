@@ -650,7 +650,6 @@ def test_split(
     ground_truth_backend,
 ):
     dtype, value = dtype_value
-
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,

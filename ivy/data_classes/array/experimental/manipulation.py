@@ -526,7 +526,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     @handle_view
     def vsplit(
         self: ivy.Array,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array],
         /,
         *,
         copy: Optional[bool] = None,

@@ -284,14 +284,18 @@ def pad(
 
 def vsplit(
     ary: np.ndarray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], np.ndarray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
     if copy:
         ary = ary.copy()
-    return np.vsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(

@@ -234,12 +234,16 @@ def pad(
 
 def vsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    return jnp.vsplit(ary, indices_or_sections)
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(

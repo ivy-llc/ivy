@@ -296,30 +296,16 @@ def flatten(
 
 def vsplit(
     ary: paddle.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    with ivy.ArrayMode(False):
-        if isinstance(indices_or_sections, Sequence):
-            indices_or_sections = (
-                [
-                    None,
-                ]
-                + indices_or_sections
-                + [
-                    None,
-                ]
-            )
-            slices = []
-            for i, idx in enumerate(indices_or_sections[:-1]):
-                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
-            results = []
-            for i in slices:
-                results.append(ivy.get_item(ary, i))
-            return results
-        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=0)
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
