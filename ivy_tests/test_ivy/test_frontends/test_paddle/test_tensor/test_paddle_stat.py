@@ -35,18 +35,18 @@ def test_paddle_mean(
         keepdims=keepdims,
     )
     
-#var
+#quantile
 @handle_frontend_test(
-    fn_tree="paddle.var",
-    dtype_and_x=statistical_dtype_values(function="var"),
-    correction=st.integers(),
+    fn_tree="paddle.quantile",
+    dtype_and_x=statistical_dtype_values(function="quantile"),
     keepdims=st.booleans(),
+    interpolation=st.text(),
 )
-def test_paddle_var(
+def test_paddle_quantile(
     *,
     dtype_and_x,
-    correction,
     keepdims,
+    interpolation,
     on_device,
     fn_tree,
     frontend,
@@ -59,8 +59,9 @@ def test_paddle_var(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        a=x[0],
+        q=x[1],
         axis=axis,
-        correction=correction,
+        interpolation=interpolation,
         keepdims=keepdims,
     )
