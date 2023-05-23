@@ -311,7 +311,7 @@ def dsplit(
         )
     if copy:
         ary = ary.copy()
-    return np.dsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(

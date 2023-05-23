@@ -567,7 +567,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     @handle_view
     def dsplit(
         self: ivy.Array,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array],
         /,
         *,
         copy: Optional[bool] = None,
@@ -584,8 +584,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
 
         Returns
         -------

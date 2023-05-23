@@ -248,16 +248,16 @@ def vsplit(
 
 def dsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    if len(ary.shape) < 3:
+    if ary.ndim < 3:
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
-    return jnp.dsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
