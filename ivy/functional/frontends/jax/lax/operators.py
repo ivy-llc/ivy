@@ -8,6 +8,7 @@ import math
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_unsupported_dtypes
 
 _min = builtins.min
 _slice = builtins.slice
@@ -357,11 +358,13 @@ def full_like(x, fill_value, dtype=None, shape=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def ge(x, y):
     return ivy.greater_equal(x, y)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def gt(x, y):
     return ivy.greater(x, y)
@@ -415,6 +418,13 @@ def neg(x):
 @to_ivy_arrays_and_back
 def pow(x, y):
     return ivy.pow(x, y)
+
+
+@to_ivy_arrays_and_back
+def pad(operand, padding_value, padding_config):
+    return ivy.pad(
+        operand, padding_config, mode="dilated", constant_values=padding_value
+    )
 
 
 @to_ivy_arrays_and_back
@@ -688,16 +698,6 @@ def reduce_window(
 ):
     # ToDo: add support for window_dilation
     op, dims, strides = operand, window_dimensions, window_strides
-    if any(
-        [
-            (window_dimensions[i] - 1) * (base_dilation[i] - 1) + window_dimensions[i]
-            > operand.shape[i]
-            for i in range(operand.ndim)
-        ]
-    ):
-        raise ValueError(
-            "Invalid window dimensions and base dilation for the given operand shape"
-        )
 
     if isinstance(padding, str):
         pads = _padtype_to_pads(op.shape, dims, strides, padding)
@@ -706,7 +706,7 @@ def reduce_window(
     op = op.reshape((1, 1) + op.shape)
     if base_dilation:
         op = _dilate(op, base_dilation)
-    view = _conv_view(op, [1, 1] + dims, strides, pads)[0]
+    view = _conv_view(op, [1, 1] + list(dims), strides, pads)[0]
     view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
     reducer = _make_reducer(computation, init_value)
     return ivy.array(reducer(view, axis=-1))
@@ -725,3 +725,13 @@ def real(x):
 @to_ivy_arrays_and_back
 def nextafter(x1, x2):
     return ivy.nextafter(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def conj(x):
+    return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def is_finite(x):
+    return ivy.isfinite(x)

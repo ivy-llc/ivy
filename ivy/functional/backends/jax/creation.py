@@ -1,7 +1,7 @@
 # global
 from numbers import Number
 import numpy as np
-from typing import Union, Optional, List, Sequence
+from typing import Union, Optional, List, Sequence, Tuple
 
 import jax.dlpack
 import jax.numpy as jnp
@@ -319,9 +319,14 @@ array = asarray
 def copy_array(
     x: JaxArray, *, to_ivy_array: bool = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
+    x = (
+        jax.core.ShapedArray(x.shape, x.dtype)
+        if isinstance(x, jax.core.ShapedArray)
+        else jnp.array(x)
+    )
     if to_ivy_array:
-        return ivy.to_ivy(jnp.array(x))
-    return jnp.array(x)
+        return ivy.to_ivy(x)
+    return x
 
 
 def one_hot(
@@ -358,3 +363,26 @@ def one_hot(
         res = jnp.moveaxis(res, -1, axis)
 
     return _to_device(res, device)
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[jnp.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> JaxArray:
+    return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: jaxlib.xla_extension.Device,
+) -> Tuple[JaxArray]:
+    return _to_device(
+        jnp.triu_indices(n=n_rows, k=k, m=n_cols),
+        device=device,
+    )
