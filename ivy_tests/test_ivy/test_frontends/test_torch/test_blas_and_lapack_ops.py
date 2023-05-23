@@ -467,7 +467,7 @@ def test_torch_cholesky_inverse(
     dtype, x = dtype_and_x
     x = x[0]
     x = (
-        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+        np.matmul(x, x.T) + np.identity(x.shape[0]) * 1e-5
     )  # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
