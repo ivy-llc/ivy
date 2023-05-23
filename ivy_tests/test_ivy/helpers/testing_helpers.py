@@ -3,7 +3,7 @@ import pytest
 import importlib
 import inspect
 import functools
-from typing import List, Callable
+from typing import List
 
 from hypothesis import given, strategies as st
 
@@ -13,6 +13,7 @@ import ivy.functional.frontends.numpy as np_frontend
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
+from .pipeline_helper import update_backend
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInstanceStrategy,
     BuiltAsVariableStrategy,
@@ -48,9 +49,6 @@ cmd_line_args_lists = (
     "native_array",
     "container",
 )
-
-
-update_backend: Callable = ivy.utils.backend.ContextManager
 
 
 @st.composite

@@ -1,7 +1,7 @@
 import abc
 from hypothesis import strategies as st  # NOQA
 from . import globals as test_globals
-from .testing_helpers import update_backend
+from .pipeline_helper import update_backend
 
 from ivy.functional.ivy.gradients import _variable  # TODO remove
 
