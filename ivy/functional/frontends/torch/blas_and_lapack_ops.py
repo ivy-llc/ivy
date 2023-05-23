@@ -91,8 +91,8 @@ def cholesky(input, upper=False, *, out=None):
 
 @to_ivy_arrays_and_back
 def cholesky_inverse(input, upper=True, *, out=None):
-    return ivy.cholesky_inverse(input, upper=upper, out=out)
-    
+    return ivy.inverse(input, out=out)
+
 
 @to_ivy_arrays_and_back
 def det(input):

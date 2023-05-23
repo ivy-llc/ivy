@@ -160,16 +160,6 @@ def cholesky(
     return current_backend(x).cholesky(x, upper=upper, out=out)
 
 
-def cholesky_inverse(x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    upper: bool = False,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-
-    return current_backend(x).cholesky_inverse(x, upper=upper, out=out)
-
-
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
