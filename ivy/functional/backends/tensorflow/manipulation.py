@@ -227,6 +227,7 @@ def split(
         dim_size = tf.shape(x)[axis]
         num_or_size_splits = int(dim_size)
     if isinstance(num_or_size_splits, (tf.Tensor, tf.Variable)):
+        num_or_size_splits = tf.cast(num_or_size_splits, tf.int32)
         num_or_size_splits = num_or_size_splits.numpy().tolist()
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits

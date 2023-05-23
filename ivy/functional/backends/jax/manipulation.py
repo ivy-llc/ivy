@@ -160,7 +160,7 @@ def split(
                 )
             )
         return [x]
-    if isinstance(num_or_size_splits, JaxArray):
+    if isinstance(num_or_size_splits, jnp.ndarray):
         num_or_size_splits = num_or_size_splits.tolist()
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]

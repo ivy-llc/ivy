@@ -611,7 +611,7 @@ def _get_splits(
             num_or_size_splits.append(split_value)
         generate_native_array = draw(st.booleans())
         if generate_native_array:
-            return np.asarray(num_or_size_splits)
+            return np.asarray(num_or_size_splits, dtype=np.int32)
         return num_or_size_splits
 
     if allow_none:

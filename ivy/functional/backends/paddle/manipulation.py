@@ -262,6 +262,7 @@ def split(
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
     elif isinstance(num_or_size_splits, paddle.Tensor):
+        num_or_size_splits = num_or_size_splits.cast("int32")
         num_or_size_splits = num_or_size_splits.tolist()
     elif isinstance(num_or_size_splits, int):
         num_chunks = x.shape[axis] // num_or_size_splits

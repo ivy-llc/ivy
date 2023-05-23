@@ -242,7 +242,9 @@ class _ContainerWithManipulation(ContainerBase):
         /,
         *,
         copy: Optional[bool] = None,
-        num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+        num_or_size_splits: Optional[
+            Union[int, Sequence[int], ivy.Array, ivy.NativeArray]
+        ] = None,
         axis: int = 0,
         with_remainder: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,

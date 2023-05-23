@@ -240,7 +240,7 @@ def split(
     if num_or_size_splits is None:
         num_or_size_splits = 1
     elif isinstance(num_or_size_splits, torch.Tensor):
-        num_or_size_splits = num_or_size_splits.detach().cpu().numpy().tolist()
+        num_or_size_splits = num_or_size_splits.to(torch.int64).tolist()
     elif isinstance(num_or_size_splits, int):
         if with_remainder:
             num_chunks = x.shape[axis] / num_or_size_splits
