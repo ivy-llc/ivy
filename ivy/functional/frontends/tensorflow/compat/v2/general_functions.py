@@ -1,6 +1,15 @@
-from ivy.functional.frontends.tensorflow.general_functions import convert_to_tensor as tf_convert_to_tensor, identity as tf_identity
-from ivy.functional.frontends.tensorflow.linalg import tensordot as tf_tensordot, matmul as tf_matmul
-from ivy.functional.frontends.tensorflow.math import tanh as tf_tanh, reduce_mean as tf_reduce_mean
+from ivy.functional.frontends.tensorflow.general_functions import (
+    convert_to_tensor as tf_convert_to_tensor,
+    identity as tf_identity,
+)
+from ivy.functional.frontends.tensorflow.linalg import (
+    tensordot as tf_tensordot,
+    matmul as tf_matmul,
+)
+from ivy.functional.frontends.tensorflow.math import (
+    tanh as tf_tanh,
+    reduce_mean as tf_reduce_mean,
+)
 from ivy.functional.frontends.tensorflow.dtypes import cast as tf_cast
 
 

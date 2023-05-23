@@ -346,7 +346,7 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
 
     if dtype:
         a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        
+
     ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
         where = ivy.array(where, dtype=ivy.bool)

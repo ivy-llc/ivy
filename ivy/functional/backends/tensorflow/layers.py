@@ -305,6 +305,12 @@ def conv_general_dilated(
             f" the filter to be {x.shape[-1] // feature_group_count} but got"
             f" {filters.shape[-2]}"
         )
+
+    if x.shape[-1] % feature_group_count != 0:
+        raise ivy.utils.exceptions.IvyError(
+            "input channel should be divisible by feature group count"
+            f" {feature_group_count} but got input channel {x.shape[-1]}"
+        )
     if dims == 1:
         res = tf.nn.conv1d(
             x,
