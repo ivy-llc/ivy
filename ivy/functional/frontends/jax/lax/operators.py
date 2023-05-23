@@ -4,6 +4,7 @@ import itertools
 import string
 import builtins
 import math
+import functools
 
 # local
 import ivy
@@ -664,25 +665,14 @@ def _padtype_to_pads(in_shape, filter_shape, window_strides, padding):
         return [(0, 0)] * len(in_shape)
 
 
-def _make_reducer(py_binop, init_val):
-    def _delete(seq, pos):
-        return [v for i, v in enumerate(seq) if i != pos]
-
-    def _reducer(operand, axis=0):
-        axis = len(operand.shape) + axis if axis < 0 else axis
-        axis = range(operand.ndim) if axis is None else axis
-        result = ivy.full(
-            _delete(operand.shape, axis),
-            ivy.to_scalar(init_val),
-            dtype=operand.dtype,
-        )
-        operand, result = operand.to_numpy(), result.to_numpy()
-        for idx, _ in ivy.ndenumerate(operand):
-            out_idx = tuple(_delete(idx, axis))
-            result[out_idx] = py_binop(result[out_idx], operand[idx])
-        return result
-
-    return _reducer
+# ToDo: replace with ivy.reduce as soon as it's been implemented
+def _custom_reduce(operand, init_val, func):
+    init_val = init_val.to_numpy() if ivy.is_array(init_val) else init_val
+    op_parts = ivy.moveaxis(operand, -1, 0).reshape((operand.shape[-1], -1)).to_numpy()
+    result = functools.reduce(func, op_parts, init_val)
+    result = ivy.functional.backends.jax.to_numpy(result)
+    result = ivy.reshape(result, operand.shape[:-1])
+    return result
 
 
 @to_ivy_arrays_and_back
@@ -708,8 +698,8 @@ def reduce_window(
         op = _dilate(op, base_dilation)
     view = _conv_view(op, [1, 1] + list(dims), strides, pads)[0]
     view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
-    reducer = _make_reducer(computation, init_value)
-    return ivy.array(reducer(view, axis=-1))
+    ret = _custom_reduce(view, init_value, computation)
+    return ret.astype(operand.dtype)
 
 
 @to_ivy_arrays_and_back
