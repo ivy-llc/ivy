@@ -20,6 +20,7 @@ FN_DECORATORS = [
     "outputs_to_ivy_shapes",
     "outputs_to_native_arrays",
     "inputs_to_native_arrays",
+    "to_native_arrays_and_back",
     "inputs_to_native_shapes",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
