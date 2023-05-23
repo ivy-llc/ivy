@@ -8,10 +8,9 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy.functional.ivy.layers import _deconv_length
 
+
 # Linear #
 # -------#
-
-
 @st.composite
 def x_and_linear(draw, dtypes):
     dtype = draw(dtypes)
@@ -392,6 +391,7 @@ def x_and_filters(
                     max_size=dim,
                 ),
                 st.sampled_from(["SAME", "VALID"]),
+                st.integers(min_value=0, max_value=3),
             )
         )
         x_dim = []

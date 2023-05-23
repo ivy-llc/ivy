@@ -48,12 +48,12 @@ def any(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def sum(input, dim=None, keepdim=False, *, out=None):
-    return ivy.sum(input, axis=dim, keepdims=keepdim, out=out)
+def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
+    return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
 
 
 @to_ivy_arrays_and_back
-def mean(input, dim, keepdim=False, *, out=None):
+def mean(input, dim=None, keepdim=False, *, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
@@ -63,27 +63,57 @@ def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def std(input, dim, unbiased, keepdim=False, *, out=None):
+def median(input, dim=None, keepdim=False, *, out=None):
+    if dim is None:
+        input = ivy.reshape(input, (-1,))
+        sorted_input = ivy.sort(input)
+        return sorted_input[(sorted_input.shape[0] - 1) // 2]
+
+    median_tuple = namedtuple("median", ["values", "indices"])
+
+    if input.ndim == 0:
+        result = median_tuple(input, ivy.array(0))
+    else:
+        sorted_indices = ivy.argsort(input, axis=dim)
+        median_indices = ivy.gather(
+            sorted_indices, (sorted_indices.shape[dim] - 1) // 2, axis=dim
+        )
+        median_values = ivy.take_along_axis(
+            input, ivy.expand_dims(median_indices, axis=dim), dim
+        ).squeeze(dim)
+
+        if keepdim:
+            median_values = ivy.expand_dims(median_values, axis=dim)
+            median_indices = ivy.expand_dims(median_indices, axis=dim)
+
+        result = median_tuple(median_values, median_indices)
+    if out is not None:
+        ivy.inplace_update(out[0], result.values)
+        ivy.inplace_update(out[1], result.indices)
+        return out
+    return result
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def std(input, dim=None, unbiased=True, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
     },
     "torch",
 )
-# TODO: the original torch.prod places * right before `dtype`
-def prod(input, dim, *, keepdim=False, dtype=None):
+def prod(input, dim=None, keepdim=False, *, dtype=None):
     if not dtype:
         if "int" in input.dtype:
             dtype = ivy.int64
-        elif "float" in input.dtype:
-            dtype = ivy.float32
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
 
@@ -197,4 +227,55 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
     if not keepdim:
         c = ivy.squeeze(c, axis=dim)
     ret = ivy.add(ret, c, out=out)
+    return ret
+
+
+@to_ivy_arrays_and_back
+def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
+    results = ivy.unique_all(input, axis=dim)
+
+    fields = ["values"]
+    if return_inverse:
+        fields.append("inverse_indices")
+    if return_counts:
+        fields.append("counts")
+
+    Results = namedtuple("Results", fields)
+
+    values = [results.values]
+    if return_inverse:
+        values.append(results.inverse_indices)
+    if return_counts:
+        values.append(results.counts)
+
+    return Results(*values)
+
+
+@to_ivy_arrays_and_back
+def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
+    if (type(dim) in [tuple, list]) and (len(dim) == 2):
+        return ivy.matrix_norm(input, ord=p, axis=dim, keepdims=keepdim, out=out)
+    else:
+        return ivy.vector_norm(
+            input, ord=p, axis=dim, keepdims=keepdim, dtype=dtype, out=out
+        )
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "complex",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def unique_consecutive(input, return_inverse, return_counts, dim):
+    output, inverse_indices, counts = ivy.unique_consecutive(input, axis=dim)
+    ret = (output,)
+    if return_inverse:
+        ret += (inverse_indices,)
+    if return_counts:
+        ret += (counts,)
     return ret

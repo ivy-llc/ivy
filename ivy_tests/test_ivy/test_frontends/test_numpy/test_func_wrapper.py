@@ -16,16 +16,20 @@ from ivy.functional.frontends.numpy.ndarray import ndarray
 import ivy.functional.frontends.numpy as np_frontend
 
 
-def _fn(x=None, check_default=False, dtype=None):
-    if check_default:
+def _fn(*args, check_default=False, dtype=None):
+    if (
+        check_default
+        and any([not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args])
+        and not ivy.exists(dtype)
+    ):
         ivy.utils.assertions.check_equal(ivy.default_float_dtype(), "float64")
         if platform.system() != "Windows":
             ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int64")
         else:
             ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int32")
-    if ivy.exists(dtype):
+    if not ivy.exists(args[0]):
         return dtype
-    return x
+    return args[0]
 
 
 @given(
@@ -64,13 +68,22 @@ def test_inputs_to_ivy_arrays(dtype_x_shape):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
+    dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_outputs_to_numpy_arrays(dtype_and_x):
+def test_outputs_to_numpy_arrays(dtype_and_x, dtype):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
-    output = outputs_to_numpy_arrays(_fn)(input_ivy, check_default=True)
+    if not len(input_ivy.shape):
+        scalar_input_ivy = ivy.to_scalar(input_ivy)
+        outputs_to_numpy_arrays(_fn)(
+            scalar_input_ivy, scalar_input_ivy, check_default=True, dtype=dtype
+        )
+        outputs_to_numpy_arrays(_fn)(
+            scalar_input_ivy, input_ivy, check_default=True, dtype=dtype
+        )
+    output = outputs_to_numpy_arrays(_fn)(input_ivy, check_default=True, dtype=dtype)
     assert isinstance(output, ndarray)
     assert input_ivy.dtype == output.ivy_array.dtype
     assert ivy.all(input_ivy == output.ivy_array)
@@ -83,20 +96,37 @@ def test_outputs_to_numpy_arrays(dtype_and_x):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
+    dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_to_ivy_arrays_and_back(dtype_x_shape):
+def test_to_ivy_arrays_and_back(dtype_x_shape, dtype):
     x_dtype, x, shape = dtype_x_shape
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
-    output = to_ivy_arrays_and_back(_fn)(input_ivy, check_default=True)
+    if not len(input_ivy.shape):
+        scalar_input_ivy = ivy.to_scalar(input_ivy)
+        to_ivy_arrays_and_back(_fn)(
+            scalar_input_ivy, scalar_input_ivy, check_default=True, dtype=dtype
+        )
+        to_ivy_arrays_and_back(_fn)(
+            scalar_input_ivy, input_ivy, check_default=True, dtype=dtype
+        )
+    output = to_ivy_arrays_and_back(_fn)(input_ivy, check_default=True, dtype=dtype)
     assert isinstance(output, ndarray)
     assert input_ivy.dtype == output.ivy_array.dtype
     assert ivy.all(input_ivy == output.ivy_array)
 
     # check for native array
     input_native = ivy.native_array(input_ivy)
-    output = to_ivy_arrays_and_back(_fn)(input_native, check_default=True)
+    if not len(input_native.shape):
+        scalar_input_native = ivy.to_scalar(input_native)
+        to_ivy_arrays_and_back(_fn)(
+            scalar_input_native, scalar_input_native, check_default=True, dtype=dtype
+        )
+        to_ivy_arrays_and_back(_fn)(
+            scalar_input_native, input_native, check_default=True, dtype=dtype
+        )
+    output = to_ivy_arrays_and_back(_fn)(input_native, check_default=True, dtype=dtype)
     assert isinstance(output, ndarray)
     assert ivy.as_ivy_dtype(input_native.dtype) == output.ivy_array.dtype
     assert ivy.all(input_native == output.ivy_array.data)
@@ -104,7 +134,17 @@ def test_to_ivy_arrays_and_back(dtype_x_shape):
     # check for frontend array
     input_frontend = ndarray(shape)
     input_frontend.ivy_array = input_ivy
-    output = to_ivy_arrays_and_back(_fn)(input_frontend, check_default=True)
+    if not len(input_frontend.shape):
+        scalar_input_front = inputs_to_ivy_arrays(ivy.to_scalar)(input_frontend)
+        to_ivy_arrays_and_back(_fn)(
+            scalar_input_front, scalar_input_front, check_default=True, dtype=dtype
+        )
+        to_ivy_arrays_and_back(_fn)(
+            scalar_input_front, input_frontend, check_default=True, dtype=dtype
+        )
+    output = to_ivy_arrays_and_back(_fn)(
+        input_frontend, check_default=True, dtype=dtype
+    )
     assert isinstance(output, ndarray)
     assert input_frontend.ivy_array.dtype == output.ivy_array.dtype
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
@@ -140,7 +180,7 @@ def _zero_dim_to_scalar_checks(x, ret_x):
 
 @given(x=_zero_dim_to_scalar_helper())
 def test_from_zero_dim_arrays_to_scalar(x):
-    ret_x = from_zero_dim_arrays_to_scalar(_fn)(x=x)
+    ret_x = from_zero_dim_arrays_to_scalar(_fn)(x)
     if isinstance(x, tuple):
         assert isinstance(ret_x, tuple)
         for x_i, ret_x_i in zip(x, ret_x):
@@ -176,5 +216,5 @@ def _dtype_helper(draw):
     dtype=_dtype_helper(),
 )
 def test_handle_numpy_dtype(dtype):
-    ret_dtype = handle_numpy_dtype(_fn)(dtype=dtype)
+    ret_dtype = handle_numpy_dtype(_fn)(None, dtype=dtype)
     assert isinstance(ret_dtype, ivy.Dtype)

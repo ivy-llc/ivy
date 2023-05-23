@@ -21,8 +21,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
     ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
         """
         ivy.Array instance method variant of ivy.eigh_tridiagonal. This method simply
-        wraps the function, and so the docstring for ivy.eigh_tridiagonal also
-        applies to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.eigh_tridiagonal also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -90,9 +90,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.diagflat.
-        This method simply wraps the function, and so the docstring for
-        ivy.diagflat also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.diagflat. This method simply wraps the
+        function, and so the docstring for ivy.diagflat also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -120,9 +120,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.kron.
-        This method simply wraps the function, and so the docstring for
-        ivy.kron also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.kron also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -135,9 +135,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
     def matrix_exp(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.kron.
-        This method simply wraps the function, and so the docstring for
-        ivy.matrix_exp also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.matrix_exp also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -158,9 +158,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         /,
     ) -> Tuple[ivy.Array, ...]:
         """
-        ivy.Array instance method variant of ivy.eig.
-        This method simply wraps the function, and so the docstring for
-        ivy.eig also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.eig. This method simply wraps the
+        function, and so the docstring for ivy.eig also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -179,9 +179,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         /,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.eigvals.
-        This method simply wraps the function, and so the docstring for
-        ivy.eigvals also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.eigvals. This method simply wraps the
+        function, and so the docstring for ivy.eigvals also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -198,9 +198,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.adjoint.
-        This method simply wraps the function, and so the docstring for
-        ivy.adjoint also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.adjoint. This method simply wraps the
+        function, and so the docstring for ivy.adjoint also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -224,9 +224,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.multi_dot.
-        This method simply wraps the function, and so the docstring for
-        ivy.multi_dot also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.multi_dot. This method simply wraps the
+        function, and so the docstring for ivy.multi_dot also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -243,9 +243,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         self: ivy.Array, /, *, p: Optional[Union[int, float, str]] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.cond.
-        This method simply wraps the function, and so the docstring for
-        ivy.cond also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.cond. This method simply wraps the
+        function, and so the docstring for ivy.cond also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -258,3 +258,89 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         ivy.array(21.0)
         """
         return ivy.cond(self._data, p=p)
+
+    def cov(
+        self: ivy.Array,
+        x2: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        /,
+        *,
+        rowVar: bool = True,
+        bias: bool = False,
+        ddof: Optional[int] = None,
+        fweights: Optional[ivy.Array] = None,
+        aweights: Optional[ivy.Array] = None,
+        dtype: Optional[type] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cov. This method simply wraps the
+        function, and so the docstring for ivy.cov also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            a 1D or 2D input array, with a numeric data type.
+        x2
+            optional second 1D or 2D input array, with a numeric data type.
+            Must have the same shape as ``self``.
+        rowVar
+            optional variable where each row of input is interpreted as a variable
+            (default = True). If set to False, each column is instead interpreted as a
+            variable.
+        bias
+            optional variable for normalizing input (default = False) by (N - 1) where
+            N is the number of given observations. If set to True, then normalization
+            is instead by N. Can be overridden by keyword ``ddof``.
+        ddof
+            optional variable to override ``bias`` (default = None). ddof=1 will return
+            the unbiased estimate, even with fweights and aweights given. ddof=0 will
+            return the simple average.
+        fweights
+            optional 1D array of integer frequency weights; the number of times each
+            observation vector should be repeated.
+        aweights
+            optional 1D array of observation vector weights. These relative weights are
+            typically large for observations considered "important" and smaller for
+            observations considered less "important". If ddof=0 is specified, the array
+            of weights can be used to assign probabilities to observation vectors.
+        dtype
+            optional variable to set data-type of the result. By default, data-type
+            will have at least ``float64`` precision.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the covariance matrix of an input matrix, or the
+            covariance matrix of two variables. The returned array must have a
+            floating-point data type determined by Type Promotion Rules and must be
+            a square matrix of shape (N, N), where N is the number of variables in the
+            input(s).
+
+        Examples
+        --------
+        >>> x = ivy.array([[1,2,3],
+        ...                [4,5,6]])
+        >>> y = x.cov()
+        >>> print(y)
+        ivy.array([[ 1.,  1.  ],
+        ...        [ 1.,  1.  ],
+        >>> x = ivy.array([1,2,3])
+        >>> y = ivy.array([4,5,6])
+        >>> z = x.cov(y)
+        >>> print(z)
+        ivy.array([[ 1.,  1.  ],
+        ...        [ 1.,  1.  ])
+        """
+        return ivy.cov(
+            self._data,
+            x2,
+            rowVar=rowVar,
+            bias=bias,
+            ddof=ddof,
+            fweights=fweights,
+            aweights=aweights,
+            dtype=dtype,
+        )

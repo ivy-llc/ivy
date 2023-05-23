@@ -773,7 +773,6 @@ def test_tensorflow_cosine_similarity(
     fn_tree,
     on_device,
 ):
-
     helpers.test_frontend_function(
         input_dtypes=d_type[0],
         frontend=frontend,

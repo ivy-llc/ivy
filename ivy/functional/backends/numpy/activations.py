@@ -25,7 +25,7 @@ def leaky_relu(
     return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("complex",)}, backend_version)
 @_scalar_output_to_0d_array
 def gelu(
     x: np.ndarray, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
@@ -62,7 +62,6 @@ def softplus(
     threshold: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if beta is not None and beta != 1:
         x_beta = x * beta
         res = (
@@ -91,6 +90,8 @@ softplus.support_native_out = True
 def log_softmax(
     x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    if axis is None:
+        axis = -1
     x_max = np.max(x, axis=axis, keepdims=True)
     if x_max.ndim > 0:
         x_max[~np.isfinite(x_max)] = 0
