@@ -28,7 +28,6 @@ ground_backend = None  # multiversion
 
 # local
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
-from ivy import DefaultDevice
 from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -168,7 +167,7 @@ def pytest_configure(config):
                         TEST_PARAMS_CONFIG.append(
                             (
                                 device,
-                                test_globals.FWS_DICT[backend_str](),
+                                backend_str,
                                 compile_graph,
                                 implicit,
                             )
@@ -179,40 +178,26 @@ def pytest_configure(config):
 
 @pytest.fixture(autouse=True)
 def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
-    ivy_test = hasattr(request.function, "_ivy_test")
-    if ivy_test:
-        try:
-            if ground_backend:
-                test_globals.setup_api_test(
-                    backend_fw.backend,
-                    ground_backend,
-                    on_device,
-                    (
-                        request.function.test_data
-                        if hasattr(request.function, "test_data")
-                        else None
-                    ),
-                )
-            else:
-                test_globals.setup_api_test(
-                    backend_fw.backend,
-                    request.function.ground_truth_backend,
-                    on_device,
-                    (
-                        request.function.test_data
-                        if hasattr(request.function, "test_data")
-                        else None
-                    ),
-                )
+    if not hasattr(request.function, "_ivy_test"):
+        return
+    try:
+        test_globals.setup_api_test(
+            backend_fw,
+            request.function.ground_truth_backend,
+            on_device,
+            (
+                request.function.test_data
+                if hasattr(request.function, "test_data")
+                else None
+            ),
+        )
 
-        except Exception as e:
-            test_globals.teardown_api_test()
-            raise RuntimeError(f"Setting up test for {request.function} failed.") from e
-    with backend_fw.use:
-        with DefaultDevice(on_device):
-            yield
-    if ivy_test:
+    except Exception as e:
         test_globals.teardown_api_test()
+        raise RuntimeError(f"Setting up test for {request.function} failed.") from e
+
+    yield
+    test_globals.teardown_api_test()
 
 
 def pytest_generate_tests(metafunc):
@@ -223,7 +208,8 @@ def pytest_generate_tests(metafunc):
         test_paramters = TEST_PARAMS_CONFIG.copy()
         # Find the entries that contains the ground truth backend as it's backend
         for entry in test_paramters.copy():
-            if entry[1].backend == metafunc.function.ground_truth_backend:
+            # Entry 1 is backend_fw
+            if entry[1] == metafunc.function.ground_truth_backend:
                 test_paramters.remove(entry)
         metafunc.parametrize(
             "on_device,backend_fw,compile_graph,implicit", test_paramters
