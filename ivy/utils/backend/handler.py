@@ -440,6 +440,7 @@ def set_backend(backend: str, dynamic: bool = False):
         global ivy_original_dict
         if not backend_stack:
             ivy_original_dict = ivy.__dict__.copy()
+            ivy_framework_dict = ivy.functional.__dict__.copy()
 
         _clear_current_sub_backends()
         if isinstance(backend, str):
@@ -456,6 +457,7 @@ def set_backend(backend: str, dynamic: bool = False):
         backend_stack.append(backend)
         set_backend_to_specific_version(backend)
         _set_backend_as_ivy(ivy_original_dict, ivy, backend)
+        _set_backend_as_ivy(ivy_framework_dict, ivy.functional, backend)
 
         if dynamic:
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
