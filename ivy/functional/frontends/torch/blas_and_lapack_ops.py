@@ -92,7 +92,7 @@ def cholesky(input, upper=False, *, out=None):
 @to_ivy_arrays_and_back
 def cholesky_inverse(input, upper=True, *, out=None):
     u = ivy.cholesky(input, upper=upper, out=out)
-    return ivy.cholesky_inverse(x, upper=upper, out=out)
+    return ivy.cholesky_inverse(u, upper=upper, out=out)
 
 
 @to_ivy_arrays_and_back
