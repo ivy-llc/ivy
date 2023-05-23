@@ -2559,7 +2559,7 @@ def test_tensorflow_conj(
 @handle_frontend_test(
     fn_tree="tensorflow.math.sign",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_signed_integer")
     ),
     test_with_out=st.just(False),
 )
@@ -2580,5 +2580,3 @@ def test_tensorflow_sign(
         on_device=on_device,
         x=x[0],
     )
-
-

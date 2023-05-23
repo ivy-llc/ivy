@@ -26,6 +26,7 @@ _dtype_kind_keys = {
     "complex",
     "real_and_complex",
     "float_and_integer",
+    "float_and_signed_integer",
     "float_and_complex",
     "bool",
 }
@@ -65,6 +66,12 @@ def _get_type_dict(framework, kind):
     elif kind == "float_and_integer":
         return tuple(
             set(framework.valid_float_dtypes).union(framework.valid_int_dtypes)
+        )
+    elif kind == "float_and_signed_integer":
+        return tuple(
+            set(framework.valid_float_dtypes)
+            .union(framework.valid_int_dtypes)
+            .difference(framework.valid_uint_dtypes)
         )
     elif kind == "bool":
         return tuple(

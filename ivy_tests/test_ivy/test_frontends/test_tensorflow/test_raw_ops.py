@@ -828,7 +828,7 @@ def test_tensorflow_Squeeze(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Sign",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_signed_integer"),
     ),
     test_with_out=st.just(False),
 )

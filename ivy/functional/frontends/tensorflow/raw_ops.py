@@ -436,20 +436,7 @@ def Sinh(*, x, name="Sinh"):
     return ivy.sinh(x)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.10.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-        )
-    },
-    "tensorflow",
-)
-@to_ivy_arrays_and_back
-def Sign(*, x, name="Sign"):
-    return ivy.sign(x)
+Sign = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.sign))
 
 
 Size = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.size))
