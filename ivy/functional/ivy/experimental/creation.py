@@ -193,7 +193,6 @@ def kaiser_bessel_derived_window(
     >>> ivy.kaiser_bessel_derived_window(5, 5)
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
-
     if window_length < 2:
         return ivy.array([], dtype=dtype)
     half_len = window_length // 2
@@ -251,7 +250,6 @@ def hamming_window(
     >>> ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)
     ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])
     """
-
     if window_length < 2:
         return ivy.ones([window_length], dtype=dtype, out=out)
     if periodic:
