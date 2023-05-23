@@ -170,7 +170,7 @@ def cholesky_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    upper: bool = False,
+    upper: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     return current_backend(x).cholesky_inverse(x, upper=upper, out=out)
