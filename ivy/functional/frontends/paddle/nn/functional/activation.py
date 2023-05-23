@@ -3,12 +3,12 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
-def _tanh_(input_x):
+def _tanh(input_x):
     return ivy.tanh(input_x)
 
 
 @to_ivy_arrays_and_back
-def _gelu_(input_x, method="none"):
+def _gelu(input_x, method="none"):
     if method == "none":
         return ivy.gelu(input_x, approximate=False)
     elif method == "tanh":
@@ -20,17 +20,17 @@ def _gelu_(input_x, method="none"):
 
 
 @to_ivy_arrays_and_back
-def _leaky_relu_(input_x, alpha=0.2):
+def _leaky_relu(input_x, alpha=0.2):
     return ivy.leaky_relu(input_x, alpha=alpha)
 
 
 @to_ivy_arrays_and_back
-def _logsigmoid_(input_x):
+def _logsigmoid(input_x):
     return ivy.logsigmoid(input_x)
 
 
 @to_ivy_arrays_and_back
-def _log_softmax_(input_x, dim=None):
+def _log_softmax(input_x, dim=None):
     if dim is None:
         dim = -1
     return ivy.log_softmax(input_x, axis=dim)
