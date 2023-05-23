@@ -341,3 +341,11 @@ def masked_select(input, mask, out=None):
 def take(input, index):
     input = ivy.reshape(input, (-1,))
     return ivy.gather(input, index, axis=0)
+
+
+@to_ivy_arrays_and_back
+def narrow(input, dim, start, length):
+    num_dims = ivy.get_num_dims(input)
+    slices = [slice(None)] * num_dims
+    slices[dim] = slice(start, start + length)
+    return input[tuple(slices)]
