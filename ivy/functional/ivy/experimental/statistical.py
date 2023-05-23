@@ -440,9 +440,7 @@ def igamma(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    ivy.Array instance method variant of ivy.igamma. This method simply wraps the
-    function, and so the docstring for ivy.igamma also applies to this method with
-    minimal changes.
+    Compute the regularized lower gamma function of ``a`` and ``x``.
 
     Parameters
     ----------
