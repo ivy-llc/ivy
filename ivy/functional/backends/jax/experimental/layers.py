@@ -7,7 +7,6 @@ import math
 
 # local
 import ivy
-from ivy.func_wrapper import handle_mixed_function
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
@@ -552,21 +551,6 @@ def ifft(
     return jnp.fft.ifft(x, n, dim, norm)
 
 
-@handle_mixed_function(
-    lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-        not align_corners
-        and mode
-        not in [
-            "area",
-            "nearest",
-            "tf_area",
-            "mitchellcubic",
-            "gaussian",
-            "bicubic",
-        ]
-        and recompute_scale_factor
-    )
-)
 def interpolate(
     x: JaxArray,
     size: Union[Sequence[int], int],
@@ -606,3 +590,18 @@ def interpolate(
         jax.image.resize(x, shape=size, method=mode, antialias=antialias),
         (0, dims + 1, *range(1, dims + 1)),
     )
+
+
+interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
+    not align_corners
+    and mode
+    not in [
+        "area",
+        "nearest",
+        "tf_area",
+        "mitchellcubic",
+        "gaussian",
+        "bicubic",
+    ]
+    and recompute_scale_factor
+)
