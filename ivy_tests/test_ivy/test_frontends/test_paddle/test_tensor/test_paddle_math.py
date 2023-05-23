@@ -176,10 +176,10 @@ def test_paddle_acosh(
 def test_paddle_asin(
     *,
     dtype_and_x,
-    on_device,
-    fn_tree,
     frontend,
     test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
