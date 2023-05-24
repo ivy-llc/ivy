@@ -57,3 +57,7 @@ def sqrt(x, name=None):
 def atanh(x, name=None):
     return ivy.atanh(x)
 
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def atan(x, name=None):
+    return ivy.atan(x)
