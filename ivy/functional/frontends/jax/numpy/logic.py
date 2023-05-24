@@ -53,25 +53,25 @@ def not_equal(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def less(x1, x2):
+def less(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.less(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def less_equal(x1, x2):
+def less_equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.less_equal(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def greater(x1, x2):
+def greater(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.greater(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def greater_equal(x1, x2):
+def greater_equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.greater_equal(x1, x2)
 

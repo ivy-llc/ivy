@@ -21,8 +21,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     as_list=st.booleans(),
     copy=st.booleans(),
-    ndmin=helpers.ints(min_value=0, max_value=10),
-    test_with_out=st.just(False),
+    ndmin=helpers.ints(min_value=0, max_value=9),
+    test_with_out=st.just(True),
 )
 def test_jax_numpy_array(
     *,
@@ -399,7 +399,7 @@ def test_jax_numpy_empty(
 @handle_frontend_test(
     fn_tree="jax.numpy.vander",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.tuples(
             st.integers(min_value=1, max_value=5),
         ),
@@ -858,4 +858,45 @@ def test_jax_numpy_cdouble(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.compress",
+    dtype_arr_ax=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=10,
+        max_dim_size=100,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    condition=helpers.array_values(
+        dtype=helpers.get_dtypes("bool"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
+        ),
+    ),
+    test_with_out=st.just(True),
+)
+def test_jax_numpy_compress(
+    *,
+    dtype_arr_ax,
+    condition,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, arr, ax = dtype_arr_ax
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition,
+        a=arr[0],
+        axis=ax,
     )

@@ -15,15 +15,15 @@ from ivy.functional.ivy.random import (
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
 # Extra #
 # ------#
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8",)},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def random_uniform(
@@ -54,7 +54,7 @@ def random_uniform(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def random_normal(
@@ -94,8 +94,8 @@ def multinomial(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8",)},
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def randint(
@@ -132,9 +132,6 @@ def seed(*, seed_value: int = 0) -> None:
     _ = paddle.seed(seed_value)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def shuffle(
     x: paddle.Tensor,
     axis: Optional[int] = 0,

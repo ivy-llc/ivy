@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence, Tuple
 
 import tensorflow as tf
 
@@ -24,7 +24,7 @@ from . import backend_version
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.12.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -171,7 +171,7 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -301,7 +301,7 @@ def linspace(
         return tf.cast(ans, dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
 def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
@@ -357,7 +357,7 @@ def tril(
     return tf.experimental.numpy.tril(x, k)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
 def triu(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -440,7 +440,7 @@ def one_hot(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("uint32", "uint64")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("uint32", "uint64")}, backend_version)
 def frombuffer(
     buffer: bytes,
     dtype: Optional[tf.DType] = float,
@@ -459,3 +459,30 @@ def frombuffer(
         ret = ret[offset:]
 
     return ret
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: str,
+) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+    n_cols = n_rows if n_cols is None else n_cols
+
+    if n_rows < 0 or n_cols < 0:
+        n_rows, n_cols = 0, 0
+
+    ret = [[], []]
+
+    for i in range(0, min(n_rows, n_cols - k), 1):
+        for j in range(max(0, k + i), n_cols, 1):
+            ret[0].append(i)
+            ret[1].append(j)
+
+    if device is not None:
+        with tf.device(ivy.as_native_dev(device)):
+            return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
+
+    return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
