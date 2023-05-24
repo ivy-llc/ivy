@@ -387,7 +387,7 @@ def igamma(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     def igamma_cal(a, x):
-        t = np.linspace(0, x, 1000, dtype=np.float64)
+        t = np.linspace(0, x, 10000, dtype=np.float64)
         y = np.exp(-t) * (t ** (a - 1))
         integral = np.trapz(y, t)
         return np.float32(integral / math.gamma(a))
