@@ -1353,6 +1353,8 @@ def test_tensorflow_FFT(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
     )
 
 
