@@ -589,7 +589,7 @@ def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
                 arr,
                 ivy.maximum(0, pads).to_list(),
                 mode="constant",
-                constant_values=pad_value,
+                constant_values=ivy.to_scalar(pad_value),
             ),
             arr.dtype,
         )
