@@ -687,7 +687,7 @@ identities = {
 
 
 def _cast_init(init, dtype):
-    if ivy.isinf(init):
+    if not ivy.is_bool_dtype(dtype) and ivy.isinf(init):
         if ivy.is_float_dtype(dtype):
             info = ivy.finfo(dtype)
         else:
