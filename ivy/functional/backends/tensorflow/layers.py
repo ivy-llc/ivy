@@ -66,7 +66,7 @@ def _output_shape(
     return output_shape
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -87,7 +87,7 @@ def conv1d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv1d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -120,7 +120,7 @@ def conv1d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -141,7 +141,7 @@ def conv2d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv2d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -174,7 +174,7 @@ def conv2d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def depthwise_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -200,7 +200,7 @@ def depthwise_conv2d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv3d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -225,7 +225,7 @@ def conv3d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv3d_transpose(
     x: Tensor,
     filters: Tensor,
@@ -262,7 +262,7 @@ def conv3d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv_general_dilated(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -272,14 +272,19 @@ def conv_general_dilated(
     *,
     dims: int = 2,
     data_format: str = "channel_last",
+    filter_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # permuting dims based on formats
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+
+    if filter_format == "channel_first":
+        filters = tf.transpose(filters, (*range(2, dims + 2), 1, 0))
 
     # adding dilation in input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
@@ -304,6 +309,12 @@ def conv_general_dilated(
             f"given feature_group_count {feature_group_count} expected input channel of"
             f" the filter to be {x.shape[-1] // feature_group_count} but got"
             f" {filters.shape[-2]}"
+        )
+
+    if x.shape[-1] % feature_group_count != 0:
+        raise ivy.utils.exceptions.IvyError(
+            "input channel should be divisible by feature group count"
+            f" {feature_group_count} but got input channel {x.shape[-1]}"
         )
     if dims == 1:
         res = tf.nn.conv1d(
@@ -338,7 +349,7 @@ def conv_general_dilated(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv_general_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],

@@ -50,7 +50,7 @@ def current_backend_str() -> str:
 
 # tensorflow does not support uint indexing
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def get_item(x: tf.Tensor, /, query: tf.Tensor, *, copy: bool = None) -> tf.Tensor:
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
@@ -286,7 +286,7 @@ def scatter_flat(
 scatter_flat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -303,18 +303,12 @@ def scatter_nd(
             else out
         )
     # handle numeric updates
-    updates = tf.constant(
-        updates,
-        dtype=(
-            ivy.dtype(out, as_native=True)
-            if ivy.exists(out)
-            else ivy.default_dtype(item=updates)
-        ),
-    )
+    if ivy.exists(out):
+        dtype = ivy.promote_types(out.dtype, updates.dtype)
     updates = tf.cast(
         updates,
         (
-            ivy.dtype(out, as_native=True)
+            ivy.as_native_dtype(dtype)
             if ivy.exists(out)
             else ivy.default_dtype(item=updates)
         ),
@@ -606,7 +600,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def isin(
     elements: tf.Tensor,
     test_elements: tf.Tensor,

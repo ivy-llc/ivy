@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
@@ -131,7 +131,7 @@ def max_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -176,7 +176,7 @@ def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
     return padding, pad_specific, c
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float64")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
@@ -246,7 +246,7 @@ def avg_pool1d(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool2d(
     x: Union[tf.Tensor, tf.Variable],
@@ -338,7 +338,7 @@ def avg_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -671,13 +671,6 @@ def embedding(
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
-@handle_mixed_function(
-    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # NOQA
-        not align_corners and (len(x.shape) - 2) < 2
-    )
-    and mode not in ["nearest", "area", "bicubic"]
-    and recompute_scale_factor
-)
 def interpolate(
     x: Union[tf.Tensor, tf.Variable],
     size: Union[Sequence[int], int],
@@ -734,3 +727,10 @@ def interpolate(
     if remove_dim:
         ret = tf.squeeze(ret, axis=-2)
     return ret
+
+
+interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
+    (not align_corners and (len(x.shape) - 2) < 2)
+    and mode not in ["nearest", "area", "bicubic"]
+    and recompute_scale_factor
+)
