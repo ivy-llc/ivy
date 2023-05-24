@@ -1089,6 +1089,7 @@ def test_sequential_layer(
 
 # # Pooling #
 
+#max_pool1d
 @handle_method(
     method_tree="MaxPool1D.__call__",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=2, max_side=4),
