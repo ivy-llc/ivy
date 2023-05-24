@@ -157,8 +157,7 @@ def test_numpy_vsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    if isinstance(indices_or_sections, np.ndarray):
-        assume(indices_or_sections.ndim == 0)
+    assume(isinstance(indices_or_sections, int))
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
