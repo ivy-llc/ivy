@@ -463,6 +463,8 @@ def set_backend(backend: str, dynamic: bool = False):
         if verbosity.level > 0:
             verbosity.cprint("backend stack: {}".format(backend_stack))
 
+    return ivy
+
 
 def set_numpy_backend():
     """
