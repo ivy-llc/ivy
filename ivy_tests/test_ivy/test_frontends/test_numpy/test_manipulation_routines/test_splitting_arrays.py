@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
 
 # local
 import ivy
@@ -17,7 +18,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # 
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1).filter(lambda s: s is not None),
+    indices_or_sections=_get_splits(min_num_dims=1, allow_none=False),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -38,7 +39,6 @@ def test_numpy_split(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    assume(isinstance(indices_or_sections, int))
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -62,7 +62,7 @@ def test_numpy_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1).filter(lambda s: s is not None),
+    indices_or_sections=_get_splits(min_num_dims=1, allow_none=False),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -107,9 +107,7 @@ def test_numpy_array_split(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=3, axis=2).filter(
-        lambda s: s is not None
-    ),
+    indices_or_sections=_get_splits(min_num_dims=3, axis=2, allow_none=False),
     test_with_out=st.just(False),
 )
 def test_numpy_dsplit(
@@ -122,7 +120,8 @@ def test_numpy_dsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    assume(isinstance(indices_or_sections, int))
+    if isinstance(indices_or_sections, np.ndarray):
+        assume(indices_or_sections.ndim == 0)
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -145,9 +144,7 @@ def test_numpy_dsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=0).filter(
-        lambda s: s is not None
-    ),
+    indices_or_sections=_get_splits(min_num_dims=2, axis=0, allow_none=False),
     test_with_out=st.just(False),
 )
 def test_numpy_vsplit(
@@ -160,7 +157,8 @@ def test_numpy_vsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    assume(isinstance(indices_or_sections, int))
+    if isinstance(indices_or_sections, np.ndarray):
+        assume(indices_or_sections.ndim == 0)
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -183,7 +181,7 @@ def test_numpy_vsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1, axis=1),
+    indices_or_sections=_get_splits(min_num_dims=1, axis=1, allow_none=False),
     test_with_out=st.just(False),
 )
 def test_numpy_hsplit(
@@ -196,16 +194,8 @@ def test_numpy_hsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    # TODO: remove the assumption when these bugfixes are merged and version-pinned
-    # https://github.com/tensorflow/tensorflow/pull/59523
-    # https://github.com/google/jax/pull/14275
-    assume(
-        not (
-            len(value[0].shape) == 1
-            and ivy.current_backend_str() in ("tensorflow", "jax")
-        )
-    )
-    assume(isinstance(indices_or_sections, int))
+    if isinstance(indices_or_sections, np.ndarray):
+        assume(indices_or_sections.ndim == 0)
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
