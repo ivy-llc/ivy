@@ -36,7 +36,6 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return np.where(x > threshold, x, 0).astype(x.dtype)
 
 
@@ -53,7 +52,7 @@ relu6.support_native_out = True
 
 @with_unsupported_dtypes({"1.24.3 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
-def logsigmoid(input: np.ndarray) -> np.ndarray:
+def logsigmoid(input: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return -(np.log1p(np.exp(-(input))))
 
 

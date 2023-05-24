@@ -374,6 +374,12 @@ class Tensor:
     def floor(self, *, out=None):
         return torch_frontend.floor(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def not_equal(self, other, *, out=None):
+        return torch_frontend.not_equal(self, other, out=out)
+
+    ne = not_equal
+
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
@@ -883,6 +889,9 @@ class Tensor:
         self.ivy_array = self.fix().ivy_array
         return self
 
+    def is_complex(self):
+        return torch_frontend.is_complex(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
@@ -1130,6 +1139,15 @@ class Tensor:
     def addcdiv(self, tensor1, tensor2, *, value=1):
         return torch_frontend.addcdiv(self, tensor1, tensor2, value=value)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addcmul(self, tensor1, tensor2, *, value=1):
+        return torch_frontend.addcmul(self, tensor1, tensor2, value=value)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addcmul_(self, tensor1, tensor2, *, value=1):
+        self.ivy_array = self.addcmul(tensor1, tensor2, value=value).ivy_array
+        return self
+
     sign_decorator_dtypes = ("float16", "complex", "bool")
 
     @with_unsupported_dtypes({"2.0.1 and below": sign_decorator_dtypes}, "torch")
@@ -1176,6 +1194,10 @@ class Tensor:
         return 2 * torch_frontend.sum(
             torch_frontend.log(torch_frontend.real(torch_frontend.diagonal(chol)))
         )
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def copysign(self, other, *, out=None):
+        return torch_frontend.copysign(self, other, out=out)
 
 
 class Size(tuple):

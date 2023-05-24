@@ -155,9 +155,6 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-batch_norm.mixed_function = True
-
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -270,9 +267,6 @@ def instance_norm(
         runningmean.reshape((N, C)).mean(axis=0),
         runningvariance.reshape((N, C)).mean(axis=0),
     )
-
-
-instance_norm.mixed_function = True
 
 
 @handle_exceptions

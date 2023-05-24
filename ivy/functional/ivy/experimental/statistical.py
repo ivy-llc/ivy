@@ -22,8 +22,8 @@ def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    bins: Optional[Union[int, ivy.Array, ivy.NativeArray, str]] = None,
-    axis: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    bins: Optional[Union[int, ivy.Array, ivy.NativeArray]] = None,
+    axis: Optional[int] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -423,6 +423,29 @@ def bincount(
     minlength: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+    """
+    Counts the number of occurrences of each value in an integer array.
+
+    Parameters
+    ----------
+    self
+        Input array.
+    weights
+        An optional input array.
+    minlength
+        A minimum number of bins for the output array.
+    Returns
+    -------
+    ret
+        The bincount of the array elements.
+    Examples
+    --------
+    >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
+    >>> a.bincount(a)
+        3.0
+    >>> a.bincount(a, axis=0)
+        array([6.5, 2. , 2.5])
+    """
     return ivy.current_backend(x).bincount(
         x, weights=weights, minlength=minlength, out=out
     )
