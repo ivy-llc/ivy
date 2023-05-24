@@ -545,8 +545,8 @@ def can_cast(
     }
     """
     if isinstance(from_, ivy.Dtype):
-        return (from_, to) in ivy.promotion_table
-    return (from_.dtype, to) in ivy.promotion_table
+        return (from_, to) in get_promotion_table()
+    return (from_.dtype, to) in get_promotion_table()
 
 
 @handle_exceptions
@@ -2424,3 +2424,523 @@ def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
         return current_backend(None).is_native_dtype(dtype_in)
     except ValueError:
         return False
+
+
+# Promotion Tables #
+# ---------------- #
+from ivy import (
+    int8,
+    int16,
+    int32,
+    int64,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
+    bfloat16,
+    float16,
+    float32,
+    float64,
+    complex64,
+    complex128,
+    bool as _bool,
+)
+
+precise_mode_stack = list()
+
+
+class PreciseMode:
+    """Precise Mode Context Manager."""
+
+    # noinspection PyShadowingNames
+    def __init__(self, precise_mode):
+        self._precise_mode = precise_mode
+
+    def __enter__(self):
+        set_precise_mode(self._precise_mode)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        unset_precise_mode()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
+        return self
+
+
+@handle_exceptions
+def set_precise_mode(mode: bool) -> None:
+    """
+    Set the mode of whether to use a promotion table that avoids any precision loss
+    or a compute effecient table that avoids most wider-than-necessary promotions
+
+    Parameter
+    ---------
+    mode
+        boolean whether to use high precision promtion table
+
+    Examples
+    --------
+    >>> ivy.set_precise_mode(False)
+    >>> ivy.get_precise_mode()
+    False
+
+    >>> ivy.set_precise_mode(True)
+    >>> ivy.get_precise_mode()
+    True
+    """
+    global precise_mode_stack
+    ivy.utils.assertions.check_isinstance(mode, bool)
+    precise_mode_stack.append(mode)
+
+
+@handle_exceptions
+def unset_precise_mode() -> None:
+    """
+    Reset the mode of whether to use a promotion table that avoids any precision loss
+    or a compute effecient table that avoids most wider-than-necessary promotions
+
+    Examples
+    --------
+    >>> ivy.set_precise_mode(False)
+    >>> ivy.get_precise_mode()
+    False
+
+    >>> ivy.unset_precise_mode()
+    >>> ivy.get_array_mode()
+    True
+    """
+    global precise_mode_stack
+    if precise_mode_stack:
+        precise_mode_stack.pop(-1)
+
+
+@handle_exceptions
+def get_precise_mode() -> bool:
+    """
+    Get the current state of precise_mode.
+
+    Examples
+    --------
+    >>> ivy.get_precise_mode()
+    True
+
+    >>> ivy.set_precise_mode(False)
+    >>> ivy.get_precise_mode()
+    False
+    """
+    global precise_mode_stack
+    if not precise_mode_stack:
+        return True  # TODO: change when it's not the default mode anymore
+    return precise_mode_stack[-1]
+
+
+# data type promotion
+array_api_promotion_table = {
+    (int8, int8): int8,
+    (int8, int16): int16,
+    (int8, int32): int32,
+    (int8, int64): int64,
+    (int16, int8): int16,
+    (int16, int16): int16,
+    (int16, int32): int32,
+    (int16, int64): int64,
+    (int32, int8): int32,
+    (int32, int16): int32,
+    (int32, int32): int32,
+    (int32, int64): int64,
+    (int64, int8): int64,
+    (int64, int16): int64,
+    (int64, int32): int64,
+    (int64, int64): int64,
+    (uint8, uint8): uint8,
+    (uint8, uint16): uint16,
+    (uint8, uint32): uint32,
+    (uint8, uint64): uint64,
+    (uint16, uint8): uint16,
+    (uint16, uint16): uint16,
+    (uint16, uint32): uint32,
+    (uint16, uint64): uint64,
+    (uint32, uint8): uint32,
+    (uint32, uint16): uint32,
+    (uint32, uint32): uint32,
+    (uint32, uint64): uint64,
+    (uint64, uint8): uint64,
+    (uint64, uint16): uint64,
+    (uint64, uint32): uint64,
+    (uint64, uint64): uint64,
+    (int8, uint8): int16,
+    (int8, uint16): int32,
+    (int8, uint32): int64,
+    (int16, uint8): int16,
+    (int16, uint16): int32,
+    (int16, uint32): int64,
+    (int32, uint8): int32,
+    (int32, uint16): int32,
+    (int32, uint32): int64,
+    (int64, uint8): int64,
+    (int64, uint16): int64,
+    (int64, uint32): int64,
+    (uint8, int8): int16,
+    (uint16, int8): int32,
+    (uint32, int8): int64,
+    (uint8, int16): int16,
+    (uint16, int16): int32,
+    (uint32, int16): int64,
+    (uint8, int32): int32,
+    (uint16, int32): int32,
+    (uint32, int32): int64,
+    (uint8, int64): int64,
+    (uint16, int64): int64,
+    (uint32, int64): int64,
+    (float16, float16): float16,
+    (float16, float32): float32,
+    (float16, float64): float64,
+    (float32, float16): float32,
+    (float32, float32): float32,
+    (float32, float64): float64,
+    (float64, float16): float64,
+    (float64, float32): float64,
+    (float64, float64): float64,
+    (_bool, _bool): _bool,
+}
+
+# the extra promotion table follows numpy safe casting convention
+# the following link discusses the different approaches to dtype promotions
+# https://jax.readthedocs.io/en/latest/jep/9407-type-promotion.html
+
+# Avoiding All Precision Loss (Numpy Approach)
+precise_extra_promotion_table = {
+    (_bool, uint16): uint16,
+    (_bool, int32): int32,
+    (_bool, float16): float16,
+    (_bool, uint64): uint64,
+    (_bool, float64): float64,
+    (_bool, int8): int8,
+    (_bool, int64): int64,
+    (_bool, int16): int16,
+    (_bool, bfloat16): bfloat16,
+    (_bool, uint32): uint32,
+    (_bool, uint8): uint8,
+    (_bool, float32): float32,
+    (_bool, complex64): complex64,
+    (_bool, complex128): complex128,
+    (uint16, _bool): uint16,
+    (int32, _bool): int32,
+    (float16, _bool): float16,
+    (uint64, _bool): uint64,
+    (float64, _bool): float64,
+    (int8, _bool): int8,
+    (int64, _bool): int64,
+    (int16, _bool): int16,
+    (bfloat16, _bool): bfloat16,
+    (uint32, _bool): uint32,
+    (uint8, _bool): uint8,
+    (float32, _bool): float32,
+    (complex64, _bool): complex64,
+    (complex128, _bool): complex128,
+    (uint64, int8): float64,
+    (int8, uint64): float64,
+    (uint64, int16): float64,
+    (int16, uint64): float64,
+    (uint64, int32): float64,
+    (int32, uint64): float64,
+    (uint64, int64): float64,
+    (int64, uint64): float64,
+    (int8, float16): float16,
+    (float16, int8): float16,
+    (int8, float32): float32,
+    (float32, int8): float32,
+    (int8, float64): float64,
+    (float64, int8): float64,
+    (int16, float16): float32,
+    (float16, int16): float32,
+    (int16, float32): float32,
+    (float32, int16): float32,
+    (int16, float64): float64,
+    (float64, int16): float64,
+    (int32, float16): float64,
+    (float16, int32): float64,
+    (int32, float32): float64,
+    (float32, int32): float64,
+    (int32, float64): float64,
+    (float64, int32): float64,
+    (int64, float16): float64,
+    (float16, int64): float64,
+    (int64, float32): float64,
+    (float32, int64): float64,
+    (int64, float64): float64,
+    (float64, int64): float64,
+    (uint8, float16): float16,
+    (float16, uint8): float16,
+    (uint8, float32): float32,
+    (float32, uint8): float32,
+    (uint8, float64): float64,
+    (float64, uint8): float64,
+    (uint16, float16): float32,
+    (float16, uint16): float32,
+    (uint16, float32): float32,
+    (float32, uint16): float32,
+    (uint16, float64): float64,
+    (float64, uint16): float64,
+    (uint32, float16): float64,
+    (float16, uint32): float64,
+    (uint32, float32): float64,
+    (float32, uint32): float64,
+    (uint32, float64): float64,
+    (float64, uint32): float64,
+    (uint64, float16): float64,
+    (float16, uint64): float64,
+    (uint64, float32): float64,
+    (float32, uint64): float64,
+    (uint64, float64): float64,
+    (float64, uint64): float64,
+    (bfloat16, bfloat16): bfloat16,
+    (bfloat16, uint8): bfloat16,
+    (uint8, bfloat16): bfloat16,
+    (bfloat16, uint16): float32,
+    (uint16, bfloat16): float32,
+    (bfloat16, uint32): float64,
+    (uint32, bfloat16): float64,
+    (bfloat16, uint64): float64,
+    (uint64, bfloat16): float64,
+    (bfloat16, int8): bfloat16,
+    (int8, bfloat16): bfloat16,
+    (bfloat16, int16): float32,
+    (int16, bfloat16): float32,
+    (bfloat16, int32): float64,
+    (int32, bfloat16): float64,
+    (bfloat16, int64): float64,
+    (int64, bfloat16): float64,
+    (bfloat16, float16): float32,
+    (float16, bfloat16): float32,
+    (bfloat16, float32): float32,
+    (float32, bfloat16): float32,
+    (bfloat16, float64): float64,
+    (float64, bfloat16): float64,
+    (complex64, int8): complex64,
+    (int8, complex64): complex64,
+    (complex64, int16): complex64,
+    (int16, complex64): complex64,
+    (complex64, int32): complex128,
+    (int32, complex64): complex128,
+    (complex64, int64): complex128,
+    (int64, complex64): complex128,
+    (complex64, uint8): complex64,
+    (uint8, complex64): complex64,
+    (complex64, uint16): complex64,
+    (uint16, complex64): complex64,
+    (complex64, uint32): complex128,
+    (uint32, complex64): complex128,
+    (complex64, uint64): complex128,
+    (uint64, complex64): complex128,
+    (complex64, float16): complex64,
+    (float16, complex64): complex64,
+    (complex64, float32): complex64,
+    (float32, complex64): complex64,
+    (complex64, float64): complex128,
+    (float64, complex64): complex128,
+    (complex64, bfloat16): complex64,
+    (bfloat16, complex64): complex64,
+    (complex64, complex64): complex64,
+    (complex64, complex128): complex128,
+    (complex128, int8): complex128,
+    (int8, complex128): complex128,
+    (complex128, int16): complex128,
+    (int16, complex128): complex128,
+    (complex128, int32): complex128,
+    (int32, complex128): complex128,
+    (complex128, int64): complex128,
+    (int64, complex128): complex128,
+    (complex128, uint8): complex128,
+    (uint8, complex128): complex128,
+    (complex128, uint16): complex128,
+    (uint16, complex128): complex128,
+    (complex128, uint32): complex128,
+    (uint32, complex128): complex128,
+    (complex128, uint64): complex128,
+    (uint64, complex128): complex128,
+    (complex128, float16): complex128,
+    (float16, complex128): complex128,
+    (complex128, float32): complex128,
+    (float32, complex128): complex128,
+    (complex128, float64): complex128,
+    (float64, complex128): complex128,
+    (complex128, bfloat16): complex128,
+    (bfloat16, complex128): complex128,
+    (complex128, complex64): complex128,
+    (complex128, complex128): complex128,
+}
+
+extra_promotion_table = {
+    (_bool, uint16): uint16,
+    (_bool, int32): int32,
+    (_bool, float16): float16,
+    (_bool, uint64): uint64,
+    (_bool, float64): float64,
+    (_bool, int8): int8,
+    (_bool, int64): int64,
+    (_bool, int16): int16,
+    (_bool, bfloat16): bfloat16,
+    (_bool, uint32): uint32,
+    (_bool, uint8): uint8,
+    (_bool, float32): float32,
+    (_bool, complex64): complex64,
+    (_bool, complex128): complex128,
+    (uint16, _bool): uint16,
+    (int32, _bool): int32,
+    (float16, _bool): float16,
+    (uint64, _bool): uint64,
+    (float64, _bool): float64,
+    (int8, _bool): int8,
+    (int64, _bool): int64,
+    (int16, _bool): int16,
+    (bfloat16, _bool): bfloat16,
+    (uint32, _bool): uint32,
+    (uint8, _bool): uint8,
+    (float32, _bool): float32,
+    (complex64, _bool): complex64,
+    (complex128, _bool): complex128,
+    (uint64, int8): float64,
+    (int8, uint64): float64,
+    (uint64, int16): float64,
+    (int16, uint64): float64,
+    (uint64, int32): float64,
+    (int32, uint64): float64,
+    (uint64, int64): float64,
+    (int64, uint64): float64,
+    (int8, float16): float16,
+    (float16, int8): float16,
+    (int8, float32): float32,
+    (float32, int8): float32,
+    (int8, float64): float64,
+    (float64, int8): float64,
+    (int16, float16): float16,
+    (float16, int16): float16,
+    (int16, float32): float32,
+    (float32, int16): float32,
+    (int16, float64): float64,
+    (float64, int16): float64,
+    (int32, float16): float16,
+    (float16, int32): float16,
+    (int32, float32): float32,
+    (float32, int32): float32,
+    (int32, float64): float64,
+    (float64, int32): float64,
+    (int64, float16): float16,
+    (float16, int64): float16,
+    (int64, float32): float32,
+    (float32, int64): float32,
+    (int64, float64): float64,
+    (float64, int64): float64,
+    (uint8, float16): float16,
+    (float16, uint8): float16,
+    (uint8, float32): float32,
+    (float32, uint8): float32,
+    (uint8, float64): float64,
+    (float64, uint8): float64,
+    (uint16, float16): float16,
+    (float16, uint16): float16,
+    (uint16, float32): float32,
+    (float32, uint16): float32,
+    (uint16, float64): float64,
+    (float64, uint16): float64,
+    (uint32, float16): float16,
+    (float16, uint32): float16,
+    (uint32, float32): float32,
+    (float32, uint32): float32,
+    (uint32, float64): float64,
+    (float64, uint32): float64,
+    (uint64, float16): float16,
+    (float16, uint64): float16,
+    (uint64, float32): float32,
+    (float32, uint64): float32,
+    (uint64, float64): float64,
+    (float64, uint64): float64,
+    (bfloat16, bfloat16): bfloat16,
+    (bfloat16, uint8): bfloat16,
+    (uint8, bfloat16): bfloat16,
+    (bfloat16, uint16): bfloat16,
+    (uint16, bfloat16): bfloat16,
+    (bfloat16, uint32): bfloat16,
+    (uint32, bfloat16): bfloat16,
+    (bfloat16, uint64): bfloat16,
+    (uint64, bfloat16): bfloat16,
+    (bfloat16, int8): bfloat16,
+    (int8, bfloat16): bfloat16,
+    (bfloat16, int16): bfloat16,
+    (int16, bfloat16): bfloat16,
+    (bfloat16, int32): bfloat16,
+    (int32, bfloat16): bfloat16,
+    (bfloat16, int64): bfloat16,
+    (int64, bfloat16): bfloat16,
+    (bfloat16, float16): float32,
+    (float16, bfloat16): float32,
+    (bfloat16, float32): float32,
+    (float32, bfloat16): float32,
+    (bfloat16, float64): float64,
+    (float64, bfloat16): float64,
+    (complex64, int8): complex64,
+    (int8, complex64): complex64,
+    (complex64, int16): complex64,
+    (int16, complex64): complex64,
+    (complex64, int32): complex64,
+    (int32, complex64): complex64,
+    (complex64, int64): complex64,
+    (int64, complex64): complex64,
+    (complex64, uint8): complex64,
+    (uint8, complex64): complex64,
+    (complex64, uint16): complex64,
+    (uint16, complex64): complex64,
+    (complex64, uint32): complex64,
+    (uint32, complex64): complex64,
+    (complex64, uint64): complex64,
+    (uint64, complex64): complex64,
+    (complex64, float16): complex64,
+    (float16, complex64): complex64,
+    (complex64, float32): complex64,
+    (float32, complex64): complex64,
+    (complex64, float64): complex128,
+    (float64, complex64): complex128,
+    (complex64, bfloat16): complex64,
+    (bfloat16, complex64): complex64,
+    (complex64, complex64): complex64,
+    (complex64, complex128): complex128,
+    (complex128, int8): complex128,
+    (int8, complex128): complex128,
+    (complex128, int16): complex128,
+    (int16, complex128): complex128,
+    (complex128, int32): complex128,
+    (int32, complex128): complex128,
+    (complex128, int64): complex128,
+    (int64, complex128): complex128,
+    (complex128, uint8): complex128,
+    (uint8, complex128): complex128,
+    (complex128, uint16): complex128,
+    (uint16, complex128): complex128,
+    (complex128, uint32): complex128,
+    (uint32, complex128): complex128,
+    (complex128, uint64): complex128,
+    (uint64, complex128): complex128,
+    (complex128, float16): complex128,
+    (float16, complex128): complex128,
+    (complex128, float32): complex128,
+    (float32, complex128): complex128,
+    (complex128, float64): complex128,
+    (float64, complex128): complex128,
+    (complex128, bfloat16): complex128,
+    (bfloat16, complex128): complex128,
+    (complex128, complex64): complex128,
+    (complex128, complex128): complex128,
+}
+
+
+def get_promotion_table():
+    """
+    Returns the current datatype promotion table
+    """
+    return (
+        {**array_api_promotion_table, **precise_extra_promotion_table}
+        if get_precise_mode()
+        else {**array_api_promotion_table, **extra_promotion_table}
+    )
