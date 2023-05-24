@@ -20,7 +20,6 @@ FN_DECORATORS = [
     "outputs_to_ivy_shapes",
     "outputs_to_native_arrays",
     "inputs_to_native_arrays",
-    "to_native_arrays_and_back",
     "inputs_to_native_shapes",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
@@ -974,7 +973,10 @@ def _wrap_function(
         mixed_fn = original != to_wrap and hasattr(original, "inputs_to_ivy_arrays")
         for attr in FN_DECORATORS:
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
-                mixed_fn and attr == "to_native_arrays_and_back"
+                mixed_fn
+                and (
+                    attr == "inputs_to_native_arrays" or attr == "outputs_to_ivy_arrays"
+                )
             ):
                 to_wrap = getattr(ivy, attr)(to_wrap)
 
