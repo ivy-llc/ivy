@@ -3,14 +3,16 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
 import ivy
+from ivy import with_supported_dtypes, with_supported_device_and_dtypes
+from .. import backend_version
 
 
 def histogram(
     a: tf.Tensor,
     /,
     *,
-    bins: Optional[Union[int, tf.Tensor, str]] = None,
-    axis: Optional[tf.Tensor] = None,
+    bins: Optional[Union[int, tf.Tensor]] = None,
+    axis: Optional[int] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[tf.DType] = None,
@@ -65,10 +67,6 @@ def histogram(
         bins = tf.cast(bins, dtype)
     # TODO: weird error when returning bins: return ret, bins
     return ret
-
-
-from ivy import with_supported_dtypes
-from .. import backend_version
 
 
 @with_supported_dtypes(
@@ -180,6 +178,25 @@ def nanmedian(
     )
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.12.0 and below": {
+            "cpu": (
+                "int64",
+                "int32",
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "int64",
+                "int32",
+                "float32",
+                "float64",
+            ),
+        }
+    },
+    backend_version,
+)
 def bincount(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -188,10 +205,9 @@ def bincount(
     minlength: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if weights is not None:
-        ret = tf.math.bincount(x, weights=weights, minlength=minlength)
-        ret = tf.cast(ret, weights.dtype)
-    else:
-        ret = tf.math.bincount(x, minlength=minlength)
-        ret = tf.cast(ret, x.dtype)
-    return ret
+    return tf.math.bincount(
+        x.numpy().tolist(),
+        weights=weights,
+        minlength=minlength,
+        dtype=x.dtype if weights is None else weights.dtype,
+    )
