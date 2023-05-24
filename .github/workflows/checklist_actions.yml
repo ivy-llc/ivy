@@ -41,7 +41,7 @@ jobs:
   
   frontend_pr_commented:
     name: Frontend PR comment
-    if: ${{ github.event.issue.pull_request && github.event.comment.body == 'add_frontend_checklist') }}
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == 'add_frontend_checklist' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -51,7 +51,7 @@ jobs:
           persist-credentials: false
 
       - name: Update Comment
-        uses: peter-evans/create-or-update-comment@v2.0.0
+        uses: peter-evans/create-or-update-comment@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
