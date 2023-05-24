@@ -1,7 +1,7 @@
 # local
-from numpy.lib.function_base import _quantile_unchecked, _check_interpolation_as_method
-
 import ivy
+
+from numpy.lib.function_base import _quantile_unchecked, _check_interpolation_as_method
 from ivy.functional.frontends.numpy.statistics.averages_and_variances import (
     _quantile_is_valid,
 )
