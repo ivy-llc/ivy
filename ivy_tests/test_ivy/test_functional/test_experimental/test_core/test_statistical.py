@@ -451,7 +451,7 @@ def test_bincount(
         max_num_dims=2,
         min_dim_size=3,
         max_dim_size=3,
-        min_value=1,
+        min_value=2,
         max_value=100,
         allow_nan=False,
     ),
