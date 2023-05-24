@@ -35,7 +35,6 @@ def current_backend_str() -> str:
 def get_item(
     x: paddle.Tensor, query: Union[paddle.Tensor, Tuple], *, copy: bool = None
 ) -> paddle.Tensor:
-    print(query)
     # regular queries x[idx_1,idx_2,...,idx_i]
     if not isinstance(query, paddle.Tensor):
         if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
@@ -461,7 +460,7 @@ def scatter_nd(
     updates = paddle.to_tensor(
         updates,
         dtype=(
-            ivy.dtype(out, as_native=True)
+            ivy.promote_types(out.dtype, updates.dtype)
             if ivy.exists(out)
             else ivy.default_dtype(item=updates)
         ),

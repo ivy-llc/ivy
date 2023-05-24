@@ -166,7 +166,7 @@ def less(input, other, *, out=None):
 lt = less
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def not_equal(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -176,7 +176,7 @@ def not_equal(input, other, *, out=None):
 ne = not_equal
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def isin(elements, test_elements, *, assume_unique=False, invert=False):
     input_elements_copy = ivy.reshape(ivy.to_ivy(elements), (-1,))
@@ -259,7 +259,7 @@ def maximum(input, other, *, out=None):
     return ivy.maximum(input, other, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     sorted_input = ivy.sort(input, axis=dim)
@@ -282,7 +282,7 @@ def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
     if dim is None:

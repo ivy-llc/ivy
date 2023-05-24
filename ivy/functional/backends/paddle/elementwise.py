@@ -744,6 +744,10 @@ def abs(
     where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if not isinstance(where, paddle.Tensor):
+        where = paddle.to_tensor(where, dtype="bool").squeeze()
+    if not isinstance(x, paddle.Tensor):
+        x = paddle.to_tensor(x).squeeze().cast(ivy.default_dtype(item=x))
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -751,8 +755,10 @@ def abs(
         paddle.float16,
         paddle.bool,
     ]:
-        return ivy.where(where, paddle.abs(x.astype("float32")).astype(x.dtype), x)
-    return ivy.where(where, paddle.abs(x), x)
+        return paddle_backend.where(
+            where, paddle.abs(x.astype("float32")).astype(x.dtype), x
+        )
+    return paddle_backend.where(where, paddle.abs(x), x)
 
 
 def logaddexp(
@@ -1054,3 +1060,26 @@ def fmod(
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     res = paddle_backend.remainder(paddle_backend.abs(x1), paddle_backend.abs(x2))
     return paddle_backend.where(paddle_backend.less(x1, 0), -res, res)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "uint8")}},
+    backend_version,
+)
+def lcm(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    x1_dtype = x1.dtype
+    x2_dtype = x2.dtype
+    if (x1_dtype, x2_dtype) == (paddle.int16, paddle.int16):
+        return paddle.cast(
+            paddle.lcm(paddle.cast(x1, paddle.int32), paddle.cast(x2, paddle.int32)),
+            paddle.int16,
+        )
+    elif x1_dtype != x2_dtype:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return paddle.lcm(x1, x2)

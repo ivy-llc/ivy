@@ -1,7 +1,10 @@
 from typing import Union, Optional, Sequence
 import mxnet as mx
+from numbers import Number
 
+# local
 from ivy.utils.exceptions import IvyNotImplementedException
+import ivy
 
 
 def min(
@@ -46,7 +49,19 @@ def prod(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = x.dtype
+    if dtype != x.dtype and not ivy.is_bool_dtype(x):
+        x = x.astype(dtype)
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return mx.nd.prod(x, axis=axis, keepdims=keepdims).astype(dtype)
 
 
 def std(
@@ -70,7 +85,19 @@ def sum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = x.dtype
+    if dtype != x.dtype and not ivy.is_bool_dtype(x):
+        x = x.astype(dtype)
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return mx.nd.sum(x, axis=axis, keepdims=keepdims).astype(dtype)
 
 
 def var(
