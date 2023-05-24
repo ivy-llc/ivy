@@ -11,24 +11,8 @@ from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_dtypes,
-    handle_mixed_function,
 )
 from .. import backend_version
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float",)}, backend_version)
-def lcm(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.abs(torch.lcm(x1, x2, out=out))
-
-
-lcm.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
@@ -491,11 +475,6 @@ def _are_suitable_types_for_torch_lerp(input, end, weight):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
-@handle_mixed_function(
-    lambda input, end, weight, **kwargs: (
-        _are_suitable_types_for_torch_lerp(input, end, weight)
-    )
-)
 def lerp(
     input: torch.Tensor,
     end: torch.Tensor,
@@ -505,6 +484,11 @@ def lerp(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.lerp(input, end, weight, out=out)
+
+
+lerp.partial_mixed_handler = lambda input, end, weight, **kwargs: (
+    _are_suitable_types_for_torch_lerp(input, end, weight)
+)
 
 
 def frexp(

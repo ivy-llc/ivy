@@ -138,6 +138,3 @@ def layer_norm(
         return ivy.multiply(ivy.multiply(x, scale), new_std, out=out)
 
     return ivy.multiply(x, new_std, out=out)
-
-
-layer_norm.mixed_function = True

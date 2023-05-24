@@ -13,8 +13,10 @@ from typing import Optional, Union
 
 def gelu(x: None, /, *, approximate: bool = False, out: Optional[None] = None) -> None:
     if approximate:
-        return 0.5 * x * (1 + mx.nd.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x ** 3)))
-    return mx.nd.LeakyReLU(x, act_type='gelu')
+        return (
+            0.5 * x * (1 + mx.nd.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
+        )
+    return mx.nd.LeakyReLU(x, act_type="gelu")
 
 
 def leaky_relu(x: None, /, *, alpha: float = 0.2, out: Optional[None] = None) -> None:
@@ -46,16 +48,15 @@ def softplus(
     if beta is not None and beta != 1:
         x_beta = x * beta
         res = (
-                  mx.nd.add(
-                      mx.nd.log1p(mx.nd.exp(-mx.nd.abs(x_beta))),
-                      mx.nd.maximum(x_beta, 0),
-                  )
-              ) / beta
+            mx.nd.add(
+                mx.nd.log1p(mx.nd.exp(-mx.nd.abs(x_beta))),
+                mx.nd.maximum(x_beta, 0),
+            )
+        ) / beta
     else:
         x_beta = x
         res = mx.nd.add(
-            mx.nd.log1p(mx.nd.exp(-mx.nd.abs(x_beta))),
-            mx.nd.maximum(x_beta, 0)
+            mx.nd.log1p(mx.nd.exp(-mx.nd.abs(x_beta))), mx.nd.maximum(x_beta, 0)
         )
     if threshold is not None:
         return mx.nd.where(x_beta > threshold, x, res).astype(x.dtype)

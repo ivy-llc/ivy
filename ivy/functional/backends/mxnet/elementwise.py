@@ -189,8 +189,7 @@ def divide(
     if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
         ret = mx.nd.array(ret, dtype=x1.dtype)
     else:
-        ret = mx.nd.array(ret,
-                          dtype=ivy.default_float_dtype(as_native=True))
+        ret = mx.nd.array(ret, dtype=ivy.default_float_dtype(as_native=True))
     return ret
 
 
@@ -283,6 +282,16 @@ def isinf(
 
 def isnan(
     x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def lcm(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,

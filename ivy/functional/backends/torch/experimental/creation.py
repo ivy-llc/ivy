@@ -19,22 +19,6 @@ from .. import backend_version
 # -------------------#
 
 
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
-    /,
-    *,
-    device: torch.device,
-) -> Tuple[torch.Tensor]:
-    n_cols = n_rows if n_cols is None else n_cols
-    return tuple(
-        torch.triu_indices(
-            row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
-        )
-    )
-
-
 @with_unsupported_device_and_dtypes(
     {"2.0.1 and below": {"cpu": ("float16",)}},
     backend_version,
