@@ -228,6 +228,7 @@ from .tensor.math import *
 from .tensor.random import *
 from .tensor.search import *
 from .tensor.einsum import *
+from .tensor.stat import *
 
 from .tensor.tensor import Tensor
 

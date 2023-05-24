@@ -23,9 +23,10 @@ Inplace Updates
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/982738152236130335
 .. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
-.. _`in the decorator`: https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287
-.. _`mixed_function attribute`: https://github.com/unifyai/ivy/blob/fe162b84a6d5f492f9e2cef4fbd145fadede8b8f/ivy/func_wrapper.py#L574
-.. _`out argument as a keyword argument`: https://github.com/unifyai/ivy/blob/e4505b6a7ad4922ed423ae09da8c9707c9926161/ivy/func_wrapper.py#L585
+.. _`in the decorator`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L832
+.. _`checks the module`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L780
+.. _`passed as a keyword argument`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L805
+
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
 This enables much more control over the memory-efficiency of the program, preventing old unused arrays from being kept in memory for any longer than is strictly necessary.
@@ -431,10 +432,10 @@ Technically, this could be handled using the `handle_out_argument`_ wrapping, bu
 
 As explained in the :ref:`Function Types` section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected.
 
-Unlike *compositional* functions, where the :code:`handle_out_argument` decorator is not included, this decorator *should* be included for *mixed* functions.
+Unlike compositional functions, where the :code:`handle_out_argument` decorator is not included, this decorator *should* be included for mixed functions.
 This decorator is needed in order to ensure the :code:`out` argument is handled correctly when the backend *does* include a backend-specific implementation, which itself may or may not handle the :code:`out` argument explicitly.
-In such cases, the *mixed* function behaves like a *primary* function.
-If the backend-specific implementation does not handle the :code:`out` argument explicitly (there is no attribute :code:`support_native_out` specified on the backend function), then it will need to be handled `in the decorator`_. Moreover, when the mixed function defers to the compositional implementation, the handle_out_argument decorator will check for the `mixed_function attribute`_ and call the compositional function by directly passing the `out argument as a keyword argument`_.
+In such cases, the mixed function behaves like a primary function.
+If the backend-specific implementation does not handle the :code:`out` argument explicitly (there is no attribute :code:`support_native_out` specified on the backend function), then it will need to be handled `in the decorator`_. The :code:`handle_out_argument` decorator also `checks the module`_ of the function to see if it's being called with respect to a compositional function in which case the out argument can be handled directly and therefore is `passed as a keyword argument`_ to the function.
 
 
 

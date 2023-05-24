@@ -1508,9 +1508,6 @@ def lerp(
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
 
-lerp.mixed_function = True
-
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
