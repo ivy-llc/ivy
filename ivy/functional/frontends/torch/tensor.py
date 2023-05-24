@@ -883,6 +883,11 @@ class Tensor:
         self.ivy_array = self.fix().ivy_array
         return self
 
+    def squeeze_(self, dim=None):
+        self.ivy_array = self.squeeze(dim).ivy_array
+        return self
+
+
     # Special Methods #
     # -------------------#
 
