@@ -194,6 +194,7 @@ def single(x):
 def double(x):
     return ivy.astype(x, ivy.float64)
 
+
 @to_ivy_arrays_and_back
 def bool_(x):
     return ivy.astype(x, ivy.bool)

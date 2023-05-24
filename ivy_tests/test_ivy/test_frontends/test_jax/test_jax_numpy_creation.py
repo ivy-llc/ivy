@@ -779,6 +779,7 @@ def test_jax_numpy_double(
         x=x[0],
     )
 
+
 # bool_
 @handle_frontend_test(
     fn_tree="jax.numpy.bool_",
