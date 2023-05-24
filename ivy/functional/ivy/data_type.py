@@ -544,9 +544,13 @@ def can_cast(
         b: true
     }
     """
-    if isinstance(from_, ivy.Dtype):
-        return (from_, to) in get_promotion_table()
-    return (from_.dtype, to) in get_promotion_table()
+    if isinstance(from_, (ivy.Array, ivy.NativeArray)):
+        from_ = from_.dtype
+    try:
+        ivy.promote_types(from_,to)
+        return True
+    except(KeyError):
+        return False
 
 
 @handle_exceptions
