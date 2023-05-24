@@ -8479,11 +8479,9 @@ def test_torch_instance_copysign(
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
 def test_torch_instance_not_equal(
     dtype_and_x,
-    alpha,
     frontend,
     frontend_method_data,
     init_flags,
@@ -8499,7 +8497,6 @@ def test_torch_instance_not_equal(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "other": x[1],
-            "alpha": alpha,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
