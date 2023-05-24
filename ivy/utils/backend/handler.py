@@ -26,7 +26,7 @@ class ContextManager:
         self.module = module
 
     def __enter__(self):
-        set_backend(self.module)
+        return set_backend(self.module)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         previous_backend()
