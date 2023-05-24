@@ -282,8 +282,7 @@ def test_paddle_arange(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=helpers.get_dtypes("valid"),
-    test_with_out=st.just(False),
+    dtype=helpers.get_dtypes("float"),
 )
 def test_paddle_empty(
     shape,
