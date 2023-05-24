@@ -296,6 +296,8 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(updates, (bool, Number)):
+        updates = tf.convert_to_tensor(updates)
     if ivy.exists(out) and not isinstance(updates, (Number, list, tuple)):
         out = (
             tf.cast(out, dtype=updates.dtype)
