@@ -692,7 +692,8 @@ def _cast_init(init, dtype):
             info = ivy.finfo(dtype)
         else:
             info = ivy.iinfo(dtype)
-        init = info.max if init > 0 else info.min
+        if "float64" not in str(dtype):
+            init = info.max if init > 0 else info.min
     return ivy.array(init, dtype=dtype)
 
 
