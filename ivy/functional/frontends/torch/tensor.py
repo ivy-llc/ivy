@@ -374,7 +374,7 @@ class Tensor:
     def floor(self, *, out=None):
         return torch_frontend.floor(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def not_equal(self, other, *, out=None):
         return torch_frontend.not_equal(self, other, out=out)
 
