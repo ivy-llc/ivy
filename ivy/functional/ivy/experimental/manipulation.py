@@ -171,9 +171,6 @@ def flatten(
     return ivy.reshape(x, tuple(lst), order=order)
 
 
-flatten.mixed_function = True
-
-
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1096,7 +1093,7 @@ def pad(
             padding_value = constant_values
         padded = _interior_pad(input, padding_value, pad_width)
         return padded
-    pad_width = _to_pairs(pad_width, input.ndim)
+    pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
@@ -1116,6 +1113,7 @@ def pad(
     }
     if mode == "constant":
         constant_values = _to_pairs(constant_values, padded.ndim)
+        constant_values = tuple(tuple(map(ivy.array, pair)) for pair in constant_values)
         for axis, width_pair, value_pair in zip(axes, pad_width, constant_values):
             padded = _set_pad_area(padded, axis, width_pair, value_pair)
     elif mode == "empty":
@@ -1159,10 +1157,7 @@ def pad(
                 left_index, right_index, padded = _set_wrap_both(
                     padded, axis, (left_index, right_index)
                 )
-    return padded.astype(input.dtype)
-
-
-pad.mixed_function = True
+    return padded
 
 
 @handle_nestable
@@ -1653,9 +1648,6 @@ def as_strided(
         ivy.frombuffer(result, dtype=x.dtype, count=math.prod(shape)),
         shape,
     )
-
-
-as_strided.mixed_function = True
 
 
 @handle_exceptions

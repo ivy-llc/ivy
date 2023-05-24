@@ -23,8 +23,6 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 # Linear #
-
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -167,9 +165,6 @@ def linear(
     if ivy.exists(out):
         return ivy.inplace_update(out, y)
     return y
-
-
-linear.mixed_function = True
 
 
 # Dropout #
@@ -337,12 +332,12 @@ def dropout(
     mask = ivy.where(
         ivy.random_uniform(shape=noise_shape, device=ivy.dev(x), dtype=dtype, seed=seed)
         < prob,
-        0,
-        1,
+        0.0,
+        1.0,
     )
     x = x * mask
     if scale:
-        x = ivy.multiply(x, 1 / (1 - prob), out=out)
+        x = ivy.multiply(x, 1.0 / (1.0 - prob), out=out)
     return x if not ivy.exists(out) else ivy.inplace_update(out, x)
 
 
@@ -552,9 +547,6 @@ def scaled_dot_product_attention(
 
     # BS x Q x F
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
-
-
-scaled_dot_product_attention.mixed_function = True
 
 
 @handle_exceptions

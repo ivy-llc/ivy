@@ -5,10 +5,11 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# Todo : turn on complex dtype activation tests once supported in all backends
 @handle_frontend_test(
     fn_tree="jax.nn.relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=3,
         small_abs_safety_factor=3,
         safety_factor_scale="linear",
@@ -37,7 +38,7 @@ def test_jax_nn_relu(
 @handle_frontend_test(
     fn_tree="jax.nn.relu6",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -66,7 +67,7 @@ def test_jax_nn_relu6(
 @handle_frontend_test(
     fn_tree="jax.nn.soft_sign",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -95,7 +96,7 @@ def test_jax_nn_soft_sign(
 @handle_frontend_test(
     fn_tree="jax.nn.silu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -124,7 +125,7 @@ def test_jax_nn_silu(
 @handle_frontend_test(
     fn_tree="jax.nn.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -192,7 +193,7 @@ def test_jax_nn_gelu(
 @handle_frontend_test(
     fn_tree="jax.nn.sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -303,7 +304,7 @@ def test_jax_nn_softmax(
 @handle_frontend_test(
     fn_tree="jax.nn.softplus",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -440,7 +441,7 @@ def test_jax_nn_glu(
 @handle_frontend_test(
     fn_tree="jax.nn.normalize",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -488,7 +489,7 @@ def test_jax_nn_normalize(
 @handle_frontend_test(
     fn_tree="jax.nn.hard_tanh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -503,6 +504,7 @@ def test_jax_nn_hard_tanh(
     fn_tree,
     frontend,
 ):
+    # TODO: enable this test for all valid dtypes as jax.nn.hard_tanh supports
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -517,7 +519,7 @@ def test_jax_nn_hard_tanh(
 @handle_frontend_test(
     fn_tree="jax.nn.celu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         min_value=-5,
         max_value=5,
         safety_factor_scale="linear",
@@ -550,7 +552,7 @@ def test_jax_nn_celu(
 @handle_frontend_test(
     fn_tree="jax.nn.elu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         min_value=-5,
         max_value=5,
         safety_factor_scale="linear",
@@ -582,7 +584,7 @@ def test_jax_nn_elu(
 @handle_frontend_test(
     fn_tree="jax.nn.logsumexp",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -683,7 +685,7 @@ def test_jax_nn_hard_swish(
 @handle_frontend_test(
     fn_tree="jax.nn.hard_silu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
     ),
@@ -711,7 +713,7 @@ def test_jax_nn_hard_silu(
 @handle_frontend_test(
     fn_tree="jax.nn.hard_sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
     ),
@@ -739,7 +741,7 @@ def test_jax_nn_hard_sigmoid(
 @handle_frontend_test(
     fn_tree="jax.nn.selu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",

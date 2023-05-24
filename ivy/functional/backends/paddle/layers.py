@@ -4,15 +4,15 @@ from typing import Optional, Tuple, Union, Sequence
 
 # global
 import paddle
+import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.functional.ivy.layers import _handle_padding, _get_x_data_format
+import ivy.functional.backends.paddle as paddle_backend
 
 # local
-import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.utils.exceptions import IvyNotImplementedException
 
 from . import backend_version
-from ivy.functional.ivy.layers import _handle_padding, _get_x_data_format
-from ivy.functional.backends import paddle as pd_backend
 
 
 def _is_list_or_tuple(inp):
@@ -153,7 +153,10 @@ def depthwise_conv2d(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def conv3d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -203,7 +206,10 @@ def conv3d_transpose(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def conv_general_dilated(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -233,9 +239,9 @@ def conv_general_dilated(
             h = x.shape[1 + i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
             h = paddle.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
-            x = pd_backend.swapaxes(x, 1 + i, -1)
+            x = paddle_backend.swapaxes(x, 1 + i, -1)
             x = paddle.matmul(x, h)
-            x = pd_backend.swapaxes(x, -1, 1 + i)
+            x = paddle_backend.swapaxes(x, -1, 1 + i)
 
     df = "NLC" if dims == 1 else _get_x_data_format(dims, data_format="channel_last")
     x = _pad_before_conv(x, filters, strides, padding, dims, dilations, df)
