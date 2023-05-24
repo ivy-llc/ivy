@@ -1110,6 +1110,7 @@ def pad(
     }
     if mode == "constant":
         constant_values = _to_pairs(constant_values, padded.ndim)
+        constant_values = tuple(tuple(map(ivy.array, pair)) for pair in constant_values)
         for axis, width_pair, value_pair in zip(axes, pad_width, constant_values):
             padded = _set_pad_area(padded, axis, width_pair, value_pair)
     elif mode == "empty":
