@@ -6,7 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
-    fn_tree="functional.ivy.l1_normalize",
+    fn_tree="functional.ivy.experimental.l1_normalize",
     data=helpers.arrays(min_num_dims=2, min_dim_size=2),
     axis=st.one_of(st.none(), st.integers(min_value=0, max_value=1)),
 )
