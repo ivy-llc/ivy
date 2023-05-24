@@ -265,7 +265,9 @@ def split(
     return list(torch.split(x, num_or_size_splits, axis))
 
 
-@with_unsupported_dtypes({"1.11.0": ("int8", "int16", "uint8")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("int8", "int16", "uint8")}, backend_version
+)
 def repeat(
     x: torch.Tensor,
     /,
@@ -332,7 +334,7 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
-@with_unsupported_dtypes({"1.11.0": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.0.1": ("float16", "complex")}, backend_version)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],

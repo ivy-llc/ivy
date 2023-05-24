@@ -91,7 +91,7 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64", "complex")},
+    {"2.0.1 and below": ("uint8", "uint16", "uint32", "uint64", "complex")},
     backend_version,
 )
 def broadcast_to(
@@ -180,7 +180,7 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("uint16",)}, backend_version)
 def as_native_dtype(
     dtype_in: Union[torch.dtype, str, bool, int, float, np.dtype]
 ) -> torch.dtype:

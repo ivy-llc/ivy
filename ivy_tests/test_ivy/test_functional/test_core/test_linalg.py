@@ -925,11 +925,14 @@ def test_vecdot(
         min_value=-1e04,
         max_value=1e04,
         abs_smallest_val=1e-04,
+        max_axes_size=2,
+        force_int_axis=True,
     ),
     kd=st.booleans(),
     ord=st.one_of(
-        helpers.ints(min_value=1, max_value=2),
-        helpers.floats(min_value=1.0, max_value=2.0),
+        helpers.ints(min_value=0, max_value=5),
+        helpers.floats(min_value=1.0, max_value=5.0),
+        st.sampled_from((float("inf"), -float("inf"))),
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
 )
@@ -1152,28 +1155,23 @@ def test_svd(
 # matrix_norm
 @handle_test(
     fn_tree="functional.ivy.matrix_norm",
-    dtype_value_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=5), key="shape"),
+    ground_truth_backend="torch",
+    dtype_value_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-        min_value=-1e20,
-        max_value=1e20,
-        large_abs_safety_factor=10,
-        small_abs_safety_factor=10,
-        safety_factor_scale="log",
+        valid_axis=True,
+        min_axes_size=2,
+        max_axes_size=2,
+        force_tuple_axis=True,
+        allow_neg_axes=False,
     ),
     kd=st.booleans(),
-    axis=st.just((-2, -1)),
-    ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), -float("inf"), "fro", "nuc")),
+    ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), float("inf"), "fro", "nuc")),
 )
 def test_matrix_norm(
     *,
-    dtype_value_shape,
+    dtype_value_axis,
     kd,
-    axis,
     ord,
     test_flags,
     backend_fw,
@@ -1181,7 +1179,7 @@ def test_matrix_norm(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_value_shape
+    dtype, x, axis = dtype_value_axis
     assume(np.all(matrix_is_stable(np.array(x), cond_limit=10)).item())
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
