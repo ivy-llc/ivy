@@ -777,7 +777,7 @@ def infer_device(fn: Callable) -> Callable:
 
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
-    handle_out_in_ivy = hasattr(fn, "mixed_function")
+    is_compos_fn = "ivy.functional.ivy" in fn.__module__
 
     @functools.wraps(fn)
     def _handle_out_argument(*args, out=None, **kwargs):
@@ -801,7 +801,7 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
-        if out is None or handle_out_in_ivy:
+        if out is None or is_compos_fn:
             return fn(*args, out=out, **kwargs)
         if handle_out_in_backend:
             # extract underlying native array for out
@@ -962,34 +962,26 @@ def _wrap_function(
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
-            if attr.startswith("_") or hasattr(ivy, attr) or attr == "handles_out_arg":
+            if attr.startswith("_") or hasattr(ivy, attr):
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
         # Copy docstring
         docstring_attr = ["__annotations__", "__doc__"]
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
-        # wrap decorators
-        mixed = hasattr(original, "mixed_function")
-        if mixed:
-            to_replace = {
-                True: ["inputs_to_ivy_arrays"],
-                False: [
-                    "outputs_to_ivy_arrays",
-                    "inputs_to_native_arrays",
-                ],
-            }
-            # if the backend has a primary implementation
-            # we'll store the compositional fn's reference
-            # for the handle_mixed_function decorator
-            if to_wrap != original:
-                to_wrap.compos = original
-            for attr in to_replace[compositional]:
-                setattr(original, attr, True)
 
+        mixed_fn = original != to_wrap and hasattr(original, "inputs_to_ivy_arrays")
         for attr in FN_DECORATORS:
-            if hasattr(original, attr) and not hasattr(to_wrap, attr):
+            if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
+                mixed_fn and attr == "to_native_arrays_and_back"
+            ):
                 to_wrap = getattr(ivy, attr)(to_wrap)
+
+        if hasattr(to_wrap, "partial_mixed_handler"):
+            to_wrap.compos = original
+            to_wrap = handle_mixed_function(getattr(to_wrap, "partial_mixed_handler"))(
+                to_wrap
+            )
     return to_wrap
 
 

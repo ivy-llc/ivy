@@ -10,6 +10,7 @@ from typing import Optional, Union
 import paddle
 import paddle.nn.functional as F
 import ivy.functional.backends.paddle as paddle_backend
+import ivy
 
 unsupported_dtypes = [
     paddle.int8,
@@ -110,19 +111,19 @@ def softplus(
     if beta is not None and beta != 1:
         x_beta = x * beta
         res = (
-            paddle_backend.add(
-                paddle_backend.log1p(paddle_backend.exp(-paddle_backend.abs(x_beta))),
-                paddle_backend.maximum(x_beta, 0),
+            ivy.add(
+                ivy.log1p(ivy.exp(-ivy.abs(x_beta))),
+                ivy.maximum(x_beta, 0),
             )
         ) / beta
     else:
         x_beta = x
-        res = paddle_backend.add(
-            paddle_backend.log1p(paddle_backend.exp(-paddle_backend.abs(x_beta))),
-            paddle_backend.maximum(x_beta, 0),
+        res = ivy.add(
+            ivy.log1p(ivy.exp(-ivy.abs(x_beta))),
+            ivy.maximum(x_beta, 0),
         )
     if threshold is not None:
-        return paddle_backend.where(x_beta > threshold, x, res).astype(x.dtype)
+        return ivy.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)
 
 

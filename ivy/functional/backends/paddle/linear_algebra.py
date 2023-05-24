@@ -160,7 +160,8 @@ def eigvalsh(
 def inner(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
     if x1.dtype in [
         paddle.int8,
         paddle.int16,
@@ -375,7 +376,8 @@ def matrix_transpose(
 def outer(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
     if x1.dtype in [
         paddle.int8,
         paddle.int16,

@@ -114,6 +114,7 @@ def eigvalsh(
 eigvalsh.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def inner(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -170,7 +171,7 @@ def matmul(
     # torch does not support inplace matmul (same storage in out=)
     # https://github.com/pytorch/pytorch/issues/58742
     # https://github.com/pytorch/pytorch/issues/48900
-    if out in (x1, x2):
+    if out is x1 or out is x2:
         out = None
     if transpose_a:
         x1 = torch.swapaxes(x1, -1, -2)
