@@ -404,7 +404,7 @@ def minimum(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-def heaviside(x1, x2):
+def heaviside(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.heaviside(x1, x2)
 
@@ -420,12 +420,12 @@ def log1p(x, /):
 
 
 @to_ivy_arrays_and_back
-def copysign(x1, x2):
+def copysign(x1, x2, /):
     return ivy.copysign(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def sinc(x):
+def sinc(x, /):
     return ivy.sinc(x)
 
 
@@ -439,12 +439,12 @@ def sinc(x):
     "jax",
 )
 @to_ivy_arrays_and_back
-def nextafter(x1, x2):
+def nextafter(x1, x2, /):
     return ivy.nextafter(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def remainder(x1, x2):
+def remainder(x1, x2, /):
     return ivy.remainder(x1, x2)
 
 
@@ -521,7 +521,7 @@ def conj(x, /):
 
 
 @to_ivy_arrays_and_back
-def subtract(x1, x2):
+def subtract(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.subtract(x1, x2)
 
