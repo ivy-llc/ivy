@@ -7886,6 +7886,44 @@ def test_torch_instance_div_(
     )
 
 
+# divide
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch_frontend.div",
+    method_name="divide",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+)
+def test_torch_instance_divide(
+    dtype_and_x,
+    rounding_mode,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+            "rounding_mode": rounding_mode,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # normal_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8230,44 +8268,6 @@ def test_torch_instance_multiply(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "other": x[1],
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# divide
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch_frontend.div",
-    method_name="divide",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-    ),
-)
-def test_torch_instance_divide(
-    dtype_and_x,
-    rounding_mode,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    assume(not np.any(np.isclose(x[1], 0)))
-
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={"data": x[0]},
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "other": x[1],
-            "rounding_mode": rounding_mode,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
