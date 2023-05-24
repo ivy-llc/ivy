@@ -105,9 +105,7 @@ def max_pool2d(
         x,
         pad_list,
         value=float("-inf"),
-        # data_format="NCHW"
     )
-    
     
     res = paddle.nn.functional.max_pool2d(x, kernel_size=new_kernel, stride=strides, padding=0, ceil_mode=ceil_mode)
 
