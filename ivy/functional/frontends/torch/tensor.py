@@ -380,6 +380,12 @@ class Tensor:
 
     ne = not_equal
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def equal(self, other, *, out=None):
+        return torch_frontend.equal(self, other, out=out)
+
+    eq = equal
+
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
