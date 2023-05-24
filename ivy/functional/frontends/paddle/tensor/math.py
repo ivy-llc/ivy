@@ -42,7 +42,7 @@ def acosh(x, name=None):
     return ivy.acosh(x)
 
 
-@with_supported_dtypes({"2.4.2 and below": ("float16", "float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def asin(x, name=None):
     return ivy.asin(x)
