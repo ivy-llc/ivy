@@ -142,7 +142,7 @@ def flatten(
     if x.shape == ():
         x = ivy.reshape(x, (1, -1))[0, :]
     if start_dim == end_dim:
-        return x
+        return ivy.inplace_update(out, x) if ivy.exists(out) else x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             "Dimension out of range (expected to be in range of"
@@ -166,7 +166,7 @@ def flatten(
             lst.insert(i, x.shape[i])
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
-    return ivy.reshape(x, tuple(lst), order=order)
+    return ivy.reshape(x, tuple(lst), order=order, out=out)
 
 
 @handle_nestable
