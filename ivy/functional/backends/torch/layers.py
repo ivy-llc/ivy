@@ -366,14 +366,19 @@ def conv_general_dilated(
     *,
     dims: int = 2,
     data_format: str = "channel_last",
+    filter_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
+    # permuting dims based on formats
     if data_format == "channel_last":
         x = x.permute(0, dims + 1, *range(1, dims + 1))
+
+    if filter_format == "channel_last":
+        filters = filters.permute(-1, -2, *range(dims))
 
     # adding dilation to input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
