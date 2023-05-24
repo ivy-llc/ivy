@@ -32,7 +32,8 @@ def abs(
     where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:  # noqa
-    """Calculate the absolute value for each element ``x_i`` of the input array ``x``
+    """
+    Calculate the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
     ``x`` but has positive sign).
 
@@ -80,7 +81,7 @@ def abs(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([-1,0,-6])
+    >>> x = ivy.array([-1, 0, -6])
     >>> y = ivy.abs(x)
     >>> print(y)
     ivy.array([1, 0, 6])
@@ -88,17 +89,17 @@ def abs(
     >>> x = ivy.array([3.7, -7.7, 0, -2, -0])
     >>> y = ivy.abs(x)
     >>> print(y)
-    ivy.array([ 3.7, 7.7, 0., 2., 0.])
+    ivy.array([3.7, 7.7, 0., 2., 0.])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
     >>> ivy.abs(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.1,  2.2,  3.3],
+    ivy.array([[1.1, 2.2, 3.3],
                [4.4, 5.5, 6.6]])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),b=ivy.array([4.5, -5.3, -0, -2.3]))
+    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]), b=ivy.array([4.5, -5.3, -0, -2.3]))
     >>> y = ivy.abs(x)
     >>> print(y)
     {
