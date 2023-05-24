@@ -126,39 +126,7 @@ def max_pool3d(
     data_format: str = "NDHWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if isinstance(strides, int):
-        strides = (strides, strides, strides)
-    elif len(strides) == 1:
-        strides = (strides[0], strides[0], strides[0])
-    if isinstance(kernel, int):
-        kernel = (kernel, kernel, kernel)
-    elif len(kernel) == 1:
-        kernel = (kernel[0], kernel[0], kernel[0])
-    if data_format == "NDHWC":
-        x = paddle.transpose(x, perm=[0, 2, 3, 4, 1])
-    x_shape = list(x.shape[2:])
-    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
-    x = paddle.nn.functional.pad(
-        x,
-        [
-            pad_w // 2,
-            pad_w - pad_w // 2,
-            pad_h // 2,
-            pad_h - pad_h // 2,
-            pad_d // 2,
-            pad_d - pad_d // 2,
-        ],
-        value=float("-inf"),
-        data_format="NDHWC",
-    )
-    if padding != "VALID" and padding != "SAME":
-        raise ValueError(f'Invalid padding arg {padding}\nMust be one of: "VALID" or "SAME"')
-    res = paddle.nn.functional.max_pool3d(x, kernel_size=kernel, stride=strides, padding=0)
-    if data_format == "NDHWC":
-        res = paddle.transpose(res, perm=[0, 4, 1, 2, 3])
-    return res
+    raise IvyNotImplementedException()
 
 
 def avg_pool1d(
@@ -230,27 +198,7 @@ def fft(
     n: Union[int, Tuple[int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if not isinstance(dim, int):
-        raise ValueError(f"Expecting <class 'int'> instead of {type(dim)}")
-
-    if n is None:
-        n = x.shape[dim]
-
-    if n < -len(x.shape):
-        raise ValueError(
-            f"Invalid dim {dim}, expecting ranging from {-len(x.shape)} to {len(x.shape)-1}"
-        )
-
-    if not isinstance(n, int):
-        raise ValueError(f"Expecting <class 'int'> instead of {type(n)}")
-
-    if n <= 1:
-        raise ValueError(f"Invalid data points {n}, expecting more than 1")
-
-    if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ValueError(f"Unrecognized normalization mode {norm}")
-
-    return paddle.fft.fft(x, n, dim, norm=norm)
+    raise IvyNotImplementedException()
 
 
 def dropout1d(
