@@ -8,10 +8,9 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy.functional.ivy.layers import _deconv_length
 
+
 # Linear #
 # -------#
-
-
 @st.composite
 def x_and_linear(draw, dtypes):
     dtype = draw(dtypes)

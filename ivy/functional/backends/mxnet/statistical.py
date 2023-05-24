@@ -1,5 +1,10 @@
 from typing import Union, Optional, Sequence
 import mxnet as mx
+from numbers import Number
+
+# local
+from ivy.utils.exceptions import IvyNotImplementedException
+import ivy
 
 
 def min(
@@ -10,7 +15,7 @@ def min(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.min Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def max(
@@ -21,7 +26,7 @@ def max(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.max Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def mean(
@@ -32,7 +37,7 @@ def mean(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.mean Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def prod(
@@ -44,7 +49,19 @@ def prod(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.prod Not Implemented")
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = x.dtype
+    if dtype != x.dtype and not ivy.is_bool_dtype(x):
+        x = x.astype(dtype)
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return mx.nd.prod(x, axis=axis, keepdims=keepdims).astype(dtype)
 
 
 def std(
@@ -56,7 +73,7 @@ def std(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.std Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def sum(
@@ -65,10 +82,22 @@ def sum(
     *,
     axis: Optional[Union[(int, Sequence[int])]] = None,
     dtype: Optional[None] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.sum Not Implemented")
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = x.dtype
+    if dtype != x.dtype and not ivy.is_bool_dtype(x):
+        x = x.astype(dtype)
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return mx.nd.sum(x, axis=axis, keepdims=keepdims).astype(dtype)
 
 
 def var(
@@ -80,7 +109,7 @@ def var(
     keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.var Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def cumprod(
@@ -93,7 +122,7 @@ def cumprod(
     dtype: Optional[None] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.cumprod Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def cumsum(
@@ -105,7 +134,7 @@ def cumsum(
     dtype: Optional[None] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.cumsum Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def einsum(
@@ -113,4 +142,4 @@ def einsum(
     *operands: Union[(None, mx.ndarray.NDArray)],
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.einsum Not Implemented")
+    raise IvyNotImplementedException()

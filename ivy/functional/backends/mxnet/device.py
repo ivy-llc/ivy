@@ -1,8 +1,14 @@
-"\nMXNet device functions.\n\nCollection of MXNet general functions, wrapped to fit Ivy syntax\nand signature.\n"
+"""
+MXNet device functions.
+
+Collection of MXNet general functions, wrapped to fit Ivy syntax and
+signature.
+"""
 import mxnet as mx
 from typing import Union, Optional
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def dev(
@@ -21,7 +27,7 @@ def to_device(
     stream: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.to_device Not Implemented")
+    return x.as_in_context(as_native_dev(device))
 
 
 def as_ivy_dev(device):
@@ -37,6 +43,8 @@ def as_ivy_dev(device):
 
 
 def as_native_dev(device: str, /):
+    if isinstance(device, mx.Context):
+        return device
     if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
     elif device.find("gpu") != -1:
@@ -51,11 +59,11 @@ def as_native_dev(device: str, /):
 
 
 def clear_cached_mem_on_dev(device: str, /):
-    raise NotImplementedError("mxnet.clear_cached_mem_on_dev Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def num_gpus() -> int:
-    raise NotImplementedError("mxnet.num_gpus Not Implemented")
+    return mx.context.num_gpus()
 
 
 def gpu_is_available() -> bool:
@@ -65,21 +73,21 @@ def gpu_is_available() -> bool:
 
 
 def tpu_is_available() -> bool:
-    raise NotImplementedError("mxnet.tpu_is_available Not Implemented")
+    return False
 
 
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
-        raise NotImplementedError("mxnet.__init__ Not Implemented")
+        raise IvyNotImplementedException()
 
     def start(self):
-        raise NotImplementedError("mxnet.start Not Implemented")
+        raise IvyNotImplementedException()
 
     def stop(self):
-        raise NotImplementedError("mxnet.stop Not Implemented")
+        raise IvyNotImplementedException()
 
     def __enter__(self):
-        raise NotImplementedError("mxnet.__enter__ Not Implemented")
+        raise IvyNotImplementedException()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        raise NotImplementedError("mxnet.__exit__ Not Implemented")
+        raise IvyNotImplementedException()
