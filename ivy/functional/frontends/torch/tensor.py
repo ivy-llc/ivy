@@ -379,15 +379,13 @@ class Tensor:
         return torch_frontend.not_equal(self, other, out=out)
 
     ne = not_equal
-    
-    
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def equal(self, other, *, out=None):
         return torch_frontend.equal(self, other, out=out)
-    
+
     eq = not_equal
-    
-    
+
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
@@ -899,7 +897,7 @@ class Tensor:
 
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
-    
+
     def addr(self, vec1, vec2, *, beta=1, alpha=1, out=None):
         return torch_frontend.addr(self, vec1, vec2, beta=beta, alpha=alpha, out=out)
 
