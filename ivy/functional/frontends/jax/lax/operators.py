@@ -10,6 +10,7 @@ import functools
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.jax import to_numpy as jax_to_numpy
 
 _min = builtins.min
 _slice = builtins.slice
@@ -670,7 +671,7 @@ def _custom_reduce(operand, init_val, func):
     init_val = init_val.to_numpy() if ivy.is_array(init_val) else init_val
     op_parts = ivy.moveaxis(operand, -1, 0).reshape((operand.shape[-1], -1)).to_numpy()
     result = functools.reduce(func, op_parts, init_val)
-    result = ivy.functional.backends.jax.to_numpy(result)
+    result = jax_to_numpy(result)
     result = ivy.reshape(result, operand.shape[:-1])
     return result
 
