@@ -26,8 +26,8 @@ def histogram(
     a: torch.Tensor,
     /,
     *,
-    bins: Optional[Union[int, torch.Tensor, str]] = None,
-    axis: Optional[torch.Tensor] = None,
+    bins: Optional[Union[int, torch.Tensor]] = None,
+    axis: Optional[int] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[torch.dtype] = None,
@@ -184,7 +184,7 @@ nanmean.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
+    {"2.0.1 and below": ("bfloat16", "float16")}, backend_version
 )
 def quantile(
     a: torch.Tensor,
@@ -227,7 +227,7 @@ def quantile(
     if keepdims:
         keepdim_shape = tuple(keepdim_shape)
         ret = ret.reshape(keepdim_shape)
-    return ret
+    return ret.to(a.dtype)
 
 
 quantile.support_native_out = True

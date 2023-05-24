@@ -153,7 +153,7 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def gcd(
     x1: Union[paddle.Tensor, int, list, tuple],
@@ -339,7 +339,11 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> bool:
-    return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return paddle.allclose(x1,
+                           x2,
+                           rtol=rtol,
+                           atol=atol,
+                           equal_nan=equal_nan).squeeze(0)
 
 
 def fix(
