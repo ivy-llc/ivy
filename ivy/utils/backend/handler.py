@@ -259,6 +259,8 @@ def _set_backend_as_ivy(
         target.__dict__[k] = _wrap_function(
             key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
         )
+        if isinstance(v, types.FunctionType) and "ivy.functional.ivy" in v.__module__:
+            ivy.functional.__dict__[k] = target.__dict__[k]
         if (
             isinstance(v, types.ModuleType)
             and "ivy.functional." in v.__name__
@@ -440,7 +442,6 @@ def set_backend(backend: str, dynamic: bool = False):
         global ivy_original_dict
         if not backend_stack:
             ivy_original_dict = ivy.__dict__.copy()
-            ivy_framework_dict = ivy.functional.__dict__.copy()
 
         _clear_current_sub_backends()
         if isinstance(backend, str):
@@ -457,7 +458,6 @@ def set_backend(backend: str, dynamic: bool = False):
         backend_stack.append(backend)
         set_backend_to_specific_version(backend)
         _set_backend_as_ivy(ivy_original_dict, ivy, backend)
-        _set_backend_as_ivy(ivy_framework_dict, ivy.functional, backend)
 
         if dynamic:
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
