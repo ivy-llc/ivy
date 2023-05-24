@@ -4,6 +4,7 @@ from pydriller import Repository
 from tqdm import tqdm
 import bz2
 import _pickle as cPickle
+import sys
 
 
 def main():
