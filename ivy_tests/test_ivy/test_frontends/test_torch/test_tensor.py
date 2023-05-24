@@ -8251,6 +8251,7 @@ def test_torch_instance_multiply(
 )
 def test_torch_instance_divide(
     dtype_and_x,
+    rounding_mode,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -8258,15 +8259,15 @@ def test_torch_instance_divide(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
+        init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "other": x[1],
-            "rounding_mode": None,
+            "rounding_mode": rounding_mode,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
