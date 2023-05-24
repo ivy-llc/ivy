@@ -237,8 +237,8 @@ def test_paddle_full_like(
         fill_value=fill,
         dtype=dtype_to_cast,
     )
-    
-    
+
+
 # arange
 @handle_frontend_test(
     fn_tree="paddle.arange",

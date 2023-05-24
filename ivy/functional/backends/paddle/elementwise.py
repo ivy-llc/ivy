@@ -1063,7 +1063,7 @@ def fmod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8","uint8")}},
+    {"2.4.2 and below": {"cpu": ("int8", "uint8")}},
     backend_version,
 )
 def lcm(

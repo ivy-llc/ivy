@@ -730,3 +730,8 @@ def nextafter(x1, x2):
 @to_ivy_arrays_and_back
 def conj(x):
     return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def is_finite(x):
+    return ivy.isfinite(x)

@@ -374,6 +374,12 @@ class Tensor:
     def floor(self, *, out=None):
         return torch_frontend.floor(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def not_equal(self, other, *, out=None):
+        return torch_frontend.not_equal(self, other, out=out)
+
+    ne = not_equal
+
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
@@ -1188,7 +1194,7 @@ class Tensor:
         return 2 * torch_frontend.sum(
             torch_frontend.log(torch_frontend.real(torch_frontend.diagonal(chol)))
         )
-    
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def copysign(self, other, *, out=None):
         return torch_frontend.copysign(self, other, out=out)
