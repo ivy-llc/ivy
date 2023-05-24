@@ -238,3 +238,12 @@ def compress(condition, a, *, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@to_ivy_arrays_and_back
+def size(a, axis=None):
+    ivy.set_default_int_dtype("int64")
+    if axis is not None:
+        sh = ivy.shape(a)
+        return sh[axis]
+    return a.size
