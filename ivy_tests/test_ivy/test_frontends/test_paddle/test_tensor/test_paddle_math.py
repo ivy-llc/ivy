@@ -170,7 +170,7 @@ def test_paddle_acosh(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.asin",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_asin(
@@ -190,4 +190,3 @@ def test_paddle_asin(
         on_device=on_device,
         x=x[0],
     )
-
