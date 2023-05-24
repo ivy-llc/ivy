@@ -2,7 +2,7 @@
 import mxnet as mx
 import numpy as np
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence, Tuple
 
 # lcoal
 import ivy
@@ -250,4 +250,10 @@ def frombuffer(
     count: Optional[int] = (-1),
     offset: Optional[int] = 0,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def triu_indices(
+    n_rows: int, n_cols: Optional[int] = None, k: int = 0, /, *, device: str
+) -> Tuple[Union[(None, mx.ndarray.NDArray)]]:
     raise IvyNotImplementedException()

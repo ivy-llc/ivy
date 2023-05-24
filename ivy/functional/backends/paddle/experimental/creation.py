@@ -3,7 +3,6 @@ from typing import Optional, Tuple
 import math
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.utils.exceptions import IvyNotImplementedException
 from paddle.fluid.libpaddle import Place
 from ivy.functional.backends.paddle.device import to_device
 
@@ -27,24 +26,6 @@ def _kaiser_window(window_length, beta):
 
 # Array API Standard #
 # -------------------#
-
-
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
-    /,
-    *,
-    device: Place,
-) -> Tuple[paddle.Tensor]:
-    #special case due to inconsistent behavior when n_cols=1 and n_rows=0
-    if not (n_cols and n_rows):
-        return paddle.to_tensor([],dtype="int64"),paddle.to_tensor([],dtype="int64")
-    return tuple(
-        to_device(
-            paddle.triu_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
-        )
-    )
 
 
 def kaiser_window(
@@ -103,9 +84,9 @@ def tril_indices(
     *,
     device: Place,
 ) -> Tuple[paddle.Tensor, ...]:
-    #special case due to inconsistent behavior when n_cols=1 and n_rows=0
+    # special case due to inconsistent behavior when n_cols=1 and n_rows=0
     if not (n_cols and n_rows):
-        return paddle.to_tensor([],dtype="int64"),paddle.to_tensor([],dtype="int64")
+        return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
     return tuple(
         to_device(
             paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device

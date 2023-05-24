@@ -2,7 +2,6 @@ import mxnet as mx
 from typing import Union, Optional, Tuple
 import numpy as np
 
-from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 
 

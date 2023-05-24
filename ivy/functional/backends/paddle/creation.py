@@ -1,7 +1,7 @@
 # global
 import struct
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence, Tuple
 
 import numpy as np
 import paddle
@@ -79,7 +79,7 @@ def _stack_tensors(x, dtype):
             else:
                 x = paddle.to_tensor(x, dtype=dtype)
     x.stop_gradient = False
-    return x
+    return x.cast(dtype)
 
 
 @asarray_to_native_arrays_and_back
@@ -261,9 +261,14 @@ def full(
         dtype = ivy.default_dtype(item=fill_value)
     if not isinstance(shape, Sequence):
         shape = [shape]
-    return to_device(
-        paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
-    )
+    if ivy.as_native_dtype(dtype) is paddle.int8:
+        return to_device(
+            paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
+        )
+    else:
+        return to_device(
+            paddle.full(shape=shape, fill_value=fill_value, dtype=dtype), device
+        )
 
 
 def full_like(
@@ -275,7 +280,9 @@ def full_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return full(shape=x.shape, fill_value=fill_value, dtype=dtype, device=device)
+    return paddle_backend.full(
+        shape=x.shape, fill_value=fill_value, dtype=dtype, device=device
+    )
 
 
 def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
@@ -682,3 +689,21 @@ def frombuffer(
     ret = paddle.to_tensor(ret, dtype=dtype)
 
     return ret
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: Optional[int] = 0,
+    /,
+    *,
+    device: Place,
+) -> Tuple[paddle.Tensor]:
+    # special case due to inconsistent behavior when n_cols=1 and n_rows=0
+    if not (n_cols and n_rows):
+        return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
+    return tuple(
+        to_device(
+            paddle.triu_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
+        )
+    )
