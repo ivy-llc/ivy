@@ -1546,19 +1546,19 @@ def arrays_for_pooling(
     dilations = []
 
     for i in range(array_dim):
-        if i == 0:
+        if i + 1 < len(in_shape):
             kernel.append(draw(st.integers(1, in_shape[i+1])))
-            new_kernel.append(kernel[i])
         else:
-            kernel.append(draw(st.integers(1, in_shape[i+1])))
-            if return_dilation:
-                if kernel[i] > 1:
-                    max_dilation = (in_shape[i+1] - kernel[i]) // (kernel[i] - 1) + 1
-                    dilations.append(draw(st.integers(1, max_dilation)))
-                    new_kernel.append(kernel[i] + (kernel[i] - 1) * (dilations[i-1] - 1))
-                else:
-                    dilations.append(1)
-                    new_kernel.append(kernel[i])
+            kernel.append(draw(st.integers(1, 10)))  # Replace 10 with an appropriate maximum value
+
+        if return_dilation:
+            if kernel[i] > 1:
+                max_dilation = (in_shape[i+1] - kernel[i]) // (kernel[i] - 1) + 1
+                dilations.append(draw(st.integers(1, max_dilation)))
+                new_kernel.append(kernel[i] + (kernel[i] - 1) * (dilations[i-1] - 1))
+            else:
+                dilations.append(1)
+                new_kernel.append(kernel[i])
 
     if explicit_or_str_padding or only_explicit_padding:
         padding = []
@@ -1588,6 +1588,7 @@ def arrays_for_pooling(
     if return_dilation:
         return dtype, x, kernel, strides, padding, dilations
     return dtype, x, kernel, strides, padding
+
 
 @st.composite
 def dtype_array_index(
