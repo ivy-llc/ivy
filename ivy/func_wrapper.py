@@ -978,6 +978,8 @@ def _wrap_function(
                     attr == "inputs_to_native_arrays" or attr == "outputs_to_ivy_arrays"
                 )
             ):
+                if mixed_fn and attr == "inputs_to_ivy_arrays":
+                    continue
                 to_wrap = getattr(ivy, attr)(to_wrap)
 
         if hasattr(to_wrap, "partial_mixed_handler"):
