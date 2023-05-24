@@ -8473,11 +8473,8 @@ def test_torch_instance_copysign(
     init_tree="torch.tensor",
     method_name="not_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
     ),
 )
 def test_torch_instance_not_equal(
