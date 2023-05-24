@@ -104,6 +104,13 @@ def test_mse_loss(
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
+
+    # Unpack lists if necessary
+    if isinstance(true, list):
+        true = true[0]
+    if isinstance(pred, list):
+        pred = pred[0]
+
     # Add dimension handling
     if len(pred.shape) > len(true.shape):
         pred = pred[: true.ndim]
@@ -148,6 +155,13 @@ def test_mae_loss(
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
+
+    # Unpack lists if necessary
+    if isinstance(true, list):
+        true = true[0]
+    if isinstance(pred, list):
+        pred = pred[0]
+
     # Add dimension handling
     if len(pred.shape) > len(true.shape):
         pred = pred[: true.ndim]
