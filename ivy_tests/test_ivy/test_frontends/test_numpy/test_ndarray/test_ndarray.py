@@ -2984,6 +2984,50 @@ def test_numpy_instance_mod__(
     )
 
 
+#Trace testing
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="trace",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(False),
+    offset=st.integers(min_value=0, max_value=0),
+    axis1=st.integers(min_value=0, max_value=0),
+    axis2=st.integers(min_value=1, max_value=1),
+)
+def test_numpy_trace(
+    dtype_and_x,
+    offset,
+    axis1,
+    axis2,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        offset=offset,
+        axis1=axis1,
+        axis2=axis2,
+    )
+
+
 # ptp
 @handle_frontend_method(
     class_tree=CLASS_TREE,
