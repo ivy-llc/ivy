@@ -339,7 +339,7 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> bool:
-    return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan).squeeze(0)
 
 
 def fix(
