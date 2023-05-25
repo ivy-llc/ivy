@@ -146,6 +146,29 @@ def binary_cross_entropy(
     >>> print(z)
     ivy.array([0.223,0.223,0.357,1.61])
 
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> z = ivy.binary_cross_entropy(x, y, reduction='mean')
+    >>> print(z)
+    ivy.array(7.6666193)
+
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> pos_weight = ivy.array([1, 2, 3, 4])
+    >>> z = ivy.binary_cross_entropy(x, y, pos_weight=pos_weight, from_logits=True)
+    ivy.array([[2.67164493e+00, 4.05471958e-03, 7.32684899e-02, 5.30496836e+00]])
+
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> pos_weight = ivy.array([1, 2, 3, 4])
+    >>> z = ivy.binary_cross_entropy(x, y, pos_weight=pos_weight, from_logits=True, reduction='sum', axis=1) # noqa: E501
+    ivy.array([8.05393649])
+
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> z = ivy.binary_cross_entropy(x, y, reduction='none', epsilon=0.5)
+    ivy.array([[11.49992943,  3.83330965,  3.83330965, 11.49992943]])
+
     >>> x = ivy.array([[0, 1, 0, 0]])
     >>> y = ivy.array([[0.6, 0.2, 0.7, 0.3]])
     >>> z = ivy.binary_cross_entropy(x, y, epsilon=1e-3)
@@ -207,7 +230,6 @@ def binary_cross_entropy(
 
     true = true.astype(pred.dtype)
 
-    true = true.astype(pred.dtype)
     epsilon = ivy.asarray(epsilon, dtype=pred.dtype)
 
     true = true * (1.0 - epsilon) + 0.5 * epsilon
