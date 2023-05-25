@@ -153,7 +153,7 @@ def asarray(
 
     elif isinstance(obj, np.ndarray) and dtype is None:
         dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-    else:
+    elif dtype is None:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
     if dtype == torch.bfloat16 and isinstance(obj, np.ndarray):

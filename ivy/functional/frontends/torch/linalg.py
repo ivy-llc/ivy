@@ -145,17 +145,17 @@ def svdvals(A, *, driver=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def inv_ex(input, *, check_errors=False, out=None):
+def inv_ex(A, *, check_errors=False, out=None):
     try:
-        inputInv = ivy.inv(input, out=out)
-        info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
+        inputInv = ivy.inv(A, out=out)
+        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
         return inputInv, info
     except RuntimeError as e:
         if check_errors:
             raise RuntimeError(e)
         else:
-            inputInv = input * math.nan
-            info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
+            inputInv = A * math.nan
+            info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
             return inputInv, info
 
 

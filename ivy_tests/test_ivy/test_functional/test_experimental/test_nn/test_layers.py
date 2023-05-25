@@ -17,6 +17,7 @@ def test_max_pool1d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -24,6 +25,7 @@ def test_max_pool1d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,

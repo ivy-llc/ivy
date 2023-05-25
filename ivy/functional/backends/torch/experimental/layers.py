@@ -5,7 +5,7 @@ import math
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
@@ -696,17 +696,6 @@ def embedding(
 embedding.support_native_out = False
 
 
-@handle_mixed_function(
-    lambda *args, mode="linear", **kwargs: mode
-    not in [
-        "tf_area",
-        "bicubic_tensorflow",
-        "mitchellcubic",
-        "lanczos3",
-        "lanczos5",
-        "gaussian",
-    ]
-)
 def interpolate(
     x: torch.Tensor,
     size: Union[Sequence[int], int],
@@ -741,6 +730,16 @@ def interpolate(
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
     )
+
+
+interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
+    "tf_area",
+    "bicubic_tensorflow",
+    "mitchellcubic",
+    "lanczos3",
+    "lanczos5",
+    "gaussian",
+]
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)

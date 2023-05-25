@@ -2,6 +2,7 @@
 from typing import Optional, Union, Tuple, Sequence
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
+import ivy.functional.backends.paddle as paddle_backend
 
 # local
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
@@ -32,19 +33,33 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if input.ndim == 0:
-        input = input.unsqueeze(0)
-        return paddle.median(x=input, axis=axis).squeeze()
-    elif input.ndim == 1:
-        return paddle.median(x=input) if keepdims else paddle.median(x=input).squeeze()
+    # keepdims is set to True because in versions up to 2.4.2
+    # there was a problem when the axis was defined and it was the
+    # only axis in the tensor so it needs to be handled manually
 
-    return paddle.median(x=input, axis=axis, keepdim=keepdims)
+    ret_dtype = input.dtype
+    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        if paddle.is_complex(input):
+            ret = paddle.complex(
+                paddle.median(input.real(), axis=axis, keepdim=True),
+                paddle.median(input.imag(), axis=axis, keepdim=True),
+            )
+        else:
+            ret = paddle.median(input.cast("float32"), axis=axis, keepdim=True)
+    else:
+        ret = paddle.median(input, axis=axis, keepdim=True)
+    if not keepdims:
+        ret = paddle_backend.squeeze(ret, axis=axis)
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == input.ndim:
+            axis = None
+    if (input.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.astype(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16", "complex64", "complex128")}},
-    backend_version,
-)
 def nanmean(
     a: paddle.Tensor,
     /,
@@ -54,12 +69,29 @@ def nanmean(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    ret_dtype = dtype if dtype is not None else a.dtype
+    a = a.cast(
+        ret_dtype
+    )  # this is necessary to match other FWs behaviour which cast before calculation
     if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
-        if dtype is None:
-            dtype = a.dtype
-        a = a.cast("float32")
-        paddle.nanmean(x=a, axis=axis, keepdim=keepdims).cast(dtype)
-    return paddle.nanmean(x=a, axis=axis, keepdim=keepdims).cast(dtype)
+        if paddle.is_complex(a):
+            ret = paddle.complex(
+                paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
+                paddle.nanmean(a.imag(), axis=axis, keepdim=keepdims),
+            )
+        else:
+            ret = paddle.nanmean(a.cast("float32"), axis=axis, keepdim=keepdims)
+    else:
+        ret = paddle.nanmean(a, axis=axis, keepdim=keepdims)
+
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == a.ndim:
+            axis = None
+    if (a.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.astype(ret_dtype)
 
 
 def _compute_quantile(
@@ -84,7 +116,7 @@ def _compute_quantile(
     dims = len(x.shape)
     out_shape = list(x.shape)
     if axis is None:
-        x = paddle.flatten(x)
+        x = paddle_backend.flatten(x)
         axis = 0
         out_shape = [1] * dims
     else:
@@ -105,8 +137,8 @@ def _compute_quantile(
                 axis_src.append(axis_single)
                 out_shape[axis_single] = 1
             axis_dst = list(range(-len(axis), 0))
-            x = paddle.moveaxis(x, axis_src, axis_dst)
-            x = paddle.flatten(x, axis_dst[0], axis_dst[-1])
+            x = paddle_backend.moveaxis(x, axis_src, axis_dst)
+            x = paddle_backend.flatten(x, axis_dst[0], axis_dst[-1])
             axis = axis_dst[0]
         else:
             if not isinstance(axis, int) or not (axis < dims and axis >= -dims):
@@ -118,8 +150,10 @@ def _compute_quantile(
                 axis += dims
             out_shape[axis] = 1
 
-    mask = x.isnan()
-    valid_counts = mask.logical_not().sum(axis=axis, keepdim=True, dtype="float64")
+    mask = paddle_backend.isnan(x)
+    valid_counts = paddle_backend.sum(
+        mask.logical_not(), axis=axis, keepdims=True, dtype="float64"
+    )
 
     indices = []
 
@@ -134,9 +168,8 @@ def _compute_quantile(
             index = q_num * (valid_counts - 1)
             last_index = x.shape[axis] - 1
             nums = paddle.full_like(index, fill_value=last_index)
-            index = paddle.where(mask.any(axis=axis, keepdim=True), nums, index)
+            index = paddle_backend.where(mask.any(axis=axis, keepdim=True), nums, index)
             indices.append(index)
-
     sorted_tensor = paddle.sort(x, axis)
 
     outputs = []
@@ -168,11 +201,11 @@ def _compute_quantile(
             tensor_upper.astype("float64"),
             weights,
         )
-        if not keepdim:
-            out = paddle.squeeze(out, axis=axis)
-        else:
-            out = out.reshape(out_shape)
-        outputs.append(out)
+    if not keepdim:
+        out = paddle.squeeze(out, axis=axis)
+    else:
+        out = out.reshape(out_shape)
+    outputs.append(out)
 
     if len(q) > 1:
         outputs = paddle.stack(outputs, 0)
@@ -228,6 +261,29 @@ def corrcoef(
     raise IvyNotImplementedException()
 
 
+def histogram(
+    a: paddle.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, paddle.Tensor]] = None,
+    axis: Optional[int] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[paddle.Tensor] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[paddle.Tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
+) -> Tuple[paddle.Tensor]:
+    if range is None:
+        min_range = 0
+        max_range = 0
+    else:
+        min_range = range[0]
+        max_range = range[1]
+    return paddle.histogram(a, bins=bins, min=min_range, max=max_range)
+
+
 def nanmedian(
     input: paddle.Tensor,
     /,
@@ -278,3 +334,34 @@ def unravel_index(
         indices = paddle.floor(indices / dim)
 
     return tuple(reversed(coord))
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "float32",
+                "float64",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def bincount(
+    x: paddle.Tensor,
+    /,
+    *,
+    weights: Optional[paddle.Tensor] = None,
+    minlength: int = 0,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.bincount(x, weights=weights, minlength=minlength).cast(
+        x.dtype if weights is None else weights.dtype
+    )

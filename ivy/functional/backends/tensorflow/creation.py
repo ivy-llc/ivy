@@ -137,7 +137,10 @@ def asarray(
                     dtype=dtype,
                 )
             else:
-                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype, item=obj))
+                if dtype is None:
+                    dtype = ivy.as_native_dtype(
+                        ivy.default_dtype(dtype=dtype, item=obj)
+                    )
                 try:
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
