@@ -2,6 +2,7 @@
 
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -317,6 +318,7 @@ def x_and_filters(
     depthwise=False,
     general=False,
     bias=False,
+    filter_format=None,
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
@@ -329,7 +331,7 @@ def x_and_filters(
     dtype = draw(helpers.get_dtypes("float", full=False))
     input_channels = draw(st.integers(1, 3))
     output_channels = draw(st.integers(1, 3))
-    group_list = [i for i in range(1, 6)]
+    group_list = [*range(1, 6)]
     if not transpose:
         group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
     else:
@@ -450,6 +452,10 @@ def x_and_filters(
                 )
             )
             dilations = (dilations, x_dilation)
+    if filter_format is not None:
+        filter_format = draw(filter_format)
+        if filter_format == "channel_first":
+            filters = np.transpose(filters, (-1, -2, *range(dim)))
     ret = (
         dtype,
         vals,
@@ -460,6 +466,7 @@ def x_and_filters(
         padding,
     )
     ret = ret + (output_shape, fc) if transpose else ret + (fc,)
+    ret = ret + (filter_format,) if filter_format is not None else ret
     if bias:
         return ret + (b,)
     return ret
@@ -751,7 +758,10 @@ def test_conv3d_transpose(
     fn_tree="functional.ivy.conv_general_dilated",
     dims=st.shared(st.integers(1, 3), key="dims"),
     x_f_d_df=x_and_filters(
-        dim=st.shared(st.integers(1, 3), key="dims"), general=True, bias=True
+        dim=st.shared(st.integers(1, 3), key="dims"),
+        general=True,
+        bias=True,
+        filter_format=st.sampled_from(["channel_last", "channel_first"]),
     ),
     ground_truth_backend="jax",
 )
@@ -765,7 +775,9 @@ def test_conv_general_dilated(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, fc, bias = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
+        x_f_d_df
+    )
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -782,6 +794,7 @@ def test_conv_general_dilated(
         padding=pad,
         dims=dims,
         data_format=data_format,
+        filter_format=ff_format,
         feature_group_count=fc,
         x_dilations=dilations[1],
         dilations=dilations[0],
