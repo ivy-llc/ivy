@@ -142,7 +142,7 @@ def asarray(
             dtype = ivy.default_dtype(item=obj)
         return paddle_backend.squeeze(paddle.to_tensor(obj, dtype=dtype), 0)
 
-    else:
+    elif dtype is None:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
     if dtype == paddle.bfloat16 and isinstance(obj, np.ndarray):
