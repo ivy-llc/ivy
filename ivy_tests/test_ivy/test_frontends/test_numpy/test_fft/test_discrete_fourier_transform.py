@@ -119,3 +119,22 @@ def test_numpy_rfft(
         axis=axis,
         norm=norm,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.fftfreq",
+    n=st.integers(min_value=10, max_value=100),
+    sample_rate=st.integers(min_value=1, max_value=10),
+)
+def test_numpy_fftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device):
+    d = 1 / sample_rate
+    helpers.test_frontend_function(
+        input_dtypes=[int],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        n=n,
+        d=d,
+    )
