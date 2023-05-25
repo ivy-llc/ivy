@@ -531,3 +531,8 @@ def sgn(input, *, out=None):
 @to_ivy_arrays_and_back
 def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
     return ivy.nan_to_num(input, nan=nan, posinf=posinf, neginf=neginf, out=out)
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def ldexp(x1, x2, out=None):
+    return ivy.ldexp(x1, x2, out=None)

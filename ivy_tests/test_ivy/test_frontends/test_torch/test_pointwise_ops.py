@@ -2526,3 +2526,53 @@ def test_torch_nan_to_num(
         posinf=posinf,
         neginf=neginf,
     )
+
+@st.composite
+def ldexp_args(draw):
+    dtype1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            num_arrays=1,
+            shared_dtype=True,
+            min_value=-100,
+            max_value=100,
+            min_num_dims=1,
+            max_num_dims=3,
+        )
+    )
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            num_arrays=1,
+            shared_dtype=True,
+            min_value=-100,
+            max_value=100,
+            min_num_dims=1,
+            max_num_dims=3,
+        )
+    )
+    return (dtype1[0], dtype2[0]), (x1[0], x2[0])
+
+@handle_frontend_test(
+    fn_tree="torch.ldexp",
+    dtype_and_x=ldexp_args(),
+    #test_gradients=st.just(False),
+)
+def test_torch_ldexp(
+    *,
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+    )
