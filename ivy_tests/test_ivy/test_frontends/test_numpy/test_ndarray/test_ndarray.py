@@ -2984,7 +2984,7 @@ def test_numpy_instance_mod__(
     )
 
 
-#Trace testing
+# Trace testing
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",

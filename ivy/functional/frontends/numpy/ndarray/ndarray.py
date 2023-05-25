@@ -120,8 +120,8 @@ class ndarray:
         else:
             return np_frontend.reshape(self, newshape, order="C")
 
-    #Trace
-    def trace(self, /, *, offset=0, axis1=0,axis2=1, out=None):
+    # Trace
+    def trace(self, /, *, offset=0, axis1=0, axis2=1, out=None):
         return np_frontend.trace(self, axis1=axis1, axis2=axis2, offset=offset, out=out)
 
     def resize(self, newshape, /, *, refcheck=True):
