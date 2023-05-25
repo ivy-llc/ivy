@@ -108,6 +108,7 @@ def conv1d_transpose(
 
 
 # noinspection PyUnresolvedReferences
+# @with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, backend_version)
 def conv2d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
