@@ -77,8 +77,8 @@ def greater_equal(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-def isnan(x, out=None):
-    return ivy.isnan(x, out=out)
+def isnan(x, /):
+    return ivy.isnan(x)
 
 
 @to_ivy_arrays_and_back
