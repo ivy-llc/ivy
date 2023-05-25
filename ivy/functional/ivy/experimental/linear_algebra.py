@@ -159,9 +159,6 @@ def eigh_tridiagonal(
     return eigenvalues, eigenvectors
 
 
-eigh_tridiagonal.mixed_function = True
-
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion

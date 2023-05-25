@@ -8,8 +8,6 @@ import jaxlib.xla_extension
 import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG, _setRNG, _getRNG  # noqa
-from ivy.func_wrapper import with_unsupported_dtypes
-from .. import backend_version
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _check_shapes_broadcastable,
@@ -76,7 +74,6 @@ def gamma(
     return to_device(jax.random.gamma(rng_input, alpha, shape, dtype) / beta, device)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, JaxArray],
     *,
