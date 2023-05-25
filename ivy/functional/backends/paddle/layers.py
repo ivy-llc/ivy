@@ -133,8 +133,6 @@ def conv2d(
         padding=padding,
         dilation=dilations,
     )
-    if data_format == "NHWC":
-        res = paddle.transpose(res, perm=(0, 3, 1, 2))
     return res
 
 
