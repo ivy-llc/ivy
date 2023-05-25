@@ -511,3 +511,9 @@ def unique(x, out_idx=ivy.int32, name=None):
     y = ret[0]
     idx = ivy.astype(ret[2], out_idx)
     return y, idx
+
+
+@to_ivy_arrays_and_back
+def meshgrid(*args, **kwargs):
+    indexing = kwargs["indexing"] if "indexing" in kwargs else "xy"
+    return ivy.meshgrid(args, indexing=indexing)
