@@ -8617,8 +8617,7 @@ def test_torch_instance_equal(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        atol_=1e-02,
+        atol_=1e-08,
         rtol_=1e-05,
-        ground_truth_backend="torch",
         on_device=on_device,
     )
