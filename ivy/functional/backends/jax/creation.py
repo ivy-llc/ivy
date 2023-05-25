@@ -75,20 +75,20 @@ def asarray(
             return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
         else:
             return _to_device(obj, device=device)
-    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
-        dtype = ivy.default_dtype(item=obj, as_native=True)
-        ivy.utils.assertions._check_jax_x64_flag(dtype)
-        if copy is True:
-            return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
+    elif dtype is None:
+        if isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
+            dtype = ivy.default_dtype(item=obj, as_native=True)
+            ivy.utils.assertions._check_jax_x64_flag(dtype)
+            if copy is True:
+                return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
+            else:
+                return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
+        elif isinstance(obj, np.ndarray):
+            dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
         else:
-            return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
-    elif isinstance(obj, np.ndarray):
-        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-        ivy.utils.assertions._check_jax_x64_flag(dtype)
-    else:
-        dtype = ivy.default_dtype(dtype=dtype, item=obj)
-        ivy.utils.assertions._check_jax_x64_flag(dtype)
+            dtype = ivy.default_dtype(dtype=dtype, item=obj)
 
+    ivy.utils.assertions._check_jax_x64_flag(dtype)
     if copy is True:
         return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
     else:
