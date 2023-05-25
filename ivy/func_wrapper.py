@@ -970,7 +970,11 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
 
-        mixed_fn = original != to_wrap and hasattr(original, "inputs_to_ivy_arrays")
+        mixed_fn = (
+            original != to_wrap
+            and hasattr(original, "inputs_to_ivy_arrays")
+            and original.__module__ in "ivy.functional.ivy"
+        )
         for attr in FN_DECORATORS:
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
                 mixed_fn
