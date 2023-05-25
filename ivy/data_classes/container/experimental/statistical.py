@@ -1014,10 +1014,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
     @staticmethod
     def static_igamma(
-        a: ivy.Container,
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        x: ivy.Container,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1066,7 +1066,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        x: ivy.Container,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
