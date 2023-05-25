@@ -393,7 +393,6 @@ def conv_general_dilated(
 
     x = _pad_before_conv(x, filters, strides, padding, dims, dilations)
 
-    filters = filters.permute(-1, -2, *range(dims))
     if dims == 1:
         res = torch.nn.functional.conv1d(
             x, filters, bias, strides, "valid", dilations, feature_group_count

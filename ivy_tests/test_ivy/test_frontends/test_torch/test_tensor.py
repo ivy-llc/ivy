@@ -8584,7 +8584,6 @@ def test_torch_instance_addr(
         on_device=on_device,
     )
 
-
 # equal
 @handle_frontend_method(
     class_tree=CLASS_TREE,
