@@ -357,7 +357,7 @@ def asarray(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(obj).asarray(
+    return current_backend().asarray(
         obj, copy=copy, dtype=dtype, device=device, out=out
     )
 
