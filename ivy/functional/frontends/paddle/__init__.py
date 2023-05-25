@@ -214,6 +214,7 @@ def promote_types_of_paddle_inputs(
 
 from . import vision
 from . import nn
+from .nn.functional.activation import tanh
 from . import linalg
 from . import fft
 from . import signal
@@ -227,6 +228,7 @@ from .tensor.math import *
 from .tensor.random import *
 from .tensor.search import *
 from .tensor.einsum import *
+from .tensor.stat import *
 
 from .tensor.tensor import Tensor
 

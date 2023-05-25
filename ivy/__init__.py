@@ -343,17 +343,19 @@ class Shape:
     def __sizeof__(self):
         return len(self._shape) if self._shape is not None else 0
 
-    def __iter__(self):
-        if self._dims is None:
-            raise ValueError("Cannot iterate over a shape")
-        return iter(d for d in self._shape)
-
     def __dir__(self):
         return self._shape.__dir__()
 
     @property
     def shape(self):
         return self._shape
+
+    def as_list(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot convert a partially known Shape to a list"
+            )
+        return [dim for dim in self._shape]
 
 
 class IntDtype(Dtype):
@@ -1347,3 +1349,35 @@ from ivy.utils.backend.sub_backend_handler import (
 
 def current_sub_backends():
     return []
+
+
+# casting modes
+
+downcast_dtypes = False
+upcast_dtypes = False
+crosscast_dtypes = False
+cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
+
+
+def downcast_data_types(val=True):
+    global downcast_dtypes
+    downcast_dtypes = val
+
+
+def upcast_data_types(val=True):
+    global upcast_dtypes
+    upcast_dtypes = val
+
+
+def crosscast_data_types(val=True):
+    global crosscast_dtypes
+    crosscast_dtypes = val
+
+
+def cast_data_types(val=True):
+    global upcast_dtypes
+    global downcast_dtypes
+    global crosscast_dtypes
+    upcast_dtypes = val
+    downcast_dtypes = val
+    crosscast_dtypes = val

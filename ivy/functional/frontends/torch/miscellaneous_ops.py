@@ -48,7 +48,7 @@ def meshgrid(*tensors, indexing=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
+    {"2.0.1 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
     "torch",
 )
 def cumsum(input, dim, *, dtype=None, out=None):
@@ -58,7 +58,7 @@ def cumsum(input, dim, *, dtype=None, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def trace(input):
     if "int" in input.dtype:
         input = input.astype("int64")
@@ -67,12 +67,17 @@ def trace(input):
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
+    {"2.0.1 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
 )
 @to_ivy_arrays_and_back
 def tril_indices(row, col, offset=0, *, dtype=ivy.int64, device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
+
+
+@to_ivy_arrays_and_back
+def cummax(input, dim, *, out=None):
+    return ivy.cummax(input, axis=dim, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -121,7 +126,7 @@ def flatten(input, start_dim=0, end_dim=-1):
     return ivy.flatten(input, start_dim=start_dim, end_dim=end_dim)
 
 
-@with_supported_dtypes({"1.11.0 and below": ("float",)}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float",)}, "torch")
 @to_ivy_arrays_and_back
 def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number
@@ -162,7 +167,7 @@ def renorm(input, p, dim, maxnorm, *, out=None):
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
             "integer",
@@ -188,7 +193,7 @@ def logcumsumexp(input, dim, *, out=None):
 
 @with_supported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "int32",
             "int64",
         )
@@ -295,18 +300,19 @@ def vander(x, N=None, increasing=False):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("int8",)}, "torch")
 def lcm(input, other, *, out=None):
     return ivy.lcm(input, other, out=out)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def einsum(equation, *operands):
     return ivy.einsum(equation, *operands)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def cross(input, other, dim=None, *, out=None):
     if dim is None:
         dim = -1
@@ -327,7 +333,7 @@ def tensordot(a, b, dims=2, out=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
+    {"2.0.1 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
 )
 def diff(input, n=1, dim=-1, prepend=None, append=None):
     return ivy.diff(input, n=n, axis=dim, prepend=prepend, append=append, out=None)

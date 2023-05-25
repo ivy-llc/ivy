@@ -1006,7 +1006,7 @@ def test_torch_cross(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        rtol=1e-1,
+        rtol=1e-2,
         atol=1e-2,
         input=input,
         other=other,

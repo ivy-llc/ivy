@@ -1,5 +1,6 @@
 # global
 import numpy as np
+import jax.lax as jlax
 import jax.numpy as jnp
 from hypothesis import assume, strategies as st
 import random
@@ -486,6 +487,9 @@ def test_jax_lax_eq(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        small_abs_safety_factor=2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1281,6 +1285,61 @@ def test_jax_lax_pow(
         on_device=on_device,
         x=xs[0],
         y=xs[1],
+    )
+
+
+@st.composite
+def _pad_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("bool"),
+            ret_shape=True,
+            min_num_dims=1,
+            min_dim_size=2,
+            min_value=-100,
+            max_value=100,
+        ).filter(lambda _x: _x[0][0] not in ["float16", "bfloat16"])
+    )
+    ndim = len(shape)
+    min_dim = min(shape)
+    padding_config = draw(
+        st.lists(
+            st.tuples(
+                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
+                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
+                st.integers(min_value=0, max_value=min_dim - 1),
+            ),
+            min_size=ndim,
+            max_size=ndim,
+        )
+    )
+    padding_value = draw(st.booleans())
+    return dtype, x[0], padding_value, padding_config
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.pad",
+    dtype_x_params=_pad_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_pad(
+    *,
+    dtype_x_params,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, operand, padding_value, padding_config = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=operand,
+        padding_value=padding_value,
+        padding_config=padding_config,
     )
 
 
@@ -2444,20 +2503,44 @@ def test_jax_lax_top_k(
 
 @st.composite
 def _reduce_window_helper(draw):
+    # ToDo: remove the dtype filtering as soon as the issues in mixed functions'
+    #  supported dtypes have been resolved
     dtype = draw(
-        helpers.get_dtypes("numeric", full=False).filter(
-            lambda x: x[0] not in ("bfloat16", "uint64", "uint32")
+        helpers.get_dtypes("valid", full=False).filter(
+            lambda x: x[0]
+            not in ["bfloat16", "uint8", "uint32", "uint64", "int8", "int16"]
         )
     )
-    init_value = draw(helpers.array_values(dtype=dtype[0], shape=()))
 
-    def py_func(accumulator, window):
-        if not len(window.shape):
-            window = jnp.expand_dims(window, 0)
-        sum = 0
-        for w in window:
-            sum += w
-        return accumulator + sum
+    if dtype[0] == "bool":
+        py_func = draw(st.sampled_from([jnp.logical_and, jnp.logical_or]))
+    else:
+        py_func = draw(
+            st.sampled_from([jlax.add, jlax.max, jlax.min, jlax.mul, jnp.multiply])
+        )
+
+    if dtype[0] == "float64":
+        init_value = draw(
+            st.sampled_from(
+                [
+                    [-float("inf")],
+                    [float("inf")],
+                    draw(
+                        helpers.dtype_and_values(
+                            dtype=dtype,
+                            shape=(),
+                        )
+                    )[1],
+                ]
+            )
+        )
+    else:
+        init_value = draw(
+            helpers.dtype_and_values(
+                dtype=dtype,
+                shape=(),
+            )
+        )[1]
 
     ndim = draw(st.integers(min_value=1, max_value=4))
 
@@ -2524,7 +2607,7 @@ def test_jax_lax_reduce_window(
         fn_tree=fn_tree,
         on_device=on_device,
         operand=operand[0],
-        init_value=init_value,
+        init_value=init_value[0],
         computation=computation,
         window_dimensions=others[0],
         window_strides=others[1],
@@ -2643,4 +2726,55 @@ def test_jax_lax_nextafter(
         on_device=on_device,
         x1=x[0],
         x2=x[0],
+    )
+
+
+# conj
+@handle_frontend_test(
+    fn_tree="jax.lax.conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["complex64"],
+    ),
+)
+def test_jax_lax_conj(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# is_finite
+@handle_frontend_test(
+    fn_tree="jax.lax.is_finite",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_is_finite(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )

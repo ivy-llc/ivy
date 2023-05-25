@@ -11,7 +11,7 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.12.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -125,7 +125,7 @@ def adjoint(
 
 @with_supported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "bfloat16",
             "float16",
             "float32",
@@ -191,7 +191,7 @@ def cond(
     return k
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: tf.Tensor,
     x2: tf.Tensor = None,
