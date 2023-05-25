@@ -1637,9 +1637,6 @@ def as_strided(
     src_ind = src_ind + ivy.arange(itemsize)
     src_ind = ivy.reshape(src_ind, (-1,)).to_numpy()
 
-    # import numpy as np
-    # result = bytearray(np.array([src[i] for i in src_ind], dtype=np.int8))
-    # numpy runs fine but the following gets stuck in asarray
     temp_list = [src[i] for i in src_ind]
     temp_array = ivy.asarray(temp_list, dtype=ivy.int8)
     result = bytearray(temp_array.to_numpy())
