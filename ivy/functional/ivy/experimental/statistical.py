@@ -456,11 +456,11 @@ def bincount(
 @handle_out_argument
 @to_native_arrays_and_back
 def igamma(
-    a: ivy.Array,
+    a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    x: ivy.Array,
-    out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
     Compute the regularized lower gamma function of ``a`` and ``x``.

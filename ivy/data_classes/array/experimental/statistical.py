@@ -424,7 +424,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        x: ivy.Array,
+        x: Union[ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
