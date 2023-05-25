@@ -380,7 +380,7 @@ def igamma(
         def integrand(t):
             return paddle.exp(-t) * paddle.pow(t, ai - 1)
 
-        intervals = paddle.linspace(0, xi, 10000)
+        intervals = paddle.linspace(0, xi, 10001)
         interval_width = xi / 10000
         values = integrand(intervals)
         integral = paddle.multiply((values[:-1] + values[1:]) / 2, interval_width)
