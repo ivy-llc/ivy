@@ -13,4 +13,4 @@ def mean(input, axis=None, keepdims=False, out=None):
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def quantile(a, q, axis=None, keepdims=False, interpolation='linear', out=None):
-    return ivy.quantile(a, q, axis=axis, keepdims=keepdims, interpolation=interpolation out=None)
+    return ivy.quantile(a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out)
