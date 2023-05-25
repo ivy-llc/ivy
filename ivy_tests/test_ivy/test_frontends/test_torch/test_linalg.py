@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import 
 )
 
 
-# _get_dtype_and_square_matrix helper
+# helpers
 @st.composite
 def _get_dtype_and_square_matrix(draw):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
@@ -28,7 +28,6 @@ def _get_dtype_and_square_matrix(draw):
     return dtype, mat
 
 
-# _get_dtype_and_matrixnon_singular helper
 @st.composite
 def _get_dtype_and_matrix_non_singular(draw):
     while True:
@@ -57,7 +56,6 @@ def _get_dtype_and_matrix_non_singular(draw):
     return matrix[0], matrix[1]
 
 
-# _get_dtype_and_matrix helper
 @st.composite
 def _get_dtype_and_matrix(draw):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
