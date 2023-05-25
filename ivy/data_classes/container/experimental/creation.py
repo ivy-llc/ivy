@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union, List, Dict
+from typing import Optional, Union, List, Dict
 
 # local
 import ivy
@@ -7,60 +7,6 @@ from ivy.data_classes.container.base import ContainerBase
 
 
 class _ContainerWithCreationExperimental(ContainerBase):
-    @staticmethod
-    def static_triu_indices(
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: int = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[Tuple[ivy.Array]] = None,
-    ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
-            "triu_indices",
-            n_rows,
-            n_cols,
-            k,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            device=device,
-            out=out,
-        )
-
-    def triu_indices(
-        self: ivy.Container,
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: int = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[Tuple[ivy.Array]] = None,
-    ) -> ivy.Container:
-        return self.static_triu_indices(
-            self,
-            n_rows,
-            n_cols,
-            k,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            device=device,
-            out=out,
-        )
-
     @staticmethod
     def static_hann_window(
         window_length: Union[int, ivy.Container],

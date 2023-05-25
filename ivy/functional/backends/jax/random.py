@@ -93,7 +93,7 @@ def random_normal(
     )
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.10 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -184,5 +184,6 @@ def shuffle(
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
 
-    # jax.random.shuffle is deprecated; identical behaviour reproduced with jax.random.permutation
+    # jax.random.shuffle is deprecated; identical behaviour reproduced with
+    # jax.random.permutation
     return jax.random.permutation(key=rng_input, x=x, axis=axis, independent=True)

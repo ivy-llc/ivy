@@ -237,3 +237,35 @@ def test_paddle_full_like(
         fill_value=fill,
         dtype=dtype_to_cast,
     )
+
+
+# arange
+@handle_frontend_test(
+    fn_tree="paddle.arange",
+    start=helpers.ints(min_value=-50, max_value=0),
+    end=helpers.ints(min_value=1, max_value=50),
+    step=helpers.ints(min_value=1, max_value=5),
+    dtype=helpers.get_dtypes("float"),
+    test_with_out=st.just(False),
+)
+def test_paddle_arange(
+    start,
+    end,
+    step,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        end=end,
+        step=step,
+        dtype=dtype[0],
+    )
