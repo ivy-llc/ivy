@@ -77,8 +77,8 @@ def greater_equal(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-def isnan(x, out=None):
-    return ivy.isnan(x, out=out)
+def isnan(x, /):
+    return ivy.isnan(x)
 
 
 @to_ivy_arrays_and_back
@@ -93,24 +93,24 @@ def all(a, axis=None, out=None, keepdims=False, *, where=False):
 
 
 @to_ivy_arrays_and_back
-def bitwise_and(x1, x2):
+def bitwise_and(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.bitwise_and(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def bitwise_not(x):
+def bitwise_not(x, /):
     return ivy.bitwise_invert(x)
 
 
 @to_ivy_arrays_and_back
-def bitwise_or(x1, x2):
+def bitwise_or(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.bitwise_or(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def bitwise_xor(x1, x2):
+def bitwise_xor(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.bitwise_xor(x1, x2)
 
