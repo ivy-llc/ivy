@@ -2999,7 +2999,6 @@ def test_numpy_instance_mod__(
         small_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
-    test_with_out=st.just(False),
     offset=st.integers(min_value=0, max_value=0),
     axis1=st.integers(min_value=0, max_value=0),
     axis2=st.integers(min_value=1, max_value=1),
@@ -3027,6 +3026,41 @@ def test_numpy_trace(
         axis2=axis2,
     )
 
+
+'''
+
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    offset=st.integers(min_value=0, max_value=0),
+    axis1=st.integers(min_value=0, max_value=0),
+    axis2=st.integers(min_value=1, max_value=1),
+)
+def test_numpy_trace(dtype_and_x, offset, axis1, axis2):
+    dtype, x = dtype_and_x
+    # Create an instance of your ndarray class with the given dtype and x
+    ndarray_instance = ndarray(dtype, x)
+    x = ndarray(shape, dtype[0])
+    x.ivy_array = data[0]
+
+
+    # Call the trace method on the instance
+    result = ndarray_instance.trace(offset=offset, axis1=axis1, axis2=axis2)
+
+    # Perform any necessary assertions or checks on the result
+    # using your preferred testing framework (e.g., pytest, unittest)
+    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+    # Example assertion
+    assert isinstance(result, YourExpectedResultType)
+'''
 
 # ptp
 @handle_frontend_method(
