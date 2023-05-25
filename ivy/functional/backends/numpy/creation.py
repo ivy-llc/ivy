@@ -13,6 +13,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 from .data_type import as_native_dtype
 
@@ -45,6 +46,7 @@ def arange(
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         np.ndarray, bool, int, float, tuple, NestedSequence, SupportsBufferProtocol
