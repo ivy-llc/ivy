@@ -25,6 +25,7 @@ from ivy.func_wrapper import (
     handle_view,
     inputs_to_ivy_arrays,
     handle_array_function,
+    to_ivy_arrays_and_back,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -1588,7 +1589,7 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
