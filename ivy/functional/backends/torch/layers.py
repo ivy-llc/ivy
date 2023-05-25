@@ -377,9 +377,6 @@ def conv_general_dilated(
     if data_format == "channel_last":
         x = x.permute(0, dims + 1, *range(1, dims + 1))
 
-    if filter_format == "channel_last":
-        filters = filters.permute(-1, -2, *range(dims))
-
     # adding dilation to input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
     for i in range(dims):
@@ -393,7 +390,9 @@ def conv_general_dilated(
 
     x = _pad_before_conv(x, filters, strides, padding, dims, dilations)
 
-    filters = filters.permute(-1, -2, *range(dims))
+    if filter_format == "channel_last":
+        filters = filters.permute(-1, -2, *range(dims))
+
     if dims == 1:
         res = torch.nn.functional.conv1d(
             x, filters, bias, strides, "valid", dilations, feature_group_count
