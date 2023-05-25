@@ -20,6 +20,7 @@ def diagflat(
     num_cols: int = -1,
     out: Optional[np.ndarray] = None,
 ):
+    out_dtype = x.dtype if out is None else out.dtype
     if len(x.shape) > 1:
         x = np.ravel(x)
 
@@ -67,14 +68,14 @@ def diagflat(
 
     diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]
     output_array += np.pad(
-        diagonal_to_add,
+        diagonal_to_add.astype(output_array.dtype),
         [
             (0, max([output_array.shape[0] - diagonal_to_add.shape[0], 0])),
             (0, max([output_array.shape[1] - diagonal_to_add.shape[1], 0])),
         ],
         mode="constant",
     )
-    ret = output_array.astype(x.dtype)
+    ret = output_array.astype(out_dtype)
 
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
@@ -96,7 +97,7 @@ kron.support_native_out = False
 
 
 @with_supported_dtypes(
-    {"1.11.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"1.24.3 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def matrix_exp(

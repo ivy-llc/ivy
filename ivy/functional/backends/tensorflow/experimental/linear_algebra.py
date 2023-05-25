@@ -11,7 +11,7 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.12.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -124,6 +124,19 @@ def adjoint(
 
 
 @with_unsupported_dtypes({"2.9.1": ("complex64", "complex128",)}, backend_version,)
+@with_supported_dtypes(
+    {
+        "2.12.0": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
 def multi_dot(
     x: Sequence[Union[tf.Tensor, tf.Variable]],
     /,
@@ -208,6 +221,7 @@ def solve_triangular(
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: tf.Tensor,
     x2: tf.Tensor = None,
