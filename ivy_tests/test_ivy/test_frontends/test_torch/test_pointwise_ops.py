@@ -1243,6 +1243,32 @@ def test_torch_clamp(
     )
 
 
+# clip
+@handle_frontend_test(
+    fn_tree="torch.clip",
+    input_and_ranges=_get_clip_inputs(),
+)
+def test_torch_clip(
+    *,
+    input_and_ranges,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, min, max = input_and_ranges
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        min=min,
+        max=max,
+    )
+
+
 # mul
 @handle_frontend_test(
     fn_tree="torch.mul",
