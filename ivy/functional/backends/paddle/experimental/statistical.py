@@ -369,6 +369,8 @@ def bincount(
 
 def igamma(
     a: paddle.Tensor,
+    /,
+    *,
     x: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
