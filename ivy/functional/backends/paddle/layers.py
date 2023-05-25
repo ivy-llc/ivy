@@ -119,16 +119,13 @@ def conv2d(
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[paddle.Tensor] = None,
 ):
-    df = "NHWC"
-    if data_format == "NCHW":
-        df = "NCHW"
-    x = _pad_before_conv(x, filters, strides, padding, 2, dilations, df)
+    x = _pad_before_conv(x, filters, strides, padding, 2, dilations, data_format)
     filters = paddle.transpose(filters, perm=(3, 2, 0, 1))
     padding = "VALID"
     res = paddle.nn.functional.conv2d(
         x,
         filters,
-        data_format=df,
+        data_format=data_format,
         stride=strides,
         padding=padding,
         dilation=dilations,
