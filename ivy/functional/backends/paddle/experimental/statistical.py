@@ -375,7 +375,7 @@ def igamma(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     results = []
-    for ai, xi in zip(a, x):
+    for ai, xi in zip(a.flatten(), x.flatten()):
 
         def integrand(t):
             return paddle.exp(-t) * paddle.pow(t, ai - 1)
@@ -387,4 +387,4 @@ def igamma(
         result = paddle.divide(paddle.sum(integral), paddle.exp(paddle.lgamma(ai)))
         results.append(result)
 
-    return paddle.stack(results)
+    return paddle.to_tensor(results).reshape(a.shape)
