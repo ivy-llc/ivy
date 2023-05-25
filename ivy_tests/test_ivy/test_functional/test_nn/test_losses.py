@@ -104,7 +104,7 @@ def test_cross_entropy(
     ),
     reduction=st.sampled_from(["none", "sum", "mean"]),
     axis=helpers.ints(min_value=-1, max_value=0),
-    epsilon=helpers.floats(min_value=0, max_value=0.49),
+    epsilon=helpers.floats(min_value=0, max_value=1.0),
     from_logits=st.booleans(),
 )
 def test_binary_cross_entropy(
