@@ -16,6 +16,46 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+def l1_normalize(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Normalize the input array along the given axis to have L1 norm equal to
+    1.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        Axis or axes along which to normalize. If ``None``, the whole array is normalized.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The normalized array.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> ivy.l1_normalize(x, axis=1)
+    ivy.array([[0.3333, 0.6667],
+               [0.4286, 0.5714]])
+    """
+    return current_backend(x).l1_normalize(x, axis=axis, out=out)
+
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
