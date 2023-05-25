@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
-    statistical_dtype_values as statistical_dtype_values_experimental,
+    _statistical_dtype_values as statistical_dtype_values_experimental,
 )
 
 
