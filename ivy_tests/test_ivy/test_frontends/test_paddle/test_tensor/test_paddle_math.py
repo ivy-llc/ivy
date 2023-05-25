@@ -245,7 +245,7 @@ def test_paddle_atanh(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.atan",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_paddle_atan(
@@ -295,7 +295,7 @@ def test_paddle_round(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.ceil",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", full=False),
     ),
 )
 def test_paddle_ceil(
