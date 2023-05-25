@@ -2281,7 +2281,7 @@ def test_torch_arctan(
 @handle_frontend_test(
     fn_tree="torch.conj_physical",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_torch_conj_physical(
