@@ -258,7 +258,6 @@ def test_torch_qr(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        test_values=False,
     )
     ret = [ivy.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
