@@ -40,3 +40,7 @@ def tanh(x, name=None):
 @to_ivy_arrays_and_back
 def acosh(x, name=None):
     return ivy.acosh(x)
+
+@to_ivy_arrays_and_back
+def less_equal(x, y, name="None"):
+    return ivy.less_equal(x, y)
