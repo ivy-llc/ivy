@@ -174,7 +174,7 @@ def test_torch_inv_ex(
         on_device=on_device,
         rtol=1e-03,
         atol=1e-02,
-        input=x[0],
+        A=x[0],
     )
 
 

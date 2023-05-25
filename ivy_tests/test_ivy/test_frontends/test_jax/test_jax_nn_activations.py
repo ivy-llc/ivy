@@ -504,6 +504,7 @@ def test_jax_nn_hard_tanh(
     fn_tree,
     frontend,
 ):
+    # TODO: enable this test for all valid dtypes as jax.nn.hard_tanh supports
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
