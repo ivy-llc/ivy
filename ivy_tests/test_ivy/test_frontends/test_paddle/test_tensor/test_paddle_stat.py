@@ -35,4 +35,3 @@ def test_paddle_mean(
         axis=axis,
         keepdims=keepdims,
     )
-    
