@@ -1931,3 +1931,41 @@ def test_tensorflow_unique(
         fn_tree=fn_tree,
         on_device=on_device,
     )
+
+
+# meshgrid
+@handle_frontend_test(
+    fn_tree="tensorflow.meshgrid",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=st.integers(min_value=1, max_value=4),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        shared_dtype=True,
+    ),
+    indexing=st.sampled_from(["xy", "ij"]),
+)
+def test_tensorflow_meshgrid(
+    *,
+    dtype_and_arrays,
+    indexing,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, arrays = dtype_and_arrays
+    kw = {}
+    for i, x_ in enumerate(arrays):
+        kw[f"x{i}"] = x_
+    test_flags.num_positional_args = len(arrays)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kw,
+        indexing=indexing,
+    )
