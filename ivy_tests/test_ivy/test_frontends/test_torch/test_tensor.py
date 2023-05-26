@@ -8593,6 +8593,12 @@ def test_torch_instance_addr(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
+        force_int_axis=True,
+        valid_axis=True,
     ),
 )
 def test_torch_instance_equal(
