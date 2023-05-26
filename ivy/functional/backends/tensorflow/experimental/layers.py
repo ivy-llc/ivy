@@ -797,7 +797,7 @@ def fft2(
                 x = tf.concat([x, z], axis=dim[i])
     operation_name = f"{s} points FFT2d at dim {dim} with {norm} normalization"
 
-    xc1 = tf.cast(x, tf.complex128)
-    ret = tf.signal.fft2d(xc1, operation_name)
+    xc = tf.cast(x, tf.complex128)
+    ret = tf.signal.fft2d(xc, operation_name)
     ret = _fft2_norm(ret, dim=dim, norm=norm)
     return ret
