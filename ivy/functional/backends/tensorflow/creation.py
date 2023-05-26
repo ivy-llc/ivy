@@ -98,12 +98,12 @@ def asarray(
         if isinstance(input, (tf.Tensor, tf.Variable, tf.TensorShape)):
             return tf.cast(x, dtype) if dtype is not None else x
         if dtype is None:
-                dtype = x.dtype if hasattr(x, "dtype") else ivy.default_dtype(item=x)
-            try:
-                ret = tf.convert_to_tensor(x, dtype)
-            except (TypeError, ValueError):
-                ret = tf.cast(x, dtype)
-            return ret
+            dtype = x.dtype if hasattr(x, "dtype") else ivy.default_dtype(item=x)
+        try:
+            ret = tf.convert_to_tensor(x, dtype)
+        except (TypeError, ValueError):
+            ret = tf.cast(x, dtype)
+        return ret
 
     with tf.device(device):
         tensor = _tf_to_tensor(
