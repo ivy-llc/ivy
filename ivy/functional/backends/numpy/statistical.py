@@ -394,6 +394,3 @@ def igamma(
 
     igamma_vec = np.vectorize(igamma_cal)
     return igamma_vec(a, x)
-
-
-igamma.support_native_out = True

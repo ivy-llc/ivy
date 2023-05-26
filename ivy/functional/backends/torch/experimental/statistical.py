@@ -361,7 +361,7 @@ def igamma(
     x: torch.Tensor,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.special.gammainc(a, x)
+    return torch.special.gammainc(a, x, out=out)
 
 
 igamma.support_native_out = True
