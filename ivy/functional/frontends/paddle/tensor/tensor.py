@@ -95,3 +95,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def abs(self):
         return paddle_frontend.abs(self)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def ceil(self):
+        return paddle_frontend.ceil(self)
