@@ -402,8 +402,9 @@ def logaddexp2(x1, x2, out=None):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def i0(x, out=None):
-    return ivy.i0(x, out=out)
+@to_ivy_arrays_and_back
+def i0(input, *, out=None):
+    return ivy.i0(input, out=out)
 
 
 def rad2deg(input, *, out=None):
