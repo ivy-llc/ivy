@@ -206,6 +206,7 @@ def _asarray_helper(draw):
             draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
         )
     )[-1]
+    dtype = st.sampled_from([dtype, draw(st.none())])
     return x_dtype, x, dtype
 
 
@@ -216,6 +217,7 @@ def _asarray_helper(draw):
     x_dtype_x_and_dtype=_asarray_helper(),
     as_list=st.booleans(),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_asarray(
     *,
@@ -228,17 +230,14 @@ def test_asarray(
     ground_truth_backend,
 ):
     x_dtype, x, dtype = x_dtype_x_and_dtype
+    
+    # avoid casting complex to non-complex
+    if dtype is not None:
+        assume(not ("complex" in x_dtype[0] and "complex" not in dtype))
 
     if as_list:
         if isinstance(x, list):
-            x = [
-                (
-                    list(i)
-                    if len(i.shape) > 0
-                    else [complex(i) if "complex" in x_dtype[0] else float(i)]
-                )
-                for i in x
-            ]
+            x = x = [(list(i) if len(i.shape) > 0 else [i.item()]) for i in x]
         else:
             x = list(x)
         # ToDo: remove this once the tests are able to generate a container of lists
