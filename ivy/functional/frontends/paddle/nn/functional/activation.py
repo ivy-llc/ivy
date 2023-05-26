@@ -42,5 +42,5 @@ def swish(x, name=None):
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def softmax(x, axis=-1, name=None):
-    axis= None if axis=-1 else axis
+    axis= None if axis==-1 else axis
     return ivy.softmax(x, axis)
