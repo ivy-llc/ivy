@@ -256,9 +256,10 @@ def test_numpy_cov(
     test_flags,
     fn_tree,
     on_device,
-    keep_dims,
 ):
-    input_dtypes, x = dtype_and_x
+    input_dtypes, x, axis = dtype_and_x
+    if isinstance(axis, tuple):
+        axis = axis[0]
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -267,8 +268,8 @@ def test_numpy_cov(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        axis=axis,
         dtype=dtype[0],
-        keepdims=keep_dims,
         test_values=False,
     )
 
