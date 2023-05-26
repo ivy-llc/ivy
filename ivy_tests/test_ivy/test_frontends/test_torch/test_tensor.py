@@ -8597,6 +8597,7 @@ def test_torch_instance_addr(
         min_num_dims=1,
         min_value=-1e04,
         max_value=1e04,
+        valid_axis=True,
     ),
 )
 def test_torch_instance_equal(
