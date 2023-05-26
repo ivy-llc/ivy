@@ -17,6 +17,7 @@ except ImportError:
     tf.TensorShape = None
 
 # local
+from pipeline_helper import update_backend
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
@@ -34,10 +35,11 @@ from .assertions import (
 
 
 # Temporary (.so) configuration
-def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
-    if test_compile:
-        fn = ivy.compile(fn, args=args, kwargs=kwargs)
-    return fn
+def compiled_if_required(backend: str, fn, test_compile=False, args=None, kwargs=None):
+    with update_backend(backend) as ivy_backend:
+        if test_compile:
+            fn = ivy_backend.compile(fn, args=args, kwargs=kwargs)
+        return fn
 
 
 available_frameworks = available_frameworkss()
@@ -814,6 +816,7 @@ def gradient_test(
     atol_: float = 1e-06,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
+    backend_to_test: str,
     ground_truth_backend: str,
     on_device: str,
 ):
@@ -821,7 +824,11 @@ def gradient_test(
         args, kwargs, i = all_args
         call_fn = ivy.__dict__[fn] if isinstance(fn, str) else fn[i]
         ret = compiled_if_required(
-            call_fn, test_compile=test_compile, args=args, kwargs=kwargs
+            backend_to_test,
+            call_fn,
+            test_compile=test_compile,
+            args=args,
+            kwargs=kwargs,
         )(*args, **kwargs)
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
@@ -1717,13 +1724,17 @@ def flatten_frontend_to_np(*, ret, frontend_array_fn=None):
     return [ivy.to_numpy(x.ivy_array) for x in ret_flat]
 
 
-def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwargs):
+def get_ret_and_flattened_np_array(
+    backend_to_test: str, fn, *args, test_compile: bool = False, **kwargs
+):
     """
     Run func with args and kwargs.
 
     Return the result along with its flattened version.
     """
-    fn = compiled_if_required(fn, test_compile=test_compile, args=args, kwargs=kwargs)
+    fn = compiled_if_required(
+        backend_to_test, fn, test_compile=test_compile, args=args, kwargs=kwargs
+    )
     ret = fn(*args, **kwargs)
 
     def map_fn(x):
