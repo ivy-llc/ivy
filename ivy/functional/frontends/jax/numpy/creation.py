@@ -243,3 +243,13 @@ def compress(condition, a, *, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@to_ivy_arrays_and_back
+def iterable(x):
+    if ivy.itemsize(x) > 1:
+        ret = True
+    else:
+        ret = False
+    return ret
+
