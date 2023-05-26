@@ -479,3 +479,12 @@ def correlate(a, v, mode="valid", precision=None):
         data_format="channel_first",
     )
     return ivy.flip(result[0, 0, out_order]) if need_flip else result[0, 0, out_order]
+#nansum
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nansum(a, axis=None, dtype=None, out=None):
+    if dtype is None:
+        dtype = ivy.float32
+    mask = ivy.isnan(a)
+    masked_a = ivy.where(mask, ivy.zeros_like(a), a)
+    return ivy.sum(masked_a, axis=axis, dtype=dtype, out=out)

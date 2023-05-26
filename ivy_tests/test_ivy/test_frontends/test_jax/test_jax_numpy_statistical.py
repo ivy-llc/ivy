@@ -1047,3 +1047,39 @@ def test_jax_numpy_correlate(
         v=x[1],
         mode=mode,
     )
+@handle_frontend_test(
+    fn_tree="jax.numpy.nansum",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_value=-100,
+        max_value=100,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    dtype=helpers.get_dtypes("numeric", none=True, full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_nansum(
+    *,
+    dtype_x_axis,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        dtype=dtype[0],
+    )
