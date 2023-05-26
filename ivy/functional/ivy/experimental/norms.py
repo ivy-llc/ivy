@@ -8,6 +8,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
+    handle_array_function,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -55,7 +57,8 @@ def l2_normalize(
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_array_function
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -159,7 +162,8 @@ def batch_norm(
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_array_function
 def instance_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
