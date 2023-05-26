@@ -71,7 +71,7 @@ def build_flag(key: str, value: bool):
 
 
 class TestFlags(metaclass=abc.ABCMeta):
-    def apply_flags(self, backend, on_device, *, args_to_iterate, input_dtypes, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         pass
 
 
@@ -96,7 +96,7 @@ class FunctionTestFlags(TestFlags):
         self.test_gradients = test_gradients
         self.test_compile = test_compile
 
-    def apply_flags(self, backend, on_device, *, args_to_iterate, input_dtypes, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
         with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
@@ -171,7 +171,7 @@ class FrontendFunctionTestFlags(TestFlags):
         self.as_variable = as_variable
         self.generate_frontend_arrays = generate_frontend_arrays
 
-    def apply_flags(self, backend, on_device, *, args_to_iterate, input_dtypes, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
         with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
@@ -232,7 +232,7 @@ class InitMethodTestFlags(TestFlags):
         self.native_arrays = native_arrays
         self.as_variable = as_variable
 
-    def apply_flags(self, backend, on_device, *, args_to_iterate, input_dtypes, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
         with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
@@ -286,7 +286,7 @@ class MethodTestFlags(TestFlags):
         self.as_variable = as_variable
         self.container = container_flags
 
-    def apply_flags(self, backend, on_device, *, args_to_iterate, input_dtypes, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
         with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
@@ -343,7 +343,7 @@ class FrontendMethodTestFlags(TestFlags):
         self.native_arrays = native_arrays
         self.as_variable = as_variable
 
-    def apply_flags(self, backend, on_device, *, args_to_iterate, input_dtypes, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
         with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
