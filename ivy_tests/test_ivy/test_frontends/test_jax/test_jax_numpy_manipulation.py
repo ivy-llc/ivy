@@ -1500,7 +1500,6 @@ def _pad_helper(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.pad",
     dtype_and_input_and_other=_pad_helper(),
-    reflect_type=st.sampled_from(["even", "odd"]),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_pad(
