@@ -19,6 +19,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 from . import backend_version
 from paddle.fluid.libpaddle import Place
@@ -85,6 +86,7 @@ def _stack_tensors(x, dtype):
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         paddle.Tensor,

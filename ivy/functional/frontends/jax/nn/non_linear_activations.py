@@ -295,6 +295,7 @@ def softplus(x):
 
 @to_ivy_arrays_and_back
 def selu(x):
+    x = _type_conversion_64(x)
     return ivy.selu(x)
 
 

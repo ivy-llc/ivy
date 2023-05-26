@@ -38,8 +38,7 @@ def _determine_depth_max_pooling(x, kernel, strides, dims):
             strides = [strides[-1], *[1] * (dims - 1)]
         else:
             kernel = spatial_kernel
-            if len(strides) == dims + 2:
-                strides = strides[1:-1]
+            strides = strides[1:-1] if len(strides) == dims + 2 else strides
     return x, kernel, strides, depth_pooling
 
 

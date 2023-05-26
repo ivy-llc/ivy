@@ -40,7 +40,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 
 CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
@@ -4227,6 +4227,7 @@ def test_torch_instance_arctanh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -8110,7 +8111,7 @@ def test_torch_instance_sign(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="std",
-    dtype_and_x=statistical_dtype_values(function="std"),
+    dtype_and_x=_statistical_dtype_values(function="std"),
 )
 def test_torch_instance_std(
     dtype_and_x,
