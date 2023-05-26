@@ -28,3 +28,8 @@ def leaky_relu(x, alpha=0.2, name=None):
 @to_ivy_arrays_and_back
 def log_sigmoid(x, name=None):
     return ivy.log(ivy.sigmoid(x))
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def silu(x, name=None):
+    return ivy.vecdot(x, ivy.sigmoid(x))
