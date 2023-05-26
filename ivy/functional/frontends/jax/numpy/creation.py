@@ -238,3 +238,28 @@ def compress(condition, a, *, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@to_ivy_arrays_and_back
+def array_str(a, max_line_width=None, precision=None, suppress_small=False):
+    if precision is None:
+        precision = ivy.array_significant_figures()
+    def round_suppress(ele, precision_):
+        count_after_decimal = str(ele)[::-1].find('.')
+        if suppress_small and (count_after_decimal > precision_):
+            # supress to zero
+            return 0
+        else:
+            return round(ele, precision_)
+
+    a = list(map(round_suppress, a, precision))
+    a = str(a)
+
+    if max_line_width is None:
+        #TODO : Need implementation of ivy.array_significant_figures()['linewidth'] functional API
+        #       hardcoding for now
+        max_line_width = 75
+    if len(a)>max_line_width:
+        for line in range(len(a)/max_line_width):
+            a = a[:max_line_width] + '\n' + a[max_line_width:]
+    return a

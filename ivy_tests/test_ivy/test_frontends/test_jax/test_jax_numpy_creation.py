@@ -900,3 +900,39 @@ def test_jax_numpy_compress(
         a=arr[0],
         axis=ax,
     )
+
+
+    
+# array_str
+@handle_frontend_test(
+    fn_tree="jax.numpy.array_str",
+    a=st.lists(
+        elements=st.floats(min_value=-100, max_value=100),
+        min_size=1,
+        max_size=10
+    ),
+    max_line_width=helpers.ints(min_value=1, max_value=100),
+    precision=helpers.ints(min_value=0, max_value=10),
+    suppress_small=st.booleans(),
+)
+def test_jax_numpy_array_str(
+    a,
+    max_line_width,
+    precision,
+    suppress_small,
+    test_flags,
+    fn_tree,
+    on_device,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes="float",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        max_line_width=max_line_width,
+        precision=precision,
+        suppress_small=suppress_small,
+    )
