@@ -745,7 +745,7 @@ def abs(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if not isinstance(where, paddle.Tensor):
-        where = paddle.to_tensor(where, dtype="bool")
+        where = paddle.to_tensor(where, dtype="bool").squeeze()
     if not isinstance(x, paddle.Tensor):
         x = paddle.to_tensor(x).squeeze().cast(ivy.default_dtype(item=x))
     if x.dtype in [
@@ -1062,6 +1062,10 @@ def fmod(
     return paddle_backend.where(paddle_backend.less(x1, 0), -res, res)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "uint8")}},
+    backend_version,
+)
 def lcm(
     x1: paddle.Tensor,
     x2: paddle.Tensor,

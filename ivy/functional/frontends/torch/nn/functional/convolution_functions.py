@@ -58,12 +58,10 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     if isinstance(padding, str):
         padding = padding.upper()
     else:
-        padding = [padding] * dims if isinstance(padding, int) else padding
-        pad_width = [(0, 0), (0, 0), *[(p, p) for p in padding]]
-        input = ivy.zero_pad(input, pad_width)
-        padding = "VALID"
-
-    weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 1, 0))
+        if isinstance(padding, int):
+            padding = [*[(padding, padding) for _ in range(dims)]]
+        else:
+            padding = [*[(p, p) for p in padding]]
 
     ret = ivy.conv(
         input,
@@ -72,6 +70,7 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
         padding,
         dims=dims,
         data_format="channel_first",
+        filter_format="channel_first",
         dilations=dilation,
         feature_group_count=groups,
     )

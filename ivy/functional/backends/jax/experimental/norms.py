@@ -3,6 +3,22 @@ from typing import Optional
 from ivy.functional.backends.jax import JaxArray
 
 
+def l1_normalize(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if axis is None:
+        norm = jnp.sum(jnp.abs(x.flatten()))
+        denorm = norm * jnp.ones_like(x)
+    else:
+        norm = jnp.sum(jnp.abs(x), axis=axis, keepdims=True)
+        denorm = jnp.divide(norm, jnp.abs(x) + 1e-12)
+    return jnp.divide(x, denorm)
+
+
 def l2_normalize(
     x: JaxArray,
     /,

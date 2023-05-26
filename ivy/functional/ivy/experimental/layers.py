@@ -895,9 +895,6 @@ def embedding(
     return ret
 
 
-embedding.mixed_function = True
-
-
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -1596,9 +1593,6 @@ def interpolate(
     return ivy.astype(ret, ivy.dtype(x), out=out)
 
 
-interpolate.mixed_function = True
-
-
 def _get_size(scale_factor, size, dims, x_shape):
     if scale_factor is not None:
         if isinstance(scale_factor, (float, int)):
@@ -1758,9 +1752,6 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
-adaptive_avg_pool1d.mixed_function = True
-
-
 @handle_nestable
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
@@ -1836,6 +1827,3 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
-
-
-adaptive_avg_pool2d.mixed_function = True
