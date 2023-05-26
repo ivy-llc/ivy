@@ -529,8 +529,9 @@ def test_jax_numpy_tensordot(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
-        large_abs_safety_factor=4,
-        safety_factor_scale="linear",
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
@@ -551,6 +552,8 @@ def test_jax_numpy_divide(
         fn_tree=fn_tree,
         a=x[0],
         b=x[1],
+        atol=1e-5,
+        rtol=1e-5,
     )
 
 
@@ -1235,6 +1238,9 @@ def test_jax_numpy_kron(
         min_value=-100,
         max_value=100,
         allow_nan=False,
+        small_abs_safety_factor=2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )

@@ -47,42 +47,42 @@ def isposinf(x, /, out=None):
 
 
 @to_ivy_arrays_and_back
-def not_equal(x1, x2):
+def not_equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.not_equal(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def less(x1, x2):
+def less(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.less(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def less_equal(x1, x2):
+def less_equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.less_equal(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def greater(x1, x2):
+def greater(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.greater(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def greater_equal(x1, x2):
+def greater_equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.greater_equal(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def isnan(x, out=None):
-    return ivy.isnan(x, out=out)
+def isnan(x, /):
+    return ivy.isnan(x)
 
 
 @to_ivy_arrays_and_back
-def equal(x1, x2):
+def equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.equal(x1, x2)
 
@@ -93,24 +93,24 @@ def all(a, axis=None, out=None, keepdims=False, *, where=False):
 
 
 @to_ivy_arrays_and_back
-def bitwise_and(x1, x2):
+def bitwise_and(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.bitwise_and(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def bitwise_not(x):
+def bitwise_not(x, /):
     return ivy.bitwise_invert(x)
 
 
 @to_ivy_arrays_and_back
-def bitwise_or(x1, x2):
+def bitwise_or(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.bitwise_or(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def bitwise_xor(x1, x2):
+def bitwise_xor(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.bitwise_xor(x1, x2)
 
@@ -215,10 +215,5 @@ def iscomplex(x: any):
 
 @to_ivy_arrays_and_back
 def iscomplexobj(x):
-    if x.ndim == 0:
-        return ivy.is_complex_dtype(ivy.dtype(x))
-    for ele in x:
-        if ivy.is_complex_dtype(ivy.dtype(ele)):
-            return True
-        else:
-            return False
+    return ivy.is_complex_dtype(ivy.dtype(x))
+

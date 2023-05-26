@@ -12,6 +12,8 @@ submodules = (
     "test_jax",
     "test_numpy",
     "test_misc",
+    "test_paddle",
+    "test_scipy",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -24,6 +26,8 @@ db_dict = {
     "test_tensorflow": ["tensorflow", 17],
     "test_numpy": ["numpy", 18],
     "test_misc": ["misc", 19],
+    "test_paddle": ["paddle", 20],
+    "test_scipy": ["scipy", 21],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",
@@ -177,27 +181,31 @@ if __name__ == "__main__":
                 failed = True
             else:
                 res = make_clickable(run_id, result_config["success"])
-            update_individual_test_results(
-                db[coll[0]], coll[1], submod, backend, test_fn, res
-            )
-            frontend_version = None
-            if (
-                coll[0] == "numpy"
-                or coll[0] == "jax"
-                or coll[0] == "tensorflow"
-                or coll[0] == "torch"
-            ):
-                frontend_version = "latest-stable"
-            update_individual_test_results(
-                db_multi[coll[0]],
-                coll[1],
-                submod,
-                backend,
-                test_fn,
-                res,
-                "latest-stable",
-                frontend_version,
-            )
+            if not with_gpu:
+                update_individual_test_results(
+                    db[coll[0]], coll[1], submod, backend, test_fn, res
+                )
+                frontend_version = None
+                if (
+                    coll[0] == "numpy"
+                    or coll[0] == "jax"
+                    or coll[0] == "tensorflow"
+                    or coll[0] == "torch"
+                    or coll[0] == "paddle"
+                ):
+                    frontend_version = "latest-stable"
+                update_individual_test_results(
+                    db_multi[coll[0]],
+                    coll[1],
+                    submod,
+                    backend,
+                    test_fn,
+                    res,
+                    "latest-stable",
+                    frontend_version,
+                )
+            else:
+                print("GPU Test: Not Updating DB")
 
     try:
         with open("tests_to_remove", "r") as f:

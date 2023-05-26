@@ -2,18 +2,22 @@
 
 # global
 from typing import Optional, Sequence, Union
+import mxnet as mx
+
+# local
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def variable(x, /):
-    raise NotImplementedError("mxnet.variable Not Implemented")
+    return x
 
 
 def is_variable(x, /, *, exclusive=False):
-    raise NotImplementedError("mxnet.is_variable Not Implemented")
+    return isinstance(x, mx.ndarray.NDArray)
 
 
 def variable_data(x, /):
-    raise NotImplementedError("mxnet.variable_data Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def execute_with_gradients(
@@ -25,20 +29,20 @@ def execute_with_gradients(
     xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
     ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ):
-    raise NotImplementedError("mxnet.execute_with_gradients Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def value_and_grad(func):
-    raise NotImplementedError("mxnet.value_and_grad Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def jac(func):
-    raise NotImplementedError("mxnet.jac Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def grad(func, argnums=0):
-    raise NotImplementedError("mxnet.grad Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def stop_gradient(x, /, *, preserve_type=True, out=None):
-    raise NotImplementedError("mxnet.stop_gradient Not Implemented")
+    raise IvyNotImplementedException()

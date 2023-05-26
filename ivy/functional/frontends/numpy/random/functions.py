@@ -79,10 +79,10 @@ def beta(a, b, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def shuffle(x, /):
+def shuffle(x, axis=0, /):
     if isinstance(x, int):
         x = ivy.arange(x)
-    return ivy.shuffle(x)
+    return ivy.shuffle(x, axis)
 
 
 @to_ivy_arrays_and_back
@@ -110,3 +110,26 @@ def chisquare(df, size=None):
         df = df * ivy.ones(size)
 
     return ivy.gamma(df / 2, 2, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def lognormal(mean=0.0, sigma=1.0, size=None):
+    ret = ivy.exp(ivy.random_normal(mean=mean, std=sigma, shape=size, dtype="float64"))
+    return ret
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def negative_binomial(n, p, size=None):
+    if p <= 0 or p >= 1:
+        raise ValueError("p must be in the interval (0, 1)")
+    if n <= 0:
+        raise ValueError("n must be strictly positive")
+    # numpy implementation uses scale = (1 - p) / p
+    scale = (1 - p) / p
+    # poisson requires shape to be a tuple
+    if isinstance(size, int):
+        size = (size,)
+    lambda_ = ivy.gamma(n, scale, shape=size)
+    return ivy.poisson(lam=lambda_, shape=size)
