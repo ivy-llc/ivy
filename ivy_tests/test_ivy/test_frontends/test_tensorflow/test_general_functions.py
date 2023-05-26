@@ -1931,3 +1931,55 @@ def test_tensorflow_unique(
         fn_tree=fn_tree,
         on_device=on_device,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.while_loop",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=10,
+        shared_dtype=True,
+        min_value=-100,
+        max_value=100,
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_tensorflow_while_loop(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    def _test_cond_fn(x):
+        def any_negative_real(arr):
+            for elem in arr:
+                if isinstance(elem, (int, float)) and elem < 0:
+                    return True
+                elif isinstance(elem, complex):
+                    return False
+                elif isinstance(elem, (list, tuple)):
+                    if any_negative_real(elem):
+                        return True
+            return False
+
+        return any_negative_real(x)
+
+    def _test_body_fn(x):
+        return x + 1
+
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        cond=_test_cond_fn,
+        body=_test_body_fn,
+        loop_vars=(x[0],),
+    )

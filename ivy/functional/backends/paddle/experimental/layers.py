@@ -2,6 +2,7 @@
 from typing import Optional, Union, Tuple, Literal, Sequence
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.functional.ivy.layers import _handle_padding
 
 # local
 
@@ -16,7 +17,31 @@ def max_pool1d(
     data_format: str = "NWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = x.dtype
+    x = x.astype("float64")
+    if isinstance(strides, int):
+        strides = (strides,)
+    elif len(strides) == 1:
+        strides = (strides[0],)
+
+    if isinstance(kernel, int):
+        kernel = (kernel,)
+    elif len(kernel) == 1:
+        kernel = (kernel[0],)
+
+    if data_format == "NWC":
+        x = paddle.transpose(x, perm=(0, 2, 1))
+    x_shape = x.shape[2]
+    pad_w = _handle_padding(x_shape, strides[0], kernel[0], padding)
+    x = paddle.nn.functional.pad(
+        x, pad=[pad_w // 2, pad_w - pad_w // 2], value=float("-inf"), data_format="NCL"
+    )
+
+    res = paddle.nn.functional.max_pool1d(x, kernel, strides, padding="valid")
+
+    if data_format == "NWC":
+        res = paddle.transpose(res, perm=(0, 2, 1))
+    return res.astype(dtype)
 
 
 def max_pool2d(
