@@ -5,7 +5,8 @@ Superset Behaviour
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
 .. _`superset behavior forum`: https://discord.com/channels/799879767196958751/1028296822386610196
-.. _`handle_mixed_function`: https://github.com/unifyai/ivy/blob/6a57477daa87e3b3c6d157f10b935ba4fa21c39f/ivy/func_wrapper.py#L923
+.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/functional/backends/torch/experimental/layers.py#L735
+.. _`handle_mixed_function`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L980
 
 When implementing functions in Ivy, whether they are primary, compositional or mixed, we are constantly faced with the question: which backend implementation should Ivy most closely follow?
 
@@ -211,21 +212,10 @@ But there are a few considerations to be made,
 As a workaround, we can simply make use of the backend-specific implementations for a certain number of dimensions and modes for each backend, and then have a general compositional implementation which covers all the remaining cases.
 This will make sure that we don't introduce any inefficiencies and also avoid re-implementation for all the backends.
 
-Ivy allows this using the `handle_mixed_function`_ wrapper on the backend-specific implementation. So the :code:`torch` backend implementation of :func:`interpolate` would look like the following,
+Ivy allows this using the `partial_mixed_handler`_ attribute on the backend-specific implementation. So the :code:`torch` backend implementation of :func:`interpolate` would look like the following,
 
 .. code-block:: python
 
-    @handle_mixed_function(
-        lambda *args, mode="linear", **kwargs: mode
-        not in [
-            "tf_area",
-            "bicubic_tensorflow",
-            "mitchellcubic",
-            "lanczos3",
-            "lanczos5",
-            "gaussian",
-        ]
-    )
     def interpolate(
         x: torch.Tensor,
         size: Union[Sequence[int], int],
@@ -261,6 +251,17 @@ Ivy allows this using the `handle_mixed_function`_ wrapper on the backend-specif
             recompute_scale_factor=recompute_scale_factor,
         )
 
+
+    interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
+        "tf_area",
+        "bicubic_tensorflow",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]
+
+When the backend is set, we use this attribute to apply the `handle_mixed_function`_ decorator to the function.
 The :code:`@handle_mixed_function` accepts a function as an input that receives the arguments and keyword arguments passed to the backend-specific implementation.
 The input function is expected to be a boolean function where we'd use the backend-specific implementation if :code:`True` and the compositional implementation if :code:`False`.
 This provides the flexibility to add any custom logic based on the use-case for maximal use of framework-specific implementations while achieving superset generalization.

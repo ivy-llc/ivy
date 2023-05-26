@@ -374,6 +374,12 @@ class Tensor:
     def floor(self, *, out=None):
         return torch_frontend.floor(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def not_equal(self, other, *, out=None):
+        return torch_frontend.not_equal(self, other, out=out)
+
+    ne = not_equal
+
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
@@ -520,9 +526,10 @@ class Tensor:
 
         return torch_frontend.tensor(ivy.expand(self.ivy_array, tuple(size)))
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def expand_as(self, other):
         return self.expand(
-            ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
+            size=ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
         )
 
     def detach(self):
@@ -790,7 +797,9 @@ class Tensor:
 
     def masked_fill(self, mask, value):
         # TODO: replace with torch_frontend.where when it's added
-        return torch_frontend.tensor(ivy.where(mask, value, self))
+        return torch_frontend.tensor(
+            torch_frontend.where(mask, value, self), dtype=self.dtype
+        )
 
     def masked_fill_(self, mask, value):
         self.ivy_array = self.masked_fill(mask, value).ivy_array
@@ -885,6 +894,9 @@ class Tensor:
 
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
+
+    def addr(self, vec1, vec2, *, beta=1, alpha=1, out=None):
+        return torch_frontend.addr(self, vec1, vec2, beta=beta, alpha=alpha, out=out)
 
     # Special Methods #
     # -------------------#

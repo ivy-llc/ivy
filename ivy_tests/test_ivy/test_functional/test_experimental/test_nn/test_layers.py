@@ -17,6 +17,7 @@ def test_max_pool1d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -24,6 +25,7 @@ def test_max_pool1d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -489,6 +491,7 @@ def test_fft(
     training=st.booleans(),
     data_format=st.sampled_from(["NWC", "NCW"]),
     test_gradients=st.just(False),
+    test_values=st.just(False),
 )
 def test_dropout1d(
     *,
@@ -508,8 +511,8 @@ def test_dropout1d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
-        test_values=False,
         x=x[0],
         prob=prob,
         training=training,
@@ -540,6 +543,7 @@ def test_dropout1d(
     data_format=st.sampled_from(["NCDHW", "NDHWC"]),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
+    test_values=st.just(False),
 )
 def test_dropout3d(
     *,
@@ -560,7 +564,6 @@ def test_dropout3d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
-        test_values=False,
         x=x[0],
         prob=prob,
         training=training,
