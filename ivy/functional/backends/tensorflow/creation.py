@@ -95,7 +95,7 @@ def asarray(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     def _tf_to_tensor(x, dtype):
-        if isinstance(input, (tf.Tensor, tf.Variable, tf.TensorShape)):
+        if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorShape)):
             return tf.cast(x, dtype) if dtype is not None else x
         if dtype is None:
             dtype = x.dtype if hasattr(x, "dtype") else ivy.default_dtype(item=x)
