@@ -43,6 +43,7 @@ def test_vorbis_window(
         dtype=dtype[0],
     )
 
+
 # TODO: fix return precision problem when dtype=bfloat16
 # hann_window
 @handle_test(

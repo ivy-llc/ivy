@@ -7,7 +7,6 @@ import ivy
 
 
 class _ArrayWithNormsExperimental(abc.ABC):
-
     def l1_normalize(
         self: ivy.Array,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -39,7 +38,6 @@ class _ArrayWithNormsExperimental(abc.ABC):
                    [0.4286, 0.5714]])
         """
         return ivy.l1_normalize(self, axis=axis, out=out)
-
 
     def l2_normalize(
         self: ivy.Array,

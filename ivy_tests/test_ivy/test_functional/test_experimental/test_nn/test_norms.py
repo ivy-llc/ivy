@@ -1,9 +1,10 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+
 
 @handle_test(
     fn_tree="functional.ivy.experimental.l1_normalize",
@@ -110,7 +111,6 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
         momentum,
         data_format,
     )
-
 
 
 @handle_test(

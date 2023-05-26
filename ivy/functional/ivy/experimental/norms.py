@@ -51,7 +51,6 @@ def l1_normalize(
     return current_backend(x).l1_normalize(x, axis=axis, out=out)
 
 
-
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
