@@ -13,7 +13,7 @@ from . import backend_version
 # ------------------ #
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def argmax(
     x: torch.Tensor,
     /,
@@ -41,7 +41,7 @@ def argmax(
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def argmin(
     x: torch.Tensor,
     /,

@@ -5,6 +5,7 @@ from hypothesis import strategies as st
 import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import _statistical_dtype_values
 
 
 # Helpers #
@@ -12,69 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 
 @st.composite
-def statistical_dtype_values(draw, *, function):
-    large_abs_safety_factor = 2
-    small_abs_safety_factor = 2
-    if function in ["mean", "median", "std", "var"]:
-        large_abs_safety_factor = 24
-        small_abs_safety_factor = 24
-    dtype, values, axis = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("float"),
-            large_abs_safety_factor=large_abs_safety_factor,
-            small_abs_safety_factor=small_abs_safety_factor,
-            safety_factor_scale="log",
-            min_num_dims=1,
-            max_num_dims=5,
-            min_dim_size=2,
-            valid_axis=True,
-            allow_neg_axes=False,
-            min_axes_size=1,
-        )
-    )
-    shape = values[0].shape
-    size = values[0].size
-    max_correction = np.min(shape)
-    if function == "var" or function == "std":
-        if size == 1:
-            correction = 0
-        elif isinstance(axis, int):
-            correction = draw(
-                helpers.ints(min_value=0, max_value=shape[axis] - 1)
-                | helpers.floats(min_value=0, max_value=shape[axis] - 1)
-            )
-            return dtype, values, axis, correction
-        else:
-            correction = draw(
-                helpers.ints(min_value=0, max_value=max_correction - 1)
-                | helpers.floats(min_value=0, max_value=max_correction - 1)
-            )
-        return dtype, values, axis, correction
-    if function == "quantile":
-        q = draw(
-            helpers.array_values(
-                dtype=helpers.get_dtypes("float"),
-                shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
-                min_value=0.0,
-                max_value=1.0,
-                exclude_max=False,
-                exclude_min=False,
-            )
-        )
-
-        interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
-        interpolation = draw(
-            helpers.list_of_size(
-                x=st.sampled_from(interpolation_names),
-                size=1,
-            )
-        )
-        return dtype, values, axis, interpolation, q
-    return dtype, values, axis
-
-
-@st.composite
-def test_histogram_helper(draw):
+def _histogram_helper(draw):
     dtype_input = draw(st.sampled_from(draw(helpers.get_dtypes("float"))))
     bins = draw(
         helpers.array_values(
@@ -188,18 +127,15 @@ def test_histogram_helper(draw):
     )
 
 
-# TODO: - Issue: https://github.com/tensorflow/probability/issues/1712
-#       - Fix: https://github.com/tensorflow/probability/commit/bcca631f01c855425710fe3
-#       b8947192b71e310dd
-#       - Error message from Tensorflow: 'Number of dimensions of `x` and `weights`
+# TODO: - Error message from Tensorflow: 'Number of dimensions of `x` and `weights`
 #       must coincide. Found: x has <nd1>, weights has <nd2>'
 #       - Error description: typo that throws unintended exceptions when using both
 #       weights and multiple axis.
-#       - This test is going to be fixed in the next tensorflow_probability release by
-#       the commit when it merges.
+#       - fixed in TFP 0.20 release.
+#       - Test helper needs to be modified to handle this case in older verions.
 @handle_test(
     fn_tree="functional.ivy.experimental.histogram",
-    values=test_histogram_helper(),
+    values=_histogram_helper(),
     test_gradients=st.just(False),
 )
 def test_histogram(
@@ -244,7 +180,7 @@ def test_histogram(
 
 @handle_test(
     fn_tree="functional.ivy.experimental.median",
-    dtype_x_axis=statistical_dtype_values(function="median"),
+    dtype_x_axis=_statistical_dtype_values(function="median"),
     keep_dims=st.booleans(),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
@@ -276,7 +212,7 @@ def test_median(
 # nanmean
 @handle_test(
     fn_tree="functional.ivy.experimental.nanmean",
-    dtype_x_axis=statistical_dtype_values(function="nanmean"),
+    dtype_x_axis=_statistical_dtype_values(function="nanmean"),
     keep_dims=st.booleans(),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
@@ -308,10 +244,50 @@ def test_nanmean(
     )
 
 
+@st.composite
+def _quantile_helper(draw):
+    large_abs_safety_factor = 2
+    small_abs_safety_factor = 2
+    dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("float"),
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale="log",
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=2,
+            valid_axis=True,
+            allow_neg_axes=False,
+            min_axes_size=1,
+            force_int_axis=True,
+        )
+    )
+    q = draw(
+        helpers.array_values(
+            dtype=helpers.get_dtypes("float"),
+            shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
+            min_value=0.0,
+            max_value=1.0,
+            exclude_max=False,
+            exclude_min=False,
+        )
+    )
+
+    interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
+    interpolation = draw(
+        helpers.list_of_size(
+            x=st.sampled_from(interpolation_names),
+            size=1,
+        )
+    )
+    return dtype, values, axis, interpolation, q
+
+
 # quantile
 @handle_test(
     fn_tree="functional.ivy.experimental.quantile",
-    dtype_and_x=statistical_dtype_values(function="quantile"),
+    dtype_and_x=_quantile_helper(),
     keep_dims=st.booleans(),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
@@ -390,7 +366,7 @@ def test_corrcoef(
 def bincount_dtype_and_values(draw):
     dtype_and_x = draw(
         helpers.dtype_and_values(
-            available_dtypes=["int32"],
+            available_dtypes=helpers.get_dtypes("integer"),
             num_arrays=2,
             shared_dtype=True,
             min_num_dims=1,
@@ -436,4 +412,46 @@ def test_bincount(
         x=x[0],
         weights=x[1],
         minlength=min_length,
+    )
+
+
+# igamma
+@handle_test(
+    fn_tree="functional.ivy.experimental.igamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32"],
+        num_arrays=2,
+        shared_dtype=True,
+        abs_smallest_val=1e-5,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=2,
+        max_value=100,
+        allow_nan=False,
+    ),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_igamma(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        rtol_=1e-04,
+        a=x[0],
+        x=x[1],
     )

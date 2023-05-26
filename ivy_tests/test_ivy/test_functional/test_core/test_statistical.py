@@ -7,12 +7,11 @@ from hypothesis import strategies as st, assume
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
-
 @st.composite
-def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
+def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
-    if any(ele in function for ele in ["mean", "std", "var", "nanstd"]):
+    if any(ele in function for ele in ["mean", "std", "var"]):
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
@@ -29,12 +28,13 @@ def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
             min_axes_size=1,
             min_value=min_value,
             max_value=max_value,
+		    allow_nan=True if "nan" in function else False,
         )
     )
     shape = values[0].shape
     size = values[0].size
     max_correction = np.min(shape)
-    if any(ele in function for ele in ["std", "var", "nanstd"]):
+    if any(ele in function for ele in ["std", "var"]):
         if size == 1:
             correction = 0
         elif isinstance(axis, int):
@@ -53,7 +53,7 @@ def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
 
 
 @st.composite
-def _get_castable_dtype(draw):
+def _get_castable_dtype(draw, min_value=None, max_value=None):
     available_dtypes = helpers.get_dtypes("numeric")
     shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
     dtype, values = draw(
@@ -64,6 +64,8 @@ def _get_castable_dtype(draw):
             small_abs_safety_factor=24,
             safety_factor_scale="log",
             shape=shape,
+            min_value=min_value,
+            max_value=max_value,
         )
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
@@ -76,7 +78,7 @@ def _get_castable_dtype(draw):
 # min
 @handle_test(
     fn_tree="functional.ivy.min",
-    dtype_and_x=statistical_dtype_values(function="min"),
+    dtype_and_x=_statistical_dtype_values(function="min"),
     keep_dims=st.booleans(),
 )
 def test_min(
@@ -106,7 +108,7 @@ def test_min(
 # max
 @handle_test(
     fn_tree="functional.ivy.max",
-    dtype_and_x=statistical_dtype_values(function="max"),
+    dtype_and_x=_statistical_dtype_values(function="max"),
     keep_dims=st.booleans(),
 )
 def test_max(
@@ -136,7 +138,7 @@ def test_max(
 # mean
 @handle_test(
     fn_tree="functional.ivy.mean",
-    dtype_and_x=statistical_dtype_values(function="mean"),
+    dtype_and_x=_statistical_dtype_values(function="mean"),
     keep_dims=st.booleans(),
 )
 def test_mean(
@@ -168,7 +170,7 @@ def test_mean(
 # var
 @handle_test(
     fn_tree="functional.ivy.var",
-    dtype_and_x=statistical_dtype_values(function="var"),
+    dtype_and_x=_statistical_dtype_values(function="var"),
     keep_dims=st.booleans(),
 )
 def test_var(
@@ -277,7 +279,7 @@ def test_sum(
 # std
 @handle_test(
     fn_tree="functional.ivy.std",
-    dtype_and_x=statistical_dtype_values(function="std"),
+    dtype_and_x=_statistical_dtype_values(function="std"),
     keep_dims=st.booleans(),
 )
 def test_std(
@@ -347,6 +349,54 @@ def test_cumsum(
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.cummax",
+    dtype_x_axis_castable=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=6,
+        min_value=-100,
+        max_value=100,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+)
+def test_cummax(
+    *,
+    dtype_x_axis_castable,
+    exclusive,
+    reverse,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis = dtype_x_axis_castable
+    if "torch" in backend_fw.__name__:
+        assume(not test_flags.as_variable[0])
+        assume(not test_flags.test_gradients)
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+        rtol_=1e-1,
+        atol_=1e-1,
+    )
+
+
 # cumprod
 @handle_test(
     fn_tree="functional.ivy.cumprod",
@@ -392,6 +442,44 @@ def test_cumprod(
         dtype=castable_dtype,
         rtol_=1e-1,
         atol_=1e-1,
+    )
+
+
+# cummin
+@handle_test(
+    fn_tree="functional.ivy.cummin",
+    dtype_x_axis_castable=_get_castable_dtype(),
+    reverse=st.booleans(),
+)
+def test_cummin(
+    *,
+    dtype_x_axis_castable,
+    reverse,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    # ToDo: set as_variable_flags as the parameter generated by test_cummin once
+    # this issue is marked as completed https://github.com/pytorch/pytorch/issues/75733
+    if "torch" in backend_fw.__name__:
+        assume(not test_flags.as_variable[0])
+        assume(not test_flags.test_gradients)
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=[input_dtype],
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        reverse=reverse,
+        dtype=castable_dtype,
+        rtol_=1e-4,
+        atol_=1e-4,
     )
 
 

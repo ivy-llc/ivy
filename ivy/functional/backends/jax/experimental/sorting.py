@@ -8,18 +8,20 @@ from ivy.functional.backends.jax import JaxArray
 from . import backend_version
 
 
-# msort
-def msort(
-    a: Union[JaxArray, list, tuple],
+# invert_permutation
+def invert_permutation(
+    x: Union[JaxArray, list, tuple],
     /,
-    *,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.msort(a)
+    sorted_indices = jnp.argsort(x)
+    inverse = jnp.zeros_like(sorted_indices)
+    inverse = inverse.at[sorted_indices].set(jnp.arange(len(x)))
+    inverse_permutation = jnp.argsort(inverse)
+    return inverse_permutation
 
 
 # lexsort
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.10 and below": ("bfloat16",)}, backend_version)
 def lexsort(
     keys: JaxArray,
     /,
