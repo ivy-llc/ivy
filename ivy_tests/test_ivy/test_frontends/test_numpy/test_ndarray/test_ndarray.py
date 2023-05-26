@@ -2989,38 +2989,53 @@ def test_numpy_instance_mod__(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="trace",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-    ),
-    offset=st.integers(min_value=0, max_value=0),
-    axis1=st.integers(min_value=0, max_value=0),
-    axis2=st.integers(min_value=1, max_value=1),
+    dtype_and_x=dtype_values_and_axes(),
+
+    # helpers.dtype_and_values(
+    # available_dtypes=helpers.get_dtypes("valid"),
+    # min_num_dims=2,
+    # max_num_dims=5,
+    # min_dim_size=2,
+    # max_dim_size=10,
+    # large_abs_safety_factor=2,
+    # small_abs_safety_factor=2,
+    # safety_factor_scale="log",
+    # ),
+    offset=st.integers(min_value=0, max_value=10),
+    # axis1=st.integers(min_value=0, max_value=5),
+    # axis2=st.integers(min_value=1, max_value=7),
 )
 def test_numpy_trace(
-    dtype_and_x,
+    dtype_x_and_axes,
     offset,
-    axis1,
-    axis2,
     frontend,
     on_device,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
+    input_dtypes, x, axis1, axis2 = dtype_x_and_axes
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_all_as_kwargs_np={
+            "axis1": axis1,
+            "axis2": axis2,
+        },
+        offset=offset,
         frontend=frontend,
         on_device=on_device,
-        a=x[0],
-        offset=offset,
-        axis1=axis1,
-        axis2=axis2,
     )
+    # dtype, x = dtype_and_x
+    # helpers.test_frontend_function(
+    # input_dtypes=dtype,
+    # frontend=frontend,
+    # on_device=on_device,
+    # a=x[0],
+    # offset=offset,
+    # axis1=axis1,
+    # axis2=axis2,
+    # )
 
 
 # ptp
