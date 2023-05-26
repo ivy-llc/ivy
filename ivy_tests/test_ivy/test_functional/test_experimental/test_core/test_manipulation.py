@@ -90,37 +90,6 @@ def test_moveaxis(
     )
 
 
-# ndenumerate
-@handle_test(
-    fn_tree="functional.ivy.experimental.ndenumerate",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-    ),
-)
-def test_ndenumerate(dtype_and_x):
-    values = dtype_and_x[1][0]
-    for (index1, x1), (index2, x2) in zip(
-        np.ndenumerate(values), ivy.ndenumerate(values)
-    ):
-        assert index1 == index2 and x1 == x2
-
-
-# ndindex
-@handle_test(
-    fn_tree="functional.ivy.experimental.ndindex",
-    dtype_x_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        ret_shape=True,
-    ),
-)
-def test_ndindex(dtype_x_shape):
-    shape = dtype_x_shape[2]
-    for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
-        assert index1 == index2
-
-
 # heaviside
 @handle_test(
     fn_tree="functional.ivy.experimental.heaviside",
@@ -348,33 +317,30 @@ def test_rot90(
 # top_k
 @handle_test(
     fn_tree="functional.ivy.experimental.top_k",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
-        min_dim_size=4,
-        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
     ),
-    axis=helpers.ints(min_value=-1, max_value=0),
     k=helpers.ints(min_value=1, max_value=4),
     largest=st.booleans(),
+    sorted=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_top_k(
     *,
-    dtype_and_x,
-    axis,
+    dtype_x_axis,
     k,
     largest,
+    sorted,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, axis = dtype_x_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -386,6 +352,7 @@ def test_top_k(
         k=k,
         axis=axis,
         largest=largest,
+        sorted=sorted,
     )
 
 
@@ -1158,5 +1125,45 @@ def test_associative_scan(
         elems=elems,
         fn=fn,
         reverse=reverse,
+        axis=axis,
+    )
+
+
+# unique_consecutive
+@handle_test(
+    fn_tree="unique_consecutive",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=2,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    none_axis=st.booleans(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_unique_consecutive(
+    *,
+    dtype_x_axis,
+    none_axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, axis = dtype_x_axis
+    if none_axis:
+        axis = None
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
         axis=axis,
     )

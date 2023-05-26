@@ -10,30 +10,9 @@ from . import backend_version
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
-
-
-@_scalar_output_to_0d_array
-def lcm(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.abs(
-        np.lcm(
-            x1,
-            x2,
-            out=out,
-        )
-    )
-
-
-lcm.support_native_out = True
 
 
 @_scalar_output_to_0d_array
