@@ -237,13 +237,6 @@ def test_paddle_full_like(
         fill_value=fill,
         dtype=dtype_to_cast,
     )
-  
-@st.composite
-def fetch_dtype(draw):
-    dtype = draw(helpers.get_dtypes("float", full=False) 
-                 | helpers.get_dtypes("integer", full=False)
-                 | helpers.get_dtypes("bool", full=False))
-    return dtype
 
 
 # empty
