@@ -9,7 +9,7 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def argsort(
@@ -33,7 +33,7 @@ def argsort(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def sort(
@@ -59,7 +59,7 @@ def sort(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def searchsorted(
@@ -115,11 +115,8 @@ def searchsorted(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8",
-                                 "uint8",
-                                 "int16",
-                                 "float16",
-                                 "complex")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("int8", "uint8", "int16", "float16", "complex")}},
+    backend_version,
 )
 def msort(
     a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None

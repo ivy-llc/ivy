@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 from numbers import Number
+from collections import namedtuple
 import numpy as np
 
 # local
@@ -439,3 +440,46 @@ def concat_from_sequence(
     elif new_axis == 1:
         ret = np.stack(input_sequence, axis=axis)
         return ret
+
+
+def unique_consecutive(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    x_shape = None
+    if axis is None:
+        x_shape = x.shape
+        x = x.flatten()
+        axis = -1
+    if axis < 0:
+        axis += x.ndim
+    sub_arrays = np.split(
+        x,
+        np.where(
+            np.any(
+                np.diff(x, axis=axis) != 0,
+                axis=tuple(i for i in np.arange(x.ndim) if i != axis),
+            )
+        )[0]
+        + 1,
+        axis=axis,
+    )
+    output = np.concatenate(
+        [np.unique(sub_array, axis=axis) for sub_array in sub_arrays],
+        axis=axis,
+    )
+    counts = np.array([sub_array.shape[axis] for sub_array in sub_arrays])
+    inverse_indices = np.repeat(np.arange(len(counts)), counts)
+    if x_shape:
+        inverse_indices = np.reshape(inverse_indices, x_shape)
+    return Results(
+        output.astype(x.dtype),
+        inverse_indices,
+        counts,
+    )
