@@ -83,7 +83,7 @@ except ImportError:
 # Test Function Helpers ###############
 
 
-def _find_instance_in_args(args, array_indices, mask):
+def _find_instance_in_args(backend: str, args, array_indices, mask):
     """
     Find the first element in the arguments that is considered to be an instance of
     Array or Container class.
@@ -109,9 +109,10 @@ def _find_instance_in_args(args, array_indices, mask):
         if a:
             break
     instance_idx = array_indices[i]
-    instance = ivy.index_nest(args, instance_idx)
-    new_args = ivy.copy_nest(args, to_mutable=False)
-    ivy.prune_nest_at_index(new_args, instance_idx)
+    with update_backend(backend) as ivy_backend:
+        instance = ivy_backend.index_nest(args, instance_idx)
+        new_args = ivy_backend.copy_nest(args, to_mutable=False)
+        ivy_backend.prune_nest_at_index(new_args, instance_idx)
     return instance, new_args
 
 
@@ -292,11 +293,11 @@ def test_function(
 
         if any(args_instance_mask):
             instance, args = _find_instance_in_args(
-                args, arrays_args_indices, args_instance_mask
+                fw, args, arrays_args_indices, args_instance_mask
             )
         else:
             instance, kwargs = _find_instance_in_args(
-                kwargs, arrays_kwargs_indices, kwargs_instance_mask
+                fw, kwargs, arrays_kwargs_indices, kwargs_instance_mask
             )
 
         if test_flags.test_compile:
