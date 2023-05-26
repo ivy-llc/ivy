@@ -94,63 +94,23 @@ def asarray(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        if isinstance(obj, tf.TensorShape):
-            if dtype is None:
-                return tf.convert_to_tensor(obj.as_list())
-            else:
-                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-                return tf.convert_to_tensor(obj.as_list(), dtype=dtype)
-        if copy:
-            if dtype is None and isinstance(obj, tf.Tensor):
-                return tf.identity(obj)
-            if dtype is None and not isinstance(obj, tf.Tensor):
-                try:
-                    dtype = ivy.default_dtype(item=obj, as_native=True)
-                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
-                except (TypeError, ValueError):
-                    dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
-                    tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
-                        dtype=dtype,
-                    )
-                return tf.identity(tf.cast(tensor, dtype))
-            else:
-                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
-                try:
-                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
-                except (TypeError, ValueError):
-                    tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
-                        dtype=dtype,
-                    )
-                return tf.identity(tf.cast(tensor, dtype))
-        else:
-            if dtype is None and isinstance(obj, tf.Tensor):
-                return obj
-            if dtype is None and not isinstance(obj, tf.Tensor):
-                if isinstance(obj, np.ndarray):
-                    dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-                    return tf.convert_to_tensor(obj, dtype=dtype)
+    def _tf_to_tensor(x, dtype):
+        if isinstance(input, (tf.Tensor, tf.Variable, tf.TensorShape)):
+            return tf.cast(x, dtype) if dtype is not None else x
+        if dtype is None:
+                dtype = x.dtype if hasattr(x, "dtype") else ivy.default_dtype(item=x)
+            try:
+                ret = tf.convert_to_tensor(x, dtype)
+            except (TypeError, ValueError):
+                ret = tf.cast(x, dtype)
+            return ret
 
-                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
-                return tf.convert_to_tensor(
-                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype), shallow=False),
-                    dtype=dtype,
-                )
-            else:
-                if dtype is None:
-                    dtype = ivy.as_native_dtype(
-                        ivy.default_dtype(dtype=dtype, item=obj)
-                    )
-                try:
-                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
-                except (TypeError, ValueError):
-                    tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
-                        dtype=dtype,
-                    )
-                return tf.cast(tensor, dtype)
+    with tf.device(device):
+        tensor = _tf_to_tensor(
+            ivy.nested_map(obj, lambda x: _tf_to_tensor(x, dtype), shallow=False),
+            dtype=dtype,
+        )
+        return tf.identity(tensor) if copy else tensor
 
 
 def empty(
