@@ -814,25 +814,61 @@ def ifft(
 
 
 def stft(
-    signal: np.ndarray,
+    x: np.ndarray,
+    input: np.ndarray,
+    signal: Union[np.ndarray, np.Variable],
     frame_step: Union[int, Tuple[int]],
+    n_fft: Union[int, Tuple[int]],
     /,
     *,
-    onesided: bool = False,
-    window: Optional[Union[int, Tuple[int]]] = None,
+    axis: int = 1,
+    onesided:Optional[bool] = False,
+    fs: Optional[float] = 1.0,
+    hop_length: Optional[Union[int, Tuple[int]]] = None,
+    win_length: Optional[Union[int, Tuple[int]]] = None,
+    dft_length: Optional[Union[int, Tuple[int]]] = None,
+    window: Optional[np.ndarray, str, int, Tuple[int]] = None,
     frame_length: Optional[Union[int, Tuple[int]]] = None,
-    norm: str = "backward",
+    nperseg: Optional[int] = 256,
+    noverlap: Optional[int] = None,
+    center: Optional[bool] = True,
+    pad_mode: Optional[str] = "reflect",
+    normalized: Optional[bool] = False,
+    nfft: Optional[int] = None,
+    detrend: Optional[str] = None,
+    return_onesided: Optional[bool] = True,
+    return_complex: Optional[bool] = True,
+    boundary: Optional[str] = None,
+    padded: Optional[bool] = True,
+    name: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if window == 0:
-        nstfts = ((signal.shape[1] - length) // step) + 1
-        for i in range(nstfts):
-            start = i * step
-            stop = i * step + length
-            complex_out = np.fft.fft(signal[0, start:stop, 0])[0:onesided_length]
-            output[0, i] = np.stack((complex_out.real, complex_out.imag), axis=1)
-            res = np.transpose(res, output[0, i])
-        return res
-    else:
-        return np.stft(signal, frame_step, window, frame_length)
+    return np.stft(
+        x,
+        input,
+        signal,
+        axis,
+        frame_step,
+        n_fft,
+        onesided,
+        fs,
+        hop_length,
+        win_length,
+        dft_length,
+        window,
+        frame_length,
+        nperseg,
+        noverlap,
+        center,
+        pad_mode,
+        normalized,
+        nfft,
+        detrend,
+        return_onesided,
+        return_complex,
+        boundary,
+        padded,
+        name,
+        out,
+    )
         
