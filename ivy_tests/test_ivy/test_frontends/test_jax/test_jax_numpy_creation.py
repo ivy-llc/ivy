@@ -780,6 +780,29 @@ def test_jax_numpy_double(
     )
 
 
+# bool_
+@handle_frontend_test(
+    fn_tree="jax.numpy.bool_",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("bool")),
+)
+def test_jax_numpy_bool_(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.geomspace",
     dtype_start_stop=_get_dtype_and_range(),

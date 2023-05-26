@@ -526,9 +526,10 @@ class Tensor:
 
         return torch_frontend.tensor(ivy.expand(self.ivy_array, tuple(size)))
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def expand_as(self, other):
         return self.expand(
-            ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
+            size=ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
         )
 
     def detach(self):
@@ -796,7 +797,9 @@ class Tensor:
 
     def masked_fill(self, mask, value):
         # TODO: replace with torch_frontend.where when it's added
-        return torch_frontend.tensor(ivy.where(mask, value, self))
+        return torch_frontend.tensor(
+            torch_frontend.where(mask, value, self), dtype=self.dtype
+        )
 
     def masked_fill_(self, mask, value):
         self.ivy_array = self.masked_fill(mask, value).ivy_array
