@@ -4,11 +4,13 @@ import itertools
 import string
 import builtins
 import math
+import functools
 
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.jax import to_numpy as jax_to_numpy
 
 _min = builtins.min
 _slice = builtins.slice
@@ -581,14 +583,14 @@ def top_k(operand, k):
     return [values, indices]
 
 
-def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
+def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
     def _pad(arr, pads, pad_value):
         out = ivy.astype(
             ivy.pad(
                 arr,
                 ivy.maximum(0, pads).to_list(),
                 mode="constant",
-                constant_values=pad_value,
+                constant_values=ivy.to_scalar(pad_value),
             ),
             arr.dtype,
         )
@@ -632,15 +634,15 @@ def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
     return view, view_axes, rhs_axes, out_axes
 
 
-def _dilate(operand, factors, fill_value=0):
+def _dilate(operand, factors, fill_value):
     outspace = list(operand.shape[:2]) + [
         shape + (factors[i] - 1) * (shape - 1)
         for i, shape in enumerate(operand.shape[2:])
     ]
     out = ivy.full(
         outspace,
-        ivy.to_scalar(ivy.array(fill_value, dtype=operand.dtype)),
-        dtype=operand.dtype,
+        ivy.to_scalar(fill_value),
+        dtype=fill_value.dtype,
     )
     lhs_slices = tuple(_slice(None, None, step) for step in factors)
     out[(_slice(None),) * 2 + lhs_slices] = operand
@@ -664,27 +666,47 @@ def _padtype_to_pads(in_shape, filter_shape, window_strides, padding):
         return [(0, 0)] * len(in_shape)
 
 
-def _make_reducer(py_binop, init_val):
-    def _delete(seq, pos):
-        return [v for i, v in enumerate(seq) if i != pos]
-
-    def _reducer(operand, axis=0):
-        axis = len(operand.shape) + axis if axis < 0 else axis
-        axis = range(operand.ndim) if axis is None else axis
-        result = ivy.full(
-            _delete(operand.shape, axis),
-            ivy.to_scalar(init_val),
-            dtype=operand.dtype,
-        )
-        operand, result = operand.to_numpy(), result.to_numpy()
-        for idx, _ in ivy.ndenumerate(operand):
-            out_idx = tuple(_delete(idx, axis))
-            result[out_idx] = py_binop(result[out_idx], operand[idx])
-        return result
-
-    return _reducer
+# ToDo: replace with ivy.reduce as soon as it's been implemented
+def _custom_reduce(operand, init_val, func):
+    init_val = init_val.to_numpy() if ivy.is_array(init_val) else init_val
+    op_parts = ivy.moveaxis(operand, -1, 0).reshape((operand.shape[-1], -1)).to_numpy()
+    result = functools.reduce(func, op_parts, init_val)
+    result = jax_to_numpy(result)
+    result = ivy.reshape(result, operand.shape[:-1])
+    return result
 
 
+identities = {
+    "max": -float("inf"),
+    "min": float("inf"),
+    "add": 0,
+    "mul": 1,
+    "multiply": 1,
+    "logical_and": True,
+    "logical_or": False,
+}
+
+
+def _cast_init(init, dtype):
+    if not ivy.is_bool_dtype(dtype) and ivy.isinf(init):
+        if ivy.is_float_dtype(dtype):
+            info = ivy.finfo(dtype)
+        else:
+            info = ivy.iinfo(dtype)
+        if "float64" not in str(dtype):
+            init = info.max if init > 0 else info.min
+    return ivy.array(init, dtype=dtype)
+
+
+def _get_identity(func, dtype, init):
+    func_name = func.__name__
+    if func_name in identities:
+        identity = identities[func_name]
+        return _cast_init(identity, dtype)
+    return init
+
+
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def reduce_window(
     operand,
@@ -698,18 +720,19 @@ def reduce_window(
 ):
     # ToDo: add support for window_dilation
     op, dims, strides = operand, window_dimensions, window_strides
-
+    init_value = _cast_init(init_value, op.dtype)
+    identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
         pads = _padtype_to_pads(op.shape, dims, strides, padding)
     else:
         pads = padding
     op = op.reshape((1, 1) + op.shape)
     if base_dilation:
-        op = _dilate(op, base_dilation)
-    view = _conv_view(op, [1, 1] + list(dims), strides, pads)[0]
+        op = _dilate(op, base_dilation, identity)
+    view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
     view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
-    reducer = _make_reducer(computation, init_value)
-    return ivy.array(reducer(view, axis=-1))
+    ret = _custom_reduce(view, init_value, computation)
+    return ret.astype(operand.dtype)
 
 
 @to_ivy_arrays_and_back

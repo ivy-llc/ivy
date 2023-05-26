@@ -238,6 +238,7 @@ def hypot(
     return tf.math.sqrt(tf.math.square(x1) + tf.math.square(x2))
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def allclose(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
