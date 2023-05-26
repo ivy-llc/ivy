@@ -321,6 +321,10 @@ def isfinite(
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.ones_like(x, tf.bool)
+    elif ivy.is_complex_dtype(x):
+        return tf.math.logical_and(
+            tf.math.is_finite(tf.math.real(x)), tf.math.is_finite(tf.math.imag(x))
+        )
     else:
         return tf.math.is_finite(x)
 
@@ -357,6 +361,18 @@ def isnan(
         return tf.zeros_like(x, tf.bool)
     else:
         return tf.math.is_nan(x)
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
+def lcm(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)

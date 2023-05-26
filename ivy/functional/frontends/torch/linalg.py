@@ -24,8 +24,8 @@ def divide(input, other, *, rounding_mode=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def inv(input, *, out=None):
-    return ivy.inv(input, out=out)
+def inv(A, *, out=None):
+    return ivy.inv(A, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -67,15 +67,15 @@ def eigh(a, /, UPLO="L", out=None):
 
 
 @to_ivy_arrays_and_back
-def qr(input, mode="reduced", *, out=None):
+def qr(A, mode="reduced", *, out=None):
     if mode == "reduced":
-        ret = ivy.qr(input, mode="reduced")
+        ret = ivy.qr(A, mode="reduced")
     elif mode == "r":
-        Q, R = ivy.qr(input, mode="r")
+        Q, R = ivy.qr(A, mode="r")
         Q = []
         ret = Q, R
     elif mode == "complete":
-        ret = ivy.qr(input, mode="complete")
+        ret = ivy.qr(A, mode="complete")
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -145,17 +145,17 @@ def svdvals(A, *, driver=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def inv_ex(input, *, check_errors=False, out=None):
+def inv_ex(A, *, check_errors=False, out=None):
     try:
-        inputInv = ivy.inv(input, out=out)
-        info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
+        inputInv = ivy.inv(A, out=out)
+        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
         return inputInv, info
     except RuntimeError as e:
         if check_errors:
             raise RuntimeError(e)
         else:
-            inputInv = input * math.nan
-            info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
+            inputInv = A * math.nan
+            info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
             return inputInv, info
 
 

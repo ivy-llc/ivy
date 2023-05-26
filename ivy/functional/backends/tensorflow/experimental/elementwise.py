@@ -22,18 +22,6 @@ def sinc(
     return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x), x.dtype)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
-def lcm(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
-
-
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -250,6 +238,7 @@ def hypot(
     return tf.math.sqrt(tf.math.square(x1) + tf.math.square(x2))
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def allclose(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],

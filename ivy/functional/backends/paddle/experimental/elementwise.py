@@ -16,25 +16,6 @@ from ivy.functional.backends.paddle.elementwise import _elementwise_helper
 from .. import backend_version
 
 
-def lcm(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    x1_dtype = x1.dtype
-    x2_dtype = x2.dtype
-    if (x1_dtype, x2_dtype) == (paddle.int16, paddle.int16):
-        return paddle.cast(
-            paddle.lcm(paddle.cast(x1, paddle.int32), paddle.cast(x2, paddle.int32)),
-            paddle.int16,
-        )
-    elif x1_dtype != x2_dtype:
-        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return paddle.lcm(x1, x2)
-
-
 @with_supported_dtypes(
     {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
     backend_version,
@@ -172,7 +153,7 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def gcd(
     x1: Union[paddle.Tensor, int, list, tuple],
@@ -358,7 +339,7 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> bool:
-    return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan).squeeze(0)
 
 
 def fix(
