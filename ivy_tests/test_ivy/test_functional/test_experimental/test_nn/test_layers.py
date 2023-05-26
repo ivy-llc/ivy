@@ -791,7 +791,7 @@ def x_and_fft2(draw, dtypes):
     dtype = draw(dtypes)
     x_dim = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+            min_num_dims=1, max_num_dims=4, min_dim_size=2, max_dim_size=100
         )
     )
     x = draw(
@@ -804,31 +804,26 @@ def x_and_fft2(draw, dtypes):
         draw(st.integers(min_fft2_points, 256)),
         draw(st.integers(min_fft2_points, 256)),
     )
-    dim = draw(
-        helpers.get_axis(
-            shape=x_dim, allow_neg=True, allow_none=False, max_size=2, sort_values=True
-        )
-    )
+    dim = draw(st.sampled_from([(0, 1), (-1, -2), (1, 0)]))
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
-    return dtype, x, dim, norm, s
+    return dtype, x, s, dim, norm
 
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft2",
-    d_x_d_n_s=x_and_fft2(helpers.get_dtypes("float_and_complex")),
+    d_x_d_s_n=x_and_fft2(helpers.get_dtypes("float_and_complex")),
     ground_truth_backend="numpy",
     test_gradients=st.just(False),
 )
 def test_fft2(
-    *,
-    d_x_d_n_s,
+    d_x_d_s_n,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, dim, norm, s = d_x_d_n_s
+    dtype, x, s, dim, norm = d_x_d_s_n
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -840,7 +835,7 @@ def test_fft2(
         atol_=1e-2,
         test_gradients=False,
         x=x,
+        s=s,
         dim=dim,
         norm=norm,
-        s=s,
     )
