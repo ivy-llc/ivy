@@ -325,10 +325,6 @@ def test_jax_numpy_resize(
     test_flags,
 ):
     x_dtype, x, new_shape = input_x_shape
-    expected_shape = tuple(new_shape)
-
-    ivy_resized = ivy.reshape(x, expected_shape)
-
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         frontend=frontend,
