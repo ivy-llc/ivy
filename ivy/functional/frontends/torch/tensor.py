@@ -380,6 +380,10 @@ class Tensor:
 
     ne = not_equal
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def equal(self, other):
+        return torch_frontend.f(self, other)
+
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
@@ -526,10 +530,9 @@ class Tensor:
 
         return torch_frontend.tensor(ivy.expand(self.ivy_array, tuple(size)))
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def expand_as(self, other):
         return self.expand(
-            size=ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
+            ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
         )
 
     def detach(self):
@@ -797,9 +800,7 @@ class Tensor:
 
     def masked_fill(self, mask, value):
         # TODO: replace with torch_frontend.where when it's added
-        return torch_frontend.tensor(
-            torch_frontend.where(mask, value, self), dtype=self.dtype
-        )
+        return torch_frontend.tensor(ivy.where(mask, value, self))
 
     def masked_fill_(self, mask, value):
         self.ivy_array = self.masked_fill(mask, value).ivy_array
@@ -1011,7 +1012,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __eq__(self, other):
-        return torch_frontend.equal(self, other)
+        return torch_frontend.eq(self, other)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __gt__(self, other):
