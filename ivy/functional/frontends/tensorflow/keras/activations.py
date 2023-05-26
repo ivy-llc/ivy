@@ -20,7 +20,7 @@ def linear(x):
 
 
 @to_ivy_arrays_and_back
-def relu(x):
+def relu(x, alpha=0.0, max_value=None, threshold=0.0):
     return ivy.relu(x)
 
 
