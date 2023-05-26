@@ -494,9 +494,9 @@ class ndarray:
     
     def __array_wrap__(self, array, context=None, /):
         if context is None:
-            return self.view()
-        else:
             return np_frontend.array(array)
+        else:
+            return ivy.Array(array, context=context)
 
     def __getitem__(self, key, /):
         ivy_args = ivy.nested_map([self, key], _to_ivy_array)
