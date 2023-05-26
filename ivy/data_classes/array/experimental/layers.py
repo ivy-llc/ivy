@@ -787,7 +787,7 @@ def stft(
         self,
         x: ivy.Array,
         input: ivy.Array,
-        signal: Union[ivy.Array, ivy.Variable],
+        signal: Union[ivy.Array, ivy.NativeArray],
         frame_step: Union[int, Tuple[int]],
         n_fft: Union[int, Tuple[int]],
         /,

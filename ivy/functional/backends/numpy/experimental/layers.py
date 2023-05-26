@@ -816,7 +816,7 @@ def ifft(
 def stft(
     x: np.ndarray,
     input: np.ndarray,
-    signal: Union[np.ndarray, np.Variable],
+    signal: Union[np.ndarray, int, Tuple[int]],
     frame_step: Union[int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
     /,

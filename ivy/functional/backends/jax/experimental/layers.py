@@ -611,7 +611,7 @@ def interpolate(
 def stft(
     x: JaxArray,
     input: JaxArray,
-    signal: Union[JaxArray, jax.Variable],
+    signal: Union[JaxArray, jint, Tuple[int]],
     frame_step: Union[int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
     /,

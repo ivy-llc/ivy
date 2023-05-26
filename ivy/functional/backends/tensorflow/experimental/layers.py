@@ -739,7 +739,7 @@ def interpolate(
 def stft(
     x: tf.Tensor,
     input: tf.Tensor,
-    signal: Union[tf.Tensor, tf.Variable],
+    signal: Union[tf.Tensor, int, Tuple[int]],
     frame_step: Union[int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
     /,

@@ -756,7 +756,7 @@ def adaptive_avg_pool2d(input, output_size):
 def stft(
     x: torch.Tensor,
     input: torch.Tensor,
-    signal: Union[torch.Tensor, torch.Variable],
+    signal: Union[torch.Tensor, int, Tuple[int]],
     frame_step: Union[int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
     /,

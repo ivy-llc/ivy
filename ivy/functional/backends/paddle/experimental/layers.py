@@ -168,7 +168,7 @@ def interpolate(
 def stft(
         x: paddle.Tensor,
         input: paddle.Tensor,
-        signal: Union[paddle.Tensor, paddle.Variable],
+        signal: Union[paddle.Tensor, int, Tuple[int]],
         frame_step: Union[int, Tuple[int]],
         n_fft: Union[int, Tuple[int]],
         /,
