@@ -2989,7 +2989,7 @@ def test_numpy_instance_mod__(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="trace",
-    dtype_and_x=dtype_values_and_axes(),
+    dtype_x_and_axes=dtype_values_and_axes(),
 
     # helpers.dtype_and_values(
     # available_dtypes=helpers.get_dtypes("valid"),
