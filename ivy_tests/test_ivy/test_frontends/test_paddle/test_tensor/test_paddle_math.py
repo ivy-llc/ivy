@@ -199,19 +199,19 @@ dtype_and_x=helpers.dtype_and_values(
     ),
 )
 def test_paddle_log_softmax(
-*,
-dtype_and_x,
-frontend,
-test_flags,
-fn_tree,
-on_device,
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-input_dtype, x = dtype_and_x
-helpers.test_frontend_function(
-    input_dtypes=input_dtype,
-    frontend=frontend,
-    test_flags=test_flags,
-    fn_tree=fn_tree,
-    on_device=on_device,
-    x=x[0],
-   )
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
