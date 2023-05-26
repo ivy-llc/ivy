@@ -112,7 +112,11 @@ def bernoulli(
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
     if logits is not None:
-        probs = jax.nn.softmax(logits, axis=-1)
-    if not _check_shapes_broadcastable(shape, probs.shape):
-        shape = probs.shape
+        if type(logits) not in (float, int):
+            probs = jax.nn.softmax(logits, axis=-1)
+        elif probs is None:
+            probs = logits
+    if type(probs) not in (float, int):
+        if not _check_shapes_broadcastable(shape, probs.shape):
+            shape = probs.shape
     return to_device(jax.random.bernoulli(rng_input, probs, shape=shape), device)

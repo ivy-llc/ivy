@@ -97,10 +97,10 @@ def bernoulli(
 ) -> torch.Tensor:
     if seed:
         torch.manual_seed(seed)
-    if logits is not None:
+    if logits is not None and type(logits) not in (float, int):
         if not _check_shapes_broadcastable(shape, logits.shape):
             shape = logits.shape
-    elif probs is not None:
+    elif probs is not None and type(probs) not in (float, int):
         if not _check_shapes_broadcastable(shape, probs.shape):
             shape = probs.shape
     return (

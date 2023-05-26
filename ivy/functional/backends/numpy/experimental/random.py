@@ -93,7 +93,11 @@ def bernoulli(
     if seed is not None:
         np.random.seed(seed)
     if logits is not None:
-        probs = np.asarray(ivy.softmax(logits), dtype=dtype)
-    if not _check_shapes_broadcastable(shape, probs.shape):
-        shape = probs.shape
+        if type(logits) not in (float, int):
+            probs = np.asarray(ivy.softmax(logits), dtype=dtype)
+        elif probs is None:
+            probs = logits
+    if type(probs) not in (float, int):
+        if not _check_shapes_broadcastable(shape, probs.shape):
+            shape = probs.shape
     return np.asarray(np.random.binomial(1, p=probs, size=shape), dtype=dtype)
