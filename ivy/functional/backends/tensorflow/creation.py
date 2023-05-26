@@ -94,11 +94,12 @@ def asarray(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    def _infer_dtype(x):
+        return x.dtype if hasattr(x, "dtype") else ivy.default_dtype(item=x)
+
     def _tf_to_tensor(x, dtype):
         if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorShape)):
             return tf.cast(x, dtype) if dtype is not None else x
-        if dtype is None:
-            dtype = x.dtype if hasattr(x, "dtype") else ivy.default_dtype(item=x)
         try:
             ret = tf.convert_to_tensor(x, dtype)
         except (TypeError, ValueError):
@@ -106,6 +107,18 @@ def asarray(
         return ret
 
     with tf.device(device):
+        if dtype is None:
+            # get default dtypes for all elements
+            dtype_list = ivy.nested_map(obj, lambda x: _infer_dtype(x), shallow=False)
+            # flatten the nested structure
+            dtype_list = tf.nest.flatten(dtype_list)
+            # keep unique dtypes
+            dtype_list = list(set(dtype_list))
+            # promote all dtypes to a single dtype
+            dtype = dtype_list[0]
+            for dt in dtype_list[1:]:
+                dtype = ivy.promote_types(dtype, dt)
+        # convert all elements to tensors and then stack into one tensor
         tensor = _tf_to_tensor(
             ivy.nested_map(obj, lambda x: _tf_to_tensor(x, dtype), shallow=False),
             dtype=dtype,
