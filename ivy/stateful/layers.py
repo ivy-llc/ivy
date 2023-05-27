@@ -1564,7 +1564,7 @@ class AvgPool1D(Module):
         Parameters
         ----------
         kernel_size
-            The size of the window to take a max over.
+            The size of the window to take an average over.
         stride
             The stride of the window. Default value: 1
         padding
