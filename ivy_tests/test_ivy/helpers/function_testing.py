@@ -1721,11 +1721,11 @@ def flatten(*, backend: str, ret):
         ret = (ret,)
 
     with update_backend(backend) as ivy_backend:
-        ret_idxs = ivy_backend.nested_argwhere(ret, ivy.is_ivy_array)
+        ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.is_ivy_array)
 
         # no ivy array in the returned values, which means it returned scalar
         if len(ret_idxs) == 0:
-            ret_idxs = ivy_backend.nested_argwhere(ret, ivy.isscalar)
+            ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
             ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
             ret_flat = [
                 ivy_backend.asarray(
