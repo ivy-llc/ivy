@@ -491,7 +491,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         --------
         >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
         >>> x.idct(type=2, norm="ortho")
-        ivy.array([ 102.,  -51.5,   0.,  -5.39,   0.,  -1.61,   0., -0.406])
+        ivy.array([ 79.49862671, -70.37691498,  30.00390816, -23.58938599,
+            13.92713165, -10.078475  ,   5.19664812,  -1.95411837])
         """
         return ivy.idct(
             self._data,
