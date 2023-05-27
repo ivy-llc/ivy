@@ -1,5 +1,6 @@
 # global
-from builtins import slice as py_slice, range as py_range
+from builtins import slice as py_slice
+from builtins import range as py_range
 
 # local
 import ivy
