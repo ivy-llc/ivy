@@ -20,19 +20,8 @@ def invert_permutation(
     return inverse_permutation
 
 
-# msort
-@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
-def msort(
-    a: Union[JaxArray, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.msort(a)
-
-
 # lexsort
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.10 and below": ("bfloat16",)}, backend_version)
 def lexsort(
     keys: JaxArray,
     /,
