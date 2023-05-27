@@ -6,7 +6,7 @@ from .pipeline_helper import update_backend
 
 @st.composite
 def _gradient_strategy(draw):
-    if test_globals.CURRENT_BACKEND().backend == "numpy":
+    if test_globals.CURRENT_BACKEND == "numpy":
         draw(st.just(False))
     draw(st.booleans())
 
@@ -15,13 +15,13 @@ def _gradient_strategy(draw):
 def _as_varaible_strategy(draw):
     if (
         test_globals.CURRENT_BACKEND is not test_globals._Notsetval
-        and test_globals.CURRENT_BACKEND().backend == "numpy"
+        and test_globals.CURRENT_BACKEND == "numpy"
     ):
         return draw(st.just([False]))
     if not test_globals.CURRENT_FRONTEND_STR:
         if (
             test_globals.CURRENT_FRONTEND is not test_globals._Notsetval
-            and test_globals.CURRENT_FRONTEND().backend == "numpy"
+            and test_globals.CURRENT_FRONTEND == "numpy"
         ):
             return draw(st.just([False]))
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
@@ -29,7 +29,7 @@ def _as_varaible_strategy(draw):
 
 @st.composite
 def _compile_strategy(draw):  # TODO remove later when paddle is supported
-    if test_globals.CURRENT_BACKEND().backend == "paddle":
+    if test_globals.CURRENT_BACKEND == "paddle":
         draw(st.just(False))
     draw(st.booleans())
 
