@@ -13,7 +13,7 @@ website:
   sidebar:
     style: "floating"
     border: true
-    logo: "assets/img/ivy_logo.png"
+    logo: "assets/img/ivy_logo_text.png"
     collapse-level: 1
     contents:
       - section: "Learn the Basics"
