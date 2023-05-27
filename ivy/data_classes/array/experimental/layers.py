@@ -426,7 +426,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger than x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
@@ -445,6 +445,55 @@ class _ArrayWithLayersExperimental(abc.ABC):
         ivy.array([ 102.,  -51.5,   0.,  -5.39,   0.,  -1.61,   0., -0.406])
         """
         return ivy.dct(
+            self._data,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
+            out=out,
+        )
+
+    def idct(
+        self: ivy.Array,
+        /,
+        *,
+        type: Literal[1, 2, 3, 4] = 2,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Optional[Literal["ortho"]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.idct. This method simply wraps the
+        function, and so the docstring for ivy.idct also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input signal.
+        type
+            The type of the idct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal length,
+            then x is truncated, if n is larger than x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+
+        Examples
+        --------
+        >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
+        >>> x.idct(type=2, norm="ortho")
+        ivy.array([ 102.,  -51.5,   0.,  -5.39,   0.,  -1.61,   0., -0.406])
+        """
+        return ivy.idct(
             self._data,
             type=type,
             n=n,
