@@ -28,14 +28,11 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
     available_frameworks,
-    ground_truth,
 )
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
-
-ground_truth = ground_truth()
 
 
 cmd_line_args = (
@@ -262,7 +259,7 @@ def _partition_dtypes_into_kinds(framework, dtypes):
 def handle_test(
     *,
     fn_tree: str = None,
-    ground_truth_backend: str = ground_truth,
+    ground_truth_backend: str = "tensorflow",
     number_positional_args=None,
     test_instance_method=BuiltInstanceStrategy,
     test_with_out=BuiltWithOutStrategy,
@@ -507,7 +504,7 @@ def _import_method(method_tree: str):
 def handle_method(
     *,
     method_tree: str = None,
-    ground_truth_backend: str = ground_truth,
+    ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
     test_compile=BuiltCompileStrategy,
     init_num_positional_args=None,
