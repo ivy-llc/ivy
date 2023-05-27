@@ -1,10 +1,10 @@
+# global
 from typing import (
     Optional,
     Union,
     Tuple,
     Iterable,
     Sequence,
-    Generator,
     Callable,
     Any,
     Literal,
@@ -13,6 +13,8 @@ from typing import (
 from numbers import Number
 from functools import partial
 import math
+
+# local
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -23,6 +25,7 @@ from ivy.func_wrapper import (
     handle_view,
     inputs_to_ivy_arrays,
     handle_array_function,
+    to_ivy_arrays_and_back,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -169,9 +172,6 @@ def flatten(
     return ivy.reshape(x, tuple(lst), order=order)
 
 
-flatten.mixed_function = True
-
-
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -216,88 +216,6 @@ def moveaxis(
     (5, 3, 4)
     """
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
-
-
-def _iter_product(*args, repeat=1):
-    # itertools.product
-    pools = [tuple(pool) for pool in args] * repeat
-    result = [[]]
-    for pool in pools:
-        result = [x + [y] for x in result for y in pool]
-    for prod in result:
-        yield tuple(prod)
-
-
-@handle_exceptions
-@inputs_to_ivy_arrays
-def ndenumerate(
-    input: Iterable,
-) -> Generator:
-    """
-    Multidimensional index iterator.
-
-    Parameters
-    ----------
-    input
-        Input array to iterate over.
-
-    Returns
-    -------
-    ret
-        An iterator yielding pairs of array coordinates and values.
-
-    Examples
-    --------
-    >>> a = ivy.array([[1, 2], [3, 4]])
-    >>> for index, x in ivy.ndenumerate(a):
-    >>>     print(index, x)
-    (0, 0) 1
-    (0, 1) 2
-    (1, 0) 3
-    (1, 1) 4
-    """
-
-    def _ndenumerate(input):
-        if ivy.is_ivy_array(input) and input.shape == ():
-            yield (), ivy.to_scalar(input)
-        else:
-            i = [range(k) for k in input.shape]
-            for idx in _iter_product(*i):
-                yield idx, input[idx]
-
-    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
-    return _ndenumerate(input)
-
-
-@handle_exceptions
-def ndindex(
-    shape: Tuple,
-) -> Generator:
-    """
-    Multidimensional index iterator.
-
-    Parameters
-    ----------
-    shape
-        The shape of the array to iterate over.
-
-    Returns
-    -------
-    ret
-        An iterator yielding array coordinates.
-
-    Examples
-    --------
-    >>> a = ivy.array([[1, 2], [3, 4]])
-    >>> for index in ivy.ndindex(a):
-    >>>     print(index)
-    (0, 0)
-    (0, 1)
-    (1, 0)
-    (1, 1)
-    """
-    args = [range(k) for k in shape]
-    return _iter_product(*args)
 
 
 @handle_nestable
@@ -1176,7 +1094,7 @@ def pad(
             padding_value = constant_values
         padded = _interior_pad(input, padding_value, pad_width)
         return padded
-    pad_width = _to_pairs(pad_width, input.ndim)
+    pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
@@ -1196,6 +1114,7 @@ def pad(
     }
     if mode == "constant":
         constant_values = _to_pairs(constant_values, padded.ndim)
+        constant_values = tuple(tuple(map(ivy.array, pair)) for pair in constant_values)
         for axis, width_pair, value_pair in zip(axes, pad_width, constant_values):
             padded = _set_pad_area(padded, axis, width_pair, value_pair)
     elif mode == "empty":
@@ -1239,10 +1158,7 @@ def pad(
                 left_index, right_index, padded = _set_wrap_both(
                     padded, axis, (left_index, right_index)
                 )
-    return padded.astype(input.dtype)
-
-
-pad.mixed_function = True
+    return padded
 
 
 @handle_nestable
@@ -1673,7 +1589,7 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
@@ -1712,25 +1628,24 @@ def as_strided(
     if any(strides[i] % itemsize != 0 for i in range(len(strides))):
         raise ivy.exceptions.IvyException("strides must be multiple of itemsize")
 
-    numel = math.prod(shape)
-    buffer_size = numel * itemsize
     src = memoryview(ivy.to_numpy(x)).cast("b")
-    buffer = bytearray(buffer_size)
-    dst = memoryview(buffer).cast("b")
 
-    dst_index = 0
-    for index in ivy.ndindex(shape):
-        src_index = sum(index[i] * strides[i] for i in range(len(shape)))
-        dst[dst_index : dst_index + itemsize] = src[src_index : src_index + itemsize]
-        dst_index += itemsize
+    src_ind = ivy.inner(
+        ivy.indices(shape).reshape((len(shape), -1)).T,
+        ivy.array(strides),
+    )
+    src_ind = ivy.expand_dims(src_ind, axis=-1)
+    src_ind = src_ind + ivy.arange(itemsize)
+    src_ind = ivy.reshape(src_ind, (-1,)).to_numpy()
+
+    temp_list = [src[i] for i in src_ind]
+    temp_array = ivy.asarray(temp_list, dtype=ivy.int8)
+    result = bytearray(temp_array.to_numpy())
 
     return ivy.reshape(
-        ivy.frombuffer(buffer, dtype=x.dtype, count=numel),
+        ivy.frombuffer(result, dtype=x.dtype, count=math.prod(shape)),
         shape,
     )
-
-
-as_strided.mixed_function = True
 
 
 @handle_exceptions

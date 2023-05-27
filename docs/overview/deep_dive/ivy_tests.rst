@@ -215,7 +215,7 @@ Ivy Test Decorators
 
 - Why do we need handle test decorators?
 
-In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keywoard only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a **complete** way. all of this happens at collecting time.
+In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keyword only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a **complete** way. all of this happens at collecting time.
 
 - What do the handle test decorators do?
 

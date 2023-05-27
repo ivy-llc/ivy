@@ -6,7 +6,7 @@ from hypothesis import strategies as st, assume
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -755,7 +755,7 @@ def test_tensorflow_reduce_logsumexp(
 # argmax
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmax",
-    dtype_and_x=statistical_dtype_values(function="argmax"),
+    dtype_and_x=_statistical_dtype_values(function="argmax"),
     output_type=st.sampled_from(["int16", "uint16", "int32", "int64"]),
     test_with_out=st.just(False),
 )
@@ -976,7 +976,7 @@ def test_tensorflow_reduce_mean(
 # reduce_variance
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_variance",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="var",
     ),
     test_with_out=st.just(False),
@@ -1473,7 +1473,7 @@ def test_tensorflow_pow(dtype_and_x, frontend, test_flags, fn_tree):
 # argmin
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmin",
-    dtype_and_x=statistical_dtype_values(function="argmin"),
+    dtype_and_x=_statistical_dtype_values(function="argmin"),
     output_type=st.sampled_from(["int32", "int64"]),
     test_with_out=st.just(False),
 )

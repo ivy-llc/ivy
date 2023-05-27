@@ -136,7 +136,7 @@ def fliplr(
 fliplr.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def i0(
     x: torch.Tensor,
     /,
@@ -237,7 +237,7 @@ def atleast_3d(
     return transformed
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def take_along_axis(
     arr: torch.Tensor,
     indices: torch.Tensor,
@@ -336,7 +336,7 @@ def concat_from_sequence(
         return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
 def unique_consecutive(
     x: torch.Tensor,
     /,
