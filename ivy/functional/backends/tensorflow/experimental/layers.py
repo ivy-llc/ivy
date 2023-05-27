@@ -728,7 +728,9 @@ def interpolate(
             else (
                 "area"
                 if mode == "tf_area"
-                else "nearest" if mode == "nearest-exact" else mode
+                else "nearest"
+                if mode == "nearest-exact"
+                else mode
             )
         )
     if mode == "bicubic_tensorflow":
