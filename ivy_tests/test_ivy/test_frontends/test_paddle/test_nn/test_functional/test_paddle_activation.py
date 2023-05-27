@@ -4,6 +4,7 @@
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+
 # gelu
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.gelu",

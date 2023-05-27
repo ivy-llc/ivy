@@ -7,7 +7,9 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 # local
 from ivy.functional.frontends.paddle.tensor.math import tanh as paddle_tanh
+
 tanh = paddle_tanh
+
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
