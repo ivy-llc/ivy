@@ -75,3 +75,12 @@ def less_than(x, y, /, *, name=None):
 @to_ivy_arrays_and_back
 def less_equal(x, y, /, *, name=None):
     return ivy.less_equal(x, y)
+
+
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def logical_or(x1, x2, /, *, name=None):
+    return ivy.logical_or(x1, x2)
