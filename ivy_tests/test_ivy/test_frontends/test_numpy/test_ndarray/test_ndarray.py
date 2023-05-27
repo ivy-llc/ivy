@@ -2990,7 +2990,6 @@ def test_numpy_instance_mod__(
     init_tree="numpy.array",
     method_name="trace",
     dtype_x_and_axes=dtype_values_and_axes(),
-
     # helpers.dtype_and_values(
     # available_dtypes=helpers.get_dtypes("valid"),
     # min_num_dims=2,
@@ -3021,8 +3020,8 @@ def test_numpy_trace(
         method_all_as_kwargs_np={
             "axis1": axis1,
             "axis2": axis2,
+            "offset": offset,
         },
-        offset=offset,
         frontend=frontend,
         on_device=on_device,
     )
