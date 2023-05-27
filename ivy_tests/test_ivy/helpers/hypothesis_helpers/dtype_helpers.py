@@ -5,12 +5,9 @@ import numpy as np
 from hypothesis import strategies as st
 from typing import Optional
 
-try:
-    import jsonpickle
-except ImportError:
-    pass
 # local
 import ivy
+from ..pipeline_helper import WithBackendContext
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
@@ -31,53 +28,56 @@ _dtype_kind_keys = {
 }
 
 
-def _get_fn_dtypes(framework, kind="valid"):
-    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
+def _get_fn_dtypes(framework: str, kind: str = "valid"):
+    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework][
         test_globals.CURRENT_DEVICE_STRIPPED
     ][kind]
 
 
-def _get_type_dict(framework, kind):
-    if kind == "valid":
-        return framework.valid_dtypes
-    elif kind == "numeric":
-        return framework.valid_numeric_dtypes
-    elif kind == "integer":
-        return framework.valid_int_dtypes
-    elif kind == "float":
-        return framework.valid_float_dtypes
-    elif kind == "unsigned":
-        return framework.valid_uint_dtypes
-    elif kind == "signed_integer":
-        return tuple(
-            set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
-        )
-    elif kind == "complex":
-        return framework.valid_complex_dtypes
-    elif kind == "real_and_complex":
-        return tuple(
-            set(framework.valid_numeric_dtypes).union(framework.valid_complex_dtypes)
-        )
-    elif kind == "float_and_complex":
-        return tuple(
-            set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
-        )
-    elif kind == "float_and_integer":
-        return tuple(
-            set(framework.valid_float_dtypes).union(framework.valid_int_dtypes)
-        )
-    elif kind == "bool":
-        return tuple(
-            set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
-        )
-    else:
-        raise RuntimeError("{} is an unknown kind!".format(kind))
-
-
-def make_json_pickable(s):
-    s = s.replace("builtins.bfloat16", "ivy.bfloat16")
-    s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
-    return s
+def _get_type_dict(framework: str, kind: str):
+    with WithBackendContext(framework) as ivy_backend:
+        if kind == "valid":
+            return ivy_backend.valid_dtypes
+        elif kind == "numeric":
+            return ivy_backend.valid_numeric_dtypes
+        elif kind == "integer":
+            return ivy_backend.valid_int_dtypes
+        elif kind == "float":
+            return ivy_backend.valid_float_dtypes
+        elif kind == "unsigned":
+            return ivy_backend.valid_uint_dtypes
+        elif kind == "signed_integer":
+            return tuple(
+                set(ivy_backend.valid_int_dtypes).difference(
+                    ivy_backend.valid_uint_dtypes
+                )
+            )
+        elif kind == "complex":
+            return ivy_backend.valid_complex_dtypes
+        elif kind == "real_and_complex":
+            return tuple(
+                set(ivy_backend.valid_numeric_dtypes).union(
+                    ivy_backend.valid_complex_dtypes
+                )
+            )
+        elif kind == "float_and_complex":
+            return tuple(
+                set(ivy_backend.valid_float_dtypes).union(
+                    ivy_backend.valid_complex_dtypes
+                )
+            )
+        elif kind == "float_and_integer":
+            return tuple(
+                set(ivy_backend.valid_float_dtypes).union(ivy_backend.valid_int_dtypes)
+            )
+        elif kind == "bool":
+            return tuple(
+                set(ivy_backend.valid_dtypes).difference(
+                    ivy_backend.valid_numeric_dtypes
+                )
+            )
+        else:
+            raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
 @st.composite
@@ -170,7 +170,7 @@ def get_dtypes(
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND(), kind))
+            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
         else:
             raise RuntimeError(
                 "No function is set to prune, calling "
@@ -178,7 +178,7 @@ def get_dtypes(
             )
     else:
         retrieval_fn = _get_type_dict
-        valid_dtypes = set(retrieval_fn(ivy, kind))
+        valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
 
     # The function may be called from a frontend test or an Ivy API test
     # In the case of an Ivy API test, the function should make sure it returns a valid
@@ -191,95 +191,18 @@ def get_dtypes(
 
     if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
         test_globals.CURRENT_FRONTEND_STR, list
-    ):  # NOQA
-        # this piece of code below checks if the version of frontend is the same
-        # as backend, i.e eg: --backend=torch/1.13.0 --frontend=torch/1.13.0
-        # in such cases we don't need to use subprocess
-        ver = True
-        if test_globals.CURRENT_FRONTEND():
-            ver = test_globals.CURRENT_FRONTEND().backend_version["version"]
-
-            if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
-                ver = test_globals.CURRENT_FRONTEND_STR[0].split("/")[1] != ver
-
-        if isinstance(test_globals.CURRENT_FRONTEND_STR, list) and ver:
-            process = test_globals.CURRENT_FRONTEND_STR[1]
-            try:
-                if test_globals.CURRENT_RUNNING_TEST.is_method:
-                    process.stdin.write("1a" + "\n")
-                    process.stdin.write(
-                        jsonpickle.dumps(test_globals.CURRENT_RUNNING_TEST.is_method)
-                        + "\n"
-                    )
-                else:
-                    process.stdin.write("1" + "\n")
-                process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
-                process.stdin.write(f"{str(kind)}" + "\n")
-                process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
-                process.stdin.write(
-                    f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
-                )
-                process.stdin.flush()
-            except Exception as e:
-                print(
-                    "Something bad happened to the subprocess, here are the logs:\n\n"
-                )
-                print(process.stdout.readlines())
-                raise e
-
-            frontend_ret = process.stdout.readline()
-            if frontend_ret:
-                try:
-                    frontend_ret = jsonpickle.loads(make_json_pickable(frontend_ret))
-                except Exception:
-                    raise Exception(f"source of all bugs   {frontend_ret}")
-            else:
-                print(process.stderr.readlines())
-                raise Exception
-            frontend_dtypes = frontend_ret
-            valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
-
-        else:
-            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
-            valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+    ):
+        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind)
+        valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatible with ground truth backend
     ground_truth_is_set = (
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
     )
     if ground_truth_is_set:
-        if isinstance(test_globals.CURRENT_GROUND_TRUTH_BACKEND, list):
-            process = test_globals.CURRENT_GROUND_TRUTH_BACKEND[1]
-            try:
-                if test_globals.CURRENT_RUNNING_TEST.is_method:
-                    process.stdin.write("1a" + "\n")
-                else:
-                    process.stdin.write("1" + "\n")
-                process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
-                process.stdin.write(f"{str(kind)}" + "\n")
-                process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
-                process.stdin.write(
-                    f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
-                )
-                process.stdin.flush()
-            except Exception as e:
-                print(
-                    "Something bad happened to the subprocess, here are the logs:\n\n"
-                )
-                print(process.stdout.readlines())
-                raise e
-            backend_ret = process.stdout.readline()
-            if backend_ret:
-                backend_ret = jsonpickle.loads(make_json_pickable(backend_ret))
-            else:
-                print(process.stderr.readlines())
-                raise Exception
-
-            valid_dtypes = valid_dtypes.intersection(backend_ret)
-        else:
-            valid_dtypes = valid_dtypes.intersection(
-                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
-            )
+        valid_dtypes = valid_dtypes.intersection(
+            retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind)
+        )
 
     valid_dtypes = list(valid_dtypes)
     if none:

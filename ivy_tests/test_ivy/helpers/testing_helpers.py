@@ -192,7 +192,7 @@ def _get_method_supported_devices_dtypes(
             organized_dtypes = {}
             for device in devices_and_dtypes.keys():
                 organized_dtypes[device] = _partition_dtypes_into_kinds(
-                    backend, devices_and_dtypes[device]
+                    backend_str, devices_and_dtypes[device]
                 )
             supported_device_dtypes[backend_str] = organized_dtypes
     return supported_device_dtypes
@@ -225,7 +225,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             fn_name = "_" + fn_name
 
     backends = available_frameworks()
-    for backend_str in backends:  # ToDo can optimize this ?
+    for backend_str in backends:
         with update_backend(backend_str) as backend:
             _tmp_mod = importlib.import_module(fn_module)  # TODO use dynamic import?
             _fn = _tmp_mod.__dict__[fn_name]
@@ -241,7 +241,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             organized_dtypes = {}
             for device in devices_and_dtypes.keys():
                 organized_dtypes[device] = _partition_dtypes_into_kinds(
-                    backend, devices_and_dtypes[device]
+                    backend_str, devices_and_dtypes[device]
                 )
             supported_device_dtypes[backend_str] = organized_dtypes
     return supported_device_dtypes
