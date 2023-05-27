@@ -7,7 +7,6 @@ from functools import reduce
 from operator import mul
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ..pipeline_helper import WithBackendContext
 import ivy_tests.test_ivy.helpers as helpers
@@ -1299,12 +1298,12 @@ def array_values(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        with WithBackendContext(test_globals.CURRENT_BACKEND):
-            dtype_info = ivy.finfo(dtype)
+        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+            dtype_info = ivy_backend.finfo(dtype)
     elif "int" in dtype:
         kind_dtype = "int"
-        with WithBackendContext(test_globals.CURRENT_BACKEND):
-            dtype_info = ivy.iinfo(dtype)
+        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+            dtype_info = ivy_backend.iinfo(dtype)
     elif "bool" in dtype:
         kind_dtype = "bool"
     else:

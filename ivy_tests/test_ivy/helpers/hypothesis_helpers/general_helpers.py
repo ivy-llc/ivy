@@ -1,11 +1,13 @@
 # global
 from hypothesis import strategies as st
 import math
+import numpy as np
 
 # local
 import ivy
-import numpy as np
+import ivy_tests.test_ivy.helpers.globals as test_globals
 from . import array_helpers, number_helpers, dtype_helpers
+from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
 
 
@@ -85,10 +87,12 @@ def apply_safety_factor(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        dtype_info = ivy.finfo(dtype)
+        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+            dtype_info = ivy_backend.finfo(dtype)
     elif "int" in dtype:
         kind_dtype = "int"
-        dtype_info = ivy.iinfo(dtype)
+        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+            dtype_info = ivy_backend.iinfo(dtype)
     else:
         raise TypeError(
             f"{dtype} is not a valid numeric data type only integers and floats"
