@@ -4,7 +4,7 @@ from hypothesis import strategies as st
 
 # local
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # nanpercentile
 @handle_frontend_test(
     fn_tree="numpy.nanpercentile",
-    dtype_values_axis=statistical_dtype_values(function="nanpercentile"),
+    dtype_values_axis=_statistical_dtype_values(function="nanpercentile"),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
