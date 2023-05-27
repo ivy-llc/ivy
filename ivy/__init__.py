@@ -350,6 +350,13 @@ class Shape:
     def shape(self):
         return self._shape
 
+    def as_list(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot convert a partially known Shape to a list"
+            )
+        return [dim for dim in self._shape]
+
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):

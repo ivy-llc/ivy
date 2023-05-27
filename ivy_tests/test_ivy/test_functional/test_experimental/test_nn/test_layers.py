@@ -17,6 +17,7 @@ def test_max_pool1d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -24,6 +25,7 @@ def test_max_pool1d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -46,6 +48,7 @@ def test_max_pool1d(
     ),
     ceil_mode=st.just(True),
     test_gradients=st.just(False),
+    ground_truth_backend="jax",
     # problem with containers converting tuple padding to
     # lists which jax does not support
     container_flags=st.just([False]),
@@ -57,6 +60,8 @@ def test_max_pool2d(
     test_flags,
     backend_fw,
     fn_name,
+    ground_truth_backend,
+    on_device,
 ):
     dtype, x, kernel, stride, pad, dilation = x_k_s_p
     assume(
@@ -72,13 +77,14 @@ def test_max_pool2d(
         )
     )
     helpers.test_function(
-        ground_truth_backend="jax",
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
+        on_device=on_device,
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -489,6 +495,7 @@ def test_fft(
     training=st.booleans(),
     data_format=st.sampled_from(["NWC", "NCW"]),
     test_gradients=st.just(False),
+    test_values=st.just(False),
 )
 def test_dropout1d(
     *,
@@ -508,8 +515,8 @@ def test_dropout1d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
-        test_values=False,
         x=x[0],
         prob=prob,
         training=training,
@@ -540,6 +547,7 @@ def test_dropout1d(
     data_format=st.sampled_from(["NCDHW", "NDHWC"]),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
+    test_values=st.just(False),
 )
 def test_dropout3d(
     *,
@@ -560,7 +568,6 @@ def test_dropout3d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
-        test_values=False,
         x=x[0],
         prob=prob,
         training=training,

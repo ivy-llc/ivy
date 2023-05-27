@@ -37,7 +37,7 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
-@with_supported_dtypes({"2.9.1 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.12.0 and below": ("float32",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     if use_norm is not None:
@@ -189,7 +189,7 @@ def ensure_shape(x, shape, name=None):
     return x
 
 
-@with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
@@ -416,7 +416,7 @@ def realdiv(x, y, name=None):
     return ivy.divide(x, y)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("uint16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("uint16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
@@ -465,7 +465,7 @@ def repeat(
     return ivy.repeat(input, repeats, axis=axis)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
@@ -504,7 +504,7 @@ norm.supported_dtypes = (
     "float64",
 )
 
-
+@to_ivy_arrays_and_back
 def unique(x, out_idx=ivy.int32, name=None):
     ret = ivy.unique_all(x, by_value=False)
     y = ret[0]
@@ -515,3 +515,18 @@ def unique(x, out_idx=ivy.int32, name=None):
 @to_ivy_arrays_and_back
 def meshgrid(*arrays, sparse=False, indexing):
     return ivy.meshgrid(*arrays, sparse=sparse, indexing=indexing)
+
+
+@to_ivy_arrays_and_back
+def while_loop(
+    cond,
+    body,
+    loop_vars,
+    shape_invariants=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    maximum_iterations=None,
+    name=None,
+):
+    return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
