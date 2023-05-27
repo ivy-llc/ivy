@@ -1905,7 +1905,7 @@ def test_torch_logaddexp2(
 @handle_frontend_test(
     fn_tree="torch.i0",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=1
     ),
 )
 def test_torch_i0(
@@ -1924,7 +1924,7 @@ def test_torch_i0(
         fn_tree=fn_tree,
         on_device=on_device,
         atol=1e-03,
-        x=x[0],
+        input=x[0],
     )
 
 
@@ -2281,7 +2281,7 @@ def test_torch_arctan(
 @handle_frontend_test(
     fn_tree="torch.conj_physical",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_torch_conj_physical(

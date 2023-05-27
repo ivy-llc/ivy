@@ -365,3 +365,28 @@ def bincount(
     return paddle.bincount(x, weights=weights, minlength=minlength).cast(
         x.dtype if weights is None else weights.dtype
     )
+
+
+def igamma(
+    a: paddle.Tensor,
+    /,
+    *,
+    x: paddle.Tensor,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    results = []
+    for ai, xi in zip(a.flatten(), x.flatten()):
+        ai = ai.astype("float64")
+        xi = xi.astype("float64")
+
+        def integrand(t):
+            return paddle.exp(-t) * paddle.pow(t, ai - 1)
+
+        intervals = paddle.linspace(0, xi, 10001).astype("float64")
+        interval_width = xi / 10000
+        values = integrand(intervals)
+        integral = paddle.multiply((values[:-1] + values[1:]) / 2, interval_width)
+        result = paddle.divide(paddle.sum(integral), paddle.exp(paddle.lgamma(ai)))
+        results.append(result)
+
+    return paddle.to_tensor(results, dtype="float32").reshape(a.shape)
