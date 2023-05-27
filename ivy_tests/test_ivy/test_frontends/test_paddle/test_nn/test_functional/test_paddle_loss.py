@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.binary_cross_entropy",
     dtype_and_vals=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float32", "float64"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
         shared_dtype=True,
         min_value=1.0013580322265625e-05,
