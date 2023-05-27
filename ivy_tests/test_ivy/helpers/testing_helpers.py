@@ -26,9 +26,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltFrontendArrayStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
-from ivy_tests.test_ivy.helpers.available_frameworks import (
-    available_frameworks,
-)
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
@@ -181,8 +179,7 @@ def _get_method_supported_devices_dtypes(
     for the method
     """
     supported_device_dtypes = {}
-    backends = available_frameworks()
-    for backend_str in backends:
+    for backend_str in available_frameworks:
         with update_backend(backend_str) as backend:
             _fn = getattr(class_module.__dict__[class_name], method_name)
             devices_and_dtypes = backend.function_supported_devices_and_dtypes(_fn)
@@ -221,8 +218,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
             fn_name = "_" + fn_name
 
-    backends = available_frameworks()
-    for backend_str in backends:
+    for backend_str in available_frameworks:
         with update_backend(backend_str) as backend:
             _tmp_mod = importlib.import_module(fn_module)  # TODO use dynamic import?
             _fn = _tmp_mod.__dict__[fn_name]

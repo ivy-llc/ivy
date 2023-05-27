@@ -21,9 +21,7 @@ from .pipeline_helper import update_backend
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
-from ivy_tests.test_ivy.helpers.available_frameworks import (
-    available_frameworks as available_frameworkss,
-)
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy.functional.ivy.gradients import _variable
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
@@ -40,9 +38,6 @@ def compiled_if_required(backend: str, fn, test_compile=False, args=None, kwargs
         if test_compile:
             fn = ivy_backend.compile(fn, args=args, kwargs=kwargs)
         return fn
-
-
-available_frameworks = available_frameworkss()
 
 
 def empty_func(*args, **kwargs):

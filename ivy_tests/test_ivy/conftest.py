@@ -7,9 +7,7 @@ from typing import Dict
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
-available_frameworks = available_frameworks()
 GENERAL_CONFIG_DICT = {}
 UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
