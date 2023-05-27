@@ -297,7 +297,6 @@ def _num_to_bit_list(value, num_dims):
 
 # ToDo: find a way around for negative indexing, which torch does not support
 @to_ivy_arrays_and_back
-@to_ivy_arrays_and_back
 def _apply_negative_index(idx, size):
     if isinstance(idx, int):
         if idx < 0:
@@ -451,9 +450,9 @@ def strided_slice(
             else:
                 shape.append(1)
             size *= shape[-1]
-        indices_shape = [size]
+        indices_shape = shape
         indices = ivy.indices_to_dense_vector(
-            indices_shape, shape, start, final_size, final_strides
+           indices_shape, shape, start, final_size, final_strides
         )
         output = ivy.reshape(
             ivy.gather(input_.flatten(), indices), shape
