@@ -998,7 +998,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger then x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
@@ -1150,17 +1150,17 @@ class _ContainerWithLayersExperimental(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
         ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
-        >>> x.dct(type=2, norm='ortho')
+        >>> x.idct(type=2, norm='ortho')
         {
-            a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0.,
-                        -0.406]),
-            b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0.,
-                        -0.0507])
+            a: ivy.array([79.49862671, -70.37691498, 30.00390816, -23.58938599,
+                  13.92713165, -10.078475, 5.19664812, -1.95411837]),
+            b: ivy.array([9.94, -8.79711437, 3.76, -2.94867325, 1.74089146,
+                  -1.25980937, 0.64958102, -0.2442648])
         }
         """
         return self.static_idct(
             self,
-            type,
+            type=type,
             n=n,
             axis=axis,
             norm=norm,
