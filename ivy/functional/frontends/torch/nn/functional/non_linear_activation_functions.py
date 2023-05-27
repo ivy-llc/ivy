@@ -346,3 +346,60 @@ def normalize(input, p=2.0, dim=1, eps=1e-12, out=None):
 )
 def softplus(input, beta=1, threshold=20):
     return ivy.softplus(input, beta=beta, threshold=threshold)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def batch_norm(
+    input,
+    mean,
+    variance,
+    weight=None,
+    bias=None,
+    training=False,
+    momentum=0.1,
+    eps=1e-5,
+):
+    """
+    Applies Batch Normalization over the input for each channel across a batch.
+
+    Parameters:
+    - input: the input array,
+    of shape (N, *S, C) where N is the batch dimension,
+     *S corresponds to any number of spatial dimensions,
+     and C corresponds to the channel dimension.
+
+    - mean: the mean array used for normalization.
+    It can be of any shape broadcastable to (N, *S, C).
+
+    - variance: the variance array used for normalization.
+    It can be of any shape broadcastable to (N, *S, C).
+
+    - weight: the scale array applied to the normalized input.
+    It can be of any shape broadcastable to (N, *S, C). Default is None.
+
+    - bias: the offset array added to the normalized input.
+    It can be of any shape broadcastable to (N, *S, C). Default is None
+
+    - training: a boolean. If true, calculate and use the mean and
+    variance of the input.
+     Otherwise, use the provided mean and variance.
+     Default is False.
+    - momentum: a float used for the running mean and running variance computation.
+    Default is 0.1.
+    - eps: a small float number to avoid dividing by 0. Default is 1e-05.
+
+    Returns:
+    - the normalized input, running mean, and running variance.
+    """
+    return ivy.batch_norm(
+        input,
+        mean,
+        variance,
+        offset=bias,
+        scale=weight,
+        training=training,
+        eps=eps,
+        momentum=momentum,
+        data_format="NSC",
+    )

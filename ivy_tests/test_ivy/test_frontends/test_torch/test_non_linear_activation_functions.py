@@ -1078,3 +1078,56 @@ def test_torch_softplus(
         beta=beta,
         threshold=threshold,
     )
+
+
+# batch_norm
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.batch_norm",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        max_value=1e04,
+    ),
+    mean=st.floats(min_value=-1.0, max_value=1.0),
+    variance=st.floats(min_value=0.0, max_value=1.0),
+    offset=st.floats(min_value=-1.0, max_value=1.0),
+    scale=st.floats(min_value=-1.0, max_value=1.0),
+    training=st.booleans(),
+    eps=st.floats(min_value=1e-05, max_value=1e-01),
+    momentum=st.floats(min_value=0.0, max_value=1.0, exclude_min=True),
+    data_format=st.sampled_from(["NSC", "NCS"]),
+)
+def test_torch_batch_norm(
+    *,
+    dtype_and_values,
+    mean,
+    variance,
+    offset,
+    scale,
+    training,
+    eps,
+    momentum,
+    data_format,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        mean=mean,
+        variance=variance,
+        offset=offset,
+        scale=scale,
+        training=training,
+        eps=eps,
+        momentum=momentum,
+        data_format=data_format,
+        rtol=1e-02,
+        atol=1e-02,
+    )
