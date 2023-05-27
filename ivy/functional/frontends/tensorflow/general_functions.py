@@ -1,5 +1,6 @@
 # global
-from builtins import slice as py_slice, range as py_range
+from builtins import slice as py_slice 
+from builtins import range as py_range
 
 # local
 import ivy
@@ -296,7 +297,6 @@ def _num_to_bit_list(value, num_dims):
 
 
 # ToDo: find a way around for negative indexing, which torch does not support
-@to_ivy_arrays_and_back
 def _apply_negative_index(idx, size):
     if isinstance(idx, int):
         if idx < 0:
