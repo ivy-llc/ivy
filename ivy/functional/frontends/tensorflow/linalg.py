@@ -110,6 +110,30 @@ def cholesky_solve(chol, rhs, name=None):
     return ivy.solve(ivy.matrix_transpose(chol), y)
 
 
+def lu_solve(lower_upper, perm, rhs, validate_args=False, name=None):
+    if validate_args:
+        if lower_upper.shape[-2:] != rhs.shape[-2:]:
+            raise ValueError("Last two dimensions of 'lower_upper' and 'rhs' must match.")
+        if lower_upper.shape[-1] != perm.shape[-1]:
+            raise ValueError("'lower_upper' last dimension must match 'perm' size.")
+
+    # extract L and U matrices from lower_upper
+    n = lower_upper.shape[-1]
+    eye = ivy.eye(n, dtype=lower_upper.dtype)
+    L = ivy.tril(lower_upper) - eye + ivy.eye(n, dtype=lower_upper.dtype)
+    U = ivy.triu(lower_upper)
+
+    # permute the right hand side (rhs)
+    perm_rhs = ivy.take_along_axis(rhs, perm[..., None], axis=-2)
+
+    # solve the lower triangular system
+    y = ivy.solve(L, perm_rhs)
+
+    # solve the upper triangular system
+    x = ivy.solve(U, y)
+
+    return x
+
 @to_ivy_arrays_and_back
 def pinv(a, rcond=None, validate_args=False, name=None):
     return ivy.pinv(a, rtol=rcond)
