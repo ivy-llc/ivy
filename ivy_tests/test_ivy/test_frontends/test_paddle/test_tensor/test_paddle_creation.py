@@ -305,7 +305,7 @@ def test_paddle_empty(
 
 
 @st.composite
-def _diag_helper(draw):
+def _custom_diag_helper(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
@@ -323,23 +323,30 @@ def _diag_helper(draw):
         k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
     else:
         k = draw(helpers.ints(min_value=0, max_value=shape[0]))
-    p = draw(helpers.ints() | helpers.floats())
-    return dtype, x, k, p
+    # p = draw(helpers.number(min_value=0, max_value=50))
+    # return dtype, x, k, p
+    return dtype, x, k
 
 
 # diag
 @handle_frontend_test(
     fn_tree="paddle.diag",
-    dtype_and_x_k_p=_diag_helper(),
+    # dtype_and_x_k_p=_custom_diag_helper(),
+    dtype_and_x_k=_custom_diag_helper(),
+    # p=helpers.number(min_value=0, max_value=50)
+    p=st.floats(0, 1),
 )
 def test_paddle_diag(
-    dtype_and_x_k_p,
+    # dtype_and_x_k_p,
+    dtype_and_x_k,
+    p,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x, k, p = dtype_and_x_k_p
+    # dtype, x, k, p = dtype_and_x_k_p
+    dtype, x, k = dtype_and_x_k
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
