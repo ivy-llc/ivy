@@ -3007,6 +3007,9 @@ def test_numpy_instance_mod__(
 def test_numpy_trace(
     dtype_x_and_axes,
     offset,
+    init_flags,
+    method_flags,
+    frontend_method_data,
     frontend,
     on_device,
 ):
@@ -3022,6 +3025,9 @@ def test_numpy_trace(
             "axis2": axis2,
             "offset": offset,
         },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
         on_device=on_device,
     )
