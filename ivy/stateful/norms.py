@@ -182,6 +182,8 @@ class BatchNorm2D(Module):
         ----------
         inputs
             Inputs to process of shape N,C,*.
+        training
+            Determine the current phase (training/inference)
 
         Returns
         -------
