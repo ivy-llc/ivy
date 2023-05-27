@@ -293,9 +293,9 @@ def div(input, other, *, rounding_mode=None, out=None):
     if rounding_mode is not None:
         promoted = input.dtype
         if rounding_mode == "trunc":
-            return ivy.trunc_divide(input, other, out=out).astype(promoted)
+            return ivy.astype(ivy.trunc_divide(input, other, out=out), promoted)
         else:
-            return ivy.floor_divide(input, other, out=out).astype(promoted)
+            return ivy.astype(ivy.floor_divide(input, other, out=out), promoted)
     else:
         return ivy.divide(input, other, out=out)
 
