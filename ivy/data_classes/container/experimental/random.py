@@ -545,3 +545,119 @@ class _ContainerWithRandomExperimental(ContainerBase):
             seed=seed,
             out=out,
         )
+
+    @staticmethod
+    def static_laplace(
+        loc: Union[ivy.Array, float],
+        scale: Union[ivy.Array, float],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        size: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.laplace. This method simply wraps the
+        function, and so the docstring for ivy.laplace also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        loc
+            The position of the distribution peak.
+        scale
+            The exponential decay, must be non-negative.
+        size
+            Output shape for the arrays in the input container. If the given shape is,
+            e.g., (m, n, k), then m * n * k samples are drawn. If size is ``None``, a
+            single value is returned if loc and scale are both scalars. Otherwise, the
+            size of ivy.broadcast_arrays(loc, scale) is used. Default is ``None``.
+        device
+            The device to place the output array on. Default is ``None``.
+        dtype
+            Output container array data type. If ``dtype`` is ``None``, the output data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution.
+        out
+            Optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including the drawn samples from the Laplace distribution.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "laplace",
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            loc=loc,
+            scale=scale,
+            size=size,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )
+
+    def laplace(
+        self: ivy.Container,
+        loc: Union[ivy.Array, float],
+        scale: Union[ivy.Array, float],
+        /,
+        *,
+        size: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.laplace. This method simply wraps
+        the function, and so the docstring for ivy.shuffle also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        loc
+            The position of the distribution peak.
+        scale
+            The exponential decay, must be non-negative.
+        size
+            Output shape for the arrays in the input container. If the given shape is,
+            e.g., (m, n, k), then m * n * k samples are drawn. If size is ``None``, a
+            single value is returned if loc and scale are both scalars. Otherwise, the
+            size of ivy.broadcast_arrays(loc, scale) is used. Default is ``None``.
+        device
+            The device to place the output array on. Default is ``None``.
+        dtype
+            Output container array data type. If ``dtype`` is ``None``, the output data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            Optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including the drawn samples from the Laplace distribution.
+        """
+        return self.static_laplace(
+            self,
+            loc=loc,
+            scale=scale,
+            size=size,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )

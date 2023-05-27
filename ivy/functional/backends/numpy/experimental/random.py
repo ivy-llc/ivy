@@ -97,3 +97,20 @@ def bernoulli(
     if not _check_shapes_broadcastable(shape, probs.shape):
         shape = probs.shape
     return np.asarray(np.random.binomial(1, p=probs, size=shape), dtype=dtype)
+
+
+def laplace(
+    loc: Union[np.ndarray, float],
+    scale: Union[np.ndarray, float],
+    /,
+    *,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: Optional[str] = None,
+    dtype: Optional[np.dtype] = None,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    dtype = dtype if dtype is not None else np.float64
+    if seed is not None:
+        np.random.seed(seed)
+    return np.asarray(np.random.laplace(loc, scale, size=size), dtype=dtype)

@@ -271,3 +271,46 @@ class _ArrayWithRandomExperimental(abc.ABC):
             seed=seed,
             out=out,
         )
+
+    def laplace(
+        self: ivy.Array,
+        loc: Union[ivy.Array, float],
+        scale: Union[ivy.Array, float],
+        /,
+        *,
+        size: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Parameters
+        ----------
+        loc
+            The position of the distribution peak.
+        scale
+            The exponential decay, must be non-negative.
+        size
+            Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples
+            are drawn. If size is ``None``, a single value is returned if loc and scale
+            are both scalars. Otherwise, the size of ivy.broadcast_arrays(loc, scale)
+            is used. Default is ``None``.
+        device
+            Device on which to create the array.
+        dtype
+            Output array data type. If ``dtype`` is ``None``, the output array data
+            type will be the default floating-point data type. Default is ``None``
+        seed
+            A python integer. Used to create a random seed distribution.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the parameterized Laplace distribution.
+        """
+        return ivy.laplace(
+            loc, scale, size=size, dtype=dtype, device=device, seed=seed, out=out
+        )

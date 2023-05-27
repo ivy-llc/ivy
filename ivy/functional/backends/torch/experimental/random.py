@@ -108,3 +108,31 @@ def bernoulli(
         .sample(shape)
         .to(device, dtype)
     )
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def laplace(
+    loc: Union[torch.tensor, float, Sequence[float]],
+    scale: Union[torch.tensor, float, Sequence[float]],
+    /,
+    *,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: torch.device,
+    dtype: Optional[torch.dtype],
+    seed: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if size is None:
+        if isinstance(loc, float) and isinstance(scale, float):
+            size = 1
+        else:
+            a, _ = torch.broadcast_tensors(loc, scale)
+            size = a.size()
+
+    if seed is not None:
+        torch.manual_seed(seed)
+    return (
+        torch.distributions.laplace.Laplace(loc=loc, scale=scale)
+        .rsample(sample_shape=size)
+        .to(device, dtype)
+    )

@@ -273,3 +273,60 @@ def test_bernoulli(
         shape=None,
         seed=seed,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.laplace",
+    dtype_and_loc_scale=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        min_num_dims=1,
+        max_num_dims=3,
+        num_arrays=2,
+        exclude_min=True,
+        shared_dtype=True,
+    ),
+    seed=helpers.ints(min_value=0, max_value=100),
+    test_instance_method=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_laplace(
+    *,
+    dtype_and_loc_scale,
+    seed,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, loc_scale = dtype_and_loc_scale
+    assume("bfloat16" not in dtype)
+
+    def call():
+        return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=dtype,
+            test_flags=test_flags,
+            test_values=False,
+            fw=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            loc=loc_scale[0],
+            scale=loc_scale[1],
+            dtype=dtype[0],
+            size=None,
+            seed=seed,
+        )
+
+    ret, ret_gt = call()
+
+    if seed:
+        ret1, ret_gt1 = call()
+        assert ivy.any(ret == ret1)
+
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for u, v in zip(ret, ret_gt):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
