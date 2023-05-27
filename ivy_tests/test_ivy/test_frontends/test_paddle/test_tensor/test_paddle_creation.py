@@ -323,7 +323,7 @@ def _diag_helper(draw):
         k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
     else:
         k = draw(helpers.ints(min_value=0, max_value=shape[0]))
-    p = draw(helpers.get_dtypes("numeric"))
+    p = draw(helpers.ints() | helpers.floats())
     return dtype, x, k, p
 
 
