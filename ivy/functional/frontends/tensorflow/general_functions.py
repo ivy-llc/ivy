@@ -297,6 +297,24 @@ def _num_to_bit_list(value, num_dims):
 
 # ToDo: find a way around for negative indexing, which torch does not support
 @to_ivy_arrays_and_back
+@to_ivy_arrays_and_back
+def _apply_negative_index(idx, size):
+    if isinstance(idx, int):
+        if idx < 0:
+            idx += size
+        return idx
+    elif isinstance(idx, slice):
+        start = idx.start if idx.start is None else _apply_negative_index(idx.start, size)
+        stop = idx.stop if idx.stop is None else _apply_negative_index(idx.stop, size)
+        step = idx.step
+        return slice(start, stop, step)
+    elif isinstance(idx, (list, tuple)):
+        return [_apply_negative_index(i, size) for i in idx]
+    else:
+        return idx
+
+
+@to_ivy_arrays_and_back
 def strided_slice(
     input_,
     begin,
@@ -319,22 +337,27 @@ def strided_slice(
             [input_rank] * 5,
         )
     )
+
     begin, end, strides = map(
         lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end, strides]
     )
+
     num_defined = len(begin)
     strides = ivy.repeat(ivy.array(1), num_defined) if strides is None else strides
     ivy.assertions.check_true(
         num_defined == len(end) == len(strides),
         message="`begin`, `end`, and `strides` are expected to have the same length",
     )
+
     begin, end, strides = map(
-        lambda x: [ivy.to_scalar(i) for i in x] if ivy.is_ivy_array(x) else x,
+        lambda x: _apply_negative_index(x, input_rank),
         [begin, end, strides],
     )
+
     for i, v in enumerate(shrink_axis_mask):
         if v == 1:
             begin_mask[i] = 0
+
     ellipsis_indices = [i for i, v in enumerate(ellipsis_mask) if v]
     if len(ellipsis_indices) > 1:
         raise ValueError("Multiple ellipses are not allowed.")
@@ -373,32 +396,69 @@ def strided_slice(
                     + [1] * (num_missing + 1)
                     + strides[ellipsis_index + 1 :]
                 )
-    full_slice = ()
-    for i, _ in enumerate(begin):
-        if new_axis_mask[i]:
-            full_slice += (ivy.newaxis,)
+
+    final_begin = []
+    final_end = []
+    final_strides = []
+    final_size = []
+
+    for i in py_range(input_rank):
+        if begin_mask[i]:
+            final_begin.append(0)
         else:
-            b = begin[i] if not begin_mask[i] else None
-            e = end[i] if not end_mask[i] else None
-            s = strides[i]
-            if b is None and e is None:
-                s = 1 if ellipsis_mask[i] else s
-            elif shrink_axis_mask[i]:
-                if b is not None:
-                    e = b + 1 if s > 0 else b - 1
-                else:
-                    e = 1 if s > 0 else input_shape[i] - 2
-            full_slice += (py_slice(b, e, s),)
-    if all(i is None for i in full_slice):
-        full_slice += (...,)
-    ret = input_[full_slice]
-    shrink_indices = [
-        i
-        for i, v in enumerate(shrink_axis_mask)
-        if v and i < len(ret.shape) and ret.shape[i] == 1
-    ]
-    ret = ivy.squeeze(ret, axis=shrink_indices)
-    return ret
+            final_begin.append(begin[i])
+        if end_mask[i]:
+            final_end.append(input_shape[i])
+        else:
+            final_end.append(end[i])
+        final_strides.append(strides[i])
+
+        final_size.append(
+            (
+                (final_end[-1] - final_begin[-1] + final_strides[-1] - 1)
+                // final_strides[-1]
+            )
+            if final_strides[-1] != 0
+            else 0
+        )
+
+    sizes_known = True
+    start = [0] * input_rank
+    shrink_axis_count = 0
+    for i in py_range(input_rank):
+        if shrink_axis_mask[i]:
+            shrink_axis_count += 1
+            continue
+        if sizes_known:
+            if final_begin[i] is None or final_end[i] is None:
+                sizes_known = False
+            else:
+                start[i] = final_begin[i]
+                final_size[i] += final_begin[i]
+
+    for i in py_range(input_rank):
+        if new_axis_mask[i]:
+            final_size.insert(i + shrink_axis_count, 1)
+
+    if sizes_known:
+        return ivy.array(input_.numpy()[tuple(slice(b, b + s) for b, s in zip(start, final_size))])
+    else:
+        shape = []
+        size = 1
+        for i in py_range(input_rank + shrink_axis_count):
+            if i < input_rank:
+                shape.append(final_size[i])
+            else:
+                shape.append(1)
+            size *= shape[-1]
+        indices_shape = [size]
+        indices = ivy.indices_to_dense_vector(
+            indices_shape, shape, start, final_size, final_strides
+        )
+        output = ivy.reshape(
+            ivy.gather(input_.flatten(), indices), shape
+        )
+        return output
 
 
 @to_ivy_arrays_and_back
