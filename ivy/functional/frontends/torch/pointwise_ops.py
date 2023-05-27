@@ -242,7 +242,7 @@ def logical_xor(input, other, *, out=None):
     return ivy.logical_xor(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def round(input, *, decimals=0, out=None):
     m = ivy.full(input.shape, 10**decimals)
@@ -474,9 +474,11 @@ def conj_physical(input, *, out=None):
     return ivy.conj(input, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 @to_ivy_arrays_and_back
-def nextafter(input, *, out=None):
-    return ivy.nextafter(input, out=out)
+def nextafter(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+    return ivy.nextafter(input, other, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
