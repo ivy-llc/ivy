@@ -304,35 +304,49 @@ def test_paddle_empty(
     )
 
 
+@st.composite
+def _diag_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            small_abs_safety_factor=2,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+            min_num_dims=1,
+            max_num_dims=2,
+            min_dim_size=1,
+            max_dim_size=50,
+        )
+    )
+    shape = x[0].shape
+    if len(shape) == 2:
+        k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
+    else:
+        k = draw(helpers.ints(min_value=0, max_value=shape[0]))
+    p = draw(helpers.get_dtypes("numeric"))
+    return dtype, x, k, p
+
+
 # diag
 @handle_frontend_test(
-    fn_tree="tensorflow.linalg.diag",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["int64", "int32"],
-        min_num_dims=1,
-        max_num_dims=2,
-        min_dim_size=5,
-        max_dim_size=10,
-        min_value=0,
-        max_value=10,
-    ),
-    k=st.just(0),
+    fn_tree="paddle.diag",
+    dtype_and_x_k_p=_diag_helper(),
 )
-def test_tensorflow_diag(
-    dtype_and_x,
-    k,
+def test_paddle_diag(
+    dtype_and_x_k_p,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, k, p = dtype_and_x_k_p
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        v=x[0],
-        k=k,
+        x=x[0],
+        offset=k,
+        padding_value=p,
     )

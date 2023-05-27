@@ -70,7 +70,7 @@ def empty(shape, dtype=None):
 
 @to_ivy_arrays_and_back
 def diag(x, offset=0, padding_value=0, name=None):
-    if len(ivy.get_num_dims(x)) == 1:
+    if ivy.get_num_dims(x) == 1:
         d = ivy.diag(x, k=offset)
         if padding_value:
             d_mask = ivy.eye(d.shape[0], k=offset)
