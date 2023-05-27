@@ -1,7 +1,7 @@
 # global
 import ivy
 import ivy.functional.frontends.paddle as paddle
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, handle_out_argument
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -82,5 +82,6 @@ def less_equal(x, y, /, *, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def logical_or(x, y, /, *, name=None):
+@handle_out_argument
+def logical_or(x, y, /, *, name=None, out=None):
     return ivy.logical_or(x, y)

@@ -1,5 +1,6 @@
 # global
 import numpy as np
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -218,6 +219,7 @@ def test_paddle_equal_all(
 @handle_frontend_test(
     fn_tree="paddle.logical_or",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    test_with_out=st.just(True),
 )
 def test_paddle_logical_or(
     *,
