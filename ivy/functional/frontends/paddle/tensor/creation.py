@@ -66,3 +66,15 @@ def arange(start, end=None, step=1, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
     return ivy.empty(shape=shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def diag(x, offset=0, padding_value=0, name=None):
+    if len(ivy.get_num_dims(x)) == 1:
+        d = ivy.diag(x, k=offset)
+        if padding_value:
+            d_mask = ivy.eye(d.shape[0], k=offset)
+            d[d_mask] = padding_value
+        return d
+    else:
+        return ivy.diag(x, k=offset)
