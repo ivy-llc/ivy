@@ -84,4 +84,4 @@ def less_equal(x, y, /, *, name=None):
 @to_ivy_arrays_and_back
 @handle_out_argument
 def logical_or(x, y, /, *, name=None, out=None):
-    return ivy.logical_or(x, y)
+    return ivy.logical_or(x, y, out=out)
