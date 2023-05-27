@@ -82,5 +82,5 @@ def less_equal(x, y, /, *, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def logical_or(x1, x2, /, *, name=None):
-    return ivy.logical_or(x1, x2)
+def logical_or(x, y, /, *, name=None):
+    return ivy.logical_or(x, y)
