@@ -466,6 +466,7 @@ def dct(
         dct_out = tf.signal.dct(x, type=type, n=n, axis=-1, norm=norm)
     return dct_out
 
+
 def idct(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -476,9 +477,9 @@ def idct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    inverse_type = {1:1, 2:3, 3:2, 4:4}[type]
-
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
+
 
 def _fft_norm(
     x: Union[tf.Tensor, tf.Variable],
