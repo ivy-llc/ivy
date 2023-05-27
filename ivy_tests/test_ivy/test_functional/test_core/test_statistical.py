@@ -7,6 +7,7 @@ from hypothesis import strategies as st, assume
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
+
 @st.composite
 def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
     large_abs_safety_factor = 2
@@ -28,7 +29,7 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
             min_axes_size=1,
             min_value=min_value,
             max_value=max_value,
-		    allow_nan=True if "nan" in function else False,
+            allow_nan=True if "nan" in function else False,
         )
     )
     shape = values[0].shape

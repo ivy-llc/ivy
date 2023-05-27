@@ -50,5 +50,11 @@ def asin(x, name=None):
 
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def log(x, name=None):
+    return ivy.log(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def tan(x, name=None):
     return ivy.tan(x)
