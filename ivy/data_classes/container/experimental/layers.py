@@ -1078,10 +1078,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
         >>> ivy.Container.static_idct(x, type=2, norm='ortho')
         {
-            a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0.,
-                        -0.406]),
-            b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0.,
-                        -0.0507])
+            a: ivy.array([79.49862671, -70.37691498, 30.00390816, -23.58938599,
+                          13.92713165, -10.078475, 5.19664812, -1.95411837]),
+            b: ivy.array([9.93732834, -8.79711437, 3.75048852, -2.94867325, 1.74089146,
+                          -1.25980937, 0.64958102, -0.2442648])
         }
 
         With multiple :class:`ivy.Container` inputs:
@@ -1093,9 +1093,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> norm = ivy.Container(a="ortho", b=None)
         >>> ivy.Container.static_idct(x, type=type, n=n, norm=norm)
         {
-            a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9,
-                        -5.89]),
-            b: ivy.array([242., -253., 286., -515., 467.])
+            a: ivy.array([86.29723358, -66.6950531, 9.93914509, 2.88008738,
+                          -16.18951225, 18.06697273, -17.57439804, 11.68861485,
+                          -4.41308832]),
+            b: ivy.array([242.0700836, -253.2449036, 285.6711426, -514.501709,
+                          467.4924011])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
