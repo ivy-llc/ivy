@@ -293,3 +293,9 @@ def diag(
     if (num_cols and num_rows) and (size == (num_cols * num_rows)):
         output = ivy.reshape(output, (num_rows, num_cols))
     return ivy.astype(output, ivy.dtype(diagonal))
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16", "float32", "complex64")}, "tensorflow")
+def expm(input, name=None):
+    return ivy.matrix_exp(input)
