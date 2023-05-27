@@ -242,7 +242,7 @@ def test_numpy_trace(
     fn_tree="numpy.linalg.cond",
     p=st.sampled_from([ivy.inf, -ivy.inf, "fro", None, 1, -1, 2, -2]),
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_dim_size=2,
         min_num_dims=2,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
