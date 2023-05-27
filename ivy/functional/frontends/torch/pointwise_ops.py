@@ -374,6 +374,7 @@ def log(input, *, out=None):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
 def logaddexp(x1, x2, out=None):
     return ivy.logaddexp(x1, x2, out=out)
 
@@ -397,15 +398,18 @@ def expm1(input, out=None):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
 def logaddexp2(x1, x2, out=None):
     return ivy.logaddexp2(x1, x2, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def i0(x, out=None):
-    return ivy.i0(x, out=out)
+@to_ivy_arrays_and_back
+def i0(input, *, out=None):
+    return ivy.i0(input, out=out)
 
 
+@to_ivy_arrays_and_back
 def rad2deg(input, *, out=None):
     return ivy.rad2deg(input, out=out)
 
@@ -466,13 +470,8 @@ def angle(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def arctan(input, *, out=None):
-    return ivy.arctan(input, out=out)
-
-
-@to_ivy_arrays_and_back
 def conj_physical(input, *, out=None):
-    return ivy.conj_physical(input, out=out)
+    return ivy.conj(input, out=out)
 
 
 @to_ivy_arrays_and_back
