@@ -2308,6 +2308,8 @@ def test_torch_conj_physical(
     fn_tree="torch.nextafter",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_torch_nextafter(
@@ -2326,6 +2328,7 @@ def test_torch_nextafter(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+        other=x[1],
     )
 
 
