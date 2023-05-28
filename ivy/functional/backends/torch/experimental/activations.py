@@ -34,9 +34,10 @@ def thresholded_relu(
 @with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
 def elu(
     x: torch.Tensor,
+    /,
+    *,
     alpha: Optional[Union[int, float]] = 1.0,
     out: Optional[torch.Tensor] = None,
-    inplace: bool = False,
 ) -> torch.Tensor:
     return torch.nn.functional.elu(x, alpha=alpha, inplace=False)
 

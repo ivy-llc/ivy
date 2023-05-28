@@ -22,16 +22,16 @@ def logit(
     return jnp.log(x / (1 - x))
 
 def elu(
-    x: jnp.ndarray,
+    x: JaxArray,
+    /,
+    *,
     alpha: float = 1.0,
-    out: Optional[jnp.ndarray] = None,
-    inplace: bool = False,
-) -> jnp.ndarray:
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if out is not None:
         raise ValueError("The 'out' parameter is not supported in Jax.")
-    if inplace:
-        raise ValueError("Inplace operation is not supported in Jax.")
-    return jnp.where(x > 0, x, alpha * (jnp.exp(x) - 1))
+    return jnp.where(x > 0, x, alpha * (jnp.exp(x) - 1)).astype(x.dtype)
+
 
 def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     relu6_func = jax.nn.relu6

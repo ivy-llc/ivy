@@ -43,13 +43,14 @@ def thresholded_relu(
 
 def elu(
     x: paddle.Tensor,
+    /,
+ *,
     alpha: float = 1.0,
     out: Optional[paddle.Tensor] = None,
-    inplace: bool = False,
 ) -> paddle.Tensor:
     if out is not None:
         raise ValueError("The 'out' parameter is not supported in PaddlePaddle.")
-    return paddle.nn.functional.elu(x, alpha=alpha, inplace=inplace)
+    return paddle.nn.functional.elu(x, alpha=alpha, inplace=False)
 
 
 def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
