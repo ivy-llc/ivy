@@ -8,7 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # binary_cross_entropy
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.binary_cross_entropy",
+    fn_tree="paddle.nn.functional.loss.binary_cross_entropy",
     dtype_and_vals=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,

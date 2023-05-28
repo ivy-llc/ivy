@@ -22,7 +22,8 @@ def _get_reduction_func(reduction):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def binary_cross_entropy(input, label, weight=None, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
-    result = ivy.binary_cross_entropy(label, input, epsilon=0.0)
+    output_array = ivy.zeros((1,))
+    result = ivy.binary_cross_entropy(label, input, name, epsilon=0.0, out=output_array)
 
     if weight is not None:
         result = ivy.multiply(weight, result)
