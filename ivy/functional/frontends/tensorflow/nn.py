@@ -532,12 +532,12 @@ def pool(
                 strides,
                 padding,
                 data_format=data_format)   
-    return ivy.pool(
-        input,
-        window_shape,
-        pooling_type,
-        strides=strides, 
-        padding=padding, 
-        data_format=data_format, 
-        dilations=dilations, 
-        name=name)
+    # return ivy.pool(
+    #     input,
+    #     window_shape,
+    #     pooling_type,
+    #     strides=strides, 
+    #     padding=padding, 
+    #     data_format=data_format, 
+    #     dilations=dilations, 
+    #     name=name)
