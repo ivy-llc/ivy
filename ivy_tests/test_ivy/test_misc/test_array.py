@@ -255,12 +255,14 @@ def test_array__getitem__(
     method_flags,
     method_name,
     class_name,
+    backend_fw,
     ground_truth_backend,
     on_device,
 ):
     query, x_dtype = query_dtype_and_x
     dtype, x = x_dtype
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -285,6 +287,7 @@ def test_array__setitem__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -298,6 +301,7 @@ def test_array__setitem__(
     elif ivy.is_bool_dtype(dtype[0]):
         val = bool(val)
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -322,12 +326,14 @@ def test_array__pos__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -352,12 +358,14 @@ def test_array__neg__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -380,6 +388,7 @@ def test_array__pow__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -401,6 +410,7 @@ def test_array__pow__(
     x[0] = not_too_close_to_zero(x[0])
     x[1] = not_too_close_to_zero(x[1])
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -423,6 +433,7 @@ def test_array__rpow__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -444,6 +455,7 @@ def test_array__rpow__(
     x[0] = not_too_close_to_zero(x[0])
     x[1] = not_too_close_to_zero(x[1])
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -467,6 +479,7 @@ def test_array__ipow__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -488,6 +501,7 @@ def test_array__ipow__(
     x[0] = not_too_close_to_zero(x[0])
     x[1] = not_too_close_to_zero(x[1])
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -517,12 +531,14 @@ def test_array__add__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -552,12 +568,14 @@ def test_array__radd__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -588,12 +606,14 @@ def test_array__iadd__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -623,12 +643,14 @@ def test_array__sub__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -658,12 +680,14 @@ def test_array__rsub__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -694,12 +718,14 @@ def test_array__isub__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -729,12 +755,14 @@ def test_array__mul__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -764,12 +792,14 @@ def test_array__rmul__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -800,12 +830,14 @@ def test_array__imul__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -835,6 +867,7 @@ def test_array__mod__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -842,6 +875,7 @@ def test_array__mod__(
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -871,6 +905,7 @@ def test_array__rmod__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -878,6 +913,7 @@ def test_array__rmod__(
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -908,6 +944,7 @@ def test_array__imod__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -915,6 +952,7 @@ def test_array__imod__(
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -944,6 +982,7 @@ def test_array__divmod__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -951,6 +990,7 @@ def test_array__divmod__(
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -980,6 +1020,7 @@ def test_array__rdivmod__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -987,6 +1028,7 @@ def test_array__rdivmod__(
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1016,12 +1058,14 @@ def test_array__truediv__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1051,12 +1095,14 @@ def test_array__rtruediv__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1087,12 +1133,14 @@ def test_array__itruediv__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1122,6 +1170,7 @@ def test_array__floordiv__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -1129,6 +1178,7 @@ def test_array__floordiv__(
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1158,6 +1208,7 @@ def test_array__rfloordiv__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -1165,6 +1216,7 @@ def test_array__rfloordiv__(
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1195,6 +1247,7 @@ def test_array__ifloordiv__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -1202,6 +1255,7 @@ def test_array__ifloordiv__(
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1226,6 +1280,7 @@ def test_array__matmul__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -1233,6 +1288,7 @@ def test_array__matmul__(
     input_dtype1, x = x
     input_dtype2, y = y
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1257,6 +1313,7 @@ def test_array__rmatmul__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -1264,6 +1321,7 @@ def test_array__rmatmul__(
     dtype1, x1 = x1
     dtype2, x2 = x2
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1289,6 +1347,7 @@ def test_array__imatmul__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -1296,6 +1355,7 @@ def test_array__imatmul__(
     dtype1, x1 = x1
     dtype2, x2 = x2
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1320,12 +1380,14 @@ def test_array__abs__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1351,12 +1413,14 @@ def test_array__float__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1385,12 +1449,14 @@ def test_array__int__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1418,12 +1484,14 @@ def test_array__bool__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1450,12 +1518,14 @@ def test_array__lt__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1482,12 +1552,14 @@ def test_array__le__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1514,12 +1586,14 @@ def test_array__eq__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1546,12 +1620,14 @@ def test_array__ne__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1578,12 +1654,14 @@ def test_array__gt__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1610,12 +1688,14 @@ def test_array__ge__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1642,12 +1722,14 @@ def test_array__and__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1674,12 +1756,14 @@ def test_array__rand__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1707,12 +1791,14 @@ def test_array__iand__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1739,12 +1825,14 @@ def test_array__or__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1771,12 +1859,14 @@ def test_array__ror__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1804,12 +1894,14 @@ def test_array__ior__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1834,12 +1926,14 @@ def test_array__invert__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1866,12 +1960,14 @@ def test_array__xor__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1898,12 +1994,14 @@ def test_array__rxor__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1931,12 +2029,14 @@ def test_array__ixor__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1963,6 +2063,7 @@ def test_array__lshift__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -1970,6 +2071,7 @@ def test_array__lshift__(
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -1996,6 +2098,7 @@ def test_array__rlshift__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -2003,6 +2106,7 @@ def test_array__rlshift__(
     dtype, x = dtype_and_x
     x[0] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -2030,6 +2134,7 @@ def test_array__ilshift__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -2037,6 +2142,7 @@ def test_array__ilshift__(
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -2064,6 +2170,7 @@ def test_array__rshift__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -2071,6 +2178,7 @@ def test_array__rshift__(
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -2097,6 +2205,7 @@ def test_array__rrshift__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -2104,6 +2213,7 @@ def test_array__rrshift__(
     dtype, x = dtype_and_x
     x[0] = np.asarray(np.clip(x[0], 0, np.iinfo(dtype[0]).bits - 1), dtype=dtype[0])
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -2131,6 +2241,7 @@ def test_array__irshift__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -2138,6 +2249,7 @@ def test_array__irshift__(
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -2162,12 +2274,14 @@ def test_array__deepcopy__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -2194,12 +2308,14 @@ def test_array__len__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
@@ -2226,12 +2342,14 @@ def test_array__iter__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
