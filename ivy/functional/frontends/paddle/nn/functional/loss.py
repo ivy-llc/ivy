@@ -23,7 +23,7 @@ def _get_reduction_func(reduction):
 def binary_cross_entropy(input, label, weight=None, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
     output_array = ivy.zeros((1,))
-    result = ivy.binary_cross_entropy(label, input, name, epsilon=0.0, out=output_array)
+    result = ivy.binary_cross_entropy(label, input, epsilon=0.0, out=output_array)
 
     if weight is not None:
         result = ivy.multiply(weight, result)
