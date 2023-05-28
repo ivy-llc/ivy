@@ -1,5 +1,6 @@
 # global
 import numpy as np
+import jax.lax as jlax
 import jax.numpy as jnp
 from hypothesis import assume, strategies as st
 import random
@@ -2502,20 +2503,44 @@ def test_jax_lax_top_k(
 
 @st.composite
 def _reduce_window_helper(draw):
+    # ToDo: remove the dtype filtering as soon as the issues in mixed functions'
+    #  supported dtypes have been resolved
     dtype = draw(
-        helpers.get_dtypes("numeric", full=False).filter(
-            lambda x: x[0] not in ("bfloat16", "uint64", "uint32")
+        helpers.get_dtypes("valid", full=False).filter(
+            lambda x: x[0]
+            not in ["bfloat16", "uint8", "uint32", "uint64", "int8", "int16"]
         )
     )
-    init_value = draw(helpers.array_values(dtype=dtype[0], shape=()))
 
-    def py_func(accumulator, window):
-        if not len(window.shape):
-            window = jnp.expand_dims(window, 0)
-        sum = 0
-        for w in window:
-            sum += w
-        return accumulator + sum
+    if dtype[0] == "bool":
+        py_func = draw(st.sampled_from([jnp.logical_and, jnp.logical_or]))
+    else:
+        py_func = draw(
+            st.sampled_from([jlax.add, jlax.max, jlax.min, jlax.mul, jnp.multiply])
+        )
+
+    if dtype[0] == "float64":
+        init_value = draw(
+            st.sampled_from(
+                [
+                    [-float("inf")],
+                    [float("inf")],
+                    draw(
+                        helpers.dtype_and_values(
+                            dtype=dtype,
+                            shape=(),
+                        )
+                    )[1],
+                ]
+            )
+        )
+    else:
+        init_value = draw(
+            helpers.dtype_and_values(
+                dtype=dtype,
+                shape=(),
+            )
+        )[1]
 
     ndim = draw(st.integers(min_value=1, max_value=4))
 
@@ -2582,7 +2607,7 @@ def test_jax_lax_reduce_window(
         fn_tree=fn_tree,
         on_device=on_device,
         operand=operand[0],
-        init_value=init_value,
+        init_value=init_value[0],
         computation=computation,
         window_dimensions=others[0],
         window_strides=others[1],
@@ -2724,6 +2749,31 @@ def test_jax_lax_conj(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# is_finite
+@handle_frontend_test(
+    fn_tree="jax.lax.is_finite",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_is_finite(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
