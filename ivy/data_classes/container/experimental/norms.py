@@ -4,7 +4,6 @@ import ivy
 
 
 class _ContainerWithNormsExperimental(ContainerBase):
-
     @staticmethod
     def static_l1_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -83,7 +82,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.l1_normalize. This method simply
         wraps the function, and so the docstring for ivy.l1_normalize also applies to
         this method with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -104,7 +103,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         out
             Optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-            
+
         Returns
         -------
         ret
@@ -118,7 +117,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            )
+        )
 
     @staticmethod
     def static_l2_normalize(

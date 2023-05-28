@@ -5,14 +5,14 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 
 
 # mean
 @handle_frontend_test(
     fn_tree="paddle.mean",
-    dtype_and_x=statistical_dtype_values(function="mean"),
+    dtype_and_x=_statistical_dtype_values(function="mean"),
     keepdims=st.booleans(),
 )
 def test_paddle_mean(

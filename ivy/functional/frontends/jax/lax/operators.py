@@ -106,7 +106,6 @@ def conv(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
-    rhs = ivy.permute_dims(rhs, axes=(*range(2, dims + 2), 1, 0))
     return ivy.conv_general_dilated(
         lhs,
         rhs,
@@ -114,6 +113,7 @@ def conv(
         padding,
         dims=dims,
         data_format="channel_first",
+        filter_format="channel_first",
     )
 
 
