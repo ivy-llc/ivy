@@ -258,7 +258,9 @@ def test_paddle_divide(
         available_dtypes=helpers.get_dtypes("float"),
         force_int_axis=True,
         min_num_dims=1,
+        max_num_dims=1,
         valid_axis=True,
+        safety_factor_scale="log",
     ),
 )
 def test_paddle_cumsum(
