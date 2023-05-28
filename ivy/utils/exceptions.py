@@ -82,12 +82,12 @@ def _combine_messages(*messages, include_backend=True):
     # adding the native error as well if it exists and the trace mode is set to "full"
     if isinstance(default[-1], Exception):
         if isinstance(default[-1], IvyException):
-            # native error was passed in the message
             if default[-1].native_error is not None:
+                # native error was passed in the message
                 native_error = default[-1].native_error
             else:
                 # a string was passed in the message
-                # hence the last element is IvyException
+                # hence the last element is an IvyException
                 default[-1] = str(default[-1])
                 return delimiter.join(default)
         else:
