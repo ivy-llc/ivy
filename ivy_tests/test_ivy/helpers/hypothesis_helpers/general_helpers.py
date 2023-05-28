@@ -1,11 +1,11 @@
 # global
 from hypothesis import strategies as st
+from functools import lru_cache
 import math
 import numpy as np
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers.globals as test_globals
 from . import array_helpers, number_helpers, dtype_helpers
 from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
@@ -48,9 +48,11 @@ def matrix_is_stable(x, cond_limit=30):
     return np.linalg.cond(x.astype("float64")) <= cond_limit
 
 
+@lru_cache(None)
 def apply_safety_factor(
     dtype,
     *,
+    backend: str,
     min_value=None,
     max_value=None,
     abs_smallest_val=None,
@@ -87,11 +89,11 @@ def apply_safety_factor(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+        with WithBackendContext(backend) as ivy_backend:
             dtype_info = ivy_backend.finfo(dtype)
     elif "int" in dtype:
         kind_dtype = "int"
-        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+        with WithBackendContext(backend) as ivy_backend:
             dtype_info = ivy_backend.iinfo(dtype)
     else:
         raise TypeError(

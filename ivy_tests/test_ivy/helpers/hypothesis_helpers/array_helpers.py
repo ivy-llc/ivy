@@ -1321,6 +1321,7 @@ def array_values(
 
         min_value, max_value, abs_smallest_val = gh.apply_safety_factor(
             dtype,
+            backend=test_globals.CURRENT_BACKEND,
             min_value=min_value,
             max_value=max_value,
             abs_smallest_val=abs_smallest_val,
