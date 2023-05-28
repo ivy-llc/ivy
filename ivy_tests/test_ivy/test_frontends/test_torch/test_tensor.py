@@ -753,7 +753,7 @@ def test_torch_instance_reshape(
     init_tree="torch.tensor",
     method_name="reshape_as",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
     ),
 )
 def test_torch_instance_reshape_as(
@@ -1209,7 +1209,7 @@ def test_torch_instance_cosh_(
     init_tree="torch.tensor",
     method_name="view",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     shape=helpers.reshape_shapes(
