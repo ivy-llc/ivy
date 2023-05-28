@@ -355,7 +355,7 @@ def test_paddle_round(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.ceil",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_paddle_ceil(
