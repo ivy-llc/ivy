@@ -4747,7 +4747,7 @@ def test_torch_instance_size(
     init_tree="torch.tensor",
     method_name="min",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
 )
 def test_torch_instance_min(
