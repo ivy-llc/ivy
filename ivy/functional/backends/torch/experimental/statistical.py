@@ -352,3 +352,16 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def igamma(
+    a: torch.Tensor,
+    /,
+    *,
+    x: torch.Tensor,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.gammainc(a, x, out=out)
+
+
+igamma.support_native_out = True

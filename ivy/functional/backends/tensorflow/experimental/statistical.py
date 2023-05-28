@@ -211,3 +211,9 @@ def bincount(
         minlength=minlength,
         dtype=x.dtype if weights is None else weights.dtype,
     )
+
+
+def igamma(
+    a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
+) -> tf.Tensor:
+    return tf.math.igamma(a, x)

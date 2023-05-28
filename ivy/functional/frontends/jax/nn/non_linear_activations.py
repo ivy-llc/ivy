@@ -181,9 +181,8 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         a = ivy.astype(a, dtype)
         b = ivy.asarray(b, dtype=dtype)
         a = ivy.where(b != 0, a, -ivy.inf)
-
+        a = ivy.astype(a, dtype)
     out_dtype = _batch_promotion(a, b, default_dtype="float32")
-
     pos_dims, dims = _reduction_dims(a, axis)
 
     amax = ivy.max(a, axis=pos_dims, keepdims=keepdims)
@@ -212,7 +211,6 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         sumexp = ivy.sum(expsub, axis=dims, keepdims=keepdims)
         sign = ivy.stop_gradient(ivy.sign(sumexp))
         out = ivy.add(ivy.log(ivy.abs(sumexp)), amax)
-
     if return_sign:
         return out, sign
 
