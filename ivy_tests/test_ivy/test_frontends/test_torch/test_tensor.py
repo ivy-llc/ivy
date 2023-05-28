@@ -6807,11 +6807,7 @@ def test_torch_instance_numpy(
     ),
 )
 def test_torch_instance_atan2_(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
+    dtype_and_x, frontend_method_data, init_flags, method_flags, frontend, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -6827,6 +6823,7 @@ def test_torch_instance_atan2_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
