@@ -7,12 +7,11 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
 
-@handle_mixed_function(lambda x, weight, **kwargs: weight.ndim == 2)
 @with_unsupported_dtypes(
     {"2.0.1 and below": ("float16", "bfloat16", "complex")},
     backend_version,
@@ -28,12 +27,20 @@ def linear(
     return torch.nn.functional.linear(x, weight, bias)
 
 
-def _pad_before_conv(x, filters, strides, padding, dims, dilations):
+linear.partial_mixed_handler = lambda x, weight, **kwargs: weight.ndim == 2
+
+
+def _pad_before_conv(
+    x, filters, strides, padding, dims, dilations, filter_format="channel_last"
+):
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     strides = [strides] * dims if isinstance(strides, int) else strides
+    filter_shape = filters.shape[:dims]
+    if filter_format == "channel_first":
+        filter_shape = filters.shape[2:]
     if isinstance(padding, str):
         filter_shape = [
-            filters.shape[i] + (filters.shape[i] - 1) * (dilations[i] - 1)
+            filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
             for i in range(dims)
         ]
         pad_specific = [
@@ -364,14 +371,19 @@ def conv_general_dilated(
     *,
     dims: int = 2,
     data_format: str = "channel_last",
+    filter_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
+    # permuting dims based on formats
     if data_format == "channel_last":
         x = x.permute(0, dims + 1, *range(1, dims + 1))
+
+    if filter_format == "channel_last":
+        filters = filters.permute(-1, -2, *range(dims))
 
     # adding dilation to input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
@@ -384,9 +396,8 @@ def conv_general_dilated(
             x = torch.matmul(x, h)
             x = torch.swapaxes(x, -1, 2 + i)
 
-    x = _pad_before_conv(x, filters, strides, padding, dims, dilations)
+    x = _pad_before_conv(x, filters, strides, padding, dims, dilations, "channel_first")
 
-    filters = filters.permute(-1, -2, *range(dims))
     if dims == 1:
         res = torch.nn.functional.conv1d(
             x, filters, bias, strides, "valid", dilations, feature_group_count
