@@ -1,4 +1,3 @@
-import os
 import sys
 from get_all_tests import get_all_tests
 

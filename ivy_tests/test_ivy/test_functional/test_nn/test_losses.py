@@ -70,16 +70,17 @@ def test_cross_entropy(
     fn_tree="functional.ivy.binary_cross_entropy",
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        min_value=0,
+        min_value=1e-04,
         max_value=1,
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
+        shape=(5,),
     ),
     dtype_and_pred=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=1.0013580322265625e-05,
+        min_value=1e-04,
         max_value=1,
         allow_inf=False,
         exclude_min=True,
@@ -87,14 +88,32 @@ def test_cross_entropy(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
+        shape=(5,),
+    ),
+    dtype_and_pos=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        shape=(5,),
     ),
     reduction=st.sampled_from(["none", "sum", "mean"]),
-    epsilon=helpers.floats(min_value=0, max_value=0.49),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    epsilon=helpers.floats(min_value=0, max_value=1.0),
+    from_logits=st.booleans(),
 )
 def test_binary_cross_entropy(
     dtype_and_true,
     dtype_and_pred,
+    dtype_and_pos,
+    from_logits,
     reduction,
+    axis,
     epsilon,
     test_flags,
     backend_fw,
@@ -102,22 +121,45 @@ def test_binary_cross_entropy(
     on_device,
     ground_truth_backend,
 ):
-    pred_dtype, pred = dtype_and_pred
-    true_dtype, true = dtype_and_true
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=true_dtype + pred_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-1,
-        true=true[0],
-        pred=pred[0],
-        epsilon=epsilon,
-        reduction=reduction,
-    )
+    dtype_true, true = dtype_and_true
+    dtype_pred, pred = dtype_and_pred
+    dtype_pos_weight, pos_weight = dtype_and_pos
+
+    if from_logits:
+        helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=dtype_true + dtype_pred + dtype_pos_weight,
+            test_flags=test_flags,
+            fw=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            rtol_=1e-02,
+            atol_=1e-02,
+            true=true[0],
+            pred=pred[0],
+            axis=axis,
+            epsilon=epsilon,
+            reduction=reduction,
+            from_logits=from_logits,
+            pos_weight=pos_weight[0],
+        )
+    else:
+        helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=dtype_true + dtype_pred,
+            test_flags=test_flags,
+            fw=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            rtol_=1e-02,
+            atol_=1e-02,
+            true=true[0],
+            pred=pred[0],
+            axis=axis,
+            epsilon=epsilon,
+            reduction=reduction,
+            from_logits=from_logits,
+        )
 
 
 # sparse_cross_entropy

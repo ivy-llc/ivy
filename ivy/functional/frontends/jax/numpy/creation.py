@@ -196,6 +196,11 @@ def double(x):
 
 
 @to_ivy_arrays_and_back
+def bool_(x):
+    return ivy.astype(x, ivy.bool)
+
+
+@to_ivy_arrays_and_back
 def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
     x = ivy.linspace(
