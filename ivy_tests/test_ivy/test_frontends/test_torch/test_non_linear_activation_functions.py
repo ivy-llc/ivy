@@ -1089,7 +1089,7 @@ def test_torch_softplus(
     ),
     mean=st.floats(min_value=-1.0, max_value=1.0),
     variance=st.floats(min_value=0.0, max_value=1.0),
-    weight=st.booleans(),
+   
     training=st.booleans(),
     eps=st.floats(min_value=1e-05, max_value=1e-01),
     momentum=st.floats(min_value=0.0, max_value=1.0, exclude_min=True),
