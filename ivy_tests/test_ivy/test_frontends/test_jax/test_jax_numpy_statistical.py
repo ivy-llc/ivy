@@ -10,7 +10,7 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
     _get_castable_dtype,
 )
 from ivy import inf
@@ -66,7 +66,7 @@ def test_jax_numpy_einsum(
 # mean
 @handle_frontend_test(
     fn_tree="jax.numpy.mean",
-    dtype_x_axis=statistical_dtype_values(function="mean"),
+    dtype_x_axis=_statistical_dtype_values(function="mean"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_helpers.where(),
     keepdims=st.booleans(),
@@ -111,7 +111,7 @@ def test_jax_numpy_mean(
 # var
 @handle_frontend_test(
     fn_tree="jax.numpy.var",
-    dtype_x_axis=statistical_dtype_values(function="var").filter(
+    dtype_x_axis=_statistical_dtype_values(function="var").filter(
         lambda x: x[0][0] != "bfloat16"
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True).filter(
@@ -362,7 +362,7 @@ def test_jax_numpy_sum(
 @handle_frontend_test(
     fn_tree="jax.numpy.min",
     aliases=["jax.numpy.amin"],
-    dtype_x_axis=statistical_dtype_values(function="min"),
+    dtype_x_axis=_statistical_dtype_values(function="min"),
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
@@ -403,7 +403,7 @@ def test_jax_numpy_min(
 @handle_frontend_test(
     fn_tree="jax.numpy.max",
     aliases=["jax.numpy.amax"],
-    dtype_x_axis=statistical_dtype_values(function="max"),
+    dtype_x_axis=_statistical_dtype_values(function="max"),
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
@@ -593,7 +593,7 @@ def test_numpy_nanmin(
 # nanstd
 @handle_frontend_test(
     fn_tree="jax.numpy.nanstd",
-    dtype_and_a=statistical_dtype_values(function="nanstd"),
+    dtype_and_a=_statistical_dtype_values(function="nanstd"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
@@ -638,7 +638,7 @@ def test_jax_numpy_nanstd(
 # nanvar
 @handle_frontend_test(
     fn_tree="jax.numpy.nanvar",
-    dtype_x_axis=statistical_dtype_values(function="nanvar").filter(
+    dtype_x_axis=_statistical_dtype_values(function="nanvar").filter(
         lambda x: x[0][0] != "bfloat16"
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True).filter(
@@ -767,7 +767,7 @@ def test_jax_numpy_nancumsum(
 # std
 @handle_frontend_test(
     fn_tree="jax.numpy.std",
-    dtype_x_axis=statistical_dtype_values(function="std"),
+    dtype_x_axis=_statistical_dtype_values(function="std"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_helpers.where(),
     keepdims=st.booleans(),

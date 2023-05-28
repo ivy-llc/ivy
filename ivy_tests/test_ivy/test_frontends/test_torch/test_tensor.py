@@ -40,7 +40,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 
 CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
@@ -4227,6 +4227,7 @@ def test_torch_instance_arctanh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -8110,7 +8111,7 @@ def test_torch_instance_sign(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="std",
-    dtype_and_x=statistical_dtype_values(function="std"),
+    dtype_and_x=_statistical_dtype_values(function="std"),
 )
 def test_torch_instance_std(
     dtype_and_x,
@@ -8494,6 +8495,87 @@ def test_torch_instance_not_equal(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        atol_=1e-02,
+        on_device=on_device,
+    )
+
+
+@st.composite
+def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    vec1 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size1,), min_value=2, max_value=5
+        )
+    )
+    vec2 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size2,), min_value=2, max_value=5
+        )
+    )
+    if with_input:
+        input = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2, max_value=5
+            )
+        )
+        return dtype, input, vec1, vec2
+    return dtype, vec1, vec2
+
+
+# addr
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="addr",
+    dtype_and_vecs=_get_dtype_input_and_vectors(with_input=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+)
+def test_torch_instance_addr(
+    dtype_and_vecs,
+    beta,
+    alpha,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    dtype, input, vec1, vec2 = dtype_and_vecs
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        init_all_as_kwargs_np={
+            "data": input,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={
+            "vec1": vec1,
+            "vec2": vec2,
+            "beta": beta,
+            "alpha": alpha,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

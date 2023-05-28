@@ -249,6 +249,7 @@ def test_paddle_divide(
         x=x[0],
         y=x[1],
     )
+
     
 # sqrt
 @handle_frontend_test(

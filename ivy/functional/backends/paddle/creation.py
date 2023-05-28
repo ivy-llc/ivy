@@ -19,6 +19,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 from . import backend_version
 from paddle.fluid.libpaddle import Place
@@ -79,12 +80,13 @@ def _stack_tensors(x, dtype):
             else:
                 x = paddle.to_tensor(x, dtype=dtype)
     x.stop_gradient = False
-    return x
+    return x.cast(dtype)
 
 
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         paddle.Tensor,
@@ -142,7 +144,7 @@ def asarray(
             dtype = ivy.default_dtype(item=obj)
         return paddle_backend.squeeze(paddle.to_tensor(obj, dtype=dtype), 0)
 
-    else:
+    elif dtype is None:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
     if dtype == paddle.bfloat16 and isinstance(obj, np.ndarray):
@@ -261,9 +263,14 @@ def full(
         dtype = ivy.default_dtype(item=fill_value)
     if not isinstance(shape, Sequence):
         shape = [shape]
-    return to_device(
-        paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
-    )
+    if ivy.as_native_dtype(dtype) is paddle.int8:
+        return to_device(
+            paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
+        )
+    else:
+        return to_device(
+            paddle.full(shape=shape, fill_value=fill_value, dtype=dtype), device
+        )
 
 
 def full_like(
@@ -275,7 +282,9 @@ def full_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return full(shape=x.shape, fill_value=fill_value, dtype=dtype, device=device)
+    return paddle_backend.full(
+        shape=x.shape, fill_value=fill_value, dtype=dtype, device=device
+    )
 
 
 def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
