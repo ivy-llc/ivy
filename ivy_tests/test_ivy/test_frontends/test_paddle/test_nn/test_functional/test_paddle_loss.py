@@ -29,7 +29,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     name=st.none(),
     reduction=st.sampled_from(["mean", "none", "sum", None]),
 )
-def test_torch_binary_cross_entropy(
+def test_paddle_binary_cross_entropy(
     *,
     dtype_and_vals,
     reduction,
