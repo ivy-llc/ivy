@@ -5,33 +5,13 @@ from hypothesis import strategies as st
 import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    _statistical_dtype_values,
+)
 
 
 # Helpers #
 # ------- #
-
-
-@st.composite
-def _statistical_dtype_values(draw, function):
-    large_abs_safety_factor = 24
-    small_abs_safety_factor = 24
-    dtype, values, axis = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("float"),
-            large_abs_safety_factor=large_abs_safety_factor,
-            small_abs_safety_factor=small_abs_safety_factor,
-            safety_factor_scale="log",
-            min_num_dims=1,
-            max_num_dims=5,
-            min_dim_size=2,
-            valid_axis=True,
-            allow_neg_axes=False,
-            min_axes_size=1,
-            force_int_axis=True,
-            allow_nan=True if "nan" in function else False,
-        )
-    )
-    return dtype, values, axis
 
 
 @st.composite
