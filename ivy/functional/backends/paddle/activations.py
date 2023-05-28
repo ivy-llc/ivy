@@ -167,8 +167,8 @@ def elu(
 ) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
-            return paddle_backend.where(
-                x > 0, x, alpha * (paddle_backend.exp(x) - 1)
+            return paddle.complex(
+                F.elu(x.real(), alpha=alpha), F.elu(x.imag(), alpha=alpha)
             )
         return F.elu(x.cast("float32"), alpha=alpha).cast(x.dtype)
     return F.elu(x, alpha=alpha)
