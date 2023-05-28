@@ -68,8 +68,43 @@ def _print_traceback_history():
 sys.excepthook = _custom_exception_handle
 
 
-def _combine_messages(*messages, include_backend=True):
+def _add_native_error(default):
+    """
+    Append the native error to the message if it exists.
+
+    Parameters
+    ----------
+    default
+        list containing all the messages
+
+    Returns
+    -------
+    ret
+        list containing all the messages, with the native error appended if it exists
+    """
     trace_mode = ivy.get_exception_trace_mode()
+    if isinstance(default[-1], Exception):
+        if isinstance(default[-1], IvyException):
+            if default[-1].native_error is not None:
+                # native error was passed in the message
+                native_error = default[-1].native_error
+            else:
+                # a string was passed in the message
+                # hence the last element is an IvyException
+                default[-1] = str(default[-1])
+                return default
+        else:
+            # exception was raised by the backend natively
+            native_error = default[-1]
+        if trace_mode == "full":
+            default[-1] = native_error.__class__.__name__
+            default.append(str(native_error))
+        else:
+            default[-1] = str(native_error)
+    return default
+
+
+def _combine_messages(*messages, include_backend=True):
     if not include_backend:
         return " ".join(messages)
     default = [
@@ -80,24 +115,7 @@ def _combine_messages(*messages, include_backend=True):
         default.append(message)
 
     # adding the native error as well if it exists and the trace mode is set to "full"
-    if isinstance(default[-1], Exception):
-        if isinstance(default[-1], IvyException):
-            if default[-1].native_error is not None:
-                # native error was passed in the message
-                native_error = default[-1].native_error
-            else:
-                # a string was passed in the message
-                # hence the last element is an IvyException
-                default[-1] = str(default[-1])
-                return delimiter.join(default)
-        else:
-            # exception was raised by the backend natively
-            native_error = default[-1]
-        if trace_mode == "full":
-            default[-1] = native_error.__class__.__name__
-            default.append(str(native_error))
-        else:
-            default[-1] = str(native_error)
+    default = _add_native_error(default)
     return delimiter.join(default)
 
 
