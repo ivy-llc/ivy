@@ -1248,7 +1248,7 @@ def test_torch_instance_view(
     init_tree="torch.tensor",
     method_name="float",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
 )
 def test_torch_instance_float(
@@ -1489,7 +1489,7 @@ def test_torch_instance_asin(
     init_tree="torch.tensor",
     method_name="amax",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
 )
 def test_torch_instance_amax(
@@ -1588,7 +1588,7 @@ def test_torch_instance_abs_(
     init_tree="torch.tensor",
     method_name="amin",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
 )
 def test_torch_instance_amin(
@@ -1621,7 +1621,7 @@ def test_torch_instance_amin(
     init_tree="torch.tensor",
     method_name="aminmax",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
     keepdim=st.booleans(),
 )
@@ -3278,7 +3278,7 @@ def test_torch_instance_expand(
     init_tree="torch.tensor",
     method_name="expand_as",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
     ),
 )
 def test_torch_instance_expand_as(
@@ -3449,7 +3449,7 @@ def test_torch_instance_long(
     init_tree="torch.tensor",
     method_name="max",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
 )
 def test_torch_instance_max(
