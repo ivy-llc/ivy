@@ -157,6 +157,7 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         return F.mish(x.cast("float32")).cast(x.dtype)
     return F.mish(x)
 
+
 def elu(
     x: paddle.Tensor,
     /,
