@@ -216,4 +216,3 @@ def iscomplex(x: any):
 @to_ivy_arrays_and_back
 def iscomplexobj(x):
     return ivy.is_complex_dtype(ivy.dtype(x))
-
