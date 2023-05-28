@@ -58,3 +58,9 @@ def log(x, name=None):
 @to_ivy_arrays_and_back
 def divide(x, y, name=None):
     return ivy.divide(x, y)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def add(x, y, name=None):
+    return ivy.add(x, y)
