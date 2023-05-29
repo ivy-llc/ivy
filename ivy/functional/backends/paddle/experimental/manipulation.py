@@ -418,6 +418,11 @@ def atleast_3d(
     return res
 
 
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8",)}},
+    backend_version,
+)
 def take_along_axis(
     arr: paddle.Tensor,
     indices: paddle.Tensor,
