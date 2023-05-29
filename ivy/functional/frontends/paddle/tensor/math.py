@@ -70,3 +70,9 @@ def multiply(x, y, name=None):
 @to_ivy_arrays_and_back
 def add(x, y, name=None):
     return ivy.add(x, y)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def subtract(x, y, name=None):
+    return ivy.subtract(x, y)
