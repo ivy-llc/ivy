@@ -973,7 +973,7 @@ def _wrap_function(
         mixed_fn = (
             original != to_wrap
             and hasattr(original, "inputs_to_ivy_arrays")
-            and original.__name__ != "inplace_update"
+            and not original.__name__.startswith("inplace")
         )
         for attr in FN_DECORATORS:
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
