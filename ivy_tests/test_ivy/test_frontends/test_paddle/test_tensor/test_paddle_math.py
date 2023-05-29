@@ -346,5 +346,4 @@ def test_paddle_subtract(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        alpha=1,
     )
