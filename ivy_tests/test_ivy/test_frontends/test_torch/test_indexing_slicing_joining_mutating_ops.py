@@ -1,10 +1,10 @@
 # global
 from hypothesis import strategies as st, assume
 import math
+import numpy as np
 
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
@@ -926,7 +926,7 @@ def test_torch_vstack(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    split_size_or_sections=_get_splits().filter(lambda s: s is not None),
+    split_size_or_sections=_get_splits(allow_none=False, min_num_dims=1),
     dim=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -965,7 +965,7 @@ def test_torch_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1),
+    indices_or_sections=_get_splits(min_num_dims=1, allow_none=False),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1036,7 +1036,7 @@ def test_torch_unbind(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=3, axis=2),
+    indices_or_sections=_get_splits(min_num_dims=3, axis=2, allow_none=False),
 )
 def test_torch_dsplit(
     *,
@@ -1048,6 +1048,7 @@ def test_torch_dsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
+    assume(not isinstance(indices_or_sections, np.ndarray))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1064,9 +1065,9 @@ def test_torch_dsplit(
     fn_tree="torch.hsplit",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1, axis=1),
+    indices_or_sections=_get_splits(min_num_dims=1, axis=1, allow_none=False),
 )
 def test_torch_hsplit(
     *,
@@ -1078,15 +1079,7 @@ def test_torch_hsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    # TODO: remove the assumption when these bugfixes are merged and version-pinned
-    # https://github.com/tensorflow/tensorflow/pull/59523
-    # https://github.com/google/jax/pull/14275
-    assume(
-        not (
-            len(value[0].shape) == 1
-            and ivy.current_backend_str() in ("tensorflow", "jax")
-        )
-    )
+    assume(not isinstance(indices_or_sections, np.ndarray))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1105,7 +1098,7 @@ def test_torch_hsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=0),
+    indices_or_sections=_get_splits(min_num_dims=2, axis=0, allow_none=False),
 )
 def test_torch_vsplit(
     *,
@@ -1117,6 +1110,7 @@ def test_torch_vsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
+    assume(not isinstance(indices_or_sections, np.ndarray))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
