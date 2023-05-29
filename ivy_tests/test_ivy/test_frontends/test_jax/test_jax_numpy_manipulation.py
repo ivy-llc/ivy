@@ -336,7 +336,6 @@ def test_jax_numpy_resize(
     )
 
 
-
 # moveaxis
 @handle_frontend_test(
     fn_tree="jax.numpy.moveaxis",
