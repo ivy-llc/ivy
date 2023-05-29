@@ -1,10 +1,8 @@
 # global
 
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-
 
 # hardswish
 @handle_frontend_test(
@@ -13,7 +11,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         available_dtypes=helpers.get_dtypes("float"),
         safety_factor_scale="log",
     ),
-    # test_with_out=st.just(False),
 )
 def test_paddle_hardswish(
     *,
