@@ -1246,3 +1246,7 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def greater(self, other, *, out=None):
+        return torch_frontend.greater(self, other, out=out)
