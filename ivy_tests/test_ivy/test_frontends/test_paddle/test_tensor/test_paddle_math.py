@@ -320,7 +320,6 @@ def test_paddle_add(
 import paddle
 
 
-# subtract
 @handle_frontend_test(
     fn_tree="paddle.subtract",
     dtype_and_x=helpers.dtype_and_values(
@@ -352,4 +351,5 @@ def test_paddle_subtract(
         on_device=on_device,
         x=x[0],
         y=x[1],
+        alpha=1,
     )
