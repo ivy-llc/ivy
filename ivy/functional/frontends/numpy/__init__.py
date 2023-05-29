@@ -524,7 +524,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _square,
 )
 
-from ivy.functional.frontends.numpy.linalg.solving_equations_and_inverting_matrices import (
+from ivy.functional.ivy.linear_algebra import (
     inv,
 )
 
@@ -707,4 +707,4 @@ conj = ufunc("_conj")
 rint = ufunc("_rint")
 nextafter = ufunc("_nextafter")
 conjugate = ufunc("_conjugate")
-inv = ufunc("inv")
+invert = ufunc("inv")
