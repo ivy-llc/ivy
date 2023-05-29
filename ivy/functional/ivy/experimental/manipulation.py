@@ -38,9 +38,9 @@ def flatten(
     /,
     *,
     copy: Optional[bool] = None,
-    start_dim: int = 0,
-    end_dim: int = -1,
-    order: str = "C",
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
