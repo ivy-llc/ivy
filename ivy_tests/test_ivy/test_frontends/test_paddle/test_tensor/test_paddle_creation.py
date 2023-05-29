@@ -269,3 +269,36 @@ def test_paddle_arange(
         step=step,
         dtype=dtype[0],
     )
+
+
+# empty
+@handle_frontend_test(
+    fn_tree="paddle.empty",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_paddle_empty(
+    shape,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
+        dtype=dtype[0],
+    )
