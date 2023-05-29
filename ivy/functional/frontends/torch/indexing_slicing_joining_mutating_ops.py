@@ -235,7 +235,7 @@ def _get_indices_or_sections(indices_or_sections, indices, sections):
         elif ivy.exists(sections) and not ivy.exists(indices):
             indices_or_sections = sections
         else:
-            raise ivy.utils.exception.IvyError(
+            raise ivy.utils.exceptions.IvyError(
                 "got invalid argument for indices_or_sections"
             )
     return indices_or_sections
