@@ -214,6 +214,7 @@ def real(input):
     return ivy.real(input)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def sign(input, *, out=None):
     return ivy.sign(input, out=out)
@@ -242,7 +243,7 @@ def logical_xor(input, other, *, out=None):
     return ivy.logical_xor(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def round(input, *, decimals=0, out=None):
     m = ivy.full(input.shape, 10**decimals)
@@ -287,16 +288,15 @@ def mul(input, other, *, out=None):
 multiply = mul
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def div(input, other, *, rounding_mode=None, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     if rounding_mode is not None:
-        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
         promoted = input.dtype
         if rounding_mode == "trunc":
-            return ivy.trunc_divide(input, other, out=out).astype(promoted)
+            return ivy.astype(ivy.trunc_divide(input, other, out=out), promoted)
         else:
-            return ivy.floor_divide(input, other, out=out).astype(promoted)
+            return ivy.astype(ivy.floor_divide(input, other, out=out), promoted)
     else:
         return ivy.divide(input, other, out=out)
 
@@ -331,6 +331,7 @@ divide = div
 
 @to_ivy_arrays_and_back
 def true_divide(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.divide(input, other, out=out)
 
 
@@ -375,6 +376,7 @@ def log(input, *, out=None):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
 def logaddexp(x1, x2, out=None):
     return ivy.logaddexp(x1, x2, out=out)
 
@@ -398,15 +400,18 @@ def expm1(input, out=None):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
 def logaddexp2(x1, x2, out=None):
     return ivy.logaddexp2(x1, x2, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def i0(x, out=None):
-    return ivy.i0(x, out=out)
+@to_ivy_arrays_and_back
+def i0(input, *, out=None):
+    return ivy.i0(input, out=out)
 
 
+@to_ivy_arrays_and_back
 def rad2deg(input, *, out=None):
     return ivy.rad2deg(input, out=out)
 
@@ -456,6 +461,7 @@ def lerp(input, end, weight, *, out=None):
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def signbit(input, *, out=None):
     return ivy.signbit(input, out=out)
@@ -467,18 +473,15 @@ def angle(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def arctan(input, *, out=None):
-    return ivy.arctan(input, out=out)
-
-
-@to_ivy_arrays_and_back
 def conj_physical(input, *, out=None):
-    return ivy.conj_physical(input, out=out)
+    return ivy.conj(input, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 @to_ivy_arrays_and_back
-def nextafter(input, *, out=None):
-    return ivy.nextafter(input, out=out)
+def nextafter(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+    return ivy.nextafter(input, other, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
@@ -521,9 +524,11 @@ def erf(input, *, out=None):
 def sgn(input, *, out=None):
     if ivy.is_complex_dtype(input.dtype):
         input_abs = ivy.abs(input, out=out)
-        return ivy.where(
-            input_abs == 0, 0, ivy.divide(input, input_abs, out=out), out=out
-        )
+        # TODO wrap this in Where function after solve it's errors
+        if input_abs == 0:
+            return 0
+        else:
+            return ivy.divide(input, input_abs, out=out)
     else:
         return ivy.sign(input, out=out)
 

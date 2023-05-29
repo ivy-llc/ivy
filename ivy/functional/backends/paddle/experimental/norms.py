@@ -84,6 +84,28 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
+def l1_normalize(
+    x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
+) -> paddle.Tensor:
+    if axis is None:
+        axis = list(range(x.ndim))
+    elif isinstance(axis, int):
+        axis = [axis]
+    else:
+        axis = list(axis)
+
+    # Compute the L1 norm along the given axis
+    norm = paddle.norm(x, p=1, axis=axis, keepdim=True)
+
+    # Divide x by the L1 norm to obtain the normalized array
+    norm = paddle.where(norm == 0, paddle.to_tensor([1], dtype=x.dtype), norm)
+    if out is None:
+        return x / norm
+    else:
+        out[:] = x / norm
+        return out
+
+
 def l2_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:

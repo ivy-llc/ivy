@@ -1150,9 +1150,9 @@ def cummax(
     reverse: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a tuple containing the cumulative maximum of elements
-     of input along the given axis and index location of each
-     maximum value found along the given axis.
+    """
+    Return a tuple containing the cumulative maximum of elements of input along the
+    given axis and index location of each maximum value found along the given axis.
 
     Parameters
     ----------
@@ -1228,13 +1228,10 @@ def cummax(
     >>> ivy.cummax(x, axis=0, reverse=True, exclusive=False)
     >>> print(y)
     [ivy.array([ 15, 15, 15, 15, -23, -45]), ivy.array([2, 2, 2, 2, 1, 0])]
-
     """
-    return current_backend(x).cummax(x,
-                                     reverse=reverse,
-                                     axis=axis,
-                                     exclusive=exclusive,
-                                     out=out)
+    return current_backend(x).cummax(
+        x, reverse=reverse, axis=axis, exclusive=exclusive, out=out
+    )
 
 
 @handle_array_function

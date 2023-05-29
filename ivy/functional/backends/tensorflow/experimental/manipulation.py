@@ -204,13 +204,17 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = tf.clip_by_value(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
-        if "float" in str(arr.dtype):
+    elif mode in ("fill", "drop"):
+        if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = tf.constant(float("nan"), dtype=arr.dtype)
         elif "uint" in str(arr.dtype):
             fill_value = tf.constant(arr.dtype.max, dtype=arr.dtype)
-        else:
+        elif "int" in str(arr.dtype):
             fill_value = tf.constant(-arr.dtype.max - 1, dtype=arr.dtype)
+        else:
+            raise TypeError(
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex', 'uint', 'int'."
+            )
         indices = tf.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
         arr_shape = list(arr_shape)
         arr_shape[axis] = 1
