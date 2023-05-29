@@ -9,7 +9,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-
+from ivy.utils.exceptions import IvyNotImplementedException
 
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
 
@@ -701,31 +701,31 @@ def CumulativeLogsumexp(
     x, axis, exclusive=False, reverse=False, name="CumulativeLogsumexp"
 ):
     # TODO
-    pass
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def Complex(real, imag, Tout=ivy.complex64, name="Complex"):
     # TODO
-    pass
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def AccumulateNV2(inputs, shape, name="AccumulateNV2"):
     # TODO
-    pass
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def DebugGradientIdentity(input, name="DebugGradientIdentity"):
     # TODO
-    pass
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def Real(input, Tout=ivy.float32, name="Real"):
     # TODO
-    pass
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
@@ -737,25 +737,25 @@ def BandedTriangularSolve(
     name="BandedTriangularSolve",
 ):
     # TODO
-    pass
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def BatchMatMul(x, y, adj_x=False, adj_y=False, name="BatchMatMul"):
     # TODO
-    pass
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def BatchMatMulV2(x, y, adj_x=False, adj_y=False, name="BatchMatMulV2"):
     # TODO
-    pass
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMatMulV3"):
     # TODO
-    pass
+    raise IvyNotImplementedException
 
 
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
