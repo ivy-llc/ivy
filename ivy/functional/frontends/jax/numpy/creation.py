@@ -247,7 +247,7 @@ def compress(condition, a, *, axis=None, out=None):
 
 @to_ivy_arrays_and_back
 def iterable(x):
-    if ivy.itemsize(x) > 1:
+    if ivy.itemsize(x) > 1 or hasattr(x, "__iter__"):
         ret = True
     else:
         ret = False
