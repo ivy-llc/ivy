@@ -317,6 +317,9 @@ def test_paddle_add(
     )
 
 
+import paddle
+
+
 # subtract
 @handle_frontend_test(
     fn_tree="paddle.subtract",
@@ -339,8 +342,8 @@ def test_paddle_subtract(
     test_flags,
 ):
     input_dtype, x = dtype_and_x
-    x[0] = x[0] + 3
-    x[1] = x[1] + 3
+    x[0] = paddle.to_tensor(x[0] + 3)
+    x[1] = paddle.to_tensor(x[1] + 3)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
