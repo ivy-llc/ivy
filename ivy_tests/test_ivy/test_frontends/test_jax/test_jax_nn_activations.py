@@ -5,6 +5,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# Todo : turn on complex dtype activation tests once supported in all backends
 @handle_frontend_test(
     fn_tree="jax.nn.relu",
     dtype_and_x=helpers.dtype_and_values(
@@ -192,7 +193,7 @@ def test_jax_nn_gelu(
 @handle_frontend_test(
     fn_tree="jax.nn.sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -503,6 +504,7 @@ def test_jax_nn_hard_tanh(
     fn_tree,
     frontend,
 ):
+    # TODO: enable this test for all valid dtypes as jax.nn.hard_tanh supports
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,

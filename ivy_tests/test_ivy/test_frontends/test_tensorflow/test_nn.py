@@ -6,7 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _dropout_helper
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
@@ -1120,7 +1120,7 @@ def test_tensorflow_max_pool2d(
 # moments
 @handle_frontend_test(
     fn_tree="tensorflow.nn.moments",
-    dtype_x_axis=statistical_dtype_values(function="mean"),
+    dtype_x_axis=_statistical_dtype_values(function="mean"),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
 )

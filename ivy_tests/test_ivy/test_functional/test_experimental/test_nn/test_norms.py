@@ -6,6 +6,36 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.l1_normalize",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"), valid_axis=True
+    ),
+)
+def test_l1_normalize(
+    *,
+    dtype_values_axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    x_dtype, x, axis = dtype_values_axis
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=x_dtype,
+        x=x,
+        axis=axis,
+    )
+
+
 @st.composite
 def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance_norm"):
     data_format = draw(st.sampled_from(["NSC", "NCS"]))

@@ -171,7 +171,7 @@ def matmul(
     # torch does not support inplace matmul (same storage in out=)
     # https://github.com/pytorch/pytorch/issues/58742
     # https://github.com/pytorch/pytorch/issues/48900
-    if out in (x1, x2):
+    if out is x1 or out is x2:
         out = None
     if transpose_a:
         x1 = torch.swapaxes(x1, -1, -2)
