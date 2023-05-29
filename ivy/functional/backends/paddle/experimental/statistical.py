@@ -1,7 +1,6 @@
 # global
 from typing import Optional, Union, Tuple, Sequence
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 
 # local
@@ -258,7 +257,22 @@ def corrcoef(
     rowvar: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if y is None:
+        xarr = x
+    else:
+        axis = 0 if rowvar else 1
+        xarr = paddle.concat([x, y], axis=axis)
+
+    if rowvar:
+        mean_t = paddle.mean(xarr, axis=1, keepdim=True)
+        cov_t = ((xarr - mean_t) @ (xarr - mean_t).T) / (x.shape[1] - 1)
+    else:
+        mean_t = paddle.mean(xarr, axis=0, keepdim=True)
+        cov_t = ((xarr - mean_t).T @ (xarr - mean_t)) / (x.shape[1] - 1)
+
+    cov2_t = paddle.diag(1 / paddle.sqrt(paddle.diag(cov_t)))
+    cor = cov2_t @ cov_t @ cov2_t
+    return cor
 
 
 def histogram(
