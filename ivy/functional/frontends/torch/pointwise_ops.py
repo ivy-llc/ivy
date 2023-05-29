@@ -331,6 +331,7 @@ divide = div
 
 @to_ivy_arrays_and_back
 def true_divide(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.divide(input, other, out=out)
 
 
