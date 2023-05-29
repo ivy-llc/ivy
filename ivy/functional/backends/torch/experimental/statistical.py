@@ -183,7 +183,9 @@ def nanmean(
 nanmean.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("bfloat16", "float16")}, backend_version
+)
 def quantile(
     a: torch.Tensor,
     q: Union[torch.Tensor, float],

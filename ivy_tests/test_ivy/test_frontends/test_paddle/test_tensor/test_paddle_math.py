@@ -191,7 +191,6 @@ def test_paddle_asin(
         x=x[0],
     )
 
-
 # less_equal
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.less_equal",
@@ -201,6 +200,7 @@ def test_paddle_asin(
         shared_dtype=True,
     ),
 )
+
 def test_tensorflow_less_equal(
     *,
     dtype_and_x,
