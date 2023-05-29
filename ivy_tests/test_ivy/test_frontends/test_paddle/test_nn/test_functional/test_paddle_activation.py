@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.selu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         safety_factor_scale="log",
         small_abs_safety_factor=20,
     ),
