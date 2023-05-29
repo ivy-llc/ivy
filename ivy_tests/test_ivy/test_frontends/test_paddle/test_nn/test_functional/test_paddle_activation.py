@@ -12,9 +12,13 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         available_dtypes=helpers.get_dtypes("valid"),
         safety_factor_scale="log",
         small_abs_safety_factor=20,
+        min_dim_size=3,
+        max_dim_size=5,
+        min_value=1,
+        max_value=10,
     ),
-    scale=helpers.ints(min_value=2, max_value=5),
-    alpha=helpers.ints(min_value=1, max_value=5),
+    scale=helpers.ints(min_value=2, max_value=10),
+    alpha=helpers.ints(min_value=1, max_value=10),
 )
 def test_paddle_selu(
     *,
