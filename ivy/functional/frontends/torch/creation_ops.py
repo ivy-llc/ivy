@@ -99,22 +99,6 @@ def zeros_like(
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def arange(
-    end,
-    start=0,
-    step=1,
-    *,
-    out=None,
-    dtype=None,
-    layout=None,
-    device=None,
-    requires_grad=False,
-):
-    return ivy.arange(start, end, step, dtype=dtype, device=device, out=out)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def arange(
     start=0,
     end=None,
     step=1,
