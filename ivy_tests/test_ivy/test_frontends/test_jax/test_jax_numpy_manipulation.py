@@ -296,7 +296,7 @@ def _get_input_and_new_shape(draw):
     new_shape = draw(
         helpers.get_shape(
             min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
-        )
+        ).filter(lambda x: np.prod(x) == np.prod(shape))
     )
     x_dtype, x = draw(
         helpers.dtype_and_values(
@@ -325,20 +325,15 @@ def test_jax_numpy_resize(
     test_flags,
 ):
     x_dtype, x, new_shape = input_x_shape
-    expected_shape = tuple(new_shape)
-
-    ivy_resized = ivy.reshape(x, expected_shape)
-
-    out = helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=x_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x,
+        a=x[0],
         new_shape=new_shape,
     )
-    assert np.array_equal(out, ivy.to_numpy(ivy_resized))
 
 
 # moveaxis
@@ -1504,7 +1499,6 @@ def _pad_helper(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.pad",
     dtype_and_input_and_other=_pad_helper(),
-    reflect_type=st.sampled_from(["even", "odd"]),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_pad(

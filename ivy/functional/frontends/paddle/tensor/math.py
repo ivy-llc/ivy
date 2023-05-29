@@ -64,3 +64,4 @@ def divide(x, y, name=None):
 @to_ivy_arrays_and_back
 def multiply(x, y, name=None):
     return ivy.multiply(x, y)
+
