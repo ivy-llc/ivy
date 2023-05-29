@@ -521,9 +521,11 @@ def erf(input, *, out=None):
 def sgn(input, *, out=None):
     if ivy.is_complex_dtype(input.dtype):
         input_abs = ivy.abs(input, out=out)
-        return ivy.where(
-            input_abs == 0, 0, ivy.divide(input, input_abs, out=out), out=out
-        )
+        # TODO wrap this in Where function after solve it's errors
+        if input_abs == 0:
+            return 0
+        else:
+            return ivy.divide(input, input_abs, out=out)
     else:
         return ivy.sign(input, out=out)
 
