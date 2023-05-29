@@ -7,11 +7,38 @@ import math
 
 # local
 import ivy
-from ivy.func_wrapper import handle_mixed_function
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+
+
+def _determine_depth_max_pooling(x, kernel, strides, dims):
+    # determine depth pooling
+    depth_pooling = False
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1]
+        if kernel[-1] != 1:
+            depth_pooling = True
+            if any(jnp.array(spatial_kernel) != 1):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if x.shape[-1] % kernel[-1] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            # x = jnp.transpose(x, (0, dims + 1, *range(1, dims + 1)))
+            kernel = [1, 1, 1, kernel[-1]]
+            strides = [1, 1, 1, strides[-1]]
+    return x, kernel, strides, depth_pooling
 
 
 def _from_int_to_tuple(arg, dim):
@@ -66,8 +93,8 @@ def general_pool(
     ), f"len({window_shape}) must equal len({strides})"
 
     window_shape = tuple(window_shape)
-    strides = (1,) + strides + (1,)
-    dims = (1,) + window_shape + (1,)
+    strides = (1,) + strides + (1,) if len(strides) == dim else strides
+    dims = (1,) + window_shape + (1,) if len(window_shape) == dim else window_shape
     dilation = (1,) + tuple(dilation) + (1,)
 
     is_single_input = False
@@ -86,43 +113,56 @@ def general_pool(
             for i in range(1, len(dims) - 1)
         ]
     )
-
-    # manually creating padding list
-    if isinstance(padding, str):
-        pad_list = _pad_str_to_list(inputs, dims, padding, strides, new_window_shape)
-    else:
-        if isinstance(padding, int):
-            padding = [(padding,) * 2] * dim
-        pad_list = [(0, 0)] + list(padding) + [(0, 0)]
-
-    if ceil_mode:
-        c = []
-        for i in range(len(dims) - 2):
-            pad_list[i + 1], ceil = _padding_ceil_mode(
-                inputs.shape[i + 1],
-                new_window_shape[i],
-                pad_list[i + 1],
-                strides[i + 1],
-                True,
-            )
-            c.append(ceil)
-
-    if count_include_pad:
-        # manually pad inputs with 0 if ceil_mode is True
-        # because they're not counted in average calculation
-        if ceil_mode:
-            ceil = [(0, c[i]) for i in range(len(dims) - 2)]
-            for i in range(len(dims) - 2):
-                pad_list[i + 1] = (pad_list[i + 1][0], pad_list[i + 1][1] - ceil[i][1])
-            inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
-            inputs = jnp.pad(
-                inputs, [(0, 0)] + ceil + [(0, 0)], mode="constant", constant_values=0.0
+    inputs, window_shape, strides, depth_pooling = _determine_depth_max_pooling(
+        inputs, window_shape, strides, 2
+    )
+    if not depth_pooling:
+        # manually creating padding list
+        if isinstance(padding, str):
+            pad_list = _pad_str_to_list(
+                inputs, dims, padding, strides, new_window_shape
             )
         else:
-            # manually pad inputs with 1s
-            # because they are counted in average calculation
-            inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
-        pad_list = [(0, 0)] * len(pad_list)
+            if isinstance(padding, int):
+                padding = [(padding,) * 2] * dim
+            pad_list = [(0, 0)] + list(padding) + [(0, 0)]
+
+        if ceil_mode:
+            c = []
+            for i in range(len(dims) - 2):
+                pad_list[i + 1], ceil = _padding_ceil_mode(
+                    inputs.shape[i + 1],
+                    new_window_shape[i],
+                    pad_list[i + 1],
+                    strides[i + 1],
+                    True,
+                )
+                c.append(ceil)
+
+        if count_include_pad:
+            # manually pad inputs with 0 if ceil_mode is True
+            # because they're not counted in average calculation
+            if ceil_mode:
+                ceil = [(0, c[i]) for i in range(len(dims) - 2)]
+                for i in range(len(dims) - 2):
+                    pad_list[i + 1] = (
+                        pad_list[i + 1][0],
+                        pad_list[i + 1][1] - ceil[i][1],
+                    )
+                inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
+                inputs = jnp.pad(
+                    inputs,
+                    [(0, 0)] + ceil + [(0, 0)],
+                    mode="constant",
+                    constant_values=0.0,
+                )
+            else:
+                # manually pad inputs with 1s
+                # because they are counted in average calculation
+                inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
+            pad_list = [(0, 0)] * len(pad_list)
+    else:
+        pad_list = [(0, 0)] * (dim + 2)
 
     y = jlax.reduce_window(
         inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
@@ -552,21 +592,6 @@ def ifft(
     return jnp.fft.ifft(x, n, dim, norm)
 
 
-@handle_mixed_function(
-    lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-        not align_corners
-        and mode
-        not in [
-            "area",
-            "nearest",
-            "tf_area",
-            "mitchellcubic",
-            "gaussian",
-            "bicubic",
-        ]
-        and recompute_scale_factor
-    )
-)
 def interpolate(
     x: JaxArray,
     size: Union[Sequence[int], int],
@@ -606,3 +631,18 @@ def interpolate(
         jax.image.resize(x, shape=size, method=mode, antialias=antialias),
         (0, dims + 1, *range(1, dims + 1)),
     )
+
+
+interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
+    not align_corners
+    and mode
+    not in [
+        "area",
+        "nearest",
+        "tf_area",
+        "mitchellcubic",
+        "gaussian",
+        "bicubic",
+    ]
+    and recompute_scale_factor
+)

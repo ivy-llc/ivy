@@ -3,9 +3,8 @@ import ivy
 from ivy.functional.ivy.gradients import _variable
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy.functional.frontends.jax._src.api import device_put, device_get
+from ivy.functional.frontends.jax import device_put, device_get, vmap
 from hypothesis import strategies as st
-from ivy.functional.frontends.jax._src.api import vmap
 import jax
 
 
@@ -23,7 +22,7 @@ def _fn3(x, y):
 
 # vmap
 @handle_frontend_test(
-    fn_tree="jax._src.api.vmap",
+    fn_tree="jax.general_functions.vmap",
     func=st.sampled_from([_fn1, _fn2, _fn3]),
     dtype_and_arrays_and_axes=helpers.arrays_and_axes(
         allow_none=False,
@@ -96,7 +95,7 @@ def test_vmap(
 
 # device_put
 @handle_frontend_test(
-    fn_tree="jax._src.api.device_put",
+    fn_tree="jax.general_functions.device_put",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -127,7 +126,7 @@ def test_jax_device_put(
 
 # device_get
 @handle_frontend_test(
-    fn_tree="jax._src.api.device_get",
+    fn_tree="jax.general_functions.device_get",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),

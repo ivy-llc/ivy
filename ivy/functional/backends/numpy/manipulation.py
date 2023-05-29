@@ -207,7 +207,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,

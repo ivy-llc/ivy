@@ -11,7 +11,7 @@ import ivy
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16", "complex"),
+        "2.0.1 and below": ("float16", "complex"),
     },
     backend_version,
 )
@@ -78,7 +78,7 @@ def unique_all(
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16",),
+        "2.0.1 and below": ("float16",),
     },
     backend_version,
 )
@@ -92,7 +92,7 @@ def unique_counts(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16",),
+        "2.0.1 and below": ("float16",),
     },
     backend_version,
 )
@@ -108,7 +108,7 @@ def unique_inverse(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16", "complex"),
+        "2.0.1 and below": ("float16", "complex"),
     },
     backend_version,
 )
