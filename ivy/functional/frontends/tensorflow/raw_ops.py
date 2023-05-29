@@ -14,9 +14,7 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
 
 
-@to_ivy_arrays_and_back
-def Acos(*, x, name="Acos"):
-    return ivy.acos(x)
+Acos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acos))
 
 
 Acosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acosh))
