@@ -460,6 +460,7 @@ def lerp(input, end, weight, *, out=None):
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def signbit(input, *, out=None):
     return ivy.signbit(input, out=out)
