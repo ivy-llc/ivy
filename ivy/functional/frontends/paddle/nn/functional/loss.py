@@ -6,12 +6,11 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 def _get_reduction_func(reduction):
     if reduction == "none":
-        ret = lambda x: x
+        return lambda x: x
     elif reduction == "mean":
-        ret = ivy.mean
+        return ivy.mean
     elif reduction == "sum":
-        ret = ivy.sum
-    return ret
+        return ivy.sum
 
 
 @to_ivy_arrays_and_back
