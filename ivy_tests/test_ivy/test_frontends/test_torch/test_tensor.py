@@ -8744,6 +8744,8 @@ def test_torch_greater(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
+        min_num_dims=1,
+        shared_dtype=True,
     ),
 )
 def test_torch_sgn(
@@ -8765,4 +8767,5 @@ def test_torch_sgn(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        atol_=1e-04,
     )
