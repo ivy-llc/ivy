@@ -111,52 +111,12 @@ def cholesky_solve(chol, rhs, name=None):
 
 
 def lu_solve(lower_upper, perm, rhs, validate_args=False, name=None):
-    """
-        Solve a system of linear equations using LU decomposition.
-
-        This function takes a LU decomposed matrix (lower_upper), a permutation matrix (perm), and a right-hand side vector (rhs), and solves the system for the unknown vector.
-
-        Parameters:
-        lower_upper (ivy.Array): An array representing the LU decomposition of a matrix A.
-        perm (ivy.Array): A permutation matrix from the LU decomposition.
-        rhs (ivy.Array): The right-hand side vector in the system of equations.
-        validate_args (bool, optional): If set to True, the function will validate the input arguments.
-        name (str, optional): The name for the operation.
-
-        Raises:
-        ValueError: If the last two dimensions of 'lower_upper' and 'rhs' don't match, or if the last dimension of 'lower_upper' doesn't match the size of 'perm'.
-
-        Returns:
-        ivy.Array: The solution to the system of equations Ax = rhs.
-
-        Examples:
-        >>> import ivy
-        >>> lower_upper = ivy.array([[4,3],[6,3]])
-        >>> perm = ivy.array([0,1])
-        >>> rhs = ivy.array([7,8])
-        >>> x = lu_solve(lower_upper, perm, rhs)
-        """
     if validate_args:
-        if lower_upper.shape[-2:] != rhs.shape[-2:]:
-            raise ValueError("Last two dimensions of 'lower_upper' and 'rhs' must match.")
-        if lower_upper.shape[-1] != perm.shape[-1]:
-            raise ValueError("'lower_upper' last dimension must match 'perm' size.")
-
-    # extract L and U matrices from lower_upper
-    n = lower_upper.shape[-1]
-    eye = ivy.eye(n, dtype=lower_upper.dtype)
-    L = ivy.tril(lower_upper) - eye + ivy.eye(n, dtype=lower_upper.dtype)
-    U = ivy.triu(lower_upper)
-
-    # permute the right hand side (rhs)
-    perm_rhs = ivy.take_along_axis(rhs, perm[..., None], axis=-2)
-
-    # solve the lower triangular system
-    y = ivy.solve(L, perm_rhs)
-
-    # solve the upper triangular system
-    x = ivy.solve(U, y)
-
+        for i in perm:
+            if rhs.shape != i.shape:
+                raise ValueError(f"The shape of perm vector {i} does not match the shape of rhs.")
+    perm_rhs = [rhs[i] for i in perm]
+    x = [ivy.solve(lower_upper,i) for i in perm_rhs]
     return x
 
 @to_ivy_arrays_and_back
