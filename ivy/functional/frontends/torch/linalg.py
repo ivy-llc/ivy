@@ -248,3 +248,43 @@ def vander(x, N=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def multi_dot(tensors, *, out=None):
     return ivy.multi_dot(tensors, out=out)
+
+
+
+
+@to_ivy_arrays_and_back
+
+def ldl_factor_ex(A, hermitian=False, check_errors=False):
+    if hermitian:
+        A = A.conj()
+
+    n = A.shape[0]
+    LD = ivy.zeros_like(A)
+    pivots = ivy.zeros(n, dtype=ivy.int32)
+    info = ivy.zeros(1, dtype=ivy.int32)
+
+    for j in range(n):
+        for i in range(j):
+            LD[j, i] = A[j, i]
+            for k in range(i):
+                LD[j, i] -= LD[j, k] * LD[i, k] * LD[k, k]
+
+            LD[j, i] /= LD[i, i]
+
+        LD[j, j] = A[j, j]
+        for k in range(j):
+            LD[j, j] -= LD[j, k] * LD[j, k] * LD[k, k]
+
+        pivots[j] = j
+
+    if check_errors:
+        for j in range(n):
+            if LD[j, j] == 0:
+                info[0] = j + 1
+                break
+
+    if check_errors and info.item() != 0:
+        raise RuntimeError(f"Zero diagonal element at index {info.item()} in LD factor. Division by zero may occur.")
+
+    return LD, pivots, info
+
