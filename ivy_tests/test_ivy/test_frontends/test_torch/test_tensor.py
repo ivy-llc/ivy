@@ -8695,7 +8695,7 @@ def test_torch_instance_equal(
         on_device=on_device,
     )
 
-
+    
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -8708,7 +8708,7 @@ def test_torch_instance_equal(
         allow_inf=False,
     ),
 )
-def test_torch_special_greater(
+def test_torch_greater(
     dtype_and_x,
     frontend_method_data,
     init_flags,
