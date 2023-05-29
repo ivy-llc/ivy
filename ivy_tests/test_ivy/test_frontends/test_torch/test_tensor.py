@@ -8740,7 +8740,7 @@ def test_torch_greater(
     method_name="sgn",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
+        num_arrays=1,
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
