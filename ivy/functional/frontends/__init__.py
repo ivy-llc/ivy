@@ -1,5 +1,5 @@
 versions = {
-    "torch": "1.11.0",
+    "torch": "2.0.1",
     "tensorflow": "2.9.0",
     "numpy": "1.23.2",
     "jax": "0.3.16",

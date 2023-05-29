@@ -406,14 +406,19 @@ def conv_general_dilated(
     *,
     dims: int = 2,
     data_format: str = "channel_last",
+    filter_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
+    # permuting dims based on formats
     if data_format == "channel_first":
         x = np.transpose(x, (0, *range(2, dims + 2), 1))
+    if filter_format == "channel_first":
+        filters = np.transpose(filters, (*range(2, dims + 2), 1, 0))
+
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations

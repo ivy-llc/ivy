@@ -136,7 +136,7 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
 
 
 @with_unsupported_dtypes(
-    {"0.3.14 and below": ("complex",)},
+    {"0.4.10 and below": ("complex",)},
     backend_version,
 )
 def broadcast_to(
