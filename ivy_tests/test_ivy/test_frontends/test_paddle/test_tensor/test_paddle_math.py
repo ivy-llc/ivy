@@ -254,7 +254,6 @@ def test_paddle_divide(
 # multiply
 @handle_frontend_test(
     fn_tree="paddle.multiply",
-    fn_tree="paddle.divide",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -288,7 +287,6 @@ def test_paddle_multiply(
 # add
 @handle_frontend_test(
     fn_tree="paddle.add",
-    fn_tree="paddle.divide",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -322,7 +320,6 @@ def test_paddle_add(
 # subtract
 @handle_frontend_test(
     fn_tree="paddle.subtract",
-    fn_tree="paddle.divide",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
