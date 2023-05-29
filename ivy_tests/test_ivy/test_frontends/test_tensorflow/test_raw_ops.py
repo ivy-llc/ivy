@@ -3624,13 +3624,17 @@ def test_tensorflow_Real(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BandedTriangularSolve
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BandedTriangularSolve",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    lower=st.booleans(),
+    adjoint=st.booleans(),
 )
 def test_tensorflow_BandedTriangularSolve(
     dtype_and_x,
@@ -3638,8 +3642,6 @@ def test_tensorflow_BandedTriangularSolve(
     test_flags,
     fn_tree,
     on_device,
-    matrix,
-    rhs,
     lower,
     adjoint,
 ):
@@ -3657,13 +3659,17 @@ def test_tensorflow_BandedTriangularSolve(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BatchMatMul
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BatchMatMul",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    adj_x=st.booleans(),
+    adj_y=st.booleans(),
 )
 def test_tensorflow_BatchMatMul(
     dtype_and_x,
@@ -3688,13 +3694,17 @@ def test_tensorflow_BatchMatMul(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BatchMatMulV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BatchMatMulV2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    adj_x=st.booleans(),
+    adj_y=st.booleans(),
 )
 def test_tensorflow_BatchMatMulV2(
     dtype_and_x,
@@ -3719,13 +3729,18 @@ def test_tensorflow_BatchMatMulV2(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BatchMatMulV3
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BatchMatMulV3",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    Tout=st.sampled_from(["float32", "float64"]),
+    adj_x=st.booleans(),
+    adj_y=st.booleans(),
 )
 def test_tensorflow_BatchMatMulV3(
     dtype_and_x,
