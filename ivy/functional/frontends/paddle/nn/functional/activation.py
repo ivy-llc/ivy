@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.utils.exceptions import handle_exceptions
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.paddle.tensor.math import tanh as paddle_tanh
 from ivy.functional.frontends.paddle.tensor.math import (
@@ -9,9 +9,7 @@ from ivy.functional.frontends.paddle.tensor.math import (
 )
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("bfloat16", "uint32", "uint16", "uint64")}, "paddle"
-)
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 @handle_exceptions
 def selu(
