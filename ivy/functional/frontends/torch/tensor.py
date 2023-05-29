@@ -1251,3 +1251,7 @@ class Size(tuple):
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def greater(self, other, *, out=None):
         return torch_frontend.greater(self, other, out=out)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def sgn(self, *, out=None):
+        return torch_frontend.sgn(self, out=out)
