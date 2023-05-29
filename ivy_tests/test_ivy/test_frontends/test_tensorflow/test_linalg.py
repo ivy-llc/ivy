@@ -613,6 +613,7 @@ def test_tensorflow_matrix_transpose(
     )
 
 
+# global_norm
 @st.composite
 def _get_dtype_and_sequence_of_arrays(draw):
     array_dtype = draw(helpers.get_dtypes("float", full=False))
