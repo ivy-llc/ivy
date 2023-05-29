@@ -993,10 +993,8 @@ def test_torch_sign(
 
 # absolute
 @handle_frontend_test(
-    fn_tree="torch.abs",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+    fn_tree="torch.absolute",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_torch_absolute(
     *,
