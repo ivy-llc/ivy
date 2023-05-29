@@ -28,7 +28,7 @@ def _statistical_dtype_values(draw, function):
             allow_neg_axes=False,
             min_axes_size=1,
             force_int_axis=True,
-            allow_nan=True if "nan" in function else False
+            allow_nan=True if "nan" in function else False,
         )
     )
     return dtype, values, axis
