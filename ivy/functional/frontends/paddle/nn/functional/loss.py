@@ -11,10 +11,6 @@ def _get_reduction_func(reduction):
         ret = ivy.mean
     elif reduction == "sum":
         ret = ivy.sum
-    else:
-        raise ivy.utils.exceptions.IvyException(
-            "{} is not a valid value for reduction".format(reduction)
-        )
     return ret
 
 
