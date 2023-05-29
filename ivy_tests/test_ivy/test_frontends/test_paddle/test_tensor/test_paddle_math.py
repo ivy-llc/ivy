@@ -276,5 +276,4 @@ def test_paddle_divide(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        y=x[1],
     )
