@@ -214,6 +214,7 @@ def real(input):
     return ivy.real(input)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def sign(input, *, out=None):
     return ivy.sign(input, out=out)
