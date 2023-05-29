@@ -726,15 +726,7 @@ class Tensor:
         self.ivy_array = self.cumsum(dim, dtype).ivy_array
         return self
 
-    @with_unsupported_dtypes(
-        {
-            "2.0.1 and below": (
-                "float16",
-                "bfloat16",
-            )
-        },
-        "torch",
-    )
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def inverse(self):
         return torch_frontend.inverse(self)
 
@@ -1075,6 +1067,7 @@ class Tensor:
     ndimension = dim
     subtract = sub
     sub_ = subtract_
+    eq = equal
 
     def bitwise_xor(self, other):
         return torch_frontend.bitwise_xor(self, other)
