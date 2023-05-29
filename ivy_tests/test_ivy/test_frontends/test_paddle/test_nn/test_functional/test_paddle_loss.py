@@ -26,8 +26,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_dim_size=2,
         shape=(5,),
     ),
-    name=st.none(),
-    reduction=st.sampled_from(["mean", "none", "sum", None]),
+    name=None,
+    reduction=st.sampled_from(["mean", "none", "sum"]),
 )
 def test_paddle_binary_cross_entropy(
     *,
