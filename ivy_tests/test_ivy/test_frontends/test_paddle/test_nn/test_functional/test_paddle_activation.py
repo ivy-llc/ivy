@@ -13,10 +13,14 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         safety_factor_scale="log",
         small_abs_safety_factor=20,
     ),
+    scale=helpers.ints(min_value=1, max_value=10),
+    alpha=helpers.ints(min_value=1, max_value=10),
 )
 def test_paddle_selu(
     *,
     dtype_and_x,
+    scale,
+    alpha,
     on_device,
     fn_tree,
     frontend,
@@ -30,4 +34,6 @@ def test_paddle_selu(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        alpha=alpha,
+        scale=scale,
     )
