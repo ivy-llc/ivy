@@ -78,7 +78,7 @@ def less_equal(x, y, /, *, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
+    {"2.4.2 and below": ("bfloat16", "uint16", "uint32", "uint64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
