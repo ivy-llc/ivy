@@ -335,3 +335,13 @@ def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
+
+
+def igamma(
+    a: JaxArray,
+    /,
+    *,
+    x: JaxArray,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jlax.igamma(a=a, x=x)

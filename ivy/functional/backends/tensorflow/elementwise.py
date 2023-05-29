@@ -321,6 +321,10 @@ def isfinite(
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.ones_like(x, tf.bool)
+    elif ivy.is_complex_dtype(x):
+        return tf.math.logical_and(
+            tf.math.is_finite(tf.math.real(x)), tf.math.is_finite(tf.math.imag(x))
+        )
     else:
         return tf.math.is_finite(x)
 
