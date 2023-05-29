@@ -235,7 +235,7 @@ def _get_indices_or_sections(indices_or_sections, indices, sections):
         elif ivy.exists(sections) and not ivy.exists(indices):
             indices_or_sections = sections
         else:
-            raise ivy.utils.exception.IvyError(
+            raise ivy.utils.exceptions.IvyError(
                 "got invalid argument for indices_or_sections"
             )
     return indices_or_sections
@@ -335,3 +335,9 @@ def index_copy(input, dim, index, source, *, out=None):
 @to_ivy_arrays_and_back
 def masked_select(input, mask, out=None):
     return ivy.flatten(input[mask], out=out)
+
+
+@to_ivy_arrays_and_back
+def take(input, index):
+    input = ivy.reshape(input, (-1,))
+    return ivy.gather(input, index, axis=0)

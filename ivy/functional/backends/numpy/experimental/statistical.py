@@ -7,15 +7,15 @@ from . import backend_version
 
 
 @with_unsupported_dtypes(
-    {"1.23.0 and below": ("bfloat16",)},
+    {"1.24.3 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
     a: np.ndarray,
     /,
     *,
-    bins: Optional[Union[int, np.ndarray, str]] = None,
-    axis: Optional[np.ndarray] = None,
+    bins: Optional[Union[int, np.ndarray]] = None,
+    axis: Optional[int] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[np.dtype] = None,
@@ -178,7 +178,7 @@ def quantile(
     # quantile method in numpy backend, always return an array with dtype=float64.
     # in other backends, the output is the same dtype as the input.
 
-    tuple(axis) if isinstance(axis, list) else axis
+    (tuple(axis) if isinstance(axis, list) else axis)
 
     return np.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out

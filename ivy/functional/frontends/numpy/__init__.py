@@ -522,6 +522,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _sign,
     _sqrt,
     _square,
+    _lcm,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
@@ -556,6 +557,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
     _conj,
+    _conjugate,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -701,3 +703,5 @@ frexp = ufunc("_frexp")
 conj = ufunc("_conj")
 rint = ufunc("_rint")
 nextafter = ufunc("_nextafter")
+conjugate = ufunc("_conjugate")
+lcm = ufunc("_lcm")

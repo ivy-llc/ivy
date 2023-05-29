@@ -5,13 +5,50 @@ import math
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+def _determine_depth_max_pooling(
+    x, kernel, strides, dims, data_format="channel_last", filter_format="channel_last"
+):
+    # determine depth pooling
+    depth_pooling = False
+    channels = x.shape[1] if filter_format == "channel_first" else x.shape[-1]
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1] if data_format == "channel_last" else kernel[2:]
+        if kernel[-1] != 1:
+            depth_pooling = True
+            if any(torch.tensor(spatial_kernel) != 1):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if channels % kernel[-1] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            x = torch.permute(x, (0, 2, 1, *range(3, dims + 2)))
+            kernel = [kernel[-1], *[1] * (dims - 1)]
+            strides = [strides[-1], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            if len(strides) == dims + 2:
+                strides = (
+                    strides[1:-1] if data_format == "channel_last" else strides[2:]
+                )
+    return x, kernel, strides, depth_pooling
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool1d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int]],
@@ -49,7 +86,7 @@ def max_pool1d(
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -97,24 +134,31 @@ def max_pool2d(
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
 
-    new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
-
-    if isinstance(padding, str):
-        pad_h = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
-        pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
-        pad_list = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
-    else:
-        # torch pad takes width padding first, then height padding
-        padding = (padding[1], padding[0])
-        pad_list = [item for sublist in padding for item in sublist]
-
-    x = torch.nn.functional.pad(
-        x,
-        pad_list,
-        value=float("-inf"),
+    # determine depth pooling
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 2, data_format="channel_first"
     )
+    if not depth_pooling:
+        new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
+
+        if isinstance(padding, str):
+            pad_h = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
+            pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
+            pad_list = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
+        else:
+            # torch pad takes width padding first, then height padding
+            padding = (padding[1], padding[0])
+            pad_list = [item for sublist in padding for item in sublist]
+
+        x = torch.nn.functional.pad(
+            x,
+            pad_list,
+            value=float("-inf"),
+        )
 
     res = torch.nn.functional.max_pool2d(x, kernel, strides, 0, dilation, ceil_mode)
+    if depth_pooling:
+        res = torch.permute(res, (0, 2, 1, 3))
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
@@ -122,7 +166,7 @@ def max_pool2d(
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -167,8 +211,7 @@ def max_pool3d(
     )
     if padding != "VALID" and padding != "SAME":
         raise ivy.utils.exceptions.IvyException(
-            "Invalid padding arg {}\n"
-            'Must be one of: "VALID" or "SAME"'.format(padding)
+            'Invalid padding arg {}\nMust be one of: "VALID" or "SAME"'.format(padding)
         )
     res = torch.nn.functional.max_pool3d(x, kernel, strides, 0)
     if data_format == "NDHWC":
@@ -204,7 +247,7 @@ def _get_specific_pad(x_shape, kernel, strides, padding, dims):
     return padding, pad_specific
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def avg_pool1d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int]],
@@ -286,7 +329,7 @@ def _adjust_num_padded_values_to_ceil(
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -373,7 +416,7 @@ def avg_pool2d(
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -617,7 +660,7 @@ def dropout1d(
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -697,17 +740,6 @@ def embedding(
 embedding.support_native_out = False
 
 
-@handle_mixed_function(
-    lambda *args, mode="linear", **kwargs: mode
-    not in [
-        "tf_area",
-        "bicubic_tensorflow",
-        "mitchellcubic",
-        "lanczos3",
-        "lanczos5",
-        "gaussian",
-    ]
-)
 def interpolate(
     x: torch.Tensor,
     size: Union[Sequence[int], int],
@@ -744,11 +776,21 @@ def interpolate(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
+    "tf_area",
+    "bicubic_tensorflow",
+    "mitchellcubic",
+    "lanczos3",
+    "lanczos5",
+    "gaussian",
+]
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool1d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool1d(input, output_size)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool2d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool2d(input, output_size)

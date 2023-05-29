@@ -1,10 +1,10 @@
 numpy # unpinned we test with latest version now
-einops==0.4.1
+einops==0.6.1
 psutil==5.9.1
 termcolor==1.1.0
 colorama==0.4.5
 packaging==21.3
 nvidia-ml-py<=11.495.46 # mod_name=pynvml
 diskcache
-google-auth
+google-auth # mod_name=google.auth
 requests

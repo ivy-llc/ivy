@@ -6,7 +6,7 @@ from hypothesis import strategies as st, assume
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -755,7 +755,7 @@ def test_tensorflow_reduce_logsumexp(
 # argmax
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmax",
-    dtype_and_x=statistical_dtype_values(function="argmax"),
+    dtype_and_x=_statistical_dtype_values(function="argmax"),
     output_type=st.sampled_from(["int16", "uint16", "int32", "int64"]),
     test_with_out=st.just(False),
 )
@@ -976,7 +976,7 @@ def test_tensorflow_reduce_mean(
 # reduce_variance
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_variance",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="var",
     ),
     test_with_out=st.just(False),
@@ -1473,7 +1473,7 @@ def test_tensorflow_pow(dtype_and_x, frontend, test_flags, fn_tree):
 # argmin
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmin",
-    dtype_and_x=statistical_dtype_values(function="argmin"),
+    dtype_and_x=_statistical_dtype_values(function="argmin"),
     output_type=st.sampled_from(["int32", "int64"]),
     test_with_out=st.just(False),
 )
@@ -2129,7 +2129,6 @@ def test_tensorflow_floormod(
         on_device=on_device,
         x=x[0],
         y=x[1],
-
     )
 
 
@@ -2500,4 +2499,57 @@ def test_tensorflow_greater_equal(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# in_top_k
+@handle_frontend_test(
+    fn_tree="tensorflow.math.in_top_k",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    k=st.integers(min_value=0, max_value=5),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_in_top_k(
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, k
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        targets=x[0],
+        pred=x[1],
+        k=k,
+    )
+
+
+# conj
+@handle_frontend_test(
+    fn_tree="tensorflow.math.conj",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_tensorflow_conj(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
