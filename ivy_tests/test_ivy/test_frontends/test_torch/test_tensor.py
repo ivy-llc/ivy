@@ -132,7 +132,7 @@ def test_torch_tensor_property_shape(dtype_x):
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+        available_dtypes=helpers.get_dtypes("complex", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_real(
@@ -3712,7 +3712,7 @@ def test_torch_instance_bitwise_and(
     init_tree="torch.tensor",
     method_name="bitwise_or",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
 )
