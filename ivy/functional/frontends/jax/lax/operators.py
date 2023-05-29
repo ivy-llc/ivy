@@ -730,7 +730,7 @@ def reduce_window(
     if base_dilation:
         op = _dilate(op, base_dilation, identity)
     view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
-    view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
+    view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
     ret = _custom_reduce(view, init_value, computation)
     return ret.astype(operand.dtype)
 
