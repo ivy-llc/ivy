@@ -9,6 +9,39 @@ from ivy.functional.frontends.paddle.tensor.math import (
 )
 
 
+def _batch_promotion(*args, default_dtype="float64"):
+    # Promote all types
+    promote_types = set()
+
+    for arg in args:
+        if args is None:
+            continue
+        if isinstance(arg, (float, int)):
+            continue
+        promote_types.add(ivy.dtype(arg))
+
+    if "float64" in promote_types:
+        return "float64"
+
+    if "float32" in promote_types:
+        return "float32"
+
+    if "float16" in promote_types:
+        return "float32" if "bfloat16" in promote_types else "float16"
+
+    if "bfloat16" in promote_types:
+        return "bfloat16"
+
+    if "int64" in promote_types or "uint64" in promote_types:
+        return "float64"
+
+    ints = ["int8", "int16", "int32"]
+    if "uint32" in promote_types and any(d in promote_types for d in ints):
+        return "float64"
+
+    return default_dtype
+
+
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 @handle_exceptions
@@ -25,8 +58,11 @@ def selu(
 
     if alpha < 0:
         raise ValueError(f"The alpha must be no less than zero. Received: {alpha}.")
-    mask = (x > 0).astype(float)
-    return scale * ((x * mask) + (alpha * (ivy.exp(x) - 1) * (1 - mask)))
+
+    ret = ivy.where(x > 0, x, alpha * ivy.expm1(x))
+    dtype = _batch_promotion(x, alpha, default_dtype="float64")
+    arr = ivy.asarray(ret, dtype=dtype)
+    return scale * arr
 
 
 tanh = paddle_tanh
