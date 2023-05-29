@@ -928,7 +928,7 @@ def test_jax_numpy_compress(
 @handle_frontend_test(
     fn_tree="jax.numpy.iterable",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes(), shared_dtype=True
+        available_dtypes=helpers.get_dtypes("valid")
     ),
 )
 def test_jax_numpy_iterable(
