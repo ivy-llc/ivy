@@ -250,6 +250,7 @@ def test_paddle_divide(
         y=x[1],
     )
 
+
 # multiply
 @handle_frontend_test(
     fn_tree="paddle.multiply",
@@ -276,4 +277,3 @@ def test_paddle_multiply(
         x=x[0],
         y=x[1],
     )
-
