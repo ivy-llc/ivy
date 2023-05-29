@@ -48,7 +48,19 @@ def asin(x, name=None):
     return ivy.asin(x)
 
 
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def log_softmax(x, name=None):
+    return ivy.log_softmax(x)
+
+
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def log(x, name=None):
     return ivy.log(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def divide(x, y, name=None):
+    return ivy.divide(x, y)
