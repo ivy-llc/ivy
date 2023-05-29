@@ -24,7 +24,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
-        shape=(1,),
+        shape=(5,),
     ),
     name=st.none(),
     reduction=st.sampled_from(["mean", "none", "sum", None]),

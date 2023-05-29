@@ -28,9 +28,7 @@ def binary_cross_entropy(input, label, weight=None, reduction="mean", name=None)
         result = ivy.multiply(weight, result)
 
     if reduction in ["sum", "mean"]:
-        result = reduction_fn(result).reshape(
-            1,
-        )
+        result = reduction_fn(result).reshape((1,))
     else:
         result = reduction_fn(result)
     return result
