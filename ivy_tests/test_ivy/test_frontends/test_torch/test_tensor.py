@@ -8586,7 +8586,6 @@ def test_torch_instance_addr(
     )
 
 
-
 # logical_not_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8621,6 +8620,7 @@ def test_torch_instance_logical_not_(
         on_device=on_device,
     )
 
+
 # rsqrt
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8652,7 +8652,8 @@ def test_torch_instance_rsqrt(
         frontend=frontend,
         on_device=on_device,
     )
-    
+
+
 # equal
 @handle_frontend_method(
     class_tree=CLASS_TREE,
