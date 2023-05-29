@@ -1067,6 +1067,7 @@ class Tensor:
     ndimension = dim
     subtract = sub
     sub_ = subtract_
+    eq = equal
 
     def bitwise_xor(self, other):
         return torch_frontend.bitwise_xor(self, other)
