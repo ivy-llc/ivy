@@ -130,7 +130,7 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
     try:
         return np.broadcast_arrays(*arrays)
     except ValueError as e:
-        raise ivy.utils.exceptions.IvyBroadcastShapeError(str(e))
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
 
 
 @with_unsupported_dtypes({"1.24.3 and below": ("complex",)}, backend_version)
