@@ -404,6 +404,128 @@ def nanmedian(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def nanmin(
+    input: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    out: Optional[ivy.Array] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[float] = None,
+    where: ivy.Array = None,
+) -> ivy.Array:
+    """
+    ivy.Array instance method variant of ivy.nanmin. This method simply wraps the
+    function, and so the docstring for ivy.nanmin also applies to this method with
+    minimal changes.
+
+    Parameters
+    ----------
+    self
+        Input array.
+    axis
+        Axis or axes along which the minimum is computed.
+        The default is to compute the minimum of the flattened array.
+    out
+        optional output array, for writing the result to.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a. If the value is anything but the default,
+        then keepdims will be passed through to the mean or sum methods of
+        sub-classes of ndarray. If the sub-classes methods does not implement
+        keepdims any exceptions will be raised.
+    initial
+        The maximum value of an output element.
+        Must be present to allow computation on empty slice.
+    where
+        Elements to compare for the minimum
+
+    Returns
+    -------
+    ret
+         An array with the same shape as a, with the specified axis removed.
+         If a is a 0-d array, or if axis is None, an ndarray scalar is returned.
+         The same dtype as a is returned.
+
+    Examples
+    --------
+    >>> a = ivy.Array([[ivy.nan, 4], [8.5, 65]])
+    >>> a.nanmin(a)
+        1.0
+    >>> a.nanmin(a, axis=0)
+        array([3., 2., 1.])
+    """
+    return ivy.current_backend().nanmin(
+        input, axis=axis, out=out, keepdims=keepdims, initial=initial, where=where
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def nanmax(
+    input: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    out: Optional[ivy.Array] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[float] = None,
+    where: ivy.Array = None,
+) -> ivy.Array:
+    """
+    ivy.Array instance method variant of ivy.nanmax. This method simply wraps the
+    function, and so the docstring for ivy.nanmax also applies to this method with
+    minimal changes.
+
+    Parameters
+    ----------
+    self
+        Input array.
+    axis
+        Axis or axes along which the maximum is computed.
+        The default is to compute the maximum of the flattened array.
+    out
+        optional output array, for writing the result to.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a. If the value is anything but the default,
+        then keepdims will be passed through to the mean or sum methods of
+        sub-classes of ndarray. If the sub-classes methods does not implement
+        keepdims any exceptions will be raised.
+    initial
+        The minimum value of an output element.
+        Must be present to allow computation on empty slice
+    where
+        Elements to compare for the minimum
+
+    Returns
+    -------
+    ret
+         An array with the same shape as a, with the specified axis removed.
+         If a is a 0-d array, or if axis is None, an ndarray scalar is returned.
+         The same dtype as a is returned.
+
+    Examples
+    --------
+    >>> a = ivy.Array([[ivy.nan, 4], [8.5, 65]])
+    >>> a.nanmax(a)
+        65.0
+    >>> a.nanmax(a, axis=0)
+        array([ 8.5, 65. ])
+    """
+    return ivy.current_backend().nanmin(
+        input, axis=axis, out=out, keepdims=keepdims, initial=initial, where=where
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def bincount(
     x: ivy.Array,
     /,
