@@ -143,7 +143,7 @@ def test_torch_inv(
         on_device=on_device,
         rtol=1e-03,
         atol=1e-02,
-        input=x[0],
+        A=x[0],
     )
 
 
@@ -174,7 +174,7 @@ def test_torch_inv_ex(
         on_device=on_device,
         rtol=1e-03,
         atol=1e-02,
-        input=x[0],
+        A=x[0],
     )
 
 
@@ -255,7 +255,7 @@ def test_torch_qr(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        A=x[0],
         test_values=False,
     )
     ret = [ivy.to_numpy(x) for x in ret]
@@ -492,13 +492,14 @@ def test_torch_matrix_power(
 # matrix_norm
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
-    dtype_value_axis=helpers.dtype_values_axis(
+    dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        valid_axis=True,
-        min_axes_size=2,
-        max_axes_size=2,
-        force_tuple_axis=True,
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
@@ -506,7 +507,7 @@ def test_torch_matrix_power(
 )
 def test_torch_matrix_norm(
     *,
-    dtype_and_x,
+    dtype_values_axis,
     ord,
     keepdim,
     axis,
@@ -516,15 +517,15 @@ def test_torch_matrix_norm(
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-04,
-        atol=1e-04,
+        # rtol=1e-04,
+        # atol=1e-04,
         input=x[0],
         ord=ord,
         dim=axis,

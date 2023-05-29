@@ -12,7 +12,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 @handle_frontend_test(
     fn_tree="jax.numpy.allclose",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
     ),

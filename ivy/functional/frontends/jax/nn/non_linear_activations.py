@@ -147,14 +147,13 @@ def hard_swish(x):
 
 @to_ivy_arrays_and_back
 def hard_tanh(x):
-    x = ivy.asarray(x)
     n1 = -1
     if "uint" in str(x.dtype):
         dtype = x.dtype
         # tensorflow can't use -1 for uint
         n1 = ivy.asarray((1 << ivy.dtype_bits(dtype)) - 1, dtype=dtype)
 
-    return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x))
+    return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x)).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -182,9 +181,8 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         a = ivy.astype(a, dtype)
         b = ivy.asarray(b, dtype=dtype)
         a = ivy.where(b != 0, a, -ivy.inf)
-
+        a = ivy.astype(a, dtype)
     out_dtype = _batch_promotion(a, b, default_dtype="float32")
-
     pos_dims, dims = _reduction_dims(a, axis)
 
     amax = ivy.max(a, axis=pos_dims, keepdims=keepdims)
@@ -213,7 +211,6 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         sumexp = ivy.sum(expsub, axis=dims, keepdims=keepdims)
         sign = ivy.stop_gradient(ivy.sign(sumexp))
         out = ivy.add(ivy.log(ivy.abs(sumexp)), amax)
-
     if return_sign:
         return out, sign
 
@@ -296,6 +293,7 @@ def softplus(x):
 
 @to_ivy_arrays_and_back
 def selu(x):
+    x = _type_conversion_64(x)
     return ivy.selu(x)
 
 
