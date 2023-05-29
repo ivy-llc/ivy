@@ -8660,7 +8660,7 @@ def test_torch_instance_rsqrt(
     init_tree="torch.tensor",
     method_name="equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -8701,7 +8701,7 @@ def test_torch_instance_equal(
     init_tree="torch.tensor",
     method_name="greater",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_value=-1e04,
         max_value=1e04,
