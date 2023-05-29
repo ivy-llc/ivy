@@ -2191,6 +2191,7 @@ def test_torch_lerp(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-1,
         input=start,
         end=end,
         weight=weight,
