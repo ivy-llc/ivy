@@ -105,6 +105,10 @@ batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
 )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def l1_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:

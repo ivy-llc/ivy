@@ -13,12 +13,11 @@ def l1_normalize(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
-        norm = np.sum(np.abs(x.flatten()))
-        denorm = norm * np.ones_like(x)
+        denorm = np.linalg.norm(x.flatten(), 1, axis)
     else:
-        norm = np.sum(np.abs(x), axis=axis, keepdims=True)
-        denorm = np.divide(norm, np.abs(x) + 1e-12)
-    return np.divide(x, denorm)
+        denorm = np.linalg.norm(x, 1, axis, keepdims=True)
+        denorm = np.maximum(denorm, 1e-12)
+    return np.divide(x, denorm, out=out)
 
 
 def l2_normalize(

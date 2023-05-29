@@ -11,11 +11,10 @@ def l1_normalize(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
-        norm = jnp.sum(jnp.abs(x.flatten()))
-        denorm = norm * jnp.ones_like(x)
+        denorm = jnp.linalg.norm(x.flatten(), 1, axis)
     else:
-        norm = jnp.sum(jnp.abs(x), axis=axis, keepdims=True)
-        denorm = jnp.divide(norm, jnp.abs(x) + 1e-12)
+        denorm = jnp.linalg.norm(x, 1, axis, keepdims=True)
+        denorm = jnp.maximum(denorm, 1e-12)
     return jnp.divide(x, denorm)
 
 

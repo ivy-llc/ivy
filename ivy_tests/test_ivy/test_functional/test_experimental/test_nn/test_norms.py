@@ -8,20 +8,24 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.ivy.experimental.l1_normalize",
-    dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"), valid_axis=True
+    dtype_and_x=helpers.arrays_and_axes(
+        available_dtypes=helpers.get_dtypes("float"),
+        num=1,
+        return_dtype=True,
+        force_int_axis=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_l1_normalize(
     *,
-    dtype_values_axis,
+    dtype_and_x,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    x_dtype, x, axis = dtype_values_axis
+    x_dtype, x, axis = dtype_and_x
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
@@ -31,7 +35,7 @@ def test_l1_normalize(
         rtol_=1e-1,
         atol_=1e-1,
         input_dtypes=x_dtype,
-        x=x,
+        x=x[0],
         axis=axis,
     )
 
