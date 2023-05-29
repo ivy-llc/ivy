@@ -1,6 +1,4 @@
 # global
-import numpy as np
-from typing import Optional, Sequence, Union
 import ivy
 
 
@@ -14,7 +12,6 @@ def _quantile_is_valid(q):
         if not (ivy.all(0 <= q) and ivy.all(q <= 1)):
             return False
     return True
-
 
 
 def _cpercentile(N, percent, key=lambda x: x):
@@ -53,12 +50,12 @@ def nanpercentile(
     a = ivy.array(a)
     q = ivy.divide(q, 100.0)
     q = ivy.array(q)
-    
+
     if not _quantile_is_valid(q):
         # raise ValueError("percentile s must be in the range [0, 100]")
         ivy.logging.warning("percentile s must be in the range [0, 100]")
         return []
-    
+
     if axis is None:
         resultarray = []
         nanlessarray = []
