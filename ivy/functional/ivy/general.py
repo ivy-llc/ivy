@@ -3626,28 +3626,6 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     return supported
 
 
-def _mixed_functions_devices_and_dtypes(
-    fn, merge_fn, get_fn, recurse=True, complement=False
-):
-    primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
-    devices_dtypes = _get_devices_and_dtypes(primary_fn, complement=complement)
-    if hasattr(primary_fn, "handle_mixed_function"):
-        compos_fn = primary_fn.compos
-        devices_dtypes_compos = _get_devices_and_dtypes(
-            compos_fn, complement=complement
-        )
-        if recurse:
-            devices_dtypes_compos = ivy.functional.data_type._nested_get(
-                compos_fn,
-                devices_dtypes_compos,
-                merge_fn,
-                get_fn,
-                wrapper=lambda x: x,
-            )
-            devices_dtypes = (devices_dtypes_compos, devices_dtypes)
-    return devices_dtypes
-
-
 @handle_exceptions
 @handle_nestable
 def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
