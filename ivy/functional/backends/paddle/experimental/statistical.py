@@ -392,7 +392,6 @@ def igamma(
     return paddle.to_tensor(results, dtype="float32").reshape(a.shape)
 
 
-
 def cov(
     x1: paddle.Tensor,
     x2: paddle.Tensor = None,
