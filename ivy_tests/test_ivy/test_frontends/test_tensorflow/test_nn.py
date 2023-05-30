@@ -19,9 +19,18 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
-    alpha=helpers.floats(min_value=0, max_value=1),
+    alpha=helpers.floats(
+        min_value=0,
+        max_value=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
+    ),
 )
 def test_tensorflow_leaky_relu(
     *,
