@@ -57,7 +57,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                 if isinstance(keys, dict):
                     # this is a dep with just one key
                     # being the dep
-                    dep = keys.keys()[0]
+                    dep = list(keys.keys())[0]
                     # check if version is there in this
                     if ver in keys[dep]:
                         # we install this one
