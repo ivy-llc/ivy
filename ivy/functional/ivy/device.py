@@ -1143,24 +1143,6 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
     return tuple(supported)
 
 
-
-def _mixed_functions_devices(fn, merge_fn, get_fn, recurse=True, complement=False):
-    primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
-    devices = set(_get_devices(primary_fn, complement=complement))
-    if hasattr(primary_fn, "handle_mixed_function"):
-        compos_fn = primary_fn.compos
-        devices_compos = set(_get_devices(compos_fn, complement=complement))
-        if recurse:
-            devices_compos = ivy.functional.data_type._nested_get(
-                compos_fn,
-                devices_compos,
-                merge_fn,
-                get_fn,
-            )
-            devices = (devices_compos, devices)
-    return devices
-
-  
 @handle_exceptions
 @handle_nestable
 def function_supported_devices(
@@ -1214,7 +1196,6 @@ def function_supported_devices(
 def function_unsupported_devices(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
-
     """
     Return the unsupported devices of the current backend's function.
 
