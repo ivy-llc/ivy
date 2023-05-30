@@ -68,7 +68,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                                 (
                                     f"PYTHONPATH={path}:$PYTHONPATH "
                                     f"pip install {dep}=={keys[dep][ver]} --target=={path} --no-cache-dir"
-                                    "unset PYTHONPATH"
+                                    f"unset PYTHONPATH"
                                 ),
                             ),
                             shell=True,
@@ -79,7 +79,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                                 (
                                     f"PYTHONPATH={path}:$PYTHONPATH"
                                     f"pip install {dep} --target=={path} --no-cache-dir"
-                                    "unset PYTHONPATH"
+                                    f"unset PYTHONPATH"
                                 ),
                             ),
                             shell=True,
@@ -90,7 +90,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                             (
                                 f"PYTHONPATH={path}:$PYTHONPATH"
                                 f"pip install {keys} --target=={path} --no-cache-dir"
-                                "unset PYTHONPATH"
+                                f"unset PYTHONPATH"
                             ),
                         ),
                         shell=True,
