@@ -851,9 +851,6 @@ def test_tensorflow_qr(
         fn_tree,
         on_device,
 ):
-    input_dtype, x = dtype_and_input
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=input_dtype,
 =======
 # diag
 @handle_frontend_test(
