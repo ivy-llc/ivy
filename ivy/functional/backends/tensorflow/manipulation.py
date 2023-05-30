@@ -209,7 +209,9 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    num_or_size_splits: Optional[
+        Union[int, Sequence[int], Union[tf.Tensor, tf.Variable]]
+    ] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -224,6 +226,9 @@ def split(
     if num_or_size_splits is None:
         dim_size = tf.shape(x)[axis]
         num_or_size_splits = int(dim_size)
+    if isinstance(num_or_size_splits, (tf.Tensor, tf.Variable)):
+        num_or_size_splits = tf.cast(num_or_size_splits, tf.int32)
+        num_or_size_splits = num_or_size_splits.numpy().tolist()
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
