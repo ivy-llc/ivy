@@ -3,6 +3,9 @@ repos:
     rev: 23.3.0
     hooks:
       - id: black
+        language_version: python3
+        args:
+          - "--preview"
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.1.1
     hooks:
