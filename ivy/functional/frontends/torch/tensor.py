@@ -920,8 +920,8 @@ class Tensor:
     def addr(self, vec1, vec2, *, beta=1, alpha=1, out=None):
         return torch_frontend.addr(self, vec1, vec2, beta=beta, alpha=alpha, out=out)
     
-    def addr_(self):
-        self.ivy_array = self.addr().ivy_array
+    def addr_(self, vec1, vec2, *, beta=1, alpha=1):
+        self.ivy_array = self.addr(vec1, vec2, beta=beta, alpha=alpha).ivy_array
         return self
 
     # Special Methods #
