@@ -16,6 +16,9 @@ from ivy.functional.ivy.gradients import (
     _set_duplicates,
     _process_func_ret_and_grads,
 )
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+)
 
 
 # ToDo: modify these functions to track whether variable() has been called
@@ -144,8 +147,12 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(jax.jacfwd(grad_fn)((ivy.to_native(x_in))))
+    grad_fn = lambda *x_in: ivy.nested_map(func(*x_in), ivy.to_native)
+
+    def callback_fn(*args):
+        fn = to_native_arrays_and_back(jax.jacfwd(grad_fn, argnums=range(len(args))))
+        return fn(*args)
+
     return callback_fn
 
 

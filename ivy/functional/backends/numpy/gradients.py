@@ -65,7 +65,7 @@ def jac(func):
         "has no effect on the array, as gradients are not supported in the first place."
     )
 
-    def grad_fn(xs):
+    def grad_fn(*xs):
         jacobian = ivy.nested_map(
             xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
         )
