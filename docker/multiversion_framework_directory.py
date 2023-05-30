@@ -65,33 +65,33 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         # we install this one
                         subprocess.run(
                             (
-                                (
-                                    f"PYTHONPATH={path}:$PYTHONPATH "
-                                    f"pip install {dep}=={keys[dep][ver]} --target=={path} --no-cache-dir"
-                                    f"unset PYTHONPATH"
-                                ),
+
+                                    f"PYTHONPATH={path}:$PYTHONPATH ",
+                                    f"pip install {dep}=={keys[dep][ver]} --target=={path} --no-cache-dir",
+                                    "unset PYTHONPATH"
+
                             ),
                             shell=True,
                         )
                     else:
                         subprocess.run(
                             (
-                                (
-                                    f"PYTHONPATH={path}:$PYTHONPATH"
-                                    f"pip install {dep} --target=={path} --no-cache-dir"
-                                    f"unset PYTHONPATH"
-                                ),
+
+                                    f"PYTHONPATH={path}:$PYTHONPATH",
+                                    f"pip install {dep} --target=={path} --no-cache-dir",
+                                    "unset PYTHONPATH"
+
                             ),
                             shell=True,
                         )
                 else:
                     subprocess.run(
                         (
-                            (
-                                f"PYTHONPATH={path}:$PYTHONPATH"
-                                f"pip install {keys} --target=={path} --no-cache-dir"
-                                f"unset PYTHONPATH"
-                            ),
+
+                                f"PYTHONPATH={path}:$PYTHONPATH",
+                                f"pip install {keys} --target=={path} --no-cache-dir",
+                                "unset PYTHONPATH"
+
                         ),
                         shell=True,
                     )
