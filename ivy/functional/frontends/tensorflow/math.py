@@ -420,6 +420,21 @@ def unsorted_segment_sqrt_n(
 
 
 @to_ivy_arrays_and_back
+def unsorted_segment_prod(
+    data, segment_ids, num_segments, name="unsorted_segment_prod"
+):
+    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    x = ivy.ones(tuple([num_segments] + list(data.shape[1:])))
+    count = ivy.ones((num_segments,))
+    for i in range(segment_ids.shape[0]):
+        x[segment_ids[i]] = x[segment_ids[i]] * data[i]
+        count[segment_ids[i]] += 1
+    for j in range(num_segments):
+        x[j] = ivy.pow(x[j], 1.0 / count[j])
+    return x
+
+
+@to_ivy_arrays_and_back
 def zero_fraction(value, name="zero_fraction"):
     zero = ivy.zeros(tuple(list(value.shape)), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
