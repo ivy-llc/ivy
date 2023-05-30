@@ -82,9 +82,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
 if __name__ == "__main__":
     arg_lis = sys.argv
 
-    json_path = directory_generator(
-        arg_lis[1]
-    )  # path to the json file storing version specific deps
+    json_path = arg_lis[1]  # path to the json file storing version specific deps
     print(arg_lis[1])
     print(arg_lis[2])
     # directory_generator(arg_lis[2:], "")
