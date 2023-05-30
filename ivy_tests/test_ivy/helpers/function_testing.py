@@ -1487,12 +1487,14 @@ def test_frontend_method(
             ),
             shallow=False,
         )
-        args_method_np = ivy.nested_map(
+        args_method_np = ivy_backend.nested_map(
             args_method_ivy,
-            lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+            lambda x: (
+                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
+            ),
             shallow=False,
         )
-        kwargs_method_np = ivy.nested_map(
+        kwargs_method_np = ivy_backend.nested_map(
             kwargs_method_ivy,
             lambda x: (
                 ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
@@ -1506,6 +1508,7 @@ def test_frontend_method(
         # Run testing
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
         ret, ret_np_flat = get_ret_and_flattened_np_array(
+            backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
             *args_method,
             **kwargs_method,
