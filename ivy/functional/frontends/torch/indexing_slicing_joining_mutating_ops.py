@@ -258,7 +258,7 @@ def hsplit(input, indices_or_sections=None, /):
 
 
 @to_ivy_arrays_and_back
-def vsplit(input, indices_or_sections=None, /, *, indices=None, sections=None):
+def vsplit(input, indices_or_sections=None, /):
     if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
         indices_or_sections = (
             ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[0]])
