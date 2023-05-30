@@ -515,7 +515,7 @@ def test_paddle_ceil(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
-        shared_dtype=True
+        shared_dtype=True,
     ),
 )
 def test_paddle_pow(
