@@ -10,7 +10,7 @@ import ivy
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "uint8",
             "int8",
             "int16",
@@ -26,8 +26,8 @@ def histogram(
     a: torch.Tensor,
     /,
     *,
-    bins: Optional[Union[int, torch.Tensor, str]] = None,
-    axis: Optional[torch.Tensor] = None,
+    bins: Optional[Union[int, torch.Tensor]] = None,
+    axis: Optional[int] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[torch.dtype] = None,
@@ -137,7 +137,7 @@ def histogram(
 histogram.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bool")}, backend_version)
 def median(
     input: torch.Tensor,
     /,
@@ -183,9 +183,7 @@ def nanmean(
 nanmean.support_native_out = True
 
 
-@with_unsupported_dtypes(
-    {"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
-)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def quantile(
     a: torch.Tensor,
     q: Union[torch.Tensor, float],
@@ -227,7 +225,7 @@ def quantile(
     if keepdims:
         keepdim_shape = tuple(keepdim_shape)
         ret = ret.reshape(keepdim_shape)
-    return ret
+    return ret.to(a.dtype)
 
 
 quantile.support_native_out = True
@@ -251,7 +249,7 @@ def corrcoef(
     return torch.corrcoef(xarr)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def nanmedian(
     input: torch.Tensor,
     /,
@@ -354,3 +352,16 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def igamma(
+    a: torch.Tensor,
+    /,
+    *,
+    x: torch.Tensor,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.gammainc(a, x, out=out)
+
+
+igamma.support_native_out = True
