@@ -278,6 +278,7 @@ def test_paddle_divide(
         y=x[1],
     )
 
+
 # multiply
 @handle_frontend_test(
     fn_tree="paddle.multiply",
@@ -344,6 +345,7 @@ def test_paddle_add(
     )
 
 
+# subtract
 @handle_frontend_test(
     fn_tree="paddle.subtract",
     dtype_and_x=helpers.dtype_and_values(
@@ -374,7 +376,8 @@ def test_paddle_subtract(
         x=x[0],
         y=x[1],
     )
-   
+
+
 # sqrt
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.sqrt",
@@ -399,6 +402,7 @@ def test_paddle_sqrt(
         on_device=on_device,
         x=x[0],
     )
+
 
 # atanh
 @handle_frontend_test(
@@ -425,6 +429,7 @@ def test_paddle_atanh(
         x=x[0],
     )
 
+
 # atan
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.atan",
@@ -450,6 +455,7 @@ def test_paddle_atan(
         x=x[0],
     )
 
+
 # round
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.round",
@@ -474,6 +480,7 @@ def test_paddle_round(
         on_device=on_device,
         x=x[0],
     )
+
 
 # ceil
 @handle_frontend_test(
