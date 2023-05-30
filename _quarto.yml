@@ -13,7 +13,7 @@ website:
   sidebar:
     style: "floating"
     border: true
-    logo: "assets/img/ivy_logo.png"
+    logo: "assets/img/ivy_logo_text.png"
     collapse-level: 1
     contents:
       - section: "Learn the Basics"
@@ -32,6 +32,7 @@ website:
       - section: "Examples and Demos"
         contents:
           - "examples_and_demos/01_using_ivy_resnet18.ipynb"
+          - "examples_and_demos/torch_to_jax.ipynb"
 
 format:
   html:
