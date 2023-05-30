@@ -418,6 +418,11 @@ def atleast_3d(
     return res
 
 
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8",)}},
+    backend_version,
+)
 def take_along_axis(
     arr: paddle.Tensor,
     indices: paddle.Tensor,
@@ -444,13 +449,18 @@ def take_along_axis(
         max_index = arr.shape[axis] - 1
         with ivy.ArrayMode(False):
             indices = ivy.clip(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
-        if "float" in str(arr.dtype):
+    elif mode in ("fill", "drop"):
+        if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = float("nan")
         elif "uint" in str(arr.dtype):
             fill_value = paddle.iinfo(arr.dtype).max
-        else:
+        elif "int" in str(arr.dtype):
             fill_value = -paddle.iinfo(arr.dtype).max - 1
+        else:
+            raise TypeError(
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex', 'uint', 'int'."
+            )
+
         with ivy.ArrayMode(False):
             indices = ivy.where(
                 (indices < 0) | (indices >= arr.shape[axis]), -1, indices
