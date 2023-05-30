@@ -682,7 +682,7 @@ def test_numpy_copysign(
 @handle_frontend_test(
     fn_tree="numpy.lcm",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=["int16", "int32", "int64"],
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=False,
         min_num_dims=1,
