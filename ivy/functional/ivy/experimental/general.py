@@ -1,21 +1,24 @@
 # global
 import functools
-from typing import Callable, Union
+from typing import Callable, Union, Sequence
 
 # local
 import ivy
+from ivy import to_ivy_arrays_and_back
 from ivy.utils.exceptions import handle_exceptions
 
 
+@to_ivy_arrays_and_back
 @handle_exceptions
 def reduce(
     operand: Union[ivy.Array, ivy.NativeArray],
-    init_value: Union[int, float, -float("inf"), float("inf")],
+    init_value: Union[int, float],
     func: Callable,
-    axis: int,
+    axes: Union[int, Sequence[int]] = 0,
+    keepdims: bool = False,
 ) -> ivy.Array:
     """
-    Reduces the input array's dimensions by one by applying a function along one axis.
+    Reduces the input array's dimensions by applying a function along one or more axes.
 
     Parameters
     ----------
@@ -25,8 +28,11 @@ def reduce(
         The value with which to start the reduction.
     func
         The reduction function.
-    axis
-        The dimension along which the reduction is performed.
+    axes
+        The dimensions along which the reduction is performed.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result as
+        dimensions with size one.
 
     Returns
     -------
@@ -44,7 +50,14 @@ def reduce(
     ivy.array([5, 7, 9])
     """
     func = ivy.output_to_native_arrays(func)
-    op_parts = ivy.moveaxis(operand, axis, 0).reshape((operand.shape[axis], -1))
-    result = functools.reduce(func, op_parts, init_value)
-    result = ivy.reshape(result, operand.shape[:axis] + operand.shape[axis+1:])
-    return ivy.inputs_to_native_arrays(result)
+    axes = (axes,) if isinstance(axes, int) else axes
+    axes = sorted(axes, reverse=True)
+    axes = [a + operand.ndim if a < 0 else a for a in axes]
+    init_value = ivy.array(init_value)
+    for axis in axes:
+        op_parts = ivy.moveaxis(operand, axis, 0).reshape((operand.shape[axis], -1))
+        result = functools.reduce(func, op_parts, init_value)
+        result = ivy.reshape(result, operand.shape[:axis] + operand.shape[axis+1:])
+    if keepdims:
+        result = ivy.expand_dims(result, axis=axes)
+    return result

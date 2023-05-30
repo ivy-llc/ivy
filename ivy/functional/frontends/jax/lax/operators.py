@@ -4,13 +4,11 @@ import itertools
 import string
 import builtins
 import math
-import functools
 
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.jax import to_numpy as jax_to_numpy
 
 _min = builtins.min
 _slice = builtins.slice

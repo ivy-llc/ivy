@@ -1,6 +1,5 @@
 # global
-from typing import Union, Callable
-
+from typing import Union, Callable, Sequence
 import jax
 
 # local
@@ -10,11 +9,14 @@ from ivy.functional.backends.jax import JaxArray
 
 def reduce(
     operand: JaxArray,
-    init_value: Union[int, float, -float("inf"), float("inf")],
+    init_value: Union[int, float],
     func: Callable,
-    axis: int,
+    axes: Union[int, Sequence[int]] = 0,
+    keepdims: bool = False,
 ) -> JaxArray:
     func = ivy.output_to_native_arrays(func)
-    return ivy.inputs_to_native_arrays(
-        jax.lax.reduce(operand, init_value, func, (axis,))
-    )
+    axes = (axes,) if isinstance(axes, int) else axes
+    result = jax.lax.reduce(operand, init_value, func, axes)
+    if keepdims:
+        result = ivy.expand_dims(result, axis=axes)
+    return result

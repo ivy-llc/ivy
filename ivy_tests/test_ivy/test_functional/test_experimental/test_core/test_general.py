@@ -15,46 +15,52 @@ def _reduce_helper(draw):
         func = draw(st.sampled_from([ivy.logical_and, ivy.logical_or]))
     else:
         func = draw(
-            st.sampled_from([ivy.add, ivy.max, ivy.min, ivy.multiply])
+            st.sampled_from([ivy.add, ivy.maximum, ivy.minimum, ivy.multiply])
         )
-    init_value = draw(
-        st.sampled_from(
-            [
-                [-float("inf")],
-                [float("inf")],
-                draw(
-                    helpers.dtype_and_values(
-                        dtype=dtype,
-                        shape=(),
-                    )
-                )[1],
-            ]
-        )
-    )
-    dtype, operand, axis = draw(
-        helpers.dtype_values_axis(
+    init_value = draw(st.sampled_from(
+        [
+            [-float("inf")],
+            [float("inf")],
+            draw(
+                helpers.dtype_and_values(
+                    dtype=dtype,
+                    shape=(),
+                )
+            )[1],
+        ]
+    ))
+    dtype, operand, shape = draw(
+        helpers.dtype_and_values(
             min_num_dims=1,
             dtype=dtype,
+            ret_shape=True,
         )
     )
-    return dtype, operand, init_value[0], func, axis
+    axes = draw(helpers.get_axis(shape=shape))
+    return dtype, operand[0], init_value[0], func, axes
 
 
 # reduce
 @handle_test(
     fn_tree="functional.ivy.experimental.reduce",
-    all_args=_reduce_helper(),
+    args=_reduce_helper(),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_reduce(
     *,
-    all_args,
+    args,
+    keepdims,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, operand, init_value, func, axis = all_args
+    dtype, operand, init_value, func, axes = args
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -65,5 +71,6 @@ def test_reduce(
         operand=operand,
         init_value=init_value,
         func=func,
-        axis=axis,
+        axes=axes,
+        keepdims=keepdims,
     )
