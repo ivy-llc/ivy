@@ -449,10 +449,13 @@ def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
 
 
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64", "int16")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def split(value, num_or_size_splits, axis=0, num=None, name=None):
     return ivy.split(
-        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=False
+        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=True
     )
 
 

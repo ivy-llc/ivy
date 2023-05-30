@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     inputs_to_ivy_arrays,
+    handle_array_function,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1316,6 +1317,8 @@ def _upsample_bicubic2d_default(
 
 @handle_nestable
 @handle_out_argument
+@inputs_to_ivy_arrays
+@handle_array_function
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],

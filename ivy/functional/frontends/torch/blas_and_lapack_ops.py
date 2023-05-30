@@ -123,8 +123,8 @@ def matmul(input, other, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def matrix_power(input, n, *, out=None):
-    return torch_frontend.matrix_power(input, n, out=out)
+def matrix_power(A, n, *, out=None):
+    return torch_frontend.linalg.matrix_power(A, n, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -172,8 +172,8 @@ def qr(input, some=True, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def slogdet(input):
-    return torch_frontend.slogdet(input)
+def slogdet(A, *, out=None):
+    return torch_frontend.linalg.slogdet(A, out=out)
 
 
 @to_ivy_arrays_and_back
