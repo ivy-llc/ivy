@@ -524,7 +524,11 @@ def nextafter(x1, x2, name=None):
     },
     "tensorflow",
 )
+@to_ivy_arrays_and_back
 def abs(x, name=None):
+    dtype = ivy.dtype(x)
+    if dtype in ["complex64", "complex128"]:
+        return ivy.sqrt(ivy.square(ivy.real(x)) + ivy.square(ivy.imag(x)))
     return ivy.abs(x)
 
 
