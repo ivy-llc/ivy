@@ -4,6 +4,7 @@ from ivy.functional.ivy.experimental.sparse_array import (
     _verify_csr_components,
     _is_data_not_indices_values_and_shape,
 )
+from ivy.utils.exceptions import IvyNotImplementedException
 import paddle
 
 
@@ -29,7 +30,7 @@ def native_sparse_array(
     format = format.lower()
 
     if format not in ["coo", "csr"]:
-        raise ivy.utils.exceptions.IvyException(
+        raise IvyNotImplementedException(
             "paddle only supports 'coo' and 'csr' sparse formats."
         )
 
