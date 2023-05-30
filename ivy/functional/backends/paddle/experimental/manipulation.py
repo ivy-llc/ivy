@@ -418,7 +418,6 @@ def atleast_3d(
     return res
 
 
-
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("int8",)}},
     backend_version,
@@ -458,7 +457,8 @@ def take_along_axis(
             fill_value = -paddle.iinfo(arr.dtype).max - 1
         else:
             raise TypeError(
-                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex', 'uint', 'int'."
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex',"
+                " 'uint', 'int'."
             )
 
         with ivy.ArrayMode(False):
