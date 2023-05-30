@@ -2553,3 +2553,33 @@ def test_tensorflow_conj(
         on_device=on_device,
         x=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.math.cumulative_logsumexp",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=0.1,
+        max_value=10,
+    ),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+)
+def test_tensorflow_cumulative_logsumexp(
+    *, dtype_x_axis, frontend, test_flags, fn_tree, on_device, exclusive, reverse
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+    )

@@ -145,6 +145,46 @@ def cumsum(x, axis, exclusive=False, reverse=False, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.12.0 and below": "bfloat16",
+    },
+    "tensorflow",
+)
+def cumulative_logsumexp(
+    x, axis=0, exclusive=False, reverse=False, name="cumulative_logsumexp"
+):
+    unstacked = ivy.array(ivy.unstack(x, axis=axis))
+    if reverse:
+        unstacked = ivy.flip(unstacked, axis=0)
+    if exclusive:
+        unstacked = ivy.roll(unstacked, 1, axis=0)
+        if unstacked.shape[0] > 0:
+            unstacked[0] = ivy.full_like(unstacked[0], -ivy.inf)
+
+    def prefix_scan_iteration(index, args):
+        previous_level = unstacked[index - 1]
+        this_level = unstacked[index]
+
+        together = ivy.array([previous_level, this_level])
+
+        min_elements = ivy.min(together, axis=0)
+        max_elements = ivy.max(together, axis=0)
+
+        new_level = max_elements + ivy.log(1.0 + ivy.exp(min_elements - max_elements))
+        unstacked[index] = new_level
+        return args
+
+    ivy.for_loop(range(1, unstacked.shape[0]), prefix_scan_iteration, ())
+    if reverse:
+        unstacked = ivy.flip(unstacked, axis=0)
+
+    stacked_back = ivy.moveaxis(unstacked, 0, axis)
+
+    return ivy.astype(stacked_back, x.dtype)
+
+
+@to_ivy_arrays_and_back
 def divide(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
