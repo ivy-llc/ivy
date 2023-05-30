@@ -9,14 +9,12 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-
+from ivy.utils.exceptions import IvyNotImplementedException
 
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
 
 
-@to_ivy_arrays_and_back
-def Acos(*, x, name="Acos"):
-    return ivy.acos(x)
+Acos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acos))
 
 
 Acosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acosh))
@@ -702,30 +700,32 @@ Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))
 def CumulativeLogsumexp(
     x, axis, exclusive=False, reverse=False, name="CumulativeLogsumexp"
 ):
-    return ivy.astype(
-        ivy.CumulativeLogsumexp(x, axis, exclusive=exclusive, reverse=reverse),
-        input.dtype,
-    )
+    # TODO
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def Complex(real, imag, Tout=ivy.complex64, name="Complex"):
-    return ivy.Complex(real, imag, Tout=Tout)
+    # TODO
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def AccumulateNV2(inputs, shape, name="AccumulateNV2"):
-    return ivy.AccumulateNV2(inputs, shape)
+    # TODO
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def DebugGradientIdentity(input, name="DebugGradientIdentity"):
-    return ivy.DebugGradientIdentity(input)
+    # TODO
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def Real(input, Tout=ivy.float32, name="Real"):
-    return ivy.Real(input, Tout=Tout)
+    # TODO
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
@@ -736,22 +736,26 @@ def BandedTriangularSolve(
     adjoint=False,
     name="BandedTriangularSolve",
 ):
-    return ivy.BandedTriangularSolve(matrix, rhs, lower=lower, adjoint=adjoint)
+    # TODO
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def BatchMatMul(x, y, adj_x=False, adj_y=False, name="BatchMatMul"):
-    return ivy.BatchMatMul(x, y, adj_x=adj_x, adj_y=adj_y)
+    # TODO
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def BatchMatMulV2(x, y, adj_x=False, adj_y=False, name="BatchMatMulV2"):
-    return ivy.BatchMatMulV2(x, y, adj_x=adj_x, adj_y=adj_y)
+    # TODO
+    raise IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
 def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMatMulV3"):
-    return ivy.BatchMatMulV3(x, y, Tout=Tout, adj_x=adj_x, adj_y=adj_y)
+    # TODO
+    raise IvyNotImplementedException
 
 
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))

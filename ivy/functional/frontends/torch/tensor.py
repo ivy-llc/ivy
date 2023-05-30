@@ -364,6 +364,7 @@ class Tensor:
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self, other)
 
+    @with_supported_dtypes({"2.0.1 and below": ("integer",)}, "torch")
     def bitwise_or(self, other):
         return torch_frontend.bitwise_or(self, other)
 
@@ -383,7 +384,7 @@ class Tensor:
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
 
-    @with_supported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def floor(self, *, out=None):
         return torch_frontend.floor(self)
 
@@ -393,7 +394,6 @@ class Tensor:
 
     ne = not_equal
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
@@ -1033,7 +1033,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __eq__(self, other):
-        return torch_frontend.equal(self, other)
+        return torch_frontend.eq(self, other)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __gt__(self, other):
@@ -1230,6 +1230,10 @@ class Tensor:
     def copysign(self, other, *, out=None):
         return torch_frontend.copysign(self, other, out=out)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
+    def greater(self, other, *, out=None):
+        return torch_frontend.greater(self, other, out=out)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1246,7 +1250,3 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
-
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
-    def greater(self, other, *, out=None):
-        return torch_frontend.greater(self, other, out=out)
