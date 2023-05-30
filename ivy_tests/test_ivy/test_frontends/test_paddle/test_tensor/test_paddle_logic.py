@@ -218,7 +218,9 @@ def test_paddle_equal_all(
 # logical_or
 @handle_frontend_test(
     fn_tree="paddle.logical_or",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("valid",), num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=("valid",), num_arrays=2, min_num_dims=1, max_num_dims=3
+    ),
     test_with_out=st.just(True),
 )
 def test_paddle_logical_or(
