@@ -836,7 +836,6 @@ def test_tensorflow_adjoint(
         matrix=x[0],
     )
 
-
 # qr
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.qr",
@@ -851,7 +850,7 @@ def test_tensorflow_qr(
         fn_tree,
         on_device,
 ):
-=======
+    
 # diag
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.diag",
