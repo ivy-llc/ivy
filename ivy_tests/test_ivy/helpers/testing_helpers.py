@@ -229,8 +229,9 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
-        is_mixed = hasattr(_fn, "mixed_function") and ivy.__dict__[_fn.__name__] != _fn
-        if is_mixed:
+        # TODO this won't be needed once
+        # https://github.com/unifyai/ivy/pull/15829 is merged
+        if ivy.__dict__[_fn.__name__] != _fn:
             _fn = ivy.__dict__[_fn.__name__]
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
         devices_and_dtypes = (
