@@ -30,4 +30,3 @@ def test_paddle_hardswish(
         on_device=on_device,
         x=x[0],
     )
-
