@@ -11,13 +11,14 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     fn_tree="paddle.nn.functional.common.cosine_similarity",
     d_type_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
         min_value=2,
         max_value=5,
         min_dim_size=2,
-        shared_dtype=True,
-        num_arrays=2,
+        shape=(4, 4),
     ),
-    axis=st.integers(min_value=-1, max_value=0),
+    axis=st.integers(min_value=-1, max_value=1),
 )
 def test_paddle_cosine_similarity(
     *,
