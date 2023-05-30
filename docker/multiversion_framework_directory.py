@@ -66,8 +66,8 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         subprocess.run(
                             (
                                 (
-                                    f"PYTHONPATH={path}:$PYTHONPATHpip install"
-                                    f" {dep}=={keys[dep][ver]} --target=={path} --no-cache-dir"
+                                    f"PYTHONPATH={path}:$PYTHONPATH "
+                                    f"pip install {dep}=={keys[dep][ver]} --target=={path} --no-cache-dir"
                                     "unset PYTHONPATH"
                                 ),
                             ),
