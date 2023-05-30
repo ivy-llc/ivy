@@ -711,14 +711,13 @@ def round(
             paddle.round(paddle_backend.multiply(x, factor)), factor_denom
         )
 
-    x, _ = ivy.promote_types_of_inputs(x, x)
     if x.dtype not in [paddle.float32, paddle.float64]:
         if paddle.is_complex(x):
             return paddle.complex(
                 _np_round(x.real(), decimals), _np_round(x.imag(), decimals)
             )
         return _np_round(x.astype("float32"), decimals).astype(x.dtype)
-    return _np_round(x, decimals)
+    return _np_round(x, decimals).astype(x.dtype)
 
 
 def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
