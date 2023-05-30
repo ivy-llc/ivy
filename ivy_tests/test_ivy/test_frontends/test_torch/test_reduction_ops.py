@@ -6,11 +6,11 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
     _get_castable_dtype,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
-    statistical_dtype_values as statistical_dtype_values_experimental,
+    _quantile_helper,
 )
 
 
@@ -280,7 +280,7 @@ def test_torch_sum(
 
 @handle_frontend_test(
     fn_tree="torch.mean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="mean",
         min_value=-1e04,
         max_value=1e04,
@@ -311,7 +311,7 @@ def test_torch_mean(
 
 @handle_frontend_test(
     fn_tree="torch.nanmean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="nanmean",
         min_value=-1e04,
         max_value=1e04,
@@ -374,7 +374,7 @@ def test_torch_median(
 
 @handle_frontend_test(
     fn_tree="torch.std",
-    dtype_and_x=statistical_dtype_values(function="std"),
+    dtype_and_x=_statistical_dtype_values(function="std"),
     keepdims=st.booleans(),
 )
 def test_torch_std(
@@ -448,7 +448,7 @@ def test_torch_prod(
 
 @handle_frontend_test(
     fn_tree="torch.var",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="var",
         min_value=-1e04,
         max_value=1e04,
@@ -617,7 +617,7 @@ def test_torch_max(
 
 @handle_frontend_test(
     fn_tree="torch.std_mean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="std_mean",
         min_value=-1e04,
         max_value=1e04,
@@ -649,7 +649,7 @@ def test_torch_std_mean(
 
 @handle_frontend_test(
     fn_tree="torch.var_mean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="var_mean",
         min_value=-1e04,
         max_value=1e04,
@@ -713,7 +713,7 @@ def test_torch_aminmax(
 
 @handle_frontend_test(
     fn_tree="torch.quantile",
-    dtype_and_x=statistical_dtype_values_experimental(function="quantile"),
+    dtype_and_x=_quantile_helper(),
     keepdims=st.booleans(),
 )
 def test_torch_quantile(
