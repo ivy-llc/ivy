@@ -1,7 +1,11 @@
 # global
 import ivy
 import ivy.functional.frontends.paddle as paddle
-from ivy.func_wrapper import with_unsupported_dtypes, handle_out_argument
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    handle_out_argument,
+    with_supported_dtypes,
+)
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -77,8 +81,18 @@ def less_equal(x, y, /, *, name=None):
     return ivy.less_equal(x, y)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("bfloat16", "uint16", "uint32", "uint64")},
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "bool",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
     "paddle",
 )
 @to_ivy_arrays_and_back
