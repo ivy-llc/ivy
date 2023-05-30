@@ -1161,13 +1161,18 @@ def pad(
     return padded
 
 
+pad.mixed_function = True
+
+
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
+@handle_array_function
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
@@ -1182,8 +1187,8 @@ def vsplit(
     indices_or_sections
         If indices_or_sections is an integer n, the array is split into n
         equal sections, provided that n must be a divisor of the split axis.
-        If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple.
+        If indices_or_sections is a sequence of ints or 1-D array,
+        then input is split at each of the indices.
 
     Returns
     -------
@@ -1204,13 +1209,14 @@ def vsplit(
     return ivy.current_backend(ary).vsplit(ary, indices_or_sections, copy=copy)
 
 
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
@@ -1228,8 +1234,8 @@ def dsplit(
         equal size. If input is not divisible by n, the sizes of the first
         int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
         the rest will have size int(ary.size(0) / n).
-        If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple.
+        If indices_or_sections is a sequence of ints or 1-D array,
+        then input is split at each of the indices.
 
     Returns
     -------
@@ -1463,13 +1469,15 @@ def take_along_axis(
     )
 
 
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
+@handle_array_function
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
