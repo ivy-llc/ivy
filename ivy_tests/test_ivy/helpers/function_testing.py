@@ -1502,8 +1502,13 @@ def test_frontend_method(
             shallow=False,
         )
 
+        # TODO, pretty bad hack, please do it this in proper way.
+        ivy_backend.utils.dynamic_import.import_module(
+            f"ivy.functional.frontends.{frontend}"
+        )
         ivy_frontend_creation_fn = getattr(
-            frontend_method_data.ivy_init_module, frontend_method_data.init_name
+            getattr(getattr(getattr(ivy_backend, "functional"), "frontends"), frontend),
+            frontend_method_data.init_name,
         )
         # Run testing
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
