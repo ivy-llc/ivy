@@ -10,29 +10,6 @@ from dataclasses import dataclass
 
 # needed for multiversion
 available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
-FWS_DICT = {
-    "": lambda: None,
-}
-
-if "numpy" in available_frameworks:
-    FWS_DICT["numpy"] = lambda x=None: _get_ivy_numpy(x)
-
-if "jax" in available_frameworks:
-    FWS_DICT["jax"] = lambda x=None: _get_ivy_jax(x)
-
-if "tensorflow" in available_frameworks:
-    FWS_DICT["tensorflow"] = lambda x=None: _get_ivy_tensorflow(x)
-    FWS_DICT["tensorflow_graph"] = lambda: _get_ivy_tensorflow()
-
-if "torch" in available_frameworks:
-    FWS_DICT["torch"] = lambda x=None: _get_ivy_torch(x)
-
-if "paddle" in available_frameworks:
-    FWS_DICT["paddle"] = lambda x=None: _get_ivy_paddle(x)
-
-if "mxnet" in available_frameworks:
-    FWS_DICT["mxnet"] = lambda x=None: _get_ivy_mxnet(x)
-
 
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
@@ -165,21 +142,21 @@ def _set_frontend(framework: str):
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_FRONTEND_STR = framework
-    CURRENT_FRONTEND = FWS_DICT[framework]
+    CURRENT_FRONTEND = framework
 
 
 def _set_backend(framework: str):
     global CURRENT_BACKEND
     if CURRENT_BACKEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    CURRENT_BACKEND = FWS_DICT[framework]
+    CURRENT_BACKEND = framework
 
 
 def _set_ground_truth_backend(framework: str):
     global CURRENT_GROUND_TRUTH_BACKEND
     if CURRENT_GROUND_TRUTH_BACKEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    CURRENT_GROUND_TRUTH_BACKEND = FWS_DICT[framework]
+    CURRENT_GROUND_TRUTH_BACKEND = framework
 
 
 def _set_device(device: str):

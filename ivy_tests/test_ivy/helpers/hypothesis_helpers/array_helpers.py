@@ -7,7 +7,8 @@ from functools import reduce
 from operator import mul
 
 # local
-import ivy
+import ivy_tests.test_ivy.helpers.globals as test_globals
+from ..pipeline_helper import WithBackendContext
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
 from . import general_helpers as gh
@@ -1297,10 +1298,12 @@ def array_values(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        dtype_info = ivy.finfo(dtype)
+        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+            dtype_info = ivy_backend.finfo(dtype)
     elif "int" in dtype:
         kind_dtype = "int"
-        dtype_info = ivy.iinfo(dtype)
+        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+            dtype_info = ivy_backend.iinfo(dtype)
     elif "bool" in dtype:
         kind_dtype = "bool"
     else:
@@ -1318,6 +1321,7 @@ def array_values(
 
         min_value, max_value, abs_smallest_val = gh.apply_safety_factor(
             dtype,
+            backend=test_globals.CURRENT_BACKEND,
             min_value=min_value,
             max_value=max_value,
             abs_smallest_val=abs_smallest_val,
@@ -1396,14 +1400,6 @@ def array_values(
                 values = [complex(*v) for v in values]
     else:
         values = draw(list_of_size(x=st.booleans(), size=size))
-    if dtype == "bfloat16":
-        # check bfloat16 behavior enabled or not
-        try:
-            np.dtype("bfloat16")
-        except Exception:
-            # enables bfloat16 behavior with possibly no side effects
-
-            import paddle_bfloat  # noqa
 
     array = np.asarray(values, dtype=dtype)
 
