@@ -52,15 +52,16 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
         # check to see if this pkg has specific version dependencies
         with open(path_to_json, "r") as file:
             json_data = json.load(file)
-            print(json_data)
+            print(json_data.keys())
             for keys in json_data[fw]:
+                print(keys, "here")
                 # check if key is dict
                 if isinstance(keys, dict):
                     # this is a dep with just one key
                     # being the dep
                     dep = list(keys.keys())[0]
                     # check if version is there in this
-                    if ver in keys[dep]:
+                    if ver in keys[dep].keys():
                         # we install this one
                         subprocess.run(
                             (
