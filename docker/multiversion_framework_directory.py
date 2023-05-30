@@ -46,6 +46,8 @@ def install_pkg(path, pkg, base="fw/"):
 
 
 def install_deps(pkgs, path_to_json, base="/opt/fw/"):
+    print(pkgs)
+    print(path_to_json)
     for fw in pkgs:
         fw, ver = fw.split("/")
         path = base + fw + "/" + ver
