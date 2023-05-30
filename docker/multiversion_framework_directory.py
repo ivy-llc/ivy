@@ -81,11 +81,11 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
 
 if __name__ == "__main__":
     arg_lis = sys.argv
-    if len(arg_lis) > 1:  # we have specified what frameworks to install
-        json_path = directory_generator(
-            arg_lis[1]
-        )  # path to the json file storing version specific deps
-        directory_generator(arg_lis[2:], "")
-        install_deps(arg_lis[2:], json_path)
-    else:
-        directory_generator(["tensorflow", "jax", "torch"])
+
+    json_path = directory_generator(
+        arg_lis[1]
+    )  # path to the json file storing version specific deps
+    print(arg_lis[1])
+    print(arg_lis[2])
+    # directory_generator(arg_lis[2:], "")
+    # install_deps(arg_lis[2:], json_path)
