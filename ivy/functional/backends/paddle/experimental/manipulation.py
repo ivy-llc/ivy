@@ -296,62 +296,30 @@ def flatten(
 
 def vsplit(
     ary: paddle.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    with ivy.ArrayMode(False):
-        if isinstance(indices_or_sections, Sequence):
-            indices_or_sections = (
-                [
-                    None,
-                ]
-                + indices_or_sections
-                + [
-                    None,
-                ]
-            )
-            slices = []
-            for i, idx in enumerate(indices_or_sections[:-1]):
-                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
-            results = []
-            for i in slices:
-                results.append(ivy.get_item(ary, i))
-            return results
-        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=0)
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
     ary: paddle.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    with ivy.ArrayMode(False):
-        if isinstance(indices_or_sections, Sequence):
-            indices_or_sections = (
-                [
-                    None,
-                ]
-                + indices_or_sections
-                + [
-                    None,
-                ]
-            )
-            slices = []
-            for i, idx in enumerate(indices_or_sections[:-1]):
-                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
-            results = []
-            for i in slices:
-                results.append(
-                    ivy.get_item(
-                        ary, (slice(None, None, None), slice(None, None, None), i)
-                    )
-                )
-            return results
-        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=2)
+    if ary.ndim < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
@@ -418,7 +386,6 @@ def atleast_3d(
     return res
 
 
-
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("int8",)}},
     backend_version,
@@ -458,7 +425,8 @@ def take_along_axis(
             fill_value = -paddle.iinfo(arr.dtype).max - 1
         else:
             raise TypeError(
-                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex', 'uint', 'int'."
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex',"
+                " 'uint', 'int'."
             )
 
         with ivy.ArrayMode(False):
@@ -498,25 +466,9 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    with ivy.ArrayMode(False):
-        if isinstance(indices_or_sections, Sequence):
-            indices_or_sections = (
-                [
-                    None,
-                ]
-                + indices_or_sections
-                + [
-                    None,
-                ]
-            )
-            slices = []
-            for i, idx in enumerate(indices_or_sections[:-1]):
-                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
-            results = []
-            for i in slices:
-                results.append(ivy.get_item(ary, (slice(None, None, None), i)))
-            return results
-        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=1)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:

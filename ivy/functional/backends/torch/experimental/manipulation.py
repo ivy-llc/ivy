@@ -171,30 +171,34 @@ flatten.partial_mixed_handler = (
 
 def vsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], torch.Tensor],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[torch.Tensor]:
+    if len(ary.shape) < 2:
+        raise ivy.utils.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
     if copy:
         ary = torch.clone(ary)
-    return torch.vsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], torch.Tensor],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[torch.Tensor]:
-    if len(ary.shape) < 3:
+    if len(ary.shape) < 2:
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
     if copy:
         ary = torch.clone(ary)
-    return list(torch.dsplit(ary, indices_or_sections))
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
@@ -288,7 +292,9 @@ def hsplit(
 ) -> List[torch.Tensor]:
     if copy:
         ary = torch.clone(ary)
-    return list(torch.hsplit(ary, indices_or_sections))
+    if len(ary.shape) == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 take_along_axis.support_native_out = True
