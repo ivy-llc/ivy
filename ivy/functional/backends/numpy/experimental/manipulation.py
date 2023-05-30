@@ -366,13 +366,17 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = np.clip(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
-        if "float" in str(arr.dtype):
+    elif mode in ("fill", "drop"):
+        if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = np.NAN
         elif "uint" in str(arr.dtype):
             fill_value = np.iinfo(arr.dtype).max
-        else:
+        elif "int" in str(arr.dtype):
             fill_value = -np.iinfo(arr.dtype).max - 1
+        else:
+            raise TypeError(
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex', 'uint', 'int'."
+            )
         indices = np.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
         arr_shape = list(arr_shape)
         arr_shape[axis] = 1
