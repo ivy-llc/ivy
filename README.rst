@@ -278,10 +278,9 @@ The model's output can be visualized as follows:
 
 .. raw:: html
 
-   <video width="320" height="240" autoplay loop>
-      <source src="https://github.com/ZiadAmerr/unifyai.github.io/blob/master/webm/video_hq.webm" type="video/webm">
-      Your browser does not support the video tag.
-    </video>
+   <div align="center">
+      <img width="50%" src="https://github.com/ZiadAmerr/unifyai.github.io/blob/master/img/regressor_lq.gif">
+   </div>
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
 covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more!
