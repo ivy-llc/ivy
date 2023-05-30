@@ -11,6 +11,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
+import functools
 
 
 @to_ivy_arrays_and_back
@@ -82,7 +83,11 @@ def fill(dims, value, name=None):
 
 @to_ivy_arrays_and_back
 def foldl(fn, elems, initializer=None, name=None):
-    return ivy.foldl(fn, elems, initializer=initializer)
+    arr = ivy.array(elems)
+    if initializer is None:
+        return functools.reduce(fn, arr)
+    else:
+        return functools.reduce(fn, arr, initializer)
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
