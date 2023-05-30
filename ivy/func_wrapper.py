@@ -8,11 +8,7 @@ import copy as python_copy
 from types import FunctionType
 from typing import Callable
 import inspect
-import torch
 import numpy as np
-
-
-# Function Wrappers
 
 
 # for wrapping (sequence matters)
@@ -665,17 +661,22 @@ def handle_view_indexing(fn: Callable) -> Callable:
     return _handle_view_indexing
 
 
-def _convert_numpy_arrays_to_torch(*args):
-    torch_tensors = []
+def _convert_numpy_arrays_to_backend_specific(*args):
+    tensors = []
     for array in args:
         if isinstance(array, np.ndarray):
-            torch_tensors.append(torch.from_numpy(array))
+            tensors.append(ivy.nested_map(
+                array,
+                lambda x: ivy.current_backend().asarray(x, device="cpu"),
+                include_derived=True,
+                shallow=False,
+            ))
         else:
-            torch_tensors.append(array)
-    return tuple(torch_tensors)
+            tensors.append(array)
+    return tuple(tensors)
 
 
-def handle_numpy_array_in_torch(fn: Callable) -> Callable:
+def handle_numpy_arrays_in_specific_backend(fn: Callable) -> Callable:
     """
     Wrap `fn` and converts all `numpy.ndarray` inputs to `torch.Tensor` instances.
 
@@ -685,11 +686,11 @@ def handle_numpy_array_in_torch(fn: Callable) -> Callable:
 
     @functools.wraps(fn)
     def _handle_numpy_array_in_torch(*args, **kwargs):
-        args = _convert_numpy_arrays_to_torch(*args)
+        args = _convert_numpy_arrays_to_backend_specific(*args)
         ret = fn(*args, **kwargs)
         return ret
 
-    _handle_numpy_array_in_torch.handle_numpy_array_in_torch = True
+    _handle_numpy_array_in_torch.handle_numpy_arrays_in_specific_backend = True
     return _handle_numpy_array_in_torch
 
 
