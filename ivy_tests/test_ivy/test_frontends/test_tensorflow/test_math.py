@@ -47,7 +47,7 @@ def test_tensorflow_imag(
     fn_tree="tensorflow.math.accumulate_n",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple([ivy.int64]),
-        num_arrays=2,
+        num_arrays=helpers.ints(min_value=2, max_value=5),
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
@@ -2082,6 +2082,8 @@ def test_tensorflow_log(
     fn_tree="tensorflow.math.add_n",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+        shared_dtype=True,
     ),
 )
 def test_tensorflow_add_n(
@@ -2099,7 +2101,7 @@ def test_tensorflow_add_n(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        inputs=x,
     )
 
 
