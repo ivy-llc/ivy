@@ -44,7 +44,7 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 
 # requirement mappings directs which dependency to be installed and where
 SHELL ["/bin/bash", "-c"]
-RUN python3 multiversion_framework_directory.py requirement_mappings_multiversion.json $fw 
+RUN python3 multiversion_framework_directory.py requirement_mappings_multiversion.json $fw
 
 
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
