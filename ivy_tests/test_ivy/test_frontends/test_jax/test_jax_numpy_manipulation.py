@@ -1102,7 +1102,9 @@ def test_jax_numpy_rot90(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, allow_none=False, is_mod_split=True
+    ),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1142,7 +1144,9 @@ def test_jax_numpy_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, allow_none=False, is_mod_split=True
+    ),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1183,7 +1187,9 @@ def test_jax_numpy_array_split(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=3, axis=2, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=3, axis=2, allow_none=False, is_mod_split=True
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_dsplit(
@@ -1285,7 +1291,9 @@ def test_jax_numpy_dstack(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=0, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=2, axis=0, allow_none=False, is_mod_split=True
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_vsplit(
@@ -1316,7 +1324,9 @@ def test_jax_numpy_vsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=1, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=2, axis=1, allow_none=False, is_mod_split=True
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_hsplit(

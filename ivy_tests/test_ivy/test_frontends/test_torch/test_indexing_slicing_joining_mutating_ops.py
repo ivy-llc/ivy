@@ -925,7 +925,9 @@ def test_torch_vstack(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    split_size_or_sections=_get_splits(allow_none=False, min_num_dims=1),
+    split_size_or_sections=_get_splits(
+        allow_none=False, min_num_dims=1, allow_array_indices=False
+    ),
     dim=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -964,7 +966,9 @@ def test_torch_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, allow_none=False, allow_array_indices=False
+    ),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1036,7 +1040,11 @@ def test_torch_unbind(
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
     indices_or_sections=_get_splits(
-        min_num_dims=3, axis=2, allow_none=False, allow_array_indices=False
+        min_num_dims=3,
+        axis=2,
+        allow_none=False,
+        allow_array_indices=False,
+        is_mod_split=True,
     ),
 )
 def test_torch_dsplit(
@@ -1068,7 +1076,11 @@ def test_torch_dsplit(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
     indices_or_sections=_get_splits(
-        min_num_dims=1, axis=1, allow_none=False, allow_array_indices=False
+        min_num_dims=1,
+        axis=1,
+        allow_none=False,
+        allow_array_indices=False,
+        is_mod_split=True,
     ),
 )
 def test_torch_hsplit(
@@ -1100,7 +1112,11 @@ def test_torch_hsplit(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
     indices_or_sections=_get_splits(
-        min_num_dims=2, axis=0, allow_none=False, allow_array_indices=False
+        min_num_dims=2,
+        axis=0,
+        allow_none=False,
+        allow_array_indices=False,
+        is_mod_split=True,
     ),
 )
 def test_torch_vsplit(

@@ -576,7 +576,12 @@ def test_repeat(
 
 @st.composite
 def _get_splits(
-    draw, allow_none=True, min_num_dims=1, axis=None, allow_array_indices=True
+    draw,
+    allow_none=True,
+    min_num_dims=1,
+    axis=None,
+    allow_array_indices=True,
+    is_mod_split=False,
 ):
     """Generate valid splits, either by generating an integer that evenly divides the
     axis or a list of splits that sum to the length of the axis being split."""
@@ -599,7 +604,7 @@ def _get_splits(
         return draw(st.sampled_from(factors))
 
     @st.composite
-    def _get_list_split(draw, allow_arr_indices=True):
+    def _get_list_split(draw, allow_arr_indices=True, is_other_split=False):
         num_or_size_splits = []
         while sum(num_or_size_splits) < shape[axis]:
             split_value = draw(
@@ -609,8 +614,8 @@ def _get_splits(
                 )
             )
             num_or_size_splits.append(split_value)
-        # sorting the generated splits to remove duplicates
-        num_or_size_splits = list(set(num_or_size_splits))
+        if is_other_split:
+            num_or_size_splits = list(set(num_or_size_splits))
         if allow_arr_indices:
             gen_random_native = draw(st.booleans())
             if gen_random_native:
@@ -619,13 +624,18 @@ def _get_splits(
 
     if allow_none:
         return draw(
-            _get_list_split(allow_arr_indices=allow_array_indices)
+            _get_list_split(
+                allow_arr_indices=allow_array_indices, is_other_split=is_mod_split
+            )
             | _get_int_split()
             | st.none()
         )
     else:
         return draw(
-            _get_list_split(allow_arr_indices=allow_array_indices) | _get_int_split()
+            _get_list_split(
+                allow_arr_indices=allow_array_indices, is_other_split=is_mod_split
+            )
+            | _get_int_split()
         )
 
 
