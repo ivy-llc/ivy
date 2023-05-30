@@ -6,7 +6,7 @@ COPY /docker/multiversion_framework_directory.py .
 COPY /docker/requirement_mappings_multiversion.json .
 
 ARG fw
-
+ARG pycon=3.8.10
 # Install miniconda
 ENV CONDA_DIR /opt/miniconda/
 
