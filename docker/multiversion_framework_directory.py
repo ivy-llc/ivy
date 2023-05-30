@@ -63,38 +63,42 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                     # check if version is there in this
                     if ver in keys[dep].keys():
                         # we install this one
-                        subprocess.run(
+                        result= subprocess.run(
                             (
 
-                                    f"PYTHONPATH={path}:$PYTHONPATH ",
-                                    f"pip install {dep}=={keys[dep][ver]} --target=={path} --no-cache-dir",
+                                    f"PYTHONPATH={path}:$PYTHONPATH; ",
+                                    f"pip install {dep}=={keys[dep][ver]} --target={path} --no-cache-dir;",
                                     "unset PYTHONPATH"
 
                             ),
                             shell=True,
                         )
+                        assert result == 0
                     else:
-                        subprocess.run(
+                        result= subprocess.run(
                             (
 
-                                    f"PYTHONPATH={path}:$PYTHONPATH",
-                                    f"pip install {dep} --target=={path} --no-cache-dir",
+                                    f"PYTHONPATH={path}:$PYTHONPATH;",
+                                    f"pip install {dep} --target={path} --no-cache-dir;",
                                     "unset PYTHONPATH"
 
                             ),
                             shell=True,
                         )
+                        assert result == 0
                 else:
-                    subprocess.run(
+                    print("did I run")
+                    result =subprocess.run(
                         (
 
-                                f"PYTHONPATH={path}:$PYTHONPATH",
-                                f"pip install {keys} --target=={path} --no-cache-dir",
+                                f"PYTHONPATH={path}:$PYTHONPATH;",
+                                f"pip install {keys} --target={path} --no-cache-dir;",
                                 "unset PYTHONPATH"
 
                         ),
                         shell=True,
                     )
+                    assert result==0
 
 
 if __name__ == "__main__":
