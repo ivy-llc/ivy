@@ -100,6 +100,6 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
 if __name__ == "__main__":
     arg_lis = sys.argv
 
-    json_path = arg_lis[1]  # path to the json file storing version specific deps
+    json_path = 'requirement_mappings_multiversion.json'  # path to the json file storing version specific deps
     directory_generator(arg_lis[2:], "")
     install_deps(arg_lis[2:], json_path)
