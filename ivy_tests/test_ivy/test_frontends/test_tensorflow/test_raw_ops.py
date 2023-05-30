@@ -3469,13 +3469,17 @@ def test_tensorflow_roll(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # CumulativeLogsumexp
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.CumulativeLogsumexp",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    axis=st.just(0),
     test_with_out=st.just(False),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
 )
 def test_tensorflow_CumulativeLogsumexp(
     dtype_and_x,
@@ -3501,13 +3505,16 @@ def test_tensorflow_CumulativeLogsumexp(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # Complex
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Complex",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    Tout=st.sampled_from(["complex64", "complex128"]),
 )
 def test_tensorflow_Complex(
     dtype_and_x,
@@ -3515,8 +3522,6 @@ def test_tensorflow_Complex(
     test_flags,
     fn_tree,
     on_device,
-    real,
-    imag,
     Tout,
 ):
     input_dtype, x = dtype_and_x
@@ -3532,6 +3537,7 @@ def test_tensorflow_Complex(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # AccumulateNV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AccumulateNV2",
@@ -3539,6 +3545,7 @@ def test_tensorflow_Complex(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    shape=helpers.get_shape(min_num_dims=1),
 )
 def test_tensorflow_AccumulateNV2(
     dtype_and_x,
@@ -3546,7 +3553,6 @@ def test_tensorflow_AccumulateNV2(
     test_flags,
     fn_tree,
     on_device,
-    inputs,
     shape,
 ):
     input_dtype, x = dtype_and_x
@@ -3557,10 +3563,11 @@ def test_tensorflow_AccumulateNV2(
         fn_tree=fn_tree,
         on_device=on_device,
         inputs=x[0],
-        shape=x[1],
+        shape=shape,
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # DebugGradientIdentity
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.DebugGradientIdentity",
@@ -3587,6 +3594,7 @@ def test_tensorflow_DebugGradientIdentity(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # Real
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Real",
@@ -3594,6 +3602,7 @@ def test_tensorflow_DebugGradientIdentity(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    Tout=st.sampled_from(["float32", "float64"]),
 )
 def test_tensorflow_Real(
     dtype_and_x,
@@ -3615,13 +3624,17 @@ def test_tensorflow_Real(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BandedTriangularSolve
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BandedTriangularSolve",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    lower=st.booleans(),
+    adjoint=st.booleans(),
 )
 def test_tensorflow_BandedTriangularSolve(
     dtype_and_x,
@@ -3629,8 +3642,6 @@ def test_tensorflow_BandedTriangularSolve(
     test_flags,
     fn_tree,
     on_device,
-    matrix,
-    rhs,
     lower,
     adjoint,
 ):
@@ -3648,13 +3659,17 @@ def test_tensorflow_BandedTriangularSolve(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BatchMatMul
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BatchMatMul",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    adj_x=st.booleans(),
+    adj_y=st.booleans(),
 )
 def test_tensorflow_BatchMatMul(
     dtype_and_x,
@@ -3679,13 +3694,17 @@ def test_tensorflow_BatchMatMul(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BatchMatMulV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BatchMatMulV2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    adj_x=st.booleans(),
+    adj_y=st.booleans(),
 )
 def test_tensorflow_BatchMatMulV2(
     dtype_and_x,
@@ -3710,13 +3729,18 @@ def test_tensorflow_BatchMatMulV2(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BatchMatMulV3
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BatchMatMulV3",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    Tout=st.sampled_from(["float32", "float64"]),
+    adj_x=st.booleans(),
+    adj_y=st.booleans(),
 )
 def test_tensorflow_BatchMatMulV3(
     dtype_and_x,
