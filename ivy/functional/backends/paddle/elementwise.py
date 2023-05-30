@@ -705,8 +705,8 @@ def round(
             x - eps,
             x,
         )
-        factor = paddle_backend.pow(10, decimals).astype(x.dtype)
-        factor_denom = ivy.where(ivy.isinf(x), 1, factor)
+        factor = paddle_backend.pow(10.0, decimals).astype(x.dtype)
+        factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
         return paddle_backend.divide(
             paddle.round(paddle_backend.multiply(x, factor)), factor_denom
         )
