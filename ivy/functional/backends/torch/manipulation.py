@@ -221,7 +221,7 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, List[int]]] = None,
+    num_or_size_splits: Optional[Union[int, List[int], torch.Tensor]] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[torch.Tensor]:
@@ -239,6 +239,8 @@ def split(
     dim_size: int = x.shape[axis]
     if num_or_size_splits is None:
         num_or_size_splits = 1
+    elif isinstance(num_or_size_splits, torch.Tensor):
+        num_or_size_splits = num_or_size_splits.to(torch.int64).tolist()
     elif isinstance(num_or_size_splits, int):
         if with_remainder:
             num_chunks = x.shape[axis] / num_or_size_splits

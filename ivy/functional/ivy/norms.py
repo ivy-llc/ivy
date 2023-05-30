@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_function,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -23,6 +24,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_out_argument
+@inputs_to_ivy_arrays
 @handle_array_function
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
