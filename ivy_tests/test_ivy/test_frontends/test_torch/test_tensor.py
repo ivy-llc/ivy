@@ -132,7 +132,7 @@ def test_torch_tensor_property_shape(dtype_x):
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+        available_dtypes=helpers.get_dtypes("complex", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_real(
@@ -3712,7 +3712,7 @@ def test_torch_instance_bitwise_and(
     init_tree="torch.tensor",
     method_name="bitwise_or",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
 )
@@ -8586,7 +8586,6 @@ def test_torch_instance_addr(
     )
 
 
-
 # logical_not_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8621,6 +8620,7 @@ def test_torch_instance_logical_not_(
         on_device=on_device,
     )
 
+
 # rsqrt
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8652,14 +8652,15 @@ def test_torch_instance_rsqrt(
         frontend=frontend,
         on_device=on_device,
     )
-    
+
+
 # equal
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -8691,5 +8692,43 @@ def test_torch_instance_equal(
         frontend=frontend,
         atol_=1e-04,
         rtol_=1e-04,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="greater",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_greater(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
