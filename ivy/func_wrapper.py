@@ -970,11 +970,20 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
 
-        mixed_fn = original != to_wrap and hasattr(original, "inputs_to_ivy_arrays")
+        mixed_fn = (
+            original != to_wrap
+            and hasattr(original, "inputs_to_ivy_arrays")
+            and not original.__name__.startswith("inplace")
+        )
         for attr in FN_DECORATORS:
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
-                mixed_fn and attr == "to_native_arrays_and_back"
+                mixed_fn
+                and (
+                    attr == "inputs_to_native_arrays" or attr == "outputs_to_ivy_arrays"
+                )
             ):
+                if mixed_fn and attr == "inputs_to_ivy_arrays":
+                    continue
                 to_wrap = getattr(ivy, attr)(to_wrap)
 
         if hasattr(to_wrap, "partial_mixed_handler"):
