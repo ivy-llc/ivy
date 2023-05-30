@@ -1,7 +1,6 @@
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 import math
-import numpy as np
 
 
 # local
@@ -1036,7 +1035,9 @@ def test_torch_unbind(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=3, axis=2, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=3, axis=2, allow_none=False, allow_array_indices=False
+    ),
 )
 def test_torch_dsplit(
     *,
@@ -1048,7 +1049,6 @@ def test_torch_dsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    assume(not isinstance(indices_or_sections, np.ndarray))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1067,7 +1067,9 @@ def test_torch_dsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1, axis=1, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, axis=1, allow_none=False, allow_array_indices=False
+    ),
 )
 def test_torch_hsplit(
     *,
@@ -1079,7 +1081,6 @@ def test_torch_hsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    assume(not isinstance(indices_or_sections, np.ndarray))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1098,7 +1099,9 @@ def test_torch_hsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=0, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=2, axis=0, allow_none=False, allow_array_indices=False
+    ),
 )
 def test_torch_vsplit(
     *,
@@ -1110,7 +1113,6 @@ def test_torch_vsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-    assume(not isinstance(indices_or_sections, np.ndarray))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
