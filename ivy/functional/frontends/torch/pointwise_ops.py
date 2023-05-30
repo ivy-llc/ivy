@@ -214,6 +214,7 @@ def real(input):
     return ivy.real(input)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def sign(input, *, out=None):
     return ivy.sign(input, out=out)
@@ -330,6 +331,7 @@ divide = div
 
 @to_ivy_arrays_and_back
 def true_divide(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.divide(input, other, out=out)
 
 
@@ -459,6 +461,7 @@ def lerp(input, end, weight, *, out=None):
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def signbit(input, *, out=None):
     return ivy.signbit(input, out=out)

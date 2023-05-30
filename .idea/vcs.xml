@@ -2,10 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-<<<<<<< HEAD
-    <mapping directory="$PROJECT_DIR$/ivy_tests/array_api_testing/test_array_api" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/ivy_tests/array_api_testing/test_array_api/array-api" vcs="Git" />
-=======
->>>>>>> ccea4e97589623a960f5a6ca0d4fe382a956c8c6
+    <mapping directory="$PROJECT_DIR$/ivy_tests/test_array_api" vcs="Git" />
   </component>
 </project>
