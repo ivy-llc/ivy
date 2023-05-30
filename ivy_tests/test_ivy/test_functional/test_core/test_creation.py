@@ -938,27 +938,27 @@ def test_frombuffer(
 
 @handle_test(
     fn_tree="functional.ivy.triu_indices",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        max_num_dims=0,
-        num_arrays=3,
-        min_value=0,
-        max_value=10,
-    ),
+    n_rows=st.integers(min_value=0, max_value=5),
+    n_cols=st.integers(min_value=0, max_value=5) | st.just(None),
+    k=st.integers(min_value=-5, max_value=5),
+    input_dtype=helpers.get_dtypes("integer"),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
 )
 def test_triu_indices(
     *,
-    dtype_and_x,
+    n_rows,
+    n_cols,
+    k,
+    input_dtype,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype = input_dtype
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -966,7 +966,7 @@ def test_triu_indices(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        n_rows=int(x[0]),
-        n_cols=int(x[1]),
-        k=int(x[2]),
+        n_rows=n_rows,
+        n_cols=n_cols,
+        k=k,
     )
