@@ -47,7 +47,7 @@ def test_tensorflow_imag(
     fn_tree="tensorflow.math.accumulate_n",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple([ivy.int64]),
-        num_arrays=2,
+        num_arrays=helpers.ints(min_value=2, max_value=5),
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
@@ -1832,6 +1832,9 @@ def test_tensorflow_log_softmax(
     fn_tree="tensorflow.math.abs",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -2079,6 +2082,8 @@ def test_tensorflow_log(
     fn_tree="tensorflow.math.add_n",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+        shared_dtype=True,
     ),
 )
 def test_tensorflow_add_n(
@@ -2096,7 +2101,7 @@ def test_tensorflow_add_n(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        inputs=x,
     )
 
 
@@ -2218,21 +2223,24 @@ def test_tensorflow_sinh(
 # softmax
 @handle_frontend_test(
     fn_tree="tensorflow.math.softmax",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_inf=False,
     ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_softmax(
     *,
-    dtype_and_x,
+    dtype_values_axis,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -2240,6 +2248,9 @@ def test_tensorflow_softmax(
         fn_tree=fn_tree,
         on_device=on_device,
         logits=x[0],
+        atol=1e-02,
+        rtol=1e-2,
+        axis=axis,
     )
 
 

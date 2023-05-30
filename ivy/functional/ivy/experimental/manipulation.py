@@ -36,14 +36,16 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
+@inputs_to_ivy_arrays
+@handle_array_function
 def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
-    start_dim: int = 0,
-    end_dim: int = -1,
-    order: str = "C",
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -145,7 +147,7 @@ def flatten(
     if x.shape == ():
         x = ivy.reshape(x, (1, -1))[0, :]
     if start_dim == end_dim:
-        return x
+        return ivy.inplace_update(out, x) if ivy.exists(out) else x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             "Dimension out of range (expected to be in range of"
@@ -169,7 +171,7 @@ def flatten(
             lst.insert(i, x.shape[i])
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
-    return ivy.reshape(x, tuple(lst), order=order)
+    return ivy.reshape(x, tuple(lst), order=order, out=out)
 
 
 @handle_nestable
@@ -1161,13 +1163,18 @@ def pad(
     return padded
 
 
+pad.mixed_function = True
+
+
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
+@handle_array_function
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
@@ -1182,8 +1189,8 @@ def vsplit(
     indices_or_sections
         If indices_or_sections is an integer n, the array is split into n
         equal sections, provided that n must be a divisor of the split axis.
-        If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple.
+        If indices_or_sections is a sequence of ints or 1-D array,
+        then input is split at each of the indices.
 
     Returns
     -------
@@ -1204,13 +1211,14 @@ def vsplit(
     return ivy.current_backend(ary).vsplit(ary, indices_or_sections, copy=copy)
 
 
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
@@ -1228,8 +1236,8 @@ def dsplit(
         equal size. If input is not divisible by n, the sizes of the first
         int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
         the rest will have size int(ary.size(0) / n).
-        If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple.
+        If indices_or_sections is a sequence of ints or 1-D array,
+        then input is split at each of the indices.
 
     Returns
     -------
@@ -1463,13 +1471,15 @@ def take_along_axis(
     )
 
 
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
+@handle_array_function
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,

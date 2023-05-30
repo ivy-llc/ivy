@@ -35,10 +35,13 @@ def _pad_before_conv(
 ):
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     strides = [strides] * dims if isinstance(strides, int) else strides
-    filter_shape = filters.shape[:dims]
-    if filter_format == "channel_first":
-        filter_shape = filters.shape[2:]
+    filter_shape = (
+        filters.shape[2:] if filter_format == "channel_first" else filters.shape[:dims]
+    )
     if isinstance(padding, str):
+        # use torch's padding in conv if strides are all 1
+        if len(strides) == strides.count(1):
+            return x, padding.lower()
         filter_shape = [
             filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
             for i in range(dims)
@@ -54,9 +57,12 @@ def _pad_before_conv(
         pad_list[1::2] = pad_list_bot
     else:
         if isinstance(padding, int):
-            padding = [(padding, padding)] * dims
+            return x, padding
+        # if symmetric padding is used, use torch's padding in conv function
+        if all(pad[0] == pad[1] for pad in padding):
+            return x, [pad[0] for pad in padding]
         pad_list = [item for sublist in padding for item in sublist[::-1]][::-1]
-    return torch.nn.functional.pad(x, pad_list)
+    return torch.nn.functional.pad(x, pad_list), "valid"
 
 
 def _pad_before_conv_tranpose(
@@ -118,9 +124,11 @@ def conv1d(
 ) -> torch.Tensor:
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    x = _pad_before_conv(x, filters, strides, padding, 1, dilations)
     filters = filters.permute(2, 1, 0)
-    res = torch.nn.functional.conv1d(x, filters, None, strides, "valid", dilations)
+    x, padding = _pad_before_conv(
+        x, filters, strides, padding, 1, dilations, "channel_first"
+    )
+    res = torch.nn.functional.conv1d(x, filters, None, strides, padding, dilations)
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
     return res
@@ -191,9 +199,11 @@ def conv2d(
 ) -> torch.Tensor:
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    x = _pad_before_conv(x, filters, strides, padding, 2, dilations)
     filters = filters.permute(3, 2, 0, 1)
-    res = torch.nn.functional.conv2d(x, filters, None, strides, "valid", dilations)
+    x, padding = _pad_before_conv(
+        x, filters, strides, padding, 2, dilations, "channel_first"
+    )
+    res = torch.nn.functional.conv2d(x, filters, None, strides, padding, dilations)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
@@ -277,11 +287,13 @@ def depthwise_conv2d(
     filters = ivy.squeeze(filters, 3).to_native() if filters.ndim == 4 else filters
     filters = torch.unsqueeze(filters, -1)
     dims_in = filters.shape[-2]
-    x = _pad_before_conv(x, filters, strides, padding, 2, dilations)
     filters = filters.permute(2, 3, 0, 1)
+    x, padding = _pad_before_conv(
+        x, filters, strides, padding, 2, dilations, "channel_first"
+    )
     # noinspection PyArgumentEqualDefault
     res = torch.nn.functional.conv2d(
-        x, filters, None, strides, "valid", dilations, dims_in
+        x, filters, None, strides, padding, dilations, dims_in
     )
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
@@ -305,9 +317,11 @@ def conv3d(
 ):
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-    x = _pad_before_conv(x, filters, strides, padding, 3, dilations)
     filters = filters.permute(4, 3, 0, 1, 2)
-    res = torch.nn.functional.conv3d(x, filters, None, strides, "valid", dilations)
+    x, padding = _pad_before_conv(
+        x, filters, strides, padding, 3, dilations, "channel_first"
+    )
+    res = torch.nn.functional.conv3d(x, filters, None, strides, padding, dilations)
     if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
     return res
@@ -396,19 +410,21 @@ def conv_general_dilated(
             x = torch.matmul(x, h)
             x = torch.swapaxes(x, -1, 2 + i)
 
-    x = _pad_before_conv(x, filters, strides, padding, dims, dilations, "channel_first")
+    x, padding = _pad_before_conv(
+        x, filters, strides, padding, dims, dilations, "channel_first"
+    )
 
     if dims == 1:
         res = torch.nn.functional.conv1d(
-            x, filters, bias, strides, "valid", dilations, feature_group_count
+            x, filters, bias, strides, padding, dilations, feature_group_count
         )
     elif dims == 2:
         res = torch.nn.functional.conv2d(
-            x, filters, bias, strides, "valid", dilations, feature_group_count
+            x, filters, bias, strides, padding, dilations, feature_group_count
         )
     else:
         res = torch.nn.functional.conv3d(
-            x, filters, bias, strides, "valid", dilations, feature_group_count
+            x, filters, bias, strides, padding, dilations, feature_group_count
         )
     if data_format == "channel_last":
         return res.permute(0, *range(2, dims + 2), 1)
