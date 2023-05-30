@@ -67,8 +67,8 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                             (
                                 (
                                     f"PYTHONPATH={path}:$PYTHONPATHpip install"
-                                    f" {dep}=={keys[dep][ver]} --target=={path} --no-cache-dirunset"
-                                    " PYTHONPATH"
+                                    f" {dep}=={keys[dep][ver]} --target=={path} --no-cache-dir"
+                                    "unset PYTHONPATH"
                                 ),
                             ),
                             shell=True,
