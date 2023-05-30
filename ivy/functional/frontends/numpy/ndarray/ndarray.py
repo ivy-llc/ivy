@@ -494,7 +494,7 @@ class ndarray:
         if not dtype:
             return self
         return np_frontend.array(self, dtype=dtype)
-    
+
     def __array_wrap__(self, array, context=None, /):
         if context is None:
             return np_frontend.array(array)
