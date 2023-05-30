@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+from tensorflow import errors as tf_errors
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -13,7 +14,9 @@ from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_tensor import (
 )  # noqa : E501
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
-from tensorflow import errors as tf_errors
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
+    _get_splits,
+)
 
 
 @st.composite
@@ -1678,7 +1681,7 @@ def test_tensorflow_roll(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    num_or_size_splits=st.just(1),
+    num_or_size_splits=_get_splits(allow_none=False, min_num_dims=1),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1686,7 +1689,6 @@ def test_tensorflow_roll(
         ),
         key="target_axis",
     ),
-    number_positional_args=st.just(2),
     test_with_out=st.just(False),
 )
 def test_tensorflow_split(
