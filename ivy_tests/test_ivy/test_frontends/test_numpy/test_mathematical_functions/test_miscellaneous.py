@@ -392,6 +392,7 @@ def test_numpy_sign(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
+
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
