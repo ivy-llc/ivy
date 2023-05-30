@@ -213,7 +213,8 @@ def take_along_axis(
             fill_value = tf.constant(-arr.dtype.max - 1, dtype=arr.dtype)
         else:
             raise TypeError(
-                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex', 'uint', 'int'."
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex',"
+                " 'uint', 'int'."
             )
         indices = tf.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
         arr_shape = list(arr_shape)
