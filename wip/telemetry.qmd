@@ -1,0 +1,145 @@
+---
+sidebar: false
+---
+
+## Telemetry Policy
+
+We want to give Ivy’s users as much flexibility as possible when it comes to data collection. 
+Therefore, there are **five** different data sharing modes for you to choose from. 😄
+
+Keep in mind that any collected data is string-based and as concise as possible, this is, no training data, model parameter, or input array to your function or model will leave your computer at any time in terms of telemetry.
+
+All of the data is totally anonymised, and is used to inform about Ivy’s usage, helping us prioritize the development of features and the improvement of the most used functions across all the versions of all the frameworks when it comes to compilation and transpilation.
+
+Ivy will be a much better framework if it’s possible to prioritize adding new functions and improving existing ones based on their actual usage in the community, rather than leaving this all to guess work and potentially focusing our efforts on functions people don’t actually want or need.
+
+More specifically, by sharing your data, this means more time will be spent on improving the functions, frameworks, and computation graphs that matter most for your projects.
+
+If you use the premium features with an account, this data is stored in a database with the key being your account id. If you do not create an Ivy account, the data is stored in a database with the key being a securely hashed version of the IP address from where the call was made.
+
+
+### Telemetry Modes
+
+This section outlines the different modes available to all users, as well as the data that is collected for each one when calling `ivy.compile`, `ivy.transpile`, or `ivy.unify`. 
+
+1. **stealth** 
+
+No data at all. 😄
+
+This mode is limited to users with the **enterprise** license only.
+
+2. **api-calls**
+
+Ivy function signature and its timestamp.
+
+As an example, the message produced by this function call would be:
+
+```
+comp_fn = ivy.compile(fn, to=”torch”, include_generators=True)
+
+{
+	"function": ivy.compile,
+	"timestamp": 108586,
+	"flags": {"to": "torch", "include_generators": "True"}
+}
+```
+
+This is helpful to understand the typical usage of Ivy, making it possible to focus the development on the more widely used features and use cases of Ivy. 
+
+3. **functional-api**
+
+Ivy function signature, timestamp, and the set of used functions from the corresponding functional API, without their frequencies.
+
+A sample message in this case would be similar to:
+
+```
+comp_fn = ivy.compile(fn, to=”torch”, include_generators=True)
+
+{
+	"function": ivy.compile,
+	"timestamp": 108586,
+	"flags": {"to": "torch", "include_generators": "True"},
+	"functions": ["torch.add", "torch.matmul"]
+}
+```
+
+As mentioned above, this helps prioritize the addition of new functions and fixing of existing ones based on actual user usage of them, rather than relying on guess work and potentially focusing our efforts on functions that may not be wanted or needed by the users.
+
+4. **functional-api-frequency**
+
+Ivy function signature, timestamp, and the set of used functions from the corresponding functional API along the number of calls to each function.
+
+A sample message if this mode is selected would be:
+
+```
+comp_fn = ivy.compile(fn, to=”torch”, include_generators=True)
+
+{
+	"function": ivy.compile,
+	"timestamp": 108586,
+	"flags": {"to": "torch", "include_generators": "True"},
+	"functions": [["torch.add", 2], ["torch.matmul", 1]]
+}
+```
+
+Similar to the previous mode, this helps even more to prioritize certain functions that need to be included, fixed, or optimized based on their actual usage. The usage frequencies give another very helpful data point to be even more accurate with function prioritization, as it’s now possible to focus on the functions depending on how commonly used they are.
+
+**NOTE:** Users with the **early pilot access** should have this mode turned on at the minimum. 
+This helps in informing the team about how Ivy is being used and where it can be improved.
+Thus, we ask for more usage data in order to improve our product at a faster pace.
+
+5. **graph**
+
+Ivy function signature, timestamp and a text-based representation of the computation graph. 
+This mode is set by **default** on `pip install ivy`.
+
+If this mode is selected, telemetry messages will be similar to:
+
+```
+comp_fn = ivy.compile(fn, to=”torch”, include_generators=True)
+{
+	"function": ivy.compile,
+	"timestamp": 108586,
+	"flags": {"to": "torch", "include_generators": "True"},
+	"graph": "<graph_representation>"
+}
+```
+
+where `<graph_representation>` would be a string containing:
+
+```
+p708217 = args[0]
+p862415 = args[1]
+p817145 = torch.add(p708217, p862415)
+p913484 = torch.add(p708217, p817145)
+p868273 = torch.matmul(p913484, p817145)
+return p868273
+```
+
+In this case, telemetry helps not only with the function-level prioritization, but also with sub-function fixes and optimizations in Ivy’s functional API and Ivy’s frontends, as it’s now possible to distinguish which parameters or flags are used more often by users of the compiler and the transpiler.
+
+Furthermore, having an anonymized, minimal version of the computational graph allows us to recreate and explore any error that arises during compilation or transpilation, which once again enables the prioritization of bug fixes and features based on real-world usage.
+
+Below, you can find a summary of the modes and their corresponding data levels:
+
+|               | stealth | api-calls | functional-api | functional-api-frequency | graph |
+|:-------------:|:-------:|:---------:|:--------------:|:------------------------:|:-----:|
+| Ivy signature |    -    |     x     |       x        |            x             |   x   |
+|  Time stamp   |    -    |     x     |       x        |            x             |   x   |
+|   Functions   |    -    |     -     |       x        |            x             |   x   |
+|   Frequency   |    -    |     -     |       -        |            x             |   x   |
+|  Graph repr.  |    -    |     -     |       -        |            -             |   x   |
+
+
+
+### Setting the Telemetry Mode
+
+By default, the telemetry mode is `graph`. 
+To change this setting, you should modify the `config.json` file that you can find inside of your `.ivy` directory. 
+More specifically, you will have to change the `data_level` field. For example, if you want to limit the telemetry to avoid sending the computational graph, you can modify `config.json` so that it looks like this:
+
+```
+{
+    "data_level": "functional-api-frequency"
+}
+```
