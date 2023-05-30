@@ -83,7 +83,5 @@ if __name__ == "__main__":
     arg_lis = sys.argv
 
     json_path = arg_lis[1]  # path to the json file storing version specific deps
-    print(arg_lis[1])
-    print(arg_lis[2])
-    # directory_generator(arg_lis[2:], "")
-    # install_deps(arg_lis[2:], json_path)
+    directory_generator(arg_lis[2:], "")
+    install_deps(arg_lis[2:], json_path)
