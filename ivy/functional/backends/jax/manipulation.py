@@ -148,7 +148,7 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    num_or_size_splits: Optional[Union[int, Sequence[int], JaxArray]] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[JaxArray]:
@@ -160,6 +160,8 @@ def split(
                 )
             )
         return [x]
+    if isinstance(num_or_size_splits, jnp.ndarray):
+        num_or_size_splits = num_or_size_splits.tolist()
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
     elif isinstance(num_or_size_splits, int) and with_remainder:
