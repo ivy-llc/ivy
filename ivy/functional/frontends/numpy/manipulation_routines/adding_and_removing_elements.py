@@ -31,7 +31,9 @@ def insert(arr, obj, values, axis=None):
     elif len(indices) == 1:
         index = int(indices[0])
         if index < -shape[axis] or index > shape[axis]:
-            raise IndexError(f"index {obj} is out of bounds for axis {axis} with size {shape[axis]}")
+            raise IndexError(
+                f"index {obj} is out of bounds for axis {axis} with size {shape[axis]}"
+            )
         if index < 0:
             index += shape[axis]
         values = ivy.reshape(values, [-1] + [1] * (ndim - 1))
