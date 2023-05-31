@@ -8738,38 +8738,32 @@ def test_torch_greater(
     )
 
 
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="sgn",
+@handle_frontend_test(
+    fn_tree="torch.sgn",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
-        min_num_dims=1,
-        shared_dtype=True,
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_sgn(
+def test_torch_tan(
+    *,
     dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
     on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
         frontend=frontend,
+        fn_tree=fn_tree,
         on_device=on_device,
-        atol_=1e-04,
+        input=x[0],
     )
