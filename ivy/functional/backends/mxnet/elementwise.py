@@ -240,6 +240,16 @@ def floor_divide(
     return mx.nd.floor(mx.nd.divide(x1, x2))
 
 
+def fmin(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def greater(
     x1: Union[(float, None, mx.ndarray.NDArray)],
     x2: Union[(float, None, mx.ndarray.NDArray)],
@@ -551,6 +561,18 @@ def subtract(
         x2 = multiply(x2, alpha)
         ivy.unset_array_mode()
     return mx.nd.subtract(x1, x2)
+
+
+def trapz(
+    y: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    x: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    dx: float = 1.0,
+    axis: int = (-1),
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
 
 
 def tan(

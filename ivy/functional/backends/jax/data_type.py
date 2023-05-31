@@ -132,7 +132,10 @@ def astype(
 
 
 def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
-    return jnp.broadcast_arrays(*arrays)
+    try:
+        return jnp.broadcast_arrays(*arrays)
+    except ValueError as e:
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
 
 
 @with_unsupported_dtypes(
@@ -146,6 +149,7 @@ def broadcast_to(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     if x.ndim > len(shape):
         return jnp.broadcast_to(x.reshape(-1), shape)
     return jnp.broadcast_to(x, shape)

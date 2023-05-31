@@ -5,7 +5,8 @@ import paddle
 import math
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy import promote_types_of_inputs
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 
 # local
 from . import backend_version
@@ -425,6 +426,22 @@ def divide(
     return (x1 / x2).astype(ret_dtype)
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    backend_version,
+)
+def fmin(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x1.dtype != x2.dtype:
+        x1, x2 = promote_types_of_inputs(x1, x2)
+    return paddle.fmin(x1, x2)
+
+
 def greater(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -736,6 +753,56 @@ def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.trunc(x)
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32")},
+    backend_version,
+)
+def trapz(
+    y: paddle.Tensor,
+    /,
+    *,
+    x: Optional[paddle.Tensor] = None,
+    dx: Optional[float] = 1.0,
+    axis: Optional[int] = -1,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x is None:
+        d = dx
+    else:
+        if x.ndim == 1:
+            d = paddle.diff(x)
+            # reshape to correct shape
+            shape = [1] * y.ndim
+            shape[axis] = d.shape[0]
+            d = d.reshape(shape)
+        else:
+            d = paddle.diff(x, axis=axis)
+
+    slice1 = [slice(None)] * y.ndim
+    slice2 = [slice(None)] * y.ndim
+
+    slice1[axis] = slice(1, None)
+    slice2[axis] = slice(None, -1)
+
+    with ivy.ArrayMode(False):
+        if y.shape[axis] < 2:
+            return ivy.zeros_like(ivy.squeeze(y, axis=axis))
+        ret = ivy.sum(
+            ivy.divide(
+                ivy.multiply(
+                    d,
+                    ivy.add(
+                        ivy.get_item(y, tuple(slice1)), ivy.get_item(y, tuple(slice2))
+                    ),
+                ),
+                2.0,
+            ),
+            axis=axis,
+        )
+
+    return ret
+
+
 def abs(
     x: Union[float, paddle.Tensor],
     /,
@@ -757,7 +824,10 @@ def abs(
         return paddle_backend.where(
             where, paddle.abs(x.astype("float32")).astype(x.dtype), x
         )
-    return paddle_backend.where(where, paddle.abs(x), x)
+    ret = paddle_backend.where(where, paddle.abs(x), x)
+    if ivy.is_complex_dtype(x.dtype):
+        return ivy.real(ret)
+    return ret
 
 
 def logaddexp(

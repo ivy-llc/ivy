@@ -337,9 +337,6 @@ class Shape:
     def __hash__(self):
         return hash(self._shape)
 
-    def __str__(self):
-        return "?" if self._shape is None else str(self._shape)
-
     def __sizeof__(self):
         return len(self._shape) if self._shape is not None else 0
 
