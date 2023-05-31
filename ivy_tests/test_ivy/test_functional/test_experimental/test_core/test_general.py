@@ -11,16 +11,12 @@ from ivy_tests.test_ivy.helpers import handle_test
 def _reduce_helper(draw):
     # ToDo: remove the filtering when supported dtypes are fixed for mixed functions
     dtype = draw(
-        helpers.get_dtypes("valid", full=False).filter(
-            lambda x: 'complex' not in x[0]
-        )
+        helpers.get_dtypes("valid", full=False).filter(lambda x: "complex" not in x[0])
     )
     if dtype[0] == "bool":
         func = draw(st.sampled_from([ivy.logical_and, ivy.logical_or]))
     else:
-        func = draw(
-            st.sampled_from([ivy.add, ivy.maximum, ivy.minimum, ivy.multiply])
-        )
+        func = draw(st.sampled_from([ivy.add, ivy.maximum, ivy.minimum, ivy.multiply]))
     init_value = draw(
         helpers.dtype_and_values(
             dtype=dtype,

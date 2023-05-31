@@ -55,14 +55,16 @@ def reduce(
     init_value = ivy.array(init_value)
     op_dtype = operand.dtype
     if ivy.nested_any(
-            func,
-            lambda x: hasattr(x, '__module__') and x.__module__.startswith('ivy') and not x.__module__.startswith('ivy.functional.frontends'),
+        func,
+        lambda x: hasattr(x, "__module__")
+        and x.__module__.startswith("ivy")
+        and not x.__module__.startswith("ivy.functional.frontends"),
     ):
         func = ivy.__dict__[func.__name__]
     for axis in axes:
         temp = ivy.moveaxis(operand, axis, 0).reshape((operand.shape[axis], -1))
         temp = functools.reduce(func, temp, init_value)
-        operand = ivy.reshape(temp, operand.shape[:axis] + operand.shape[axis+1:])
+        operand = ivy.reshape(temp, operand.shape[:axis] + operand.shape[axis + 1 :])
     if keepdims:
         operand = ivy.expand_dims(operand, axis=axes)
     return operand.astype(op_dtype)

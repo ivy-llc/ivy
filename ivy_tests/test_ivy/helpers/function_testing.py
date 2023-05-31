@@ -1632,9 +1632,9 @@ def convtrue(argument):
 def wrap_frontend_function_args(argument):
     """Wrap frontend function arguments to return native arrays."""
     if ivy.nested_any(
-            argument,
-            lambda x: hasattr(x, '__module__') and x.__module__.startswith(
-                'ivy.functional.frontends'),
+        argument,
+        lambda x: hasattr(x, "__module__")
+        and x.__module__.startswith("ivy.functional.frontends"),
     ):
         return output_to_native_arrays(frontend_outputs_to_ivy_arrays(argument))
     return argument

@@ -597,10 +597,11 @@ def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
     """
     Wrap `fn` and convert all frontend arrays in its return to ivy arrays.
 
-    Used in cases when a frontend function receives a callable (frontend function)
-    argument. To be able to use that callable in a composition of ivy functions, its
-    outputs need to be converted to ivy arrays.
+    Used in cases when a frontend function receives a callable (frontend
+    function) argument. To be able to use that callable in a composition
+    of ivy functions, its outputs need to be converted to ivy arrays.
     """
+
     @functools.wraps(fn)
     def _outputs_to_ivy_arrays(*args, **kwargs):
         ret = fn(*args, **kwargs)
