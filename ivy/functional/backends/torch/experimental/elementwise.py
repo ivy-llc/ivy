@@ -1,7 +1,6 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
-from math import pi
 import torch
 
 # local
@@ -30,20 +29,6 @@ def fmax(
 fmax.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-def fmin(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.fmin(x1, x2, out=None)
-
-
-fmin.support_native_out = True
-
-
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -51,32 +36,6 @@ def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 
 sinc.support_native_out = True
-
-
-def trapz(
-    y: torch.Tensor,
-    /,
-    *,
-    x: Optional[torch.Tensor] = None,
-    dx: Optional[float] = None,
-    axis: int = -1,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if x is None:
-        dx = dx if dx is not None else 1
-        return torch.trapezoid(y, dx=dx, dim=axis)
-    else:
-        if dx is not None:
-            TypeError(
-                "trapezoid() received an invalid combination of arguments - got "
-                "(Tensor, Tensor, int), but expected one of: *(Tensor "
-                "y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
-            )
-        else:
-            return torch.trapezoid(y, x=x, dim=axis)
-
-
-trapz.support_native_out = False
 
 
 def float_power(
@@ -93,18 +52,6 @@ def float_power(
 
 
 float_power.support_native_out = True
-
-
-def exp2(
-    x: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.exp2(x, out=out)
-
-
-exp2.support_native_out = True
 
 
 def copysign(
@@ -180,20 +127,6 @@ def nansum(
 nansum.support_native_out = False
 
 
-def gcd(
-    x1: Union[torch.Tensor, int, list, tuple],
-    x2: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.gcd(x1, x2, out=out)
-
-
-gcd.support_native_out = True
-
-
 def isclose(
     a: torch.Tensor,
     b: torch.Tensor,
@@ -208,37 +141,6 @@ def isclose(
 
 
 isclose.support_native_out = False
-
-
-def angle(
-    input: torch.Tensor,
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if deg:
-        return torch.angle(input, out=out) * (180 / pi)
-    else:
-        return torch.angle(input, out=out)
-
-
-angle.support_native_out = True
-
-
-def imag(
-    val: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if val.dtype not in (torch.complex64, torch.complex128):
-        ret = torch.imag(val.to(torch.complex64))
-        return ret.to(val.dtype)
-    return torch.imag(val)
-
-
-imag.support_native_out = False
 
 
 def nan_to_num(
@@ -298,9 +200,6 @@ def diff(
         else torch.tensor(append)
     )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
-
-
-gcd.support_native_out = False
 
 
 def signbit(

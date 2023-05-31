@@ -702,7 +702,7 @@ def triu_indices(
     device: Place,
 ) -> Tuple[paddle.Tensor]:
     # special case due to inconsistent behavior when n_cols=1 and n_rows=0
-    if not (n_cols and n_rows):
+    if n_cols == 1 and n_rows == 0:
         return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
     return tuple(
         to_device(

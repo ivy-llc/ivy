@@ -18,7 +18,10 @@ def abs(
     where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return ivy.where(where, np.absolute(x, out=out), x)
+    ret = ivy.where(where, np.absolute(x, out=out), x)
+    if ivy.is_complex_dtype(x.dtype):
+        return ivy.real(ret)
+    return ret
 
 
 abs.support_native_out = True
@@ -269,6 +272,18 @@ def exp(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 exp.support_native_out = True
 
 
+def exp2(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.exp2(x, out=out)
+
+
+exp2.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def expm1(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.expm1(x, out=out)
@@ -303,6 +318,30 @@ def floor_divide(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.floor(np.divide(x1, x2)).astype(x1.dtype)
+
+
+@_scalar_output_to_0d_array
+def fmin(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.fmin(
+        x1,
+        x2,
+        out=None,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    )
+
+
+fmin.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -378,12 +417,10 @@ def lcm(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.abs(
-        np.lcm(
-            x1,
-            x2,
-            out=out,
-        )
+    return np.lcm(
+        x1,
+        x2,
+        out=out,
     )
 
 
@@ -667,6 +704,22 @@ subtract.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+def trapz(
+    y: np.ndarray,
+    /,
+    *,
+    x: Optional[np.ndarray] = None,
+    dx: float = 1.0,
+    axis: int = -1,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.trapz(y, x=x, dx=dx, axis=axis)
+
+
+trapz.support_native_out = False
+
+
+@_scalar_output_to_0d_array
 def tan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.tan(x, out=out)
 
@@ -823,3 +876,42 @@ def fmod(
 
 
 fmod.support_native_out = True
+
+
+def angle(
+    z: np.ndarray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.angle(z, deg=deg)
+
+
+angle.support_native_out = False
+
+
+def gcd(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.gcd(x1, x2, out=out)
+
+
+gcd.support_native_out = True
+
+
+def imag(
+    val: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.imag(val)
+
+
+imag.support_native_out = False

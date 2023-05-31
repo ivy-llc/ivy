@@ -11,7 +11,7 @@ from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .elementwise import _elementwise_helper
 
 # Array API Standard #
@@ -643,6 +643,10 @@ def vander(
     )
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("unsigned", "int8", "int16", "float16")},
+    backend_version,
+)
 def vector_to_skew_symmetric_matrix(
     vector: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
