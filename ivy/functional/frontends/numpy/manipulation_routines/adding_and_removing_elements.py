@@ -27,7 +27,7 @@ def insert(arr, obj, values, axis=None):
 
     if len(indices) == 0:
         return arr
-    
+
     elif len(indices) == 1:
         index = int(indices[0])
         if index < -shape[axis] or index > shape[axis]:
@@ -52,7 +52,7 @@ def insert(arr, obj, values, axis=None):
         slobj2[axis] = slice(index, None)
         new[tuple(slobj)] = arr[tuple(slobj2)]
         return new
-    
+
     else:
         order = ivy.argsort(indices, kind="mergesort")
         indices[order] += ivy.arange(len(indices))
