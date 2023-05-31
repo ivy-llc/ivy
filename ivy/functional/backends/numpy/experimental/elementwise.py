@@ -129,18 +129,6 @@ def isclose(
 isclose.support_native_out = False
 
 
-def imag(
-    val: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.imag(val)
-
-
-imag.support_native_out = False
-
-
 def nan_to_num(
     x: np.ndarray,
     /,

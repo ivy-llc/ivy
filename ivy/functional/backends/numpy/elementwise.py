@@ -903,3 +903,15 @@ def gcd(
 
 
 gcd.support_native_out = True
+
+
+def imag(
+    val: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.imag(val)
+
+
+imag.support_native_out = False

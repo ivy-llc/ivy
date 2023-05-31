@@ -925,3 +925,25 @@ def angle(
         return tf.math.angle(input, name=None) * (180 / tf.experimental.numpy.pi)
     else:
         return tf.math.angle(input, name=None)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.12.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "int32",
+        )
+    },
+    backend_version,
+)
+def imag(
+    val: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.imag(val, name=None)

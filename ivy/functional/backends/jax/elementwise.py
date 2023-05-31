@@ -491,6 +491,15 @@ def exp2(
     return jnp.power(2, x)
 
 
+def imag(
+    val: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.imag(val)
+
+
 def angle(
     z: JaxArray,
     /,

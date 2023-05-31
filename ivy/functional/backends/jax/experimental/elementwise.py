@@ -197,15 +197,6 @@ def nextafter(
     return jnp.nextafter(x1, x2)
 
 
-def imag(
-    val: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.imag(val)
-
-
 def zeta(
     x: JaxArray,
     q: JaxArray,

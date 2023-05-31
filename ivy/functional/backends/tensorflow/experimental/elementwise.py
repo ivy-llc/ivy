@@ -249,28 +249,6 @@ def diff(
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.12.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "bfloat16",
-            "int32",
-        )
-    },
-    backend_version,
-)
-def imag(
-    val: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.imag(val, name=None)
-
-
 @with_supported_dtypes(
     {
         "2.12.0 and below": (

@@ -1945,6 +1945,42 @@ def exp(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+def imag(
+    val: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the Imaginary part of a complex numbers(x+yj).
+
+    Parameters
+    ----------
+    val
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns an array with the imaginary part of complex numbers.
+
+    Examples
+    --------
+    >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
+    >>> b
+    ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+    >>> ivy.imag(b)
+    ivy.array([2., 4., 6.])
+    """
+    return ivy.current_backend(val).imag(val, out=out)
+
+
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def angle(
     z: Union[ivy.Array, ivy.NativeArray],
     /,

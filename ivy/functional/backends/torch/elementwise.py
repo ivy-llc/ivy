@@ -48,6 +48,21 @@ def bitwise_xor(
 bitwise_xor.support_native_out = True
 
 
+def imag(
+    val: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if val.dtype not in (torch.complex64, torch.complex128):
+        ret = torch.imag(val.to(torch.complex64))
+        return ret.to(val.dtype)
+    return torch.imag(val)
+
+
+imag.support_native_out = False
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
 def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
