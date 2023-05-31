@@ -245,7 +245,7 @@ def test_numpy_trace(
         available_dtypes=helpers.get_dtypes("float"),
         min_dim_size=2,
         min_num_dims=2,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda y: tuple([y, y])),
     ),
 )
 def test_numpy_cond(
