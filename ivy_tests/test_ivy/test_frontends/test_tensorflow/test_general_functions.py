@@ -144,6 +144,52 @@ def _get_global_norm_clip_inputs(draw):
         global_norm_dtype, global_norm = None, None
     return t_list_dtype, t_list, norm_dtype, norm, global_norm_dtype, global_norm
 
+#dynamic_partiotion
+@helpers.handle_frontend_test(
+    fn_tree="tensorflow.dynamic_partition",
+    data_array = helpers.dtype_values_axis(
+        available_dtypes=[np.int32, np.float32],
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=6,
+        max_dim_size=9,
+    ),
+    partitions_array = helpers.dtype_values_axis(
+        available_dtypes=[np.int32],
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=6,
+        max_dim_size=9,
+        max_value=3
+    ),
+    num_partitions = st.integers(min_value=4, max_value=5)
+)
+def test_tensorflow_dynamic_partition(
+    *,
+    data_array,
+    partitions_array,
+    num_partitions,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    strategy_data, data = data_array
+    strategy_partitions, partitions = partitions_array
+
+    # use the test_frontend_function helper function to test the dynamic_partition function
+    helpers.test_frontend_function(
+        input_dtypes=(strategy_data, strategy_partitions, "int32"),
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        partitions=partitions,
+        num_partitions=num_partitions,
+    )
 
 # clip_by_global_norm
 @handle_frontend_test(

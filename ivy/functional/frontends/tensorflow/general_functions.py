@@ -118,7 +118,6 @@ def einsum(equation, *inputs, **kwargs):
     return ivy.einsum(equation, *inputs)
 
 @to_ivy_arrays_and_back
-@handle_tf_dtype
 def dynamic_partition(data, partitions, num_partitions, name=None):
   results = []
   for i in range(num_partitions):
