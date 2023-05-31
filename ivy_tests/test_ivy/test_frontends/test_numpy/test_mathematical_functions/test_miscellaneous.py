@@ -468,8 +468,8 @@ def test_numpy_heaviside(
         max_value=+np.inf,
         allow_nan=True,
     ),
-    posinf=st.one_of(st.none(), st.floats()),
-    neginf=st.one_of(st.none(), st.floats()),
+    posinf=st.one_of(st.none(), st.floats(min_value=0, max_value=10000)),
+    neginf=st.one_of(st.none(), st.floats(min_value=-10000, max_value=0)),
     nan=st.floats(min_value=0, max_value=10),
     copy=st.booleans(),
     test_with_out=st.just(False),
@@ -486,6 +486,10 @@ def test_numpy_nan_to_num(
     neginf,
 ):
     input_dtype, x = dtype_and_x
+    # to avoid overflow errors of tf as you can't easily create a tensor
+    # close to tf.dtype.max or tf.dtype.min, we need to assume that
+    if ivy.current_backend_str() == "tensorflow":
+        assume(posinf is not None and neginf is not None)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
