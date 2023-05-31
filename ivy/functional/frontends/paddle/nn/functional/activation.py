@@ -25,9 +25,8 @@ def selu(
         raise ValueError(f"The alpha must be no less than zero. Received: {alpha}.")
 
     ret = ivy.where(x > 0, x, alpha * ivy.expm1(x))
-    dtype = ivy.dtype(x)
     arr = scale * ret
-    return ivy.asarray(arr, dtype=dtype)
+    return ivy.astype(arr, x.dtype)
 
 
 tanh = paddle_tanh
