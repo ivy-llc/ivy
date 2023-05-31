@@ -2990,19 +2990,8 @@ def test_numpy_instance_mod__(
     init_tree="numpy.array",
     method_name="trace",
     dtype_x_and_axes=dtype_values_and_axes(),
-    # helpers.dtype_and_values(
-    # available_dtypes=helpers.get_dtypes("valid"),
-    # min_num_dims=2,
-    # max_num_dims=5,
-    # min_dim_size=2,
-    # max_dim_size=10,
-    # large_abs_safety_factor=2,
-    # small_abs_safety_factor=2,
-    # safety_factor_scale="log",
-    # ),
     offset=st.integers(min_value=0, max_value=10),
-    # axis1=st.integers(min_value=0, max_value=5),
-    # axis2=st.integers(min_value=1, max_value=7),
+
 )
 def test_numpy_trace(
     dtype_x_and_axes,
@@ -3031,16 +3020,6 @@ def test_numpy_trace(
         frontend=frontend,
         on_device=on_device,
     )
-    # dtype, x = dtype_and_x
-    # helpers.test_frontend_function(
-    # input_dtypes=dtype,
-    # frontend=frontend,
-    # on_device=on_device,
-    # a=x[0],
-    # offset=offset,
-    # axis1=axis1,
-    # axis2=axis2,
-    # )
 
 
 # ptp
