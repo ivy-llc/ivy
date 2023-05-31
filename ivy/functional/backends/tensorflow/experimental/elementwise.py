@@ -53,15 +53,6 @@ def float_power(
     return tf.cast(tf.experimental.numpy.float_power(x1, x2), out_dtype)
 
 
-def exp2(
-    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.pow(2, x, name=None)
-
-
 def copysign(
     x1: Union[tf.Tensor, tf.Variable, Number],
     x2: Union[tf.Tensor, tf.Variable, Number],

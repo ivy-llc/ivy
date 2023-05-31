@@ -44,15 +44,6 @@ def float_power(
     return jnp.float_power(x1, x2).astype(out_dtype)
 
 
-def exp2(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.power(2, x)
-
-
 def copysign(
     x1: jax_ArrayLike,
     x2: jax_ArrayLike,

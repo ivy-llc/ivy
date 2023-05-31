@@ -602,6 +602,15 @@ def trunc(
     raise IvyNotImplementedException()
 
 
+def exp2(
+    x: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def erf(
     x: Union[(None, mx.ndarray.NDArray)],
     /,

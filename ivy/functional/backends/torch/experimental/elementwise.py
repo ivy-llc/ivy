@@ -55,18 +55,6 @@ def float_power(
 float_power.support_native_out = True
 
 
-def exp2(
-    x: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.exp2(x, out=out)
-
-
-exp2.support_native_out = True
-
-
 def copysign(
     x1: Union[torch.Tensor, Number],
     x2: Union[torch.Tensor, Number],

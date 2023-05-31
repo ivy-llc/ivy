@@ -272,6 +272,18 @@ def exp(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 exp.support_native_out = True
 
 
+def exp2(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.exp2(x, out=out)
+
+
+exp2.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def expm1(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.expm1(x, out=out)

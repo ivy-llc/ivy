@@ -912,6 +912,16 @@ def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return pow(math.e, x).astype(x.dtype)
 
 
+def exp2(
+    x: Union[paddle.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        return ivy.pow(2, x)
+
+
 def subtract(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
