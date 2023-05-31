@@ -18,7 +18,10 @@ def abs(
     where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return ivy.where(where, np.absolute(x, out=out), x)
+    ret = ivy.where(where, np.absolute(x, out=out), x)
+    if ivy.is_complex_dtype(x.dtype):
+        return ivy.real(ret)
+    return ret
 
 
 abs.support_native_out = True
@@ -306,6 +309,30 @@ def floor_divide(
 
 
 @_scalar_output_to_0d_array
+def fmin(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.fmin(
+        x1,
+        x2,
+        out=None,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    )
+
+
+fmin.support_native_out = True
+
+
+@_scalar_output_to_0d_array
 def greater(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -378,12 +405,10 @@ def lcm(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.abs(
-        np.lcm(
-            x1,
-            x2,
-            out=out,
-        )
+    return np.lcm(
+        x1,
+        x2,
+        out=out,
     )
 
 
@@ -664,6 +689,22 @@ def subtract(
 
 
 subtract.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def trapz(
+    y: np.ndarray,
+    /,
+    *,
+    x: Optional[np.ndarray] = None,
+    dx: float = 1.0,
+    axis: int = -1,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.trapz(y, x=x, dx=dx, axis=axis)
+
+
+trapz.support_native_out = False
 
 
 @_scalar_output_to_0d_array

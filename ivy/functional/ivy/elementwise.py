@@ -42,11 +42,21 @@ def abs(
 
     **Special Cases**
 
-    For this particular case,
+    For real-valued floating-point operands,
 
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If ``x_i`` is ``-0``, the result is ``+0``.
     - If ``x_i`` is ``-infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)`` and ``b = imag(x_i)``. and
+
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value (including ``NaN``), the result is ``+infinity``.
+    - If ``a`` is any value (including ``NaN``) and ``b`` is ``+infinity``, the result is ``+infinity``.
+    - If ``a`` is either ``+0`` or ``-0``, the result is ``abs(b)``.
+    - If ``b`` is ``+0`` or ``-0``, the result is ``abs(a)``.
+    - If ``a`` is ``NaN`` and ``b`` is a finite number, the result is ``NaN``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``, the result is ``NaN``.
+    - If ``a`` is ``Na``N and ``b`` is ``NaN``, the result is ``NaN``.
 
     Parameters
     ----------
@@ -2190,6 +2200,50 @@ def floor_divide(
     }
     """
     return ivy.current_backend(x1, x2).floor_divide(x1, x2, out=out)
+
+
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def fmin(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Compute the element-wise minimums of two arrays. Differs from ivy.minimum in the
+    case where one of the elements is NaN. ivy.minimum returns the NaN element while
+    ivy.fmin returns the non-NaN element.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise minimums.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([1, 3, 2])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([ 0.,  0., nan])
+    """
+    return ivy.current_backend().fmin(x1, x2, out=out)
 
 
 @handle_exceptions
@@ -5010,6 +5064,63 @@ def tanh(
     }
     """
     return ivy.current_backend(x).tanh(x, out=out)
+
+
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def trapz(
+    y: ivy.Array,
+    /,
+    *,
+    x: Optional[ivy.Array] = None,
+    dx: float = 1.0,
+    axis: int = -1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Integrate along the given axis using the composite trapezoidal rule.
+
+    If x is provided, the integration happens in sequence along its elements
+    - they are not sorted..
+
+    Parameters
+    ----------
+    y
+        The array that should be integrated.
+    x
+        The sample points corresponding to the input array values.
+        If x is None, the sample points are assumed to be evenly spaced
+        dx apart. The default is None.
+    dx
+        The spacing between sample points when x is None. The default is 1.
+    axis
+        The axis along which to integrate.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Definite integral of n-dimensional array as approximated along
+        a single axis by the trapezoidal rule. If the input array is a
+        1-dimensional array, then the result is a float. If n is greater
+        than 1, then the result is an n-1 dimensional array.
+
+    Examples
+    --------
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.trapz([1,2,3])
+    4.0
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.trapz([1,2,3], x=[4, 6, 8])
+    8.0
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.trapz([1,2,3], dx=2)
+    8.0
+    """
+    return ivy.current_backend(y).trapz(y, x=x, dx=dx, axis=axis, out=out)
 
 
 @handle_exceptions

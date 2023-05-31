@@ -1,10 +1,11 @@
 # global
 from typing import Union, Optional
 import tensorflow as tf
+import tensorflow_probability as tfp
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy import promote_types_of_inputs
 from . import backend_version
 
@@ -21,7 +22,10 @@ def abs(
     x_dtype = ivy.dtype(x)
     if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
-    return ivy.where(where, tf.abs(x), x)
+    ret = ivy.where(where, tf.abs(x), x)
+    if ivy.is_complex_dtype(x_dtype):
+        return ivy.real(ret)
+    return ret
 
 
 def acos(
@@ -289,6 +293,21 @@ def floor_divide(
     return tf.experimental.numpy.floor_divide(x1, x2)
 
 
+@with_supported_dtypes({"2.12.0 and below": ("float",)}, backend_version)
+def fmin(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    x1 = tf.where(tf.math.is_nan(x1), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2), x1, x2)
+    ret = tf.experimental.numpy.minimum(x1, x2)
+    return ret
+
+
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def greater(
     x1: Union[float, tf.Tensor, tf.Variable],
@@ -372,7 +391,7 @@ def lcm(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
+    return tf.experimental.numpy.lcm(x1, x2)
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
@@ -680,6 +699,18 @@ def tanh(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.tanh(x)
+
+
+def trapz(
+    y: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    x: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    dx: float = 1.0,
+    axis: int = -1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)

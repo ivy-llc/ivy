@@ -33,74 +33,8 @@ def fmax(
     return paddle.fmax(x1, x2)
 
 
-@with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
-    backend_version,
-)
-def fmin(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if x1.dtype != x2.dtype:
-        x1, x2 = promote_types_of_inputs(x1, x2)
-    return paddle.fmin(x1, x2)
-
-
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
-
-
-@with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32")},
-    backend_version,
-)
-def trapz(
-    y: paddle.Tensor,
-    /,
-    *,
-    x: Optional[paddle.Tensor] = None,
-    dx: Optional[float] = 1.0,
-    axis: Optional[int] = -1,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if x is None:
-        d = dx
-    else:
-        if x.ndim == 1:
-            d = paddle.diff(x)
-            # reshape to correct shape
-            shape = [1] * y.ndim
-            shape[axis] = d.shape[0]
-            d = d.reshape(shape)
-        else:
-            d = paddle.diff(x, axis=axis)
-
-    slice1 = [slice(None)] * y.ndim
-    slice2 = [slice(None)] * y.ndim
-
-    slice1[axis] = slice(1, None)
-    slice2[axis] = slice(None, -1)
-
-    with ivy.ArrayMode(False):
-        if y.shape[axis] < 2:
-            return ivy.zeros_like(ivy.squeeze(y, axis=axis))
-        ret = ivy.sum(
-            ivy.divide(
-                ivy.multiply(
-                    d,
-                    ivy.add(
-                        ivy.get_item(y, tuple(slice1)), ivy.get_item(y, tuple(slice2))
-                    ),
-                ),
-                2.0,
-            ),
-            axis=axis,
-        )
-
-    return ret
 
 
 def float_power(
@@ -299,7 +233,7 @@ def signbit(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle_backend.less(
-        paddle_backend.where(x.astype(bool), x, paddle_backend.divide(1., x)), 0.
+        paddle_backend.where(x.astype(bool), x, paddle_backend.divide(1.0, x)), 0.0
     )
 
 

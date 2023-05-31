@@ -495,7 +495,7 @@ def test_fft(
     training=st.booleans(),
     data_format=st.sampled_from(["NWC", "NCW"]),
     test_gradients=st.just(False),
-    test_values=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_dropout1d(
     *,
@@ -514,6 +514,7 @@ def test_dropout1d(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
+        test_values=False,
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
@@ -547,7 +548,6 @@ def test_dropout1d(
     data_format=st.sampled_from(["NCDHW", "NDHWC"]),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
-    test_values=st.just(False),
 )
 def test_dropout3d(
     *,
@@ -566,6 +566,8 @@ def test_dropout3d(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
+        test_values=False,
+        on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],

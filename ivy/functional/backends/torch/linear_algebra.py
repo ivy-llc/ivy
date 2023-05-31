@@ -521,7 +521,15 @@ def vander(
     return ret
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex",
+            "unsigned",
+        )
+    },
+    backend_version,
+)
 def vector_to_skew_symmetric_matrix(
     vector: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
