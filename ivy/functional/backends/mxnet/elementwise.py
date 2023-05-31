@@ -563,6 +563,18 @@ def subtract(
     return mx.nd.subtract(x1, x2)
 
 
+def trapz(
+    y: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    x: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    dx: float = 1.0,
+    axis: int = (-1),
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def tan(
     x: Union[(None, mx.ndarray.NDArray)],
     /,

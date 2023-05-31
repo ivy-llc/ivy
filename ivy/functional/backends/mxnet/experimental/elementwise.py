@@ -24,18 +24,6 @@ def fmax(
     raise IvyNotImplementedException()
 
 
-def trapz(
-    y: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    x: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-    dx: float = 1.0,
-    axis: int = (-1),
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def float_power(
     x1: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
     x2: Union[(None, mx.ndarray.NDArray, float, list, tuple)],

@@ -2402,6 +2402,58 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.subtract(self._data, x2, alpha=alpha, out=out)
 
+    def trapz(
+        self: ivy.Array,
+        /,
+        *,
+        x: Optional[ivy.Array] = None,
+        dx: float = 1.0,
+        axis: int = -1,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.trapz. This method simply wraps the
+        function, and so the docstring for ivy.trapz also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The array that should be integrated.
+        x
+            The sample points corresponding to the input array values.
+            If x is None, the sample points are assumed to be evenly spaced
+            dx apart. The default is None.
+        dx
+            The spacing between sample points when x is None. The default is 1.
+        axis
+            The axis along which to integrate.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Definite integral of n-dimensional array as approximated along
+            a single axis by the trapezoidal rule. If the input array is a
+            1-dimensional array, then the result is a float. If n is greater
+            than 1, then the result is an n-1 dimensional array.
+
+        Examples
+        --------
+        >>> y = ivy.array([1, 2, 3])
+        >>> ivy.trapz(y)
+        4.0
+        >>> y = ivy.array([1, 2, 3])
+        >>> x = ivy.array([4, 6, 8])
+        >>> ivy.trapz(y, x=x)
+        8.0
+        >>> y = ivy.array([1, 2, 3])
+        >>> ivy.trapz(y, dx=2)
+        8.0
+        """
+        return ivy.trapz(self._data, x=x, dx=dx, axis=axis, out=out)
+
     def tan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tan. This method simply wraps the
