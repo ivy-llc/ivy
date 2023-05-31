@@ -6,38 +6,64 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 @to_ivy_arrays_and_back
 def insert(arr, obj, values, axis=None):
-    # Convert obj to a list of indices
-    if isinstance(obj, int) or isinstance(obj, slice):
-        indices = [obj]
-    else:
-        indices = list(obj)
-
-    # Check if the axis is None and flatten the array if needed
+    arr = ivy.array(arr)
+    values = ivy.array(values)
+    shape = ivy.shape(arr)
+    ndim = len(ivy.shape(arr))
     if axis is None:
-        arr = arr.flatten()
-        axis = 0
+        arr = ivy.flatten(arr)
+        ndim = len(ivy.shape(arr))
+        axis = ndim - 1
+        shape = ivy.shape(arr)
+    elif axis < 0:
+        axis += ndim
+    if isinstance(obj, slice):
+        indices = ivy.arange(*obj.indices(shape[axis]), dtype=ivy.int32)
+    else:
+        obj = [obj]
+        indices = ivy.array(obj).astype(ivy.int32)
+    if len(indices) == 0:
+        return arr
+    elif len(indices) == 1:
+        index = int(indices[0])
+        if index < -shape[axis] or index > shape[axis]:
+            raise IndexError(f"index {obj} is out of bounds for axis {axis} "
+                             f"with size {shape[axis]}")
+        if index < 0:
+            index += shape[axis]
+        values = ivy.reshape(values, [-1] + [1] * (ndim - 1))
+        values = ivy.moveaxis(values, 0, axis)
+        numnew = ivy.shape(values)[axis]
+        newshape = list(shape)
+        newshape[axis] += numnew
+        new = ivy.empty(newshape, dtype=arr.dtype).astype(arr.dtype)
+        slobj = [slice(None)] * ndim
+        slobj[axis] = slice(None, index)
+        new[tuple(slobj)] = arr[tuple(slobj)]
+        slobj[axis] = slice(index, index + numnew)
+        new[tuple(slobj)] = values
+        slobj[axis] = slice(index + numnew, None)
+        slobj2 = [slice(None)] * ndim
+        slobj2[axis] = slice(index, None)
+        new[tuple(slobj)] = arr[tuple(slobj2)]
+        return new
 
-    # Calculate the shape of the resulting array after insertion
-    new_shape = list(arr.shape)
-    new_shape[axis] += len(indices)
-
-    # Create a new array to hold the inserted values
-    new_arr = ivy.empty(new_shape, dtype=arr.dtype)
-
-    # Copy the elements from the original array to the new array
-    slices = [slice(None)] * arr.ndim
-    for i, index in enumerate(indices):
-        slices[axis] = slice(None, index)
-        new_arr[tuple(slices)] = arr[tuple(slices)]
-        slices[axis] = slice(index, None)
-        new_arr[tuple(slices)] = arr[tuple(slices)]
-        slices[axis] = slice(None)
-
-    # Insert the values into the new array
-    slices[axis] = indices
-    new_arr[tuple(slices)] = values
-
-    return new_arr
+    else:
+        order = ivy.argsort(indices, kind='mergesort')
+        indices[order] += ivy.arange(len(indices))
+        old_mask = ivy.ones(shape[axis], dtype=bool)
+        old_mask[indices] = False
+        numnew = len(indices)
+        newshape = list(shape)
+        newshape[axis] += numnew
+        new = ivy.empty(newshape, dtype=arr.dtype)
+        slobj = [slice(None)] * ndim
+        slobj[axis] = indices
+        new[tuple(slobj)] = values
+        slobj2 = [slice(None)] * ndim
+        slobj2[axis] = old_mask
+        new[tuple(slobj2)] = arr
+        return new
 
 
 @to_ivy_arrays_and_back
