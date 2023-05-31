@@ -299,7 +299,7 @@ def signbit(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle_backend.less(
-        paddle_backend.where(x.astype(bool), x, paddle_backend.divide(1., x)), 0.
+        paddle_backend.where(x.astype(bool), x, paddle_backend.divide(1.0, x)), 0.0
     )
 
 
