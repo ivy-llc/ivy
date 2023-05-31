@@ -1919,8 +1919,9 @@ def test_tensorflow_Cumsum(  # NOQA
     fn_tree="tensorflow.raw_ops.Relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float",
-            "double",
+            "float16",
+            "float32",
+            "float64",
             "int32",
             "uint8",
             "int16",
@@ -1928,10 +1929,8 @@ def test_tensorflow_Cumsum(  # NOQA
             "int64",
             "bfloat16",
             "uint16",
-            "half",
             "uint32",
             "uint64",
-            "qint8",
         ],
         min_num_dims=1,
     ),
