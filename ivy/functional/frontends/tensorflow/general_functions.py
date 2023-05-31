@@ -117,6 +117,15 @@ def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
 def einsum(equation, *inputs, **kwargs):
     return ivy.einsum(equation, *inputs)
 
+@to_ivy_arrays_and_back
+@handle_tf_dtype
+def dynamic_partition(data, partitions, num_partitions, name=None):
+  results = []
+  for i in range(num_partitions):
+    results.append(ivy.array([]))
+  for i, x in enumerate(data):
+    results[partitions[i]] = ivy.concat((results[partitions[i]],ivy.array([x])))
+  return results
 
 @to_ivy_arrays_and_back
 def reshape(tensor, shape, name=None):
