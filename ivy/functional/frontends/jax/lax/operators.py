@@ -720,7 +720,7 @@ def reduce_window(
     view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
     view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
     computation = frontend_outputs_to_ivy_arrays(computation)
-    ret = ivy.reduce(view, init_value, computation, -1)
+    ret = ivy.reduce(view, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
 
 
