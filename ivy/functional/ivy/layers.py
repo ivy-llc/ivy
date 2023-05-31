@@ -14,6 +14,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    auto_shift_device,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1623,6 +1624,7 @@ def conv3d_transpose(
     )
 
 
+@auto_shift_device
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion

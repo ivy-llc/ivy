@@ -31,6 +31,7 @@ FN_DECORATORS = [
     "with_unsupported_dtypes",
     "handle_nans",
     "handle_mixed_function",
+    "auto_shift_device",
 ]
 
 
@@ -769,6 +770,22 @@ def infer_device(fn: Callable) -> Callable:
 
     _infer_device.infer_device = True
     return _infer_device
+
+
+def auto_shift_device(fn: Callable) -> Callable:
+    def _auto_shift_device(*args, **kwargs):
+        if ivy.functional.device.soft_device_placement and ivy.get_array_mode():
+            device = ivy.default_device()
+            args = (
+                arg.to_device(device) if type(arg) == ivy.Array else arg for arg in args
+            )
+            kwargs = {
+                k: v.to_device(device) if type(v) == ivy.Array else v
+                for k, v in kwargs.items()
+            }
+        return fn(*args, **kwargs)
+
+    return _auto_shift_device
 
 
 # Inplace Update Handling #

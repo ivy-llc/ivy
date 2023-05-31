@@ -42,7 +42,7 @@ default_device_stack = list()
 dev_handles = dict()
 split_factors = dict()
 max_chunk_sizes = dict()
-
+soft_device_placement = True
 
 # Extra #
 # ------#
@@ -71,6 +71,7 @@ class DefaultDevice:
         >>> x = ivy.DefaultDevice("tpu")
         """
         self._dev = device
+        self.prev_soft_device_placement = soft_device_placement
 
     def __enter__(self):
         """
@@ -91,6 +92,7 @@ class DefaultDevice:
         "cpu"
         """
         ivy.set_default_device(self._dev)
+        set_soft_device_placement(True)
         return self
 
     def __exit__(
@@ -126,10 +128,16 @@ class DefaultDevice:
         "cpu"
         """
         ivy.unset_default_device()
+        set_soft_device_placement(self.prev_soft_device_placement)
         if self and (exc_type is not None):
             print(exc_tb)
             raise exc_val
         return self
+
+
+def set_soft_device_placement(enabled):
+    global soft_device_placement
+    soft_device_placement = enabled
 
 
 # Helpers #
