@@ -8744,7 +8744,7 @@ def test_torch_greater(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_tan(
+def test_torch_sgn(
     *,
     dtype_and_x,
     as_variable,
