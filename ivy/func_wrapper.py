@@ -662,18 +662,12 @@ def handle_view_indexing(fn: Callable) -> Callable:
 
 
 def _convert_numpy_arrays_to_backend_specific(*args):
-    tensors = []
-    for array in args:
-        if isinstance(array, np.ndarray):
-            tensors.append(ivy.nested_map(
-                array,
-                lambda x: ivy.current_backend().asarray(x, device="cpu"),
-                include_derived=True,
-                shallow=False,
-            ))
-        else:
-            tensors.append(array)
-    return tuple(tensors)
+    
+    np_arr_idxs = ivy.nested_argwhere(args, lambda x: isinstance(x, np.ndarray))
+    np_arr_val = ivy.multi_index_nest(args, np_arr_idxs)
+    backend_arr_vals = [ivy.array(x).to_native() for x in np_arr_val]
+    ivy.set_nest_at_indices(args, np_arr_idxs, backend_arr_vals)
+    return args
 
 
 def handle_numpy_arrays_in_specific_backend(fn: Callable) -> Callable:
