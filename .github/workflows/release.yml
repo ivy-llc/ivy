@@ -7,7 +7,7 @@ on:
 jobs:
   publish-ivy-docs:
     name: Publish Ivy Docs
-    uses: unifyai/workflows/.github/workflows/docs-release.yml
+    uses: unifyai/workflows/.github/workflows/docs-release.yml@master
     with:
       repo_name: unifyai/ivy
     secrets: inherit
