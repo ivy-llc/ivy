@@ -684,7 +684,7 @@ def test_numpy_copysign(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        shared_dtype=False,
+        shared_dtype=True,
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
