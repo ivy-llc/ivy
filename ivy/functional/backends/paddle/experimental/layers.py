@@ -96,7 +96,6 @@ def max_pool2d(
         pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
         pad_list = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
     else:
-        # PaddlePaddle pad takes height padding first, then width padding
         padding = (padding[1], padding[0])
         pad_list = [item for sublist in padding for item in sublist]
 
