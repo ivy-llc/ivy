@@ -127,7 +127,10 @@ def astype(
 
 
 def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
-    return np.broadcast_arrays(*arrays)
+    try:
+        return np.broadcast_arrays(*arrays)
+    except ValueError as e:
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
 
 
 @with_unsupported_dtypes({"1.24.3 and below": ("complex",)}, backend_version)
@@ -138,6 +141,7 @@ def broadcast_to(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     if x.ndim > len(shape):
         return np.broadcast_to(x.reshape([-1]), shape)
     return np.broadcast_to(x, shape)
