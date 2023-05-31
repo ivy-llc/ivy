@@ -1,10 +1,13 @@
 name: Release Workflow
 on:
   release:
-    types: [ published ]
+    types: [ published ] # TODO: Check this
   workflow_dispatch:
+
 jobs:
   publish-ivy-docs:
     name: Publish Ivy Docs
-    uses: ./.github/workflows/docs.yml
+    uses: unifyai/workflows/.github/workflows/docs-release.yml
+    with:
+      repo_name: unifyai/ivy
     secrets: inherit
