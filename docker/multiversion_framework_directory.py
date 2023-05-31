@@ -49,6 +49,10 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
     for fw in pkgs:
         fw, ver = fw.split("/")
         path = base + fw + "/" + ver
+        modified_env = {
+            "PATH": os.environ["PATH"],
+            "PYTHONPATH": f"{path}:{os.environ.get('PYTHONPATH', '')}"
+        }
         # check to see if this pkg has specific version dependencies
         with open(path_to_json, "r") as file:
             json_data = json.load(file)
@@ -63,42 +67,66 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                     # check if version is there in this
                     if ver in keys[dep].keys():
                         # we install this one
-                        result= subprocess.run(
-                            (
+                        commands = [
+                            "pip", "install", f"{dep}=={keys[dep][ver]}", "--target", path, "--no-cache-dir"
+                        ]
 
-                                    f"PYTHONPATH={path}:$PYTHONPATH; ",
-                                    f"pip install {dep}=={keys[dep][ver]} --target={path} --no-cache-dir;",
-                                    "unset PYTHONPATH"
+                        result = subprocess.run(commands, capture_output=True, text=True,env=modified_env)
 
-                            ),
-                            shell=True,
-                        )
-                        assert result == 0
+                        if result.returncode == 0:
+                            print("Command executed successfully.")
+                        else:
+                            print(f"Command encountered an error. Return code: {result.returncode}")
+
+                        if result.stderr:
+                            print("Error output:")
+                            print(result.stderr)
+
+                        if result.stdout:
+                            print("Standard output:")
+                            print(result.stdout)
+
                     else:
-                        result= subprocess.run(
-                            (
+                        commands = [
+                            "pip", "install", dep, "--target", path, "--no-cache-dir"
+                        ]
 
-                                    f"PYTHONPATH={path}:$PYTHONPATH;",
-                                    f"pip install {dep} --target={path} --no-cache-dir;",
-                                    "unset PYTHONPATH"
+                        result = subprocess.run(commands, capture_output=True, text=True,env=modified_env)
 
-                            ),
-                            shell=True,
-                        )
-                        assert result == 0
+                        if result.returncode == 0:
+                            print("Command executed successfully.")
+                        else:
+                            print(f"Command encountered an error. Return code: {result.returncode}")
+
+                        if result.stderr:
+                            print("Error output:")
+                            print(result.stderr)
+
+                        if result.stdout:
+                            print("Standard output:")
+                            print(result.stdout)
+
                 else:
-                    print("did I run")
-                    result =subprocess.run(
-                        (
 
-                                f"PYTHONPATH={path}:$PYTHONPATH;",
-                                f"pip install {keys} --target={path} --no-cache-dir;",
-                                "unset PYTHONPATH"
+                    commands = [
+                        "pip", "install", keys, "--target", path, "--no-cache-dir"
+                    ]
 
-                        ),
-                        shell=True,
-                    )
-                    assert result==0
+                    result = subprocess.run(commands, capture_output=True, text=True, env=modified_env)
+
+                    if result.returncode == 0:
+                        print("Command executed successfully.")
+                    else:
+                        print(f"Command encountered an error. Return code: {result.returncode}")
+
+                    if result.stderr:
+                        print("Error output:")
+                        print(result.stderr)
+
+                    if result.stdout:
+                        print("Standard output:")
+                        print(result.stdout)
+
 
 
 if __name__ == "__main__":
