@@ -757,7 +757,10 @@ def abs(
         return paddle_backend.where(
             where, paddle.abs(x.astype("float32")).astype(x.dtype), x
         )
-    return paddle_backend.where(where, paddle.abs(x), x)
+    ret = paddle_backend.where(where, paddle.abs(x), x)
+    if ivy.is_complex_dtype(x.dtype):
+        return ivy.real(ret)
+    return ret
 
 
 def logaddexp(
