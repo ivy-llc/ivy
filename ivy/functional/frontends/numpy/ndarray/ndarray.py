@@ -474,7 +474,15 @@ class ndarray:
 
     def __ipow__(self, value, /):
         return np_frontend.power(self, value, out=self)
-
+    
+    def __lshift__(self, shift_amount):
+        if isinstance(self.value, int):
+            return self.value << shift_amount
+        else:
+            raise TypeError(
+                "Left shift operation is not supported for the given object."
+            )
+            
     def __iand__(self, value, /):
         return np_frontend.logical_and(self, value, out=self)
 
