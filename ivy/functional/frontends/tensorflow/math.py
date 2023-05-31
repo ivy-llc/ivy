@@ -19,8 +19,8 @@ def imag(input, name=None):
 
 
 @to_ivy_arrays_and_back
-def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
-    return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
+def accumulate_n(inputs, shape=None, tensor_dtype=None, name=None):
+    return ivy.sum(inputs, axis=0)
 
 
 @to_ivy_arrays_and_back
@@ -338,6 +338,7 @@ def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
 
 @to_ivy_arrays_and_back
 def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
+    input_tensor = ivy.array(input_tensor)
     return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
         input_tensor.dtype
     )
@@ -524,7 +525,11 @@ def nextafter(x1, x2, name=None):
     },
     "tensorflow",
 )
+@to_ivy_arrays_and_back
 def abs(x, name=None):
+    dtype = ivy.dtype(x)
+    if dtype in ["complex64", "complex128"]:
+        return ivy.sqrt(ivy.square(ivy.real(x)) + ivy.square(ivy.imag(x)))
     return ivy.abs(x)
 
 
@@ -586,6 +591,7 @@ def log(x, name=None):
 
 @to_ivy_arrays_and_back
 def add_n(inputs, name=None):
+    inputs = ivy.array(inputs)
     return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
 

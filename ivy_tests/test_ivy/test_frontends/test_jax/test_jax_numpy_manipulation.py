@@ -1099,10 +1099,12 @@ def test_jax_numpy_rot90(
 @handle_frontend_test(
     fn_tree="jax.numpy.split",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, allow_none=False, is_mod_split=True
+    ),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1142,7 +1144,9 @@ def test_jax_numpy_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, allow_none=False, is_mod_split=True
+    ),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -1163,6 +1167,7 @@ def test_jax_numpy_array_split(
     test_flags,
 ):
     input_dtype, value = dtype_value
+    assume(isinstance(indices_or_sections, int))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1182,7 +1187,9 @@ def test_jax_numpy_array_split(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=3, axis=2),
+    indices_or_sections=_get_splits(
+        min_num_dims=3, axis=2, allow_none=False, is_mod_split=True
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_dsplit(
@@ -1284,7 +1291,9 @@ def test_jax_numpy_dstack(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=0),
+    indices_or_sections=_get_splits(
+        min_num_dims=2, axis=0, allow_none=False, is_mod_split=True
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_vsplit(
@@ -1313,9 +1322,11 @@ def test_jax_numpy_vsplit(
     fn_tree="jax.numpy.hsplit",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1, axis=1),
+    indices_or_sections=_get_splits(
+        min_num_dims=2, axis=1, allow_none=False, is_mod_split=True
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_hsplit(
@@ -1328,15 +1339,6 @@ def test_jax_numpy_hsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
-
-    # TODO: remove this assumption when this bugfix is merged and version-pinned
-    # https://github.com/google/jax/pull/14275
-    assume(not (len(value[0].shape) == 1))
-
-    # TODO: remove this assumption when this bugfix is merged and version-pinned
-    # https://github.com/tensorflow/tensorflow/pull/59523
-    assume(not (len(value[0].shape) == 1 and ivy.current_backend_str() == "tensorflow"))
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

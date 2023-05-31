@@ -211,7 +211,6 @@ def kaiser_bessel_derived_window(
 
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
 @infer_dtype
 def hamming_window(
     window_length: int,
