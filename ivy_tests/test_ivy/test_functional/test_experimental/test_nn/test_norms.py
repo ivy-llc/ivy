@@ -127,8 +127,7 @@ def test_instance_norm(
     on_device,
     ground_truth_backend,
 ):
-    test_flags.with_out = False
-    x_dtype, x, scale, offset, mean, variance, eps, momentum, data_format = data
+    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
@@ -167,8 +166,7 @@ def test_batch_norm(
     on_device,
     ground_truth_backend,
 ):
-    test_flags.with_out = False
-    x_dtype, x, scale, offset, mean, variance, eps, momentum, data_format = data
+    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
