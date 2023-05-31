@@ -274,6 +274,7 @@ def test_dct(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
@@ -283,6 +284,7 @@ def test_dct(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         type=type,
         n=n,
