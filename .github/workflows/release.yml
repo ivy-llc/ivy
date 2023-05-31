@@ -7,4 +7,4 @@ jobs:
   publish-ivy-docs:
     name: Publish Ivy Docs
     if: startsWith(github.ref, 'refs/tags')
-    uses: ./.github/workflows/docs.yml@master
+    uses: ./.github/workflows/docs.yml
