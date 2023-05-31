@@ -8,6 +8,9 @@ from ivy import inputs_to_ivy_arrays
 from ivy.utils.exceptions import handle_exceptions
 
 
+# ToDo: add array instance and container methods
+
+
 @handle_exceptions
 @inputs_to_ivy_arrays
 def reduce(
