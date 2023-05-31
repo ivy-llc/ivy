@@ -262,9 +262,22 @@ def corrcoef(
     else:
         axis = 0 if rowvar else 1
         xarr = paddle.concat([x, y], axis=axis)
-        xarr = xarr.T if not rowvar else xarr
 
-    return paddle.linalg.corrcoef(xarr)
+    perm = [i for i in range(len(xarr.shape) - 1, -1, -1)]
+    if rowvar:
+        mean_t = paddle.mean(xarr, axis=1, keepdim=True)
+        cov_t = ((xarr - mean_t) @ paddle.transpose(xarr - mean_t, perm)) / (
+            x.shape[1] - 1
+        )
+    else:
+        mean_t = paddle.mean(xarr, axis=0, keepdim=True)
+        cov_t = (paddle.transpose(xarr - mean_t, perm) @ (xarr - mean_t)) / (
+            x.shape[1] - 1
+        )
+
+    cov2_t = paddle.diag(1 / paddle.sqrt(paddle.diag(cov_t)))
+    cor = cov2_t @ cov_t @ cov2_t
+    return cor
 
 
 def histogram(
