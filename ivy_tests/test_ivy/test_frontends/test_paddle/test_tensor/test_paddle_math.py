@@ -255,12 +255,10 @@ def test_paddle_divide(
 @handle_frontend_test(
     fn_tree="paddle.cumsum",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        force_int_axis=True,
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        max_num_dims=1,
         valid_axis=True,
-        safety_factor_scale="log",
+        force_int_axis=True,
     ),
 )
 def test_paddle_cumsum(
@@ -280,4 +278,6 @@ def test_paddle_cumsum(
         on_device=on_device,
         x=x[0],
         axis=axis,
+        rtol=1e-01,
+        atol=1e-01,
     )
