@@ -9,6 +9,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
 )
+from ivy.func_wrapper import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -333,6 +334,9 @@ def _lcm(
 @handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+@with_supported_dtypes(
+    {"1.24.3 and below": ("int8", "int16", "int32", "int64")}, "numpy"
+)  # Add
 def _gcd(
     x1,
     x2,
