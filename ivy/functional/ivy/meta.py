@@ -553,7 +553,7 @@ def reptile_step(
     batch
         The input batch
     cost_fn
-        callable for the cost function, receivng the task-specific sub-batch and
+        Callable for the cost function, receiving the task-specific sub-batch and
         variables
     variables
         Variables to be optimized
@@ -570,12 +570,14 @@ def reptile_step(
     return_inner_v
         Either 'first', 'all', or False. 'first' means the variables for the first task
         inner loop will also be returned. variables for all tasks will be returned with
-        'all'. Default is ``False``.
+        'all'. 
+        Default is ``False``.
     num_tasks
-        Number of unique tasks to inner-loop optimize for the meta step. Determined from
-        batch by default.
+        Number of unique tasks to inner-loop optimize for the meta step. 
+        Determined from batch by default.
     stop_gradients
-        Whether to stop the gradients of the cost. Default is ``True``.
+        Whether to stop the gradients of the cost. 
+        Default is ``True``.
 
     Returns
     -------
