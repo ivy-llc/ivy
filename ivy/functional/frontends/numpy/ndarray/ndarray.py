@@ -121,8 +121,12 @@ class ndarray:
             return np_frontend.reshape(self, newshape, order="C")
 
     # Trace
-    def trace(self, /, *, offset=0, axis1=0, axis2=1, dtype=None, out=None):
-        return ivy.all(np_frontend.trace(self, axis1=axis1, axis2=axis2, offset=offset, dtype=dtype, out=out))
+    def trace(self, /, *, offset=0, axis1=0, axis2=1, out=None):
+        return ivy.all(
+            np_frontend.trace(
+                self, axis1=axis1, axis2=axis2, offset=offset, out=out
+            )
+        )
 
     def resize(self, newshape, /, *, refcheck=True):
         return np_frontend.resize(self, newshape, refcheck)
