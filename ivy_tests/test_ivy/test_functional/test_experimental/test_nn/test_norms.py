@@ -1,33 +1,33 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
+
 @handle_test(
     fn_tree="functional.ivy.experimental.l1_normalize",
-    data=helpers.arrays(min_num_dims=2, min_dim_size=2),
-    axis=st.one_of(st.none(), st.integers(min_value=0, max_value=1)),
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"), valid_axis=True
+    ),
 )
 def test_l1_normalize(
     *,
-    data,
-    axis,
+    dtype_values_axis,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    x_dtype, x = data
+    x_dtype, x, axis = dtype_values_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
-        xs_grad_idxs=[[0, 0]],
         rtol_=1e-1,
         atol_=1e-1,
         input_dtypes=x_dtype,
@@ -112,7 +112,6 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
     )
 
 
-
 @handle_test(
     fn_tree="functional.ivy.experimental.instance_norm",
     data=_instance_and_batch_norm_helper(min_dims=3),
@@ -128,8 +127,7 @@ def test_instance_norm(
     on_device,
     ground_truth_backend,
 ):
-    test_flags.with_out = False
-    x_dtype, x, scale, offset, mean, variance, eps, momentum, data_format = data
+    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
@@ -168,8 +166,7 @@ def test_batch_norm(
     on_device,
     ground_truth_backend,
 ):
-    test_flags.with_out = False
-    x_dtype, x, scale, offset, mean, variance, eps, momentum, data_format = data
+    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,

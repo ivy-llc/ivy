@@ -106,7 +106,6 @@ def conv(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
-    rhs = ivy.permute_dims(rhs, axes=(*range(2, dims + 2), 1, 0))
     return ivy.conv_general_dilated(
         lhs,
         rhs,
@@ -114,6 +113,7 @@ def conv(
         padding,
         dims=dims,
         data_format="channel_first",
+        filter_format="channel_first",
     )
 
 
@@ -372,6 +372,7 @@ def gt(x, y):
     return ivy.greater(x, y)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def le(x, y):
     return ivy.less_equal(x, y)
@@ -730,7 +731,7 @@ def reduce_window(
     if base_dilation:
         op = _dilate(op, base_dilation, identity)
     view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
-    view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
+    view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
     ret = _custom_reduce(view, init_value, computation)
     return ret.astype(operand.dtype)
 

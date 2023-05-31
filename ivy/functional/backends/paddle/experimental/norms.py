@@ -83,6 +83,7 @@ def batch_norm(
     ).cast(x.dtype)
     return xnormalized, runningmean, runningvariance
 
+
 def l1_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
@@ -92,10 +93,10 @@ def l1_normalize(
         axis = [axis]
     else:
         axis = list(axis)
-    
+
     # Compute the L1 norm along the given axis
     norm = paddle.norm(x, p=1, axis=axis, keepdim=True)
-    
+
     # Divide x by the L1 norm to obtain the normalized array
     norm = paddle.where(norm == 0, paddle.to_tensor([1], dtype=x.dtype), norm)
     if out is None:

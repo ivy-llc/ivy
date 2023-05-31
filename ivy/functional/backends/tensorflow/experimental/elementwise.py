@@ -178,8 +178,11 @@ def nan_to_num(
     neginf: Optional[Union[float, int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    posinf = posinf if posinf is not None else 1.79769313e308
-    neginf = neginf if neginf is not None else -1.79769313e308
+    posinf = posinf if posinf is not None else x.dtype.max
+    neginf = neginf if neginf is not None else x.dtype.min
+    posinf = tf.constant(posinf, x.dtype)
+    neginf = tf.constant(neginf, x.dtype)
+    nan = tf.constant(nan, x.dtype)
     ret = tf.where(tf.math.is_nan(x), nan, x)
     ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret > 0), posinf, ret)
     ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret < 0), neginf, ret)

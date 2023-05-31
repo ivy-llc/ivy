@@ -449,3 +449,42 @@ def bincount(
     return ivy.current_backend(x).bincount(
         x, weights=weights, minlength=minlength, out=out
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def igamma(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    x: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """
+    Compute the regularized lower gamma function of ``a`` and ``x``.
+
+    Parameters
+    ----------
+    self
+        Input array.
+    x
+        An additional input array.
+        `x` has the same type as `a`.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The lower incomplete gamma function of the array elements.
+
+    Examples
+    --------
+    >>> a = ivy.array([2.5])
+    >>> x = ivy.array([1.7, 1.2])
+    >>> a.igamma(x)
+        ivy.array([0.3614, 0.2085])
+    """
+    return ivy.current_backend().igamma(a, x=x, out=out)
