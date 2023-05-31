@@ -2519,28 +2519,13 @@ def _reduce_window_helper(draw):
             st.sampled_from([jlax.add, jlax.max, jlax.min, jlax.mul, jnp.multiply])
         )
 
-    if dtype[0] == "float64":
-        init_value = draw(
-            st.sampled_from(
-                [
-                    [-float("inf")],
-                    [float("inf")],
-                    draw(
-                        helpers.dtype_and_values(
-                            dtype=dtype,
-                            shape=(),
-                        )
-                    )[1],
-                ]
-            )
+    init_value = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=(),
+            allow_inf=True,
         )
-    else:
-        init_value = draw(
-            helpers.dtype_and_values(
-                dtype=dtype,
-                shape=(),
-            )
-        )[1]
+    )[1]
 
     ndim = draw(st.integers(min_value=1, max_value=4))
 

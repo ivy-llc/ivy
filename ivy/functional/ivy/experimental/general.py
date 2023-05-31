@@ -8,8 +8,8 @@ from ivy import to_ivy_arrays_and_back
 from ivy.utils.exceptions import handle_exceptions
 
 
-@to_ivy_arrays_and_back
 @handle_exceptions
+@inputs_to_ivy_arrays
 def reduce(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
@@ -54,10 +54,11 @@ def reduce(
     axes = sorted(axes, reverse=True)
     axes = [a + operand.ndim if a < 0 else a for a in axes]
     init_value = ivy.array(init_value)
+    op_dtype = operand.dtype
     for axis in axes:
-        op_parts = ivy.moveaxis(operand, axis, 0).reshape((operand.shape[axis], -1))
-        result = functools.reduce(func, op_parts, init_value)
-        result = ivy.reshape(result, operand.shape[:axis] + operand.shape[axis+1:])
+        temp = ivy.moveaxis(operand, axis, 0).reshape((operand.shape[axis], -1))
+        temp = functools.reduce(func, temp, init_value)
+        operand = ivy.reshape(temp, operand.shape[:axis] + operand.shape[axis+1:])
     if keepdims:
-        result = ivy.expand_dims(result, axis=axes)
-    return result
+        operand = ivy.expand_dims(operand, axis=axes)
+    return operand.astype(op_dtype)
