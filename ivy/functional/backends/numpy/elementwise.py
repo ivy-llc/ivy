@@ -378,12 +378,10 @@ def lcm(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.abs(
-        np.lcm(
-            x1,
-            x2,
-            out=out,
-        )
+    return np.lcm(
+        x1,
+        x2,
+        out=out,
     )
 
 
