@@ -428,6 +428,7 @@ def test_torch_triu(
         diagonal=diagonal,
     )
 
+
 # cummax
 @handle_frontend_test(
     fn_tree="torch.cummax",
@@ -465,6 +466,7 @@ def test_torch_cummax(
         input=x[0],
         dim=axis,
     )
+
 
 # cumprod
 @handle_frontend_test(
