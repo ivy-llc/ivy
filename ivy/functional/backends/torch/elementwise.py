@@ -871,3 +871,18 @@ def fmod(
 
 
 fmod.support_native_out = True
+
+
+
+def gcd(
+    x1: Union[torch.Tensor, int, list, tuple],
+    x2: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return torch.gcd(x1, x2, out=out)
+
+
+gcd.support_native_out = True
