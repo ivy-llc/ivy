@@ -10,6 +10,7 @@ def insert(arr, obj, values, axis=None):
     values = ivy.array(values)
     shape = ivy.shape(arr)
     ndim = len(ivy.shape(arr))
+
     if axis is None:
         arr = ivy.flatten(arr)
         ndim = len(ivy.shape(arr))
@@ -17,18 +18,20 @@ def insert(arr, obj, values, axis=None):
         shape = ivy.shape(arr)
     elif axis < 0:
         axis += ndim
+
     if isinstance(obj, slice):
         indices = ivy.arange(*obj.indices(shape[axis]), dtype=ivy.int32)
     else:
         obj = [obj]
         indices = ivy.array(obj).astype(ivy.int32)
+
     if len(indices) == 0:
         return arr
+    
     elif len(indices) == 1:
         index = int(indices[0])
         if index < -shape[axis] or index > shape[axis]:
-            raise IndexError(f"index {obj} is out of bounds for axis {axis} "
-                             f"with size {shape[axis]}")
+            raise IndexError(f"index {obj} is out of bounds for axis {axis} with size {shape[axis]}")
         if index < 0:
             index += shape[axis]
         values = ivy.reshape(values, [-1] + [1] * (ndim - 1))
@@ -47,9 +50,9 @@ def insert(arr, obj, values, axis=None):
         slobj2[axis] = slice(index, None)
         new[tuple(slobj)] = arr[tuple(slobj2)]
         return new
-
+    
     else:
-        order = ivy.argsort(indices, kind='mergesort')
+        order = ivy.argsort(indices, kind="mergesort")
         indices[order] += ivy.arange(len(indices))
         old_mask = ivy.ones(shape[axis], dtype=bool)
         old_mask[indices] = False
