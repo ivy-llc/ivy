@@ -65,3 +65,23 @@ def rfft(a, n=None, axis=-1, norm=None):
         norm = "backward"
     a = ivy.array(a, dtype=ivy.float64)
     return ivy.dft(a, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("int",)}, "paddle")
+@to_ivy_arrays_and_back
+def fftfreq(n, d=1.0):
+    if not isinstance(
+        n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
+    ):
+        raise ValueError("n should be an integer")
+
+    N = (n - 1) // 2 + 1
+    val = 1.0 / (n * d)
+    results = ivy.empty(tuple([n]), dtype=int)
+
+    p1 = ivy.arange(0, N, dtype=int)
+    results[:N] = p1
+    p2 = ivy.arange(-(n // 2), 0, dtype=int)
+    results[N:] = p2
+
+    return results * val

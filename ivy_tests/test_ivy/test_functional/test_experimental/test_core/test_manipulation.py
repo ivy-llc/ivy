@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
 import numpy as np
-from typing import Sequence
 
 # local
 import ivy
@@ -614,8 +613,6 @@ def test_vsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    if isinstance(indices_or_sections, Sequence):
-        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -649,8 +646,6 @@ def test_dsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    if isinstance(indices_or_sections, Sequence):
-        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -860,8 +855,6 @@ def test_hsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    if isinstance(indices_or_sections, Sequence):
-        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
