@@ -287,7 +287,7 @@ def test_torch_instance_abs(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_abs(
+def test_torch_instance_round(
     dtype_and_x,
     frontend_method_data,
     init_flags,
