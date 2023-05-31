@@ -42,11 +42,21 @@ def abs(
 
     **Special Cases**
 
-    For this particular case,
+    For real-valued floating-point operands,
 
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If ``x_i`` is ``-0``, the result is ``+0``.
     - If ``x_i`` is ``-infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)`` and ``b = imag(x_i)``. and
+
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value (including ``NaN``), the result is ``+infinity``.
+    - If ``a`` is any value (including ``NaN``) and ``b`` is ``+infinity``, the result is ``+infinity``.
+    - If ``a`` is either ``+0`` or ``-0``, the result is ``abs(b)``.
+    - If ``b`` is ``+0`` or ``-0``, the result is ``abs(a)``.
+    - If ``a`` is ``NaN`` and ``b`` is a finite number, the result is ``NaN``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``, the result is ``NaN``.
+    - If ``a`` is ``Na``N and ``b`` is ``NaN``, the result is ``NaN``.
 
     Parameters
     ----------

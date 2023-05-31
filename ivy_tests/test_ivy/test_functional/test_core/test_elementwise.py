@@ -42,6 +42,7 @@ def test_abs(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        where=True,
     )
 
 

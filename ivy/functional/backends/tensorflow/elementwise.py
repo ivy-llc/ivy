@@ -21,7 +21,10 @@ def abs(
     x_dtype = ivy.dtype(x)
     if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
-    return ivy.where(where, tf.abs(x), x)
+    ret = ivy.where(where, tf.abs(x), x)
+    if ivy.is_complex_dtype(x_dtype):
+        return ivy.real(ret)
+    return ret
 
 
 def acos(
@@ -372,7 +375,7 @@ def lcm(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
+    return tf.experimental.numpy.lcm(x1, x2)
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)

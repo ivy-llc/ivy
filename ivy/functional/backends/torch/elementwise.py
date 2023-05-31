@@ -354,7 +354,7 @@ def lcm(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.abs(torch.lcm(x1, x2, out=out))
+    return torch.lcm(x1, x2, out=out)
 
 
 lcm.support_native_out = True
@@ -549,7 +549,10 @@ def abs(
     x = _cast_for_unary_op(x)
     if x.dtype is torch.bool:
         return x
-    return ivy.where(where, torch.abs(x, out=out), x)
+    ret = ivy.where(where, torch.abs(x, out=out), x)
+    if ivy.is_complex_dtype(x.dtype):
+        return ivy.real(ret)
+    return ret
 
 
 abs.support_native_out = True
