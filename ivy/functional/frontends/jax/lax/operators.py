@@ -372,6 +372,7 @@ def gt(x, y):
     return ivy.greater(x, y)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def le(x, y):
     return ivy.less_equal(x, y)
