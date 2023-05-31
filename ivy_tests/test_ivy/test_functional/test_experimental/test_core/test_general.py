@@ -42,8 +42,6 @@ def _reduce_helper(draw):
     keepdims=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
-    test_instance_method=st.just(False),
-    container_flags=st.just([False]),
 )
 def test_reduce(
     *,

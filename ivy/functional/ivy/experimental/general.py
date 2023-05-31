@@ -4,7 +4,7 @@ from typing import Callable, Union, Sequence
 
 # local
 import ivy
-from ivy import inputs_to_ivy_arrays
+from ivy import inputs_to_ivy_arrays, handle_nestable
 from ivy.utils.exceptions import handle_exceptions
 
 
@@ -12,11 +12,14 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_nestable
 @inputs_to_ivy_arrays
 def reduce(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
     func: Callable,
+    /,
+    *,
     axes: Union[int, Sequence[int]] = 0,
     keepdims: bool = False,
 ) -> ivy.Array:
@@ -53,8 +56,8 @@ def reduce(
     ivy.array([5, 7, 9])
     """
     axes = (axes,) if isinstance(axes, int) else axes
-    axes = sorted(axes, reverse=True)
     axes = [a + operand.ndim if a < 0 else a for a in axes]
+    axes = sorted(axes, reverse=True)
     init_value = ivy.array(init_value)
     op_dtype = operand.dtype
     if ivy.nested_any(

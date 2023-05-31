@@ -12,10 +12,16 @@ def reduce(
     operand: np.ndarray,
     init_value: Union[int, float],
     func: Callable,
+    /,
+    *,
     axes: Union[int, Sequence[int]] = 0,
     keepdims: bool = False,
 ) -> np.ndarray:
-    axes = (axes,) if isinstance(axes, int) else axes
+    axes = (
+        (axes,)
+        if isinstance(axes, int)
+        else tuple(axes) if isinstance(axes, list) else axes
+    )
     reduced_func = np.frompyfunc(func, 2, 1).reduce
     op_dtype = operand.dtype
     for axis in axes:
