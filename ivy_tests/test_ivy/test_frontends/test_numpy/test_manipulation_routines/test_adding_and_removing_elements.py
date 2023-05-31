@@ -44,7 +44,7 @@ def test_numpy_insert(
         values=values[2],
         axis=axis,
     )
-    
+
 
 # unique
 @handle_frontend_test(
