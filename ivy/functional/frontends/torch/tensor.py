@@ -1248,3 +1248,7 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def sgn(self, *, out=None):
+        return torch_frontend.sgn(self, out=out)
