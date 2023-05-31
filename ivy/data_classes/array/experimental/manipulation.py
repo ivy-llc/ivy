@@ -473,7 +473,12 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             [ 2, 12,  8, 14]]]))
         """
         return ivy.flatten(
-            self._data, copy=copy, start_dim=start_dim, end_dim=end_dim, out=out
+            self._data,
+            copy=copy,
+            start_dim=start_dim,
+            end_dim=end_dim,
+            order=order,
+            out=out,
         )
 
     def pad(

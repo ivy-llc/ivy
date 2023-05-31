@@ -5109,31 +5109,23 @@ def test_torch_instance_t(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="shape"),
     ),
-    start_dim=helpers.get_axis(
+    axes=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
-        allow_neg=True,
-        force_int=True,
-    ),
-    end_dim=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="shape"),
-        allow_neg=True,
-        force_int=True,
+        min_size=2,
+        max_size=2,
+        unique=False,
+        force_tuple=True,
     ),
 )
 def test_torch_instance_flatten(
     dtype_value,
-    start_dim,
-    end_dim,
+    axes,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    if start_dim > end_dim:
-        temp = start_dim
-        start_dim = end_dim
-        end_dim = temp
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -5142,8 +5134,8 @@ def test_torch_instance_flatten(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "start_dim": start_dim,
-            "end_dim": end_dim,
+            "start_dim": axes[0],
+            "end_dim": axes[1],
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
