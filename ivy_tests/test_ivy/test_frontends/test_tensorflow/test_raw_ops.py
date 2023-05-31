@@ -1918,7 +1918,21 @@ def test_tensorflow_Cumsum(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=[
+            "float",
+            "double",
+            "int32",
+            "uint8",
+            "int16",
+            "int8",
+            "int64",
+            "bfloat16",
+            "uint16",
+            "half",
+            "uint32",
+            "uint64",
+            "qint8",
+        ],
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
