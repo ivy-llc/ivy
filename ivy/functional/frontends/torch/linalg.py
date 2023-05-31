@@ -256,9 +256,3 @@ def characteristic_equation_solver(matrix):
     eigenvalues = ivy.eigenvalues(matrix)
     coefficients = ivy.array([1.0, *[-1.0] * (len(eigenvalues) + 1)], dtype=matrix.dtype)
     return ivy.roots(coefficients)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
-def kronecker_product(a, b):
-    return ivy.kronecker(a, b)
