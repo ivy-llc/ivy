@@ -37,8 +37,6 @@ def test_paddle_selu(
         alpha=alpha,
         scale=scale,
     )
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # gelu
