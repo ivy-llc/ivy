@@ -8,9 +8,6 @@ from ivy import inputs_to_ivy_arrays, handle_nestable
 from ivy.utils.exceptions import handle_exceptions
 
 
-# ToDo: add array instance and container methods
-
-
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
