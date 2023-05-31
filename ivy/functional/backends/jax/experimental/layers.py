@@ -419,7 +419,7 @@ def dct(
         if n <= signal_len:
             local_idx = [slice(None)] * len(x.shape)
             local_idx[axis] = slice(None, n)
-            x = x[local_idx]
+            x = x[tuple(local_idx)]
         else:
             pad_idx = [[0, 0] for _ in range(len(x.shape))]
             pad_idx[axis][1] = n - signal_len
