@@ -5,7 +5,7 @@ import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
 
-
+IvyArray
 class ndarray:
     def __init__(self, shape, dtype="float32", order=None, _init_overload=False):
         if isinstance(dtype, np_frontend.dtype):
@@ -474,7 +474,12 @@ class ndarray:
 
     def __ipow__(self, value, /):
         return np_frontend.power(self, value, out=self)
-
+    
+    def __lshift__(self, shift):
+        if shift < 0:
+            raise ValueError("Shift value must be non-negative.")
+        return self.ivy_array[shift:] + self.ivy_array[:shift]
+   
     def __iand__(self, value, /):
         return np_frontend.logical_and(self, value, out=self)
 
