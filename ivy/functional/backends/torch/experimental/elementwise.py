@@ -128,20 +128,6 @@ def nansum(
 nansum.support_native_out = False
 
 
-def gcd(
-    x1: Union[torch.Tensor, int, list, tuple],
-    x2: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.gcd(x1, x2, out=out)
-
-
-gcd.support_native_out = True
-
-
 def isclose(
     a: torch.Tensor,
     b: torch.Tensor,
@@ -246,9 +232,6 @@ def diff(
         else torch.tensor(append)
     )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
-
-
-gcd.support_native_out = False
 
 
 def signbit(

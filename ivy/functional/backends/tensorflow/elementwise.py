@@ -882,3 +882,20 @@ def fmod(
     x1, x2 = promote_types_of_inputs(x1, x2)
     res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
     return tf.where(x1 < 0, -res, res)
+
+
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
+def gcd(
+    x1: Union[tf.Tensor, tf.Variable, int, list, tuple],
+    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return tf.experimental.numpy.gcd(x1, x2)
+
+
+gcd.support_native_out = False

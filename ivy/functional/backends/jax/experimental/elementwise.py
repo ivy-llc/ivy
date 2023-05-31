@@ -88,17 +88,6 @@ def nansum(
     return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
-def gcd(
-    x1: Union[JaxArray, float, list, tuple],
-    x2: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.gcd(x1, x2)
-
-
 def isclose(
     a: JaxArray,
     b: JaxArray,
