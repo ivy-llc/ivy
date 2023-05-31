@@ -283,7 +283,9 @@ def test_torch_instance_abs(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="round",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
 )
 def test_paddle_instance_round(
     dtype_and_x,
