@@ -21,7 +21,10 @@ def abs(
     x_dtype = ivy.dtype(x)
     if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
-    return ivy.where(where, tf.abs(x), x)
+    ret = ivy.where(where, tf.abs(x), x)
+    if ivy.is_complex_dtype(x_dtype):
+        return ivy.real(ret)
+    return ret
 
 
 def acos(

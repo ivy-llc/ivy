@@ -870,6 +870,7 @@ def test_tensorflow_diag(
         k=k,
     )
 
+
 # matmul
 @handle_frontend_test(
     fn_tree="tensorflow.matmul",
