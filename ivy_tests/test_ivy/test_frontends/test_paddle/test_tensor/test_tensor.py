@@ -283,7 +283,7 @@ def test_paddle_instance_abs(
     init_tree="paddle.to_tensor",
     method_name="round",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_instance_round(
