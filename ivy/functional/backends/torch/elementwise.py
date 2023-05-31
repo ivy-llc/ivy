@@ -182,6 +182,10 @@ asinh.support_native_out = True
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def sign(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
+    if "complex" in str(x.dtype):
+        return torch.where(
+            x.real != 0, torch.sign(x.real) + 0.0j, torch.sign(x.imag) + 0.0j
+        )
     return torch.sign(x, out=out)
 
 
@@ -350,7 +354,7 @@ def lcm(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.abs(torch.lcm(x1, x2, out=out))
+    return torch.lcm(x1, x2, out=out)
 
 
 lcm.support_native_out = True

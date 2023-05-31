@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
 )
+import ivy.functional.backends.paddle as paddle_backend
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.paddle.elementwise import _elementwise_helper
@@ -297,8 +298,9 @@ def signbit(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        return ivy.less_equal(x, 0)
+    return paddle_backend.less(
+        paddle_backend.where(x.astype(bool), x, paddle_backend.divide(1., x)), 0.
+    )
 
 
 def hypot(
