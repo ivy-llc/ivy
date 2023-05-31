@@ -354,7 +354,7 @@ def lcm(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.abs(torch.lcm(x1, x2, out=out))
+    return torch.lcm(x1, x2, out=out)
 
 
 lcm.support_native_out = True
