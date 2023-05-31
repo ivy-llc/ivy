@@ -338,6 +338,7 @@ def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
 
 @to_ivy_arrays_and_back
 def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
+    input_tensor = ivy.array(input_tensor)
     return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
         input_tensor.dtype
     )

@@ -90,7 +90,8 @@ def argmin(
         ret = paddle.argmin(x, axis=axis)
 
     if keepdims:
-        shape = [1] * x.ndim
+        shape = list(x.shape)
+        shape[axis] = 1
         ret = paddle_backend.reshape(ret, shape)
     elif axis is None or x.ndim == 1:
         ret = paddle_backend.squeeze(ret, axis=-1)
@@ -159,6 +160,7 @@ def where(
         if array.ndim == 0:
             arrays[i] = paddle_backend.expand_dims(array, axis=0)
     condition, x1, x2 = arrays
+    condition = condition.cast("bool") if condition.dtype != paddle.bool else condition
 
     if ret_dtype in [
         paddle.int8,

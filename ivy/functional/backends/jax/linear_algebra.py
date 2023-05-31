@@ -511,7 +511,15 @@ def vander(
     return jnp.vander(x, N=N, increasing=increasing)
 
 
-@with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "0.4.10 and below": (
+            "complex",
+            "unsigned",
+        )
+    },
+    backend_version,
+)
 def vector_to_skew_symmetric_matrix(
     vector: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:

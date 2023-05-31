@@ -22,7 +22,10 @@ def abs(
     if "bool" in str(x.dtype):
         return x
     # jnp.where is used for consistent gradients
-    return ivy.where(where, jnp.where(x != 0, jnp.absolute(x), 0), x)
+    ret = ivy.where(where, jnp.where(x != 0, jnp.absolute(x), 0), x)
+    if ivy.is_complex_dtype(x.dtype):
+        return ivy.real(ret)
+    return ret
 
 
 def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -206,6 +209,16 @@ def floor_divide(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.floor(jnp.divide(x1, x2)).astype(x1.dtype)
+
+
+def fmin(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmin(x1, x2)
 
 
 def greater(
@@ -441,6 +454,18 @@ def subtract(
     return jnp.subtract(x1, x2)
 
 
+def trapz(
+    y: JaxArray,
+    /,
+    *,
+    x: Optional[JaxArray] = None,
+    dx: float = 1.0,
+    axis: int = -1,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.trapz(y, x=x, dx=dx, axis=axis)
+
+
 def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tan(x)
 
@@ -457,8 +482,18 @@ def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
         return jnp.trunc(x)
 
 
+def exp2(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.power(2, x)
+
+
 # Extra #
 # ------#
+
 
 
 @with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)

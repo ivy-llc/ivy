@@ -72,6 +72,10 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[JaxArray, Tuple[JaxArray]]:
+    if x.ndim == 0:
+        raise ivy.utils.exceptions.IvyValueError(
+            "Cannot call nonzero on a zero dim array"
+        )
     res = jnp.nonzero(x, size=size, fill_value=fill_value)
 
     if as_tuple:
