@@ -93,19 +93,6 @@ def isclose(
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-def angle(
-    input: paddle.Tensor,
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    result = paddle.angle(input)
-    if deg:
-        result = paddle.rad2deg(result)
-    return result
-
-
 @with_unsupported_device_and_dtypes(
     {
         "2.4.2 and below": {

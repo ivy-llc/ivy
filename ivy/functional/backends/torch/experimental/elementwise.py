@@ -1,7 +1,6 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
-from math import pi
 import torch
 
 # local
@@ -142,22 +141,6 @@ def isclose(
 
 
 isclose.support_native_out = False
-
-
-def angle(
-    input: torch.Tensor,
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if deg:
-        return torch.angle(input, out=out) * (180 / pi)
-    else:
-        return torch.angle(input, out=out)
-
-
-angle.support_native_out = True
 
 
 def imag(

@@ -878,6 +878,19 @@ def fmod(
 fmod.support_native_out = True
 
 
+def angle(
+    z: np.ndarray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.angle(z, deg=deg)
+
+
+angle.support_native_out = False
+
+
 def gcd(
     x1: Union[np.ndarray, int, list, tuple],
     x2: Union[np.ndarray, float, list, tuple],

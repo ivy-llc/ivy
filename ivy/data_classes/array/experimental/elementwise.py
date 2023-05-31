@@ -363,48 +363,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             self._data, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
 
-    def angle(
-        self: ivy.Array,
-        /,
-        *,
-        deg: bool = False,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.angle. This method simply wraps the
-        function, and so the docstring for ivy.angle also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        z
-            Array-like input.
-        deg
-            optional bool.
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Returns an array of angles for each complex number in the input.
-            If def is False(default), angle is calculated in radian and if
-            def is True, then angle is calculated in degrees.
-
-        Examples
-        --------
-        >>> ivy.set_backend('tensorflow')
-        >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
-        >>> z
-        ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
-        >>> ivy.angle(z)
-        ivy.array([ 2.35619449,  2.35619449, -0.78539816])
-        >>> ivy.set_backend('numpy')
-        >>> ivy.angle(z,deg=True)
-        ivy.array([135., 135., -45.])
-        """
-        return ivy.angle(self._data, deg=deg, out=out)
-
     def imag(
         self: ivy.Array,
         /,

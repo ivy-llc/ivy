@@ -899,3 +899,29 @@ def gcd(
 
 
 gcd.support_native_out = False
+
+
+@with_unsupported_dtypes(
+    {
+        "2.12.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "int32",
+        )
+    },
+    backend_version,
+)
+def angle(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if deg:
+        return tf.math.angle(input, name=None) * (180 / tf.experimental.numpy.pi)
+    else:
+        return tf.math.angle(input, name=None)

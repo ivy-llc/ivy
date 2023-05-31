@@ -197,16 +197,6 @@ def nextafter(
     return jnp.nextafter(x1, x2)
 
 
-def angle(
-    z: JaxArray,
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.angle(z, deg=deg)
-
-
 def imag(
     val: JaxArray,
     /,

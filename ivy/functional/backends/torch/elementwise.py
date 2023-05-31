@@ -1,6 +1,6 @@
 # global
 from typing import Union, Optional
-
+from math import pi
 import torch
 
 # local
@@ -873,7 +873,6 @@ def fmod(
 fmod.support_native_out = True
 
 
-
 def gcd(
     x1: Union[torch.Tensor, int, list, tuple],
     x2: Union[torch.Tensor, float, list, tuple],
@@ -886,3 +885,19 @@ def gcd(
 
 
 gcd.support_native_out = True
+
+
+def angle(
+    input: torch.Tensor,
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if deg:
+        return torch.angle(input, out=out) * (180 / pi)
+    else:
+        return torch.angle(input, out=out)
+
+
+angle.support_native_out = True

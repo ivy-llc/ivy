@@ -129,19 +129,6 @@ def isclose(
 isclose.support_native_out = False
 
 
-def angle(
-    z: np.ndarray,
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.angle(z, deg=deg)
-
-
-angle.support_native_out = False
-
-
 def imag(
     val: np.ndarray,
     /,

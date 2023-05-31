@@ -406,51 +406,6 @@ def isclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-def angle(
-    z: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Calculate Element-wise the angle for an array of complex numbers(x+yj).
-
-    Parameters
-    ----------
-    z
-        Array-like input.
-    deg
-        optional bool.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Returns an array of angles for each complex number in the input.
-        If deg is False(default), angle is calculated in radian and if
-        deg is True, then angle is calculated in degrees.
-
-    Examples
-    --------
-    >>> ivy.set_backend('tensorflow')
-    >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
-    >>> z
-    ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
-    >>> ivy.angle(z)
-    ivy.array([ 2.35619449,  2.35619449, -0.78539816])
-    >>> ivy.set_backend('numpy')
-    >>> ivy.angle(z,deg=True)
-    ivy.array([135., 135., -45.])
-    """
-    return ivy.current_backend(z).angle(z, deg=deg, out=out)
-
-
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
 def imag(
     val: Union[ivy.Array, ivy.NativeArray],
     /,

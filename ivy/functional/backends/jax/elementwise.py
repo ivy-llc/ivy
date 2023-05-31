@@ -491,6 +491,15 @@ def exp2(
     return jnp.power(2, x)
 
 
+def angle(
+    z: JaxArray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.angle(z, deg=deg)
+
 # Extra #
 # ------#
 
