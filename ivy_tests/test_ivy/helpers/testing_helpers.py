@@ -231,8 +231,8 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         _fn = _tmp_mod.__dict__[fn_name]
         # TODO this won't be needed once
         # https://github.com/unifyai/ivy/pull/15829 is merged
-        if ivy.__dict__[_fn.__name__] != _fn:
-            _fn = ivy.__dict__[_fn.__name__]
+        if "ivy.functional.ivy" in _fn.__module__ and ivy.__dict__[fn_name] != _fn:
+            _fn = ivy.__dict__[fn_name]
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
         devices_and_dtypes = (
             tuple(devices_and_dtypes.values())
