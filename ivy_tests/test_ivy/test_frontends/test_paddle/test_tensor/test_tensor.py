@@ -277,13 +277,14 @@ def test_paddle_instance_abs(
         on_device=on_device,
     )
 
+
 # round
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
-    method_name="round",
+    method_name="round_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_paddle_instance_round(

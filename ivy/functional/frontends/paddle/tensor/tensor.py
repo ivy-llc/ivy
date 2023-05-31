@@ -90,8 +90,8 @@ class Tensor:
         return paddle_frontend.reshape(self._ivy_array)
 
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
-    def round(self, name=None):
-        return paddle_frontend.round(self, name)
+    def round_(self):
+        return paddle_frontend.round(self)
 
     def dim(self):
         return self.ivy_array.ndim
