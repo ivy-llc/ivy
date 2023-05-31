@@ -101,8 +101,8 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle.linalg.det(x.cast("float32")).squeeze().cast(x.dtype)
-    return paddle.linalg.det(x).squeeze()
+        return paddle.linalg.det(x.cast("float32")).cast(x.dtype)
+    return paddle.linalg.det(x)
 
 
 def diagonal(
