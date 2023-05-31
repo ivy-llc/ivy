@@ -371,7 +371,12 @@ class ndarray:
 
     def __pow__(self, value, /):
         return np_frontend.power(self, value)
-
+    
+    def __lshift__(self, shift):
+        if shift < 0:
+            raise ValueError("Shift value must be non-negative.")
+        return self.ivy_array[shift:] + self.ivy_array[:shift]
+    
     def __and__(self, value, /):
         return np_frontend.logical_and(self, value)
 
