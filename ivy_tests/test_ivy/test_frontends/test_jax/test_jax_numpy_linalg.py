@@ -98,7 +98,6 @@ def test_jax_numpy_det(
     test_flags,
 ):
     dtype, x = dtype_and_x
-    print(f"input = {x}, dtype = {dtype}, x_o = {x[0]}")
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
