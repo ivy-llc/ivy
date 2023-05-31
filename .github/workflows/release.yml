@@ -6,5 +6,5 @@ on:
 jobs:
   publish-ivy-docs:
     name: Publish Ivy Docs
-    if: startsWith(github.ref, 'refs/tags')
     uses: ./.github/workflows/docs.yml
+    secrets: inherit
