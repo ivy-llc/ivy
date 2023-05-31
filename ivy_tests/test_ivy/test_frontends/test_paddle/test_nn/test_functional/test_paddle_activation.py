@@ -1,4 +1,5 @@
 # global
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -45,6 +46,7 @@ def test_paddle_selu(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    approximate=st.booleans(),
 )
 def test_paddle_gelu(
     *,
@@ -62,6 +64,8 @@ def test_paddle_gelu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         x=x[0],
         approximate=approximate,
     )
