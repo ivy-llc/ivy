@@ -1,7 +1,7 @@
 # global
 import numpy as np
-import jax.lax as jlax
-import jax.numpy as jnp
+import ivy.functional.frontends.jax.lax as jlax
+import ivy.functional.frontends.jax.numpy as jnp
 from hypothesis import assume, strategies as st
 import random
 from jax.lax import ConvDimensionNumbers

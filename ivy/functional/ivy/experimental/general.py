@@ -4,7 +4,7 @@ from typing import Callable, Union, Sequence
 
 # local
 import ivy
-from ivy import to_ivy_arrays_and_back
+from ivy import inputs_to_ivy_arrays
 from ivy.utils.exceptions import handle_exceptions
 
 
@@ -49,12 +49,16 @@ def reduce(
     >>> ivy.reduce(x, 0, ivy.add, 1)
     ivy.array([5, 7, 9])
     """
-    func = ivy.output_to_native_arrays(func)
     axes = (axes,) if isinstance(axes, int) else axes
     axes = sorted(axes, reverse=True)
     axes = [a + operand.ndim if a < 0 else a for a in axes]
     init_value = ivy.array(init_value)
     op_dtype = operand.dtype
+    if ivy.nested_any(
+            func,
+            lambda x: hasattr(x, '__module__') and x.__module__.startswith('ivy') and not x.__module__.startswith('ivy.functional.frontends'),
+    ):
+        func = ivy.__dict__[func.__name__]
     for axis in axes:
         temp = ivy.moveaxis(operand, axis, 0).reshape((operand.shape[axis], -1))
         temp = functools.reduce(func, temp, init_value)

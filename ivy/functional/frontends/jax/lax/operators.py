@@ -8,7 +8,7 @@ import math
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, frontend_outputs_to_ivy_arrays
 
 _min = builtins.min
 _slice = builtins.slice
@@ -719,6 +719,7 @@ def reduce_window(
         op = _dilate(op, base_dilation, identity)
     view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
     view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
+    computation = frontend_outputs_to_ivy_arrays(computation)
     ret = ivy.reduce(view, init_value, computation, -1)
     return ret.astype(operand.dtype)
 
