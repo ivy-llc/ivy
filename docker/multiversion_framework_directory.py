@@ -78,13 +78,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         else:
                             print(f"Command encountered an error. Return code: {result.returncode}")
 
-                        if result.stderr:
-                            print("Error output:")
-                            print(result.stderr)
-
-                        if result.stdout:
-                            print("Standard output:")
-                            print(result.stdout)
+  
 
                     else:
                         commands = [
@@ -98,13 +92,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         else:
                             print(f"Command encountered an error. Return code: {result.returncode}")
 
-                        if result.stderr:
-                            print("Error output:")
-                            print(result.stderr)
 
-                        if result.stdout:
-                            print("Standard output:")
-                            print(result.stdout)
 
                 else:
 
@@ -119,13 +107,6 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                     else:
                         print(f"Command encountered an error. Return code: {result.returncode}")
 
-                    if result.stderr:
-                        print("Error output:")
-                        print(result.stderr)
-
-                    if result.stdout:
-                        print("Standard output:")
-                        print(result.stdout)
 
 
 
