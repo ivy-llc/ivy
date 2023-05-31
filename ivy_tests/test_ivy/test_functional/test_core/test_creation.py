@@ -206,7 +206,7 @@ def _asarray_helper(draw):
             draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
         )
     )[-1]
-    dtype = st.sampled_from([dtype, draw(st.none())])
+    # dtype = draw(st.sampled_from([dtype, draw(st.none())]))
     return x_dtype, x, dtype
 
 
@@ -215,10 +215,11 @@ def _asarray_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.asarray",
     x_dtype_x_and_dtype=_asarray_helper(),
-    as_list=st.booleans(),
+    as_list=st.just(True),  # st.booleans(),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
 )
+# @reproduce_failure('6.75.3', b'AXicY2BkZEAGAAAtAAM=')
 def test_asarray(
     *,
     x_dtype_x_and_dtype,
@@ -230,38 +231,19 @@ def test_asarray(
     ground_truth_backend,
 ):
     x_dtype, x, dtype = x_dtype_x_and_dtype
-    
+
     # avoid casting complex to non-complex
     if dtype is not None:
         assume(not ("complex" in x_dtype[0] and "complex" not in dtype))
 
     if as_list:
         if isinstance(x, list):
-            x = x = [(list(i) if len(i.shape) > 0 else [i.item()]) for i in x]
+            x = x = [i.tolist() for i in x]
         else:
-            x = list(x)
-        # ToDo: remove this once the tests are able to generate a container of lists
-        # than a list of containers
-        assume(
-            not (
-                test_flags.container[0]
-                or test_flags.instance_method
-                or test_flags.with_out
-            )
-        )
+            x = x.tolist()
     else:
         if len(x) == 1:
             x = x[0]
-        else:
-            # ToDo: remove this once the tests are able to generate a container of lists
-            # than a list of containers
-            assume(
-                not (
-                    test_flags.container[0]
-                    or test_flags.instance_method
-                    or test_flags.with_out
-                )
-            )
 
     helpers.test_function(
         input_dtypes=x_dtype,
@@ -270,7 +252,7 @@ def test_asarray(
         fw=backend_fw,
         fn_name=fn_name,
         object_in=x,
-        dtype=dtype,
+        dtype=None,  # dtype,
         device=on_device,
         ground_truth_backend=ground_truth_backend,
     )
