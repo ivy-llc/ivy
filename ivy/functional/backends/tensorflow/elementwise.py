@@ -259,6 +259,15 @@ def exp(
     return tf.math.exp(x)
 
 
+def exp2(
+    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.pow(2, x, name=None)
+
+
 def expm1(
     x: Union[tf.Tensor, tf.Variable],
     /,

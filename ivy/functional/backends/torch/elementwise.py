@@ -658,6 +658,18 @@ def exp(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 exp.support_native_out = True
 
 
+def exp2(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.exp2(x, out=out)
+
+
+exp2.support_native_out = True
+
+
 def subtract(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],

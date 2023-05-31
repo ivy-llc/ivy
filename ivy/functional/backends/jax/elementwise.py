@@ -482,8 +482,18 @@ def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
         return jnp.trunc(x)
 
 
+def exp2(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.power(2, x)
+
+
 # Extra #
 # ------#
+
 
 
 @with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)

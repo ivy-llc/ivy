@@ -1941,6 +1941,43 @@ def exp(
     return ivy.current_backend(x).exp(x, out=out)
 
 
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def exp2(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Calculate 2**p for all p in the input array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise 2 to the power x. This is a scalar if x is a scalar.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.exp2(x)
+    ivy.array([2.,    4.,   8.])
+    >>> x = [5, 6, 7]
+    >>> ivy.exp2(x)
+    ivy.array([32.,   64.,  128.])
+    """
+    return ivy.current_backend().exp2(x, out=out)
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion

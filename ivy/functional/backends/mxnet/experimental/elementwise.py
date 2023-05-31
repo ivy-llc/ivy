@@ -34,15 +34,6 @@ def float_power(
     raise IvyNotImplementedException()
 
 
-def exp2(
-    x: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def copysign(
     x1: Union[(None, mx.ndarray.NDArray, Number)],
     x2: Union[(None, mx.ndarray.NDArray, Number)],

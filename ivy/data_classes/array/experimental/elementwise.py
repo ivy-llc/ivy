@@ -160,40 +160,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.float_power(self._data, x2, out=out)
 
-    def exp2(
-        self: Union[ivy.Array, float, list, tuple],
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.exp2. This method simply wraps the
-        function, and so the docstring for ivy.exp2 also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        self
-            Array-like input.
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Element-wise 2 to the power x. This is a scalar if x is a scalar.
-
-        Examples
-        --------
-        >>> x = ivy.array([1, 2, 3])
-        >>> x.exp2()
-        ivy.array([2.,    4.,   8.])
-        >>> x = [5, 6, 7]
-        >>> x.exp2()
-        ivy.array([32.,   64.,  128.])
-        """
-        return ivy.exp2(self._data, out=out)
-
     def copysign(
         self: Union[ivy.Array, ivy.NativeArray, Number],
         x2: Union[ivy.Array, ivy.NativeArray, Number],
