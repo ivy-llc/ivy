@@ -721,3 +721,48 @@ def test_numpy_lcm(
         out=None,
         where=where,
     )
+
+
+# gcd
+@handle_frontend_test(
+    fn_tree="numpy.gcd",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=["int32", "int64"],
+        num_arrays=2,
+        shared_dtype=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="lcm"
+    ),
+)
+def test_numpy_gcd(
+    dtype_and_inputs,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_inputs
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
+    )
