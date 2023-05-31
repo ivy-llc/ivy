@@ -309,6 +309,30 @@ def floor_divide(
 
 
 @_scalar_output_to_0d_array
+def fmin(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.fmin(
+        x1,
+        x2,
+        out=None,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    )
+
+
+fmin.support_native_out = True
+
+
+@_scalar_output_to_0d_array
 def greater(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],

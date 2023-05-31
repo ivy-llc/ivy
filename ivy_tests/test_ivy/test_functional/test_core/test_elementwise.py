@@ -790,6 +790,44 @@ def test_floor_divide(
     )
 
 
+# fmin
+@handle_test(
+    fn_tree="functional.ivy.fmin",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_nan=True,
+    ),
+    test_gradients=st.just(False),
+)
+def test_fmin(
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
 # greater
 @handle_test(
     fn_tree="functional.ivy.greater",

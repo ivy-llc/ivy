@@ -4,7 +4,7 @@ import tensorflow as tf
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy import promote_types_of_inputs
 from . import backend_version
 
@@ -290,6 +290,21 @@ def floor_divide(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.floor_divide(x1, x2)
+
+
+@with_supported_dtypes({"2.12.0 and below": ("float",)}, backend_version)
+def fmin(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    x1 = tf.where(tf.math.is_nan(x1), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2), x1, x2)
+    ret = tf.experimental.numpy.minimum(x1, x2)
+    return ret
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)

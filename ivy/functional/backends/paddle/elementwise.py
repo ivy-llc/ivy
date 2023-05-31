@@ -5,7 +5,8 @@ import paddle
 import math
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy import promote_types_of_inputs
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 
 # local
 from . import backend_version
@@ -423,6 +424,22 @@ def divide(
     if not (ivy.is_float_dtype(ret_dtype) or ivy.is_complex_dtype(ret_dtype)):
         ret_dtype = ivy.default_float_dtype(as_native=True)
     return (x1 / x2).astype(ret_dtype)
+
+
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    backend_version,
+)
+def fmin(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x1.dtype != x2.dtype:
+        x1, x2 = promote_types_of_inputs(x1, x2)
+    return paddle.fmin(x1, x2)
 
 
 def greater(

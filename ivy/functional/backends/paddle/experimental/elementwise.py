@@ -33,22 +33,6 @@ def fmax(
     return paddle.fmax(x1, x2)
 
 
-@with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
-    backend_version,
-)
-def fmin(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if x1.dtype != x2.dtype:
-        x1, x2 = promote_types_of_inputs(x1, x2)
-    return paddle.fmin(x1, x2)
-
-
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
 

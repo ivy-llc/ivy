@@ -36,21 +36,6 @@ def fmax(
     return ret
 
 
-@with_supported_dtypes({"2.12.0 and below": ("float",)}, backend_version)
-def fmin(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    x1 = tf.where(tf.math.is_nan(x1), x2, x1)
-    x2 = tf.where(tf.math.is_nan(x2), x1, x2)
-    ret = tf.experimental.numpy.minimum(x1, x2)
-    return ret
-
-
 def trapz(
     y: Union[tf.Tensor, tf.Variable],
     /,

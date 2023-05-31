@@ -211,6 +211,16 @@ def floor_divide(
     return jnp.floor(jnp.divide(x1, x2)).astype(x1.dtype)
 
 
+def fmin(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmin(x1, x2)
+
+
 def greater(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
