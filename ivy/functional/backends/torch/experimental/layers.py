@@ -11,6 +11,43 @@ from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
+def _determine_depth_max_pooling(
+    x, kernel, strides, dims, data_format="channel_last", filter_format="channel_last"
+):
+    # determine depth pooling
+    depth_pooling = False
+    channels = x.shape[1] if filter_format == "channel_first" else x.shape[-1]
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1] if data_format == "channel_last" else kernel[2:]
+        if kernel[-1] != 1:
+            depth_pooling = True
+            if any(torch.tensor(spatial_kernel) != 1):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if channels % kernel[-1] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            x = torch.permute(x, (0, 2, 1, *range(3, dims + 2)))
+            kernel = [kernel[-1], *[1] * (dims - 1)]
+            strides = [strides[-1], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            if len(strides) == dims + 2:
+                strides = (
+                    strides[1:-1] if data_format == "channel_last" else strides[2:]
+                )
+    return x, kernel, strides, depth_pooling
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool1d(
     x: torch.Tensor,
@@ -97,24 +134,31 @@ def max_pool2d(
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
 
-    new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
-
-    if isinstance(padding, str):
-        pad_h = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
-        pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
-        pad_list = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
-    else:
-        # torch pad takes width padding first, then height padding
-        padding = (padding[1], padding[0])
-        pad_list = [item for sublist in padding for item in sublist]
-
-    x = torch.nn.functional.pad(
-        x,
-        pad_list,
-        value=float("-inf"),
+    # determine depth pooling
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 2, data_format="channel_first"
     )
+    if not depth_pooling:
+        new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
+
+        if isinstance(padding, str):
+            pad_h = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
+            pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
+            pad_list = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
+        else:
+            # torch pad takes width padding first, then height padding
+            padding = (padding[1], padding[0])
+            pad_list = [item for sublist in padding for item in sublist]
+
+        x = torch.nn.functional.pad(
+            x,
+            pad_list,
+            value=float("-inf"),
+        )
 
     res = torch.nn.functional.max_pool2d(x, kernel, strides, 0, dilation, ceil_mode)
+    if depth_pooling:
+        res = torch.permute(res, (0, 2, 1, 3))
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
@@ -556,6 +600,15 @@ def dct(
         return dct_out
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def fft(
     x: torch.Tensor,
     dim: int,
@@ -586,7 +639,11 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return torch.fft.fft(x, n, dim, norm, out=out)
+    if x.dtype in [torch.int64, torch.float64, torch.complex128]:
+        out_dtype = torch.complex128
+    else:
+        out_dtype = torch.complex64
+    return torch.fft.fft(x, n, dim, norm, out=out).to(dtype=out_dtype)
 
 
 def dropout1d(

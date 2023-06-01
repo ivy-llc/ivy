@@ -59,6 +59,53 @@ def _get_dtype_and_square_matrix(draw, real_and_complex_only=False):
     return dtype, mat
 
 
+@st.composite
+def _dtype_values_axis(draw):
+    dtype_and_values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=1000.0,
+        )
+    )
+
+    dtype, x = dtype_and_values
+    x = x[0]
+    r = len(x.shape)
+
+    valid_axes = [None]
+
+    for i in range(-r, r):
+        valid_axes.append(i)
+        for j in range(-r, r):
+            if i != j and abs(i - j) != r:
+                valid_axes.append([i, j])
+
+    axis = draw(st.sampled_from(valid_axes))
+
+    p_list = ["fro", 1, 2, ivy.inf, -ivy.inf]
+    if isinstance(axis, list) and len(axis) == 2:
+        p = draw(
+            st.one_of(
+                st.sampled_from(p_list),
+                st.floats(min_value=1.0, max_value=10.0, allow_infinity=False),
+            )
+        )
+    else:
+        p = draw(
+            st.one_of(
+                st.sampled_from(p_list + [0]),
+                st.floats(min_value=1.0, max_value=10.0, allow_infinity=False),
+            )
+        )
+
+    return dtype, x, axis, p
+
+
 # Tests #
 # ----- #
 
@@ -100,6 +147,37 @@ def test_paddle_matmul(
         y=x[1],
         transpose_x=transpose_x,
         transpose_y=transpose_y,
+    )
+
+
+# norm
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.norm",
+    dtype_values_axis=_dtype_values_axis(),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_paddle_norm(
+    dtype_values_axis,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis, p = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        p=p,
+        axis=axis,
+        keepdim=keepdims,
+        atol=1e-1,
+        rtol=1e-1,
     )
 
 
@@ -297,4 +375,38 @@ def test_paddle_pinv(
         atol=1e-3,
         x=x[0],
         rcond=rcond,
+    )
+
+
+# cholesky
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.cholesky",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    upper=st.booleans(),
+)
+def test_paddle_cholesky(
+    dtype_and_x,
+    upper,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    x = x[0]
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        upper=upper,
     )
