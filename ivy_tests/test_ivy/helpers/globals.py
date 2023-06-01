@@ -127,8 +127,8 @@ def _get_ivy_tensorflow(version=None):
         config.allow_global_framework_imports(fw=[version])
     try:
         import ivy.functional.backends.tensorflow
-    except ImportError:
-        return None
+    except ImportError as e:
+        return e
     return ivy.functional.backends.tensorflow
 
 

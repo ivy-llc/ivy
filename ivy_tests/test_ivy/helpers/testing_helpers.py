@@ -33,6 +33,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
+from ivy_tests.test_ivy.conftest import mod_backend
 
 ground_truth = ground_truth()
 
@@ -198,6 +199,28 @@ def _get_method_supported_devices_dtypes(
     return supported_device_dtypes
 
 
+def _get_supported_devices_dtypes_helper(backend:str, fn_module: str, fn_name:str):
+    # helper function so as to ease multiprocessing
+    ivy.set_backend(backend)
+    _tmp_mod = importlib.import_module(fn_module)
+    _fn = _tmp_mod.__dict__[fn_name]
+    devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
+    try:
+        # Issue with bfloat16 and tensorflow
+        if "bfloat16" in devices_and_dtypes["gpu"]:
+            tmp = list(devices_and_dtypes["gpu"])
+            tmp.remove("bfloat16")
+            devices_and_dtypes["gpu"] = tuple(tmp)
+    except KeyError:
+        pass
+    organized_dtypes = {}
+    for device in devices_and_dtypes.keys():
+        organized_dtypes[device] = _partition_dtypes_into_kinds(
+            ivy, devices_and_dtypes[device]
+        )
+    return organized_dtypes
+
+
 def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     """
     Get supported devices and data types for a function in Ivy API.
@@ -209,6 +232,10 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     fn_module
         Full import path of the function module
+
+    multiversion
+        string representing the backend and acting as a bool to
+        signal multiprocess calculation
 
     Returns
     -------
@@ -225,26 +252,16 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             fn_name = "_" + fn_name
 
     backends = available_frameworks()
+
     for b in backends:  # ToDo can optimize this ?
-        ivy.set_backend(b)
-        _tmp_mod = importlib.import_module(fn_module)
-        _fn = _tmp_mod.__dict__[fn_name]
-        devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
-        try:
-            # Issue with bfloat16 and tensorflow
-            if "bfloat16" in devices_and_dtypes["gpu"]:
-                tmp = list(devices_and_dtypes["gpu"])
-                tmp.remove("bfloat16")
-                devices_and_dtypes["gpu"] = tuple(tmp)
-        except KeyError:
-            pass
-        organized_dtypes = {}
-        for device in devices_and_dtypes.keys():
-            organized_dtypes[device] = _partition_dtypes_into_kinds(
-                ivy, devices_and_dtypes[device]
-            )
-        supported_device_dtypes[b] = organized_dtypes
-        ivy.previous_backend()
+        if mod_backend[b]:
+            # we gotta calculate the dtypes through multiprocess
+            proc, input_queue, output_queue =mod_backend[b]
+            input_queue.put(("supported dtypes",fn_module,fn_name,b))
+            supported_device_dtypes[b] =output_queue.get()
+        else:
+            supported_device_dtypes[b] = _get_supported_devices_dtypes_helper(b,fn_module,fn_name)
+            ivy.previous_backend()
     return supported_device_dtypes
 
 
@@ -343,6 +360,7 @@ def handle_test(
     def test_wrapper(test_fn):
         if is_fn_tree_provided:
             callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+
             supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
             possible_arguments["fn_name"] = st.just(fn_name)
 
@@ -368,6 +386,7 @@ def handle_test(
             wrapped_test = test_fn
 
         # Set the test data to be used by test helpers
+        print("this one ")
         if is_fn_tree_provided:
             wrapped_test.test_data = TestData(
                 test_fn=wrapped_test,
