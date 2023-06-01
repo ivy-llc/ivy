@@ -1794,7 +1794,7 @@ def test_torch_instance_log2(
     init_tree="torch.tensor",
     method_name="__bool__",
     dtype_and_x=helpers.dtype_and_values(
-        max_num_dims=0,
+        max_dim_size=1,
         min_value=-1e04,
         max_value=1e04,
     ),
