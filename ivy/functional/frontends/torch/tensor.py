@@ -921,6 +921,9 @@ class Tensor:
     # Special Methods #
     # -------------------#
 
+    def __bool__(self):
+        return self.item().__bool__()
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __add__(self, other):
         return self.add(other)
