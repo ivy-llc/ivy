@@ -164,12 +164,13 @@ def test_numpy_lexsort(
 
 @handle_frontend_test(
     fn_tree="numpy.partition",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
+    dtype_x_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int64"],
+        max_num_dims=1,
+        indices_same_dims=True,
+        disable_random_axis=False,
+        axis_zero=False,
     ),
     test_with_out=st.just(False),
 )
@@ -181,14 +182,14 @@ def test_numpy_partition(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, kth, axis = dtype_x_axis
+    dtypes, x, kth, axis, _ = dtype_x_axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes[0],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        kth=kth,
+        kth=kth[0],
         axis=axis,
     )
