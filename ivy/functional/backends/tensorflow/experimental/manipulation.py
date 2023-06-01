@@ -6,7 +6,7 @@ import tensorflow as tf
 
 # local
 import numpy as np
-from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+from ivy.func_wrapper import with_unsupported_dtypes
 
 from ivy.functional.backends.torch.experimental.manipulation import _check_tuple
 from .. import backend_version
@@ -384,7 +384,7 @@ def _check(*args, **kwargs):
             elif isinstance(pad, int):
                 return False
 
-@handle_mixed_function(lambda *args, **kwargs: _check(*args, **kwargs))
+
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16", "complex64", "complex128")}, backend_version)
 def pad(
         input: tf.Tensor,
@@ -400,3 +400,6 @@ def pad(
 ) -> tf.Tensor:
     return tf.pad(input, pad_width, mode=mode,
                   constant_values=constant_values)
+
+
+pad.partial_mixed_handler = lambda *args, **kwargs: _check(*args, **kwargs)
