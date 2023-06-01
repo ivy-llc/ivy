@@ -48,6 +48,7 @@ def test_max_pool1d(
     ),
     ceil_mode=st.just(True),
     test_gradients=st.just(False),
+    ground_truth_backend="jax",
     # problem with containers converting tuple padding to
     # lists which jax does not support
     container_flags=st.just([False]),
@@ -59,6 +60,8 @@ def test_max_pool2d(
     test_flags,
     backend_fw,
     fn_name,
+    ground_truth_backend,
+    on_device,
 ):
     dtype, x, kernel, stride, pad, dilation = x_k_s_p
     assume(
@@ -74,13 +77,14 @@ def test_max_pool2d(
         )
     )
     helpers.test_function(
-        ground_truth_backend="jax",
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
+        on_device=on_device,
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -421,9 +425,9 @@ def test_interpolate(
 
 
 @st.composite
-def x_and_fft(draw, dtypes):
+def x_and_fft(draw):
     min_fft_points = 2
-    dtype = draw(dtypes)
+    dtype = draw(helpers.get_dtypes("valid", full=False))
     x_dim = draw(
         helpers.get_shape(
             min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
@@ -433,11 +437,11 @@ def x_and_fft(draw, dtypes):
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
         )
     )
-    dim = draw(
-        helpers.get_axis(shape=x_dim, allow_neg=True, allow_none=False, max_size=1)
-    )
+    dim = draw(helpers.get_axis(shape=x_dim, allow_neg=True, force_int=True))
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
     n = draw(st.integers(min_fft_points, 256))
     return dtype, x, dim, norm, n
@@ -445,8 +449,8 @@ def x_and_fft(draw, dtypes):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft",
-    d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
-    ground_truth_backend="numpy",
+    d_x_d_n_n=x_and_fft(),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_fft(
@@ -454,6 +458,7 @@ def test_fft(
     d_x_d_n_n,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
     ground_truth_backend,
 ):
@@ -464,9 +469,7 @@ def test_fft(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
-        rtol_=1e-2,
-        atol_=1e-2,
-        test_gradients=False,
+        on_device=on_device,
         x=x,
         dim=dim,
         norm=norm,
@@ -491,6 +494,7 @@ def test_fft(
     training=st.booleans(),
     data_format=st.sampled_from(["NWC", "NCW"]),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_dropout1d(
     *,
@@ -509,9 +513,10 @@ def test_dropout1d(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
         test_values=False,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
         x=x[0],
         prob=prob,
         training=training,
@@ -560,9 +565,10 @@ def test_dropout3d(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
+        test_values=False,
+        on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_values=False,
         x=x[0],
         prob=prob,
         training=training,
@@ -665,7 +671,7 @@ def test_embedding(
 
 @handle_test(
     fn_tree="dft",
-    d_xfft_axis_n_length=x_and_fft(helpers.get_dtypes("complex")),
+    d_xfft_axis_n_length=x_and_fft(),
     d_xifft_axis_n_length=x_and_ifft(),
     inverse=st.booleans(),
     onesided=st.booleans(),
@@ -679,6 +685,7 @@ def test_dft(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     if inverse:
@@ -692,14 +699,13 @@ def test_dft(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x,
         axis=axis,
         inverse=inverse,
         onesided=onesided,
         dft_length=dft_length,
         norm=norm,
-        rtol_=1e-2,
-        atol_=1e-2,
     )
 
 

@@ -6,7 +6,7 @@ import numpy as np
 import jax.numpy as jnp
 from numbers import Number
 from operator import mul
-from functools import reduce
+from functools import reduce as _reduce
 from typing import Iterable, Optional, Union, Sequence, Callable, Tuple
 import multiprocessing as _multiprocessing
 import importlib
@@ -116,7 +116,7 @@ def gather_nd_helper(params, indices):
     else:
         num_index_dims = indices_shape[-1]
     res_dim_sizes_list = [
-        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = jnp.array(res_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
