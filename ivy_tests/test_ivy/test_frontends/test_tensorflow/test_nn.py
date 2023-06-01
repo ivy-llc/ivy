@@ -1533,6 +1533,7 @@ def test_tensorflow_pool(
         pooling_type,
         data_format,
     ) = x_k_s_p_df
+    strides = (strides[0], strides[0])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
