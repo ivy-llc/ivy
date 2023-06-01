@@ -1163,6 +1163,27 @@ def default_dtype(
         Return ``dtype`` as native or ivy dtype if provided, else
         if ``item`` is given, return its dtype, otherwise return the
         global default dtype.
+
+    Examples
+    --------
+    >>> ivy.set_default_dtype("float32")
+    >>> ivy.default_dtype()
+    'float32'
+
+    >>> ivy.set_default_dtype("float64")
+    >>> ivy.default_dtype(dtype="float32")
+    'float32'
+
+    >>> x = ivy.array([1, 2, 3], dtype="int32")
+    >>> ivy.default_dtype(item=x)
+    'int32'
+
+    >>> ivy.default_dtype(dtype="uint8", as_native=True)
+    numpy.uint8
+
+    >>> y = ivy.array([0], dtype="uint64")
+    >>> ivy.default_dtype(item=y, as_native=True)
+    numpy.uint64
     """
     if ivy.exists(dtype):
         if as_native is True:
