@@ -305,13 +305,12 @@ def bernoulli(
     )
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
 @infer_dtype
-@infer_device
+@to_native_arrays_and_back
+@inputs_to_native_shapes
+@handle_nestable
+@handle_exceptions
+@handle_out_argument
 def laplace(
     loc: Union[ivy.Array, float],
     scale: Union[ivy.Array, float],
