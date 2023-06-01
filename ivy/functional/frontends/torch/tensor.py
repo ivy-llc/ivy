@@ -398,6 +398,10 @@ class Tensor:
         return torch_frontend.equal(self, other)
 
     def new_zeros(self, *size, dtype=None, device=None, requires_grad=False):
+        if isinstance(size[0], tuple):
+            return torch_frontend.zeros(
+                size[0], dtype=dtype, device=device, requires_grad=requires_grad
+            )
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
