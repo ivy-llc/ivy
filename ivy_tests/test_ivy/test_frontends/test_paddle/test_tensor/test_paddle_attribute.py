@@ -8,10 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="paddle.tensor.attribute.is_complex",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        min_dim_size=1,
-        max_dim_size=1,
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_is_complex(
