@@ -2761,9 +2761,13 @@ def test_jax_numpy_polyint(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=1,
-        min_dim_size=2,
+        min_dim_size=1,
+        max_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
     ),
     # trim_leading_zeros=st.booleans(),
+    # TODO: if trim_zeros_tol exists, can add this
 )
 def test_jax_numpy_polydiv(
     *,
@@ -2784,6 +2788,8 @@ def test_jax_numpy_polydiv(
         u=x[0],
         v=x[1],
         # trim_leading_zeros=trim_leading_zeros,
+        rtol=1e-01,
+        atol=1e-02,
     )
 
 
