@@ -1,7 +1,6 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
-from math import pi
 import torch
 
 # local
@@ -128,20 +127,6 @@ def nansum(
 nansum.support_native_out = False
 
 
-def gcd(
-    x1: Union[torch.Tensor, int, list, tuple],
-    x2: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.gcd(x1, x2, out=out)
-
-
-gcd.support_native_out = True
-
-
 def isclose(
     a: torch.Tensor,
     b: torch.Tensor,
@@ -156,37 +141,6 @@ def isclose(
 
 
 isclose.support_native_out = False
-
-
-def angle(
-    input: torch.Tensor,
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if deg:
-        return torch.angle(input, out=out) * (180 / pi)
-    else:
-        return torch.angle(input, out=out)
-
-
-angle.support_native_out = True
-
-
-def imag(
-    val: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if val.dtype not in (torch.complex64, torch.complex128):
-        ret = torch.imag(val.to(torch.complex64))
-        return ret.to(val.dtype)
-    return torch.imag(val)
-
-
-imag.support_native_out = False
 
 
 def nan_to_num(
@@ -246,9 +200,6 @@ def diff(
         else torch.tensor(append)
     )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
-
-
-gcd.support_native_out = False
 
 
 def signbit(

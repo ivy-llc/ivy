@@ -180,25 +180,6 @@ def diff(
     raise IvyNotImplementedException()
 
 
-def angle(
-    input: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def imag(
-    val: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def zeta(
     x: Union[(None, mx.ndarray.NDArray)],
     q: Union[(None, mx.ndarray.NDArray)],
