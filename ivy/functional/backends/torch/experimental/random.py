@@ -129,6 +129,9 @@ def laplace(
             a, _ = torch.broadcast_tensors(loc, scale)
             size = a.size()
 
+    if dtype is None:
+        dtype = torch.float32
+
     if seed is not None:
         torch.manual_seed(seed)
     return (

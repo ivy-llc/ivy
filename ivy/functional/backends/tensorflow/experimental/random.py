@@ -170,9 +170,8 @@ def laplace(
             size = tf.broadcast_dynamic_shape(loc.shape, scale.shape)
 
     if dtype is None:
-        dtype = tf.float64
-    else:
-        dtype = dtype
+        dtype = tf.float32
+
     if seed is not None:
         tf.random.set_seed(seed)
     with tf.device(device):

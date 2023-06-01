@@ -110,7 +110,7 @@ def laplace(
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    dtype = dtype if dtype is not None else np.float64
+    dtype = dtype if dtype is not None else np.float32
     if seed is not None:
         np.random.seed(seed)
     return np.asarray(np.random.laplace(loc, scale, size=size), dtype=dtype)
