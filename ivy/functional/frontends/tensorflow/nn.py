@@ -490,12 +490,17 @@ def pool(
     dilations=None,
     name=None,
 ):
-    return ivy.pool(
-        input,
-        window_shape,
-        pooling_type,
-        strides=strides,
-        padding=padding,
-        data_format=data_format,
-        dilations=dilations,
-    )
+    if pooling_type == "AVG":
+        if len(ivy.shape(input)) == 3:
+            return ivy.avg_pool1d(input, window_shape, strides, padding, data_format=data_format)
+        elif len(ivy.shape(input)) == 4:
+            return ivy.avg_pool2d(input, window_shape, strides, padding, data_format=data_format)
+        elif len(ivy.shape(input)) == 5:
+            return ivy.avg_pool3d(input, window_shape, strides, padding, data_format=data_format)
+    elif pooling_type == "MAX":
+        if len(ivy.shape(input)) == 3:
+            return ivy.max_pool1d(input, window_shape, strides, padding, data_format=data_format)
+        elif len(ivy.shape(input)) == 4:
+            return ivy.max_pool2d(input, window_shape, strides, padding, data_format=data_format)
+        elif len(ivy.shape(input)) == 5:
+            return ivy.max_pool3d(input, window_shape, strides, padding, data_format=data_format)
