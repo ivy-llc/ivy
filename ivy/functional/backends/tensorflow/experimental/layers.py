@@ -474,7 +474,8 @@ def _fft_norm(
     *,
     norm: str = "backward",
 ):
-    n = tf.constant(x.shape[dim])
+    n = tf.constant(tf.shape(x)[dim])
+    n = tf.cast(n, x.dtype)
     if norm == "backward":
         return x
     elif norm == "ortho":
@@ -550,7 +551,7 @@ def fft(
         permute[dim], permute[-1] = permute[-1], permute[dim]
         x = tf.transpose(x, permute)
         ret = tf.signal.fft(x, operation_name)
-        x = tf.transpose(x, permute)
+        ret = tf.transpose(ret, permute)
         del permute
     else:
         ret = tf.signal.fft(x, operation_name)
