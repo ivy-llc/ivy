@@ -496,7 +496,7 @@ def pool(
     strides: Optional[Union[int, Tuple[int], Tuple[int, int, int]]] = None,
     padding: str = "VALID",
     data_format: Optional[str] = None,
-    dilation: Optional[Union[int, Tuple[int], Tuple[int, int, int]]] = None,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int, int]]] = None,
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
