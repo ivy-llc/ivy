@@ -7,16 +7,20 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+def _get_reduce_func(dtype):
+    if dtype == "bool":
+        return st.sampled_from([ivy.logical_and, ivy.logical_or])
+    else:
+        return st.sampled_from([ivy.add, ivy.maximum, ivy.minimum, ivy.multiply])
+
+
 @st.composite
-def _reduce_helper(draw):
+def _reduce_helper(draw, get_func_st):
     # ToDo: remove the filtering when supported dtypes are fixed for mixed functions
     dtype = draw(
         helpers.get_dtypes("valid", full=False).filter(lambda x: "complex" not in x[0])
     )
-    if dtype[0] == "bool":
-        func = draw(st.sampled_from([ivy.logical_and, ivy.logical_or]))
-    else:
-        func = draw(st.sampled_from([ivy.add, ivy.maximum, ivy.minimum, ivy.multiply]))
+    func = draw(get_func_st(dtype[0]))
     init_value = draw(
         helpers.dtype_and_values(
             dtype=dtype,
@@ -38,7 +42,7 @@ def _reduce_helper(draw):
 # reduce
 @handle_test(
     fn_tree="functional.ivy.experimental.reduce",
-    args=_reduce_helper(),
+    args=_reduce_helper(_get_reduce_func),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),

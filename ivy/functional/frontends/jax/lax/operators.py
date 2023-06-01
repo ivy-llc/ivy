@@ -726,6 +726,15 @@ def reduce_window(
 
 
 @to_ivy_arrays_and_back
+def reduce(operands, init_values, computation, dimensions):
+    func_name = computation.__name__
+    if func_name in identities:
+        init_values = identities[func_name]
+    computation = frontend_outputs_to_ivy_arrays(computation)
+    return ivy.reduce(operands, init_values, computation, axes=dimensions)
+
+
+@to_ivy_arrays_and_back
 def squeeze(array, dimensions):
     return ivy.squeeze(array, dimensions)
 

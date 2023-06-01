@@ -10,6 +10,8 @@ from jax.lax import ConvDimensionNumbers
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_general import \
+    _reduce_helper
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
@@ -2599,6 +2601,40 @@ def test_jax_lax_reduce_window(
         padding=padding,
         base_dilation=others[2],
         window_dilation=None,
+    )
+
+
+def _get_reduce_func(dtype):
+    if dtype[0] == "bool":
+        return st.sampled_from([jnp.logical_and, jnp.logical_or])
+    else:
+        return st.sampled_from([jlax.add, jlax.max, jlax.min, jlax.mul, jnp.multiply])
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.reduce",
+    all_args=_reduce_helper(_get_reduce_func),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_reduce(
+    *,
+    all_args,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtypes, operand, init_value, computation, dims = all_args
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operands=operand[0],
+        init_values=init_value[0],
+        computation=computation,
+        dimensions=dims,
     )
 
 
