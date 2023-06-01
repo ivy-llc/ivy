@@ -798,7 +798,6 @@ def adaptive_avg_pool2d(input, output_size):
 
 def fft2(
     x: torch.Tensor,
-    /,
     *,
     s: Sequence[int] = None,
     dim: Sequence[int] = (-2, -1),
@@ -826,4 +825,4 @@ def fft2(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return torch.fft.ff2t(x, s=s, dim=dim, norm=norm, out=out)
+    return torch.fft.fft2(x, s, dim, norm, out=out)

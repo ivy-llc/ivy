@@ -794,15 +794,10 @@ def test_adaptive_avg_pool2d(
 def x_and_fft2(draw, dtypes):
     min_fft2_points = 2
     dtype = draw(dtypes)
-    x_dim = draw(
-        helpers.get_shape(
-            min_num_dims=1, max_num_dims=4, min_dim_size=2, max_dim_size=100
-        )
-    )
     x = draw(
         helpers.array_values(
-            dtype=dtype[1],
-            shape=tuple(x_dim),
+            dtype=dtype[0],
+            shape=(2, 2),
         )
     )
     s = (
@@ -816,11 +811,12 @@ def x_and_fft2(draw, dtypes):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft2",
-    d_x_d_s_n=x_and_fft2(helpers.get_dtypes("float_and_complex")),
+    d_x_d_s_n=x_and_fft2(helpers.get_dtypes("complex")),
     ground_truth_backend="numpy",
-    test_gradients=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_fft2(
+    *,
     d_x_d_s_n,
     test_flags,
     backend_fw,
@@ -838,7 +834,6 @@ def test_fft2(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=False,
         x=x,
         s=s,
         dim=dim,

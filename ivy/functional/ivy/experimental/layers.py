@@ -1835,7 +1835,6 @@ def adaptive_avg_pool2d(
 @to_native_arrays_and_back
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
     s: Sequence[int] = None,
     dim: Sequence[int] = (-2, -1),
@@ -1849,7 +1848,7 @@ def fft2(
     ----------
     x
         Input volume *[...,d_in,...]*,
-        where d_in indicates the dimension that needs FFT.
+        where d_in indicates the dimension that needs FFT2.
     s
         sequence of ints, optional
         Shape (length of each transformed axis) of the output (s[0] refers to axis 0,
@@ -1858,7 +1857,7 @@ def fft2(
         If it is larger, the input is padded with zeros. if s is not given, the shape
         of the input along the axes specified by axes is used.
     dim
-        Axes over which to compute the FFT. If not given, the last two axes are used.
+        Axes over which to compute the FFT2. If not given, the last two axes are used.
         A repeated index in axes means the transform over that axis is performed
         multiple times. A one-element sequence means that a one-dimensional FFT is
         performed.

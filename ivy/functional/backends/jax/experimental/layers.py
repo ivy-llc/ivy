@@ -650,7 +650,6 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
 
 def fft2(
     x: JaxArray,
-    /,
     *,
     s: Sequence[int] = None,
     dim: Sequence[int] = (-2, -1),
@@ -678,4 +677,4 @@ def fft2(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return jnp.fft.fft2(x, s=s, axes=dim, norm=norm)
+    return jnp.fft.fft2(x, s, dim, norm)

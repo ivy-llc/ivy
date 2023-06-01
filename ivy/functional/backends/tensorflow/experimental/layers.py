@@ -745,7 +745,7 @@ def _fft2_norm(
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
 ):
-    n = tf.constant(x.shape[0] * x.shape[1])
+    n = tf.constant(x.shape[dim[0]] * x.shape[dim[1]])
     if norm == "backward":
         return x
     elif norm == "ortho":
@@ -758,7 +758,6 @@ def _fft2_norm(
 
 def fft2(
     x: Union[tf.Tensor, tf.Variable],
-    /,
     *,
     s: Sequence[int] = None,
     dim: Sequence[int] = (-2, -1),
@@ -788,14 +787,13 @@ def fft2(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     for i in range(len(dim)):
         if any([x.shape[dim[j]] != s[j] for j in range(len(s))]):
-            a = list(x.shape)
-            if any([a[dim[j]] > s[j] for j in range(len(s))]):
-                index = [slice(None)] * len(a)
+            if any([x.shape[dim[j]] > s[j] for j in range(len(s))]):
+                index = [slice(None)] * len(x.shape)
                 index[1] = slice(0, 1, s[i])
                 x = x[tuple(index)]
             else:
-                a[dim[i]] = s[i] - a[dim[i]]
-                z = tf.zeros(a, dtype=x.dtype)
+                x.shape[dim[i]] = s[i] - x.shape[dim[i]]
+                z = tf.zeros(x.shape, dtype=x.dtype)
                 x = tf.concat([x, z], axis=dim[i])
     operation_name = f"{s} points FFT2d at dim {dim} with {norm} normalization"
 

@@ -814,7 +814,6 @@ def ifft(
 
 def fft2(
     x: np.ndarray,
-    /,
     *,
     s: Sequence[int] = None,
     dim: Sequence[int] = (-2, -1),
@@ -842,4 +841,4 @@ def fft2(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return np.fft.fft2(x, s=s, axes=dim, norm=norm)
+    return np.fft.fft2(x, s, dim, norm)
