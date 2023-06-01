@@ -173,7 +173,7 @@ def cond(pred, true_fn=None, false_fn=None, name=None):
 
     if not pred:
         return false_fn()
-    
+
 
 @to_ivy_arrays_and_back
 def shape(input, out_type=ivy.int32, name=None):
@@ -548,3 +548,8 @@ def while_loop(
     name=None,
 ):
     return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
+
+
+@to_ivy_arrays_and_back
+def truncatediv(x, y, name=None):
+    return ivy.trunc_divide(x, y)
