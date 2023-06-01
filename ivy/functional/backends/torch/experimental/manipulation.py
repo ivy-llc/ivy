@@ -6,7 +6,7 @@ import torch
 
 # local
 import numpy as np
-from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
 
@@ -361,21 +361,50 @@ def unique_consecutive(
     )
   
   
-def _can_handle_padding(input_shape, pad, mode):
-    n_dims = len(input_shape)
-    if n_dims == 0:
+def _can_handle_padding(input, pad, mode):
+
+    # if it is not tuple of integers then convert it
+    if all(isinstance(sub_tuple, tuple) for sub_tuple in pad):
+        pad = tuple(element for sub_tuple in pad for element in sub_tuple)
+
+    if not isinstance(pad, tuple) or len(pad) % 2 != 0 or len(pad) < 2 or len(pad) > 6:
         return False
-    if n_dims == 1 and mode != 'circular':
+
+    if input.dim() < 2 or input.dim() > 5:
         return False
+
+    if mode in ['reflect', 'replicate']:
+        if input.dim() == 2 and len(pad) > 2:
+            return False
+        if input.dim() == 3 and len(pad) > 4:
+            return False
+        if input.dim() == 4 and len(pad) < 4:
+            return False
+        if input.dim() == 5 and len(pad) < 6:
+            return False
+
+            # reflect padding requires that padding size is less than input size for each dim
+        if mode == 'reflect':
+            for i in range(-1, -len(pad) - 1, -2):
+                if pad[i] >= input.size(i // 2):
+                    return False
+                if pad[i - 1] >= input.size(i // 2):
+                    return False
+
     if mode == 'circular':
-        return True
-    if isinstance(pad, int):
-        return False
-    for i in range(n_dims):
-        if not isinstance(pad[2 * i], int) or not isinstance(pad[2 * i + 1], int):
+        if input.dim() < 3:
             return False
-        if input_shape[i] + pad[2*i] + pad[2*i+1] < 0:
+        if input.dim() == 3 and len(pad) != 2:
             return False
+        if input.dim() == 4 and len(pad) != 4:
+            return False
+        if input.dim() == 5 and len(pad) != 6:
+            return False
+
+            # circular padding requires that padding size is less than input size for last dim
+        if pad[-1] > input.size(-1) or pad[-2] > input.size(-1):
+            return False
+
     return True
 
 
@@ -432,7 +461,6 @@ def _check(*args, **kwargs):
             return False
 
 
-@handle_mixed_function(lambda *args, **kwargs: _check(*args, **kwargs))
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16", "complex64", "complex128")}, backend_version)
 def pad(
     input: torch.Tensor,
@@ -461,3 +489,6 @@ def pad(
         mode=mode,
         value=constant_values,
         )
+
+
+pad.partial_mixed_handler = lambda *args, **kwargs: _check(*args, **kwargs)
