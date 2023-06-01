@@ -29,28 +29,6 @@ def fmax(
     return jnp.fmax(x1, x2)
 
 
-def fmin(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.fmin(x1, x2)
-
-
-def trapz(
-    y: JaxArray,
-    /,
-    *,
-    x: Optional[JaxArray] = None,
-    dx: float = 1.0,
-    axis: int = -1,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.trapz(y, x=x, dx=dx, axis=axis)
-
-
 def float_power(
     x1: Union[JaxArray, float, list, tuple],
     x2: Union[JaxArray, float, list, tuple],
@@ -64,15 +42,6 @@ def float_power(
     else:
         out_dtype = jnp.float64
     return jnp.float_power(x1, x2).astype(out_dtype)
-
-
-def exp2(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.power(2, x)
 
 
 def copysign(
@@ -117,17 +86,6 @@ def nansum(
     if isinstance(axis, list):
         axis = tuple(axis)
     return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
-
-
-def gcd(
-    x1: Union[JaxArray, float, list, tuple],
-    x2: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.gcd(x1, x2)
 
 
 def isclose(
@@ -237,25 +195,6 @@ def nextafter(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nextafter(x1, x2)
-
-
-def angle(
-    z: JaxArray,
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.angle(z, deg=deg)
-
-
-def imag(
-    val: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.imag(val)
 
 
 def zeta(

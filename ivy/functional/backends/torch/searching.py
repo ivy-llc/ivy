@@ -77,6 +77,10 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
+    if x.ndim == 0:
+        raise ivy.utils.exceptions.IvyValueError(
+            "Cannot call nonzero on a zero dim array"
+        )
     res = torch.stack(torch.nonzero(x, as_tuple=True))
 
     if size is not None:
