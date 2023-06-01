@@ -916,3 +916,20 @@ def angle(
 
 
 angle.support_native_out = True
+
+
+def nan_to_num(
+    x: torch.Tensor,
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if copy:
+        return torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf, out=out)
+    else:
+        x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
+        return x
