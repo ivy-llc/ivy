@@ -620,7 +620,7 @@ def pool(
                     pooling_type, ivy.shape(x)
                 )
             )
-    else: 
+    else:
         raise Exception("Unsupported pooling type {}".format(pooling_type))
 
 

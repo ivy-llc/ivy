@@ -1513,6 +1513,7 @@ def _pool_args(draw):
         data_format,
     )
 
+
 # pool
 @handle_frontend_test(
     fn_tree="tensorflow.nn.pool",
