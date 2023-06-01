@@ -631,7 +631,7 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return np.fft.fft(x, n, dim, norm)
+    return np.fft.fft(x, n=n, axis=dim, norm=norm).astype(x.dtype)
 
 
 def dct(
