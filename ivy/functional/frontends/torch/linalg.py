@@ -253,5 +253,5 @@ def multi_dot(tensors, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def characteristic_equation_solver(matrix):
     eigenvalues = ivy.eigenvalues(matrix)
-    coefficients = ivy.array([1.0, *[-1.0] * (len(eigenvalues) + 1)], dtype=matrix.dtype)
+    coefficients = ivy.array([1.0, *[-1.0] * (len(eigenvalues) + 1)])
     return ivy.roots(coefficients)
