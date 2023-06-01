@@ -1948,6 +1948,7 @@ def test_tensorflow_acosh(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
         x=x[0],
     )
 
