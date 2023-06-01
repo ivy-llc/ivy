@@ -7,6 +7,14 @@ from ivy.functional.backends.jax import JaxArray
 from jax import lax
 import ivy
 
+def elu(
+    x: JaxArray,
+    /,
+    *,
+    alpha: float = 1.0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.where(x > 0, x, alpha * (jnp.exp(x) - 1)).astype(x.dtype)
 
 def logit(
     x: JaxArray,
@@ -20,17 +28,6 @@ def logit(
     else:
         x = jnp.clip(x, eps, 1 - eps)
     return jnp.log(x / (1 - x))
-
-def elu(
-    x: JaxArray,
-    /,
-    *,
-    alpha: float = 1.0,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if out is not None:
-        raise ValueError("The 'out' parameter is not supported in Jax.")
-    return jnp.where(x > 0, x, alpha * (jnp.exp(x) - 1)).astype(x.dtype)
 
 
 def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

@@ -97,7 +97,6 @@ ACTIVATION_FUNCTIONS = [
 ]
 
 
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion

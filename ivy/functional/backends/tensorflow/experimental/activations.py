@@ -36,7 +36,8 @@ def thresholded_relu(
     threshold = tf.cast(threshold, x.dtype)
     return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex", "bool")}, backend_versiondef elu(
+@with_unsupported_dtypes({"2.12.0 and below": ("complex", "bool")}, backend_version)
+def elu(
     x: tf.Tensor,
     /,
     *,
