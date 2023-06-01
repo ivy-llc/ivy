@@ -484,6 +484,146 @@ def avg_pool3d(
     )
 
 
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def pool(
+    x: Union[ivy.Array, ivy.NativeArray],
+    window_shape: Union[int, Tuple[int], Tuple[int, int, int]],
+    pooling_type: str,
+    /,
+    *,
+    strides: Optional[Union[int, Tuple[int], Tuple[int, int, int]]] = None,
+    padding: str = "VALID",
+    data_format: Optional[str] = None,
+    dilation: Optional[Union[int, Tuple[int], Tuple[int, int, int]]] = None,
+    ceil_mode: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Performs an N-D pooling operation.
+
+    Parameters
+    ----------
+    x
+        Input volume *[batch_size,d,h,w,d_in]*.
+    window_shape
+        Convolution filters *[d,h,w]*.
+    pooling_type
+        The type of pooling operation, either "AVG" or "MAX".
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
+    data_format
+        NDHWC" or "NCDHW". Defaults to "NDHWC".
+    count_include_pad
+        Whether to include padding in the averaging calculation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Both the description and the type hints above assumes an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
+    >>> print(ivy.pool(x,2,'MAX'))
+    ivy.array([[[[[ 7.,  8.]]]],
+              [[[[31., 32.]]]]])
+    >>> print(ivy.pool(x,2,'AVG'))
+    ivy.array([[[[[ 7.,  8.]]]],
+                [[[[31., 32.]]]]])
+    """
+    if pooling_type == "AVG":
+        if len(ivy.shape(x)) == 3:
+            return ivy.current_backend(x).avg_pool1d(
+                x,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format,
+                ceil_mode=ceil_mode,
+                out=out,
+            )
+        elif len(ivy.shape(x)) == 4:
+            return ivy.current_backend(x).avg_pool2d(
+                x,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format,
+                ceil_mode=ceil_mode,
+                out=out,
+            )
+        elif len(ivy.shape(x)) == 5:
+            return ivy.current_backend(x).avg_pool3d(
+                x,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format,
+                ceil_mode=ceil_mode,
+                out=out,
+            )
+        else:
+            raise Exception(
+                "Unsupported pooling type {} for input shape {}".format(
+                    pooling_type, ivy.shape(x)
+                )
+            )
+    elif pooling_type == "MAX":
+        if len(ivy.shape(x)) == 3:
+            return ivy.current_backend(x).max_pool1d(
+                x,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format,
+                ceil_mode=ceil_mode,
+                out=out,
+            )
+        elif len(ivy.shape(x)) == 4:
+            return ivy.current_backend(x).max_pool2d(
+                x,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format,
+                ceil_mode=ceil_mode,
+                out=out,
+            )
+        elif len(ivy.shape(x)) == 5:
+            return ivy.current_backend(x).max_pool3d(
+                x,
+                window_shape,
+                strides,
+                padding,
+                data_format=data_format,
+                ceil_mode=ceil_mode,
+                out=out,
+            )
+        else:
+            raise Exception(
+                "Unsupported pooling type {} for input shape {}".format(
+                    pooling_type, ivy.shape(x)
+                )
+            )
+    else: 
+        raise Exception("Unsupported pooling type {}".format(pooling_type))
+
+
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
