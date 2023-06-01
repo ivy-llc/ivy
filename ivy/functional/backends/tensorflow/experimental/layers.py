@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
@@ -478,9 +478,9 @@ def _fft_norm(
     if norm == "backward":
         return x
     elif norm == "ortho":
-        return x / tf.sqrt(n)
+        return x / tf.cast(tf.sqrt(tf.cast(n, tf.float32)), x.dtype)
     elif norm == "forward":
-        return x / n
+        return x / tf.cast(n, x.dtype)
     else:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
@@ -502,6 +502,7 @@ def _ifft_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
+@with_supported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def fft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,

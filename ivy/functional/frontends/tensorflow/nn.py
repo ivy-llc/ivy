@@ -448,7 +448,7 @@ def softmax(logits, axis=None, name=None):
 
 @with_unsupported_dtypes({"2.9.0 and below": "float16"}, "tensorflow")
 @to_ivy_arrays_and_back
-def leaky_relu(features, alpha, name=None):
+def leaky_relu(features, alpha=0.2, name=None):
     return ivy.leaky_relu(features, alpha=alpha)
 
 
@@ -467,6 +467,13 @@ def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
 
 
+# avg_pool3d
 @to_ivy_arrays_and_back
 def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
     return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+# avg_pool1d
+@to_ivy_arrays_and_back
+def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
+    return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)

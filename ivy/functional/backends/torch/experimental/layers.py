@@ -600,6 +600,15 @@ def dct(
         return dct_out
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def fft(
     x: torch.Tensor,
     dim: int,
@@ -630,7 +639,11 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return torch.fft.fft(x, n, dim, norm, out=out)
+    if x.dtype in [torch.int64, torch.float64, torch.complex128]:
+        out_dtype = torch.complex128
+    else:
+        out_dtype = torch.complex64
+    return torch.fft.fft(x, n, dim, norm, out=out).to(dtype=out_dtype)
 
 
 def dropout1d(

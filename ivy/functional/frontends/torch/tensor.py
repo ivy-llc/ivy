@@ -394,7 +394,6 @@ class Tensor:
 
     ne = not_equal
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
@@ -576,20 +575,18 @@ class Tensor:
     def tensor_split(self, indices_or_sections, dim=0):
         return torch_frontend.tensor_split(self, indices_or_sections, dim)
 
-    def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
-        return torch_frontend.vsplit(
-            self, indices_or_sections, indices=indices, sections=sections
-        )
+    def vsplit(self, indices_or_sections, /):
+        return torch_frontend.vsplit(self, indices_or_sections)
 
-    def hsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
-        return torch_frontend.hsplit(
-            self, indices_or_sections, indices=indices, sections=sections
-        )
+    def hsplit(self, indices_or_sections, /):
+        return torch_frontend.hsplit(self, indices_or_sections)
 
-    def dsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
-        return torch_frontend.dsplit(
-            self, indices_or_sections, indices=indices, sections=sections
-        )
+    def dsplit(
+        self,
+        indices_or_sections,
+        /,
+    ):
+        return torch_frontend.dsplit(self, indices_or_sections)
 
     def dim(self):
         return self.ivy_array.ndim
@@ -700,6 +697,9 @@ class Tensor:
 
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self, dim=dim, keepdim=keepdim)
+
+    def nanmean(self, dim=None, keepdim=False):
+        return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def median(self, dim=None, keepdim=False):
@@ -1231,6 +1231,10 @@ class Tensor:
     def copysign(self, other, *, out=None):
         return torch_frontend.copysign(self, other, out=out)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
+    def greater(self, other, *, out=None):
+        return torch_frontend.greater(self, other, out=out)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1247,7 +1251,3 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
-
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
-    def greater(self, other, *, out=None):
-        return torch_frontend.greater(self, other, out=out)
