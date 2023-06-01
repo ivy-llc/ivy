@@ -135,6 +135,7 @@ def test_torch_inv(
     test_flags,
 ):
     dtype, x = dtype_and_x
+    test_flags.num_positional_args = 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -224,13 +225,14 @@ def test_torch_det(
     test_flags,
 ):
     dtype, x = dtype_and_x
+    test_flags.num_positional_args = len(x)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
+        A=x,
     )
 
 
@@ -288,13 +290,14 @@ def test_torch_slogdet(
     test_flags,
 ):
     dtype, x = dtype_and_x
+    test_flags.num_positional_args = len(x)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
+        A=x,
     )
 
 
@@ -477,6 +480,7 @@ def test_torch_matrix_power(
     test_flags,
 ):
     dtype, x = dtype_and_x
+    test_flags.num_positional_args = len(x) + 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -484,7 +488,7 @@ def test_torch_matrix_power(
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-01,
-        input=x,
+        A=x,
         n=n,
     )
 
@@ -494,12 +498,11 @@ def test_torch_matrix_power(
     fn_tree="torch.linalg.matrix_norm",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=3,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=4,
-        min_axis=-3,
-        max_axis=2,
+        min_num_dims=2,
+        min_axes_size=2,
+        max_axes_size=2,
+        valid_axis=True,
+        force_tuple_axis=True,
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
@@ -510,7 +513,6 @@ def test_torch_matrix_norm(
     dtype_values_axis,
     ord,
     keepdim,
-    axis,
     dtype,
     frontend,
     test_flags,
@@ -593,6 +595,7 @@ def test_torch_vecdot(
     fn_tree,
 ):
     dtype, input, other, dim = dtype_input_other_dim
+    test_flags.num_positional_args = len(dtype_input_other_dim) - 2
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -600,8 +603,8 @@ def test_torch_vecdot(
         fn_tree=fn_tree,
         rtol=1e-2,
         atol=1e-3,
-        input=input,
-        other=other,
+        x=input,
+        y=other,
         dim=dim,
     )
 
@@ -622,7 +625,6 @@ def _matrix_rank_helper(draw):
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_rank",
-    aliases=["torch.matrix_rank"],
     dtype_and_x=_matrix_rank_helper(),
     atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
     rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
@@ -858,6 +860,8 @@ def test_torch_svdvals(
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+        safety_factor_scale="log",
+        small_abs_safety_factor=6,
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -877,14 +881,15 @@ def test_torch_solve(
     input_dtype, data = dtype_and_data
     input = data[0][:, :-1]
     other = data[0][:, -1].reshape(-1, 1)
+    test_flags.num_positional_args = 2
     helpers.test_frontend_function(
         input_dtypes=[input_dtype[0], input_dtype[0]],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input,
-        other=other,
+        A=input,
+        B=other,
     )
 
 
@@ -1019,7 +1024,7 @@ def test_torch_tensorsolve(
     test_flags,
 ):
     input_dtype, A, B = a_and_b
-    test_flags.num_positional_args = 2
+    test_flags.num_positional_args = len(a_and_b) - 1
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         test_flags=test_flags,

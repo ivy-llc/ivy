@@ -60,19 +60,13 @@ def _handle_nestable_dtype_info(fn):
 # Unindent every line in the source such that
 # class methods can be compiled as normal methods
 def _lstrip_lines(source: str) -> str:
-    source = source.lstrip().split("\n")
-
-    # If the first line is a decorator
-    if source[0][0] == "@":
-        # If the second line is a function definition
-        if source[1].lstrip()[0:3] == "def":
-            # Work out how many whitespace chars to remove
-            num_chars_to_remove = source[1].find("d")
-
-            # The first string needs no changes
-            for i in range(1, len(source)):
-                source[i] = source[i][num_chars_to_remove:]
-
+    # Separate all lines
+    source = source.split("\n")
+    # Check amount of indent before first character
+    indent = len(source[0]) - len(source[0].lstrip())
+    # Remove same spaces from all lines
+    for i in range(len(source)):
+        source[i] = source[i][indent:]
     source = "\n".join(source)
     return source
 
@@ -2008,7 +2002,9 @@ def promote_types(
                 (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
             ]
     except KeyError:
-        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
+        raise ivy.utils.exceptions.IvyDtypePromotionError(
+            "these dtypes are not type promotable"
+        )
     return ret
 
 

@@ -194,13 +194,17 @@ def kaiser_bessel_derived_window(
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
     if window_length < 2:
-        return ivy.array([], dtype=dtype)
+        result = ivy.array([], dtype=dtype)
+        if ivy.exists(out):
+            ivy.inplace_update(out, result)
+        return result
     half_len = window_length // 2
     kaiser_w = ivy.kaiser_window(half_len + 1, False, beta, dtype=dtype)
     kaiser_w_csum = ivy.cumsum(kaiser_w)
     half_w = ivy.sqrt(kaiser_w_csum[:-1] / kaiser_w_csum[-1:])
     window = ivy.concat((half_w, half_w[::-1]), axis=0)
-    return window.astype(dtype)
+    result = window.astype(dtype)
+    return result
 
 
 @handle_exceptions
@@ -257,8 +261,6 @@ def hamming_window(
     else:
         count = ivy.linspace(0, window_length, window_length)
     result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
-    if ivy.exists(out):
-        ivy.inplace_update(out, result)
     return result
 
 
