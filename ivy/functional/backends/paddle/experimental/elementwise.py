@@ -78,20 +78,6 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
-)
-def gcd(
-    x1: Union[paddle.Tensor, int, list, tuple],
-    x2: Union[paddle.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return paddle.gcd(x1, x2)
-
-
-@with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def isclose(
@@ -105,46 +91,6 @@ def isclose(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
-
-def angle(
-    input: paddle.Tensor,
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    result = paddle.angle(input)
-    if deg:
-        result = paddle.rad2deg(result)
-    return result
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "float32",
-                "float64",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def imag(
-    val: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.imag(val)
 
 
 def nan_to_num(

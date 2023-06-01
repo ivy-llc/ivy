@@ -376,3 +376,37 @@ def test_paddle_pinv(
         x=x[0],
         rcond=rcond,
     )
+
+
+# cholesky
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.cholesky",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    upper=st.booleans(),
+)
+def test_paddle_cholesky(
+    dtype_and_x,
+    upper,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    x = x[0]
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        upper=upper,
+    )

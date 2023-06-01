@@ -2336,3 +2336,117 @@ def test_lcm(
         x1=x[0],
         x2=x[1],
     )
+
+
+# gcd
+@handle_test(
+    fn_tree="functional.ivy.gcd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_gcd(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        ground_truth_backend=ground_truth_backend,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# imag
+@handle_test(
+    fn_tree="functional.ivy.imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_imag(
+    *,
+    dtype_and_x,
+    test_flags,
+    ground_truth_backend,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        val=x[0],
+    )
+
+
+# angle
+@handle_test(
+    fn_tree="functional.ivy.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64"],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    deg=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_angle(
+    *,
+    dtype_and_x,
+    deg,
+    test_flags,
+    ground_truth_backend,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, z = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        z=z[0],
+        deg=deg,
+    )

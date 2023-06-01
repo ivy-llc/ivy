@@ -491,6 +491,24 @@ def exp2(
     return jnp.power(2, x)
 
 
+def imag(
+    val: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.imag(val)
+
+
+def angle(
+    z: JaxArray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.angle(z, deg=deg)
+
 # Extra #
 # ------#
 
@@ -557,3 +575,14 @@ def fmod(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmod(x1, x2)
+
+
+def gcd(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return jnp.gcd(x1, x2)

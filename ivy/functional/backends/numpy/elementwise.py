@@ -876,3 +876,42 @@ def fmod(
 
 
 fmod.support_native_out = True
+
+
+def angle(
+    z: np.ndarray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.angle(z, deg=deg)
+
+
+angle.support_native_out = False
+
+
+def gcd(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.gcd(x1, x2, out=out)
+
+
+gcd.support_native_out = True
+
+
+def imag(
+    val: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.imag(val)
+
+
+imag.support_native_out = False

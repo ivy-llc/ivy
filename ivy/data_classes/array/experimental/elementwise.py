@@ -304,44 +304,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             self._data, axis=axis, dtype=dtype, keepdims=keepdims, out=out
         )
 
-    def gcd(
-        self: Union[ivy.Array, int, list, tuple],
-        x2: Union[ivy.Array, int, list, tuple],
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.gcd. This method simply wraps the
-        function, and so the docstring for ivy.gcd also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        self
-            First array-like input.
-        x2
-            Second array-like input
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Element-wise gcd of |x1| and |x2|.
-
-        Examples
-        --------
-        >>> x1 = ivy.array([1, 2, 3])
-        >>> x2 = ivy.array([4, 5, 6])
-        >>> x1.gcd(x2)
-        ivy.array([1.,    1.,   3.])
-        >>> x1 = ivy.array([1, 2, 3])
-        >>> x1.gcd(10)
-        ivy.array([1.,   2.,  1.])
-        """
-        return ivy.gcd(self._data, x2, out=out)
-
     def isclose(
         self: ivy.Array,
         b: ivy.Array,
@@ -400,83 +362,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         return ivy.isclose(
             self._data, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
-
-    def angle(
-        self: ivy.Array,
-        /,
-        *,
-        deg: bool = False,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.angle. This method simply wraps the
-        function, and so the docstring for ivy.angle also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        z
-            Array-like input.
-        deg
-            optional bool.
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Returns an array of angles for each complex number in the input.
-            If def is False(default), angle is calculated in radian and if
-            def is True, then angle is calculated in degrees.
-
-        Examples
-        --------
-        >>> ivy.set_backend('tensorflow')
-        >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
-        >>> z
-        ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
-        >>> ivy.angle(z)
-        ivy.array([ 2.35619449,  2.35619449, -0.78539816])
-        >>> ivy.set_backend('numpy')
-        >>> ivy.angle(z,deg=True)
-        ivy.array([135., 135., -45.])
-        """
-        return ivy.angle(self._data, deg=deg, out=out)
-
-    def imag(
-        self: ivy.Array,
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.imag. This method simply wraps the
-        function, and so the docstring for ivy.imag also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        self
-            Array-like input.
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Returns an array with the imaginary part of complex numbers.
-
-        Examples
-        --------
-        >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
-        >>> b
-        ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
-        >>> ivy.imag(b)
-        ivy.array([2., 4., 6.])
-        >>> b.imag()
-        ivy.array([2., 4., 6.])
-        """
-        return ivy.imag(self._data, out=out)
 
     def nan_to_num(
         self: ivy.Array,
