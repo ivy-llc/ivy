@@ -13,7 +13,8 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 def matmul(x, y, transpose_x=False, transpose_y=False, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
     return ivy.matmul(x, y, transpose_a=transpose_x, transpose_b=transpose_y)
-    
+
+
 # norm
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
