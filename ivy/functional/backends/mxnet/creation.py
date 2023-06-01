@@ -2,7 +2,7 @@
 import mxnet as mx
 import numpy as np
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence, Tuple
 
 # lcoal
 import ivy
@@ -13,6 +13,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 
 
@@ -32,6 +33,7 @@ def arange(
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         (
@@ -250,4 +252,10 @@ def frombuffer(
     count: Optional[int] = (-1),
     offset: Optional[int] = 0,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def triu_indices(
+    n_rows: int, n_cols: Optional[int] = None, k: int = 0, /, *, device: str
+) -> Tuple[Union[(None, mx.ndarray.NDArray)]]:
     raise IvyNotImplementedException()

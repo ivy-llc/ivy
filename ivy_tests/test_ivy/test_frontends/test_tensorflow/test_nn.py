@@ -6,7 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _dropout_helper
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
@@ -19,9 +19,18 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
-    alpha=helpers.floats(min_value=0, max_value=1),
+    alpha=helpers.floats(
+        min_value=0,
+        max_value=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
+    ),
 )
 def test_tensorflow_leaky_relu(
     *,
@@ -1120,7 +1129,7 @@ def test_tensorflow_max_pool2d(
 # moments
 @handle_frontend_test(
     fn_tree="tensorflow.nn.moments",
-    dtype_x_axis=statistical_dtype_values(function="mean"),
+    dtype_x_axis=_statistical_dtype_values(function="mean"),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
 )

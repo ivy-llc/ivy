@@ -1,7 +1,7 @@
 # global
 import copy
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence, Tuple
 import numpy as np
 import torch
 from torch import Tensor
@@ -19,6 +19,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 from . import backend_version
 
@@ -98,6 +99,7 @@ def _stack_tensors(x, dtype):
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         torch.Tensor,
@@ -153,7 +155,7 @@ def asarray(
 
     elif isinstance(obj, np.ndarray) and dtype is None:
         dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-    else:
+    elif dtype is None:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
     if dtype == torch.bfloat16 and isinstance(obj, np.ndarray):
@@ -625,3 +627,19 @@ def frombuffer(
     dtype = ivy.as_native_dtype(dtype)
 
     return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: torch.device,
+) -> Tuple[torch.Tensor]:
+    n_cols = n_rows if n_cols is None else n_cols
+    return tuple(
+        torch.triu_indices(
+            row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
+        )
+    )

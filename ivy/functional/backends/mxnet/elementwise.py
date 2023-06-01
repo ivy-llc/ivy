@@ -189,8 +189,7 @@ def divide(
     if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
         ret = mx.nd.array(ret, dtype=x1.dtype)
     else:
-        ret = mx.nd.array(ret,
-                          dtype=ivy.default_float_dtype(as_native=True))
+        ret = mx.nd.array(ret, dtype=ivy.default_float_dtype(as_native=True))
     return ret
 
 
@@ -241,6 +240,16 @@ def floor_divide(
     return mx.nd.floor(mx.nd.divide(x1, x2))
 
 
+def fmin(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def greater(
     x1: Union[(float, None, mx.ndarray.NDArray)],
     x2: Union[(float, None, mx.ndarray.NDArray)],
@@ -283,6 +292,16 @@ def isinf(
 
 def isnan(
     x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def lcm(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
@@ -544,6 +563,18 @@ def subtract(
     return mx.nd.subtract(x1, x2)
 
 
+def trapz(
+    y: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    x: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    dx: float = 1.0,
+    axis: int = (-1),
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def tan(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
@@ -564,6 +595,33 @@ def tanh(
 
 def trunc(
     x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def imag(
+    val: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def angle(
+    input: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+def exp2(
+    x: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,

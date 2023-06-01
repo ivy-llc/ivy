@@ -2,7 +2,7 @@
 import math
 import itertools
 from typing import Optional, Union, Tuple, Literal, Sequence
-from functools import reduce
+from functools import reduce as _reduce
 
 # local
 import ivy
@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     inputs_to_ivy_arrays,
+    handle_array_function,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -895,9 +896,6 @@ def embedding(
     return ret
 
 
-embedding.mixed_function = True
-
-
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -1256,7 +1254,7 @@ def _upsample_cubic_interp1d(coeffs, ts):
 
 
 def _sum_tensors(ts):
-    return reduce(ivy.add, ts)
+    return _reduce(ivy.add, ts)
 
 
 def _upsample_bicubic2d_default(
@@ -1319,6 +1317,8 @@ def _upsample_bicubic2d_default(
 
 @handle_nestable
 @handle_out_argument
+@inputs_to_ivy_arrays
+@handle_array_function
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],
@@ -1596,9 +1596,6 @@ def interpolate(
     return ivy.astype(ret, ivy.dtype(x), out=out)
 
 
-interpolate.mixed_function = True
-
-
 def _get_size(scale_factor, size, dims, x_shape):
     if scale_factor is not None:
         if isinstance(scale_factor, (float, int)):
@@ -1758,9 +1755,6 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
-adaptive_avg_pool1d.mixed_function = True
-
-
 @handle_nestable
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
@@ -1836,6 +1830,3 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
-
-
-adaptive_avg_pool2d.mixed_function = True

@@ -6,6 +6,7 @@ from numbers import Number
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy
 
+
 def min(
     x: Union[(None, mx.ndarray.NDArray)],
     /,

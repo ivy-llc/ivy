@@ -11,7 +11,7 @@ from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .elementwise import _elementwise_helper
 
 # Array API Standard #
@@ -160,7 +160,8 @@ def eigvalsh(
 def inner(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
     if x1.dtype in [
         paddle.int8,
         paddle.int16,
@@ -335,11 +336,11 @@ def matrix_rank(
 ) -> paddle.Tensor:
     if x.ndim < 2:
         return paddle.to_tensor(0).squeeze().astype(x.dtype)
-    atol = atol if atol is not None else 0
-    rtol = rtol if rtol is not None else 0
-    svd_values = paddle_backend.svd(x)[1]
-    sigma = paddle_backend.max(svd_values)
-    tol = paddle_backend.maximum(atol, rtol * sigma)
+    atol = atol if atol is not None else 0.0
+    rtol = rtol if rtol is not None else 0.0
+    svd_values = ivy.svd(x, compute_uv=False)
+    sigma = ivy.max(svd_values)
+    tol = ivy.maximum(atol, rtol * sigma)
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -361,7 +362,7 @@ def matrix_transpose(
     x: paddle.Tensor,
     /,
     *,
-    perm: Union[Tuple[List[int], List[int]]] = None,
+    perm: Optional[Union[Tuple[int], List[int]]] = None,
     conjugate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -375,7 +376,8 @@ def matrix_transpose(
 def outer(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
     if x1.dtype in [
         paddle.int8,
         paddle.int16,
@@ -641,6 +643,10 @@ def vander(
     )
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("unsigned", "int8", "int16", "float16")},
+    backend_version,
+)
 def vector_to_skew_symmetric_matrix(
     vector: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:

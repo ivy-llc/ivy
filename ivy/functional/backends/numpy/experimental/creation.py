@@ -11,19 +11,6 @@ import ivy
 # -------------------#
 
 
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
-    /,
-    *,
-    device: str,
-) -> Tuple[np.ndarray]:
-    return tuple(
-        _to_device(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)), device=device)
-    )
-
-
 def vorbis_window(
     window_length: np.ndarray,
     *,
@@ -66,7 +53,7 @@ def hann_window(
     if periodic:
         count = np.arange(size) / size
     else:
-        count = np.linspace(start = 0, stop = size,num=size)
+        count = np.linspace(start=0, stop=size, num=size)
     return (0.5 - 0.5 * np.cos(2 * np.pi * count)).astype(dtype)
 
 

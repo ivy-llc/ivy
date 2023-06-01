@@ -588,7 +588,9 @@ class _ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_list(self)
 
-    def to_file(self: ivy.Array, fid: Union[str, bytes, int], sep: str = '', format_: str = '%s') -> None:
+    def to_file(
+        self: ivy.Array, fid: Union[str, bytes, int], sep: str = "", format_: str = "%s"
+    ) -> None:
         """
         ivy.Array instance method variant of to_file.
 
@@ -622,7 +624,6 @@ class _ArrayWithGeneral(abc.ABC):
         """
 
         return ivy.to_file(self, fid, sep, format_)
-
 
     def supports_inplace_updates(self: ivy.Array, /) -> bool:
         """

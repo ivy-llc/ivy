@@ -449,10 +449,13 @@ def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
 
 
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64", "int16")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def split(value, num_or_size_splits, axis=0, num=None, name=None):
     return ivy.split(
-        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=False
+        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=True
     )
 
 
@@ -511,3 +514,18 @@ def unique(x, out_idx=ivy.int32, name=None):
     y = ret[0]
     idx = ivy.astype(ret[2], out_idx)
     return y, idx
+
+
+@to_ivy_arrays_and_back
+def while_loop(
+    cond,
+    body,
+    loop_vars,
+    shape_invariants=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    maximum_iterations=None,
+    name=None,
+):
+    return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)

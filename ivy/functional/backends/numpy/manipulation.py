@@ -174,7 +174,7 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    num_or_size_splits: Optional[Union[int, Sequence[int], np.ndarray]] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[np.ndarray]:
@@ -199,6 +199,8 @@ def split(
             num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
                 int(remainder * num_or_size_splits)
             ]
+    elif isinstance(num_or_size_splits, np.ndarray):
+        num_or_size_splits = num_or_size_splits.tolist()
     if isinstance(num_or_size_splits, (list, tuple)):
         num_or_size_splits = np.cumsum(num_or_size_splits[:-1])
     if copy:

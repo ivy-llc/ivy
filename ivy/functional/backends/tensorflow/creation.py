@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence, Tuple
 
 import tensorflow as tf
 
@@ -14,6 +14,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 from . import backend_version
 
@@ -73,6 +74,7 @@ def arange(
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         tf.Tensor,
@@ -109,7 +111,7 @@ def asarray(
                 except (TypeError, ValueError):
                     dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -119,7 +121,7 @@ def asarray(
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -133,18 +135,19 @@ def asarray(
 
                 dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 return tf.convert_to_tensor(
-                    ivy.nested_map(
-                        obj, lambda x: tf.convert_to_tensor(x, dtype), shallow=False
-                    ),
+                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype), shallow=False),
                     dtype=dtype,
                 )
             else:
-                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype, item=obj))
+                if dtype is None:
+                    dtype = ivy.as_native_dtype(
+                        ivy.default_dtype(dtype=dtype, item=obj)
+                    )
                 try:
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.cast(tensor, dtype)
@@ -461,3 +464,30 @@ def frombuffer(
         ret = ret[offset:]
 
     return ret
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: str,
+) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+    n_cols = n_rows if n_cols is None else n_cols
+
+    if n_rows < 0 or n_cols < 0:
+        n_rows, n_cols = 0, 0
+
+    ret = [[], []]
+
+    for i in range(0, min(n_rows, n_cols - k), 1):
+        for j in range(max(0, k + i), n_cols, 1):
+            ret[0].append(i)
+            ret[1].append(j)
+
+    if device is not None:
+        with tf.device(ivy.as_native_dev(device)):
+            return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
+
+    return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))

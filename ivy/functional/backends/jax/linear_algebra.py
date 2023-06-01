@@ -146,14 +146,9 @@ def inv(
 ) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
         return x
-    else:
-        if adjoint is False:
-            ret = jnp.linalg.inv(x)
-            return ret
-        else:
-            x = jnp.transpose(x)
-            ret = jnp.linalg.inv(x)
-            return ret
+    if adjoint:
+        x = jnp.transpose(x)
+    return jnp.linalg.inv(x)
 
 
 @with_unsupported_dtypes(
@@ -516,7 +511,15 @@ def vander(
     return jnp.vander(x, N=N, increasing=increasing)
 
 
-@with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "0.4.10 and below": (
+            "complex",
+            "unsigned",
+        )
+    },
+    backend_version,
+)
 def vector_to_skew_symmetric_matrix(
     vector: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
