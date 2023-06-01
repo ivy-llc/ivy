@@ -8,7 +8,6 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 from math import factorial
 
-
 # sign
 @to_ivy_arrays_and_back
 def sign(x, /):
@@ -629,17 +628,20 @@ def polyint(p, m=1, k=None):
 )
 @to_ivy_arrays_and_back
 def polydiv(u, v, *, trim_leading_zeros=False):
-    m = len(u) - 1
-    n = len(v) - 1
-    scale = 1. / v[0]
+    u, v_arr = ivy.promote_types_of_inputs(u, v)
+    n = v_arr.shape[0] - 1
+    m = u.shape[0] - 1
+    scale = 1. / v_arr[0]
     q = ivy.zeros((max(m - n + 1, 1),), dtype=u.dtype)
+    r = ivy.copy_array(u)
     for k in range(0, m - n + 1):
-        d = scale * u[k]
+        d = scale * r[k]
         q[k] = d
-        u[k:k+n+1] -= (d * v)
+        r[k:k+n+1] -= (d * v_arr)
     if trim_leading_zeros:
-        u = trim_zeros(u, trim='f')
-    return q, u
+        r = trim_zeros(r, trim='f')
+        # TODO: Need to find a way to control tolerance of trim_zeros
+    return q, r
 
 
 @to_ivy_arrays_and_back
