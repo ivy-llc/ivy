@@ -116,28 +116,3 @@ def bernoulli(
     if not _check_shapes_broadcastable(shape, probs.shape):
         shape = probs.shape
     return to_device(jax.random.bernoulli(rng_input, probs, shape=shape), device)
-
-
-def laplace(
-    loc: Union[JaxArray, float, Sequence[float]],
-    scale: Union[JaxArray, float, Sequence[float]],
-    /,
-    *,
-    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
-    dtype: Optional[jnp.dtype] = None,
-    seed: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if size is None:
-        if isinstance(loc, float) and isinstance(scale, float):
-            size = 1
-        else:
-            size = jax.numpy.broadcast_shapes(loc.shape, scale.shape)
-
-    if seed is not None:
-        rng_input = jax.random.PRNGKey(seed)
-    else:
-        RNG_, rng_input = jax.random.split(_getRNG())
-        _setRNG(RNG_)
-    return to_device(jax.random.laplace(rng_input, shape=size, dtype=dtype), device)

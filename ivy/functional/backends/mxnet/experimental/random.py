@@ -68,17 +68,3 @@ def bernoulli(
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
-
-
-def laplace(
-    loc: Union[mx.ndarray.NDArray, float],
-    scale: Union[mx.ndarray.NDArray, float],
-    /,
-    *,
-    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Optional[str] = None,
-    dtype: Optional[Union[(None, ivy.Dtype)]] = None,
-    seed: Optional[int] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
