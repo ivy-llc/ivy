@@ -1,6 +1,7 @@
 # local
 from typing import Optional, Union, Sequence
 import ivy
+import numpy as np
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
@@ -352,12 +353,58 @@ def laplace(
     ret
         Drawn samples from the parameterized Laplace distribution.
     """
-    return ivy.current_backend().laplace(
-        loc,
-        scale,
-        size=size,
+    if dtype is None:
+        dtype = ivy.float32
+
+    if isinstance(loc, (int, float)):
+        loc = ivy.full(shape=(), fill_value=loc, dtype=dtype)
+
+    if isinstance(scale, (int, float)):
+        scale = ivy.full(shape=(), fill_value=scale, dtype=dtype)
+
+    if (len(scale.shape) > 0 or len(loc.shape) > 0) and (loc.dtype == scale.dtype):
+        loc, scale = ivy.broadcast_arrays(loc, scale)
+    else:
+        loc, scale = loc, scale
+
+    eps = _get_eps(loc.dtype)
+
+    if seed is not None:
+        ivy.seed(seed_value=seed)
+
+    if size is None:
+        size = (1,)
+
+    uniform = ivy.random_uniform(
+        low=float(np.nextafter(-1, 1)) + eps / 2,
+        high=1.0 - eps / 2,
+        shape=size,
         device=device,
         dtype=dtype,
         seed=seed,
-        out=out,
     )
+
+    if len(scale.shape) == 0 and len(loc.shape) == 0:
+        loc, scale, uniform = ivy.broadcast_arrays(loc, scale, uniform)
+    else:
+        loc, scale = loc, scale
+
+    return ivy.to_device(
+        (loc - scale * uniform.sign() * ivy.log1p(-ivy.abs(uniform))), device
+    )
+
+
+def _get_eps(dtype):
+    """
+    Get the eps of certain data type.
+
+    Returns
+    -------
+    eps:
+        A float eps value by different data types.
+    """
+    eps = 1.19209e-07
+    if dtype == ivy.float64 or dtype == ivy.complex128:
+        eps = 2.22045e-16
+
+    return eps

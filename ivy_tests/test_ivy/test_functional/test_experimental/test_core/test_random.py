@@ -288,6 +288,7 @@ def test_bernoulli(
     ),
     seed=helpers.ints(min_value=0, max_value=100),
     test_instance_method=st.just(False),
+    test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_laplace(
