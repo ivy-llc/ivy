@@ -104,6 +104,7 @@ def test_max_pool3d(
     x_k_s_p,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
@@ -112,6 +113,7 @@ def test_max_pool3d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,

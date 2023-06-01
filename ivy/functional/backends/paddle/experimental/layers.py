@@ -123,7 +123,39 @@ def max_pool3d(
     data_format: str = "NDHWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if isinstance(strides, int):
+        strides = (strides, strides, strides)
+    elif len(strides) == 1:
+        strides = (strides[0], strides[0], strides[0])
+    if isinstance(kernel, int):
+        kernel = (kernel, kernel, kernel)
+    elif len(kernel) == 1:
+        kernel = (kernel[0], kernel[0], kernel[0])
+    if data_format == "NDHWC":
+        x = paddle.transpose(x, perm=[0, 4, 1, 2, 3])
+    x_shape = list(x.shape[2:])
+    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
+    x = paddle.nn.functional.pad(
+        x,
+        [
+            pad_w // 2,
+            pad_w - pad_w // 2,
+            pad_h // 2,
+            pad_h - pad_h // 2,
+            pad_d // 2,
+            pad_d - pad_d // 2,
+        ],
+        value=float("-inf"),
+        data_format="NCDHW",
+    )
+    if padding != "VALID" and padding != "SAME":
+        raise ValueError(f'Invalid padding arg {padding}\nMust be one of: "VALID" or "SAME"')
+    res = paddle.nn.functional.max_pool3d(x, kernel_size=kernel, stride=strides, padding=0)
+    if data_format == "NDHWC":
+        res = paddle.transpose(res, perm=[0, 2, 3, 4, 1])
+    return res
 
 
 def avg_pool1d(
