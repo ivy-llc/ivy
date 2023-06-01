@@ -591,7 +591,6 @@ def pool(
                 strides,
                 padding,
                 data_format=data_format,
-                ceil_mode=ceil_mode,
                 out=out,
             )
         elif len(ivy.shape(x)) == 4:
@@ -611,7 +610,6 @@ def pool(
                 strides,
                 padding,
                 data_format=data_format,
-                ceil_mode=ceil_mode,
                 out=out,
             )
         else:
