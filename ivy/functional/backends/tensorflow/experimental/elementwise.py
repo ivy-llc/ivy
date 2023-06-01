@@ -8,7 +8,6 @@ from tensorflow.python.ops.numpy_ops import np_math_ops
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-import tensorflow_probability as tfp
 from .. import backend_version
 
 
@@ -36,33 +35,6 @@ def fmax(
     return ret
 
 
-@with_supported_dtypes({"2.12.0 and below": ("float",)}, backend_version)
-def fmin(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    x1 = tf.where(tf.math.is_nan(x1), x2, x1)
-    x2 = tf.where(tf.math.is_nan(x2), x1, x2)
-    ret = tf.experimental.numpy.minimum(x1, x2)
-    return ret
-
-
-def trapz(
-    y: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    x: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    dx: float = 1.0,
-    axis: int = -1,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)
-
-
 @with_unsupported_dtypes(
     {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
@@ -79,15 +51,6 @@ def float_power(
     else:
         out_dtype = tf.float64
     return tf.cast(tf.experimental.numpy.float_power(x1, x2), out_dtype)
-
-
-def exp2(
-    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.pow(2, x, name=None)
 
 
 def copysign(
@@ -137,20 +100,6 @@ def nansum(
 ) -> Union[tf.Tensor, tf.Variable]:
     np_math_ops.enable_numpy_methods_on_tensor()
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
-
-
-@with_unsupported_dtypes(
-    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
-)
-def gcd(
-    x1: Union[tf.Tensor, tf.Variable, int, list, tuple],
-    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.gcd(x1, x2)
 
 
 def isclose(
@@ -298,54 +247,6 @@ def diff(
     if append is not None:
         x = tf.experimental.numpy.append(x, append, axis=axis if axis != -1 else None)
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
-
-
-@with_unsupported_dtypes(
-    {
-        "2.12.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "bfloat16",
-            "int32",
-        )
-    },
-    backend_version,
-)
-def angle(
-    input: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if deg:
-        return tf.math.angle(input, name=None) * (180 / tf.experimental.numpy.pi)
-    else:
-        return tf.math.angle(input, name=None)
-
-
-@with_unsupported_dtypes(
-    {
-        "2.12.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "bfloat16",
-            "int32",
-        )
-    },
-    backend_version,
-)
-def imag(
-    val: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.imag(val, name=None)
 
 
 @with_supported_dtypes(

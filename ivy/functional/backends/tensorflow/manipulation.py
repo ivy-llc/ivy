@@ -3,6 +3,7 @@ import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
 
+import numpy as np
 import tensorflow as tf
 
 # local
@@ -47,7 +48,10 @@ def concat(
         axis = 0
         if is_tuple:
             xs = tuple(xs)
-    return tf.concat(xs, axis)
+    try:
+        return tf.concat(xs, axis)
+    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def expand_dims(
@@ -62,8 +66,8 @@ def expand_dims(
         out_shape = _calculate_out_shape(axis, x.shape)
         ret = tf.reshape(x, shape=out_shape)
         return ret
-    except tf.errors.InvalidArgumentError as error:
-        raise ivy.utils.exceptions.IvyException(repr(error))
+    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def flip(
@@ -197,7 +201,10 @@ def stack(
     axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.stack(arrays, axis)
+    try:
+        return tf.experimental.numpy.stack(arrays, axis)
+    except ValueError as e:
+        raise ivy.utils.exceptions.IvyIndexError(e)
 
 
 # Extra #

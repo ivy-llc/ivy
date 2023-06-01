@@ -69,6 +69,10 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[Union[tf.Tensor, tf.Variable]]]:
+    if x.ndim == 0:
+        raise ivy.utils.exceptions.IvyValueError(
+            "Cannot call nonzero on a zero dim array"
+        )
     res = tf.experimental.numpy.nonzero(x)
 
     if size is not None:

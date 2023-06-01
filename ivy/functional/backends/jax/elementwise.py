@@ -211,6 +211,16 @@ def floor_divide(
     return jnp.floor(jnp.divide(x1, x2)).astype(x1.dtype)
 
 
+def fmin(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmin(x1, x2)
+
+
 def greater(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
@@ -444,6 +454,18 @@ def subtract(
     return jnp.subtract(x1, x2)
 
 
+def trapz(
+    y: JaxArray,
+    /,
+    *,
+    x: Optional[JaxArray] = None,
+    dx: float = 1.0,
+    axis: int = -1,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.trapz(y, x=x, dx=dx, axis=axis)
+
+
 def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tan(x)
 
@@ -460,8 +482,36 @@ def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
         return jnp.trunc(x)
 
 
+def exp2(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.power(2, x)
+
+
+def imag(
+    val: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.imag(val)
+
+
+def angle(
+    z: JaxArray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.angle(z, deg=deg)
+
 # Extra #
 # ------#
+
 
 
 @with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)
@@ -525,3 +575,14 @@ def fmod(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmod(x1, x2)
+
+
+def gcd(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return jnp.gcd(x1, x2)
