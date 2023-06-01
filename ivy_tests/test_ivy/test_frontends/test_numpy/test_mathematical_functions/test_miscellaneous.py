@@ -738,7 +738,7 @@ def test_numpy_lcm(
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="lcm"
+        fn_name="gcd"
     ),
 )
 def test_numpy_gcd(
