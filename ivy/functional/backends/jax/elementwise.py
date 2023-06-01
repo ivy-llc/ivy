@@ -350,6 +350,19 @@ def multiply(
     return jnp.multiply(x1, x2)
 
 
+def nan_to_num(
+    x: JaxArray,
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
 def negative(
     x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
