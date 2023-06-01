@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
 )
+import ivy.functional.backends.paddle as paddle_backend
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.paddle.elementwise import _elementwise_helper
@@ -32,74 +33,8 @@ def fmax(
     return paddle.fmax(x1, x2)
 
 
-@with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
-    backend_version,
-)
-def fmin(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if x1.dtype != x2.dtype:
-        x1, x2 = promote_types_of_inputs(x1, x2)
-    return paddle.fmin(x1, x2)
-
-
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
-
-
-@with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32")},
-    backend_version,
-)
-def trapz(
-    y: paddle.Tensor,
-    /,
-    *,
-    x: Optional[paddle.Tensor] = None,
-    dx: Optional[float] = 1.0,
-    axis: Optional[int] = -1,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if x is None:
-        d = dx
-    else:
-        if x.ndim == 1:
-            d = paddle.diff(x)
-            # reshape to correct shape
-            shape = [1] * y.ndim
-            shape[axis] = d.shape[0]
-            d = d.reshape(shape)
-        else:
-            d = paddle.diff(x, axis=axis)
-
-    slice1 = [slice(None)] * y.ndim
-    slice2 = [slice(None)] * y.ndim
-
-    slice1[axis] = slice(1, None)
-    slice2[axis] = slice(None, -1)
-
-    with ivy.ArrayMode(False):
-        if y.shape[axis] < 2:
-            return ivy.zeros_like(ivy.squeeze(y, axis=axis))
-        ret = ivy.sum(
-            ivy.divide(
-                ivy.multiply(
-                    d,
-                    ivy.add(
-                        ivy.get_item(y, tuple(slice1)), ivy.get_item(y, tuple(slice2))
-                    ),
-                ),
-                2.0,
-            ),
-            axis=axis,
-        )
-
-    return ret
 
 
 def float_power(
@@ -112,16 +47,6 @@ def float_power(
     x1 = paddle.cast(x1, dtype="float64")
     x2 = paddle.cast(x2, dtype="float64")  # Compute the element-wise power
     return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
-
-
-def exp2(
-    x: Union[paddle.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        return ivy.pow(2, x)
 
 
 def copysign(
@@ -153,20 +78,6 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
-)
-def gcd(
-    x1: Union[paddle.Tensor, int, list, tuple],
-    x2: Union[paddle.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return paddle.gcd(x1, x2)
-
-
-@with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def isclose(
@@ -180,46 +91,6 @@ def isclose(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
-
-def angle(
-    input: paddle.Tensor,
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    result = paddle.angle(input)
-    if deg:
-        result = paddle.rad2deg(result)
-    return result
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "float32",
-                "float64",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def imag(
-    val: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.imag(val)
 
 
 def nan_to_num(
@@ -297,8 +168,9 @@ def signbit(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        return ivy.less_equal(x, 0)
+    return paddle_backend.less(
+        paddle_backend.where(x.astype(bool), x, paddle_backend.divide(1.0, x)), 0.0
+    )
 
 
 def hypot(
