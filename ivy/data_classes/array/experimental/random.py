@@ -285,6 +285,10 @@ class _ArrayWithRandomExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
+        ivy.Array instance method variant of ivy.laplace. This method simply wraps the
+        function, and so the docstring for ivy.laplace also applies to this method with
+        minimal changes.
+
         Parameters
         ----------
         loc
