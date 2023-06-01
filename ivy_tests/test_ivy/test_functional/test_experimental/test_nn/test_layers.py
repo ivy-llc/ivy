@@ -462,7 +462,6 @@ def x_and_fft(draw, dtypes):
     ),
     ground_truth_backend="numpy",
     test_gradients=st.just(False),
-    container_flags=st.just([False]),
 )
 def test_fft(
     *,
