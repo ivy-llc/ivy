@@ -84,4 +84,4 @@ def msort(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.msort(a)
+    return jnp.sort(a, axis=0, kind="mergesort")
