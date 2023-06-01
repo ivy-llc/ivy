@@ -765,7 +765,7 @@ class Tensor:
     def ne(self, other):
         return torch_frontend.ne(self, other)
 
-    def squeeze(self, dim):
+    def squeeze(self, dim=None):
         return torch_frontend.squeeze(self, dim)
 
     def flip(self, dims):
