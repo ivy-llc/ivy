@@ -458,6 +458,7 @@ def test_fft(
     d_x_d_n_n,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
     ground_truth_backend,
 ):
@@ -467,6 +468,7 @@ def test_fft(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
