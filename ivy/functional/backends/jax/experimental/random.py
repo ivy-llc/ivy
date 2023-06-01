@@ -135,7 +135,6 @@ def laplace(
         else:
             size = jax.numpy.broadcast_shapes(loc.shape, scale.shape)
 
-    jax.numpy.broadcast_shapes(loc.shape, scale.shape)
     if seed is not None:
         rng_input = jax.random.PRNGKey(seed)
     else:
