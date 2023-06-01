@@ -1133,8 +1133,8 @@ class Tensor:
         ).ivy_array
         return self
 
-    def nonzero(self):
-        return torch_frontend.nonzero(self)
+    def nonzero(self, as_tuple=False):
+        return torch_frontend.nonzero(self, as_tuple=as_tuple)
 
     def mm(self, mat2):
         return torch_frontend.mm(self, mat2)
