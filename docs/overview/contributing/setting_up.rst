@@ -696,8 +696,7 @@ Note: Currently you do not need to comment out the :code:`conftest.py` file in t
 
 Setting up with WSL
 -------------------
-
-Here is another way for you to set up the whole Ivy environment on Windows using WSL, virtual environment and VSCode. 
+ 
 It is understandable that working with computationally heavy tools like Docker and PyCharm is not always confortable for new developers.
 By utilizing WSL, you can run a Linux distribution on your Windows machine and in addition, venv is leveraged to create 
 isolated Python environments eliminating the need for a full-fledged containerization solution like Docker, and with VSCode being an appropriate alternative to PyCharm, 
