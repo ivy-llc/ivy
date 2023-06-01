@@ -987,14 +987,12 @@ def _wrap_function(
                 if mixed_fn:
                     if attr == "inputs_to_ivy_arrays":
                         continue
-                    if (
-                        hasattr(to_wrap, "partial_mixed_handler")
-                        and attr == "handle_mixed_function"
-                    ):
-                        to_wrap.compos = original
-                        to_wrap = handle_mixed_function(
-                            getattr(to_wrap, "partial_mixed_handler")
-                        )(to_wrap)
+                    if attr == "handle_mixed_function":
+                        if hasattr(to_wrap, "partial_mixed_handler"):
+                            to_wrap.compos = original
+                            to_wrap = handle_mixed_function(
+                                getattr(to_wrap, "partial_mixed_handler")
+                            )(to_wrap)
                         continue
                 to_wrap = getattr(ivy, attr)(to_wrap)
 

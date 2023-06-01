@@ -2,7 +2,7 @@ import paddle
 import paddle.nn.functional as F
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from typing import Optional
+from typing import Optional, Tuple
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
@@ -35,11 +35,11 @@ def batch_norm(
     *,
     scale: Optional[paddle.Tensor] = None,
     offset: Optional[paddle.Tensor] = None,
-    training: bool = False,
-    eps: float = 1e-5,
-    momentum: float = 1e-1,
-    out: Optional[paddle.Tensor] = None,
-):
+    training: Optional[bool] = False,
+    eps: Optional[float] = 1e-5,
+    momentum: Optional[float] = 1e-1,
+    out: Optional[Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.float32, paddle.float64]:
         x, mean, variance, scale, offset = [
             t.cast("float32") for t in [x, mean, variance, scale, offset]
