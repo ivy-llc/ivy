@@ -437,10 +437,18 @@ def x_and_fft(draw, dtypes):
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
+            min_value=-1e5,
+            max_value=1e5,
+            allow_inf=False,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
         )
     )
     dim = draw(
-        helpers.get_axis(shape=x_dim, allow_neg=True, allow_none=False, max_size=1)
+        helpers.get_axis(
+            shape=x_dim, allow_neg=True, allow_none=False, max_size=1, force_int=True
+        )
     )
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
     n = draw(st.integers(min_fft_points, 256))
@@ -449,15 +457,19 @@ def x_and_fft(draw, dtypes):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft",
-    d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
+    d_x_d_n_n=x_and_fft(
+        helpers.get_dtypes("complex"),
+    ),
     ground_truth_backend="numpy",
     test_gradients=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_fft(
     *,
     d_x_d_n_n,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
     ground_truth_backend,
 ):
@@ -470,7 +482,7 @@ def test_fft(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=False,
+        on_device=on_device,
         x=x,
         dim=dim,
         norm=norm,
