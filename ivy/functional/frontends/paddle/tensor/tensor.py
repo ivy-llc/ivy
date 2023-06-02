@@ -106,5 +106,6 @@ class Tensor:
     def asin(self, name=None):
         return ivy.asin(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(self, axis=None, keepdims=False):
         return ivy.argmax(self._ivy_array, axis=axis, keepdims=keepdims)
