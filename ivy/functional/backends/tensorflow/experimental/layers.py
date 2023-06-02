@@ -455,8 +455,6 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    if x.dtype not in (tf.float32, tf.float64):
-        x = tf.cast(x, tf.float32)
     # ToDo: Update this once tf.signal.dct supports axis other than -1
     if axis != -1:
         new_dims = list(range(len(x.shape)))
