@@ -112,6 +112,9 @@ def isclose(
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
