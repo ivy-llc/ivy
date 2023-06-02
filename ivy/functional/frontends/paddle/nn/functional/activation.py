@@ -31,3 +31,10 @@ def selu(
 
 tanh = paddle_tanh
 log_softmax = paddle_log_softmax
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def hardsigmoid(x, slope=0.1666667, offset=0.5, name=None):
+    ret = ivy.minimum(ivy.maximum(ivy.add(ivy.multiply(x, slope), offset), 0), 1)
+    return ret
