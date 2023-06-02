@@ -49,6 +49,25 @@ def float_power(
     return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
 
 
+def frexp(
+    x: Union[paddle.Tensor, Number],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException
+
+
+def ldexp(
+    x1: Union[paddle.Tensor, Number],
+    x2: Union[paddle.Tensor, Number],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException
+
+
 def copysign(
     x1: Union[paddle.Tensor, Number],
     x2: Union[paddle.Tensor, Number],
