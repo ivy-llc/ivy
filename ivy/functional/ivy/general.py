@@ -3807,7 +3807,7 @@ def isin(
     >>> ivy.isin(x, y, invert=True)
     ivy.array([False, False, False,  True])
     """
-    return ivy.current_backend().isin(
+    return ivy.current_backend(elements, test_elements).isin(
         elements, test_elements, assume_unique=assume_unique, invert=invert
     )
 
@@ -3842,7 +3842,7 @@ def itemsize(
     >>> ivy.itemsize(x)
     16
     """
-    return ivy.current_backend().itemsize(x)
+    return ivy.current_backend(x).itemsize(x)
 
 
 @handle_exceptions
@@ -3871,4 +3871,4 @@ def strides(
     >>> ivy.strides(x)
     (4, 8)
     """
-    return ivy.current_backend().strides(x)
+    return ivy.current_backend(x).strides(x)

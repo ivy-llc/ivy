@@ -620,6 +620,7 @@ def angle(
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
 
+
 def exp2(
     x: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
     /,
