@@ -1,6 +1,10 @@
+# global
+import sys
+
 # local
-from ivy.utils.exceptions import handle_exceptions
 import ivy
+from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
 from numbers import Number
 from typing import Union, Tuple, Iterable
 from .dtypes import DType
@@ -105,4 +109,10 @@ from . import sets
 from . import signal
 from . import sparse
 
+
 _frontend_array = constant
+
+# setting to specific version #
+# --------------------------- #
+
+set_frontend_to_specific_version(sys.modules[__name__])
