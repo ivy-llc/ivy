@@ -129,22 +129,6 @@ def isclose(
 isclose.support_native_out = False
 
 
-def nan_to_num(
-    x: np.ndarray,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
-
-
-nan_to_num.support_native_out = False
-
-
 def logaddexp2(
     x1: Union[np.ndarray, int, list, tuple],
     x2: Union[np.ndarray, int, list, tuple],

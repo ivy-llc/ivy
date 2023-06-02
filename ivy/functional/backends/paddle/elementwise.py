@@ -1216,3 +1216,42 @@ def imag(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.imag(val)
+
+
+def nan_to_num(
+    x: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        if ivy.is_int_dtype(x):
+            if posinf is None:
+                posinf = ivy.iinfo(x).max
+            if neginf is None:
+                neginf = ivy.iinfo(x).min
+        elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
+            if posinf is None:
+                posinf = ivy.finfo(x).max
+            if neginf is None:
+                neginf = ivy.finfo(x).min
+        ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret > 0),
+            paddle.to_tensor(posinf, dtype=x.dtype),
+            ret,
+        )
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret < 0),
+            paddle.to_tensor(neginf, dtype=x.dtype),
+            ret,
+        )
+        if copy:
+            return ret.clone()
+        else:
+            x = ret
+            return x

@@ -544,10 +544,11 @@ def dct(
     elif type == 2:
         scale_dims = [1] * len(x.shape)
         scale_dims[axis] = axis_dim
+        complex_part = torch.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
         scale = 2.0 * torch.exp(
             torch.complex(
                 real_zero,
-                -torch.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float,
+                -complex_part.type(real_zero.type()),
             )
         ).view(scale_dims)
 
@@ -566,9 +567,10 @@ def dct(
     elif type == 3:
         scale_dims = [1] * len(x.shape)
         scale_dims[axis] = axis_dim
+        complex_part = torch.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
         scale = 2.0 * torch.exp(
             torch.complex(
-                real_zero, torch.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
+                real_zero, complex_part.type(real_zero.type())
             )
         ).view(scale_dims)
         if norm == "ortho":
@@ -600,6 +602,15 @@ def dct(
         return dct_out
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def fft(
     x: torch.Tensor,
     dim: int,
@@ -630,7 +641,11 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return torch.fft.fft(x, n, dim, norm, out=out)
+    if x.dtype in [torch.int64, torch.float64, torch.complex128]:
+        out_dtype = torch.complex128
+    else:
+        out_dtype = torch.complex64
+    return torch.fft.fft(x, n, dim, norm, out=out).to(dtype=out_dtype)
 
 
 def dropout1d(
