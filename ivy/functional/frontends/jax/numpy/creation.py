@@ -245,11 +245,7 @@ def compress(condition, a, *, axis=None, out=None):
     return ivy.moveaxis(arr[condition_arr], 0, axis)
 
 
-@to_ivy_arrays_and_back
-def iterable(x):
-    if ivy.itemsize(x) > 1 or hasattr(x, "__iter__"):
-        ret = True
-    else:
-        ret = False
-    return ret
+@inputs_to_ivy_arrays
+def iterable(y):
+    return hasattr(y, "__iter__") and y.ndim > 0
 
