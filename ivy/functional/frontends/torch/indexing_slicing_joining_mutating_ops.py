@@ -1,6 +1,5 @@
 # local
 import ivy
-from ivy.functional.frontends import torch
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
