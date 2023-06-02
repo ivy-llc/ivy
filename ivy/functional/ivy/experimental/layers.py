@@ -584,6 +584,7 @@ def dct(
 
 
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back

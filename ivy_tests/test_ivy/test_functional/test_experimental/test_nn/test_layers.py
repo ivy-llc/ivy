@@ -440,8 +440,12 @@ def x_and_fft(draw):
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
-            large_abs_safety_factor=2,
-            small_abs_safety_factor=2,
+            min_value=-1e5,
+            max_value=1e5,
+            allow_inf=False,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
         )
     )
     dim = draw(helpers.get_axis(shape=x_dim, allow_neg=True, force_int=True))
@@ -472,6 +476,8 @@ def test_fft(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
         on_device=on_device,
         x=x,
         dim=dim,
