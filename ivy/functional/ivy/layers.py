@@ -1796,6 +1796,7 @@ def conv(
     dims: int = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "channel_last",
+    filter_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
@@ -1829,6 +1830,10 @@ def conv(
         Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
         "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
         while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "OIW",
+        "OIHW", "OIDHW" input data formats for 1-D, 2-D, 3-D convolution respectively,
+        while "channel_last" corresponds to "WIO", "HWIO", "DHWIO" respectively.
     feature_group_count
          split input into groups, d_in should be divisible by the number of groups.
          (Default value = 1)
@@ -1870,6 +1875,7 @@ def conv(
             padding,
             dims=dims,
             data_format=data_format,
+            filter_format=filter_format,
             feature_group_count=feature_group_count,
             x_dilations=x_dilations,
             dilations=dilations,

@@ -5,6 +5,121 @@ import ivy
 
 class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
+    def static_l1_normalize(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out=None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.l1_normalize. This method simply
+        wraps the function, and so the docstring for ivy.l1_normalize also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input container with leaves to be normalized.
+        axis
+            The axis along which to normalize.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the normalized leaves.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0.5, 1.5, 2.5], [3.5, 4.5, 5.5]])))
+        ...                    b=ivy.array([[-1., -1.], [-1., -0.5]]]))
+        >>> y = ivy.Container.static_l1_normalize(x, axis=1)
+        >>> print(y)
+        {
+            a: ivy.array([[0.1, 0.3, 0.5],
+                          [0.35, 0.45, 0.55]]),
+            b: ivy.array([[-0.5, -0.5],
+                          [-0.5, -0.25]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "l1_normalize",
+            x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def l1_normalize(
+        self,
+        axis: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out=None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.l1_normalize. This method simply
+        wraps the function, and so the docstring for ivy.l1_normalize also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input container with leaves to be normalized.
+        axis
+            The axis along which to normalize.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+        out
+            Optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container containing the normalized leaves.
+        """
+        return self.static_l1_normalize(
+            self,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_l2_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: Optional[int] = None,
