@@ -252,7 +252,7 @@ def valid_dct(draw):
     )
     dims_len = len(x[0].shape)
     n = draw(st.sampled_from([None, "int"]))
-    axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len))
+    axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len - 1))
     norm = draw(st.sampled_from([None, "ortho"]))
     type = draw(helpers.ints(min_value=1, max_value=4))
     if n == "int":
@@ -270,10 +270,12 @@ def valid_dct(draw):
     test_gradients=st.just(False),
 )
 def test_dct(
+    *,
     dtype_x_and_args,
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
@@ -283,6 +285,7 @@ def test_dct(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         type=type,
         n=n,
