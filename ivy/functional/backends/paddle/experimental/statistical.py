@@ -262,22 +262,133 @@ def corrcoef(
     else:
         axis = 0 if rowvar else 1
         xarr = paddle.concat([x, y], axis=axis)
+        xarr = xarr.T if not rowvar else xarr
 
-    perm = [i for i in range(len(xarr.shape) - 1, -1, -1)]
-    if rowvar:
-        mean_t = paddle.mean(xarr, axis=1, keepdim=True)
-        cov_t = ((xarr - mean_t) @ paddle.transpose(xarr - mean_t, perm)) / (
-            x.shape[1] - 1
-        )
-    else:
-        mean_t = paddle.mean(xarr, axis=0, keepdim=True)
-        cov_t = (paddle.transpose(xarr - mean_t, perm) @ (xarr - mean_t)) / (
-            x.shape[1] - 1
-        )
+        def cov(x, rowvar=True, ddof=True, fweights=None, aweights=None, name=None):
+            if len(x.shape) > 2 or len(x.shape) < 1:
+                raise ValueError(
+                    "Input(x) only support N-D (1<=N<=2) tensor in cov, but received "
+                    "length of Input(input) is %s."
+                    % len(x.shape)
+                )
+            nx = x
+            if len(x.shape) == 1:
+                nx = x.reshape((1, -1))
+            if not rowvar and nx.shape[0] != 1:
+                nx = nx.t()
+            w = None
+            observation_num = nx.shape[1]
+            if fweights is not None:
+                w = fweights.astype(nx.dtype)
+                if len(w.shape) > 1:
+                    raise ValueError(
+                        "Input(fweights) only support N-D (N<=1) tensor in cov, but"
+                        " received shape of Input(input) is %s."
+                        % len(fweights.shape)
+                    )
+                if fweights.shape[0] != observation_num:
+                    raise ValueError(
+                        "The number of Input(fweights) should equal to x's dim[1]: {},"
+                        " but received size of Input(fweights) is {}.".format(
+                            observation_num, fweights.shape[0]
+                        )
+                    )
+                if fweights.min() < 0:
+                    raise ValueError(
+                        "The value of Input(fweights) cannot be negtive, but received "
+                        "min of Input(fweights) is {}.".format(fweights.min())
+                    )
+                if not paddle.all(fweights == paddle.round(fweights.astype("float64"))):
+                    raise ValueError("Input(fweights) must be integer ")
 
-    cov2_t = paddle.diag(1 / paddle.sqrt(paddle.diag(cov_t)))
-    cor = cov2_t @ cov_t @ cov2_t
-    return cor
+            if aweights is not None:
+                aw = aweights.astype(nx.dtype)
+                if len(aw.shape) > 1:
+                    raise ValueError(
+                        "Input(aweights) only support N-D (N<=1) tensor in cov, but"
+                        " received length of Input(input) is %s."
+                        % len(aweights.shape)
+                    )
+
+                if aweights.shape[0] != observation_num:
+                    raise ValueError(
+                        "The number of Input(aweights) should equal to x's dim[1]: {},"
+                        " but received size of Input(aweights) is {}.".format(
+                            observation_num, aweights.shape[0]
+                        )
+                    )
+                if aweights.min() < 0:
+                    raise ValueError(
+                        "The value of Input(aweights) cannot be negtive, but received "
+                        "min of Input(aweights) is {}.".format(aweights.min())
+                    )
+                if w is not None:
+                    w = w * aw
+                else:
+                    w = aw
+
+            w_sum = paddle.to_tensor(observation_num, dtype=nx.dtype)
+
+            if fweights is not None or aweights is not None:
+                w_sum = w.sum()
+                if w_sum.item() == 0:
+                    raise ValueError("The sum of weights is zero, can't be normalized.")
+
+            if w is not None:
+                nx_w = nx * w
+                avg = (nx_w).sum(axis=1) / w_sum
+            else:
+                avg = nx.sum(axis=1) / w_sum
+                nx_w = nx
+
+            if w is not None and aweights is not None and ddof:
+                norm_factor = w_sum - (w * aweights).sum() / w_sum
+            else:
+                norm_factor = w_sum - ddof
+            if norm_factor <= 0:
+                norm_factor = paddle.to_tensor(0.0, dtype=nx.dtype)
+            nx = nx - avg.unsqueeze(1)
+
+            if w is None:
+                nx_t = nx.T
+            else:
+                nx_t = (nx * w).T
+
+            xxt = paddle.mm(nx, nx_t.conj())
+            cov = paddle.divide(xxt, norm_factor).squeeze()
+            return cov
+
+        if len(x.shape) > 2 or len(x.shape) < 1:
+            raise ValueError(
+                "Input(x) only support N-D (1<=N<=2) tensor in corrcoef, but received "
+                "length of Input(input) is %s."
+                % len(x.shape)
+            )
+        x = xarr
+        rowvar = True
+        c = cov(x, rowvar)
+        if c.ndim == 0:
+            # scalar covariance
+            # nan if incorrect value (nan, inf, 0), 1 otherwise
+            return c / c
+
+        d = paddle.diag(c)
+
+        if paddle.is_complex(d):
+            d = d.real()
+        stddev = paddle.sqrt(d)
+        c /= stddev[:, None]
+        c /= stddev[None, :]
+
+        # Clip to [-1, 1].  This does not guarantee
+        if paddle.is_complex(c):
+            return paddle.complex(
+                paddle.clip(c.real(), -1, 1), paddle.clip(c.imag(), -1, 1)
+            )
+        else:
+            c = paddle.clip(c, -1, 1)
+
+        return c
 
 
 def histogram(
