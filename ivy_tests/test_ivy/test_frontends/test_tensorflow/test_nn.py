@@ -1517,6 +1517,7 @@ def test_tensorflow_pool(
         on_device=on_device,
         input=x[0],
         window_shape=ksize,
+        pooling_type="UNKNOWN",
         strides=strides,
         padding=padding,
     )
