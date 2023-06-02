@@ -173,7 +173,7 @@ def cond(pred, true_fn=None, false_fn=None, name=None):
 
     if not pred:
         return false_fn()
-    
+
 
 @to_ivy_arrays_and_back
 def shape(input, out_type=ivy.int32, name=None):
