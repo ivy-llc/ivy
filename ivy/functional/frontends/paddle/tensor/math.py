@@ -112,3 +112,9 @@ def round(x, name=None):
 @to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def less_than(x, y, name="None"):
+    return ivy.less_than(x, y)
