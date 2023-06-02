@@ -10,7 +10,7 @@ def conv2D(
     padding=0,
     data_format=None,
     dilations=None,
-    out=None,
+    out=None
 ):
     return ivy.conv2D(
         input,
@@ -19,5 +19,5 @@ def conv2D(
         padding=padding,
         data_format=data_format,
         dilations=dilations,
-        out=out,
+        out=out
     )
