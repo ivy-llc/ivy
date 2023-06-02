@@ -31,3 +31,26 @@ def selu(
 
 tanh = paddle_tanh
 log_softmax = paddle_log_softmax
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def celu(
+    x,
+    /,
+    *,
+    alpha=1.0,
+    name=None,
+):
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(
+            ivy.exp(ivy.divide(x, alpha)),
+            1,
+        ),
+    )
+    ret = ivy.add(
+        ivy.maximum(0, x),
+        ivy.minimum(0, prod),
+    )
+    return ret
