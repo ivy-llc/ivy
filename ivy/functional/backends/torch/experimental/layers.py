@@ -570,9 +570,7 @@ def dct(
         scale_dims[axis] = axis_dim
         complex_part = torch.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
         scale = 2.0 * torch.exp(
-            torch.complex(
-                real_zero, complex_part.type(real_zero.type())
-            )
+            torch.complex(real_zero, complex_part.type(real_zero.type()))
         ).view(scale_dims)
         if norm == "ortho":
             n1 = torch.sqrt(axis_dim_float)

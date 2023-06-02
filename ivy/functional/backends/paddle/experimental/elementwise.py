@@ -93,8 +93,6 @@ def isclose(
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-
-
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
