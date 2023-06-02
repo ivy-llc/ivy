@@ -209,7 +209,8 @@ def handle_exceptions(fn: Callable) -> Callable:
             raise e
         except IvyError as e:
             _write_traceback_history(buffer)
-            raise ivy.utils.exceptions.IvyError(fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True)
+            raise ivy.utils.exceptions.IvyError(
+                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True)
         except IvyBroadcastShapeError as e:
             _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyBroadcastShapeError(
