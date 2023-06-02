@@ -509,9 +509,9 @@ def angle(
 ) -> JaxArray:
     return jnp.angle(z, deg=deg)
 
+
 # Extra #
 # ------#
-
 
 
 @with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)
