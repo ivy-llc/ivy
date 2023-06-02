@@ -184,7 +184,7 @@ def sum(
     if x.dtype in [paddle.int8, paddle.uint8]:
         ret = paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
     else:
-        ret = paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+        ret = paddle.sum(x.cast(dtype), axis=axis, dtype=dtype, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):

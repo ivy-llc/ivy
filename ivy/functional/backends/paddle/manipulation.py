@@ -247,7 +247,7 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, List[int]]] = None,
+    num_or_size_splits: Optional[Union[int, List[int], paddle.Tensor]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
 ) -> List[paddle.Tensor]:
@@ -261,6 +261,9 @@ def split(
         return [x]
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
+    elif isinstance(num_or_size_splits, paddle.Tensor):
+        num_or_size_splits = num_or_size_splits.cast("int32")
+        num_or_size_splits = num_or_size_splits.tolist()
     elif isinstance(num_or_size_splits, int):
         num_chunks = x.shape[axis] // num_or_size_splits
         remainder = x.shape[axis] % num_or_size_splits

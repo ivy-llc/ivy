@@ -337,9 +337,6 @@ class Shape:
     def __hash__(self):
         return hash(self._shape)
 
-    def __str__(self):
-        return "?" if self._shape is None else str(self._shape)
-
     def __sizeof__(self):
         return len(self._shape) if self._shape is not None else 0
 
@@ -349,6 +346,13 @@ class Shape:
     @property
     def shape(self):
         return self._shape
+
+    def as_list(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot convert a partially known Shape to a list"
+            )
+        return [dim for dim in self._shape]
 
 
 class IntDtype(Dtype):

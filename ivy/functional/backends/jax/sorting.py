@@ -77,11 +77,11 @@ def searchsorted(
 
 
 # msort
-@with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.11 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[JaxArray, list, tuple],
     /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.msort(a)
+    return jnp.sort(a, axis=0, kind="mergesort")
