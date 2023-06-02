@@ -7,6 +7,15 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def cross(x, y, /, *, axis=9, name=None):
+    x, y = promote_types_of_paddle_inputs(x, y)
+    return ivy.cross(x, y, axis=axis)
+
+
 # matmul
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
@@ -104,3 +113,10 @@ def eigh(x, UPLO="L", name=None):
 def pinv(x, rcond=1e-15, hermitian=False, name=None):
     # TODO: Add hermitian functionality
     return ivy.pinv(x, rtol=rcond)
+
+
+# cholesky
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def cholesky(x, /, *, upper=False, name=None):
+    return ivy.cholesky(x, upper=upper)

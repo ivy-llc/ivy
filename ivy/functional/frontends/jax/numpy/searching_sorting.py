@@ -124,6 +124,7 @@ def sort(x, axis=-1, descending=False, stable=True, out=None):
     return x
 
 
+@to_ivy_arrays_and_back
 def flatnonzero(a):
     return ivy.nonzero(ivy.reshape(a, (-1,)))
 

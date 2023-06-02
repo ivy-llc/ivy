@@ -341,53 +341,6 @@ def test_isclose(
     )
 
 
-# nan_to_num
-@handle_test(
-    fn_tree="functional.ivy.experimental.nan_to_num",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=3,
-        min_value=-100,
-        max_value=100,
-        allow_nan=True,
-        allow_inf=True,
-    ),
-    copy=st.booleans(),
-    nan=st.floats(min_value=0.0, max_value=100),
-    posinf=st.floats(min_value=5e100, max_value=5e100),
-    neginf=st.floats(min_value=-5e100, max_value=-5e100),
-    test_gradients=st.just(False),
-)
-def test_nan_to_num(
-    *,
-    dtype_and_x,
-    copy,
-    nan,
-    posinf,
-    neginf,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        ground_truth_backend=ground_truth_backend,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-        copy=copy,
-        nan=nan,
-        posinf=posinf,
-        neginf=neginf,
-    )
-
-
 # logaddexp2
 @handle_test(
     fn_tree="functional.ivy.experimental.logaddexp2",

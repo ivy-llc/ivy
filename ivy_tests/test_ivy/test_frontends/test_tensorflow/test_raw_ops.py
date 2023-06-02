@@ -3283,8 +3283,7 @@ def test_tensorflow_Conv3D(
     fn_tree="tensorflow.raw_ops.Softmax",
     dtype_values_axis=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=2,
+        min_num_dims=1,
     ),
     test_with_out=st.just(False),
 )
