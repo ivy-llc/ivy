@@ -11,13 +11,14 @@ import jaxlib.xla_extension
 import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax.device import _to_device
+from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 
 
@@ -50,6 +51,7 @@ def arange(
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         JaxArray,
@@ -75,24 +77,28 @@ def asarray(
             return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
         else:
             return _to_device(obj, device=device)
-    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
-        dtype = ivy.default_dtype(item=obj, as_native=True)
-        ivy.utils.assertions._check_jax_x64_flag(dtype)
-        if copy is True:
-            return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
+    elif dtype is None:
+        if isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
+            dtype = ivy.default_dtype(item=obj, as_native=True)
+            ivy.utils.assertions._check_jax_x64_flag(dtype)
+            if copy is True:
+                return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
+            else:
+                return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
+        elif isinstance(obj, np.ndarray):
+            dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
         else:
-            return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
-    elif isinstance(obj, np.ndarray):
-        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-        ivy.utils.assertions._check_jax_x64_flag(dtype)
-    else:
-        dtype = ivy.default_dtype(dtype=dtype, item=obj)
-        ivy.utils.assertions._check_jax_x64_flag(dtype)
+            dtype = ivy.default_dtype(dtype=dtype, item=obj)
 
+    ivy.utils.assertions._check_jax_x64_flag(dtype)
     if copy is True:
         return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
     else:
-        return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
+        # jnp.array is much slower than np.array when called on lists
+        # timing the function given a 7 million integer element list
+        # the execution time drops from 323 to 17 seconds
+        obj = np.asarray(_to_array(obj))
+        return _to_device(jnp.array(obj, dtype=dtype), device=device)
 
 
 def empty(

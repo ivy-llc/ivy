@@ -2,7 +2,7 @@
 import math
 import itertools
 from typing import Optional, Union, Tuple, Literal, Sequence
-from functools import reduce
+from functools import reduce as _reduce
 
 # local
 import ivy
@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     inputs_to_ivy_arrays,
+    handle_array_function,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -583,6 +584,7 @@ def dct(
 
 
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1253,7 +1255,7 @@ def _upsample_cubic_interp1d(coeffs, ts):
 
 
 def _sum_tensors(ts):
-    return reduce(ivy.add, ts)
+    return _reduce(ivy.add, ts)
 
 
 def _upsample_bicubic2d_default(
@@ -1316,6 +1318,8 @@ def _upsample_bicubic2d_default(
 
 @handle_nestable
 @handle_out_argument
+@inputs_to_ivy_arrays
+@handle_array_function
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],
