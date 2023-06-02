@@ -7,7 +7,7 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, auto_shift_device
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
@@ -372,7 +372,6 @@ def conv3d_transpose(
     return res
 
 
-@auto_shift_device
 @with_unsupported_dtypes(
     {"2.0.1 and below": ("float16", "bfloat16", "complex")},
     backend_version,

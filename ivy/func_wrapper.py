@@ -31,7 +31,7 @@ FN_DECORATORS = [
     "with_unsupported_dtypes",
     "handle_nans",
     "handle_mixed_function",
-    "auto_shift_device",
+    "handle_device_shifting_for_arrays",
 ]
 
 
@@ -772,20 +772,34 @@ def infer_device(fn: Callable) -> Callable:
     return _infer_device
 
 
-def auto_shift_device(fn: Callable) -> Callable:
-    def _auto_shift_device(*args, **kwargs):
-        if ivy.functional.device.soft_device_placement and ivy.get_array_mode():
+def handle_device_shifting_for_arrays(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_device_shifting_for_arrays(*args, **kwargs):
+        """
+        Move all array inputs of the function to `ivy.default_device()`.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function.
+        """
+        if ivy.get_soft_device_mode() and ivy.get_array_mode():
             device = ivy.default_device()
-            args = (
-                arg.to_device(device) if type(arg) == ivy.Array else arg for arg in args
+            args, kwargs = ivy.nested_map(
+                [args, kwargs],
+                lambda x: (x.to_device(device) if isinstance(x, ivy.Array) else x),
             )
-            kwargs = {
-                k: v.to_device(device) if type(v) == ivy.Array else v
-                for k, v in kwargs.items()
-            }
         return fn(*args, **kwargs)
 
-    return _auto_shift_device
+    _handle_device_shifting_for_arrays.handle_device_shifting_for_arrays = True
+    return _handle_device_shifting_for_arrays
 
 
 # Inplace Update Handling #

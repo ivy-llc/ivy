@@ -14,7 +14,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    auto_shift_device,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -25,6 +25,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 # Linear #
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -172,6 +173,7 @@ def linear(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -346,6 +348,7 @@ def dropout(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @handle_array_function
 def scaled_dot_product_attention(
@@ -551,6 +554,7 @@ def scaled_dot_product_attention(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -784,6 +788,7 @@ def multi_head_attention(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -879,6 +884,7 @@ def conv1d(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1014,6 +1020,7 @@ def conv1d_transpose(
 
 
 @handle_nestable
+@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1141,6 +1148,7 @@ def conv2d(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1261,6 +1269,7 @@ def conv2d_transpose(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1399,6 +1408,7 @@ def depthwise_conv2d(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1515,6 +1525,7 @@ def conv3d(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1624,8 +1635,8 @@ def conv3d_transpose(
     )
 
 
-@auto_shift_device
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1708,6 +1719,7 @@ def conv_general_dilated(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1783,6 +1795,7 @@ def conv_general_transpose(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @handle_out_argument
 @handle_array_function
@@ -1890,6 +1903,7 @@ def conv(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays

@@ -42,7 +42,7 @@ default_device_stack = list()
 dev_handles = dict()
 split_factors = dict()
 max_chunk_sizes = dict()
-soft_device_placement = True
+soft_device_mode_stack = list()
 
 # Extra #
 # ------#
@@ -71,7 +71,6 @@ class DefaultDevice:
         >>> x = ivy.DefaultDevice("tpu")
         """
         self._dev = device
-        self.prev_soft_device_placement = soft_device_placement
 
     def __enter__(self):
         """
@@ -92,7 +91,7 @@ class DefaultDevice:
         "cpu"
         """
         ivy.set_default_device(self._dev)
-        set_soft_device_placement(True)
+        ivy.set_soft_device_mode(True)
         return self
 
     def __exit__(
@@ -128,16 +127,11 @@ class DefaultDevice:
         "cpu"
         """
         ivy.unset_default_device()
-        set_soft_device_placement(self.prev_soft_device_placement)
+        ivy.unset_soft_device_mode()
         if self and (exc_type is not None):
             print(exc_tb)
             raise exc_val
         return self
-
-
-def set_soft_device_placement(enabled):
-    global soft_device_placement
-    soft_device_placement = enabled
 
 
 # Helpers #
@@ -273,6 +267,73 @@ def print_all_ivy_arrays_on_dev(
         [print((arr.shape, arr.dtype)) for arr in arrs]
     else:
         [print(arr) for arr in arrs]
+
+
+@handle_exceptions
+def set_soft_device_mode(mode: bool) -> None:
+    """
+    Set the mode of whether to move input arrays to `ivy.default_device()` before
+    performing an operation.
+
+    Parameter
+    ---------
+    mode
+        boolean whether to move input arrays
+
+    Examples
+    --------
+    >>> ivy.set_soft_device_mode(False)
+    >>> ivy.get_soft_device_mode()
+    False
+
+    >>> ivy.set_soft_device_mode(True)
+    >>> ivy.get_soft_device_mode()
+    True
+    """
+    global soft_device_mode_stack
+    ivy.utils.assertions.check_isinstance(mode, bool)
+    soft_device_mode_stack.append(mode)
+
+
+@handle_exceptions
+def unset_soft_device_mode() -> None:
+    """
+    Reset the mode of moving input arrays to `ivy.default_device()` before performing an
+    operation.
+
+    Examples
+    --------
+    >>> ivy.set_soft_device_mode(False)
+    >>> ivy.get_soft_device_mode()
+    False
+
+    >>> ivy.unset_soft_device_mode()
+    >>> ivy.get_soft_device_mode()
+    True
+    """
+    global soft_device_mode_stack
+    if soft_device_mode_stack:
+        soft_device_mode_stack.pop(-1)
+
+
+@handle_exceptions
+def get_soft_device_mode() -> bool:
+    """
+    Get the current state of soft_device_mode.
+
+    Examples
+    --------
+    >>> ivy.get_soft_device_mode()
+    True
+
+    >>> ivy.set_soft_device_mode(False)
+    >>> ivy.get_soft_device_mode()
+    False
+    """
+    global soft_device_mode_stack
+    if not soft_device_mode_stack:
+        return True
+    return soft_device_mode_stack[-1]
 
 
 # Retrieval

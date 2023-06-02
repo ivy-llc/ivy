@@ -1029,6 +1029,7 @@ globals_vars = GlobalsDict(
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
+        "soft_device_mode_stack": device.soft_device_mode_stack,
         "nestable_mode_stack": general.nestable_mode_stack,
         "exception_trace_mode_stack": general.exception_trace_mode_stack,
         "default_dtype_stack": data_type.default_dtype_stack,
