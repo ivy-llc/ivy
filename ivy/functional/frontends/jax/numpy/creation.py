@@ -247,5 +247,5 @@ def compress(condition, a, *, axis=None, out=None):
 
 @inputs_to_ivy_arrays
 def iterable(y):
-    return hasattr(y, "__iter__") and y.ndim > 0
+    return hasattr(y, "__iter__") or y.ndim > 0
 
