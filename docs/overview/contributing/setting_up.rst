@@ -571,7 +571,7 @@ For windows users, the file path should be entered with "/" (forward-slashes), f
 WSL
 ***
  
-It is understandable that working with computationally heavy tools like Docker and PyCharm is not always confortable for new developers.
+It is understandable that working with computationally heavy tools like Docker and PyCharm is not always comfortable for new developers.
 By utilizing WSL, you can run a Linux distribution on your Windows machine and in addition, venv is leveraged to create 
 isolated Python environments eliminating the need for a full-fledged containerization solution like Docker, and with VSCode being an appropriate alternative to PyCharm, 
 the steps explained below will help you in setting up a less resource-intensive Ivy environment.
