@@ -12,7 +12,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 # ------------------ #
 
 
-@with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.11 and below": ("complex",)}, backend_version)
 def argmax(
     x: JaxArray,
     /,
@@ -38,7 +38,7 @@ def argmax(
     return ret
 
 
-@with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.11 and below": ("complex",)}, backend_version)
 def argmin(
     x: JaxArray,
     /,
@@ -72,10 +72,6 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[JaxArray, Tuple[JaxArray]]:
-    if x.ndim == 0:
-        raise ivy.utils.exceptions.IvyValueError(
-            "Cannot call nonzero on a zero dim array"
-        )
     res = jnp.nonzero(x, size=size, fill_value=fill_value)
 
     if as_tuple:
