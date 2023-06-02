@@ -278,8 +278,6 @@ def test_torch_instance_abs(
     )
 
 
-
-         
 # asin
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -311,8 +309,9 @@ def test_paddle_asin(
         frontend=frontend,
         on_device=on_device,
     )
-   
- # asinh
+
+
+# asinh
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -321,7 +320,6 @@ def test_paddle_asin(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-
 def test_paddle_asinh(
     dtype_and_x,
     frontend_method_data,
@@ -344,7 +342,8 @@ def test_paddle_asinh(
         frontend=frontend,
         on_device=on_device,
     )
-    
+
+
 # atan
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -354,7 +353,6 @@ def test_paddle_asinh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-
 def test_paddle_atan(
     dtype_and_x,
     frontend_method_data,
@@ -377,4 +375,3 @@ def test_paddle_atan(
         frontend=frontend,
         on_device=on_device,
     )
-
