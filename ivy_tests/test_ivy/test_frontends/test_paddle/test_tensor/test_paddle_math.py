@@ -201,7 +201,7 @@ def test_paddle_asin(
     ),
 )
 
-def test_tensorflow_less_equal(
+def test_paddle_less_equal(
     *,
     dtype_and_x,
     on_device,
