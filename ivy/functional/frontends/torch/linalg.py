@@ -45,8 +45,8 @@ def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
 
 
 @to_ivy_arrays_and_back
-def det(input, *, out=None):
-    return ivy.det(input, out=out)
+def det(A, *, out=None):
+    return ivy.det(A, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -82,9 +82,9 @@ def qr(A, mode="reduced", *, out=None):
 
 
 @to_ivy_arrays_and_back
-def slogdet(input, *, out=None):
+def slogdet(A, *, out=None):
     # TODO: add handling for out
-    return ivy.slogdet(input)
+    return ivy.slogdet(A)
 
 
 @with_unsupported_dtypes({"2.0.0 and below": ("bfloat16", "float16")}, "torch")
@@ -94,8 +94,8 @@ def cond(input, p=None, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def matrix_power(input, n, *, out=None):
-    return ivy.matrix_power(input, n, out=out)
+def matrix_power(A, n, *, out=None):
+    return ivy.matrix_power(A, n, out=out)
 
 
 @with_supported_dtypes(
@@ -117,8 +117,8 @@ def cross(input, other, *, dim=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def vecdot(x1, x2, *, dim=-1, out=None):
-    return ivy.vecdot(x1, x2, axis=dim, out=out)
+def vecdot(x, y, *, dim=-1, out=None):
+    return ivy.vecdot(x, y, axis=dim, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -184,6 +184,7 @@ def tensorinv(input, ind=2, *, out=None):
     return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)
 
 
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def eig(input, *, out=None):
     return ivy.eig(input, out=out)
@@ -191,8 +192,8 @@ def eig(input, *, out=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
-def solve(input, other, *, out=None):
-    return ivy.solve(input, other, out=out)
+def solve(A, B, *, left=True, out=None):
+    return ivy.solve(A, B, out=out)
 
 
 @to_ivy_arrays_and_back

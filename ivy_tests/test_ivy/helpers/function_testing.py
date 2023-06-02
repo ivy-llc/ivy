@@ -7,6 +7,7 @@ import importlib
 import inspect
 from collections import OrderedDict
 
+from ivy import frontend_outputs_to_ivy_arrays, output_to_native_arrays
 from ivy.utils.exceptions import IvyException
 
 
@@ -337,7 +338,8 @@ def test_function(
         assert not ivy.nested_any(
             ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
             lambda x: not x,
-        ), "the array in out argument does not contain same value as the returned"
+        ), f"the array: {test_ret} in out argument is not the same"
+        f" as the returned: {out}"
         if not max(test_flags.container) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert not ivy.nested_any(
@@ -345,7 +347,8 @@ def test_function(
                     lambda x, _: x[0].data is x[1].data, [test_ret, out]
                 ),
                 lambda x: not x,
-            ), "the array in out argument does not contain same value as the returned"
+            ), f"the array: {test_ret} in out argument is not the same"
+            f" as the returned: {out}"
     # compute the return with a Ground Truth backend
 
     ivy.set_backend(ground_truth_backend)
@@ -748,6 +751,14 @@ def test_frontend_function(
         )
         kwargs_frontend = ivy.nested_map(
             kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+        )
+
+        # wrap the frontend function objects in arguments to return native arrays
+        args_frontend = ivy.nested_map(
+            args_frontend, fn=wrap_frontend_function_args, max_depth=10
+        )
+        kwargs_frontend = ivy.nested_map(
+            kwargs_frontend, fn=wrap_frontend_function_args, max_depth=10
         )
 
         # compute the return via the frontend framework
@@ -1617,6 +1628,17 @@ def convtrue(argument):
     """Convert NativeClass in argument to true framework counter part."""
     if isinstance(argument, NativeClass):
         return argument._native_class
+    return argument
+
+
+def wrap_frontend_function_args(argument):
+    """Wrap frontend function arguments to return native arrays."""
+    if ivy.nested_any(
+        argument,
+        lambda x: hasattr(x, "__module__")
+        and x.__module__.startswith("ivy.functional.frontends"),
+    ):
+        return output_to_native_arrays(frontend_outputs_to_ivy_arrays(argument))
     return argument
 
 
