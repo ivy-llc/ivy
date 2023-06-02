@@ -19,6 +19,7 @@ def sign(x, /):
 def absolute(x, /):
     return ivy.abs(x)
 
+
 abs = absolute
 
 
