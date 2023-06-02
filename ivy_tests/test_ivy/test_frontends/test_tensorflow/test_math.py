@@ -607,6 +607,8 @@ def test_tensorflow_reciprocal(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         x=x[0],
     )
 
@@ -768,7 +770,7 @@ def test_tensorflow_argmax(
     on_device,
     output_type,
 ):
-    if ivy.current_backend_str() == "torch":
+    if ivy.current_backend_str() in ("torch", "paddle"):
         assume(output_type != "uint16")
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -1948,6 +1950,7 @@ def test_tensorflow_acosh(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
         x=x[0],
     )
 

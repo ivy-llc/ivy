@@ -104,3 +104,10 @@ def eigh(x, UPLO="L", name=None):
 def pinv(x, rcond=1e-15, hermitian=False, name=None):
     # TODO: Add hermitian functionality
     return ivy.pinv(x, rtol=rcond)
+
+
+# cholesky
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def cholesky(x, /, *, upper=False, name=None):
+    return ivy.cholesky(x, upper=upper)
