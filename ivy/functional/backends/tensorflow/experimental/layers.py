@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
@@ -456,8 +456,11 @@ def dct(
 ) -> tf.Tensor:
     if x.dtype not in (tf.float32, tf.float64):
         x = tf.cast(x, tf.float32)
+    # ToDo: Update this once tf.signal.dct supports axis other than -1
     if axis != -1:
         new_dims = list(range(len(x.shape)))
+        if axis < 0:
+            axis = len(x.shape) + axis
         new_dims[axis], new_dims[-1] = new_dims[-1], axis
         x = tf.transpose(x, new_dims)
         dct_out = tf.signal.dct(x, type=type, n=n, axis=-1, norm=norm)
@@ -478,9 +481,9 @@ def _fft_norm(
     if norm == "backward":
         return x
     elif norm == "ortho":
-        return x / tf.sqrt(n)
+        return x / tf.cast(tf.sqrt(tf.cast(n, tf.float32)), x.dtype)
     elif norm == "forward":
-        return x / n
+        return x / tf.cast(n, x.dtype)
     else:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
@@ -502,6 +505,7 @@ def _ifft_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
+@with_supported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def fft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -550,7 +554,7 @@ def fft(
         permute[dim], permute[-1] = permute[-1], permute[dim]
         x = tf.transpose(x, permute)
         ret = tf.signal.fft(x, operation_name)
-        x = tf.transpose(x, permute)
+        ret = tf.transpose(ret, permute)
         del permute
     else:
         ret = tf.signal.fft(x, operation_name)

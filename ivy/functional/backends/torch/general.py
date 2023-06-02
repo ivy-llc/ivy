@@ -1,6 +1,6 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 # global
-from functools import reduce
+from functools import reduce as _reduce
 import math
 from numbers import Number
 from operator import mul
@@ -196,7 +196,7 @@ def gather_nd_helper(params, indices):
     else:
         num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -500,11 +500,11 @@ def scatter_nd(
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
+        _reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
     ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
-    flat_result_size = reduce(mul, shape, 1)
+    flat_result_size = _reduce(mul, shape, 1)
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "

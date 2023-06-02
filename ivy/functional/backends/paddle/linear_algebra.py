@@ -548,7 +548,7 @@ def vecdot(
 ) -> paddle.Tensor:
     axes = [axis % x1.ndim]
 
-    paddle_backend.tensordot(x1, x2, axes=axes)
+    return paddle_backend.tensordot(x1, x2, axes=axes)
 
 
 def vector_norm(
