@@ -38,6 +38,7 @@ def batch_norm(
     training: Optional[bool] = False,
     eps: Optional[float] = 1e-5,
     momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.float32, paddle.float64]:
@@ -46,7 +47,20 @@ def batch_norm(
         ]
     runningmean = mean
     runningvariance = variance
-    data_format = ["", "", "NC", "NLC", "NHWC", "NDHWC"]
+    data_formats = ["NC", "NCL", "NCHW", "NCDHW", "NLC", "NHWC", "NDHWC"]
+
+    try:
+        data_format = (
+            data_formats[4:][x.ndim]
+            if data_format[-1] == "C"
+            else data_formats[0:4][x.ndim]
+        )
+    except ValueError:
+        raise ValueError(
+            "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', "
+            "'NLC', 'NHWC', 'NDHWC' but receive {}".format(data_format)
+        )
+
     with ivy.ArrayMode(False):
         if training:
             x_shape = paddle.to_tensor(x.shape)
@@ -79,9 +93,16 @@ def batch_norm(
         training=training,
         momentum=momentum,
         epsilon=eps,
-        data_format=data_format[x.ndim],
+        data_format=data_format,
     ).cast(x.dtype)
     return xnormalized, runningmean, runningvariance
+
+
+batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
+    x.ndim > 1
+    and (scale is None or scale.ndim == 1)
+    and (offset is None or offset.ndim == 1)
+)
 
 
 def l1_normalize(
