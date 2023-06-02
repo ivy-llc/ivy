@@ -118,3 +118,21 @@ def ceil(x, name=None):
 @to_ivy_arrays_and_back
 def pow(x, y, name=None):
     return ivy.pow(x, y)
+
+
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def cumprod(x, dim=None, dtype=None, name=None):
+    return ivy.cumprod(x, axis=dim, dtype=dtype)
