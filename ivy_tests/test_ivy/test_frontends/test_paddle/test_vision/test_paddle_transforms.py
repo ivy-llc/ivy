@@ -8,6 +8,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
 
+
 # std
 @handle_frontend_test(
     fn_tree="paddle.std",
