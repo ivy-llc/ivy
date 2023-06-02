@@ -920,7 +920,7 @@ class Tensor:
 
     def addr(self, vec1, vec2, *, beta=1, alpha=1, out=None):
         return torch_frontend.addr(self, vec1, vec2, beta=beta, alpha=alpha, out=out)
-    
+
     def addr_(self, vec1, vec2, *, beta=1, alpha=1):
         self.ivy_array = self.addr(vec1, vec2, beta=beta, alpha=alpha).ivy_array
         return self
@@ -1258,3 +1258,7 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
+    def scatter_(dim, index, src, reduce=None):
+        return torch_frontend.scatter_(dim, index, src, reduce=reduce)
