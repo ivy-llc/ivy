@@ -5,7 +5,7 @@ import math
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
@@ -502,6 +502,7 @@ def avg_pool3d(
     return res
 
 
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: torch.Tensor,
     /,
