@@ -216,19 +216,6 @@ def dropout(x, rate, noise_shape=None, seed=None, name=None):
     return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.12.0": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-            "bfloat16",
-        )
-    },
-    "tensorflow",
-)
 @to_ivy_arrays_and_back
 def silu(features, beta: float = 1.0):
     beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
@@ -433,6 +420,7 @@ def relu6(features, name=None):
     return ivy.relu6(features)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)

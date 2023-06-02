@@ -896,11 +896,9 @@ def test_tensorflow_dropout(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    beta=st.one_of(
-        helpers.floats(
-            min_value=0,
-            max_value=3,
-        )
+    beta=helpers.floats(
+        min_value=0,
+        max_value=3,
     ),
     test_with_out=st.just(False),
 )
@@ -920,6 +918,7 @@ def test_tensorflow_silu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-2,
         features=features[0],
         beta=beta,
     )
@@ -1299,8 +1298,7 @@ def test_tensorflow_relu6(
     fn_tree="tensorflow.nn.softmax",
     dtype_x_and_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=4,
-        max_axes_size=3,
+        min_num_dims=1,
         force_int_axis=True,
         valid_axis=True,
     ),

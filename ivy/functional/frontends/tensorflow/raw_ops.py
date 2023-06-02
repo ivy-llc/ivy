@@ -549,9 +549,14 @@ Sigmoid = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def Softmax(*, logits, name="Softmax"):
-    return ivy.softmax(logits, axis=1)
+Softmax = to_ivy_arrays_and_back(
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("float16",),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.nn.softmax))
+)
 
 
 @to_ivy_arrays_and_back
