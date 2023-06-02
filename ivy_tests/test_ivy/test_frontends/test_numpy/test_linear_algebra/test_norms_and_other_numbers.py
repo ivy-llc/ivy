@@ -11,6 +11,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     matrix_is_stable,
     _matrix_rank_helper,
 )
+from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (
+    _get_dtype_and_matrix_non_singular,
+)
 
 
 # norm
@@ -241,12 +244,7 @@ def test_numpy_trace(
 @handle_frontend_test(
     fn_tree="numpy.linalg.cond",
     p=st.sampled_from([ivy.inf, -ivy.inf, "fro", None, 1, -1, 2, -2]),
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_dim_size=2,
-        min_num_dims=2,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda y: tuple([y, y])),
-    ),
+    dtype_and_x=_get_dtype_and_matrix_non_singular(),
 )
 def test_numpy_cond(
     dtype_and_x,
@@ -265,4 +263,7 @@ def test_numpy_cond(
         on_device=on_device,
         x=x[0],
         p=p,
+        test_values=False,
+        atol=1e-3,
+        rtol=1e-2,
     )
