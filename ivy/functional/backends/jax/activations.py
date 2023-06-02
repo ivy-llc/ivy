@@ -14,7 +14,7 @@ from . import backend_version
 from ivy.functional.backends.jax import JaxArray
 
 
-@with_unsupported_dtypes({"0.4.10 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.11 and below": ("complex",)}, backend_version)
 def gelu(
     x: JaxArray,
     /,
