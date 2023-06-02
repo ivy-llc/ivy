@@ -364,6 +364,7 @@ class Tensor:
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self, other)
 
+    @with_supported_dtypes({"2.0.1 and below": ("integer",)}, "torch")
     def bitwise_or(self, other):
         return torch_frontend.bitwise_or(self, other)
 
@@ -383,7 +384,7 @@ class Tensor:
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
 
-    @with_supported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def floor(self, *, out=None):
         return torch_frontend.floor(self)
 
@@ -392,6 +393,9 @@ class Tensor:
         return torch_frontend.not_equal(self, other, out=out)
 
     ne = not_equal
+
+    def equal(self, other):
+        return torch_frontend.equal(self, other)
 
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
@@ -571,20 +575,18 @@ class Tensor:
     def tensor_split(self, indices_or_sections, dim=0):
         return torch_frontend.tensor_split(self, indices_or_sections, dim)
 
-    def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
-        return torch_frontend.vsplit(
-            self, indices_or_sections, indices=indices, sections=sections
-        )
+    def vsplit(self, indices_or_sections, /):
+        return torch_frontend.vsplit(self, indices_or_sections)
 
-    def hsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
-        return torch_frontend.hsplit(
-            self, indices_or_sections, indices=indices, sections=sections
-        )
+    def hsplit(self, indices_or_sections, /):
+        return torch_frontend.hsplit(self, indices_or_sections)
 
-    def dsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
-        return torch_frontend.dsplit(
-            self, indices_or_sections, indices=indices, sections=sections
-        )
+    def dsplit(
+        self,
+        indices_or_sections,
+        /,
+    ):
+        return torch_frontend.dsplit(self, indices_or_sections)
 
     def dim(self):
         return self.ivy_array.ndim
@@ -696,6 +698,9 @@ class Tensor:
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self, dim=dim, keepdim=keepdim)
 
+    def nanmean(self, dim=None, keepdim=False):
+        return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def median(self, dim=None, keepdim=False):
         return torch_frontend.median(self, dim=dim, keepdim=keepdim)
@@ -722,15 +727,7 @@ class Tensor:
         self.ivy_array = self.cumsum(dim, dtype).ivy_array
         return self
 
-    @with_unsupported_dtypes(
-        {
-            "2.0.1 and below": (
-                "float16",
-                "bfloat16",
-            )
-        },
-        "torch",
-    )
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def inverse(self):
         return torch_frontend.inverse(self)
 
@@ -1037,7 +1034,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __eq__(self, other):
-        return torch_frontend.equal(self, other)
+        return torch_frontend.eq(self, other)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __gt__(self, other):
@@ -1071,6 +1068,7 @@ class Tensor:
     ndimension = dim
     subtract = sub
     sub_ = subtract_
+    eq = equal
 
     def bitwise_xor(self, other):
         return torch_frontend.bitwise_xor(self, other)
@@ -1232,6 +1230,10 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def copysign(self, other, *, out=None):
         return torch_frontend.copysign(self, other, out=out)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
+    def greater(self, other, *, out=None):
+        return torch_frontend.greater(self, other, out=out)
 
 
 class Size(tuple):

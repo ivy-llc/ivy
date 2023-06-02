@@ -1,8 +1,10 @@
 # local
 import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
-from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.paddle.func_wrapper import (
+    _to_ivy_array,
+)
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 class Tensor:
@@ -95,3 +97,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def abs(self):
         return paddle_frontend.abs(self)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def asin(self, name=None):
+        return ivy.asin(self._ivy_array)
