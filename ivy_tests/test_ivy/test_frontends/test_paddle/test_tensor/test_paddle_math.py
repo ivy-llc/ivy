@@ -507,7 +507,7 @@ def test_paddle_ceil(
         x=x[0],
     )
 
-
+# pow
 @handle_frontend_test(
     fn_tree="paddle.pow",
     dtype_and_x=helpers.dtype_and_values(
