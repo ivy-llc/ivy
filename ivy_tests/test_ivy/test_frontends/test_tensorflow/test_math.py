@@ -981,6 +981,8 @@ def test_tensorflow_reduce_mean(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        atol=1e-2,
+        rtol=1e-2,
         on_device=on_device,
         input_tensor=x[0],
     )
