@@ -18,6 +18,7 @@ listing:
       template: assets/ejs/gallery.ejs
       contents:
         - "guides/01_transpiling_a_torch_model.ipynb"
+        - "guides/03_transpiling_a_tf_model.ipynb"
       sort: "false"
 
     - id: examples-and-demos
@@ -42,7 +43,7 @@ Welcome to Ivy's tutorials webpage! Our goal is to provide you with a comprehens
 :::{#learn-the-basics}
 :::
 
-### Guides 
+### Guides
 :::{#guides}
 :::
 

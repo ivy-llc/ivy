@@ -29,6 +29,7 @@ website:
       - section: "Guides"
         contents:
           - "guides/01_transpiling_a_torch_model.ipynb"
+          - "guides/03_transpiling_a_tf_model.ipynb" 
       - section: "Examples and Demos"
         contents:
           - "examples_and_demos/01_using_ivy_resnet18.ipynb"
