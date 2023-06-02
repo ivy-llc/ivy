@@ -477,6 +477,20 @@ def dct(
     return dct_out
 
 
+def idct(
+    x: JaxArray,
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
+
+
 def fft(
     x: JaxArray,
     dim: int,
