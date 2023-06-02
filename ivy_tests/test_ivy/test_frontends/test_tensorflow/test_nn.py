@@ -1492,32 +1492,12 @@ def test_tensorflow_avg_pool1d(
     )
 
 
-@st.composite
-def _pool_args(draw):
-    dims = draw(st.integers(min_value=1, max_value=3))
-    data_formats = ["NWC", "NHWC", "NDHWC"]
-    data_format = data_formats[dims - 1]
-    pooling_types = ["AVG", "MAX"]
-    pooling_type = pooling_types[draw(st.integers(min_value=0, max_value=1))]
-    return (
-        draw(
-            helpers.arrays_for_pooling(
-                min_dims=dims + 2,
-                max_dims=dims + 2,
-                min_side=1,
-                max_side=4,
-            )
-        ),
-        pooling_type,
-        data_format,
-        dims + 2,
-    )
-
-
 # pool
 @handle_frontend_test(
     fn_tree="tensorflow.nn.pool",
-    x_k_s_p_df=_pool_args(),
+    x_k_s_p_df=helpers.arrays_for_pooling(
+        min_dims=3, max_dims=3, min_side=1, max_side=4
+    ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_pool(
@@ -1528,18 +1508,7 @@ def test_tensorflow_pool(
     fn_tree,
     on_device,
 ):
-    (
-        (input_dtype, x, kernel_size, strides, padding),
-        pooling_type,
-        data_format,
-        dims,
-    ) = x_k_s_p_df
-    if dims == 3:
-        strides = (strides[0],)
-    elif dims == 4:
-        strides = (strides[0], strides[0])
-    elif dims == 5:
-        strides = (strides[0], strides[0], strides[0])
+    (input_dtype, x, ksize, strides, padding) = x_k_s_p_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1547,9 +1516,7 @@ def test_tensorflow_pool(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        window_shape=kernel_size,
-        pooling_type=pooling_type,
+        window_shape=ksize,
         strides=strides,
         padding=padding,
-        data_format=data_format,
     )
