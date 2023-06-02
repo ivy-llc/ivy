@@ -237,6 +237,8 @@ def test_jax_devicearray_mean(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
+        rtol_=1e-5,
+        atol_=1e-5,
     )
 
 

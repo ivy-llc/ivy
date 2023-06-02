@@ -593,6 +593,27 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
 
 
+def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
+    """
+    Wrap `fn` and convert all frontend arrays in its return to ivy arrays.
+
+    Used in cases when a frontend function receives a callable (frontend
+    function) argument. To be able to use that callable in a composition
+    of ivy functions, its outputs need to be converted to ivy arrays.
+    """
+
+    @functools.wraps(fn)
+    def _outputs_to_ivy_arrays(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        return ivy.nested_map(
+            ret,
+            lambda x: x.ivy_array if hasattr(x, "ivy_array") else x,
+            shallow=False,
+        )
+
+    return _outputs_to_ivy_arrays
+
+
 def handle_view(fn: Callable) -> Callable:
     """
     Wrap `fn` and performs view handling if copy is False.
@@ -970,11 +991,20 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
 
-        mixed_fn = original != to_wrap and hasattr(original, "inputs_to_ivy_arrays")
+        mixed_fn = (
+            original != to_wrap
+            and hasattr(original, "inputs_to_ivy_arrays")
+            and not original.__name__.startswith("inplace")
+        )
         for attr in FN_DECORATORS:
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
-                mixed_fn and attr == "to_native_arrays_and_back"
+                mixed_fn
+                and (
+                    attr == "inputs_to_native_arrays" or attr == "outputs_to_ivy_arrays"
+                )
             ):
+                if mixed_fn and attr == "inputs_to_ivy_arrays":
+                    continue
                 to_wrap = getattr(ivy, attr)(to_wrap)
 
         if hasattr(to_wrap, "partial_mixed_handler"):

@@ -1032,19 +1032,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_fft(
-        x: ivy.Container,
+    def _static_fft(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         dim: int,
         /,
         *,
         norm: str = "backward",
         n: Optional[Union[int, Tuple[int]]] = None,
+        out: Optional[ivy.Container] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.fft. This method simply wraps the
         function, and so the docstring for ivy.fft also applies to this method with
@@ -1097,11 +1097,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
             dim,
             norm=norm,
             n=n,
+            out=out,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def fft(
@@ -1112,7 +1112,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         norm: str = "backward",
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
-    ):
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.fft. This method simply wraps the
         function, and so the docstring for ivy.fft also applies to this method with
@@ -1159,12 +1163,16 @@ class _ContainerWithLayersExperimental(ContainerBase):
                        1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
         }
         """
-        return self.static_fft(
+        return self._static_fft(
             self,
             dim,
             norm=norm,
             n=n,
             out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod

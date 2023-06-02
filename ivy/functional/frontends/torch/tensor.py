@@ -575,20 +575,18 @@ class Tensor:
     def tensor_split(self, indices_or_sections, dim=0):
         return torch_frontend.tensor_split(self, indices_or_sections, dim)
 
-    def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
-        return torch_frontend.vsplit(
-            self, indices_or_sections, indices=indices, sections=sections
-        )
+    def vsplit(self, indices_or_sections, /):
+        return torch_frontend.vsplit(self, indices_or_sections)
 
-    def hsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
-        return torch_frontend.hsplit(
-            self, indices_or_sections, indices=indices, sections=sections
-        )
+    def hsplit(self, indices_or_sections, /):
+        return torch_frontend.hsplit(self, indices_or_sections)
 
-    def dsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
-        return torch_frontend.dsplit(
-            self, indices_or_sections, indices=indices, sections=sections
-        )
+    def dsplit(
+        self,
+        indices_or_sections,
+        /,
+    ):
+        return torch_frontend.dsplit(self, indices_or_sections)
 
     def dim(self):
         return self.ivy_array.ndim
@@ -699,6 +697,9 @@ class Tensor:
 
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self, dim=dim, keepdim=keepdim)
+
+    def nanmean(self, dim=None, keepdim=False):
+        return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def median(self, dim=None, keepdim=False):
@@ -1077,9 +1078,12 @@ class Tensor:
         return torch_frontend.bitwise_xor(self, other)
 
     def item(self):
-        if self.ndim == 0 or (self.ndim == 1 and self.shape[0] == 1):
+        if all(dim == 1 for dim in self.shape):
             return self.ivy_array.to_scalar()
-        raise ValueError("only size-1 tensors can be converted to Python scalars")
+        else:
+            raise ValueError(
+                "only one element tensors can be converted to Python scalars"
+            )
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def cumprod(self, dim, dtype):

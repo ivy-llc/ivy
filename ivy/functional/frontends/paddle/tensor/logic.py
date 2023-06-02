@@ -1,7 +1,11 @@
 # global
 import ivy
 import ivy.functional.frontends.paddle as paddle
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    handle_out_argument,
+    with_supported_dtypes,
+)
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -75,3 +79,43 @@ def less_than(x, y, /, *, name=None):
 @to_ivy_arrays_and_back
 def less_equal(x, y, /, *, name=None):
     return ivy.less_equal(x, y)
+
+
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "bool",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+@handle_out_argument
+def logical_or(x, y, /, *, name=None, out=None):
+    return ivy.logical_or(x, y, out=out)
+
+
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "bool",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+@handle_out_argument
+def logical_xor(x, y, /, *, name=None, out=None):
+    return ivy.logical_xor(x, y, out=out)
