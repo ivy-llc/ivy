@@ -124,5 +124,5 @@ def cholesky(x, /, *, upper=False, name=None):
 
 # dot
 @to_ivy_arrays_and_back
-def dot(a, b):
-    return ivy.multiply(a, b)
+def dot(x, y):
+    return ivy.multiply(x, y)
