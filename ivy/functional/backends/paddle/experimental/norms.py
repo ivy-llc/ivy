@@ -55,7 +55,7 @@ def batch_norm(
             if data_format[-1] == "C"
             else data_formats[0:4][x.ndim]
         )
-    except ValueError:
+    except IndexError:
         raise ValueError(
             "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', "
             "'NLC', 'NHWC', 'NDHWC' but receive {}".format(data_format)
