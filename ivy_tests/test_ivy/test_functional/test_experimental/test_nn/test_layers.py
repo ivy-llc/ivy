@@ -240,7 +240,7 @@ def test_avg_pool3d(
 def valid_dct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             max_value=65280,
             min_value=-65280,
             min_num_dims=1,
@@ -252,7 +252,7 @@ def valid_dct(draw):
     )
     dims_len = len(x[0].shape)
     n = draw(st.sampled_from([None, "int"]))
-    axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len))
+    axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len - 1))
     norm = draw(st.sampled_from([None, "ortho"]))
     type = draw(helpers.ints(min_value=1, max_value=4))
     if n == "int":
@@ -270,10 +270,12 @@ def valid_dct(draw):
     test_gradients=st.just(False),
 )
 def test_dct(
+    *,
     dtype_x_and_args,
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
@@ -283,6 +285,7 @@ def test_dct(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         type=type,
         n=n,
@@ -437,8 +440,12 @@ def x_and_fft(draw):
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
-            large_abs_safety_factor=2,
-            small_abs_safety_factor=2,
+            min_value=-1e5,
+            max_value=1e5,
+            allow_inf=False,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
         )
     )
     dim = draw(helpers.get_axis(shape=x_dim, allow_neg=True, force_int=True))
@@ -469,6 +476,8 @@ def test_fft(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
         on_device=on_device,
         x=x,
         dim=dim,

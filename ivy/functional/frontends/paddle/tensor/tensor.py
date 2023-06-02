@@ -1,4 +1,3 @@
-# local
 import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
 from ivy.functional.frontends.paddle.func_wrapper import (
@@ -98,10 +97,14 @@ class Tensor:
     def abs(self):
         return paddle_frontend.abs(self)
 
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def asinh(self, name=None):
+        return ivy.asinh(self._ivy_array)
+      
     @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
     def asin(self, name=None):
         return ivy.asin(self._ivy_array)
 
-    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def atan(self, name=None):
         return ivy.atan(self._ivy_array)

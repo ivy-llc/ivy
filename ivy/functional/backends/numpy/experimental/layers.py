@@ -9,6 +9,8 @@ import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -638,6 +640,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
+@with_supported_dtypes({"1.24.3 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
