@@ -426,7 +426,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The length of the transform. If n is less than the input signal length,
+            The lenght of the transform. If n is less than the input signal lenght,
             then x is truncated, if n is larger than x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".

@@ -2,7 +2,7 @@
 import math
 import itertools
 from typing import Optional, Union, Tuple, Literal, Sequence
-from functools import reduce
+from functools import reduce as _reduce
 
 # local
 import ivy
@@ -509,7 +509,7 @@ def dct(
     type
         The type of the dct. Must be 1, 2, 3 or 4.
     n
-        The length of the transform. If n is less than the input signal length,
+        The lenght of the transform. If n is less than the input signal lenght,
         then x is truncated, if n is larger then x is zero-padded.
     axis
         The axis to compute the DCT along.
@@ -690,6 +690,7 @@ def idct(
 
 
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1360,7 +1361,7 @@ def _upsample_cubic_interp1d(coeffs, ts):
 
 
 def _sum_tensors(ts):
-    return reduce(ivy.add, ts)
+    return _reduce(ivy.add, ts)
 
 
 def _upsample_bicubic2d_default(

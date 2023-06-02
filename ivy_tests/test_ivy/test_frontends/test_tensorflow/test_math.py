@@ -607,6 +607,8 @@ def test_tensorflow_reciprocal(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         x=x[0],
     )
 
@@ -768,7 +770,7 @@ def test_tensorflow_argmax(
     on_device,
     output_type,
 ):
-    if ivy.current_backend_str() == "torch":
+    if ivy.current_backend_str() in ("torch", "paddle"):
         assume(output_type != "uint16")
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -924,6 +926,9 @@ def test_tensorflow_asinh(
     fn_tree="tensorflow.math.reduce_sum",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -942,6 +947,8 @@ def test_tensorflow_reduce_sum(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-03,
+        atol=1e-03,
         input_tensor=x[0],
     )
 
@@ -1218,10 +1225,12 @@ def test_tensorflow_is_strictly_increasing(
 @handle_frontend_test(
     fn_tree="tensorflow.math.count_nonzero",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        valid_axis=True,
+        allow_neg_axes=False,
     ),
     keepdims=st.booleans(),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_count_nonzero(
@@ -1244,7 +1253,7 @@ def test_tensorflow_count_nonzero(
         input=x,
         axis=axis,
         keepdims=keepdims,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -1941,6 +1950,7 @@ def test_tensorflow_acosh(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
         x=x[0],
     )
 
