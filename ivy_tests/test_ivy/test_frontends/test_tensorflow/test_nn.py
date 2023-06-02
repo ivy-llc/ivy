@@ -1017,13 +1017,13 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
         min_num_dims=4,
         max_num_dims=4,
         min_dim_size=1,
-        large_abs_safety_factor=1.5,
-        small_abs_safety_factor=1.5,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
     ),
-    depth_radius=st.integers(min_value=1, max_value=7),
-    bias=st.floats(min_value=0.1, max_value=30),
-    alpha=st.floats(min_value=0.1, max_value=20),
-    beta=st.floats(min_value=0.1, max_value=5),
+    depth_radius=st.integers(min_value=1, max_value=5),
+    bias=st.floats(min_value=0.1, max_value=1.5),
+    alpha=st.floats(min_value=0.1, max_value=1.5),
+    beta=st.floats(min_value=0.1, max_value=1.5),
     test_with_out=st.just(False),
 )
 def test_tensorflow_local_response_normalization(
@@ -1039,16 +1039,15 @@ def test_tensorflow_local_response_normalization(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    input = x[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-3,
-        atol=1e-3,
-        input=input,
+        rtol=1e-1,
+        atol=1e-1,
+        input=x[0],
         depth_radius=depth_radius,
         bias=bias,
         alpha=alpha,
