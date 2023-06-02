@@ -56,7 +56,7 @@ def batch_norm(
             else data_formats[0:4][x.ndim]
         )
     except IndexError:
-        raise ValueError(
+        raise IndexError(
             "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', "
             "'NLC', 'NHWC', 'NDHWC' but receive {}".format(data_format)
         )
@@ -99,7 +99,7 @@ def batch_norm(
 
 
 batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
-    x.ndim > 1
+    (x.ndim > 1 and x.ndim < 6)
     and (scale is None or scale.ndim == 1)
     and (offset is None or offset.ndim == 1)
 )
