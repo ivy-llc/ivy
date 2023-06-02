@@ -281,9 +281,16 @@ def elems_and_shape(draw):
 # foldl
 @handle_frontend_test(
     fn_tree="tensorflow.foldl",
-    fn=st.just(lambda x, y: x + y),
-    initializer=st.one_of(st.none(), st.integers()),
-    dtype=helpers.get_dtypes("float", full=False),
+    fn=st.sampled_from(
+        [
+            lambda a, b: a + b,
+            lambda a, b: a - b,
+        ],
+    ),
+    initializer=st.one_of(
+        st.none(), st.integers(min_value=-(2**31), max_value=2**31 - 1)
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
     elems_and_shape=elems_and_shape(),
 )
 def test_tensorflow_foldl(
