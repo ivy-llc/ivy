@@ -1511,6 +1511,7 @@ def _pool_args(draw):
         ),
         pooling_type,
         data_format,
+        dims + 2,
     )
 
 
@@ -1532,7 +1533,14 @@ def test_tensorflow_pool(
         (input_dtype, x, kernel_size, strides, padding, dilations),
         pooling_type,
         data_format,
+        dims,
     ) = x_k_s_p_df
+    if dims == 3:
+        strides = (strides[0],)
+    elif dims == 4:
+        strides = (strides[0], strides[0])
+    elif dims == 5:
+        strides = (strides[0], strides[0], strides[0])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
