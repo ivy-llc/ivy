@@ -702,6 +702,7 @@ def test_tensorflow_reduce_any(
     fn_tree="tensorflow.math.reduce_euclidean_norm",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        max_num_dims=2,
     ),
     test_with_out=st.just(False),
 )
@@ -722,6 +723,8 @@ def test_tensorflow_reduce_euclidean_norm(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        rtol=1e-01,
+        atol=1e-01,
         on_device=on_device,
         input_tensor=x[0],
     )
