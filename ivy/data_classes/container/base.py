@@ -21,7 +21,7 @@ except ModuleNotFoundError:
 import pickle
 import random
 from operator import mul
-from functools import reduce
+from functools import reduce as _reduce
 from typing import Union, Tuple
 from builtins import set
 
@@ -1224,7 +1224,7 @@ class ContainerBase(dict, abc.ABC):
                 size += size_to_add
             elif isinstance(value, h5py.Dataset):
                 value_shape = value.shape
-                size += reduce(mul, value_shape, 1) * value.dtype.itemsize
+                size += _reduce(mul, value_shape, 1) * value.dtype.itemsize
                 batch_size = value_shape[0]
             else:
                 raise ivy.utils.exceptions.IvyException(
@@ -1942,7 +1942,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(
             dict(
                 sorted(
-                    array_dict.items(), key=lambda item: reduce(mul, item[1].shape, 1)
+                    array_dict.items(), key=lambda item: _reduce(mul, item[1].shape, 1)
                 )
             ),
             alphabetical_keys=False,
@@ -3790,7 +3790,7 @@ class ContainerBase(dict, abc.ABC):
                     (self._cont_ivy.is_native_array(v) or isinstance(v, ivy.Array))
                     and len(list(v.shape)) > 0
                     and ivy.exists(self._print_limit)
-                    and reduce(mul, v.shape) > self._print_limit
+                    and _reduce(mul, v.shape) > self._print_limit
                 ):
                     rep = (type(v), "shape=", list(v.shape))
                 elif (
