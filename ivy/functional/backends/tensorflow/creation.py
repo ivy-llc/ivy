@@ -108,21 +108,14 @@ def asarray(
 
     with tf.device(device):
         if dtype is None:
-            # get default dtypes for all elements
-            dtype_list = ivy.nested_map(obj, lambda x: _infer_dtype(x), shallow=False)
-            # flatten the nested structure
-            dtype_list = tf.nest.flatten(dtype_list)
-            # keep unique dtypes
-            dtype_list = list(set(dtype_list))
-            # promote all dtypes to a single dtype
-            dtype = dtype_list[0]
-            for dt in dtype_list[1:]:
-                dtype = ivy.promote_types(dtype, dt)
-        # convert all elements to tensors and then stack into one tensor
-        tensor = _tf_to_tensor(
-            ivy.nested_map(obj, lambda x: _tf_to_tensor(x, dtype), shallow=False),
-            dtype=dtype,
-        )
+            # this needs to be changed to a function that infers the dtype correctly
+            # because the dtype returned change when the elements order change
+            if isinstance(obj, tf.TensorShape):
+                dtype = ivy.default_int_dtype()
+            else:
+                dtype = ivy.default_dtype(item=obj)
+        # convert the input to a tensor using the appropriate function
+        tensor = _tf_to_tensor(obj, dtype)
         return tf.identity(tensor) if copy else tensor
 
 
