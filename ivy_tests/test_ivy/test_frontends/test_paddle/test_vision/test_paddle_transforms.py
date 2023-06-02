@@ -30,7 +30,7 @@ def test_paddle_std(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        x=x[0],
         dim=axis,
         unbiased=bool(correction),
         keepdim=keepdims,
