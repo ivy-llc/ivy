@@ -387,7 +387,7 @@ def array_dtypes(
         if array_api_dtypes:
             pairs = ivy.array_api_promotion_table.keys()
         else:
-            pairs = ivy.get_promotion_table().keys()
+            pairs = ivy.promotion_table.keys()
         # added to avoid complex dtypes from being sampled if they are not available.
         pairs = [pair for pair in pairs if all([d in available_dtypes for d in pair])]
         available_dtypes = [
