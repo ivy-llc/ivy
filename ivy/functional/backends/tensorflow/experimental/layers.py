@@ -456,8 +456,11 @@ def dct(
 ) -> tf.Tensor:
     if x.dtype not in (tf.float32, tf.float64):
         x = tf.cast(x, tf.float32)
+    # ToDo: Update this once tf.signal.dct supports axis other than -1
     if axis != -1:
         new_dims = list(range(len(x.shape)))
+        if axis < 0:
+            axis = len(x.shape) + axis
         new_dims[axis], new_dims[-1] = new_dims[-1], axis
         x = tf.transpose(x, new_dims)
         dct_out = tf.signal.dct(x, type=type, n=n, axis=-1, norm=norm)
@@ -551,7 +554,7 @@ def fft(
         permute[dim], permute[-1] = permute[-1], permute[dim]
         x = tf.transpose(x, permute)
         ret = tf.signal.fft(x, operation_name)
-        x = tf.transpose(x, permute)
+        ret = tf.transpose(ret, permute)
         del permute
     else:
         ret = tf.signal.fft(x, operation_name)
