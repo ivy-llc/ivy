@@ -11,6 +11,8 @@ from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -400,6 +402,7 @@ def avg_pool3d(
     return res
 
 
+@with_supported_dtypes({"0.4.11 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,

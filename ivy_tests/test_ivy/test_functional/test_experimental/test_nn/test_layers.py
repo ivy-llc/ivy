@@ -240,7 +240,7 @@ def test_avg_pool3d(
 def valid_dct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             max_value=65280,
             min_value=-65280,
             min_num_dims=1,
