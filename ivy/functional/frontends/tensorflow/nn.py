@@ -516,3 +516,5 @@ def pool(
             return ivy.max_pool3d(
                 input, window_shape, strides, padding, data_format=data_format
             )
+    else:
+        raise ValueError(f"Pooling type {pooling_type} not supported.")
