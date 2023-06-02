@@ -507,7 +507,7 @@ def test_paddle_cholesky(
         x=x,
         upper=upper,
     )
-    
+
 # dot
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.dot",
@@ -539,4 +539,3 @@ def test_paddle_dot(
         x=x[0],
         y=x[1],
     )
-
