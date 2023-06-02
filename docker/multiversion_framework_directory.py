@@ -51,7 +51,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
         path = base + fw + "/" + ver
         modified_env = {
             "PATH": os.environ["PATH"],
-            "PYTHONPATH": f"{path}:{os.environ.get('PYTHONPATH', '')}"
+            "PYTHONPATH": f"{path}:{os.environ.get('PYTHONPATH', '')}",
         }
         # check to see if this pkg has specific version dependencies
         with open(path_to_json, "r") as file:
@@ -68,51 +68,76 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                     if ver in keys[dep].keys():
                         # we install this one
                         commands = [
-                            "pip", "install", f"{dep}=={keys[dep][ver]}", "--target", path, "--no-cache-dir"
+                            "pip",
+                            "install",
+                            f"{dep}=={keys[dep][ver]}",
+                            "--target",
+                            path,
+                            "--no-cache-dir",
                         ]
 
-                        result = subprocess.run(commands, capture_output=True, text=True,env=modified_env)
+                        result = subprocess.run(
+                            commands, capture_output=True, text=True, env=modified_env
+                        )
 
                         if result.returncode == 0:
                             print("Command executed successfully.")
                         else:
-                            print(f"Command encountered an error. Return code: {result.returncode}")
-
-  
+                            print(
+                                "Command encountered an error. Return code:"
+                                f" {result.returncode}"
+                            )
 
                     else:
                         commands = [
-                            "pip", "install", dep, "--target", path, "--no-cache-dir"
+                            "pip",
+                            "install",
+                            dep,
+                            "--target",
+                            path,
+                            "--no-cache-dir",
                         ]
 
-                        result = subprocess.run(commands, capture_output=True, text=True,env=modified_env)
+                        result = subprocess.run(
+                            commands, capture_output=True, text=True, env=modified_env
+                        )
 
                         if result.returncode == 0:
                             print("Command executed successfully.")
                         else:
-                            print(f"Command encountered an error. Return code: {result.returncode}")
-
-
+                            print(
+                                "Command encountered an error. Return code:"
+                                f" {result.returncode}"
+                            )
 
                 else:
-
                     commands = [
-                        "pip", "install", keys, "--target", path, "--no-cache-dir"
+                        "pip",
+                        "install",
+                        keys,
+                        "--target",
+                        path,
+                        "--no-cache-dir",
                     ]
 
-                    result = subprocess.run(commands, capture_output=True, text=True, env=modified_env)
+                    result = subprocess.run(
+                        commands, capture_output=True, text=True, env=modified_env
+                    )
 
                     if result.returncode == 0:
                         print("Command executed successfully.")
                     else:
-                        print(f"Command encountered an error. Return code: {result.returncode}")
-
-
+                        print(
+                            "Command encountered an error. Return code:"
+                            f" {result.returncode}"
+                        )
 
 
 if __name__ == "__main__":
     arg_lis = sys.argv
 
-    json_path = 'requirement_mappings_multiversion.json'  # path to the json file storing version specific deps
+    json_path = (  # path to the json file storing version specific deps
+        "requirement_mappings_multiversion.json"
+    )
     directory_generator(arg_lis[1:])
     install_deps(arg_lis[1:], json_path)

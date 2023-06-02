@@ -910,7 +910,8 @@ def _check_arguments(
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_array_function
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
@@ -1161,9 +1162,6 @@ def pad(
                     padded, axis, (left_index, right_index)
                 )
     return padded
-
-
-pad.mixed_function = True
 
 
 @handle_exceptions

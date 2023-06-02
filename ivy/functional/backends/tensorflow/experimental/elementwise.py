@@ -117,8 +117,6 @@ def isclose(
     )
 
 
-
-
 @with_unsupported_dtypes(
     {
         "2.12.0 and below": (
