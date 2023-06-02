@@ -749,6 +749,45 @@ def test_tensorflow_concat(
     )
 
 
+# cond
+@handle_frontend_test(
+    fn_tree="tensorflow.cond",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    pred_cond=st.booleans(),
+    var=st.integers(min_value=1, max_value=100),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_cond(
+    *,
+    dtype_and_x,
+    pred_cond,
+    var,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    _test_true_fn = lambda: var + var
+
+    _test_false_fn = lambda: var * var
+
+    input_dtype, _ = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        pred=pred_cond,
+        true_fn=_test_true_fn,
+        false_fn=_test_false_fn,
+    )
+
+
 # zeros
 @handle_frontend_test(
     fn_tree="tensorflow.zeros",
