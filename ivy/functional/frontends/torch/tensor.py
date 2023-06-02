@@ -922,7 +922,12 @@ class Tensor:
     # -------------------#
 
     def __bool__(self):
-        return self.ivy_array.to_scalar().__bool__()
+        if len(self.shape) == sum(self.shape):
+            return self.ivy_array.to_scalar().__bool__()
+        raise ValueError(
+            "The truth value of an array with more than one element is ambiguous. "
+            "Use a.any() or a.all()"
+        )
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __add__(self, other):
