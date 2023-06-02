@@ -9,6 +9,8 @@ import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -631,9 +633,14 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return np.fft.fft(x, n, dim, norm)
+    if x.dtype in [np.uint64, np.int64, np.float64, np.complex128]:
+        out_dtype = np.complex128
+    else:
+        out_dtype = np.complex64
+    return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
+@with_supported_dtypes({"1.24.3 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -727,6 +734,20 @@ def dct(
             dct_out *= math.sqrt(0.5) * np.reciprocal(np.sqrt(axis_dim_float))
 
     return dct_out.astype(np.float32) if cast_final else dct_out
+
+
+def idct(
+    x: np.ndarray,
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
 
 def dropout1d(
