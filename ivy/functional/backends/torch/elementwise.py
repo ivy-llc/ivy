@@ -1,6 +1,6 @@
 # global
 from typing import Union, Optional
-
+from math import pi
 import torch
 
 # local
@@ -46,6 +46,21 @@ def bitwise_xor(
 
 
 bitwise_xor.support_native_out = True
+
+
+def imag(
+    val: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if val.dtype not in (torch.complex64, torch.complex128):
+        ret = torch.imag(val.to(torch.complex64))
+        return ret.to(val.dtype)
+    return torch.imag(val)
+
+
+imag.support_native_out = False
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
@@ -159,6 +174,20 @@ def floor(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 
 
 floor.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+def fmin(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fmin(x1, x2, out=None)
+
+
+fmin.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
@@ -525,6 +554,32 @@ def round(
 round.support_native_out = True
 
 
+def trapz(
+    y: torch.Tensor,
+    /,
+    *,
+    x: Optional[torch.Tensor] = None,
+    dx: Optional[float] = None,
+    axis: int = -1,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if x is None:
+        dx = dx if dx is not None else 1
+        return torch.trapezoid(y, dx=dx, dim=axis)
+    else:
+        if dx is not None:
+            TypeError(
+                "trapezoid() received an invalid combination of arguments - got "
+                "(Tensor, Tensor, int), but expected one of: *(Tensor "
+                "y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
+            )
+        else:
+            return torch.trapezoid(y, x=x, dim=axis)
+
+
+trapz.support_native_out = False
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
 def trunc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -616,6 +671,18 @@ def exp(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 
 
 exp.support_native_out = True
+
+
+def exp2(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.exp2(x, out=out)
+
+
+exp2.support_native_out = True
 
 
 def subtract(
@@ -819,3 +886,50 @@ def fmod(
 
 
 fmod.support_native_out = True
+
+
+def gcd(
+    x1: Union[torch.Tensor, int, list, tuple],
+    x2: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return torch.gcd(x1, x2, out=out)
+
+
+gcd.support_native_out = True
+
+
+def angle(
+    input: torch.Tensor,
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if deg:
+        return torch.angle(input, out=out) * (180 / pi)
+    else:
+        return torch.angle(input, out=out)
+
+
+angle.support_native_out = True
+
+
+def nan_to_num(
+    x: torch.Tensor,
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if copy:
+        return torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf, out=out)
+    else:
+        x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
+        return x
