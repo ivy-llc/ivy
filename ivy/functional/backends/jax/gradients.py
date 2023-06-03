@@ -17,6 +17,7 @@ from ivy.functional.ivy.gradients import (
     _process_func_ret_and_grads,
 )
 from ivy.func_wrapper import (
+    output_to_native_arrays,
     to_native_arrays_and_back,
 )
 
@@ -147,13 +148,13 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda *x_in: ivy.nested_map(func(*x_in), ivy.to_native)
+    grad_fn = output_to_native_arrays(func)
 
     def callback_fn(*args):
-        fn = to_native_arrays_and_back(jax.jacfwd(grad_fn, argnums=range(len(args))))
+        fn = jax.jacfwd(grad_fn, argnums=range(len(args)))
         return fn(*args)
 
-    return callback_fn
+    return to_native_arrays_and_back(callback_fn)
 
 
 def grad(func: Callable, argnums: Union[int, Tuple[int]] = 0):

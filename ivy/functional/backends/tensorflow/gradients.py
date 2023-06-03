@@ -11,7 +11,12 @@ from typing import Sequence, Union, Optional, Callable
 
 # local
 import ivy
-from ivy.func_wrapper import outputs_to_ivy_arrays, inputs_to_native_arrays
+from ivy.func_wrapper import (
+    outputs_to_ivy_arrays,
+    inputs_to_native_arrays,
+    output_to_native_arrays,
+    to_native_arrays_and_back,
+)
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -160,19 +165,26 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda *x_in: ivy.nested_map(func(*x_in), ivy.to_native)
+    grad_fn = output_to_native_arrays(func)
 
     def callback_fn(*args):
         with tf.GradientTape(persistent=True) as tape:
-            args = ivy.nested_map(args, ivy.to_native)
             tape.watch(args)
             y = grad_fn(*args)
-            fn = lambda x: tape.jacobian(x, args, unconnected_gradients="zero")
-            jacobian = ivy.nested_map(y, fn)
-            ret = ivy.nested_map(jacobian, ivy.to_ivy)
-        return ret
 
-    return callback_fn
+            # Handle the case where func returns multiple outputs
+            constants = {
+                "unconnected_gradients": "zero",
+                "sources": args,
+            }
+            unique = {"target": y}
+            if isinstance(y, tuple):
+                jacobian = ivy.map(tape.jacobian, constant=constants, unique=unique)
+            else:
+                jacobian = tape.jacobian(**constants, **unique)
+        return jacobian
+
+    return to_native_arrays_and_back(callback_fn)
 
 
 def grad(f, argnums=0):
