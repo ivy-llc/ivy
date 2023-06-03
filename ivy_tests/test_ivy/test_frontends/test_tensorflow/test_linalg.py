@@ -146,7 +146,7 @@ def test_matrix_rank(
     transpose_b=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_matmul(
+def test_tensorflow_matmul(
     *,
     dtype_x,
     transpose_a,
