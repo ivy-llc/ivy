@@ -224,6 +224,10 @@ def check_gather_nd_input_valid(params, indices, batch_dims):
 
 
 def check_one_way_broadcastable(x1, x2):
+    if "tracked_var_proxy" in str(x1.__class__):
+        x1 = x1.var
+    if "tracked_var_proxy" in str(x2.__class__):
+        x2 = x2.var
     for a, b in zip(x1[::-1], x2[::-1]):
         if b == 1 or a == b:
             pass
