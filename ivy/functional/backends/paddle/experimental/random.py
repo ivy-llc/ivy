@@ -19,7 +19,15 @@ def dirichlet(
     seed: Optional[int] = None,
     dtype: Optional[paddle.dtype] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    size = size if size is not None else len(alpha)
+    dtype = dtype if dtype is not None else paddle.float64
+    if seed is not None:
+        paddle.seed(seed)
+    res = paddle.to_tensor(
+        paddle.distribution.Dirichlet(concentration=alpha).sample(shape=size),
+        dtype=dtype,
+    )
+    return res
 
 
 def beta(
