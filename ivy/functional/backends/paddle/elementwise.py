@@ -5,7 +5,8 @@ import paddle
 import math
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy import promote_types_of_inputs
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 
 # local
 from . import backend_version
@@ -425,6 +426,22 @@ def divide(
     return (x1 / x2).astype(ret_dtype)
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    backend_version,
+)
+def fmin(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x1.dtype != x2.dtype:
+        x1, x2 = promote_types_of_inputs(x1, x2)
+    return paddle.fmin(x1, x2)
+
+
 def greater(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -736,6 +753,56 @@ def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.trunc(x)
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32")},
+    backend_version,
+)
+def trapz(
+    y: paddle.Tensor,
+    /,
+    *,
+    x: Optional[paddle.Tensor] = None,
+    dx: Optional[float] = 1.0,
+    axis: Optional[int] = -1,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x is None:
+        d = dx
+    else:
+        if x.ndim == 1:
+            d = paddle.diff(x)
+            # reshape to correct shape
+            shape = [1] * y.ndim
+            shape[axis] = d.shape[0]
+            d = d.reshape(shape)
+        else:
+            d = paddle.diff(x, axis=axis)
+
+    slice1 = [slice(None)] * y.ndim
+    slice2 = [slice(None)] * y.ndim
+
+    slice1[axis] = slice(1, None)
+    slice2[axis] = slice(None, -1)
+
+    with ivy.ArrayMode(False):
+        if y.shape[axis] < 2:
+            return ivy.zeros_like(ivy.squeeze(y, axis=axis))
+        ret = ivy.sum(
+            ivy.divide(
+                ivy.multiply(
+                    d,
+                    ivy.add(
+                        ivy.get_item(y, tuple(slice1)), ivy.get_item(y, tuple(slice2))
+                    ),
+                ),
+                2.0,
+            ),
+            axis=axis,
+        )
+
+    return ret
+
+
 def abs(
     x: Union[float, paddle.Tensor],
     /,
@@ -845,6 +912,20 @@ def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return pow(math.e, x).astype(x.dtype)
 
 
+def exp2(
+    x: Union[paddle.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        return ivy.pow(2, x)
+
+
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    backend_version,
+)
 def subtract(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -854,8 +935,6 @@ def subtract(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
-        x1, x2 = x1.astype("float32"), x2.astype("float32")
     if alpha not in (1, None):
         x2 = paddle_backend.multiply(x2, alpha)
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -1085,3 +1164,96 @@ def lcm(
     elif x1_dtype != x2_dtype:
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return paddle.lcm(x1, x2)
+
+
+def angle(
+    input: paddle.Tensor,
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    result = paddle.angle(input)
+    if deg:
+        result = paddle.rad2deg(result)
+    return result
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+)
+def gcd(
+    x1: Union[paddle.Tensor, int, list, tuple],
+    x2: Union[paddle.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return paddle.gcd(x1, x2)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "float16",
+                "float32",
+                "float64",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def imag(
+    val: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.imag(val)
+
+
+def nan_to_num(
+    x: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        if ivy.is_int_dtype(x):
+            if posinf is None:
+                posinf = ivy.iinfo(x).max
+            if neginf is None:
+                neginf = ivy.iinfo(x).min
+        elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
+            if posinf is None:
+                posinf = ivy.finfo(x).max
+            if neginf is None:
+                neginf = ivy.finfo(x).min
+        ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret > 0),
+            paddle.to_tensor(posinf, dtype=x.dtype),
+            ret,
+        )
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret < 0),
+            paddle.to_tensor(neginf, dtype=x.dtype),
+            ret,
+        )
+        if copy:
+            return ret.clone()
+        else:
+            x = ret
+            return x

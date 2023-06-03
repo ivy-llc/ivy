@@ -698,6 +698,9 @@ class Tensor:
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self, dim=dim, keepdim=keepdim)
 
+    def nanmean(self, dim=None, keepdim=False):
+        return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def median(self, dim=None, keepdim=False):
         return torch_frontend.median(self, dim=dim, keepdim=keepdim)
@@ -918,6 +921,10 @@ class Tensor:
     def addr(self, vec1, vec2, *, beta=1, alpha=1, out=None):
         return torch_frontend.addr(self, vec1, vec2, beta=beta, alpha=alpha, out=out)
 
+    def addr_(self, vec1, vec2, *, beta=1, alpha=1):
+        self.ivy_array = self.addr(vec1, vec2, beta=beta, alpha=alpha).ivy_array
+        return self
+
     # Special Methods #
     # -------------------#
 
@@ -1071,9 +1078,12 @@ class Tensor:
         return torch_frontend.bitwise_xor(self, other)
 
     def item(self):
-        if self.ndim == 0 or (self.ndim == 1 and self.shape[0] == 1):
+        if all(dim == 1 for dim in self.shape):
             return self.ivy_array.to_scalar()
-        raise ValueError("only size-1 tensors can be converted to Python scalars")
+        else:
+            raise ValueError(
+                "only one element tensors can be converted to Python scalars"
+            )
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def cumprod(self, dim, dtype):

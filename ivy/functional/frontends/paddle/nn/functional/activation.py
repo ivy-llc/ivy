@@ -35,5 +35,12 @@ log_softmax = paddle_log_softmax
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def hardshrink(x, threshold=0.5, name=None):
+    mask = ivy.logical_or(ivy.greater(x, threshold), ivy.less(x, -threshold))
+    return ivy.where(mask, x, 0.0)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def gelu(x, approximate=False, name=None):
     return ivy.gelu(x, approximate=approximate)

@@ -1426,7 +1426,7 @@ def default_complex_dtype(
     input
         Number or array for inferring the complex dtype.
     complex_dtype
-        The float dtype to be returned.
+        The complex dtype to be returned.
     as_native
         Whether to return the complex dtype as native dtype.
 
@@ -2002,7 +2002,9 @@ def promote_types(
                 (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
             ]
     except KeyError:
-        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
+        raise ivy.utils.exceptions.IvyDtypePromotionError(
+            "these dtypes are not type promotable"
+        )
     return ret
 
 
