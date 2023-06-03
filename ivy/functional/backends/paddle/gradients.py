@@ -18,10 +18,6 @@ from ivy.functional.ivy.gradients import (
     _set_duplicates,
     _process_func_ret_and_grads,
 )
-from ivy.func_wrapper import (
-    output_to_native_arrays,
-    to_native_arrays_and_back,
-)
 
 
 def variable(x, /):
@@ -196,13 +192,15 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = output_to_native_arrays(func)
+    grad_fn = lambda *x_in: ivy.nested_map(func(*x_in), ivy.to_native)
 
     def callback_fn(*args):
+        args = ivy.nested_map(args, ivy.to_native)
         jacobian = paddle.incubate.autograd.Jacobian(grad_fn, args)
-        return jacobian
+        ret = ivy.nested_map(jacobian, ivy.to_ivy)
+        return ret
 
-    return to_native_arrays_and_back(callback_fn)
+    return callback_fn
 
 
 def grad(f, argnums=0):

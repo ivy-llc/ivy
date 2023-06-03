@@ -9,8 +9,6 @@ import ivy
 from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     inputs_to_native_arrays,
-    output_to_native_arrays,
-    to_native_arrays_and_back,
 )
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
@@ -183,13 +181,15 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = output_to_native_arrays(func)
+    grad_fn = lambda *x_in: ivy.nested_map(func(*x_in), ivy.to_native)
 
     def callback_fn(*args):
+        args = ivy.nested_map(args, ivy.to_native)
         jacobian = torch.autograd.functional.jacobian(grad_fn, args)
-        return jacobian
+        ret = ivy.nested_map(jacobian, ivy.to_ivy)
+        return ret
 
-    return to_native_arrays_and_back(callback_fn)
+    return callback_fn
 
 
 def grad(f, argnums=0):
