@@ -945,6 +945,6 @@ def test_jax_numpy_iterable(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        y=x[0],
     )
 
