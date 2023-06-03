@@ -6,7 +6,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 
-
+# cross
 @with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -125,4 +125,5 @@ def cholesky(x, /, *, upper=False, name=None):
 # dot
 @to_ivy_arrays_and_back
 def dot(x, y):
+    x, y = promote_types_of_paddle_inputs(x, y)
     return ivy.multiply(x, y)
