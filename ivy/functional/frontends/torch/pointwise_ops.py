@@ -523,7 +523,7 @@ def erf(input, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def erfc(input, *, out=None):
-    return ivy.erfc(input, out=out)
+    return 1 - ivy.erf(input, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
