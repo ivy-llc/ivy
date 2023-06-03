@@ -51,9 +51,9 @@ def batch_norm(
 
     try:
         data_format = (
-            data_formats[4:][x.ndim]
+            data_formats[4:][x.ndim - 3]
             if data_format[-1] == "C"
-            else data_formats[0:4][x.ndim]
+            else data_formats[0:4][x.ndim - 2]
         )
     except IndexError:
         raise IndexError(
