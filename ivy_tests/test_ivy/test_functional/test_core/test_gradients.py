@@ -191,27 +191,32 @@ def test_value_and_grad(x, dtype, func, backend_fw):
 
 
 # jac
-@pytest.mark.parametrize(
-    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
-)
 @pytest.mark.parametrize("dtype", ["float32", "float64"])
 @pytest.mark.parametrize(
-    "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
+    "func, func_args",
+    [
+        (lambda x: ivy.mean(ivy.square(x)), [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]]]),
+        (lambda x: ivy.mean(ivy.cos(x)), [[[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]),
+        (
+            lambda x, y: (ivy.mean(ivy.cos(x)), ivy.mean(ivy.sin(y))),
+            [[[4.6, 2.1], [5, 2.8], [1.3, 6.2]], [[4.0, 2.1, 7.0], [2.8, 1.3, 1.0]]],
+        ),
+    ],
 )
-def test_jac(x, dtype, func, backend_fw):
+def test_jac(dtype, func, func_args, backend_fw):
     fw = backend_fw.current_backend_str()
     if fw == "numpy":
         return
     ivy.set_backend(fw)
-    var = _variable(ivy.array(x, dtype=dtype))
+    var = list(map(lambda x: _variable(ivy.array(x, dtype=dtype)), func_args))
     fn = ivy.jac(func)
-    jacobian = fn(var)
+    jacobian = fn(*var)
     jacobian_np = helpers.flatten_and_to_np(ret=jacobian)
     ivy.previous_backend()
     ivy.set_backend("tensorflow")
-    var = _variable(ivy.array(x, dtype=dtype))
+    var = list(map(lambda x: _variable(ivy.array(x, dtype=dtype)), func_args))
     fn = ivy.jac(func)
-    jacobian_gt = fn(var)
+    jacobian_gt = fn(*var)
     jacobian_np_from_gt = helpers.flatten_and_to_np(ret=jacobian_gt)
     for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
         assert jacobian.shape == jacobian_from_gt.shape

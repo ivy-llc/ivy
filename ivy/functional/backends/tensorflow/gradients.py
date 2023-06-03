@@ -160,14 +160,28 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in), nested=True)
+    grad_fn = lambda *x_in: ivy.to_native(func(*x_in), nested=True)
 
-    def callback_fn(x_in):
-        with tf.GradientTape() as tape:
+    def callback_fn(*x_in):
+        with tf.GradientTape(persistent=True) as tape:
             x_in = ivy.to_native(x_in, nested=True)
             tape.watch(x_in)
-            y = grad_fn(x_in)
-        return ivy.to_ivy(tape.jacobian(y, x_in), nested=True)
+            y = grad_fn(*x_in)
+
+            # Deal with multiple outputs
+            if isinstance(y, tuple):
+                jacobian = tuple(
+                    map(
+                        lambda yi: ivy.to_ivy(
+                            tape.jacobian(yi, x_in, unconnected_gradients="zero"),
+                            nested=True,
+                        ),
+                        y,
+                    )
+                )
+            else:
+                jacobian = ivy.to_ivy(tape.jacobian(y, x_in), nested=True)
+        return jacobian
 
     return callback_fn
 
