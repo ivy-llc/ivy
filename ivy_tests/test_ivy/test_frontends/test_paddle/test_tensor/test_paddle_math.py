@@ -508,7 +508,7 @@ def test_paddle_ceil(
     )
 
 
-    # sinh
+# sinh
 @handle_frontend_test(
     fn_tree="paddle.sinh",
     dtype_and_x=helpers.dtype_and_values(
@@ -532,6 +532,8 @@ def test_paddle_sinh(
         on_device=on_device,
         x=x[0],
     )
+
+
 # pow
 @handle_frontend_test(
     fn_tree="paddle.pow",
