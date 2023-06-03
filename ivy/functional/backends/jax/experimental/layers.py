@@ -11,6 +11,8 @@ from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -400,6 +402,7 @@ def avg_pool3d(
     return res
 
 
+@with_supported_dtypes({"0.4.11 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -419,7 +422,7 @@ def dct(
         if n <= signal_len:
             local_idx = [slice(None)] * len(x.shape)
             local_idx[axis] = slice(None, n)
-            x = x[local_idx]
+            x = x[tuple(local_idx)]
         else:
             pad_idx = [[0, 0] for _ in range(len(x.shape))]
             pad_idx[axis][1] = n - signal_len
@@ -472,6 +475,20 @@ def dct(
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * jlax.rsqrt(axis_dim_float)
     return dct_out
+
+
+def idct(
+    x: JaxArray,
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
 
 def fft(

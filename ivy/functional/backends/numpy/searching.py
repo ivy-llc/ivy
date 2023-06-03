@@ -68,7 +68,6 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[np.ndarray, Tuple[np.ndarray]]:
-
     res = np.nonzero(x)
 
     if size is not None:
