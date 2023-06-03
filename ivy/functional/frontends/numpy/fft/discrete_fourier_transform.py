@@ -75,7 +75,7 @@ def fftshift(x, axes=None):
     return roll
 
 
-@with_unsupported_dtypes({"1.9.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def rfft(a, n=None, axis=-1, norm=None):
     if norm is None:
@@ -84,10 +84,9 @@ def rfft(a, n=None, axis=-1, norm=None):
     return ivy.dft(a, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
 
 
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.12.0 and below": ("float16",)}, "numpy")
 def ihfft(a, n=None, axis=-1, norm=None):
-    a = ivy.array(a, dtype=ivy.float64)
     if n is None:
         n = a.shape[axis]
     norm = _swap_direction(norm)
@@ -95,7 +94,7 @@ def ihfft(a, n=None, axis=-1, norm=None):
     return output
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("int",)}, "paddle")
+@with_unsupported_dtypes({"1.24.3 and below": ("int",)}, "numpy")
 @to_ivy_arrays_and_back
 def fftfreq(n, d=1.0):
     if not isinstance(
