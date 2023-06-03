@@ -346,8 +346,9 @@ def test_paddle_asin(
         frontend=frontend,
         on_device=on_device,
     )
-   
- # asinh
+
+
+# asinh
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -378,4 +379,3 @@ def test_paddle_asinh(
         frontend=frontend,
         on_device=on_device,
     )
-

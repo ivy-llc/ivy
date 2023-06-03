@@ -748,8 +748,7 @@ def test_tensorflow_concat(
         axis=axis,
     )
 
-    
-    
+
 # cond
 @handle_frontend_test(
     fn_tree="tensorflow.cond",
@@ -763,14 +762,14 @@ def test_tensorflow_concat(
     test_with_out=st.just(False),
 )
 def test_tensorflow_cond(
-        *,
-        dtype_and_x,
-        pred_cond,
-        var,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    pred_cond,
+    var,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     _test_true_fn = lambda: var + var
 
@@ -787,7 +786,6 @@ def test_tensorflow_cond(
         true_fn=_test_true_fn,
         false_fn=_test_false_fn,
     )
-
 
 
 # zeros

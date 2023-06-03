@@ -2059,7 +2059,7 @@ def gcd(
     >>> ivy.gcd(x1, 10)
     ivy.array([1.,   2.,  1.])
     """
-    return ivy.current_backend().gcd(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).gcd(x1, x2, out=out)
 
 
 @handle_nestable
@@ -2096,7 +2096,7 @@ def exp2(
     >>> ivy.exp2(x)
     ivy.array([32.,   64.,  128.])
     """
-    return ivy.current_backend().exp2(x, out=out)
+    return ivy.current_backend(x).exp2(x, out=out)
 
 
 @handle_exceptions
@@ -2401,7 +2401,7 @@ def fmin(
     >>> ivy.fmin(x1, x2)
     ivy.array([ 0.,  0., nan])
     """
-    return ivy.current_backend().fmin(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).fmin(x1, x2, out=out)
 
 
 @handle_exceptions
@@ -5986,7 +5986,7 @@ def fmod(
     >>> ivy.fmod(x1, x2)
     ivy.array([ nan,  nan,  nan])
     """
-    return ivy.current_backend().fmod(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).fmod(x1, x2, out=out)
 
 
 @handle_nestable
@@ -6025,4 +6025,4 @@ def lcm(
     >>> x1.lcm(x1, x2)
     ivy.array([10, 21, 60])
     """
-    return ivy.current_backend().lcm(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).lcm(x1, x2, out=out)
