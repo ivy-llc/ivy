@@ -28,7 +28,6 @@ FN_DECORATORS = [
     "handle_array_like_without_promotion",
     "handle_nestable",
     "handle_exceptions",
-    "with_unsupported_dtypes",
     "handle_nans",
     "handle_mixed_function",
 ]

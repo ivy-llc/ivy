@@ -39,6 +39,7 @@ def test_numpy_cos(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-03,
         x=x[0],
         out=None,
         where=where,

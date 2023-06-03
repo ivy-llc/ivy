@@ -1,6 +1,9 @@
+# global
+from hypothesis import strategies as st
+
+# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from hypothesis import strategies as st
 
 
 @handle_frontend_test(
@@ -104,6 +107,35 @@ def test_numpy_fttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
     n=st.integers(min_value=2, max_value=5),
 )
 def test_numpy_rfft(
+    dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_device
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x[0],
+        n=n,
+        axis=axis,
+        norm=norm,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.ihfft",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        shape=(2,),
+        min_axis=-1,
+        force_int_axis=True,
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    n=st.integers(min_value=2, max_value=5),
+)
+def test_numpy_ihfft(
     dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_device
 ):
     input_dtype, x, axis = dtype_input_axis
