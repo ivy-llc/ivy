@@ -254,7 +254,11 @@ class Array(
     def size(self) -> Optional[int]:
         """Number of elements in the array."""
         if self._size is None:
-            self._size = functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
+            self._size = (
+                functools.reduce(mul, self._data.shape)
+                if len(self._data.shape) > 0
+                else 0
+            )
         return self._size
 
     @property

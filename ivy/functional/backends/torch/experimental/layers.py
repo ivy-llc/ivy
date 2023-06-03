@@ -5,7 +5,7 @@ import math
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
@@ -502,6 +502,7 @@ def avg_pool3d(
     return res
 
 
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: torch.Tensor,
     /,
@@ -569,9 +570,7 @@ def dct(
         scale_dims[axis] = axis_dim
         complex_part = torch.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
         scale = 2.0 * torch.exp(
-            torch.complex(
-                real_zero, complex_part.type(real_zero.type())
-            )
+            torch.complex(real_zero, complex_part.type(real_zero.type()))
         ).view(scale_dims)
         if norm == "ortho":
             n1 = torch.sqrt(axis_dim_float)
@@ -600,6 +599,20 @@ def dct(
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * torch.rsqrt(axis_dim_float)
         return dct_out
+
+
+def idct(
+    x: torch.Tensor,
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.tensor:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
 
 @with_unsupported_dtypes(

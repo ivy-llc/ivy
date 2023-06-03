@@ -143,8 +143,6 @@ def isclose(
 isclose.support_native_out = False
 
 
-
-
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def logaddexp2(
     x1: Union[torch.Tensor, float, list, tuple],
