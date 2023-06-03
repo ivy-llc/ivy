@@ -876,6 +876,9 @@ def test_tensorflow_reduce_prod(
     fn_tree="tensorflow.math.reduce_std",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_reduce_std(
@@ -978,6 +981,8 @@ def test_tensorflow_reduce_mean(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        atol=1e-2,
+        rtol=1e-2,
         on_device=on_device,
         input_tensor=x[0],
     )

@@ -294,7 +294,7 @@ def reduce_euclidean_norm(
 @to_ivy_arrays_and_back
 def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
     # stable logsumexp trick
-    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=True)
+    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=False)
     return (
         ivy.log(
             ivy.sum(
