@@ -1498,11 +1498,15 @@ def test_tensorflow_avg_pool1d(
     x_k_s_p_df=helpers.arrays_for_pooling(
         min_dims=3, max_dims=3, min_side=1, max_side=4
     ),
+    pooling_type = st.one_of(st.just("AVG"), st.just("MAX"), st.just("UNKNOWN")),
+    data_format = "NWC",
     test_with_out=st.just(False),
 )
 def test_tensorflow_pool(
     *,
     x_k_s_p_df,
+    pooling_type,
+    data_format,
     frontend,
     test_flags,
     fn_tree,
@@ -1517,7 +1521,8 @@ def test_tensorflow_pool(
         on_device=on_device,
         input=x[0],
         window_shape=ksize,
-        pooling_type="UNKNOWN",
+        pooling_type=pooling_type,
         strides=strides,
         padding=padding,
+        data_format=data_format,
     )
