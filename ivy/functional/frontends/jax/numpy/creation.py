@@ -6,6 +6,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
     handle_jax_dtype,
+    inputs_to_ivy_arrays
 )
 
 from ivy.func_wrapper import handle_out_argument
