@@ -1,3 +1,5 @@
+import math
+
 # global
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, integer_arrays_to_float
@@ -526,10 +528,46 @@ def erfc(input, *, out=None):
     return 1 - ivy.erf(input, out=out)
 
 
+# This code is a direct translation of the enfinv function in the
+# Math.h file in the PyTorch repository, which was originally inspired by
+# erfinv m file in Matlab version 2.0
+# Author:  Gary L. Pavlis, Indiana University
+# Date:  February 1996
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def erfinv(input, *, out=None):
-    return ivy.erfinv(input, out=out)
+    # Function to calculate inverse error function.  Rational approximation
+    # is used to generate an initial approximation, which is then improved to
+    # full accuracy by two steps of Newton's method
+
+    # coefficients in rational expansion
+    a = ivy.array([0.886226899, -1.645349621, 0.914624893, -0.140543331])
+    b = ivy.array([-2.118377725, 1.442710462, -0.329097515, 0.012229801])
+    c = ivy.array([-1.970840454, -1.624906493, 3.429567803, 1.641345311])
+    d = ivy.array([3.543889200, 1.637067800])
+
+    y_abs = ivy.abs(input)
+    if y_abs > 1.0:
+        return float("nan")
+    if y_abs == 1.0:
+        return math.copysign(float(ivy.inf), input)
+
+    if y_abs <= 0.7:
+        z = input * input
+        num = ((a[3] * z + a[2]) * z + a[1]) * z + a[0]
+        dem = (((b[3] * z + b[2]) * z + b[1]) * +b[0]) * z + 1.0
+        x = input * num / dem
+    else:
+        z = ivy.sqrt(-ivy.log(1.0 - y_abs) / 2.0)
+        num = ((c[3] * z + c[2]) * z + c[1]) * z + c[0]
+        dem = d[1] * z + d[0] * z + 1.0
+
+    x = math.copysign(num, input) / dem
+
+    # Two steps of Newton-Raphson correction
+    x = x - (ivy.erf(x) - input) / ((2.0 / (ivy.sqrt(ivy.pi))) * ivy.exp(-x * x))
+    x = x - (ivy.erf(x) - input) / ((2.0 / (ivy.sqrt(ivy.pi))) * ivy.exp(-x * x))
+    return x
 
 
 @to_ivy_arrays_and_back
