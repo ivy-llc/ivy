@@ -520,6 +520,18 @@ def erf(input, *, out=None):
     return ivy.erf(input, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+@to_ivy_arrays_and_back
+def erfc(input, *, out=None):
+    return ivy.erfc(input, out=out)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+@to_ivy_arrays_and_back
+def erfinv(input, *, out=None):
+    return ivy.erfinv(input, out=out)
+
+
 @to_ivy_arrays_and_back
 def sgn(input, *, out=None):
     if ivy.is_complex_dtype(input.dtype):
