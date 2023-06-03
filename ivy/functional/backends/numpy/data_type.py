@@ -141,7 +141,6 @@ def broadcast_to(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     if x.ndim > len(shape):
         return np.broadcast_to(x.reshape([-1]), shape)
     return np.broadcast_to(x, shape)
