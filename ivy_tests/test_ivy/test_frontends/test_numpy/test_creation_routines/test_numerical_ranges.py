@@ -100,7 +100,6 @@ def test_numpy_linspace(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-03,
         start=start,
         stop=stop,
         num=num,
