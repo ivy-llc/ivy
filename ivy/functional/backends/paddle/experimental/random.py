@@ -1,6 +1,9 @@
 # global
 from typing import Optional, Union, Sequence
 import paddle
+
+from ivy import with_unsupported_device_and_dtypes
+from ivy.functional.backends.paddle import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
@@ -10,6 +13,22 @@ from paddle.fluid.libpaddle import Place
 # dirichlet
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def dirichlet(
     alpha: Union[paddle.Tensor, float, Sequence[float]],
     /,
