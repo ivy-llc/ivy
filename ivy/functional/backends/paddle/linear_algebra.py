@@ -253,7 +253,11 @@ def matrix_norm(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if ord == "nuc":
-        x = paddle.moveaxis(x, axis, [-2, -1])
+        if isinstance(axis, int):
+            axis_ = [axis]
+        else:
+            axis_ = list(axis)
+        x = paddle.moveaxis(x, axis_, [-2, -1])
         ret = paddle.sum(
             paddle.linalg.svd(x)[1],
             axis=-1,

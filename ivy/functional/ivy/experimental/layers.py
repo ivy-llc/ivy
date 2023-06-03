@@ -1006,7 +1006,7 @@ def embedding(
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1070,9 +1070,9 @@ def dft(
         The signal_dim at the specified axis is equal to the dft_length.
     """
     if inverse:
-        res = ifft(x, axis, norm=norm, n=dft_length, out=out)
+        res = ivy.ifft(x, axis, norm=norm, n=dft_length, out=out)
     else:
-        res = fft(x, axis, norm=norm, n=dft_length, out=out)
+        res = ivy.fft(x, axis, norm=norm, n=dft_length, out=out)
 
     if onesided:
         slices = [slice(0, a) for a in res.shape]
