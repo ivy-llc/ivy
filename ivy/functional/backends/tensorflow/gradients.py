@@ -170,14 +170,12 @@ def jac(func: Callable):
 
             # Deal with multiple outputs
             if isinstance(y, tuple):
-                jacobian = tuple(
-                    map(
-                        lambda yi: ivy.to_ivy(
-                            tape.jacobian(yi, x_in, unconnected_gradients="zero"),
-                            nested=True,
-                        ),
-                        y,
-                    )
+                jacobian = ivy.nested_map(
+                    y,
+                    lambda yi: ivy.to_ivy(
+                        tape.jacobian(yi, x_in, unconnected_gradients="zero"),
+                        nested=True,
+                    ),
                 )
             else:
                 jacobian = ivy.to_ivy(tape.jacobian(y, x_in), nested=True)
