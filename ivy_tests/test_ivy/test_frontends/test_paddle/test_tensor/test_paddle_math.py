@@ -316,7 +316,7 @@ def test_paddle_multiply(
 @handle_frontend_test(
     fn_tree="paddle.add",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         allow_inf=False,
         large_abs_safety_factor=2,
