@@ -458,8 +458,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.nanmin. This method simply wraps the
-        function, and so the docstring for ivy.nanmin also applies to this method with
+        ivy.Container static method variant of ivy.nanmin. This method simply wraps the 
+        function, and so the docstring for ivy.nanmin also applies to this method with 
         minimal changes.
 
         Parameters
@@ -516,9 +516,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.nanmin. This method simply wraps the
-        function, and so the docstring for ivy.nanmin also applies to this method with 
-        minimal changes.
+        ivy.Container instance method variant of ivy.nanmin. This method simply wraps 
+        the function, and so the docstring for ivy.nanmin also applies to this method 
+        with minimal changes.
 
         Parameters
         ----------
@@ -570,7 +570,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.nanmax. This method simply wraps the
+        ivy.Container static method variant of ivy.nanmax. This method simply wraps the 
         function, and so the docstring for ivy.nanmax also applies to this method with 
         minimal changes.
 
@@ -628,9 +628,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.nanmax. This method simply wraps the
-        function, and so the docstring for ivy.nanmax also applies to this method with 
-        minimal changes.
+        ivy.Container instance method variant of ivy.nanmax. This method simply wraps 
+        the function, and so the docstring for ivy.nanmax also applies to this method 
+        with minimal changes.
 
         Parameters
         ----------
