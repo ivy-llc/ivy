@@ -20,6 +20,7 @@
         "post_create": "bash .devcontainer/post_create_commands.sh", 
         "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
     },
+	"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

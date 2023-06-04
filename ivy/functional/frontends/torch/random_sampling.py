@@ -10,6 +10,10 @@ except ImportError:
     Generator = SimpleNamespace
 
 
+def get_rng_state() -> ivy.array:
+    r"""Returns the random number generator state."""
+    return Generator().get_state()
+
 def seed() -> int:
     """Return a 64 bit number used to seed the RNG."""
     return int(ivy.randint(-(2**63), 2**63 - 1))
