@@ -1497,7 +1497,7 @@ def _pool_args(draw):
     dims = draw(st.integers(min_value=1, max_value=3))
     data_formats = ["NWC", "NHWC", "NDHWC"]
     data_format = data_formats[dims - 1]
-    pooling_type = st.one_of(st.just("AVG"), st.just("MAX"))
+    pooling_type = draw(st.one_of(st.just("AVG"), st.just("MAX")))
     return (
         draw(
             helpers.arrays_for_pooling(
