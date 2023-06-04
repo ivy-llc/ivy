@@ -471,8 +471,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             The default is to compute the minimum of the flattened array.
         keepdims
             If this is set to True, the axes which are reduced are left in the result 
-            as dimensions with size one. With this option, the result will broadcast correctly 
-            against the original a.
+            as dimensions with size one. With this option, the result will broadcast 
+            correctly against the original a.
         dtype
             The desired data type of returned tensor. Default is None.
         out
@@ -529,8 +529,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             The default is to compute the minimum of the flattened array.
         keepdims
             If this is set to True, the axes which are reduced are left in the result 
-            as dimensions with size one. With this option, the result will broadcast correctly 
-            against the original a.
+            as dimensions with size one. With this option, the result will broadcast 
+            correctly against the original a.
         dtype
             The desired data type of returned tensor. Default is None.
         out
@@ -583,8 +583,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             The default is to compute the maximum of the flattened array.
         keepdims
             If this is set to True, the axes which are reduced are left in the result 
-            as dimensions with size one. With this option, the result will broadcast correctly 
-            against the original a.
+            as dimensions with size one. With this option, the result will broadcast 
+            correctly against the original a.
         dtype
             The desired data type of returned tensor. Default is None.
         out
@@ -641,8 +641,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             The default is to compute the maximum of the flattened array.
         keepdims
             If this is set to True, the axes which are reduced are left in the result 
-            as dimensions with size one. With this option, the result will broadcast correctly 
-            against the original a.
+            as dimensions with size one. With this option, the result will broadcast 
+            correctly against the original a.
         dtype
             The desired data type of returned tensor. Default is None.
         out
