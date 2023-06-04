@@ -228,8 +228,10 @@ def check_one_way_broadcastable(x1, x2):
         x1 = x1.var
     if "tracked_var_proxy" in str(x2.__class__):
         x2 = x2.var
+    if len(x1) > len(x2):
+        return False
     for a, b in zip(x1[::-1], x2[::-1]):
-        if b == 1 or a == b:
+        if a == 1 or a == b:
             pass
         else:
             return False
@@ -237,10 +239,10 @@ def check_one_way_broadcastable(x1, x2):
 
 
 def check_inplace_sizes_valid(var, data):
-    if not check_one_way_broadcastable(var.shape, data.shape):
+    if not check_one_way_broadcastable(data.shape, var.shape):
         raise ivy.utils.exceptions.IvyException(
             "Could not output values of shape {} into array with shape {}.".format(
-                data.shape, var.shape
+                var.shape, data.shape
             )
         )
 
