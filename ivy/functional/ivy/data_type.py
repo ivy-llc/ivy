@@ -1426,7 +1426,7 @@ def default_complex_dtype(
     input
         Number or array for inferring the complex dtype.
     complex_dtype
-        The float dtype to be returned.
+        The complex dtype to be returned.
     as_native
         Whether to return the complex dtype as native dtype.
 

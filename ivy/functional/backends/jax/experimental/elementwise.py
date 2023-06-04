@@ -88,17 +88,6 @@ def nansum(
     return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
-def gcd(
-    x1: Union[JaxArray, float, list, tuple],
-    x2: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.gcd(x1, x2)
-
-
 def isclose(
     a: JaxArray,
     b: JaxArray,
@@ -110,19 +99,6 @@ def isclose(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
-
-def nan_to_num(
-    x: JaxArray,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
 
 
 def logaddexp2(
@@ -206,25 +182,6 @@ def nextafter(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nextafter(x1, x2)
-
-
-def angle(
-    z: JaxArray,
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.angle(z, deg=deg)
-
-
-def imag(
-    val: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.imag(val)
 
 
 def zeta(

@@ -882,3 +882,93 @@ def fmod(
     x1, x2 = promote_types_of_inputs(x1, x2)
     res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
     return tf.where(x1 < 0, -res, res)
+
+
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
+def gcd(
+    x1: Union[tf.Tensor, tf.Variable, int, list, tuple],
+    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return tf.experimental.numpy.gcd(x1, x2)
+
+
+gcd.support_native_out = False
+
+
+@with_unsupported_dtypes(
+    {
+        "2.12.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "int32",
+        )
+    },
+    backend_version,
+)
+def angle(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if deg:
+        return tf.math.angle(input, name=None) * (180 / tf.experimental.numpy.pi)
+    else:
+        return tf.math.angle(input, name=None)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.12.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "int32",
+        )
+    },
+    backend_version,
+)
+def imag(
+    val: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.imag(val, name=None)
+
+
+def nan_to_num(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    posinf = posinf if posinf is not None else x.dtype.max
+    neginf = neginf if neginf is not None else x.dtype.min
+    posinf = tf.constant(posinf, x.dtype)
+    neginf = tf.constant(neginf, x.dtype)
+    nan = tf.constant(nan, x.dtype)
+    ret = tf.where(tf.math.is_nan(x), nan, x)
+    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret > 0), posinf, ret)
+    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret < 0), neginf, ret)
+    if copy:
+        return ret
+    else:
+        x = ret
+        return x
