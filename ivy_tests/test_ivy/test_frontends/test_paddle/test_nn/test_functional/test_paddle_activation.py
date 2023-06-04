@@ -67,7 +67,7 @@ def test_paddle_hardshrink(
         threshold=threshold,
     )
 
-    
+  
 # hardswish
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.hardswish",
