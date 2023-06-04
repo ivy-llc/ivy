@@ -53,3 +53,14 @@ def hardtanh(
     less = ivy.where(ivy.less(x, min), min, x)
     ret = ivy.where(ivy.greater(x, max), max, less).astype(x.dtype)
     return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softsign(
+    x,
+    /,
+    *,
+    name=None,
+):
+    return ivy.divide(x, ivy.add(1, ivy.abs(x)))
