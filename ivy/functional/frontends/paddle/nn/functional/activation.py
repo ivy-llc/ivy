@@ -38,3 +38,18 @@ log_softmax = paddle_log_softmax
 def hardshrink(x, threshold=0.5, name=None):
     mask = ivy.logical_or(ivy.greater(x, threshold), ivy.less(x, -threshold))
     return ivy.where(mask, x, 0.0)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def hardtanh(
+    x,
+    /,
+    *,
+    min=-1.0,
+    max=1.0,
+    name=None,
+):
+    less = ivy.where(ivy.less(x, min), min, x)
+    ret = ivy.where(ivy.greater(x, max), max, less).astype(x.dtype)
+    return ret
