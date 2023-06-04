@@ -101,19 +101,6 @@ def isclose(
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-def nan_to_num(
-    x: JaxArray,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
-
-
 def logaddexp2(
     x1: Union[JaxArray, float, list, tuple],
     x2: Union[JaxArray, float, list, tuple],

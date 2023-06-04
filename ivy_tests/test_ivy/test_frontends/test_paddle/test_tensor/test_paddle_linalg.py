@@ -14,6 +14,67 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @st.composite
+def dtype_value1_value2_axis(
+    draw,
+    available_dtypes,
+    abs_smallest_val=None,
+    min_value=None,
+    max_value=None,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+    specific_dim_size=3,
+    large_abs_safety_factor=4,
+    small_abs_safety_factor=4,
+    safety_factor_scale="log",
+):
+    # For cross product, a dim with size 3 is required
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    axis = draw(helpers.ints(min_value=0, max_value=len(shape)))
+    # make sure there is a dim with specific dim size
+    shape = list(shape)
+    shape = shape[:axis] + [specific_dim_size] + shape[axis:]
+    shape = tuple(shape)
+
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
+
+    values = []
+    for i in range(2):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    abs_smallest_val=abs_smallest_val,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
+                )
+            )
+        )
+
+    value1, value2 = values[0], values[1]
+    return [dtype], value1, value2, axis
+
+
+@st.composite
 def _get_dtype_input_and_vectors(draw):
     dim_size = draw(helpers.ints(min_value=1, max_value=2))
     dtype = draw(helpers.get_dtypes("float"))
@@ -108,6 +169,42 @@ def _dtype_values_axis(draw):
 
 # Tests #
 # ----- #
+
+
+# cross
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.cross",
+    dtype_x_y_axis=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=-1e5,
+        max_value=1e5,
+        abs_smallest_val=0.01,
+        safety_factor_scale="log",
+    ),
+)
+def test_paddle_cross(
+    *,
+    dtype_x_y_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, y, axis = dtype_x_y_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        y=y,
+        axis=axis,
+    )
 
 
 # matmul
@@ -375,4 +472,38 @@ def test_paddle_pinv(
         atol=1e-3,
         x=x[0],
         rcond=rcond,
+    )
+
+
+# cholesky
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.cholesky",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    upper=st.booleans(),
+)
+def test_paddle_cholesky(
+    dtype_and_x,
+    upper,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    x = x[0]
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        upper=upper,
     )

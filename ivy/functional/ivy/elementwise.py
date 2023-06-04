@@ -2059,7 +2059,7 @@ def gcd(
     >>> ivy.gcd(x1, 10)
     ivy.array([1.,   2.,  1.])
     """
-    return ivy.current_backend().gcd(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).gcd(x1, x2, out=out)
 
 
 @handle_nestable
@@ -2096,7 +2096,7 @@ def exp2(
     >>> ivy.exp2(x)
     ivy.array([32.,   64.,  128.])
     """
-    return ivy.current_backend().exp2(x, out=out)
+    return ivy.current_backend(x).exp2(x, out=out)
 
 
 @handle_exceptions
@@ -2401,7 +2401,7 @@ def fmin(
     >>> ivy.fmin(x1, x2)
     ivy.array([ 0.,  0., nan])
     """
-    return ivy.current_backend().fmin(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).fmin(x1, x2, out=out)
 
 
 @handle_exceptions
@@ -3925,6 +3925,65 @@ def logical_xor(
     }
     """
     return ivy.current_backend(x1, x2).logical_xor(x1, x2, out=out)
+
+
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def nan_to_num(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Replace NaN with zero and infinity with large finite numbers (default behaviour) or
+    with the numbers defined by the user using the nan, posinf and/or neginf keywords.
+
+    Parameters
+    ----------
+    x
+        Array input.
+    copy
+        Whether to create a copy of x (True) or to replace values in-place (False).
+        The in-place operation only occurs if casting to an array does not require
+        a copy. Default is True.
+    nan
+        Value to be used to fill NaN values. If no value is passed then NaN values
+        will be replaced with 0.0.
+    posinf
+        Value to be used to fill positive infinity values. If no value is passed
+        then positive infinity values will be replaced with a very large number.
+    neginf
+        Value to be used to fill negative infinity values.
+        If no value is passed then negative infinity values
+        will be replaced with a very small (or negative) number.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with the non-finite values replaced.
+        If copy is False, this may be x itself.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, nan])
+    >>> ivy.nan_to_num(x)
+    ivy.array([1.,    1.,   3.,   0.0])
+    >>> x = ivy.array([1, 2, 3, inf])
+    >>> ivy.nan_to_num(x, posinf=5e+100)
+    ivy.array([1.,   2.,   3.,   5e+100])
+    """
+    return ivy.current_backend(x).nan_to_num(
+        x, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
+    )
 
 
 @handle_exceptions
@@ -5927,7 +5986,7 @@ def fmod(
     >>> ivy.fmod(x1, x2)
     ivy.array([ nan,  nan,  nan])
     """
-    return ivy.current_backend().fmod(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).fmod(x1, x2, out=out)
 
 
 @handle_nestable
@@ -5966,4 +6025,4 @@ def lcm(
     >>> x1.lcm(x1, x2)
     ivy.array([10, 21, 60])
     """
-    return ivy.current_backend().lcm(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).lcm(x1, x2, out=out)

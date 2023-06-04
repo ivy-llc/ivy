@@ -28,7 +28,6 @@ FN_DECORATORS = [
     "handle_array_like_without_promotion",
     "handle_nestable",
     "handle_exceptions",
-    "with_unsupported_dtypes",
     "handle_nans",
     "handle_mixed_function",
 ]
@@ -591,6 +590,27 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
     `ivy.Array` instances.
     """
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+
+
+def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
+    """
+    Wrap `fn` and convert all frontend arrays in its return to ivy arrays.
+
+    Used in cases when a frontend function receives a callable (frontend
+    function) argument. To be able to use that callable in a composition
+    of ivy functions, its outputs need to be converted to ivy arrays.
+    """
+
+    @functools.wraps(fn)
+    def _outputs_to_ivy_arrays(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        return ivy.nested_map(
+            ret,
+            lambda x: x.ivy_array if hasattr(x, "ivy_array") else x,
+            shallow=False,
+        )
+
+    return _outputs_to_ivy_arrays
 
 
 def handle_view(fn: Callable) -> Callable:

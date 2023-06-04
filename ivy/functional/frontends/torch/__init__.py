@@ -1,9 +1,13 @@
-import ivy
-from ivy.utils.exceptions import handle_exceptions
-
 # global
+import sys
 from numbers import Number
 from typing import Union, Tuple, Iterable
+
+# local
+import ivy
+from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -280,4 +284,10 @@ from . import func
 from .func import *
 from . import autograd
 
+
 _frontend_array = tensor
+
+# setting to specific version #
+# --------------------------- #
+
+set_frontend_to_specific_version(sys.modules[__name__])
