@@ -293,7 +293,6 @@ def test_dct(
         norm=norm,
         rtol_=1e-3,
         atol_=1e-1,
-        on_device=on_device,
     )
 
 
