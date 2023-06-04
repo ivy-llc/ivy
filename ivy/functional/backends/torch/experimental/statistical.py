@@ -183,6 +183,66 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def nanmin(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    replaced_tensor = torch.where(torch.isnan(a), float("inf"), a)
+    result = (
+        torch.min(replaced_tensor, dim=axis, keepdim=keepdims)[0]
+        if axis is not None
+        else torch.min(replaced_tensor).values
+    )
+    if torch.all(torch.isnan(a)):
+        result = torch.full(result.shape, float("nan"))
+
+    if dtype is not None:
+        result = result.to(dtype)
+
+    if out is not None:
+        out.copy_(result)
+        return out
+    return result
+
+
+nanmin.support_native_out = True
+
+
+def nanmax(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    replaced_tensor = torch.where(torch.isnan(a), float("-inf"), a)
+    result = (
+        torch.max(replaced_tensor, dim=axis, keepdim=keepdims)[0]
+        if axis is not None
+        else torch.max(replaced_tensor).values
+    )
+    if torch.all(torch.isnan(a)):
+        result = torch.full(result.shape, float("nan"))
+
+    if dtype is not None:
+        result = result.to(dtype)
+
+    if out is not None:
+        out.copy_(result)
+        return out
+    return result
+
+
+nanmax.support_native_out = True
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def quantile(
     a: torch.Tensor,

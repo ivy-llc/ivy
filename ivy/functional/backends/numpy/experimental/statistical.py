@@ -165,6 +165,40 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def nanmin(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    return np.nanmin(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
+nanmin.support_native_out = True
+
+
+def nanmax(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    return np.nanmax(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
+nanmax.support_native_out = True
+
+
 def quantile(
     a: np.ndarray,
     q: Union[float, np.ndarray],

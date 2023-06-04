@@ -444,6 +444,230 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_nanmin(
+        input: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nanmin. This method simply wraps 
+        the function, and so the docstring for ivy.nanmin also applies to this method 
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the minimum is computed. 
+            The default is to compute the minimum of the flattened array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result 
+            as dimensions with size one. With this option, the result will broadcast correctly 
+            against the original a.
+        dtype
+            The desired data type of returned tensor. Default is None.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The nanmin of the array elements in the input container.
+        
+        Functional Examples
+        -------------------
+        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> a.nanmin()
+        {
+            x: 1.,
+            y: 1.
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "nanmin",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nanmin(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nanmin. This method simply wraps 
+        the function, and so the docstring for ivy.nanmin also applies to this method 
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the minimum is computed. 
+            The default is to compute the minimum of the flattened array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result 
+            as dimensions with size one. With this option, the result will broadcast correctly 
+            against the original a.
+        dtype
+            The desired data type of returned tensor. Default is None.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The nanmin of the array elements in the input container.
+            
+        Functional Examples
+        -------------------
+        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]), \
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> a.nanmin()
+        {
+            x: 1.,
+            y: 1.
+        }
+        """
+        return self.static_nanmin(
+            self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        )
+
+    @staticmethod
+    def static_nanmax(
+        input: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nanmax. This method simply wraps 
+        the function, and so the docstring for ivy.nanmax also applies to this method 
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the maximum is computed. 
+            The default is to compute the maximum of the flattened array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result 
+            as dimensions with size one. With this option, the result will broadcast correctly 
+            against the original a.
+        dtype
+            The desired data type of returned tensor. Default is None.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The nanmax of the array elements in the input container.
+        
+        Functional Examples
+        -------------------
+        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]), \
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> a.nanmax()
+        {
+            x: 4.,
+            y: 3.
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "nanmax",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nanmax(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nanmax. This method simply wraps 
+        the function, and so the docstring for ivy.nanmax also applies to this method 
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the maximum is computed. 
+            The default is to compute the maximum of the flattened array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result 
+            as dimensions with size one. With this option, the result will broadcast correctly 
+            against the original a.
+        dtype
+            The desired data type of returned tensor. Default is None.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The nanmax of the array elements in the input container.
+            
+        Functional Examples
+        -------------------
+        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]), \
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> a.nanmax()
+        {
+            x: 4.,
+            y: 3.
+        }
+        """
+        return self.static_nanmax(
+            self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        )
+
+    @staticmethod
     def static_quantile(
         a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         q: Union[ivy.Array, float],

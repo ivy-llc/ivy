@@ -160,6 +160,34 @@ def nanmean(
     return jnp.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
 
+def nanmin(
+    a: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    return jnp.nanmin(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
+def nanmax(
+    a: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    return jnp.nanmax(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
 def quantile(
     a: JaxArray,
     q: Union[float, JaxArray],

@@ -103,6 +103,65 @@ def nanmean(
     return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
 
 
+def nanmin(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    replaced_tensor = tf.where(tf.math.is_nan(a), tf.fill(a.shape, float("inf")), a)
+
+    if axis is None:
+        result = tf.math.reduce_min(replaced_tensor)
+    else:
+        result = tf.math.reduce_min(replaced_tensor, axis=axis, keepdims=keepdims)
+
+    # If all inputs are nan, return nan
+    if tf.reduce_all(tf.math.is_nan(a)):
+        result = tf.fill(result.shape, float("nan"))
+
+    if dtype is not None:
+        result = tf.cast(result, dtype)
+
+    if out is not None:
+        out.assign(result)
+        return out
+
+    return result
+
+
+def nanmax(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    replaced_tensor = tf.where(tf.math.is_nan(a), tf.fill(a.shape, float("-inf")), a)
+
+    if axis is None:
+        result = tf.math.reduce_max(replaced_tensor)
+    else:
+        result = tf.math.reduce_max(replaced_tensor, axis=axis, keepdims=keepdims)
+
+    # If all inputs are nan, return nan
+    if tf.reduce_all(tf.math.is_nan(a)):
+        result = tf.fill(result.shape, float("nan"))
+
+    if dtype is not None:
+        result = tf.cast(result, dtype)
+
+    if out is not None:
+        out.assign(result)
+        return out
+    return result
+
+
 def quantile(
     a: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, float],

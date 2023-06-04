@@ -246,6 +246,114 @@ def nanmean(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@infer_dtype
+def nanmin(
+    a: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the minimum of all non-NaN elements along the specified dimensions.
+
+    Parameters
+    ----------
+    a
+        Input array.
+    axis
+        Axis or axes along which the minima are computed.
+        The default is to compute the minima of the flattened array.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a. If the value is anything but the default,
+        then keepdims will be passed through to the min method of sub-classes
+        of ndarray. If the sub-classes methods does not implement keepdims any
+        exceptions will be raised.
+    dtype
+        The desired data type of returned tensor. Default is None.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The nanmin of the array elements.
+
+    Functional Examples
+    -------------------
+    >>> a = ivy.array([[1, ivy.nan], [3, 4]])
+    >>> ivy.nanmin(a)
+    1.0
+    >>> ivy.nanmin(a, axis=0)
+    ivy.array([1.,  4.])
+    """
+    return ivy.current_backend(a).nanmin(
+        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
+def nanmax(
+    a: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the maximum of all non-NaN elements along the specified dimensions.
+
+    Parameters
+    ----------
+    a
+        Input array.
+    axis
+        Axis or axes along which the maxima are computed.
+        The default is to compute the maxima of the flattened array.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a. If the value is anything but the default,
+        then keepdims will be passed through to the max method of sub-classes
+        of ndarray. If the sub-classes methods does not implement keepdims any
+        exceptions will be raised.
+    dtype
+        The desired data type of returned tensor. Default is None.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The nanmax of the array elements.
+
+    Functional Examples
+    -------------------
+    >>> a = ivy.array([[1, ivy.nan], [3, 4]])
+    >>> ivy.nanmax(a)
+    4.0
+    >>> ivy.nanmax(a, axis=0)
+    ivy.array([3.,  4.])
+    """
+    return ivy.current_backend(a).nanmax(
+        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],

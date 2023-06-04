@@ -94,6 +94,88 @@ def nanmean(
     return ret.astype(ret_dtype)
 
 
+def nanmin(
+    a: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # Replace NaNs with positive infinity for min operation
+    a = paddle.where(paddle.isnan(a), float("inf"), a)
+
+    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
+        if paddle.is_complex(a):
+            ret = paddle.complex(
+                paddle.min(a.real(), axis=axis, keepdim=keepdims),
+                paddle.min(a.imag(), axis=axis, keepdim=keepdims),
+            )
+        else:
+            ret = paddle.min(a.astype("float32"), axis=axis, keepdim=keepdims)
+    else:
+        ret = paddle.min(a, axis=axis, keepdim=keepdims)
+
+    if paddle.all(paddle.isinf(ret)):
+        ret = paddle.full_like(ret, float("nan")) if keepdims else float("nan")
+
+    if isinstance(axis, Sequence):
+        if len(axis) == a.ndim:
+            axis = None
+    if (a.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+
+    if dtype is not None:
+        ret = ret.astype(dtype)
+
+    if out is not None:
+        out.assign(ret)
+        return out
+    return ret
+
+
+def nanmax(
+    a: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # Replace NaNs with negative infinity for max operation
+    a = paddle.where(paddle.isnan(a), float("-inf"), a)
+
+    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
+        if paddle.is_complex(a):
+            ret = paddle.complex(
+                paddle.max(a.real(), axis=axis, keepdim=keepdims),
+                paddle.max(a.imag(), axis=axis, keepdim=keepdims),
+            )
+        else:
+            ret = paddle.max(a.astype("float32"), axis=axis, keepdim=keepdims)
+    else:
+        ret = paddle.max(a, axis=axis, keepdim=keepdims)
+
+    if paddle.all(paddle.isinf(ret)):
+        ret = paddle.full_like(ret, float("nan")) if keepdims else float("nan")
+
+    if isinstance(axis, Sequence):
+        if len(axis) == a.ndim:
+            axis = None
+    if (a.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+
+    if dtype is not None:
+        ret = ret.astype(dtype)
+
+    if out is not None:
+        out.assign(ret)
+        return out
+    return ret
+
+
 def _compute_quantile(
     x, q, axis=None, keepdim=False, ignore_nan=False, interpolation="linear"
 ):
