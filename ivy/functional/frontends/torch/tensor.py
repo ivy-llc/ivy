@@ -13,7 +13,7 @@ from ivy.functional.frontends.torch.func_wrapper import _to_ivy_array
 
 
 class Tensor:
-    def __init__(self, array, device=None, _init_overload=False):
+    def __init__(self, array, device=None, _init_overload=False, requires_grad=False):
         if _init_overload:
             self._ivy_array = (
                 ivy.array(array) if not isinstance(array, ivy.Array) else array
@@ -23,6 +23,9 @@ class Tensor:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
             )
+        self.grads = None
+        self.func_inputs = None
+        self.requires_grad = requires_grad
 
     def __len__(self):
         return len(self._ivy_array)
@@ -69,6 +72,18 @@ class Tensor:
             return self
         return torch_frontend.permute(self, list(range(self.ndim))[::-1])
 
+    @property
+    def grads(self):
+        return self._grads
+
+    @property
+    def func_inputs(self):
+        return self._func_inputs
+
+    @property
+    def requires_grad(self):
+        return self._requires_grad
+
     # Setters #
     # --------#
 
@@ -77,6 +92,21 @@ class Tensor:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
+
+    @grads.setter
+    def grads(self, g):
+        self._grads = g
+
+    @func_inputs.setter
+    def func_inputs(self, i):
+        self._func_inputs = i
+
+    @requires_grad.setter
+    def requires_grad(self, r):
+        assert (
+            type(r) == bool
+        ), f"argument 'requires_grad' must be bool, not {type(r).__name__}"
+        self._requires_grad = r
 
     # Instance Methods #
     # ---------------- #
@@ -763,7 +793,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def ne(self, other):
-        return torch_frontend.ne(self, other)
+        x = torch_frontend.ne(self, other)
+        return x
 
     def squeeze(self, dim):
         return torch_frontend.squeeze(self, dim)

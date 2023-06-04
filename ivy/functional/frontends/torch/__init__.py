@@ -278,5 +278,6 @@ from .utilities import *
 from . import linalg
 from . import func
 from .func import *
+from . import autograd
 
 _frontend_array = tensor

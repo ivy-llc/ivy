@@ -25,6 +25,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
     _get_dtype_input_and_matrices,
 )
 from ivy.functional.frontends.torch import Tensor
+import ivy.functional.frontends.torch as torch_frontend
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
@@ -116,6 +117,74 @@ def test_torch_tensor_property_dtype(
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.dtype, dtype[0])
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+    ),
+    requires_grad=_requires_grad(),
+)
+def test_torch_tensor_property_requires_grad(
+    dtype_x,
+    requires_grad,
+):
+    _, data = dtype_x
+    x = torch_frontend.tensor(data[0], requires_grad=requires_grad)
+    assert x.requires_grad == requires_grad
+
+    x = torch_frontend.tensor(data[0])
+    x.requires_grad = requires_grad
+    x = torch_frontend.tensor(data[0], requires_grad=requires_grad)
+
+    with pytest.raises(
+        Exception, match="argument 'requires_grad' must be bool, not tuple"
+    ):
+        x = torch_frontend.tensor(data[0], requires_grad=(1, 0))
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+    ),
+    grads=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", prune_function=False),
+        num_arrays=st.integers(min_value=1, max_value=5),
+    ),
+)
+def test_torch_tensor_property_grads(
+    dtype_x,
+    grads,
+):
+    _, data = dtype_x
+    grads = list(map(ivy.array, grads[1]))
+    x = torch_frontend.tensor(data[0])
+    assert x.grads is None
+    x.grads = grads
+    for x, y in zip(x.grads, grads):
+        assert ivy.all(x == y)
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+    ),
+    func_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", prune_function=False),
+        num_arrays=st.integers(min_value=1, max_value=5),
+    ),
+)
+def test_torch_tensor_property_func_inputs(
+    dtype_x,
+    func_inputs,
+):
+    _, data = dtype_x
+    func_inputs = list(map(ivy.array, func_inputs[1]))
+    x = torch_frontend.tensor(data[0])
+    assert x.func_inputs is None
+    x.func_inputs = func_inputs
+    for x, y in zip(x.func_inputs, func_inputs):
+        assert ivy.all(x == y)
 
 
 @given(

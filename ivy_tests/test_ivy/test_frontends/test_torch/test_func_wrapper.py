@@ -1,5 +1,6 @@
 # global
 from hypothesis import given
+import torch
 
 # local
 import ivy
@@ -8,6 +9,7 @@ from ivy.functional.frontends.torch.func_wrapper import (
     inputs_to_ivy_arrays,
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
+    handle_gradients,
 )
 from ivy.functional.frontends.torch.tensor import Tensor
 import ivy.functional.frontends.torch as torch_frontend
@@ -24,6 +26,64 @@ def _fn(*args, dtype=None, check_default=False):
         )
         ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int64")
     return args[0]
+
+
+@given(
+    dtype_and_xs=helpers.dtype_and_values(
+        min_value=-1e5,
+        max_value=1e5,
+        available_dtypes=("float32", "float64"),
+    ),
+)
+def test_handle_gradients(dtype_and_xs):
+    if ivy.current_backend_str() == "paddle" or ivy.current_backend_str() == "numpy":
+        return
+
+    dtypes, xs = dtype_and_xs
+    fn = lambda x: 2 * x  # TODO: when ivy.jac is fixed, add more args
+
+    # Test when requires_grad = False
+    x = torch_frontend.tensor(xs[0], dtype=dtypes[0])
+
+    output_fn = fn(x)
+    output_wrapped = handle_gradients(fn)(x)
+
+    assert ivy.all(output_fn.ivy_array == output_wrapped.ivy_array)
+    assert output_wrapped.grads is None
+    assert output_wrapped.func_inputs is None
+    assert not output_wrapped.requires_grad
+
+    # Test when requires_grad = True
+    # Test requires_grad is set properly
+    x = torch_frontend.tensor(xs[0], requires_grad=True)
+    assert x.requires_grad
+
+    output_wrapped = handle_gradients(fn)(x)
+    assert output_wrapped.requires_grad
+
+    # Test function inputs are stored
+    # TODO: when ivy.jac is fixed edit this to
+    # check only inputs with req_grad = True
+    for stored, gt in zip(output_wrapped.func_inputs, [x]):
+        assert ivy.all(stored.ivy_array == gt.ivy_array)
+
+    # Test gradients are stored
+    x_native = torch.tensor(xs[0], requires_grad=True)
+    output_native = fn(x_native)
+    grads_gt = torch.autograd.grad(
+        output_native, x_native, grad_outputs=torch.ones_like(output_native)
+    )
+
+    axis = list(range(len(output_wrapped.shape)))
+    grads = output_wrapped.grads[0].sum(dim=axis)
+
+    ivy.set_backend("torch")
+    grads_flat_np_gt = helpers.flatten_and_to_np(ret=ivy.to_ivy(grads_gt[0]))
+    ivy.previous_backend()
+    grads_flat_np = helpers.flatten_frontend_to_np(ret=grads)
+    for grads_flat, grads_flat_gt in zip(grads_flat_np, grads_flat_np_gt):
+        assert grads_flat.shape == grads_flat_gt.shape
+        helpers.value_test(ret_np_flat=grads_flat, ret_np_from_gt_flat=grads_flat_gt)
 
 
 @given(

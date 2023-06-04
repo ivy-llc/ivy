@@ -2,7 +2,10 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, integer_arrays_to_float
 import ivy.functional.frontends.torch as torch_frontend
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_gradients,
+)
 
 
 @to_ivy_arrays_and_back
@@ -40,12 +43,14 @@ def tanh(input, *, out=None):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@handle_gradients
 @to_ivy_arrays_and_back
 def cos(input, *, out=None):
     return ivy.cos(input, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@handle_gradients
 @to_ivy_arrays_and_back
 def sin(input, *, out=None):
     return ivy.sin(input, out=out)
@@ -98,6 +103,7 @@ sub = subtract
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@handle_gradients
 @to_ivy_arrays_and_back
 def exp(input, *, out=None):
     return ivy.exp(input, out=out)
