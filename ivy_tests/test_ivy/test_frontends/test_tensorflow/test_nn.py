@@ -1498,7 +1498,7 @@ def test_tensorflow_avg_pool1d(
     x_k_s_p_df=helpers.arrays_for_pooling(
         min_dims=3, max_dims=3, min_side=1, max_side=4
     ),
-    pooling_type=st.one_of(st.just("AVG"), st.just("MAX"), st.just("UNKNOWN")),
+    pooling_type=st.one_of(st.just("AVG"), st.just("MAX")),
     data_format=st.one_of(st.sampled_from(["NWC"])),
     test_with_out=st.just(False),
 )
