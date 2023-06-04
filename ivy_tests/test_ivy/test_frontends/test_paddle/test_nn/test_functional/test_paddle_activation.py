@@ -68,6 +68,37 @@ def test_paddle_hardshrink(
     )
 
 
+# hardtanh
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.hardtanh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    max_val=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+)
+def test_paddle_hardtanh(
+    *,
+    dtype_and_x,
+    max_val,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    max_min = max_val, -max_val
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        min=max_min[1],
+        max=max_min[0],
+    )
+
+
 # hardsigmoid
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.hardsigmoid",
