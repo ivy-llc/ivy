@@ -4,13 +4,11 @@ import itertools
 import string
 import builtins
 import math
-import functools
 
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.jax import to_numpy as jax_to_numpy
+from ivy.func_wrapper import with_unsupported_dtypes, frontend_outputs_to_ivy_arrays
 
 _min = builtins.min
 _slice = builtins.slice
@@ -372,6 +370,7 @@ def gt(x, y):
     return ivy.greater(x, y)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def le(x, y):
     return ivy.less_equal(x, y)
@@ -666,16 +665,6 @@ def _padtype_to_pads(in_shape, filter_shape, window_strides, padding):
         return [(0, 0)] * len(in_shape)
 
 
-# ToDo: replace with ivy.reduce as soon as it's been implemented
-def _custom_reduce(operand, init_val, func):
-    init_val = init_val.to_numpy() if ivy.is_array(init_val) else init_val
-    op_parts = ivy.moveaxis(operand, -1, 0).reshape((operand.shape[-1], -1)).to_numpy()
-    result = functools.reduce(func, op_parts, init_val)
-    result = jax_to_numpy(result)
-    result = ivy.reshape(result, operand.shape[:-1])
-    return result
-
-
 identities = {
     "max": -float("inf"),
     "min": float("inf"),
@@ -730,8 +719,9 @@ def reduce_window(
     if base_dilation:
         op = _dilate(op, base_dilation, identity)
     view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
-    view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
-    ret = _custom_reduce(view, init_value, computation)
+    view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
+    computation = frontend_outputs_to_ivy_arrays(computation)
+    ret = ivy.reduce(view, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
 
 

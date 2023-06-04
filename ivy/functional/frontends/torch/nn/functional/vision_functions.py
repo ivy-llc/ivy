@@ -107,22 +107,16 @@ def _handle_padding_shape(padding, n, mode):
 
 @to_ivy_arrays_and_back
 def pad(input, pad, mode="constant", value=0):
+    mode_dict = {
+        "constant": "constant",
+        "reflect": "reflect",
+        "replicate": "edge",
+        "circular": "wrap",
+    }
+    if mode not in mode_dict:
+        raise ValueError(f"Unsupported padding mode: {mode}")
     pad = _handle_padding_shape(pad, len(input.shape), mode)
-    if mode == "constant":
-        return ivy.pad(input, pad, mode="constant", constant_values=value)
-    elif mode == "reflect":
-        return ivy.pad(input, pad, mode="reflect", reflect_type="even")
-    elif mode == "replicate":
-        return ivy.pad(input, pad, mode="edge")
-    elif mode == "circular":
-        return ivy.pad(input, pad, mode="wrap")
-    else:
-        raise ivy.utils.exceptions.IvyException(
-            (
-                "mode '{}' must be in "
-                + "['constant', 'reflect', 'replicate', 'circular']"
-            ).format(mode)
-        )
+    return ivy.pad(input, pad, mode=mode_dict[mode], constant_values=value)
 
 
 def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
