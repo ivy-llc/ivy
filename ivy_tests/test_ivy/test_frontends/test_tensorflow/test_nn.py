@@ -1492,6 +1492,7 @@ def test_tensorflow_avg_pool1d(
     )
 
 
+@st.composite
 def _pool_args(draw):
     dims = draw(st.integers(min_value=1, max_value=3))
     data_formats = ["NWC", "NHWC", "NDHWC"]
