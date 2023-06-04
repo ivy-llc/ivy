@@ -14,6 +14,15 @@ from ivy.func_wrapper import (
 from .. import backend_version
 
 
+def erfc(
+    a: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.erfc(a, out=out)
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def fmax(
     x1: torch.Tensor,

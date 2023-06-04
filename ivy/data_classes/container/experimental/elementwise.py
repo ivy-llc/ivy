@@ -1519,6 +1519,96 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_erfc(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.erfc. This method simply wraps the
+        function, and so the docstring for ivy.erfc also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        out
+            the optional output container.
+
+        Returns
+        -------
+        ret
+            the complementary of error function
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3, 4]))
+        >>> y = ivy.Container.static_erfc(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.84270069, 0.99532214, 0.99997789, 0.99999998])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-ivy.inf, -3, ivy.nan, 0, ivy.inf]))
+        >>> y = ivy.Container.static_erfc(x)
+        >>> print(y)
+        {
+            a: ivy.array([-1., -0.99997789, nan, 0., 1.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "erfc",
+            x,
+            out=out,
+        )
+
+    def erfc(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.erfc. This method simply wraps the
+        function, and so the docstring for ivy.erfc also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        out
+            the optional output container.
+
+        Returns
+        -------
+        ret
+            the complementary of error function
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3, 4]))
+        >>> y = x.erfc()
+        >>> print(y)
+        {
+            a: ivy.array([1, 1, 1, 1])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, -3, ivy.nan, 0, ivy.inf]))
+        >>> y = x.erfc()
+        >>> print(y)
+        {
+            a: ivy.array([0.15729928, 0.00467783, 1.99997783, nan, 1., 0.])
+        }
+        """
+        return self.static_erfc(
+            self,
+            out=out,
+        )
+
+    @staticmethod
     def static_diff(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,

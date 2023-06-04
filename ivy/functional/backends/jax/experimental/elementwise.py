@@ -18,6 +18,10 @@ def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
 
 
+def erfc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return js.special.erfc(x)
+
+
 def fmax(
     x1: JaxArray,
     x2: JaxArray,

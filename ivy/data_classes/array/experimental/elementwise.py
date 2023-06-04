@@ -160,6 +160,43 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.float_power(self._data, x2, out=out)
 
+    def erfc(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.erfc. This method simply wraps the
+        function, and so the docstring for ivy.erfc also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            the optional output array.
+
+        Returns
+        -------
+        ret
+            the complementary of error function
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 4])
+        >>> y = x.erfc()
+        >>> print(y)
+        ivy.array([0.84270069, 0.99532214, 0.99997789, 0.99999998])
+
+        >>> x = ivy.array([-ivy.inf, -3, ivy.nan, 0, ivy.inf])
+        >>> y = x.erfc()
+        >>> print(y)
+        ivy.array([-1, -0.99997789, nan, 0., 1.])
+        """
+        return ivy.erfc(self._data, out=out)
+
     def copysign(
         self: Union[ivy.Array, ivy.NativeArray, Number],
         x2: Union[ivy.Array, ivy.NativeArray, Number],

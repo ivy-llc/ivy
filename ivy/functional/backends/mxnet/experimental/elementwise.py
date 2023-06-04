@@ -14,6 +14,15 @@ def sinc(
     raise IvyNotImplementedException()
 
 
+def erfc(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def fmax(
     x1: Union[(None, mx.ndarray.NDArray)],
     x2: Union[(None, mx.ndarray.NDArray)],

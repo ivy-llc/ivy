@@ -16,6 +16,18 @@ def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 @_scalar_output_to_0d_array
+def erfc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    t = 1.0 / (1.0 + 0.3275911 * np.abs(x))
+    a1 = 0.254829592
+    a2 = -0.284496736
+    a3 = 1.421413741
+    a4 = -1.453152027
+    a5 = 1.061405429
+    k = a1 * t + a2 * t**2 + a3 * t**3 + a4 * t**4 + a5 * t**5
+    return np.sign(x) * (1 - k * np.exp(-(x**2)))
+
+
+@_scalar_output_to_0d_array
 def fmax(
     x1: np.ndarray,
     x2: np.ndarray,

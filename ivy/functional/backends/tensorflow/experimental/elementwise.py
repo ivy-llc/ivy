@@ -467,6 +467,26 @@ def xlogy(
     return tf.math.xlogy(x, y)
 
 
+@with_supported_dtypes(
+    {
+        "2.12.0 and below": (
+            "bfloat16",
+            "half",
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
+def erfc(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfc(x)
+
+
 @with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, backend_version)
 def real(
     x: Union[tf.Tensor, tf.Variable],

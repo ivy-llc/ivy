@@ -43,6 +43,36 @@ def test_sinc(
     )
 
 
+# erfc
+@handle_test(
+    fn_tree="functional.ivy.experimental.erfc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_gradients=st.just(False),
+)
+def test_erfc(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        atol_=1e-02,
+        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )
+
+
 # fmax
 @handle_test(
     fn_tree="functional.ivy.experimental.fmax",

@@ -983,6 +983,43 @@ def binarizer(
 
 
 @handle_exceptions
+@handle_out_argument
+@to_native_arrays_and_back
+def erfc(
+    x: ivy.Array,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the complementary error function of `x`.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        the optional output array.
+
+    Returns
+    -------
+    ret
+        the complementary of error function
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4])
+    >>> ivy.erfc(x)
+    ivy.array([0.84270069, 0.99532214, 0.99997789, 0.99999998])
+
+    >>> x = ivy.array([-ivy.inf, -3, ivy.nan, 0, ivy.inf])
+    >>> ivy.erfc(x)
+    ivy.array([-1., -0.99997789, nan, 0., 1.])
+    """
+    return ivy.current_backend().erfc(x, out=out)
+
+
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
