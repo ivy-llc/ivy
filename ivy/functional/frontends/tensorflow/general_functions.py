@@ -82,7 +82,7 @@ def fill(dims, value, name=None):
 
 
 @to_ivy_arrays_and_back
-def foldl(fn, elems, initializer=None, name=None):
+def foldl(fn, elems, initializer=None):
     try:
         iter(elems)
     except TypeError:

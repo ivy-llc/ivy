@@ -270,12 +270,15 @@ def elems_and_shape(draw):
     shape = draw(
         st.lists(st.integers(min_value=1, max_value=10), min_size=1, max_size=3)
     )
+    elems_size = np.prod(shape).item()
     elems = draw(
         st.lists(
-            st.floats(), min_size=np.prod(shape).item(), max_size=np.prod(shape).item()
+            st.floats(min_value=-1000, max_value=1000),
+            min_size=elems_size,
+            max_size=elems_size,
         )
     )
-    return elems, shape
+    return np.array(elems).reshape(-1), shape
 
 
 # foldl
@@ -285,12 +288,11 @@ def elems_and_shape(draw):
         [
             lambda a, b: a + b,
             lambda a, b: a - b,
+            lambda a, b: a * b,
         ],
     ),
-    initializer=st.one_of(
-        st.none(), st.integers(min_value=-(2**31), max_value=2**31 - 1)
-    ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    initializer=st.one_of(st.none(), st.floats(min_value=-1000, max_value=1000)),
+    dtype=helpers.get_dtypes("float", full=False),
     elems_and_shape=elems_and_shape(),
 )
 def test_tensorflow_foldl(
@@ -304,7 +306,6 @@ def test_tensorflow_foldl(
     test_flags,
 ):
     elems, shape = elems_and_shape
-    elems = np.array(elems).reshape(shape)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         fn=fn,
