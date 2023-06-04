@@ -517,4 +517,7 @@ def pool(
                 input, window_shape, strides, padding, data_format=data_format
             )
     else:
-        raise ValueError(f"Pooling type {pooling_type} not supported, please use AVG or MAX as pooling type.")
+        raise ValueError(
+            f"Pooling type {pooling_type} not supported, please use AVG or MAX as"
+            " pooling type."
+        )
