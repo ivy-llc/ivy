@@ -823,7 +823,6 @@ def test_jax_numpy_std(
         max_dim_size=3,
         min_value=-100,
         max_value=100,
-        allow_nan=False,
     ),
     rowvar=st.booleans(),
 )
@@ -889,7 +888,7 @@ def test_jax_numpy_median(
 # ptp
 @handle_frontend_test(
     fn_tree="jax.numpy.ptp",
-    dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=False),
+    dtype_and_x_axis_dtype=_get_castable_dtypes_values(),
     keep_dims=st.booleans(),
 )
 def test_jax_numpy_ptp(
