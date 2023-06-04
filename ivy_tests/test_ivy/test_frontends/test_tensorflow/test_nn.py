@@ -1492,27 +1492,52 @@ def test_tensorflow_avg_pool1d(
     )
 
 
+def _pool_args(draw):
+    dims = draw(st.integers(min_value=1, max_value=3))
+    data_formats = ["NWC", "NHWC", "NDHWC"]
+    data_format = data_formats[dims - 1]
+    pooling_type = st.one_of(st.just("AVG"), st.just("MAX"))
+    return (
+        draw(
+            helpers.arrays_for_pooling(
+                min_dims=dims + 2,
+                max_dims=dims + 2,
+                min_side=1,
+                max_side=4,
+            )
+        ),
+        data_format,
+        pooling_type,
+        dims + 2,
+    )
+
+
 # pool
 @handle_frontend_test(
     fn_tree="tensorflow.nn.pool",
-    x_k_s_p_df=helpers.arrays_for_pooling(
-        min_dims=3, max_dims=3, min_side=1, max_side=4
-    ),
-    pooling_type=st.one_of(st.just("AVG"), st.just("MAX")),
-    data_format=st.one_of(st.sampled_from(["NWC"])),
+    x_k_s_p_df=_pool_args(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_pool(
     *,
     x_k_s_p_df,
-    pooling_type,
-    data_format,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    (input_dtype, x, ksize, strides, padding) = x_k_s_p_df
+    (
+        (input_dtype, x, ksize, strides, padding),
+        data_format,
+        pooling_type,
+        num_dims,
+    ) = x_k_s_p_df
+    if num_dims == 3:
+        strides = (strides[0],)
+    elif num_dims == 4:
+        strides = (strides[0], strides[0])
+    elif num_dims == 5:
+        strides = (strides[0], strides[0], strides[0])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
