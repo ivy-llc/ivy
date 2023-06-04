@@ -6,7 +6,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
     handle_jax_dtype,
-    inputs_to_ivy_arrays
+    inputs_to_ivy_arrays,
 )
 
 from ivy.func_wrapper import handle_out_argument
@@ -249,4 +249,3 @@ def compress(condition, a, *, axis=None, out=None):
 @inputs_to_ivy_arrays
 def iterable(y):
     return hasattr(y, "__iter__") and y.ndim > 0
-
