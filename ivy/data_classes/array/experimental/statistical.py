@@ -204,9 +204,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         keepdims
             If this is set to True, the axes which are reduced are left in the result
             as dimensions with size one. With this option, the result will broadcast
-            correctly against the original array. If the value is anything but the default,
-            then keepdims will be passed through to the min method of the underlying data type.
-            If the method does not implement keepdims any exceptions will be raised.
+            correctly against the original array. If the value is anything but the
+            default, then keepdims will be passed through to the min method of the
+            underlying data type. If the method does not implement keepdims any
+            exceptions will be raised.
         dtype
             The desired data type of returned tensor. Default is None.
         out
@@ -253,9 +254,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         keepdims
             If this is set to True, the axes which are reduced are left in the result
             as dimensions with size one. With this option, the result will broadcast
-            correctly against the original array. If the value is anything but the default,
-            then keepdims will be passed through to the max method of the underlying data type.
-            If the method does not implement keepdims any exceptions will be raised.
+            correctly against the original array. If the value is anything but the
+            default, then keepdims will be passed through to the max method of the
+            underlying data type. If the method does not implement keepdims any
+            exceptions will be raised.
         dtype
             The desired data type of returned tensor. Default is None.
         out

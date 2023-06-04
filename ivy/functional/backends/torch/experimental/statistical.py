@@ -264,7 +264,7 @@ def quantile(
     if isinstance(q, torch.Tensor):
         qt = q.to(torch.float64)
     else:
-        qt = torch.full(a.shape, fill_value=q)  # Make q the same shape as a
+        qt = q
     for i in axis:
         keepdim_shape[i] = 1
     axis = [num_dim + x if x < 0 else x for x in axis]
