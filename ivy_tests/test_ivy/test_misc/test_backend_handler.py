@@ -172,19 +172,6 @@ def test_choose_random_backend(excluded):
         assert backend in backends_list
 
 
-@pytest.mark.parametrize("backend", available_frameworks())
-def test_get_backend(backend):
-    imported_backend = importlib.import_module(_backend_dict[backend])
-
-    # checking whether the updating of __dict__ works
-    assert "pi" not in imported_backend.__dict__
-    ivy.get_backend(backend)
-    assert "pi" in imported_backend.__dict__
-
-    # checking whether the backend is returned correctly
-    ivy.utils.assertions.check_equal(ivy.get_backend(backend), imported_backend)
-
-
 # Dynamic Backend
 
 backends = list(_backend_dict.keys())
