@@ -6,7 +6,6 @@ from typing import Union, Tuple, Iterable
 # local
 import ivy
 from ivy.utils.exceptions import handle_exceptions
-from ivy.functional.frontends import set_frontend_to_specific_version
 
 
 # Constructing dtypes are required as ivy.<dtype>
@@ -285,8 +284,3 @@ from .func import *
 
 
 _frontend_array = tensor
-
-# setting to specific version #
-# --------------------------- #
-
-set_frontend_to_specific_version(sys.modules[__name__])

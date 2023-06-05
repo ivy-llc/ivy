@@ -4,7 +4,6 @@ import sys
 # local
 import ivy
 from ivy.utils.exceptions import handle_exceptions
-from ivy.functional.frontends import set_frontend_to_specific_version
 from typing import Union, Iterable, Tuple
 from numbers import Number
 from .data_type_routines import dtype
@@ -713,8 +712,3 @@ nextafter = ufunc("_nextafter")
 conjugate = ufunc("_conjugate")
 lcm = ufunc("_lcm")
 gcd = ufunc("_gcd")
-
-# setting to specific version #
-# --------------------------- #
-
-set_frontend_to_specific_version(sys.modules[__name__])

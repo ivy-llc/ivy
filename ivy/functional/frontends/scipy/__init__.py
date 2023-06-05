@@ -2,7 +2,6 @@
 import sys
 
 # local
-from ivy.functional.frontends import set_frontend_to_specific_version
 from . import cluster
 from . import constants
 from . import fft
@@ -24,8 +23,3 @@ import ivy.functional.frontends.numpy as np
 
 
 array = _frontend_array = np.array
-
-# setting to specific version #
-# --------------------------- #
-
-set_frontend_to_specific_version(sys.modules[__name__])

@@ -1,7 +1,6 @@
 import sys
 import ivy
 from ivy.utils.exceptions import handle_exceptions
-from ivy.functional.frontends import set_frontend_to_specific_version
 
 
 # global
@@ -237,8 +236,3 @@ from .tensor.tensor import Tensor
 
 
 _frontend_array = Tensor
-
-# setting to specific version #
-# --------------------------- #
-
-set_frontend_to_specific_version(sys.modules[__name__])
