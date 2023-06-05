@@ -53,3 +53,16 @@ def hardtanh(
     less = ivy.where(ivy.less(x, min), min, x)
     ret = ivy.where(ivy.greater(x, max), max, less).astype(x.dtype)
     return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def gelu(x, approximate=False, name=None):
+    return ivy.gelu(x, approximate=approximate)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def hardsigmoid(x, slope=0.1666667, offset=0.5, name=None):
+    ret = ivy.minimum(ivy.maximum(ivy.add(ivy.multiply(x, slope), offset), 0), 1)
+    return ret
