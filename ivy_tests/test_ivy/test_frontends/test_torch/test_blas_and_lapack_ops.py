@@ -786,6 +786,7 @@ def test_torch_dot(
     test_flags,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
+    test_flags.num_positional_args = len(dtype_and_vecs) - 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

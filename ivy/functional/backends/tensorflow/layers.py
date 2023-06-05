@@ -335,14 +335,42 @@ def conv_general_dilated(
             dilations,
         )
     else:
-        res = tf.nn.conv3d(
-            x,
-            filters,
-            strides,
-            "VALID",
-            df,
-            dilations,
-        )
+        # grouped conv3d is not supported on CPU
+        # ToDO: change the condition of GPU when automatic device shifting
+        #  is implemented in ivy
+        if feature_group_count == 1 or tf.test.is_gpu_available():
+            res = tf.nn.conv3d(
+                x,
+                filters,
+                strides,
+                "VALID",
+                df,
+                dilations,
+            )
+        else:
+            res = tf.concat(
+                [
+                    tf.nn.conv3d(
+                        x[:, :, :, :, i : i + filters.shape[-2]],
+                        filters[
+                            :, :, :, :, j : j + filters.shape[-1] // feature_group_count
+                        ],
+                        strides,
+                        "VALID",
+                        df,
+                        dilations,
+                    )
+                    for i, j in zip(
+                        range(0, x.shape[-1], filters.shape[-2]),
+                        range(
+                            0,
+                            filters.shape[-1],
+                            filters.shape[-1] // feature_group_count,
+                        ),
+                    )
+                ],
+                axis=-1,
+            )
     res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))

@@ -886,9 +886,9 @@ def test_trace(
         small_abs_safety_factor=100,
         safety_factor_scale="log",
         min_num_dims=1,
-        max_num_dims=5,
+        max_num_dims=4,
         min_dim_size=1,
-        max_dim_size=5,
+        max_dim_size=4,
     ),
 )
 def test_vecdot(

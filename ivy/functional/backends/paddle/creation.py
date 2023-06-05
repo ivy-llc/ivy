@@ -19,6 +19,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 from . import backend_version
 from paddle.fluid.libpaddle import Place
@@ -85,6 +86,7 @@ def _stack_tensors(x, dtype):
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         paddle.Tensor,
@@ -142,7 +144,7 @@ def asarray(
             dtype = ivy.default_dtype(item=obj)
         return paddle_backend.squeeze(paddle.to_tensor(obj, dtype=dtype), 0)
 
-    else:
+    elif dtype is None:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
     if dtype == paddle.bfloat16 and isinstance(obj, np.ndarray):
@@ -171,6 +173,8 @@ def empty(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if isinstance(shape, int):
+        shape = [shape]
     return to_device(paddle.empty(shape=shape).cast(dtype), device)
 
 
@@ -385,7 +389,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
 )
 def linspace(
     start: Union[paddle.Tensor, float],
@@ -700,7 +704,7 @@ def triu_indices(
     device: Place,
 ) -> Tuple[paddle.Tensor]:
     # special case due to inconsistent behavior when n_cols=1 and n_rows=0
-    if not (n_cols and n_rows):
+    if n_cols == 1 and n_rows == 0:
         return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
     return tuple(
         to_device(

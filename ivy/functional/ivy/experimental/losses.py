@@ -1,4 +1,3 @@
-# local
 import ivy
 from typing import Optional, Union
 from ivy.func_wrapper import (
@@ -128,3 +127,4 @@ def mae_loss(
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     result = ivy.mean(ivy.abs(true - pred), keepdims=True)
     return _reduce_loss(reduction, result, None, out)
+
