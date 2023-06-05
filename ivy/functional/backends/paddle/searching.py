@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Union
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 from .elementwise import _elementwise_helper
 
@@ -12,8 +12,15 @@ from .elementwise import _elementwise_helper
 # ------------------ #
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128")},
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "complex64",
+                "complex128",
+            )
+        }
+    },
     backend_version,
 )
 def argmax(
@@ -40,7 +47,8 @@ def argmax(
         ret = paddle.argmax(x, axis=axis)
 
     if keepdims:
-        shape = [1] * x.ndim
+        shape = list(x.shape)
+        shape[axis] = 1
         ret = paddle_backend.reshape(ret, shape)
     elif axis is None or x.ndim == 1:
         ret = paddle_backend.squeeze(ret, axis=-1)
@@ -48,8 +56,15 @@ def argmax(
     return ret.astype(dtype)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128")},
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "complex64",
+                "complex128",
+            )
+        }
+    },
     backend_version,
 )
 def argmin(
@@ -58,11 +73,11 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[paddle.dtype] = None,
+    dtype: Optional[paddle.dtype] = None,
     select_last_index: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = output_dtype if output_dtype is not None else paddle.int64
+    dtype = dtype if dtype is not None else paddle.int64
     if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
         x = x.cast("float32")
     if select_last_index:
@@ -76,7 +91,8 @@ def argmin(
         ret = paddle.argmin(x, axis=axis)
 
     if keepdims:
-        shape = [1] * x.ndim
+        shape = list(x.shape)
+        shape[axis] = 1
         ret = paddle_backend.reshape(ret, shape)
     elif axis is None or x.ndim == 1:
         ret = paddle_backend.squeeze(ret, axis=-1)
@@ -84,10 +100,6 @@ def argmin(
     return ret.astype(dtype)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16")},
-    backend_version,
-)
 def nonzero(
     x: paddle.Tensor,
     /,
@@ -134,10 +146,6 @@ def nonzero(
     return res.T
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16")},
-    backend_version,
-)
 def where(
     condition: paddle.Tensor,
     x1: Union[float, int, paddle.Tensor],
@@ -153,6 +161,7 @@ def where(
         if array.ndim == 0:
             arrays[i] = paddle_backend.expand_dims(array, axis=0)
     condition, x1, x2 = arrays
+    condition = condition.cast("bool") if condition.dtype != paddle.bool else condition
 
     if ret_dtype in [
         paddle.int8,
@@ -178,10 +187,6 @@ def where(
 # ----- #
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16")},
-    backend_version,
-)
 def argwhere(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
