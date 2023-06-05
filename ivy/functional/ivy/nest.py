@@ -1055,7 +1055,17 @@ def nested_map(
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
+
+    Examples
+    --------
+    >>> x = [[1, 2], [3, 4]]
+    >>> def square(n):
+    ...     return n * n
+    ...
+    >>> print(nested_map(x, square))
+    [[1, 4], [9, 16]]
     """
+
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
@@ -1067,31 +1077,29 @@ def nested_map(
             include_derived[t] = False
     if ivy.exists(max_depth) and _depth > max_depth:
         return x
+
     class_instance = type(x)
-    tuple_check_fn = ivy.default(
-        _tuple_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[tuple]
-            else (lambda x_, t_: type(x_) is t_)
-        ),
-    )
-    list_check_fn = ivy.default(
-        _list_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[list]
-            else (lambda x_, t_: type(x_) is t_)
-        ),
-    )
-    dict_check_fn = ivy.default(
-        _dict_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[dict]
-            else (lambda x_, t_: type(x_) is t_)
-        ),
-    )
+    def tuple_check_fn_default(x_, t_):
+        if include_derived[tuple]:
+            return isinstance(x_, t_)
+        else:
+            return type(x_) is t_
+
+    def list_check_fn_default(x_, t_):
+        if include_derived[list]:
+            return isinstance(x_, t_)
+        else:
+            return type(x_) is t_
+
+    def dict_check_fn_default(x_, t_):
+        if include_derived[dict]:
+            return isinstance(x_, t_)
+        else:
+            return type(x_) is t_
+
+    tuple_check_fn = ivy.default(_tuple_check_fn, tuple_check_fn_default)
+    list_check_fn = ivy.default(_list_check_fn, list_check_fn_default)
+    dict_check_fn = ivy.default(_dict_check_fn, dict_check_fn_default)
 
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
