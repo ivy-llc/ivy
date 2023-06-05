@@ -135,6 +135,7 @@ def logical_xor(x, y, /, *, name=None, out=None):
     },
     "paddle",
 )
+
 @to_ivy_arrays_and_back
 @handle_out_argument
 def logical_not(x, /, *, name=None, out=None):
@@ -185,8 +186,8 @@ def bitwise_and(x, y, /, *, name=None, out=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "int32", "int64")}, "paddle"
-)
+    {"2.4.2 and below": ("int8", "int16", "int32", "int64")}, "paddle")
+
 @to_ivy_arrays_and_back
 def bitwise_not(x, /, *, name=None):
     return ivy.bitwise_not(x)
@@ -206,7 +207,6 @@ def bitwise_xor(x, y, /, *, name=None):
 def allclose(x, y, /, *, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
     return ivy.allclose(x, y, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
-
 @with_supported_dtypes(
     {
         "2.4.2 and below": (
@@ -219,6 +219,7 @@ def allclose(x, y, /, *, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
     },
     "paddle",
 )
+
 @to_ivy_arrays_and_back
 def isclose(x, y, /, *, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
     return ivy.isclose(x, y, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -227,6 +228,7 @@ def isclose(x, y, /, *, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
     {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
     "paddle",
 )
+
 @to_ivy_arrays_and_back
 def is_tensor(x, /, *, name=None):
     return isinstance(x, paddle.Tensor)
