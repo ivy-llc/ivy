@@ -29,7 +29,6 @@ FN_DECORATORS = [
     "handle_mixed_function",
     "handle_nestable",
     "handle_exceptions",
-    "with_unsupported_dtypes",
     "handle_nans",
 ]
 

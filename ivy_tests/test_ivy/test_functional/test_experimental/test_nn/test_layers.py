@@ -296,6 +296,37 @@ def test_dct(
     )
 
 
+@handle_test(
+    fn_tree="idct",
+    dtype_x_and_args=valid_dct(),
+    test_gradients=st.just(False),
+)
+def test_idct(
+    dtype_x_and_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, type, n, axis, norm = dtype_x_and_args
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        type=type,
+        n=n,
+        axis=axis,
+        norm=norm,
+        rtol_=1e-3,
+        atol_=1e-1,
+        on_device=on_device,
+    )
+
+
 @st.composite
 def _interp_args(draw, mode=None, mode_list=None):
     if not mode and not mode_list:

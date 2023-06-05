@@ -469,6 +469,20 @@ def dct(
     return dct_out
 
 
+def idct(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
+
+
 def _fft_norm(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -535,6 +549,7 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    x = tf.cast(x, tf.complex128)
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:
