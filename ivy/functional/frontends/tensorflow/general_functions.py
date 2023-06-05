@@ -551,5 +551,7 @@ def while_loop(
 
 
 @to_ivy_arrays_and_back
-def truncatediv(x, y, name=None):
-    return ivy.trunc_divide(x, y)
+def truncate_mod(x, y):
+    x = ivy.broadcast_to(x, ivy.shape(y))
+    y = ivy.broadcast_to(y, ivy.shape(x))
+    return ivy.trunc(x / y) * y + (x % y)
