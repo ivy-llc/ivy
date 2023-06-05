@@ -1,12 +1,13 @@
 import contextlib
 import ivy
+import importlib
 import functools
 import logging
 import weakref
 import warnings
 import copy as python_copy
 from types import FunctionType
-from typing import Callable
+from typing import List, Callable
 import inspect
 
 
@@ -30,6 +31,7 @@ FN_DECORATORS = [
     "handle_exceptions",
     "handle_nans",
     "handle_mixed_function",
+    "handle_versioned_function",
 ]
 
 
@@ -282,6 +284,70 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
                 for sub_sequence in sequence
                 if isinstance(sub_sequence, (tuple, list))
             )
+
+
+def _fn_name_from_version_specific_fns(
+    versioned_fn_names: List[str], version: str
+) -> str:
+    """
+    Check the list of version specific function names and return the function name that
+    matches the given version str.
+
+    Parameters
+    ----------
+    versioned_fn_names
+        the version specific names of the function for which the version
+        support is to be provided.
+    version
+        the version of the current framework for which the support is to be provided,
+        the version is inferred by importing the framework in the case of frontend
+        version support and defaults to the highest available version in case of import
+        failure
+
+    Returns
+    -------
+        the name of the version specific function which will then be executed instead.
+    """
+
+    def _match_fn_with_version(fn_name):
+        if "_to_" in name:
+            i = name.index("_v_")
+            e = name.index("_to_")
+            version_start = name[i + 3 : e]
+            version_start = tuple(map(int, version_start.split("p")))
+            version_end = name[e + 4 :]
+            version_end = tuple(map(int, version_end.split("p")))
+            if version_start <= version <= version_end:
+                return True
+            return False
+        elif "_and_above" in name:
+            i = name.index("_v_")
+            e = name.index("_and_")
+            version_start = name[i + 3 : e]
+            version_start = tuple(map(int, version_start.split("p")))
+            if version >= version_start:
+                return True
+            return False
+        else:
+            i = name.index("_v_")
+            e = name.index("_and_")
+            version_start = name[i + 3 : e]
+            version_start = tuple(map(int, version_start.split("p")))
+            if version <= version_start:
+                return True
+            return False
+
+    version = str(version)
+    if version.find("+") != -1:
+        version = tuple(map(int, version[: version.index("+")].split(".")))
+        # version = int(version[: version.index("+")].replace(".", ""))
+    else:
+        version = tuple(map(int, version.split(".")))
+        # version = int(version.replace(".", ""))
+
+    for name in versioned_fn_names:
+        if _match_fn_with_version(name):
+            return name
 
 
 # Array Handling #
@@ -1271,6 +1337,84 @@ def handle_mixed_function(condition) -> Callable:
         return _handle_mixed_function
 
     return inner_function
+
+
+def handle_versioned_function(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_versioned_function(*args, **kwargs):
+        """
+        Handle version specific implementations of `fn` according to the version
+        installed on the user's machine.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the version-specific implementation of `fn`.
+        """
+        # Retrieve the current module
+        fn_module = str(fn.__module__)
+
+        # Determine if the fn was a frontend fn or a backend fn
+        is_frontend_fn = "frontend" in fn_module
+        is_backend_fn = "backend" in fn_module
+
+        if (not (is_frontend_fn or is_backend_fn)) or (
+            is_backend_fn and is_frontend_fn
+        ):
+            raise TypeError(
+                "Argument `fn` must either be a valid frontend or a valid backend"
+                " function."
+            )
+
+        # TODO: Add implementation if this decorator is to be applied to a backend fn
+        if is_backend_fn:
+            raise NotImplementedError
+
+        if is_frontend_fn:
+            try:
+                from ivy.functional.frontends import versions
+            except ImportError as e:
+                raise e
+
+            # Retrieve the version of the native fw installed on user's machine
+            fw = fn_module.split(".")[3]
+            str_fw = str(fw)
+            try:
+                fw = importlib.import_module(fw)
+                fw_version = fw.__version__
+            except (ImportError, AttributeError):
+                fw_version = versions[str_fw]
+
+            fn_name = str(fn.__name__) + "_v_"
+
+            # Search the current module only for the version-specific implementations
+            versioned_fn_names = []
+            module = importlib.import_module(
+                fn_module.rsplit(".", 1)[0], fn_module.rsplit(".", 1)[1]
+            )
+            [versioned_fn_names.append(k) for k in dir(module) if fn_name in k]
+
+            # Retrieve the correct versioned fn out of all possible candidate fns
+            _fn = _fn_name_from_version_specific_fns(versioned_fn_names, fw_version)
+
+            if not _fn:
+                raise LookupError(
+                    "Failed to look up a version-specific implementation of"
+                    f" {fn_name} that matches the version of {{fw.__name__}} installed:"
+                    " {fw_version}."
+                )
+
+            # Call the version-specific fn instead of the original fn
+            return module.__dict__[_fn](*args, **kwargs)
+
+    _handle_versioned_function.handle_versioned_function = True
+    return _handle_versioned_function
 
 
 attribute_dict = {

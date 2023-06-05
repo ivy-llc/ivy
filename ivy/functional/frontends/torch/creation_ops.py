@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import handle_versioned_function, with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -50,13 +50,13 @@ def ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=Fals
 
 
 @to_ivy_arrays_and_back
-def ones_like_v_0p3p0_to_0p3p1(input, out=None):
-    return ivy.ones_like(input, out=None)
+def heaviside(input, values, *, out=None):
+    return ivy.heaviside(input, values, out=out)
 
 
 @to_ivy_arrays_and_back
-def heaviside(input, values, *, out=None):
-    return ivy.heaviside(input, values, out=out)
+def ones_like_v_0p3p0_to_0p3p1(input, out=None):
+    return ivy.ones_like(input, out=None)
 
 
 @to_ivy_arrays_and_back
@@ -71,6 +71,12 @@ def ones_like_v_0p4p0_and_above(
 ):
     ret = ivy.ones_like(input, dtype=dtype, device=device)
     return ret
+
+
+@handle_versioned_function
+@to_ivy_arrays_and_back
+def ones_like(*args, **kwargs):
+    pass
 
 
 @to_ivy_arrays_and_back
