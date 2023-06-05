@@ -124,3 +124,8 @@ def ceil(x, name=None):
 @to_ivy_arrays_and_back
 def pow(x, y, name=None):
     return ivy.pow(x, y)
+
+
+@to_ivy_arrays_and_back
+def conj(x, name=None):
+    return ivy.conj(x)
