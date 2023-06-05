@@ -408,7 +408,8 @@ def test_paddle_log(
         frontend=frontend,
         on_device=on_device,
     )
-    
+
+
 # argmax
 @handle_frontend_method(
     class_tree=CLASS_TREE,
