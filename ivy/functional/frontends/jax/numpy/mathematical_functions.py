@@ -637,10 +637,10 @@ def polydiv(u, v, *, trim_leading_zeros=False):
     for k in range(0, m - n + 1):
         d = scale * r[k]
         q[k] = d
-        r[k:k+n+1] -= (d * v_arr)
-    if trim_leading_zeros:
-        r = trim_zeros(r, trim='f')
-        # TODO: Need to find a way to control tolerance of trim_zeros
+        r[k:k+n+1] = r[k:k+n+1] - (d * v_arr)
+    # if trim_leading_zeros:
+    #    r = trim_zeros_tol(r, trim='f')
+    # TODO: need to control tolerance of the values returned by this function to handle the argument
     return q, r
 
 
