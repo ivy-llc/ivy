@@ -2766,13 +2766,10 @@ def test_jax_numpy_polyint(
         min_value=-1e04,
         max_value=1e04,
     ),
-    # trim_leading_zeros=st.booleans(),
-    # TODO: if trim_zeros_tol exists, can add this
 )
 def test_jax_numpy_polydiv(
     *,
     dtype_and_x,
-    # trim_leading_zeros,
     test_flags,
     on_device,
     fn_tree,
@@ -2787,7 +2784,6 @@ def test_jax_numpy_polydiv(
         on_device=on_device,
         u=x[0],
         v=x[1],
-        # trim_leading_zeros=trim_leading_zeros,
         rtol=1e-01,
         atol=1e-02,
     )
