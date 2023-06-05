@@ -282,5 +282,3 @@ def test_numpy_asarray_chkfinite(
         on_device=on_device,
         a=a[0],
     )
-
-
