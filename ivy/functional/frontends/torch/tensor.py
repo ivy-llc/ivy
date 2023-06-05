@@ -1250,6 +1250,9 @@ class Tensor:
     def greater(self, other, *, out=None):
         return torch_frontend.greater(self, other, out=out)
 
+    def narrow(self, dimension, start, length):
+        torch_frontend.narrow(self, dim=dimension, start=start, length=length)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
