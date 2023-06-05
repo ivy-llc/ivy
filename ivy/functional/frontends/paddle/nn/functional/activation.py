@@ -87,3 +87,14 @@ def softshrink(
     up = ivy.where(ivy.greater(x, threshold), ivy.subtract(x, threshold), 0)
     add = ivy.add(low, up)
     return ivy.astype(add, x.dtype)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softsign(
+    x,
+    /,
+    *,
+    name=None,
+):
+    return ivy.divide(x, ivy.add(1, ivy.abs(x)))
