@@ -995,13 +995,12 @@ def _wrap_function(
             and hasattr(original, "inputs_to_ivy_arrays")
             and not original.__name__.startswith("inplace")
         )
+
         for attr in FN_DECORATORS:
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
                 mixed_fn
                 and (
-                    attr == "inputs_to_native_arrays"
-                    or attr == "outputs_to_ivy_arrays"
-                    or attr == "handle_mixed_function"
+                    attr in ["inputs_to_native_arrays", "outputs_to_ivy_arrays", "handle_mixed_function"]
                 )
             ):
                 if mixed_fn:
