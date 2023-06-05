@@ -12,7 +12,8 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"
+    {"2.4.2 and below": ("uint8", "int8", "int16", "complex64", "complex128")},
+    "paddle",
 )
 @to_ivy_arrays_and_back
 def equal(x, y, /, *, name=None):
@@ -20,7 +21,8 @@ def equal(x, y, /, *, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"
+    {"2.4.2 and below": ("uint8", "int8", "int16", "complex64", "complex128")},
+    "paddle",
 )
 @to_ivy_arrays_and_back
 def not_equal(x, y, /, *, name=None):
@@ -29,15 +31,7 @@ def not_equal(x, y, /, *, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.4.2 and below": (
-            "uint8",
-            "int8",
-            "int16",
-            "float16",
-            "complex64",
-            "complex128",
-        )
-    },
+        "2.4.2 and below": ("uint8", "int8", "int16", "float16", "complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -135,11 +129,11 @@ def logical_xor(x, y, /, *, name=None, out=None):
     },
     "paddle",
 )
-
 @to_ivy_arrays_and_back
 @handle_out_argument
 def logical_not(x, /, *, name=None, out=None):
     return ivy.logical_not(x, out=out)  
+
 
 @with_supported_dtypes(
     {
@@ -159,7 +153,6 @@ def logical_not(x, /, *, name=None, out=None):
     },
     "paddle",
 )
-
 @to_ivy_arrays_and_back
 def is_empty(x, /, *, name=None):
     return paddle.to_tensor(ivy.is_empty(x))
@@ -201,6 +194,7 @@ def bitwise_not(x, /, *, name=None):
 def bitwise_xor(x, y, /, *, name=None):
     return ivy.bitwise_xor(x, y)
 
+
 @with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64")},
     "paddle",
@@ -208,6 +202,7 @@ def bitwise_xor(x, y, /, *, name=None):
 @to_ivy_arrays_and_back
 def allclose(x, y, /, *, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
     return ivy.allclose(x, y, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
 
 @with_supported_dtypes(
     {
@@ -224,6 +219,7 @@ def allclose(x, y, /, *, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
 @to_ivy_arrays_and_back
 def isclose(x, y, /, *, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
     return ivy.isclose(x, y, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
 
 @with_unsupported_dtypes(
     {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
