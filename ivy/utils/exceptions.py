@@ -181,9 +181,10 @@ class IvyDtypePromotionError(IvyException):
         super().__init__(*messages, include_backend=include_backend)
 
 
-def handle_exceptions(fn: Callable) -> Callable:
+buffer = io.StringIO()
 
-    buffer = io.StringIO()
+
+def handle_exceptions(fn: Callable) -> Callable:
 
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
