@@ -1505,6 +1505,7 @@ def _pool_args(draw):
                 max_dims=dims + 2,
                 min_side=1,
                 max_side=4,
+                return_dilation=True,
             )
         ),
         data_format,
@@ -1528,7 +1529,7 @@ def test_tensorflow_pool(
     on_device,
 ):
     (
-        (input_dtype, x, ksize, strides, padding),
+        (input_dtype, x, ksize, strides, padding, dilation),
         data_format,
         pooling_type,
         num_dims,
@@ -1551,4 +1552,5 @@ def test_tensorflow_pool(
         strides=strides,
         padding=padding,
         data_format=data_format,
+        dilations=dilation,
     )
