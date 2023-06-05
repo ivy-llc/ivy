@@ -105,3 +105,7 @@ class Tensor:
     @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
     def asin(self, name=None):
         return ivy.asin(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def sin(self, name=None):
+        return ivy.sin(self._ivy_array)

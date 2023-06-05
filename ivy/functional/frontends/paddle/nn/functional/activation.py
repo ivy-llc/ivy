@@ -45,4 +45,18 @@ def hardshrink(x, threshold=0.5, name=None):
 def hardswish(x, name=None):
     relu6_val = ivy.relu6(ivy.add(x, 3))
     ret = ivy.multiply(x, ivy.divide(relu6_val, 6))
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def hardtanh(
+    x,
+    /,
+    *,
+    min=-1.0,
+    max=1.0,
+    name=None,
+):
+    less = ivy.where(ivy.less(x, min), min, x)
+    ret = ivy.where(ivy.greater(x, max), max, less).astype(x.dtype)
     return ret
