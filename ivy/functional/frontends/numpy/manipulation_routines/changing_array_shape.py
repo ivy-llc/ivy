@@ -29,6 +29,9 @@ def ravel(a, order="C"):
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
+@to_ivy_arrays_and_back
+def asfarray(a, dtype=ivy.float64):
+    return ivy.asarray(a, dtype=ivy.float64)
 
 @to_ivy_arrays_and_back
 def asarray_chkfinite(a, dtype=None, order=None):
