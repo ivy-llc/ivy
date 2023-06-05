@@ -490,6 +490,23 @@ def pool(
     dilations=None,
     name=None,
 ):
+    if dilations is not None:
+        def dilate_kernel(kernel, dilation_rate):
+            # Get the dimensions of the kernel
+            kernel_height, kernel_width = kernel.shape
+            dilated_kernel_height = (kernel_height - 1) * dilation_rate + 1
+            dilated_kernel_width = (kernel_width - 1) * dilation_rate + 1
+            # Create an empty dilated kernel array
+            dilated_kernel = ivy.zeros((dilated_kernel_height, dilated_kernel_width))
+            # Assign the original kernel values to the dilated kernel
+            for i in range(kernel_height):
+                for j in range(kernel_width):
+                    dilated_kernel[i * dilation_rate][j * dilation_rate] = kernel[i][j]
+            return dilated_kernel
+        kernel_shape = (window_shape[0], window_shape[0])
+        kernel = ivy.ones(kernel_shape)
+        dilated_kernel = dilate_kernel(kernel, dilations[0])
+        window_shape = (dilated_kernel.shape[0],)
     if pooling_type == "AVG":
         if len(ivy.shape(input)) == 3:
             return ivy.avg_pool1d(
