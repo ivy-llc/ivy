@@ -1,5 +1,10 @@
+# global
+import sys
+
+# local
 import ivy
 from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
 from typing import Union, Iterable, Tuple
 from numbers import Number
 from .data_type_routines import dtype
@@ -7,6 +12,7 @@ from . import ndarray
 from .ndarray import *
 from . import scalars
 from .scalars import *
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -523,6 +529,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _sqrt,
     _square,
     _lcm,
+    _gcd,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
@@ -705,3 +712,9 @@ rint = ufunc("_rint")
 nextafter = ufunc("_nextafter")
 conjugate = ufunc("_conjugate")
 lcm = ufunc("_lcm")
+gcd = ufunc("_gcd")
+
+# setting to specific version #
+# --------------------------- #
+
+set_frontend_to_specific_version(sys.modules[__name__])

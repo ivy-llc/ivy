@@ -3,7 +3,7 @@ import numpy as np
 import hypothesis.extra.numpy as nph
 from hypothesis import strategies as st, assume
 from hypothesis.internal.floats import float_of
-from functools import reduce
+from functools import reduce as _reduce
 from operator import mul
 
 # local
@@ -1463,7 +1463,7 @@ def broadcast_shapes(*shapes):
 
 # np.prod and others have overflow and math.prod is Python 3.8+ only
 def prod(seq):
-    return reduce(mul, seq, 1)
+    return _reduce(mul, seq, 1)
 
 
 # from array-api repo

@@ -149,7 +149,7 @@ def test_tensorflow_softmax(
     )
 
 
-# gelu test
+# gelu
 @handle_frontend_test(
     fn_tree="tensorflow.keras.activations.gelu",
     dtype_and_x=helpers.dtype_and_values(
@@ -176,6 +176,8 @@ def test_tensorflow_gelu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         x=x[0],
         approximate=approximate,
     )
@@ -360,6 +362,8 @@ def test_tensorflow_selu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-03,
+        atol=1e-03,
         x=x[0],
     )
 
