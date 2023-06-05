@@ -906,8 +906,14 @@ def test_jax_numpy_compress(
     fn_tree="jax.numpy.size",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        abs_smallest_val=0,
+        num_arrays=1,
         min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=100,
         valid_axis=True,
+        allow_neg_axes=True,
         force_int_axis=True,
     ),
 )
