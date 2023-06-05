@@ -481,6 +481,10 @@ def equal(x, y, name=None):
     return ivy.equal(x, y)
 
 
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float32", "float64", "int32", "int64")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def not_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)

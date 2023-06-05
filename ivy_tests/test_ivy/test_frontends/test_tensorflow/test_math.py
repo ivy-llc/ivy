@@ -1552,7 +1552,7 @@ def test_tensorflow_equal(
 @handle_frontend_test(
     fn_tree="tensorflow.math.not_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
     ),
