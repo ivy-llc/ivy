@@ -338,7 +338,10 @@ def test_function(
         assert not ivy.nested_any(
             ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
             lambda x: not x,
-        ), f"the array: {test_ret} in out argument is not the same as the returned: {out}"
+        ), (
+            f"the array: {test_ret} in out argument is not the same as the returned:"
+            f" {out}"
+        )
         if not max(test_flags.container) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert not ivy.nested_any(
@@ -346,7 +349,10 @@ def test_function(
                     lambda x, _: x[0].data is x[1].data, [test_ret, out]
                 ),
                 lambda x: not x,
-            ), f"the array: {test_ret} in out argument is not the same as the returned: {out}"
+            ), (
+                f"the array: {test_ret} in out argument is not the same as the"
+                f" returned: {out}"
+            )
     # compute the return with a Ground Truth backend
 
     ivy.set_backend(ground_truth_backend)

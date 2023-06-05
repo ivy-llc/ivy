@@ -55,6 +55,9 @@ However when the current backend is set to the previous using the :func:`ivy.pre
 While the `implicit_backend`_ functionality gives more freedom to the user, the recommended way of doing things would be set the backend explicitly.
 In addition, all the previously set backends can be cleared by calling :func:`ivy.unset_backend`.
 
+:func:`set_dynamic_backend`. Dynamic backend setting is a feature which allows conversion of the ivy arrays to the newly set backend by the user.
+When the user calls `ivy` function with a native array of one backend with another backend set,doing a `set_backend` with `dynamic=True`, the function would 
+get converted based on the newly set backend which gets it working.
 
 Backend and Frontend Version Support
 ------------------------------------
