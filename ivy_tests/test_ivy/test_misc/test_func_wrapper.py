@@ -120,6 +120,29 @@ def test_handle_mixed_function(x, weight, expected):
 
 
 @pytest.mark.parametrize(
+    ("x", "version", "expected"),
+    [
+        ([[2, 2, 2], [1, 1, 1]], "0.3.1", False),
+        ([[2, 2, 2], [1, 1, 1]], "0.4.1", True),
+    ],
+)
+def test_handle_versioned_function(x, version, expected):
+    from ivy.functional.frontends import torch as ivy_torch
+    import torch
+
+    x = ivy.array(x)
+    fw_version = torch.__version__
+    torch.__version__ = version
+    test_fn = "ivy.functional.frontends.torch.ones_like_v_0p4p0_and_above"
+
+    with patch(test_fn) as test_mock_function:
+        ivy_torch.ones_like(x)
+        assert test_mock_function.called == expected
+
+    torch.__version__ = fw_version
+
+
+@pytest.mark.parametrize(
     "array_to_update",
     [0, 1, 2, 3, 4],
 )
