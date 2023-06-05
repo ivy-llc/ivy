@@ -226,7 +226,16 @@ def isclose(x, y, /, *, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
     return ivy.isclose(x, y, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
+    {
+        "2.4.2 and below": (
+        "bool",
+        "uint8",
+        "int8",
+        "int16",
+        "complex64",
+        "complex128"
+        )
+    },
     "paddle",
 )
 @to_ivy_arrays_and_back
