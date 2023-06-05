@@ -563,9 +563,11 @@ def test_paddle_abs(
 
 # cumprod
 @handle_frontend_test(
-    fn_tree="paddle.cumprod",
+    fn_tree="paddle.tensor.math.cumprod",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=20,
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
