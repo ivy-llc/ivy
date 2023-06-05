@@ -145,12 +145,11 @@ def logical_not(x, /, *, name=None, out=None):
     {
         "2.4.2 and below": (
             "bool",
+            "uint8",
             "int8",
             "int16",
             "int32",
             "int64",
-            "float32",
-            "float64",
         )
     },
     "paddle",
