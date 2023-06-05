@@ -185,7 +185,7 @@ def test_numpy_moveaxis(
 # asfarray
 @handle_frontend_test(
     fn_tree="numpy.asfarray",
-    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float"))
+    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_numpy_asfarray(
     *,
