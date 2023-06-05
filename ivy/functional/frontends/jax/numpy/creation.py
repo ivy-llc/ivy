@@ -6,6 +6,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
     handle_jax_dtype,
+    inputs_to_ivy_arrays,
 )
 
 from ivy.func_wrapper import handle_out_argument
@@ -243,3 +244,17 @@ def compress(condition, a, *, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@inputs_to_ivy_arrays
+def iterable(y):
+    return hasattr(y, "__iter__") and y.ndim > 0
+
+
+@to_ivy_arrays_and_back
+def size(a, axis=None):
+    ivy.set_default_int_dtype("int64")
+    if axis is not None:
+        sh = ivy.shape(a)
+        return sh[axis]
+    return a.size

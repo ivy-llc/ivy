@@ -14,7 +14,7 @@ from ivy.utils.exceptions import handle_exceptions
 def reduce(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
-    func: Callable,
+    computation: Callable,
     /,
     *,
     axes: Union[int, Sequence[int]] = 0,
@@ -29,7 +29,7 @@ def reduce(
         The array to act on.
     init_value
         The value with which to start the reduction.
-    func
+    computation
         The reduction function.
     axes
         The dimensions along which the reduction is performed.
@@ -58,15 +58,15 @@ def reduce(
     init_value = ivy.array(init_value)
     op_dtype = operand.dtype
     if ivy.nested_any(
-        func,
+        computation,
         lambda x: hasattr(x, "__module__")
         and x.__module__.startswith("ivy")
         and not x.__module__.startswith("ivy.functional.frontends"),
     ):
-        func = ivy.__dict__[func.__name__]
+        computation = ivy.__dict__[computation.__name__]
     for axis in axes:
         temp = ivy.moveaxis(operand, axis, 0).reshape((operand.shape[axis], -1))
-        temp = functools.reduce(func, temp, init_value)
+        temp = functools.reduce(computation, temp, init_value)
         operand = ivy.reshape(temp, operand.shape[:axis] + operand.shape[axis + 1 :])
     if keepdims:
         operand = ivy.expand_dims(operand, axis=axes)

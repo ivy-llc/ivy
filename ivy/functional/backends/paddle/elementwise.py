@@ -922,6 +922,10 @@ def exp2(
         return ivy.pow(2, x)
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    backend_version,
+)
 def subtract(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -931,8 +935,6 @@ def subtract(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
-        x1, x2 = x1.astype("float32"), x2.astype("float32")
     if alpha not in (1, None):
         x2 = paddle_backend.multiply(x2, alpha)
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -1216,3 +1218,42 @@ def imag(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.imag(val)
+
+
+def nan_to_num(
+    x: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        if ivy.is_int_dtype(x):
+            if posinf is None:
+                posinf = ivy.iinfo(x).max
+            if neginf is None:
+                neginf = ivy.iinfo(x).min
+        elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
+            if posinf is None:
+                posinf = ivy.finfo(x).max
+            if neginf is None:
+                neginf = ivy.finfo(x).min
+        ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret > 0),
+            paddle.to_tensor(posinf, dtype=x.dtype),
+            ret,
+        )
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret < 0),
+            paddle.to_tensor(neginf, dtype=x.dtype),
+            ret,
+        )
+        if copy:
+            return ret.clone()
+        else:
+            x = ret
+            return x
