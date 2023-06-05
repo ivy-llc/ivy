@@ -176,6 +176,11 @@ class IvyDtypePromotionError(IvyException):
         super().__init__(*messages, include_backend=include_backend)
 
 
+class IvyDeviceError(IvyException):
+    def __init__(self, *messages, include_backend=False):
+        super().__init__(*messages, include_backend=include_backend)
+
+
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
