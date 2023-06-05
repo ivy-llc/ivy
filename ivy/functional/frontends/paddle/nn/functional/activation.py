@@ -59,3 +59,42 @@ def hardtanh(
 @to_ivy_arrays_and_back
 def gelu(x, approximate=False, name=None):
     return ivy.gelu(x, approximate=approximate)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def hardsigmoid(x, slope=0.1666667, offset=0.5, name=None):
+    ret = ivy.minimum(ivy.maximum(ivy.add(ivy.multiply(x, slope), offset), 0), 1)
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def relu6(x, name=None):
+    return ivy.relu6(x)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softshrink(
+    x,
+    /,
+    *,
+    threshold=0.5,
+    name=None,
+):
+    low = ivy.where(ivy.less(x, -threshold), ivy.add(x, threshold), 0)
+    up = ivy.where(ivy.greater(x, threshold), ivy.subtract(x, threshold), 0)
+    add = ivy.add(low, up)
+    return ivy.astype(add, x.dtype)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softsign(
+    x,
+    /,
+    *,
+    name=None,
+):
+    return ivy.divide(x, ivy.add(1, ivy.abs(x)))
