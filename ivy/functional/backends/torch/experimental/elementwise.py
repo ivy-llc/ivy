@@ -143,23 +143,6 @@ def isclose(
 isclose.support_native_out = False
 
 
-def nan_to_num(
-    x: torch.Tensor,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if copy:
-        return torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf, out=out)
-    else:
-        x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
-        return x
-
-
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def logaddexp2(
     x1: Union[torch.Tensor, float, list, tuple],
@@ -252,7 +235,7 @@ def fix(
 fix.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.13.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def nextafter(
     x1: torch.Tensor,
     x2: torch.Tensor,

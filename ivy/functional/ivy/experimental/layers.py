@@ -2,7 +2,7 @@
 import math
 import itertools
 from typing import Optional, Union, Tuple, Literal, Sequence
-from functools import reduce
+from functools import reduce as _reduce
 
 # local
 import ivy
@@ -584,6 +584,113 @@ def dct(
 
 
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+def idct(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Compute the 1D Inverse Discrete Cosine Tranformation of a given signal.
+
+    Parameters
+    ----------
+    x
+        The input signal.
+    type
+        The type of the idct. Must be 1, 2, 3 or 4.
+    n
+        The length of the transform. If n is less than the input signal length,
+        then x is truncated, if n is larger then x is zero-padded.
+    axis
+        The axis to compute the IDCT along.
+    norm
+        The type of normalization to be applied. Must be either None or "ortho".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array containing the transformed input.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([8, 16, 24, 32, 40, 48, 56, 64])
+    >>> ivy.idct(x, type=2, n=None, norm='ortho')
+    ivy.array([ 79.49862671, -70.37691498,  30.00390816, -23.58938599,
+        13.92713165, -10.078475  ,   5.19664812,  -1.95411837])
+
+    >>> x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]],
+    ...                [[1,  2,  3,  4], [ 5,  6,  7,  8]]])
+    >>> ivy.idct(x, type=1, n=None, axis=0, norm=None)
+    ivy.array([[[ 9., 18., 27., 36.],
+        [45., 54., 63., 72.]],
+       [[ 7., 14., 21., 28.],
+        [35., 42., 49., 56.]]])
+
+    >>> x = ivy.array([[ 8.1, 16.2, 24.3, 32.4],
+    ...                [40.5, 48.6, 56.7, 64.8]])
+    >>> y = ivy.zeros((2, 4), dtype=ivy.float32)
+    >>> ivy.idct(x, type=1, n=None, norm=None, out=y)
+    >>> print(y)
+    ivy.array([[ 1.21500000e+02, -3.24000015e+01,  1.90734863e-06,
+            -8.10000420e+00],
+           [ 3.15899994e+02, -3.24000053e+01,  3.81469727e-06,
+            -8.09999847e+00]])
+
+    >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
+    >>> ivy.idct(x, type=4, n=None, norm=None, out=x)
+    >>> print(x)
+    ivy.array([ 279.4135742 , -279.6779785 ,  128.3770599 , -114.8719864 ,
+             83.72109985,  -79.52869415,   69.79182434,  -68.72489166])
+
+    With one :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
+    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
+    >>> ivy.idct(x, type=3, n=None, norm='ortho')
+    {
+        a: ivy.array([1.01823372e+02, -5.15385818e+01, 1.36371455e-06, -5.38763905e+00,
+                      0., -1.60722279e+00, -8.80319249e-08, -4.05617893e-01]),
+        b: ivy.array([1.27279215e+01, -6.44232273e+00, 1.70464318e-07, -6.73454881e-01,
+                      0., -2.00902849e-01, -1.10039906e-08, -5.07022366e-02])
+    }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
+    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
+    >>> container_n = ivy.Container(a=9, b=4)
+    >>> container_type = ivy.Container(a=2, b=1)
+    >>> container_norm = ivy.Container(a="ortho", b=None)
+    >>> ivy.idct(x, type=container_type, n=container_n, norm=container_norm)
+    {
+        a: ivy.array([86.29723358, -66.6950531, 9.93914509, 2.88008738,
+                      -16.18951225, 18.06697273, -17.57439804, 11.68861485,
+                      -4.41308832]),
+        b: ivy.array([15., -4., -2.22044605e-16, -1.])
+    }
+    """
+    return ivy.current_backend(x).idct(x, type=type, n=n, axis=axis, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -899,7 +1006,7 @@ def embedding(
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -963,9 +1070,9 @@ def dft(
         The signal_dim at the specified axis is equal to the dft_length.
     """
     if inverse:
-        res = ifft(x, axis, norm=norm, n=dft_length, out=out)
+        res = ivy.ifft(x, axis, norm=norm, n=dft_length, out=out)
     else:
-        res = fft(x, axis, norm=norm, n=dft_length, out=out)
+        res = ivy.fft(x, axis, norm=norm, n=dft_length, out=out)
 
     if onesided:
         slices = [slice(0, a) for a in res.shape]
@@ -1254,7 +1361,7 @@ def _upsample_cubic_interp1d(coeffs, ts):
 
 
 def _sum_tensors(ts):
-    return reduce(ivy.add, ts)
+    return _reduce(ivy.add, ts)
 
 
 def _upsample_bicubic2d_default(
