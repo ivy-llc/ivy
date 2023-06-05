@@ -6,6 +6,10 @@ import jax.numpy as jnp
 
 # local
 import ivy
+from ivy import (
+    default_float_dtype,
+    is_float_dtype,
+)
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.jax import JaxArray
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -315,6 +319,21 @@ def logaddexp(
     x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.logaddexp(x1, x2)
+
+
+def logaddexp2(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not is_float_dtype(x1):
+        x1 = x1.astype(default_float_dtype(as_native=True))
+        x2 = x2.astype(default_float_dtype(as_native=True))
+    return jnp.logaddexp2(x1, x2)
+
 
 
 def logical_and(
