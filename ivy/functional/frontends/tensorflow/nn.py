@@ -503,13 +503,17 @@ def pool(
                 for j in range(kernel_width):
                     dilated_kernel[i * dilation_rate][j * dilation_rate] = kernel[i][j]
             return dilated_kernel
-        kernel_shape = (window_shape[0], window_shape[0])
+        
+        if len(ivy.shape(input)) == 3:
+            kernel_shape = (window_shape[0], window_shape[0])
+        elif len(ivy.shape(input)) == 4 or len(ivy.shape(input)) == 5:
+            kernel_shape = (window_shape[0], window_shape[1])
         kernel = ivy.ones(kernel_shape)
         dilated_kernel = dilate_kernel(kernel, dilations[0])
         if len(ivy.shape(input)) == 3:
             window_shape = (dilated_kernel.shape[0],)
         elif len(ivy.shape(input)) == 4:
-            window_shape = (dilated_kernel.shape[0], dilated_kernel.shape[0])
+            window_shape = (dilated_kernel.shape[0], dilated_kernel.shape[1])
         elif len(ivy.shape(input)) == 5:
             window_shape = (
                 dilated_kernel.shape[0],
