@@ -11,7 +11,7 @@ from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .elementwise import _elementwise_helper
 
 # Array API Standard #
@@ -253,7 +253,11 @@ def matrix_norm(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if ord == "nuc":
-        x = paddle.moveaxis(x, axis, [-2, -1])
+        if isinstance(axis, int):
+            axis_ = [axis]
+        else:
+            axis_ = list(axis)
+        x = paddle.moveaxis(x, axis_, [-2, -1])
         ret = paddle.sum(
             paddle.linalg.svd(x)[1],
             axis=-1,
@@ -548,7 +552,7 @@ def vecdot(
 ) -> paddle.Tensor:
     axes = [axis % x1.ndim]
 
-    paddle_backend.tensordot(x1, x2, axes=axes)
+    return paddle_backend.tensordot(x1, x2, axes=axes)
 
 
 def vector_norm(
@@ -643,6 +647,10 @@ def vander(
     )
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("unsigned", "int8", "int16", "float16")},
+    backend_version,
+)
 def vector_to_skew_symmetric_matrix(
     vector: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:

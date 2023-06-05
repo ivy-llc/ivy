@@ -1788,6 +1788,41 @@ def test_torch_instance_log2(
     )
 
 
+# __bool__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__bool__",
+    dtype_and_x=helpers.dtype_and_values(
+        max_dim_size=1,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+)
+def test_torch_special_bool(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # __add__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2757,7 +2792,7 @@ def test_torch_instance_ravel(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    split_size=_get_splits().filter(lambda s: s is not None),
+    split_size=_get_splits(allow_none=False, min_num_dims=1, allow_array_indices=False),
     dim=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -2804,7 +2839,9 @@ def test_torch_instance_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, allow_none=False, allow_array_indices=False
+    ),
     dim=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -2852,7 +2889,13 @@ def test_torch_instance_tensor_split(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=0, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=2,
+        axis=0,
+        allow_none=False,
+        allow_array_indices=False,
+        is_mod_split=True,
+    ),
 )
 def test_torch_instance_vsplit(
     dtype_value,
@@ -2886,9 +2929,15 @@ def test_torch_instance_vsplit(
     method_name="hsplit",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=1, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=1,
+        axis=1,
+        allow_none=False,
+        allow_array_indices=False,
+        is_mod_split=True,
+    ),
 )
 def test_torch_instance_hsplit(
     dtype_value,
@@ -2900,14 +2949,6 @@ def test_torch_instance_hsplit(
     on_device,
 ):
     input_dtype, x = dtype_value
-    # TODO: remove the assumption when these bugfixes are merged and version-pinned
-    # https://github.com/tensorflow/tensorflow/pull/59523
-    # https://github.com/google/jax/pull/14275
-    assume(
-        not (
-            len(x[0].shape) == 1 and ivy.current_backend_str() in ("tensorflow", "jax")
-        )
-    )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -2932,7 +2973,13 @@ def test_torch_instance_hsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=3, axis=2, allow_none=False),
+    indices_or_sections=_get_splits(
+        min_num_dims=3,
+        axis=2,
+        allow_none=False,
+        allow_array_indices=False,
+        is_mod_split=True,
+    ),
 )
 def test_torch_instance_dsplit(
     dtype_value,
@@ -4918,6 +4965,41 @@ def test_torch_instance_mean(
     )
 
 
+# nanmean
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="nanmean",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+)
+def test_torch_instance_nanmean(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # median
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -5097,31 +5179,23 @@ def test_torch_instance_t(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="shape"),
     ),
-    start_dim=helpers.get_axis(
+    axes=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
-        allow_neg=True,
-        force_int=True,
-    ),
-    end_dim=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="shape"),
-        allow_neg=True,
-        force_int=True,
+        min_size=2,
+        max_size=2,
+        unique=False,
+        force_tuple=True,
     ),
 )
 def test_torch_instance_flatten(
     dtype_value,
-    start_dim,
-    end_dim,
+    axes,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    if start_dim > end_dim:
-        temp = start_dim
-        start_dim = end_dim
-        end_dim = temp
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -5130,8 +5204,8 @@ def test_torch_instance_flatten(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "start_dim": start_dim,
-            "end_dim": end_dim,
+            "start_dim": axes[0],
+            "end_dim": axes[1],
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
@@ -8730,5 +8804,58 @@ def test_torch_greater(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# addr_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="addr_",
+    dtype_and_vecs=_get_dtype_input_and_vectors(with_input=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+)
+def test_torch_instance_addr_(
+    dtype_and_vecs,
+    beta,
+    alpha,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    dtype, input, vec1, vec2 = dtype_and_vecs
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        init_all_as_kwargs_np={
+            "data": input,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={
+            "vec1": vec1,
+            "vec2": vec2,
+            "beta": beta,
+            "alpha": alpha,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        atol_=1e-02,
         on_device=on_device,
     )
