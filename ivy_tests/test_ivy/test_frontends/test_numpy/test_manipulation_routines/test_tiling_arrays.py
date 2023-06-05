@@ -48,26 +48,26 @@ def test_numpy_tile(
 # repeat
 @handle_frontend_test(
     fn_tree="numpy.repeat",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         min_dim_size=2,
+        min_axis=-1,
+        max_axis=1,
     ),
     repeats=helpers.ints(min_value=2, max_value=5),
-    axis=helpers.ints(min_value=-1, max_value=1),
     test_with_out=st.just(False),
 )
 def test_numpy_repeat(
     *,
-    dtype_and_x,
+    dtype_x_axis,
     repeats,
-    axis,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
