@@ -207,6 +207,9 @@ def fix(
         return ivy.trunc(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def nextafter(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
