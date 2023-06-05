@@ -214,7 +214,7 @@ def test_numpy_iscomplexobj(
     input_dtype, x = dtype_and_x
     if ivy.current_backend_str() == "paddle":
         # mostly paddle doesn't support unsigned int
-        assume(input_dtype[0] not in ["int8", "uint8", "int16", "uint16"])
+        assume(input_dtype[0] not in ["int8", "uint8", "int16"])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
