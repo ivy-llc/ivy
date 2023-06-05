@@ -1,6 +1,7 @@
 import pickle
 import numpy as np
 import os
+import paddle
 
 from hypothesis import given, assume
 
@@ -27,7 +28,10 @@ def test_pickle_to_string(dtype_and_x, on_device):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     x = ivy.array(x[0], dtype=input_dtype[0], device=on_device)
-    x = x.to_numpy()
+    
+    # paddle tensors can't be pickled directly as referenced in this issue https://github.com/PaddlePaddle/Paddle/issues/41107
+    if ivy.backend == "paddle":
+        x = x.to_numpy()
     pickled_arr = pickle.dumps(x)
     unpickled_arr = pickle.loads(pickled_arr)
 
@@ -47,9 +51,12 @@ def test_pickle_to_string(dtype_and_x, on_device):
 )
 def test_pickle_to_and_from_disk(dtype_and_x, on_device):
     input_dtype, x = dtype_and_x
-    assume(["bfloat16"] not in input_dtype)
+    assume("bfloat16" not in input_dtype)
     x = ivy.array(x[0], dtype=input_dtype[0], device=on_device)
-    x = x.to_numpy()
+    
+    # paddle tensors can't be pickled directly as referenced in this issue https://github.com/PaddlePaddle/Paddle/issues/41107
+    if ivy.backend == "paddle":
+        x = x.to_numpy()
 
     save_filepath = "ivy_array.pickle"
     pickle.dump(x, open(save_filepath, "wb"))
