@@ -548,3 +548,10 @@ def while_loop(
     name=None,
 ):
     return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
+
+
+@to_ivy_arrays_and_back
+def truncate_mod(x, y):
+    x = ivy.broadcast_to(x, ivy.shape(y))
+    y = ivy.broadcast_to(y, ivy.shape(x))
+    return ivy.trunc(x / y) * y + (x % y)
