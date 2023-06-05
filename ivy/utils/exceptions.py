@@ -22,6 +22,14 @@ def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode):
         )
 
 
+def _remove_so_log(old_stack_trace):
+    new_stack_trace = []
+    for st in old_stack_trace:
+        if ".pyx" not in repr(st):
+            new_stack_trace.append(st)
+    return new_stack_trace
+
+
 def _print_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode):
     _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode)
     new_stack_trace = []
@@ -40,28 +48,26 @@ def _print_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode)
 def _custom_exception_handle(type, value, tb_history):
     trace_mode = ivy.get_exception_trace_mode()
     func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
+    tb_history = _remove_so_log(tb.extract_tb(tb_history))
     if trace_mode == "none":
         return
     if trace_mode == "full" and func_wrapper_trace_mode:
-        print("".join(tb.format_tb(tb_history)))
+        print("".join(tb.format_list(tb_history)))
     else:
-        _print_new_stack_trace(
-            tb.extract_tb(tb_history), trace_mode, func_wrapper_trace_mode
-        )
+        _print_new_stack_trace(tb_history, trace_mode, func_wrapper_trace_mode)
     print(type.__name__ + ":", value)
 
 
 def _print_traceback_history():
     trace_mode = ivy.get_exception_trace_mode()
     func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
+    tb_stack = _remove_so_log(tb.extract_tb(sys.exc_info()[2]))
     if trace_mode == "none":
         return
     if trace_mode == "full" and func_wrapper_trace_mode:
-        print("".join(tb.format_tb(sys.exc_info()[2])))
+        print("".join(tb.format_list(tb_stack)))
     else:
-        _print_new_stack_trace(
-            tb.extract_tb(sys.exc_info()[2]), trace_mode, func_wrapper_trace_mode
-        )
+        _print_new_stack_trace(tb_stack, trace_mode, func_wrapper_trace_mode)
     print("During the handling of the above exception, another exception occurred:\n")
 
 
