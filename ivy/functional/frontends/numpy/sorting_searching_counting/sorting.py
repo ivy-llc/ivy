@@ -38,6 +38,10 @@ def lexsort(keys, /, *, axis=-1):
 @to_ivy_arrays_and_back
 def partition(a, kth, axis=-1, kind="introselect", order=None):
     indices = ivy.argsort(a, axis=axis)
-    left = ivy.take_along_axis(a, indices[:kth], axis)
-    right = ivy.take_along_axis(a, indices[kth:], axis)
-    return ivy.concat((left, right))
+    a = a[indices]
+    if isinstance(kth, int):
+        kth = [kth]
+    index = ivy.argsort(a, axis=axis)
+    partitions = ivy.split(index, ivy.searchsorted(ivy.sort(kth), index))
+    sorted_partitions = [a[partition] for partition in partitions]
+    return ivy.concat(sorted_partitions)
