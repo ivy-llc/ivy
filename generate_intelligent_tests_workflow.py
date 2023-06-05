@@ -1,4 +1,4 @@
-total_jobs = 32
+total_jobs = 40
 job_prefix = "run_tests_"
 
 print("name: intelligent-tests-pr")
@@ -11,6 +11,7 @@ print("permissions:")
 print("  actions: read")
 print("jobs:")
 print("  display_test_results:")
+print("    if: ${{ always() }}")
 print("    runs-on: ubuntu-latest")
 print("    needs:")
 
@@ -21,13 +22,27 @@ print("    steps:")
 print("      - name: Download all test results")
 print("        uses: actions/download-artifact@v3")
 print()
-print("      - name: Combine test results")
+print("      - name: Combined Test Results")
 print("        run: |")
 print(
-    '          find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt'  # noqa
+    '          find . -name "test_results_*.txt" -exec cat {} + >'
+    " combined_test_results.txt"
 )
 print('          echo "Test results summary:"')
 print("          cat combined_test_results.txt")
+print()
+print("      - name: New Failures Introduced")
+print("        run: |")
+print(
+    '          find . -name "new_failures_*.txt" -exec cat {} + > combined_failures.txt'
+)
+print("          if [ -s combined_failures.txt ]")
+print("          then")
+print('              echo "This PR introduces the following new failing tests:"')
+print("              cat combined_failures.txt")
+print("          else")
+print('              echo "This PR does not introduce any new test failures! Yippee!"')
+print("          fi")
 print()
 for i in range(1, total_jobs + 1):
     print(f"  {job_prefix}{i}:")
@@ -45,7 +60,8 @@ for i in range(1, total_jobs + 1):
     print("        id: tests")
     print("        run: |")
     print(
-        f"          git clone -b master{i} https://github.com/unifyai/Mapping.git --depth 1"  # noqa
+        f"          git clone -b master{i} https://github.com/unifyai/Mapping.git"
+        " --depth 1"
     )
     print("          pip install pydriller")
     print("          cp Mapping/tests.pbz2 ivy/")
@@ -57,7 +73,11 @@ for i in range(1, total_jobs + 1):
         print("          python determine_tests.py extra")
     else:
         print("          python determine_tests.py")
-    print(f"          python run_tests_pr.py | tee test_results_{i}.txt")
+    print("          set -o pipefail")
+    print(
+        f"          python run_tests_pr.py new_failures_{i}.txt | tee"
+        f" test_results_{i}.txt"
+    )
     print("        continue-on-error: true")
     print()
     print("      - name: Upload test results")
@@ -65,6 +85,12 @@ for i in range(1, total_jobs + 1):
     print("        with:")
     print(f"          name: test_results_{i}")
     print(f"          path: ivy/test_results_{i}.txt")
+    print()
+    print("      - name: Upload New Failures")
+    print("        uses: actions/upload-artifact@v3")
+    print("        with:")
+    print(f"          name: new_failures_{i}")
+    print(f"          path: ivy/new_failures_{i}.txt")
     print()
     print("      - name: Check on failures")
     print("        if: steps.tests.outcome != 'success'")

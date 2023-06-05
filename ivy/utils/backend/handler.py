@@ -26,7 +26,7 @@ class ContextManager:
         self.module = module
 
     def __enter__(self):
-        set_backend(self.module)
+        return set_backend(self.module)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         previous_backend()
@@ -463,6 +463,8 @@ def set_backend(backend: str, dynamic: bool = False):
         if verbosity.level > 0:
             verbosity.cprint("backend stack: {}".format(backend_stack))
 
+    return ivy
+
 
 def set_numpy_backend():
     """
@@ -507,6 +509,15 @@ def set_paddle_backend():
     equivalent to `ivy.set_backend("paddle")`.
     """  # noqa
     set_backend("paddle")
+
+
+def set_mxnet_backend():
+    """
+    Set MXNet to be the global backend.
+
+    equivalent to `ivy.set_backend("mx")`.
+    """  # noqa
+    set_backend("mxnet")
 
 
 @prevent_access_locally

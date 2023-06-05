@@ -148,19 +148,14 @@ class Array(
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
             )
-        self._size = (
-            functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
-        )
-        self._itemsize = ivy.itemsize(self._data)
-        self._strides = ivy.strides(self._data)
-        self._dtype = ivy.dtype(self._data)
-        self._device = ivy.dev(self._data)
-        self._dev_str = ivy.as_ivy_dev(self._device)
-        self._pre_repr = "ivy.array"
-        if "gpu" in self._dev_str:
-            self._post_repr = ", dev={})".format(self._dev_str)
-        else:
-            self._post_repr = ")"
+        self._size = None
+        self._strides = None
+        self._itemsize = None
+        self._dtype = None
+        self._device = None
+        self._dev_str = None
+        self._pre_repr = None
+        self._post_repr = None
         self.backend = ivy.current_backend_str()
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
@@ -218,11 +213,15 @@ class Array(
     @property
     def dtype(self) -> ivy.Dtype:
         """Data type of the array elements."""
+        if self._dtype is None:
+            self._dtype = ivy.dtype(self._data)
         return self._dtype
 
     @property
     def device(self) -> ivy.Device:
         """Hardware device the array data resides on."""
+        if self._device is None:
+            self._device = ivy.dev(self._data)
         return self._device
 
     @property
@@ -254,16 +253,26 @@ class Array(
     @property
     def size(self) -> Optional[int]:
         """Number of elements in the array."""
+        if self._size is None:
+            self._size = (
+                functools.reduce(mul, self._data.shape)
+                if len(self._data.shape) > 0
+                else 0
+            )
         return self._size
 
     @property
     def itemsize(self) -> Optional[int]:
         """Size of array elements in bytes."""
+        if self._itemsize is None:
+            self._itemsize = ivy.itemsize(self._data)
         return self._itemsize
 
     @property
     def strides(self) -> Optional[int]:
         """Get strides across each dimension."""
+        if self._strides is None:
+            self._strides = ivy.strides(self._data)
         return self._strides
 
     @property
@@ -344,6 +353,13 @@ class Array(
         return ivy
 
     def __repr__(self):
+        if self._dev_str is None:
+            self._dev_str = ivy.as_ivy_dev(self.device)
+            self._pre_repr = "ivy.array"
+            if "gpu" in self._dev_str:
+                self._post_repr = ", dev={})".format(self._dev_str)
+            else:
+                self._post_repr = ")"
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
         if self.backend == "" or ivy.is_local():
@@ -354,7 +370,7 @@ class Array(
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
         arr_np = backend.to_numpy(self._data)
-        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
+        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
             repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             return (
@@ -384,8 +400,10 @@ class Array(
         try:
             if ivy.current_backend_str() == "torch":
                 self._data = self._data.detach()
+            if ivy.is_ivy_array(val):
+                val = val.data
             self._data.__setitem__(query, val)
-        except (AttributeError, TypeError, ValueError):
+        except:
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
             self._dtype = ivy.dtype(self._data)
 
@@ -409,9 +427,11 @@ class Array(
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        ivy.set_backend(state["backend"]) if state["backend"] is not None and len(
-            state["backend"]
-        ) > 0 else ivy.current_backend(state["data"])
+        (
+            ivy.set_backend(state["backend"])
+            if state["backend"] is not None and len(state["backend"]) > 0
+            else ivy.current_backend(state["data"])
+        )
         ivy_array = ivy.array(state["data"])
         ivy.previous_backend()
 
@@ -1125,11 +1145,10 @@ class Array(
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ivy.Array not supported")
-        if ivy.current_backend_str() == "paddle" and self.dtype in [
-            "int8",
-            "int16",
-            "uint8",
-            "float16",
-        ]:
-            return iter([to_ivy(i) for i in ivy.unstack(self._data)])
+        if ivy.current_backend_str() == "paddle":
+            if self.ndim == 1:
+                ret = [to_ivy(i).squeeze(0) for i in self._data]
+                return iter(ret)
+            elif self.dtype in ["int8", "int16", "uint8", "float16"]:
+                return iter([to_ivy(i) for i in ivy.unstack(self._data)])
         return iter([to_ivy(i) for i in self._data])

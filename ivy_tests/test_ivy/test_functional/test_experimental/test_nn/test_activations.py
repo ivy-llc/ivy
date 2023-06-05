@@ -46,7 +46,10 @@ def test_logit(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    threshold=st.floats(min_value=-0.10, max_value=10.0),
+    threshold=st.one_of(
+        st.floats(min_value=-0.10, max_value=10.0),
+        st.integers(min_value=0, max_value=10),
+    ),
 )
 def test_thresholded_relu(
     *,
@@ -216,6 +219,18 @@ def test_selu(
     test_with_out=st.just(False),
 )
 def test_sigmoid(
+=======
+# silu
+@handle_test(
+    fn_tree="functional.ivy.experimental.silu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+)
+def test_silu(
     *,
     dtype_and_x,
     test_flags,
@@ -224,6 +239,7 @@ def test_sigmoid(
     on_device,
     ground_truth_backend,
 ):
+
     input_dtype, x = dtype_and_x
     test_flags.num_positional_args = len(x)
     helpers.test_function(
@@ -234,4 +250,17 @@ def test_sigmoid(
         fn_name=fn_name,
         on_device=on_device,
         input=x[0],
+
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        x=x[0],
+
     )

@@ -45,11 +45,10 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
 
 
-def logsigmoid(input: JaxArray) -> JaxArray:
+def logsigmoid(input: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.nn.log_sigmoid(input)
 
 
@@ -60,5 +59,13 @@ def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
+
 def sigmoid(input: JaxArray) -> JaxArray:
     return jax.nn.sigmoid(input)
+
+def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jax.nn.silu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+

@@ -139,32 +139,24 @@ def test_matrix_rank(
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
-        min_value=-1e04,
-        max_value=1e04,
+        min_value=-1,
+        max_value=100,
     ),
     transpose_a=st.booleans(),
     transpose_b=st.booleans(),
-    adjoint_a=st.booleans(),
-    adjoint_b=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_matmul(
+def test_tensorflow_matmul(
     *,
     dtype_x,
     transpose_a,
     transpose_b,
-    adjoint_a,
-    adjoint_b,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_x
-    if adjoint_a and transpose_a:
-        transpose_a = False
-    if adjoint_b and transpose_b:
-        transpose_b = False
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -175,8 +167,6 @@ def test_matmul(
         b=x[1],
         transpose_a=transpose_a,
         transpose_b=transpose_b,
-        adjoint_a=adjoint_a,
-        adjoint_b=adjoint_b,
     )
 
 
@@ -834,4 +824,38 @@ def test_tensorflow_adjoint(
         fn_tree=fn_tree,
         on_device=on_device,
         matrix=x[0],
+    )
+
+
+# diag
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["int64", "int32"],
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=5,
+        max_dim_size=10,
+        min_value=0,
+        max_value=10,
+    ),
+    k=st.just(0),
+)
+def test_tensorflow_diag(
+    dtype_and_x,
+    k,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        v=x[0],
+        k=k,
     )

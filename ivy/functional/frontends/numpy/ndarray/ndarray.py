@@ -53,6 +53,10 @@ class ndarray:
     def dtype(self):
         return self.ivy_array.dtype
 
+    @property
+    def ndim(self):
+        return len(self.shape)
+
     # Setters #
     # --------#
 
@@ -206,6 +210,27 @@ class ndarray:
             subok=subok,
         )
 
+    def conj(
+        self,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    ):
+        return np_frontend.conj(
+            self.ivy_array,
+            out=out,
+            where=where,
+            casting=casting,
+            order=order,
+            dtype=dtype,
+            subok=subok,
+        )
+
     def cumprod(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumprod(
             self,
@@ -311,6 +336,12 @@ class ndarray:
             out=out,
         )
 
+    def tofile(self, fid, sep="", format_="%s"):
+        return self._ivy_array.to_file(fid, sep=sep, format_=format_)
+
+    def tolist(self) -> list:
+        return self._ivy_array.to_list()
+
     def view(self):
         return np_frontend.reshape(self, tuple(self.shape))
 
@@ -357,6 +388,9 @@ class ndarray:
         self,
     ):
         return np_frontend.copy(self)
+
+    def __deepcopy__(self, memo):
+        return self.__class__(np_frontend.copy(self))
 
     def __neg__(
         self,
@@ -461,6 +495,12 @@ class ndarray:
             return self
         return np_frontend.array(self, dtype=dtype)
 
+    def __array_wrap__(self, array, context=None, /):
+        if context is None:
+            return np_frontend.array(array)
+        else:
+            return np_frontend.asarray(self)
+
     def __getitem__(self, key, /):
         ivy_args = ivy.nested_map([self, key], _to_ivy_array)
         ret = ivy.get_item(*ivy_args)
@@ -470,5 +510,16 @@ class ndarray:
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
 
+    def __iter__(self):
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d ndarray not supported")
+        for i in range(self.ndim):
+            yield self[i]
+
     def __mod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
+
+    def ptp(self, *, axis=None, out=None, keepdims=False):
+        xmax = self.max(axis=axis, out=out, keepdims=keepdims)
+        xmin = self.min(axis=axis, out=out, keepdims=keepdims)
+        return np_frontend.subtract(xmax, xmin)

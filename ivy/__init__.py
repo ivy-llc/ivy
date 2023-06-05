@@ -212,6 +212,15 @@ class Shape:
         else:
             self._shape = None
 
+    @staticmethod
+    def _shape_casting_helper(ivy_shape, other):
+        if isinstance(other, tuple) and not isinstance(ivy_shape, tuple):
+            return tuple(ivy_shape)
+        elif isinstance(other, list) and not isinstance(ivy_shape, list):
+            return list(ivy_shape)
+        else:
+            return ivy_shape
+
     def __repr__(self):
         pattern = r"\d+(?:,\s*\d+)*"
         shape_repr = re.findall(pattern, self._shape.__str__())
@@ -221,6 +230,9 @@ class Shape:
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
 
+    def __iter__(self):
+        return iter(self._shape)
+
     def __add__(self, other):
         try:
             self._shape = self._shape + other
@@ -228,23 +240,86 @@ class Shape:
             self._shape = self._shape + list(other)
         return self
 
+    def __radd__(self, other):
+        try:
+            self._shape = other + self._shape
+        except TypeError:
+            self._shape = list(other) + self._shape
+        return self
+
     def __mul__(self, other):
         self._shape = self._shape * other
         return self
 
+    def __rmul__(self, other):
+        self._shape = other * self._shape
+        return self
+
+    def __bool__(self):
+        return self._shape.__bool__()
+
+    def __div__(self, other):
+        return self._shape // other
+
+    def __mod__(self, other):
+        return self._shape % other
+
+    def __rdiv__(self, other):
+        return other // self._shape
+
+    def __rmod__(self, other):
+        return other % self._shape
+
+    def __reduce__(self):
+        return (self._shape,)
+
+    def as_dimension(self, other):
+        if isinstance(other, self._shape):
+            return other
+        else:
+            return self._shape
+
+    def __sub__(self, other):
+        try:
+            self._shape = self._shape - other
+        except TypeError:
+            self._shape = self._shape - list(other)
+        return self
+
+    def __rsub__(self, other):
+        try:
+            self._shape = other - self._shape
+        except TypeError:
+            self._shape = list(other) - self._shape
+        return self
+
     def __eq__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
 
+    def __int__(self):
+        if hasattr(self._shape, "__int__"):
+            res = self._shape.__int__()
+        else:
+            res = int(self._shape)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
     def __ge__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape >= other
 
     def __gt__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape > other
 
     def __le__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape <= other
 
     def __lt__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape < other
 
     def __getattribute__(self, item):
@@ -256,9 +331,28 @@ class Shape:
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
 
+    def __delattr__(self, item):
+        return super().__delattr__(item)
+
+    def __hash__(self):
+        return hash(self._shape)
+
+    def __sizeof__(self):
+        return len(self._shape) if self._shape is not None else 0
+
+    def __dir__(self):
+        return self._shape.__dir__()
+
     @property
     def shape(self):
         return self._shape
+
+    def as_list(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot convert a partially known Shape to a list"
+            )
+        return [dim for dim in self._shape]
 
 
 class IntDtype(Dtype):
@@ -575,6 +669,10 @@ array_api_promotion_table = {
     (bool, bool): bool,
 }
 locks = {"backend_setter": threading.Lock()}
+
+# the extra promotion table follows numpy safe casting convention
+# the following link discusses the different approaches to dtype promotions
+# https://jax.readthedocs.io/en/latest/jep/9407-type-promotion.html
 extra_promotion_table = {
     (bool, uint16): uint16,
     (bool, int32): int32,
@@ -618,22 +716,22 @@ extra_promotion_table = {
     (float32, int8): float32,
     (int8, float64): float64,
     (float64, int8): float64,
-    (int16, float16): float16,
-    (float16, int16): float16,
+    (int16, float16): float32,
+    (float16, int16): float32,
     (int16, float32): float32,
     (float32, int16): float32,
     (int16, float64): float64,
     (float64, int16): float64,
-    (int32, float16): float16,
-    (float16, int32): float16,
-    (int32, float32): float32,
-    (float32, int32): float32,
+    (int32, float16): float64,
+    (float16, int32): float64,
+    (int32, float32): float64,
+    (float32, int32): float64,
     (int32, float64): float64,
     (float64, int32): float64,
-    (int64, float16): float16,
-    (float16, int64): float16,
-    (int64, float32): float32,
-    (float32, int64): float32,
+    (int64, float16): float64,
+    (float16, int64): float64,
+    (int64, float32): float64,
+    (float32, int64): float64,
     (int64, float64): float64,
     (float64, int64): float64,
     (uint8, float16): float16,
@@ -642,41 +740,41 @@ extra_promotion_table = {
     (float32, uint8): float32,
     (uint8, float64): float64,
     (float64, uint8): float64,
-    (uint16, float16): float16,
-    (float16, uint16): float16,
+    (uint16, float16): float32,
+    (float16, uint16): float32,
     (uint16, float32): float32,
     (float32, uint16): float32,
     (uint16, float64): float64,
     (float64, uint16): float64,
-    (uint32, float16): float16,
-    (float16, uint32): float16,
-    (uint32, float32): float32,
-    (float32, uint32): float32,
+    (uint32, float16): float64,
+    (float16, uint32): float64,
+    (uint32, float32): float64,
+    (float32, uint32): float64,
     (uint32, float64): float64,
     (float64, uint32): float64,
-    (uint64, float16): float16,
-    (float16, uint64): float16,
-    (uint64, float32): float32,
-    (float32, uint64): float32,
+    (uint64, float16): float64,
+    (float16, uint64): float64,
+    (uint64, float32): float64,
+    (float32, uint64): float64,
     (uint64, float64): float64,
     (float64, uint64): float64,
     (bfloat16, bfloat16): bfloat16,
     (bfloat16, uint8): bfloat16,
     (uint8, bfloat16): bfloat16,
-    (bfloat16, uint16): bfloat16,
-    (uint16, bfloat16): bfloat16,
-    (bfloat16, uint32): bfloat16,
-    (uint32, bfloat16): bfloat16,
-    (bfloat16, uint64): bfloat16,
-    (uint64, bfloat16): bfloat16,
+    (bfloat16, uint16): float32,
+    (uint16, bfloat16): float32,
+    (bfloat16, uint32): float64,
+    (uint32, bfloat16): float64,
+    (bfloat16, uint64): float64,
+    (uint64, bfloat16): float64,
     (bfloat16, int8): bfloat16,
     (int8, bfloat16): bfloat16,
-    (bfloat16, int16): bfloat16,
-    (int16, bfloat16): bfloat16,
-    (bfloat16, int32): bfloat16,
-    (int32, bfloat16): bfloat16,
-    (bfloat16, int64): bfloat16,
-    (int64, bfloat16): bfloat16,
+    (bfloat16, int16): float32,
+    (int16, bfloat16): float32,
+    (bfloat16, int32): float64,
+    (int32, bfloat16): float64,
+    (bfloat16, int64): float64,
+    (int64, bfloat16): float64,
     (bfloat16, float16): float32,
     (float16, bfloat16): float32,
     (bfloat16, float32): float32,
@@ -687,18 +785,18 @@ extra_promotion_table = {
     (int8, complex64): complex64,
     (complex64, int16): complex64,
     (int16, complex64): complex64,
-    (complex64, int32): complex64,
-    (int32, complex64): complex64,
-    (complex64, int64): complex64,
-    (int64, complex64): complex64,
+    (complex64, int32): complex128,
+    (int32, complex64): complex128,
+    (complex64, int64): complex128,
+    (int64, complex64): complex128,
     (complex64, uint8): complex64,
     (uint8, complex64): complex64,
     (complex64, uint16): complex64,
     (uint16, complex64): complex64,
-    (complex64, uint32): complex64,
-    (uint32, complex64): complex64,
-    (complex64, uint64): complex64,
-    (uint64, complex64): complex64,
+    (complex64, uint32): complex128,
+    (uint32, complex64): complex128,
+    (complex64, uint64): complex128,
+    (uint64, complex64): complex128,
     (complex64, float16): complex64,
     (float16, complex64): complex64,
     (complex64, float32): complex64,
@@ -760,6 +858,8 @@ from ivy.utils.backend import (
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
+    set_paddle_backend,
+    set_mxnet_backend,
     previous_backend,
     backend_stack,
     choose_random_backend,
@@ -960,8 +1060,6 @@ native_inplace_support = None
 
 supports_gradients = None
 
-if "IVY_BACKEND" in os.environ:
-    ivy.set_backend(os.environ["IVY_BACKEND"])
 
 # Array Significant Figures #
 
@@ -1248,3 +1346,35 @@ from ivy.utils.backend.sub_backend_handler import (
 
 def current_sub_backends():
     return []
+
+
+# casting modes
+
+downcast_dtypes = False
+upcast_dtypes = False
+crosscast_dtypes = False
+cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
+
+
+def downcast_data_types(val=True):
+    global downcast_dtypes
+    downcast_dtypes = val
+
+
+def upcast_data_types(val=True):
+    global upcast_dtypes
+    upcast_dtypes = val
+
+
+def crosscast_data_types(val=True):
+    global crosscast_dtypes
+    crosscast_dtypes = val
+
+
+def cast_data_types(val=True):
+    global upcast_dtypes
+    global downcast_dtypes
+    global crosscast_dtypes
+    upcast_dtypes = val
+    downcast_dtypes = val
+    crosscast_dtypes = val

@@ -19,8 +19,8 @@ def imag(input, name=None):
 
 
 @to_ivy_arrays_and_back
-def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
-    return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
+def accumulate_n(inputs, shape=None, tensor_dtype=None, name=None):
+    return ivy.sum(inputs, axis=0)
 
 
 @to_ivy_arrays_and_back
@@ -32,6 +32,11 @@ def add(x, y, name=None):
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     return ivy.exp(x)
+
+
+@to_ivy_arrays_and_back
+def expm1(x, name=None):
+    return ivy.expm1(x)
 
 
 @to_ivy_arrays_and_back
@@ -289,7 +294,7 @@ def reduce_euclidean_norm(
 @to_ivy_arrays_and_back
 def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
     # stable logsumexp trick
-    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=True)
+    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=False)
     return (
         ivy.log(
             ivy.sum(
@@ -333,6 +338,7 @@ def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
 
 @to_ivy_arrays_and_back
 def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
+    input_tensor = ivy.array(input_tensor)
     return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
         input_tensor.dtype
     )
@@ -355,10 +361,29 @@ def subtract(x, y, name=None):
     return ivy.subtract(x, y)
 
 
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def squared_difference(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
-    return ivy.square(ivy.subtract(x, y))
+    res = ivy.square(ivy.subtract(x, y))
+    if isinstance(res, complex):
+        res = res.real - res.imag * 1j  # Changing the sign of the imaginary part
+        return res
+    return res
 
 
 @with_supported_dtypes(
@@ -514,12 +539,16 @@ def nextafter(x1, x2, name=None):
 @with_unsupported_dtypes(
     {
         "1.2.0": ("float16", "complex64", "complex128"),
-        "1.8.0 and below": ("float16"),
+        "1.8.0 and below": ("float16",),
         "2.9.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
     },
     "tensorflow",
 )
+@to_ivy_arrays_and_back
 def abs(x, name=None):
+    dtype = ivy.dtype(x)
+    if dtype in ["complex64", "complex128"]:
+        return ivy.sqrt(ivy.square(ivy.real(x)) + ivy.square(ivy.imag(x)))
     return ivy.abs(x)
 
 
@@ -581,6 +610,7 @@ def log(x, name=None):
 
 @to_ivy_arrays_and_back
 def add_n(inputs, name=None):
+    inputs = ivy.array(inputs)
     return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
 
@@ -618,7 +648,7 @@ def sinh(x, name=None):
 
 
 @to_ivy_arrays_and_back
-def softmax(logits, axis=-1):
+def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
@@ -638,6 +668,11 @@ def cosh(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def angle(input, name=None):
+    return ivy.angle(input)
+
+
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
         "2.11.0 and below": ("float32", "float64"),
@@ -652,3 +687,14 @@ def zeta(x, q, name=None):
 def greater_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater_equal(x, y)
+
+
+@to_ivy_arrays_and_back
+def in_top_k(target, pred, k, name=None):
+    top_k = ivy.top_k(target, k)
+    return ivy.array([val in top_k.values for val in target])
+
+
+@to_ivy_arrays_and_back
+def conj(x, name=None):
+    return ivy.conj(x)

@@ -110,9 +110,13 @@ def argwhere(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    where_x = tf.experimental.numpy.where(x)
-    if len(where_x) == 1:
-        return tf.expand_dims(where_x[0], -1)
+    if isinstance(x, tf.Variable):
+        x_ndim = x.shape.rank
+    else:
+        x_ndim = x.ndim
+    if x_ndim == 0:
+        return tf.zeros(shape=[int(bool(x)), 0], dtype="int64")
+    where_x = tf.experimental.numpy.nonzero(x)
     res = tf.experimental.numpy.concatenate(
         [tf.expand_dims(item, -1) for item in where_x], -1
     )
