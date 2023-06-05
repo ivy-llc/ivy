@@ -137,5 +137,25 @@ def logical_xor(x, y, /, *, name=None, out=None):
 )
 @to_ivy_arrays_and_back
 @handle_out_argument
+def logical_not(x, /, *, name=None, out=None):
+    return ivy.logical_not(x, out=out)
+
+
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "bool",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+@handle_out_argument
 def bitwise_or(x, y, /, *, name=None, out=None):
     return ivy.bitwise_or(x, y, out=out)
