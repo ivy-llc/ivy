@@ -173,6 +173,8 @@ def empty(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if isinstance(shape, int):
+        shape = [shape]
     return to_device(paddle.empty(shape=shape).cast(dtype), device)
 
 
