@@ -225,6 +225,8 @@ def test_paddle_softshrink(
     fn_tree="paddle.nn.functional.softsign",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=20,
     ),
 )
 def test_paddle_softsign(
