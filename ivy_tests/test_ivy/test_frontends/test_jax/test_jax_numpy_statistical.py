@@ -543,7 +543,7 @@ def test_numpy_nanmax(
 @handle_frontend_test(
     fn_tree="jax.numpy.nanmin",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", full=False),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
