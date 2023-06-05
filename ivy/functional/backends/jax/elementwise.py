@@ -618,3 +618,7 @@ def gcd(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.gcd(x1, x2)
+
+
+def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.real(x)

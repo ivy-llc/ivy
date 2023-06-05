@@ -760,35 +760,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.xlogy(self._data, y, out=out)
 
-    def real(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.real. This method simply wraps the
-        function, and so the docstring for ivy.real also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array. Should have a real-valued floating-point data type.
-        out
-            optional output array, for writing the result to.
-            It must have a shape that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            an array containing test results. If input in an
-            array is real then, it is returned unchanged. on the
-            other hand, if it is complex then, it returns real part from it
-
-        Examples
-        --------
-        >>> x = ivy.array([4+3j, 6+2j, 1-6j])
-        >>> x.real()
-        ivy.array([4., 6., 1.])
-        """
-        return ivy.real(self._data, out=out)
-
     def binarizer(
         self: ivy.Array, /, *, threshold: float = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:

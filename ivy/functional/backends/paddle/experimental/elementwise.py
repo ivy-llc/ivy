@@ -555,28 +555,6 @@ def xlogy(
         ).cast(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "float32",
-                "float64",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.real(x)
-
-
 def count_nonzero(
     a: paddle.Tensor,
     /,

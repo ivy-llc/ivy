@@ -952,3 +952,7 @@ def nan_to_num(
     else:
         x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
         return x
+
+
+def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.real(x)

@@ -948,3 +948,7 @@ def nan_to_num(
 
 
 nan_to_num.support_native_out = False
+
+
+def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.real(x)

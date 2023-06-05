@@ -261,8 +261,6 @@ def xlogy(
         return x * np.log(y)
 
 
-def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.real(x)
 
 
 def conj(

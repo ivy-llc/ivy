@@ -415,8 +415,6 @@ def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> Jax
     return js.special.xlogy(x, y)
 
 
-def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.real(x)
 
 
 def conj(

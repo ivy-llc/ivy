@@ -281,8 +281,6 @@ def xlogy(
     return torch.xlogy(x, y, out=out)
 
 
-def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.real(x)
 
 
 def conj(
