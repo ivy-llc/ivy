@@ -1000,7 +1000,12 @@ def _wrap_function(
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
                 mixed_fn
                 and (
-                    attr in ["inputs_to_native_arrays", "outputs_to_ivy_arrays", "handle_mixed_function"]
+                    attr
+                    in [
+                        "inputs_to_native_arrays",
+                        "outputs_to_ivy_arrays",
+                        "handle_mixed_function",
+                    ]
                 )
             ):
                 if mixed_fn:
