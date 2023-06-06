@@ -2173,6 +2173,8 @@ def test_torch_sigmoid(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        min_value=-1e3,
+        max_value=1e3,
     ),
 )
 def test_torch_lerp(
@@ -2191,7 +2193,6 @@ def test_torch_lerp(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-1,
         input=start,
         end=end,
         weight=weight,
