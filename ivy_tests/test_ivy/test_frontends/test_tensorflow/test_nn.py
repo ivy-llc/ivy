@@ -1460,3 +1460,34 @@ def test_tensorflow_avg_pool3d(
         strides=strides,
         padding=padding,
     )
+
+
+# weighted moments
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.weighted_moments",
+    dtype_and_x_and_axis=_statistical_dtype_values(function="mean"),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_moments(
+    *,
+    dtype_and_x_and_axis,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_and_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
+        x=x[0],
+        axes=axis,
+        keepdims=keepdims,
+    )
