@@ -371,10 +371,6 @@ def _det_helper(draw):
             min_value=2,
             max_value=5,
             shape=shape_prefix + square,
-        ).filter(
-            lambda x: np.all(
-                np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon
-            )
         )
     )
     return dtype_x
@@ -395,6 +391,7 @@ def test_det(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -644,13 +641,7 @@ def test_outer(
 # execute with grads error
 @handle_test(
     fn_tree="functional.ivy.slogdet",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=2,
-        max_value=5,
-        safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ),
+    dtype_x=_det_helper(),
     test_with_out=st.just(False),
 )
 def test_slogdet(

@@ -443,7 +443,11 @@ def slogdet(
         "slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)]
     )
     sign, logabsdet = paddle.linalg.slogdet(x)
-    return results(sign.squeeze(), logabsdet.squeeze())
+    if x.ndim == 2:
+        sign, logabsdet = paddle_backend.squeeze(sign, axis=0), paddle_backend.squeeze(
+            logabsdet, axis=0
+        )
+    return results(sign, logabsdet)
 
 
 def solve(
