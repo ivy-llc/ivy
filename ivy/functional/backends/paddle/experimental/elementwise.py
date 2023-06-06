@@ -112,20 +112,6 @@ def isclose(
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
-)
-def logaddexp2(
-    x1: Union[paddle.Tensor, float, list, tuple],
-    x2: Union[paddle.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
-
-
 def diff(
     x: Union[paddle.Tensor, list, tuple],
     /,
@@ -567,28 +553,6 @@ def xlogy(
         return ivy.where(
             x_ok, ivy.multiply(safe_x, ivy.log(safe_y)), ivy.zeros_like(x)
         ).cast(ret_dtype)
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "float32",
-                "float64",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.real(x)
 
 
 def count_nonzero(
