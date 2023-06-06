@@ -120,4 +120,4 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def argmin(self, axis=None, keepdim=False, dtype=None, name=None):
-        return ivy.argmin(self._ivy_array, axis=axis, keepdims=keepdim)
+        return ivy.argmin(self._ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
