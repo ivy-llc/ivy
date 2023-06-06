@@ -1597,16 +1597,16 @@ class AvgPool2D(Module):
 
 class MaxPool1D(Module):
     def __init__(
-            self,
-            kernel_size,
-            stride,
-            padding,
-            /,
-            *,
-            data_format="NWC",
-            device=None,
-            v=None,
-            dtype=None
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NWC",
+        device=None,
+        v=None,
+        dtype=None,
     ):
         """
         Class for applying Max Pooling over a mini-batch of inputs.
@@ -1646,5 +1646,5 @@ class MaxPool1D(Module):
             self._kernel_size,
             self._stride,
             self._padding,
-            data_format=self._data_format
+            data_format=self._data_format,
         )
