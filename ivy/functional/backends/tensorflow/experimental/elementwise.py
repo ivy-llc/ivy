@@ -102,20 +102,6 @@ def nansum(
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
-@with_unsupported_dtypes(
-    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
-)
-def gcd(
-    x1: Union[tf.Tensor, tf.Variable, int, list, tuple],
-    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.gcd(x1, x2)
-
-
 def isclose(
     a: Union[tf.Tensor, tf.Variable],
     b: Union[tf.Tensor, tf.Variable],
@@ -129,60 +115,6 @@ def isclose(
     return tf.experimental.numpy.isclose(
         a, b, rtol=rtol, atol=atol, equal_nan=equal_nan
     )
-
-
-def nan_to_num(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    posinf = posinf if posinf is not None else x.dtype.max
-    neginf = neginf if neginf is not None else x.dtype.min
-    posinf = tf.constant(posinf, x.dtype)
-    neginf = tf.constant(neginf, x.dtype)
-    nan = tf.constant(nan, x.dtype)
-    ret = tf.where(tf.math.is_nan(x), nan, x)
-    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret > 0), posinf, ret)
-    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret < 0), neginf, ret)
-    if copy:
-        return ret
-    else:
-        x = ret
-        return x
-
-
-@with_unsupported_dtypes(
-    {
-        "2.12.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-        )
-    },
-    backend_version,
-)
-def logaddexp2(
-    x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    if not ivy.is_float_dtype(x1):
-        x1 = tf.cast(x1, ivy.default_float_dtype(as_native=True))
-        x2 = tf.cast(x2, ivy.default_float_dtype(as_native=True))
-    return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
 
 
 def signbit(
@@ -261,54 +193,6 @@ def diff(
     if append is not None:
         x = tf.experimental.numpy.append(x, append, axis=axis if axis != -1 else None)
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
-
-
-@with_unsupported_dtypes(
-    {
-        "2.12.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "bfloat16",
-            "int32",
-        )
-    },
-    backend_version,
-)
-def angle(
-    input: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if deg:
-        return tf.math.angle(input, name=None) * (180 / tf.experimental.numpy.pi)
-    else:
-        return tf.math.angle(input, name=None)
-
-
-@with_unsupported_dtypes(
-    {
-        "2.12.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "bfloat16",
-            "int32",
-        )
-    },
-    backend_version,
-)
-def imag(
-    val: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.imag(val, name=None)
 
 
 @with_supported_dtypes(
@@ -552,16 +436,6 @@ def xlogy(
 ) -> Union[tf.Tensor, tf.Variable]:
     x, y = promote_types_of_inputs(x, y)
     return tf.math.xlogy(x, y)
-
-
-@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, backend_version)
-def real(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.real(x)
 
 
 def conj(

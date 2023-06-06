@@ -501,6 +501,23 @@ def logaddexp(
 logaddexp.support_native_out = True
 
 
+def logaddexp2(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
+        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
+    return np.logaddexp2(x1, x2, out=out)
+
+
+logaddexp2.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def logical_and(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
@@ -876,3 +893,62 @@ def fmod(
 
 
 fmod.support_native_out = True
+
+
+def angle(
+    z: np.ndarray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.angle(z, deg=deg)
+
+
+angle.support_native_out = False
+
+
+def gcd(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.gcd(x1, x2, out=out)
+
+
+gcd.support_native_out = True
+
+
+def imag(
+    val: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.imag(val)
+
+
+imag.support_native_out = False
+
+
+def nan_to_num(
+    x: np.ndarray,
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+nan_to_num.support_native_out = False
+
+
+def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.real(x)

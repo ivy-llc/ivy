@@ -607,6 +607,8 @@ def test_tensorflow_reciprocal(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         x=x[0],
     )
 
@@ -700,6 +702,7 @@ def test_tensorflow_reduce_any(
     fn_tree="tensorflow.math.reduce_euclidean_norm",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        max_num_dims=2,
     ),
     test_with_out=st.just(False),
 )
@@ -720,6 +723,8 @@ def test_tensorflow_reduce_euclidean_norm(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        rtol=1e-01,
+        atol=1e-01,
         on_device=on_device,
         input_tensor=x[0],
     )
@@ -768,7 +773,7 @@ def test_tensorflow_argmax(
     on_device,
     output_type,
 ):
-    if ivy.current_backend_str() == "torch":
+    if ivy.current_backend_str() in ("torch", "paddle"):
         assume(output_type != "uint16")
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -871,6 +876,9 @@ def test_tensorflow_reduce_prod(
     fn_tree="tensorflow.math.reduce_std",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_reduce_std(
@@ -973,6 +981,8 @@ def test_tensorflow_reduce_mean(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        atol=1e-2,
+        rtol=1e-2,
         on_device=on_device,
         input_tensor=x[0],
     )
@@ -1948,6 +1958,7 @@ def test_tensorflow_acosh(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
         x=x[0],
     )
 

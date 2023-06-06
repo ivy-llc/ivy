@@ -165,7 +165,7 @@ def arccos(x, /):
 
 
 @to_ivy_arrays_and_back
-def arccosh(x):
+def arccosh(x, /):
     return ivy.acosh(x)
 
 
@@ -180,7 +180,7 @@ def arcsinh(x, /):
 
 
 @to_ivy_arrays_and_back
-def power(x1, x2):
+def power(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.pow(x1, x2)
 
