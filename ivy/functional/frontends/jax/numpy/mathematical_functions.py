@@ -631,13 +631,13 @@ def polydiv(u, v, *, trim_leading_zeros=False):
     u, v_arr = ivy.promote_types_of_inputs(u, v)
     n = v_arr.shape[0] - 1
     m = u.shape[0] - 1
-    scale = 1. / v_arr[0]
+    scale = 1.0 / v_arr[0]
     q = ivy.zeros((max(m - n + 1, 1),), dtype=u.dtype)
     r = ivy.copy_array(u)
     for k in range(0, m - n + 1):
         d = scale * r[k]
         q[k] = d
-        r[k:k+n+1] = r[k:k+n+1] - (d * v_arr)
+        r[k : k + n + 1] = r[k : k + n + 1] - (d * v_arr)
     # if trim_leading_zeros:
     #    r = trim_zeros_tol(r, trim='f')
     # TODO: need to control tolerance of this function to handle the argument
