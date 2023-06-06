@@ -47,7 +47,8 @@ def argmax(
         ret = paddle.argmax(x, axis=axis)
 
     if keepdims:
-        shape = [1] * x.ndim
+        shape = list(x.shape)
+        shape[axis] = 1
         ret = paddle_backend.reshape(ret, shape)
     elif axis is None or x.ndim == 1:
         ret = paddle_backend.squeeze(ret, axis=-1)
@@ -72,11 +73,11 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[paddle.dtype] = None,
+    dtype: Optional[paddle.dtype] = None,
     select_last_index: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = output_dtype if output_dtype is not None else paddle.int64
+    dtype = dtype if dtype is not None else paddle.int64
     if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
         x = x.cast("float32")
     if select_last_index:

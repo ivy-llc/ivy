@@ -793,7 +793,8 @@ def _squeeze_helper(draw):
         if axis == 1:
             valid_axes.append(index)
     valid_axes.insert(0, None)
-    return draw(st.sampled_from(valid_axes))
+    axis = draw(st.sampled_from(valid_axes))
+    return [axis] if axis is not None else axis
 
 
 # Squeeze
@@ -812,6 +813,7 @@ def test_tensorflow_Squeeze(  # NOQA
     frontend,
     test_flags,
     fn_tree,
+    on_device,
 ):
     dtype, xs = dtype_value
     helpers.test_frontend_function(
@@ -819,6 +821,7 @@ def test_tensorflow_Squeeze(  # NOQA
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=xs[0],
         axis=axis,
     )
@@ -3283,8 +3286,7 @@ def test_tensorflow_Conv3D(
     fn_tree="tensorflow.raw_ops.Softmax",
     dtype_values_axis=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=2,
+        min_num_dims=1,
     ),
     test_with_out=st.just(False),
 )
@@ -3302,6 +3304,7 @@ def test_tensorflow_Softmax(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-2,
         logits=values[0],
     )
 

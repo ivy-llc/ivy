@@ -1,5 +1,6 @@
 name: Update docs
 on:
+  workflow_call:
   push:
     branches:
       - master

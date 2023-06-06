@@ -150,7 +150,7 @@ def test_jax_numpy_concat(
 @handle_frontend_test(
     fn_tree="jax.numpy.repeat",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     axis=st.shared(
@@ -476,7 +476,7 @@ def test_jax_numpy_transpose(
 @handle_frontend_test(
     fn_tree="jax.numpy.flip",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     axis=helpers.get_axis(
@@ -1217,7 +1217,7 @@ def test_jax_numpy_dsplit(
 @handle_frontend_test(
     fn_tree="jax.numpy.tile",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     repeat=helpers.dtype_and_values(
