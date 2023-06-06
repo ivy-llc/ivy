@@ -28,7 +28,7 @@ from .set import _ArrayWithSet
 from .sorting import _ArrayWithSorting
 from .statistical import _ArrayWithStatistical
 from .utility import _ArrayWithUtility
-from ivy.func_wrapper import handle_view_indexing
+from ivy.func_wrapper import handle_view_indexing, outputs_to_ivy_arrays
 from .experimental import (
     _ArrayWithSearchingExperimental,
     _ArrayWithActivationsExperimental,
@@ -429,6 +429,8 @@ class Array(
             attr = self._data.__getattribute__(item)
         except AttributeError:
             attr = self._data.__getattr__(item)
+        if callable(attr):
+            return outputs_to_ivy_arrays(attr)
         return to_ivy(attr)
 
     @handle_view_indexing
