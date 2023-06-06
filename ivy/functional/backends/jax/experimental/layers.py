@@ -15,6 +15,7 @@ from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
+from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -681,6 +682,11 @@ def reduce_window(
 ) -> JaxArray:
     computation = _correct_ivy_callable(computation)
     computation = output_to_native_arrays(computation)
+    if not isinstance(padding, str):
+        # for containers the padding reaches the function as a list of lists instead of
+        # a list of tuples, which gives an unhashable dtype error
+        # this is similarly a problem in the jax backend of ivy.pad
+        padding = _to_nested_tuple(padding)
     return jlax.reduce_window(
         operand,
         init_value,
