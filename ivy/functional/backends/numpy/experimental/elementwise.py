@@ -129,23 +129,6 @@ def isclose(
 isclose.support_native_out = False
 
 
-def logaddexp2(
-    x1: Union[np.ndarray, int, list, tuple],
-    x2: Union[np.ndarray, int, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    if not ivy.is_float_dtype(x1):
-        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
-        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
-    return np.logaddexp2(x1, x2, out=out)
-
-
-logaddexp2.support_native_out = True
-
-
 def signbit(
     x: Union[np.ndarray, float, int, list, tuple],
     /,
@@ -276,10 +259,6 @@ def xlogy(
         return 0.0
     else:
         return x * np.log(y)
-
-
-def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.real(x)
 
 
 def conj(
