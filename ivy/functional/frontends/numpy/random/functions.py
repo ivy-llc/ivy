@@ -104,12 +104,18 @@ def standard_gamma(shape, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def binomial(n, p, size=None):
+    if p < 0 or p > 1:
+        raise ValueError("p must be in the interval (0, 1)")
+    if n < 0:
+        raise ValueError("n must be strictly positive")
     def comb(k,n):
         if k >= n:
             KMinusn = k - n
             return math.factorial(n) / (math.factorial(k) * math.factorial(KMinusn))
         else:
             raise ValueError("k < n")
+    if isinstance(size, int):
+        size = (size,)
     oneMinusP = ivy.subtract(1, p)
     nMinusSize = ivy.subtract(n, size)
     return (ivy.pow(oneMinusP, nMinusSize)) * (ivy.pow(p, size)) * comb(size[0], n)
