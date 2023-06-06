@@ -3,20 +3,21 @@ import functools
 from typing import Callable
 import sys
 import traceback as tb
-
+import io
 
 # Helpers #
 # ------- #
 
 
-def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode):
+def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer):
     if trace_mode in ["frontend", "ivy"]:
-        print(
+        buffer.write(
             "<stack trace is truncated to {} specific files,".format(trace_mode),
             "call `ivy.set_exception_trace_mode('full')` to view the full trace>",
         )
+
     if not func_wrapper_trace_mode:
-        print(
+        buffer.write(
             "<func_wrapper.py stack trace is squashed,",
             "call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>",
         )
@@ -29,9 +30,9 @@ def _remove_so_log(old_stack_trace):
             new_stack_trace.append(st)
     return new_stack_trace
 
-
-def _print_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode):
-    _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode)
+  
+def _write_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode, buffer):
+    _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer)
     new_stack_trace = []
     for st in old_stack_trace:
         if trace_mode == "full" and not func_wrapper_trace_mode:
@@ -42,33 +43,39 @@ def _print_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode)
                 if not func_wrapper_trace_mode and "func_wrapper.py" in repr(st):
                     continue
                 new_stack_trace.append(st)
-    print("".join(tb.format_list(new_stack_trace)))
+    buffer.write("".join(tb.format_list(new_stack_trace)))
 
 
 def _custom_exception_handle(type, value, tb_history):
     trace_mode = ivy.get_exception_trace_mode()
     func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
+    buffer = io.StringIO()
     tb_history = _remove_so_log(tb.extract_tb(tb_history))
     if trace_mode == "none":
         return
     if trace_mode == "full" and func_wrapper_trace_mode:
         print("".join(tb.format_list(tb_history)))
     else:
-        _print_new_stack_trace(tb_history, trace_mode, func_wrapper_trace_mode)
+        _write_new_stack_trace(
+            tb_history, trace_mode, func_wrapper_trace_mode, buffer
+        )
+        print(buffer.getvalue())
     print(type.__name__ + ":", value)
 
 
-def _print_traceback_history():
+def _write_traceback_history(buffer):
     trace_mode = ivy.get_exception_trace_mode()
     func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
     tb_stack = _remove_so_log(tb.extract_tb(sys.exc_info()[2]))
     if trace_mode == "none":
         return
     if trace_mode == "full" and func_wrapper_trace_mode:
-        print("".join(tb.format_list(tb_stack)))
+        buffer.write("".join(tb.format_list(tb_stack)))
     else:
-        _print_new_stack_trace(tb_stack, trace_mode, func_wrapper_trace_mode)
-    print("During the handling of the above exception, another exception occurred:\n")
+        _write_new_stack_trace(tb_stack, trace_mode, func_wrapper_trace_mode, buffer)
+    buffer.write(
+      "During the handling of the above exception, another exception occurred:\n"
+    )
 
 
 sys.excepthook = _custom_exception_handle
@@ -183,6 +190,9 @@ class IvyDtypePromotionError(IvyException):
 
 
 def handle_exceptions(fn: Callable) -> Callable:
+
+    buffer = io.StringIO()
+
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
         """
@@ -206,37 +216,38 @@ def handle_exceptions(fn: Callable) -> Callable:
         except IvyNotImplementedException as e:
             raise e
         except IvyError as e:
-            _print_traceback_history()
-            raise ivy.utils.exceptions.IvyError(fn.__name__, e, include_backend=True)
+            _write_traceback_history(buffer)
+            raise ivy.utils.exceptions.IvyError(
+                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True)
         except IvyBroadcastShapeError as e:
-            _print_traceback_history()
+            _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyBroadcastShapeError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
             )
         except IvyDtypePromotionError as e:
-            _print_traceback_history()
+            _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyDtypePromotionError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
             )
         except (IndexError, IvyIndexError) as e:
-            _print_traceback_history()
+            _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyIndexError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
             )
         except (AttributeError, IvyAttributeError) as e:
-            _print_traceback_history()
+            _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyAttributeError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
             )
         except (ValueError, IvyValueError) as e:
-            _print_traceback_history()
+            _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyValueError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
             )
         except (Exception, IvyBackendException) as e:
-            _print_traceback_history()
+            _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyBackendException(
-                fn.__name__, e, include_backend=True
+                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
             )
 
     _handle_exceptions.handle_exceptions = True
