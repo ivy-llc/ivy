@@ -2776,6 +2776,8 @@ def test_jax_numpy_polydiv(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    assume("float16" not in input_dtype)
+    # TODO: remove asumme when the decorator works
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
