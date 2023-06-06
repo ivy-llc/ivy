@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, Literal, Sequence, Callable
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -7,12 +7,15 @@ import math
 
 # local
 import ivy
+from ivy import output_to_native_arrays
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
+from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
+from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -663,6 +666,37 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
     ]
     and recompute_scale_factor
 )
+
+
+def reduce_window(
+    operand: JaxArray,
+    init_value: Union[int, float],
+    computation: Callable,
+    window_dimensions: Union[int, Sequence[int]],
+    /,
+    *,
+    window_strides: Union[int, Sequence[int]] = 1,
+    padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+    base_dilation: Union[int, Sequence[int]] = 1,
+    window_dilation: Union[int, Sequence[int]] = 1,
+) -> JaxArray:
+    computation = _correct_ivy_callable(computation)
+    computation = output_to_native_arrays(computation)
+    if not isinstance(padding, str):
+        # for containers the padding reaches the function as a list of lists instead of
+        # a list of tuples, which gives an unhashable dtype error
+        # this is similarly a problem in the jax backend of ivy.pad
+        padding = _to_nested_tuple(padding)
+    return jlax.reduce_window(
+        operand,
+        init_value,
+        computation,
+        window_dimensions,
+        window_strides,
+        padding,
+        base_dilation,
+        window_dilation,
+    )
 
 
 def fft2(

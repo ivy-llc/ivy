@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
@@ -828,6 +829,98 @@ def test_adaptive_avg_pool2d(
         fn_name=fn_name,
         input=x[0],
         output_size=output_size,
+    )
+
+
+@st.composite
+def _reduce_window_helper(draw, get_func_st):
+    dtype = draw(helpers.get_dtypes("valid", full=False))
+    py_func = draw(get_func_st(dtype[0]))
+    init_value = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=(),
+            allow_inf=True,
+        )
+    )[1]
+    ndim = draw(st.integers(min_value=1, max_value=4))
+    _, others = draw(
+        helpers.dtype_and_values(
+            num_arrays=4,
+            dtype=["int64"] * 4,
+            shape=(ndim,),
+            min_value=1,
+            max_value=3,
+            small_abs_safety_factor=1,
+            large_abs_safety_factor=1,
+        )
+    )
+    others = [other.tolist() for other in others]
+    window, dilation = others[0], others[2]
+    op_shape = []
+    for i in range(ndim):
+        min_x = window[i] + (window[i] - 1) * (dilation[i] - 1)
+        op_shape.append(draw(st.integers(min_x, min_x + 1)))
+    dtype, operand = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=op_shape,
+        )
+    )
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=ndim,
+                max_size=ndim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
+    return dtype * 2, operand, init_value, py_func, others, padding
+
+
+def _get_reduce_func(dtype):
+    if dtype == "bool":
+        return st.sampled_from([ivy.logical_and, ivy.logical_or])
+    else:
+        return st.sampled_from([ivy.add, ivy.maximum, ivy.minimum, ivy.multiply])
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.reduce_window",
+    all_args=_reduce_window_helper(_get_reduce_func),
+    test_with_out=st.just(False),
+    ground_truth_backend="jax",
+)
+def test_reduce_window(
+    *,
+    all_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtypes, operand, init_value, computation, others, padding = all_args
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        operand=operand[0],
+        init_value=init_value[0],
+        computation=computation,
+        window_dimensions=others[0],
+        window_strides=others[1],
+        padding=padding,
+        base_dilation=others[2],
+        window_dilation=None,
     )
 
 
