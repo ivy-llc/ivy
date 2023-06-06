@@ -625,6 +625,24 @@ logaddexp.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def logaddexp2(
+    x1: Union[torch.Tensor, float, list, tuple],
+    x2: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.type(ivy.default_float_dtype(as_native=True))
+        x2 = x2.type(ivy.default_float_dtype(as_native=True))
+    return torch.logaddexp2(x1, x2, out=out)
+
+
+logaddexp2.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.tan(x, out=out)
@@ -933,3 +951,7 @@ def nan_to_num(
     else:
         x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
         return x
+
+
+def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.real(x)

@@ -538,9 +538,13 @@ def can_cast(
         b: true
     }
     """
-    if isinstance(from_, ivy.Dtype):
-        return (from_, to) in ivy.promotion_table
-    return (from_.dtype, to) in ivy.promotion_table
+    if isinstance(from_, (ivy.Array, ivy.NativeArray)):
+        from_ = from_.dtype
+    try:
+        ivy.promote_types(from_, to)
+        return True
+    except KeyError:
+        return False
 
 
 @handle_exceptions
@@ -899,6 +903,28 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
     1
     """
     return current_backend(dtype_in).dtype_bits(dtype_in)
+
+
+@handle_exceptions
+def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
+    """
+    Check if the given data type is hashable or not.
+
+    Parameters
+    ----------
+    dtype_in
+        The data type to check.
+
+    Returns
+    -------
+    ret
+        True if data type is hashable else False
+    """
+    try:
+        hash(dtype_in)
+        return True
+    except TypeError:
+        return False
 
 
 @handle_exceptions
@@ -1426,7 +1452,7 @@ def default_complex_dtype(
     input
         Number or array for inferring the complex dtype.
     complex_dtype
-        The float dtype to be returned.
+        The complex dtype to be returned.
     as_native
         Whether to return the complex dtype as native dtype.
 
@@ -1992,15 +2018,14 @@ def promote_types(
     ret
         The type that both input types promote to
     """
+    query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
+    query.sort(key=lambda x: str(x))
+    query = tuple(query)
     try:
         if array_api_promotion:
-            ret = ivy.array_api_promotion_table[
-                (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
-            ]
+            ret = ivy.array_api_promotion_table[query]
         else:
-            ret = ivy.promotion_table[
-                (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
-            ]
+            ret = ivy.promotion_table[query]
     except KeyError:
         raise ivy.utils.exceptions.IvyDtypePromotionError(
             "these dtypes are not type promotable"
