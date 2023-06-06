@@ -2069,7 +2069,7 @@ def reduce_window(
     /,
     *,
     window_strides: Union[int, Sequence[int]] = 1,
-    padding: Union[str, int, Sequence[Tuple[int, int]]] = 'VALID',
+    padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
     base_dilation: Union[int, Sequence[int]] = 1,
     window_dilation: Union[int, Sequence[int]] = 1,
 ) -> ivy.Array:

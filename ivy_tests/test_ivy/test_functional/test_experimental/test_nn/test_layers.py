@@ -908,7 +908,7 @@ def _get_reduce_func(dtype):
     fn_tree="functional.ivy.experimental.reduce_window",
     all_args=_reduce_window_helper(_get_reduce_func),
     test_with_out=st.just(False),
-    ground_truth_backend='jax',
+    ground_truth_backend="jax",
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
 )
