@@ -11,7 +11,11 @@ from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
+
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -114,43 +118,56 @@ def general_pool(
             for i in range(1, len(dims) - 1)
         ]
     )
-
-    # manually creating padding list
-    if isinstance(padding, str):
-        pad_list = _pad_str_to_list(inputs, dims, padding, strides, new_window_shape)
-    else:
-        if isinstance(padding, int):
-            padding = [(padding,) * 2] * dim
-        pad_list = [(0, 0)] + list(padding) + [(0, 0)]
-
-    if ceil_mode:
-        c = []
-        for i in range(len(dims) - 2):
-            pad_list[i + 1], ceil = _padding_ceil_mode(
-                inputs.shape[i + 1],
-                new_window_shape[i],
-                pad_list[i + 1],
-                strides[i + 1],
-                True,
-            )
-            c.append(ceil)
-
-    if count_include_pad:
-        # manually pad inputs with 0 if ceil_mode is True
-        # because they're not counted in average calculation
-        if ceil_mode:
-            ceil = [(0, c[i]) for i in range(len(dims) - 2)]
-            for i in range(len(dims) - 2):
-                pad_list[i + 1] = (pad_list[i + 1][0], pad_list[i + 1][1] - ceil[i][1])
-            inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
-            inputs = jnp.pad(
-                inputs, [(0, 0)] + ceil + [(0, 0)], mode="constant", constant_values=0.0
+    inputs, window_shape, strides, depth_pooling = _determine_depth_max_pooling(
+        inputs, window_shape, strides, 2
+    )
+    if not depth_pooling:
+        # manually creating padding list
+        if isinstance(padding, str):
+            pad_list = _pad_str_to_list(
+                inputs, dims, padding, strides, new_window_shape
             )
         else:
-            # manually pad inputs with 1s
-            # because they are counted in average calculation
-            inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
-        pad_list = [(0, 0)] * len(pad_list)
+            if isinstance(padding, int):
+                padding = [(padding,) * 2] * dim
+            pad_list = [(0, 0)] + list(padding) + [(0, 0)]
+
+        if ceil_mode:
+            c = []
+            for i in range(len(dims) - 2):
+                pad_list[i + 1], ceil = _padding_ceil_mode(
+                    inputs.shape[i + 1],
+                    new_window_shape[i],
+                    pad_list[i + 1],
+                    strides[i + 1],
+                    True,
+                )
+                c.append(ceil)
+
+        if count_include_pad:
+            # manually pad inputs with 0 if ceil_mode is True
+            # because they're not counted in average calculation
+            if ceil_mode:
+                ceil = [(0, c[i]) for i in range(len(dims) - 2)]
+                for i in range(len(dims) - 2):
+                    pad_list[i + 1] = (
+                        pad_list[i + 1][0],
+                        pad_list[i + 1][1] - ceil[i][1],
+                    )
+                inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
+                inputs = jnp.pad(
+                    inputs,
+                    [(0, 0)] + ceil + [(0, 0)],
+                    mode="constant",
+                    constant_values=0.0,
+                )
+            else:
+                # manually pad inputs with 1s
+                # because they are counted in average calculation
+                inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
+            pad_list = [(0, 0)] * len(pad_list)
+    else:
+        pad_list = [(0, 0)] * (dim + 2)
 
     y = jlax.reduce_window(
         inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
@@ -388,6 +405,7 @@ def avg_pool3d(
     return res
 
 
+@with_supported_dtypes({"0.4.11 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -407,7 +425,7 @@ def dct(
         if n <= signal_len:
             local_idx = [slice(None)] * len(x.shape)
             local_idx[axis] = slice(None, n)
-            x = x[local_idx]
+            x = x[tuple(local_idx)]
         else:
             pad_idx = [[0, 0] for _ in range(len(x.shape))]
             pad_idx[axis][1] = n - signal_len
@@ -460,6 +478,20 @@ def dct(
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * jlax.rsqrt(axis_dim_float)
     return dct_out
+
+
+def idct(
+    x: JaxArray,
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
 
 def fft(
@@ -646,3 +678,4 @@ def quantize(
     max_range: Union[Sequence[int], int],
 ):
     raise IvyNotImplementedException()
+

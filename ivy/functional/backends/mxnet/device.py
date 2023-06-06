@@ -10,6 +10,7 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 from ivy.utils.exceptions import IvyNotImplementedException
 
+
 def dev(
     x: Union[(None, mx.ndarray.NDArray)], /, *, as_native: bool = False
 ) -> Union[(ivy.Device, str)]:
@@ -62,7 +63,7 @@ def clear_cached_mem_on_dev(device: str, /):
 
 
 def num_gpus() -> int:
-    raise IvyNotImplementedException()
+    return mx.context.num_gpus()
 
 
 def gpu_is_available() -> bool:
@@ -72,7 +73,7 @@ def gpu_is_available() -> bool:
 
 
 def tpu_is_available() -> bool:
-    raise IvyNotImplementedException()
+    return False
 
 
 class Profiler(BaseProfiler):

@@ -3,7 +3,7 @@ import numpy as np
 import hypothesis.extra.numpy as nph
 from hypothesis import strategies as st, assume
 from hypothesis.internal.floats import float_of
-from functools import reduce
+from functools import reduce as _reduce
 from operator import mul
 
 # local
@@ -1463,7 +1463,7 @@ def broadcast_shapes(*shapes):
 
 # np.prod and others have overflow and math.prod is Python 3.8+ only
 def prod(seq):
-    return reduce(mul, seq, 1)
+    return _reduce(mul, seq, 1)
 
 
 # from array-api repo
@@ -1632,9 +1632,9 @@ def dtype_array_index(
     )
     index = ()
     for s in shape:
-        index_type = st.sampled_from(["int", "ellipsis", "slice"])
+        index_type = draw(st.sampled_from(["int", "ellipsis", "slice"]))
         if not allow_slices or index_type == "int":
-            index += draw(st.integers(min_value=-s + 1, max_value=s - 1))
+            index += (draw(st.integers(min_value=-s + 1, max_value=s - 1)),)
         if index_type == "ellipsis" and Ellipsis not in index:
             index += (Ellipsis,)
         elif index_type == "slice":

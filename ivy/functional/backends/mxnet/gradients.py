@@ -2,16 +2,18 @@
 
 # global
 from typing import Optional, Sequence, Union
+import mxnet as mx
 
 # local
 from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def variable(x, /):
     return x
 
 
 def is_variable(x, /, *, exclusive=False):
-    raise IvyNotImplementedException()
+    return isinstance(x, mx.ndarray.NDArray)
 
 
 def variable_data(x, /):

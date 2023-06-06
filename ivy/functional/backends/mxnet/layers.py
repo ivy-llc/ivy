@@ -7,6 +7,7 @@ import ivy
 # local
 from ivy.utils.exceptions import IvyNotImplementedException
 
+
 def conv1d(
     x: Union[(None, mx.ndarray.NDArray)],
     filters: Union[(None, mx.ndarray.NDArray)],

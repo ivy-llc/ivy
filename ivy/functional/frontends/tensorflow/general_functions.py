@@ -37,7 +37,7 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
-@with_supported_dtypes({"2.9.1 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.12.0 and below": ("float32",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     if use_norm is not None:
@@ -157,6 +157,25 @@ def concat(values, axis, name=None):
 
 
 @to_ivy_arrays_and_back
+def cond(pred, true_fn=None, false_fn=None, name=None):
+    if true_fn is None:
+        raise TypeError("cond(): 'true_fn' argument required")
+    if false_fn is None:
+        raise TypeError("cond(): 'false_fn' argument required")
+
+    if not callable(true_fn):
+        raise TypeError("'true_fn' must be callable.")
+    if not callable(false_fn):
+        raise TypeError("'false_fn' must be callable.")
+
+    if pred:
+        return true_fn()
+
+    if not pred:
+        return false_fn()
+
+
+@to_ivy_arrays_and_back
 def shape(input, out_type=ivy.int32, name=None):
     out_type = to_ivy_dtype(out_type)
     if out_type in ["int32", "int64"]:
@@ -189,7 +208,7 @@ def ensure_shape(x, shape, name=None):
     return x
 
 
-@with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
@@ -238,7 +257,7 @@ def is_tensor(x, name=None):
 
 
 @to_ivy_arrays_and_back
-def gather(params, indices, axis=None, batch_dims=0, name=None):
+def gather(params, indices, validate_indices=None, axis=None, batch_dims=0, name=None):
     if axis is None:
         axis = batch_dims
     else:
@@ -416,7 +435,7 @@ def realdiv(x, y, name=None):
     return ivy.divide(x, y)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("uint16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("uint16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
@@ -449,10 +468,13 @@ def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
 
 
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64", "int16")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def split(value, num_or_size_splits, axis=0, num=None, name=None):
     return ivy.split(
-        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=False
+        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=True
     )
 
 
@@ -465,7 +487,7 @@ def repeat(
     return ivy.repeat(input, repeats, axis=axis)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
@@ -511,3 +533,18 @@ def unique(x, out_idx=ivy.int32, name=None):
     y = ret[0]
     idx = ivy.astype(ret[2], out_idx)
     return y, idx
+
+
+@to_ivy_arrays_and_back
+def while_loop(
+    cond,
+    body,
+    loop_vars,
+    shape_invariants=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    maximum_iterations=None,
+    name=None,
+):
+    return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)

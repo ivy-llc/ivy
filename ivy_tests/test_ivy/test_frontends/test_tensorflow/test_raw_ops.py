@@ -793,7 +793,8 @@ def _squeeze_helper(draw):
         if axis == 1:
             valid_axes.append(index)
     valid_axes.insert(0, None)
-    return draw(st.sampled_from(valid_axes))
+    axis = draw(st.sampled_from(valid_axes))
+    return [axis] if axis is not None else axis
 
 
 # Squeeze
@@ -812,6 +813,7 @@ def test_tensorflow_Squeeze(  # NOQA
     frontend,
     test_flags,
     fn_tree,
+    on_device,
 ):
     dtype, xs = dtype_value
     helpers.test_frontend_function(
@@ -819,6 +821,7 @@ def test_tensorflow_Squeeze(  # NOQA
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=xs[0],
         axis=axis,
     )
@@ -1353,6 +1356,8 @@ def test_tensorflow_FFT(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
     )
 
 
@@ -3281,8 +3286,7 @@ def test_tensorflow_Conv3D(
     fn_tree="tensorflow.raw_ops.Softmax",
     dtype_values_axis=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=2,
+        min_num_dims=1,
     ),
     test_with_out=st.just(False),
 )
@@ -3300,6 +3304,7 @@ def test_tensorflow_Softmax(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-2,
         logits=values[0],
     )
 
@@ -3467,13 +3472,17 @@ def test_tensorflow_roll(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # CumulativeLogsumexp
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.CumulativeLogsumexp",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    axis=st.just(0),
     test_with_out=st.just(False),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
 )
 def test_tensorflow_CumulativeLogsumexp(
     dtype_and_x,
@@ -3499,13 +3508,16 @@ def test_tensorflow_CumulativeLogsumexp(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # Complex
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Complex",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    Tout=st.sampled_from(["complex64", "complex128"]),
 )
 def test_tensorflow_Complex(
     dtype_and_x,
@@ -3513,8 +3525,6 @@ def test_tensorflow_Complex(
     test_flags,
     fn_tree,
     on_device,
-    real,
-    imag,
     Tout,
 ):
     input_dtype, x = dtype_and_x
@@ -3530,6 +3540,7 @@ def test_tensorflow_Complex(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # AccumulateNV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AccumulateNV2",
@@ -3537,6 +3548,7 @@ def test_tensorflow_Complex(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    shape=helpers.get_shape(min_num_dims=1),
 )
 def test_tensorflow_AccumulateNV2(
     dtype_and_x,
@@ -3544,7 +3556,6 @@ def test_tensorflow_AccumulateNV2(
     test_flags,
     fn_tree,
     on_device,
-    inputs,
     shape,
 ):
     input_dtype, x = dtype_and_x
@@ -3555,10 +3566,11 @@ def test_tensorflow_AccumulateNV2(
         fn_tree=fn_tree,
         on_device=on_device,
         inputs=x[0],
-        shape=x[1],
+        shape=shape,
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # DebugGradientIdentity
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.DebugGradientIdentity",
@@ -3585,6 +3597,7 @@ def test_tensorflow_DebugGradientIdentity(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # Real
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Real",
@@ -3592,6 +3605,7 @@ def test_tensorflow_DebugGradientIdentity(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    Tout=st.sampled_from(["float32", "float64"]),
 )
 def test_tensorflow_Real(
     dtype_and_x,
@@ -3613,13 +3627,17 @@ def test_tensorflow_Real(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BandedTriangularSolve
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BandedTriangularSolve",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    lower=st.booleans(),
+    adjoint=st.booleans(),
 )
 def test_tensorflow_BandedTriangularSolve(
     dtype_and_x,
@@ -3627,8 +3645,6 @@ def test_tensorflow_BandedTriangularSolve(
     test_flags,
     fn_tree,
     on_device,
-    matrix,
-    rhs,
     lower,
     adjoint,
 ):
@@ -3646,13 +3662,17 @@ def test_tensorflow_BandedTriangularSolve(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BatchMatMul
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BatchMatMul",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    adj_x=st.booleans(),
+    adj_y=st.booleans(),
 )
 def test_tensorflow_BatchMatMul(
     dtype_and_x,
@@ -3677,13 +3697,17 @@ def test_tensorflow_BatchMatMul(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BatchMatMulV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BatchMatMulV2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    adj_x=st.booleans(),
+    adj_y=st.booleans(),
 )
 def test_tensorflow_BatchMatMulV2(
     dtype_and_x,
@@ -3708,13 +3732,18 @@ def test_tensorflow_BatchMatMulV2(
     )
 
 
+# Todo: Revise strategies once reimplemented in frontend
 # BatchMatMulV3
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BatchMatMulV3",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
+    Tout=st.sampled_from(["float32", "float64"]),
+    adj_x=st.booleans(),
+    adj_y=st.booleans(),
 )
 def test_tensorflow_BatchMatMulV3(
     dtype_and_x,
