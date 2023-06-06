@@ -361,15 +361,29 @@ def test_matmul(
     )
 
 
+@st.composite
+def _det_helper(draw):
+    square = draw(helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])))
+    shape_prefix = draw(helpers.get_shape())
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=2,
+            max_value=5,
+            shape=shape_prefix + square,
+        ).filter(
+            lambda x: np.all(
+                np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon
+            )
+        )
+    )
+    return dtype_x
+
+
 # det
 @handle_test(
     fn_tree="functional.ivy.det",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=2,
-        max_value=5,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    dtype_x=_det_helper(),
 )
 def test_det(
     *,
