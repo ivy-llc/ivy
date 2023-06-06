@@ -517,7 +517,7 @@ def pool(
         elif len(ivy.shape(input)) == 5:
             window_shape = (
                 dilated_kernel.shape[0],
-                dilated_kernel.shape[0],
+                dilated_kernel.shape[1],
                 dilated_kernel.shape[0],
             )
     if pooling_type == "AVG":
