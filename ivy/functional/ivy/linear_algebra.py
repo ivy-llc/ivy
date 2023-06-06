@@ -10,7 +10,6 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -2141,7 +2140,7 @@ def tensordot(
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
-@inputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_array_function
 def tensorsolve(
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -2660,7 +2659,7 @@ def vander(
         [ 1,  5, 25]]
         )
     """
-    return current_backend().vander(x, N=N, increasing=increasing, out=out)
+    return current_backend(x).vander(x, N=N, increasing=increasing, out=out)
 
 
 @handle_exceptions
