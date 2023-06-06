@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     integer_arrays_to_float,
+    with_supported_dtypes
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1782,32 +1783,49 @@ def adaptive_avg_pool2d(
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
 
-
+@with_supported_dtypes()
 def quantize(
-    input: Union[ivy.Array, ivy.NativeArray],
-    scale: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
+    dtype: Literal["quint8", "qint8", "quint16", "qint16", "qint32"],
+    /,
+    *,
+    scale_factor: Union[ivy.Array, ivy.NativeArray],
     zero_point: Union[ivy.Array, ivy.NativeArray],
-    dtype: Literal["quint8", "qint8", "qint32"],
+    min_range: Union[ivy.Array, ivy.NativeArray],
+    max_range: Union[ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
     """
-    Converts a float tensor to a quantized tensor with given
-    scale and zero point.
+    Converts a float tensor to a quantized tensor
 
     Parameters
     ----------
-    input(Tensor)
+    x (Tensor)
         Float tensor or list of tensors to quantize
 
-    scale (float or Tensor)
+    scale_factor (float or Tensor)
         scale to apply in quantization formula
 
     zero_point (int or Tensor)
         offset in integer value that maps to float zero
 
-    dtype (torch.dtype)
+    min_range 	
+        A Tensor of type float32. The minimum value of the quantization range. 
+        This value may be adjusted by the op depending on other parameters. 
+        The adjusted value is written to output_min. If the axis attribute is specified, 
+        this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+    
+    max_range 	
+        A Tensor of type float32. The maximum value of the quantization range. 
+        This value may be adjusted by the op depending on other parameters. 
+        The adjusted value is written to output_max. If the axis attribute 
+        is specified, this must be a 1-D tensor whose size matches the
+        axis dimension of the input and output tensors.    
+
+    dtype (current_backend.dtype)
         the desired data type of returned tensor.
         Has to be one of the quantized dtypes: torch.quint8,
-        torch.qint8, torch.qint32
+        torch.qint8, torch.qint32, tf.qint8, tf.quint8, 
+        tf.qint32, tf.qint16, tf.quint16. 
 
     Returns
     -------
@@ -1815,34 +1833,12 @@ def quantize(
 
     """
 
-    ivy.set_current_backend("torch")
-    return ivy.current_backend().quantize(input, scale, zero_point, dtype)
+    return ivy.quantize(
+        x, 
+        dtype, 
+        scale_factor, 
+        zero_point, 
+        min_range, 
+        max_range,
+    )
 
-
-def dequantize(tensor) -> ivy.Array:
-    """
-    Dequantizing a quantized Tensor
-
-    Parameters
-    ----------
-    tensor (Tensor)
-        A quantized Tensor
-
-
-    torch.dequantize(tensors) -> sequence of Tensors
-
-        Given a list of quantized Tensors, dequantize them
-        and return a list of fp32 Tensors
-
-        Parameters:
-
-        tensors (sequence of Tensors)
-            A list of quantized Tensors
-
-    Returns
-    -------
-        Returns an fp32 Tensor by dequantizing a quantized Tensor
-
-    """
-    ivy.set_current_backend("torch")
-    return ivy.current_backend().dequantize(tensor)
