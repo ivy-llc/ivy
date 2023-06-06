@@ -125,5 +125,6 @@ def cholesky(x, /, *, upper=False, name=None):
 # dot
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
-def dot(*args):
-    return ivy.multi_dot(args)
+def dot(a, b, name=None):
+    a, b = promote_types_of_paddle_inputs(a, b)
+    return ivy.multi_dot([a, b])
