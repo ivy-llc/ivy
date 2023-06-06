@@ -35,8 +35,10 @@ def handle_tf_dtype(fn: Callable) -> Callable:
         elif len(args) == (dtype_pos + 1):
             dtype = args[dtype_pos]
             args = args[:-1]
-        dtype = to_ivy_dtype(dtype)
-        return fn(*args, dtype=dtype, **kwargs)
+        if dtype is not None:
+            dtype = to_ivy_dtype(dtype)
+            return fn(*args, dtype=dtype, **kwargs)
+        return fn(*args, **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
     _handle_tf_dtype.handle_tf_dtype = True

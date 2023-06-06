@@ -9,7 +9,13 @@ from typing import Optional, Union
 # global
 import paddle
 import paddle.nn.functional as F
+
+# local
 import ivy.functional.backends.paddle as paddle_backend
+import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from . import backend_version
+
 
 unsupported_dtypes = [
     paddle.int8,
@@ -82,6 +88,9 @@ def sigmoid(
     return F.sigmoid(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def softmax(
     x: paddle.Tensor,
     /,
@@ -110,22 +119,25 @@ def softplus(
     if beta is not None and beta != 1:
         x_beta = x * beta
         res = (
-            paddle_backend.add(
-                paddle_backend.log1p(paddle_backend.exp(-paddle_backend.abs(x_beta))),
-                paddle_backend.maximum(x_beta, 0),
+            ivy.add(
+                ivy.log1p(ivy.exp(-ivy.abs(x_beta))),
+                ivy.maximum(x_beta, 0),
             )
         ) / beta
     else:
         x_beta = x
-        res = paddle_backend.add(
-            paddle_backend.log1p(paddle_backend.exp(-paddle_backend.abs(x_beta))),
-            paddle_backend.maximum(x_beta, 0),
+        res = ivy.add(
+            ivy.log1p(ivy.exp(-ivy.abs(x_beta))),
+            ivy.maximum(x_beta, 0),
         )
     if threshold is not None:
-        return paddle_backend.where(x_beta > threshold, x, res).astype(x.dtype)
+        return ivy.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def log_softmax(
     x: paddle.Tensor,
     /,

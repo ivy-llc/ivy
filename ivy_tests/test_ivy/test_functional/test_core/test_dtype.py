@@ -375,6 +375,20 @@ def test_result_type(
 # ------------------------ #
 
 
+# is_hashable_dtype
+@handle_test(
+    fn_tree="functional.ivy.is_hashable_dtype",
+    input_dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_is_hashable_dtype(
+    *,
+    input_dtype,
+):
+    input_dtype = input_dtype[0]
+    res = ivy.is_hashable_dtype(input_dtype)
+    assert res
+
+
 # as_ivy_dtype
 @handle_test(
     fn_tree="functional.ivy.as_ivy_dtype",
