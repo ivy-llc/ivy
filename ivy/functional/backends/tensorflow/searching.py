@@ -21,19 +21,26 @@ def argmax(
     select_last_index: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    n_dims = tf.rank(x).numpy()
+    if axis is None:
+        x = tf.reshape(x, [-1])
     if select_last_index:
         x = tf.experimental.numpy.flip(x, axis=axis)
-        ret = x.numpy().argmax(axis=axis, keepdims=keepdims)
+        ret = tf.argmax(x, axis=axis)
         if axis is not None:
             ret = x.shape[axis] - ret - 1
         else:
             ret = tf.size(x, out_type=tf.int64) - ret - 1
     else:
-        ret = x.numpy().argmax(axis=axis, keepdims=keepdims)
-    if dtype is not None:
-        dtype = ivy.as_native_dtype(dtype)
-        return tf.cast(ret, dtype)
-    return tf.convert_to_tensor(ret)
+        ret = tf.argmax(x, axis=axis)
+
+    if keepdims:
+        if axis is None:
+            ret = tf.reshape(ret, [1] * n_dims)
+        else:
+            ret = tf.expand_dims(ret, axis)
+
+    return tf.cast(ret, dtype) if dtype is not None else ret
 
 
 def argmin(
@@ -46,19 +53,26 @@ def argmin(
     select_last_index: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    n_dims = tf.rank(x).numpy()
+    if axis is None:
+        x = tf.reshape(x, [-1])
     if select_last_index:
         x = tf.experimental.numpy.flip(x, axis=axis)
-        ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
+        ret = tf.argmin(x, axis=axis)
         if axis is not None:
             ret = x.shape[axis] - ret - 1
         else:
-            ret = tf.size(x, out_type=tf.dtypes.int64) - ret - 1
+            ret = tf.size(x, out_type=tf.int64) - ret - 1
     else:
-        ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
-    if dtype is not None:
-        dtype = ivy.as_native_dtype(dtype)
-        return tf.cast(ret, dtype)
-    return tf.convert_to_tensor(ret)
+        ret = tf.argmin(x, axis=axis)
+
+    if keepdims:
+        if axis is None:
+            ret = tf.reshape(ret, [1] * n_dims)
+        else:
+            ret = tf.expand_dims(ret, axis)
+
+    return tf.cast(ret, dtype) if dtype is not None else ret
 
 
 def nonzero(
