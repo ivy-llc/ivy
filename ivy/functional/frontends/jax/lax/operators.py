@@ -579,7 +579,6 @@ def top_k(operand, k):
     return [values, indices]
 
 
-@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def reduce_window(
     operand,
