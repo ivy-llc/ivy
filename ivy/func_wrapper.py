@@ -1303,7 +1303,7 @@ def globals_getter_func(x=None):
 
 
 class with_unsupported_dtypes(contextlib.ContextDecorator):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: object, **kwargs: object) -> object:
         self.args = args
         self.kwargs = kwargs
         self.globals = {}
