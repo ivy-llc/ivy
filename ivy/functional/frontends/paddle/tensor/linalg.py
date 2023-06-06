@@ -127,4 +127,4 @@ def cholesky(x, /, *, upper=False, name=None):
 @to_ivy_arrays_and_back
 def dot(x, y, /, *, axis=-1, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
-    return ivy.vecdot(x, y, axis=axis) 
+    return ivy.vecdot(x, y, axis=axis)
