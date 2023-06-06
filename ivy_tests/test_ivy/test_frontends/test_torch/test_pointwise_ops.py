@@ -127,7 +127,7 @@ def test_torch_tanh(
     fn_tree="torch.abs",
     aliases=["torch.absolute"],
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
     ),
 )
 def test_torch_abs(
