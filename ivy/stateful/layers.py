@@ -1648,3 +1648,56 @@ class MaxPool1D(Module):
             self._padding,
             data_format=self._data_format,
         )
+
+
+class MaxPool3D(Module):
+    def __init__(
+            self,
+            kernel_size,
+            stride,
+            padding,
+            /,
+            *,
+            data_format="NDHWC",
+            device=None,
+            dtype=None
+    ):
+        """
+        Class for applying 3D Max Pooling over 5D inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window.
+        padding
+            Implicit zero padding to be added on both sides.
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+
+        """
+        return ivy.max_pool3d(
+            x,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format
+        )
