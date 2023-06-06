@@ -2229,7 +2229,7 @@ def test_torch_signbit(
 @handle_frontend_test(
     fn_tree="torch.angle",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float64", "complex64", "complex128"],
     ),
 )
 def test_torch_angle(
