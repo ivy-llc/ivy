@@ -458,3 +458,24 @@ def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
 @to_ivy_arrays_and_back
 def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+#weighted_moments
+@to_ivy_arrays_and_back
+def weighted_moments(x, axes, frequency_weights, name=None, keep_dims=False, keepdims=None):
+
+    weighted_input_sum = ivy.sum(frequency_weights * x, axes, keepdims=True)
+    broadcasted_weights = frequency_weights + ivy.zeros_like(x)
+    sum_of_weights = ivy.sum(broadcasted_weights, axes, keepdims=True)
+    divisor = ivy.reciprocal(sum_of_weights)
+    weighted_mean = ivy.multiply(weighted_input_sum, divisor)
+
+    # x, y = check_tensorflow_casting(x, weighted_mean)
+    squared_difference = ivy.square(ivy.subtract(x, weighted_mean))
+    weighted_distsq = ivy.sum(frequency_weights * squared_difference, axes, keepdims=True)
+    weighted_variance = ivy.multiply(weighted_distsq, divisor)
+
+    if not keep_dims:
+        weighted_mean = ivy.squeeze(weighted_mean, axis=axes)
+        weighted_variance = ivy.squeeze(weighted_variance, axis=axes)
+    return weighted_mean, weighted_variance
