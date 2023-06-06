@@ -88,8 +88,9 @@ def to_device(
 def handle_soft_device_variable(*args, **kwargs):
     if ivy.default_device() != "cpu":
         raise ivy.utils.exceptions.IvyBackendException(
-            "Numpy only supports soft device mode when using 'cpu' as the device, "
-            "so you should consider setting `ivy.set_soft_device_mode(False)`."
+            "Numpy only supports soft device mode when using 'cpu' as the device."
+            " Consider moving the arrays to 'cpu' or set"
+            " `ivy.set_default_device('cpu')`."
         )
     return args, kwargs
 
