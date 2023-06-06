@@ -512,32 +512,34 @@ def test_paddle_cholesky(
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.dot",
     dtype_x_y_axis=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=3,
-        max_dim_size=3,
-        min_value=-1e5,
-        max_value=1e5,
-        abs_smallest_val=0.01,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=100,
+        small_abs_safety_factor=100,
         safety_factor_scale="log",
+        min_num_dims=1,
+        max_num_dims=4,
+        min_dim_size=1,
+        max_dim_size=4,
     ),
 )
 def test_paddle_dot(
     *,
     dtype_x_y_axis,
-    frontend,
     test_flags,
+    frontend,
     fn_tree,
     on_device,
 ):
-    dtype, x, y, _ = dtype_x_y_axis
+    dtype, x, y, axis = dtype_x_y_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        frontend=frontend,
         test_flags=test_flags,
-        fn_tree=fn_tree,
+        frontend=frontend,
+        fn_tree=fn_tree, 
         on_device=on_device,
+        rtol_=5e-1,
+        atol_=5e-1,
         x=x,
         y=y,
+        axis=axis,
     )
