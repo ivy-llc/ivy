@@ -2,9 +2,11 @@
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_general import (
+    _get_reduce_func,
+)
 
 
 @handle_test(
@@ -881,13 +883,6 @@ def _reduce_window_helper(draw, get_func_st):
         )
     )
     return dtype * 2, operand, init_value, py_func, others, padding
-
-
-def _get_reduce_func(dtype):
-    if dtype == "bool":
-        return st.sampled_from([ivy.logical_and, ivy.logical_or])
-    else:
-        return st.sampled_from([ivy.add, ivy.maximum, ivy.minimum, ivy.multiply])
 
 
 @handle_test(
