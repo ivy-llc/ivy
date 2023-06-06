@@ -513,10 +513,6 @@ def test_paddle_cholesky(
     fn_tree="paddle.tensor.linalg.dot",
     dtype_x_y_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=3,
-        max_dim_size=3,
         min_value=-1e5,
         max_value=1e5,
         abs_smallest_val=0.01,
