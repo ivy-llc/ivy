@@ -10,6 +10,7 @@ import ivy
 from ivy import output_to_native_arrays
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
+from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 
@@ -661,6 +662,7 @@ def reduce_window(
     base_dilation: Union[int, Sequence[int]] = 1,
     window_dilation: Union[int, Sequence[int]] = 1,
 ) -> JaxArray:
+    computation = _correct_ivy_callable(computation)
     computation = output_to_native_arrays(computation)
     return jlax.reduce_window(
         operand,

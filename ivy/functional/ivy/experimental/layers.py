@@ -16,6 +16,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_function,
 )
+from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.utils.exceptions import handle_exceptions
 
 _min = builtins.min
@@ -2003,13 +2004,7 @@ def reduce_window(
     ivy.array([[32.]])
     """
     # ToDo: add support for window_dilation
-    if ivy.nested_any(
-        computation,
-        lambda x: hasattr(x, "__module__")
-        and x.__module__.startswith("ivy")
-        and not x.__module__.startswith("ivy.functional.frontends"),
-    ):
-        computation = ivy.__dict__[computation.__name__]
+    computation = _correct_ivy_callable(computation)
     op, dims, strides = operand, window_dimensions, window_strides
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
