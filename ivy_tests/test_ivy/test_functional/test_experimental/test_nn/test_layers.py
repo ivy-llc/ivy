@@ -909,7 +909,6 @@ def _get_reduce_func(dtype):
     all_args=_reduce_window_helper(_get_reduce_func),
     test_with_out=st.just(False),
     ground_truth_backend="jax",
-    container_flags=st.just([False]),
 )
 def test_reduce_window(
     *,
