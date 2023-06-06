@@ -479,6 +479,7 @@ def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
 
 
+# pool
 @to_ivy_arrays_and_back
 def pool(
     input,
@@ -490,64 +491,12 @@ def pool(
     dilations=None,
     name=None,
 ):
-    if dilations is not None:
-        def dilate_kernel(kernel, dilation_rate):
-            # Get the dimensions of the kernel
-            kernel_height, kernel_width = kernel.shape
-            dilated_kernel_height = (kernel_height - 1) * dilation_rate + 1
-            dilated_kernel_width = (kernel_width - 1) * dilation_rate + 1
-            # Create an empty dilated kernel array
-            dilated_kernel = ivy.zeros((dilated_kernel_height, dilated_kernel_width))
-            # Assign the original kernel values to the dilated kernel
-            for i in range(kernel_height):
-                for j in range(kernel_width):
-                    dilated_kernel[i * dilation_rate][j * dilation_rate] = kernel[i][j]
-            return dilated_kernel
-        
-        if len(ivy.shape(input)) == 3:
-            kernel_shape = (window_shape[0], window_shape[0])
-        elif len(ivy.shape(input)) == 4 or len(ivy.shape(input)) == 5:
-            kernel_shape = (window_shape[0], window_shape[1])
-        kernel = ivy.ones(kernel_shape)
-        dilated_kernel = dilate_kernel(kernel, dilations[0])
-        if len(ivy.shape(input)) == 3:
-            window_shape = (dilated_kernel.shape[0],)
-        elif len(ivy.shape(input)) == 4:
-            window_shape = (dilated_kernel.shape[0], dilated_kernel.shape[1])
-        elif len(ivy.shape(input)) == 5:
-            window_shape = (
-                dilated_kernel.shape[0],
-                dilated_kernel.shape[1],
-                dilated_kernel.shape[0],
-            )
-    if pooling_type == "AVG":
-        if len(ivy.shape(input)) == 3:
-            return ivy.avg_pool1d(
-                input, window_shape, strides, padding, data_format=data_format
-            )
-        elif len(ivy.shape(input)) == 4:
-            return ivy.avg_pool2d(
-                input, window_shape, strides, padding, data_format=data_format
-            )
-        elif len(ivy.shape(input)) == 5:
-            return ivy.avg_pool3d(
-                input, window_shape, strides, padding, data_format=data_format
-            )
-    elif pooling_type == "MAX":
-        if len(ivy.shape(input)) == 3:
-            return ivy.max_pool1d(
-                input, window_shape, strides, padding, data_format=data_format
-            )
-        elif len(ivy.shape(input)) == 4:
-            return ivy.max_pool2d(
-                input, window_shape, strides, padding, data_format=data_format
-            )
-        elif len(ivy.shape(input)) == 5:
-            return ivy.max_pool3d(
-                input, window_shape, strides, padding, data_format=data_format
-            )
-    else:
-        raise ValueError(
-            f"Pooling type {pooling_type} not supported, please use AVG or MAX as"
-            " pooling type."
-        )
+    return ivy.pool(
+        input,
+        window_shape,
+        pooling_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+    )
