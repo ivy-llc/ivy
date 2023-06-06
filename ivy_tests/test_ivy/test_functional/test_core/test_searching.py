@@ -116,7 +116,7 @@ def test_argmin(
         x=x[0],
         axis=axis,
         keepdims=keepdims,
-        output_dtype=output_dtype[0],
+        dtype=output_dtype[0],
         select_last_index=select_last_index,
     )
 

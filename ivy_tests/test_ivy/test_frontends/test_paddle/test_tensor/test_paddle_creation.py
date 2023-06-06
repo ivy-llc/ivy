@@ -302,3 +302,33 @@ def test_paddle_empty(
         shape=shape,
         dtype=dtype[0],
     )
+
+
+# eye
+@handle_frontend_test(
+    fn_tree="paddle.eye",
+    num_rows=helpers.ints(min_value=3, max_value=10),
+    num_columns=st.none() | helpers.ints(min_value=3, max_value=10),
+    dtypes=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_paddle_eye(
+    *,
+    num_rows,
+    num_columns,
+    dtypes,
+    on_device,
+    fn_tree,
+    test_flags,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        num_rows=num_rows,
+        num_columns=num_columns,
+        dtype=dtypes[0],
+    )
