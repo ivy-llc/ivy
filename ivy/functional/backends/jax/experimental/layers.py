@@ -694,4 +694,4 @@ def fft2(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return jnp.fft.fft2(x, s, dim, norm)
+    return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)

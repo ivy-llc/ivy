@@ -790,7 +790,7 @@ def test_adaptive_avg_pool1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.adaptive_avg_pool2d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=3,
         max_num_dims=4,
         min_dim_size=5,
@@ -852,7 +852,7 @@ def x_and_fft2(draw, dtypes):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft2",
-    d_x_d_s_n=x_and_fft2(helpers.get_dtypes("complex")),
+    d_x_d_s_n=x_and_fft2(helpers.get_dtypes("float")),
     ground_truth_backend="numpy",
     container_flags=st.just([False]),
 )
