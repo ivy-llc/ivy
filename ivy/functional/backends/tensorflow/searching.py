@@ -42,7 +42,7 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[tf.dtypes.DType] = None,
+    dtype: Optional[tf.dtypes.DType] = None,
     select_last_index: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -55,9 +55,9 @@ def argmin(
             ret = tf.size(x, out_type=tf.dtypes.int64) - ret - 1
     else:
         ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
-    if output_dtype is not None:
-        output_dtype = ivy.as_native_dtype(output_dtype)
-        return tf.cast(ret, output_dtype)
+    if dtype is not None:
+        dtype = ivy.as_native_dtype(dtype)
+        return tf.cast(ret, dtype)
     return tf.convert_to_tensor(ret)
 
 
@@ -69,10 +69,6 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[Union[tf.Tensor, tf.Variable]]]:
-    if x.ndim == 0:
-        raise ivy.utils.exceptions.IvyValueError(
-            "Cannot call nonzero on a zero dim array"
-        )
     res = tf.experimental.numpy.nonzero(x)
 
     if size is not None:
@@ -114,7 +110,11 @@ def argwhere(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if x.ndim == 0:
+    if isinstance(x, tf.Variable):
+        x_ndim = x.shape.rank
+    else:
+        x_ndim = x.ndim
+    if x_ndim == 0:
         return tf.zeros(shape=[int(bool(x)), 0], dtype="int64")
     where_x = tf.experimental.numpy.nonzero(x)
     res = tf.experimental.numpy.concatenate(
