@@ -45,6 +45,7 @@ def hardshrink(x, threshold=0.5, name=None):
 def hardswish(x, name=None):
     relu6_val = ivy.relu6(ivy.add(x, 3))
     ret = ivy.multiply(x, ivy.divide(relu6_val, 6))
+    return ret
 
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
