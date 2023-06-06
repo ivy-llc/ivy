@@ -478,6 +478,7 @@ def split(value, num_or_size_splits, axis=0, num=None, name=None):
     )
 
 
+@to_ivy_arrays_and_back
 def repeat(
     input,
     repeats,
