@@ -63,7 +63,7 @@ def gamma(
     shape = _check_bounds_and_get_shape(alpha, beta, shape)
     if seed is not None:
         torch.manual_seed(seed)
-    return torch.distributions.gamma.Gamma(alpha, beta).sample(shape).to(device, dtype)
+    return torch.distributions.gamma.Gamma(alpha, beta).sample(shape).to(device)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)

@@ -42,27 +42,6 @@ def relu6(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu6(x)
 
 
-def batch_norm(
-    x: Tensor,
-    mean: Tensor,
-    variance: Tensor,
-    /,
-    *,
-    scale: Optional[Tensor] = None,
-    offset: Optional[Tensor] = None,
-    training: bool = False,
-    eps: float = 1e-5,
-):
-    ndims = len(x.shape)
-    if training:
-        dims = (0, *range(2, ndims))
-        mean = tf.math.reduce_mean(x, axis=dims)
-        variance = tf.math.reduce_variance(x, axis=dims)
-    x = tf.transpose(x, perm=(0, *range(2, ndims), 1))
-    ret = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
-    return tf.transpose(ret, perm=(0, ndims - 1, *range(1, ndims - 1)))
-
-
 @with_supported_dtypes({"2.9.1 and below": ("float",)}, backend_version)
 def logsigmoid(input: Tensor) -> Tensor:
     return tf.math.log_sigmoid(input)

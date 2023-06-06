@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes,
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
@@ -46,7 +46,8 @@ def _determine_depth_max_pooling(x, kernel, strides, dims):
             strides = [strides[-1], *[1] * (dims - 1)]
         else:
             kernel = spatial_kernel
-            strides = strides[1:-1] if len(strides) == dims + 2 else strides
+            if len(strides) == dims + 2:
+                strides = strides[1:-1]
     return x, kernel, strides, depth_pooling
 
 
@@ -93,6 +94,18 @@ def max_pool2d(
         x, kernel, strides, 2
     )
 
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
+
+    # determine depth pooling
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 2
+    )
+
     if not depth_pooling:
         if isinstance(padding, int):
             padding = [(padding,) * 2] * 2
@@ -101,24 +114,12 @@ def max_pool2d(
         elif isinstance(padding, tuple) and len(padding) == 2:
             padding = [(padding[0],) * 2, (padding[1],) * 2]
 
-        if isinstance(padding, (tuple, list)):
-            ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
-        new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
-        if isinstance(padding, str):
-            pad_h = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
-            pad_w = _handle_padding(x.shape[2], strides[1], new_kernel[1], padding)
-            padding = [
-                (pad_h // 2, pad_h - pad_h // 2),
-                (pad_w // 2, pad_w - pad_w // 2),
-            ]
-
-        x_shape = x.shape[1:-1]
-
-        if ceil_mode:
-            for i in range(2):
-                padding[i] = _padding_ceil_mode(
-                    x_shape[i], new_kernel[i], padding[i], strides[i]
-                )
+    if ceil_mode:
+        for i in range(2):
+            padding[i] = _padding_ceil_mode(
+                x_shape[i], new_kernel[i], padding[i], strides[i]
+            )
+    if not depth_pooling:
         padding = [(0, 0)] + list(padding) + [(0, 0)]
         x = tf.pad(x, padding, constant_values=-math.inf)
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
@@ -178,7 +179,7 @@ def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
     return padding, pad_specific, c
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "float64")}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],

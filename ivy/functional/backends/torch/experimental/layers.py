@@ -247,7 +247,7 @@ def _get_specific_pad(x_shape, kernel, strides, padding, dims):
     return padding, pad_specific
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def avg_pool1d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int]],
@@ -800,7 +800,7 @@ def quantize(
     dtype: Union[torch.quint8, torch.qint8, torch.qint32,],
     /,
     *,
-    scale_factor: torch.Tensor,
+    scale_factor: Union[Sequence[int], int],
     zero_point: Union[Sequence[int], int],
     min_range: Union[Sequence[int], int],
     max_range: Union[Sequence[int], int],

@@ -191,7 +191,7 @@ def interpolate(
 
 def quantize(
     x: paddle.Tensor,
-    dtype: Literal["quint8", "qint8", "quint16", "qint16", "qint32"],
+    dtype: Union[paddle.quint8, paddle.qint8, paddle.quint16, paddle.qint16, paddle.qint32],
     /,
     *,
     scale_factor: Union[Sequence[int], int],

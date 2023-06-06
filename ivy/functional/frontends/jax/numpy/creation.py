@@ -91,7 +91,7 @@ def triu(m, k=0):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
-    return DeviceArray(ivy.empty(shape, dtype=dtype))
+    return DeviceArray(ivy.empty(shape=shape, dtype=dtype))
 
 
 @to_ivy_arrays_and_back
@@ -115,6 +115,8 @@ def identity(n, dtype=None):
 
 @to_ivy_arrays_and_back
 def ndim(a):
+    if not isinstance(a, ivy.Array):
+        return 0
     return ivy.astype(ivy.array(a.ndim), ivy.int64)
 
 
@@ -182,3 +184,32 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 def single(x):
     return ivy.astype(x, ivy.float32)
+
+
+@to_ivy_arrays_and_back
+def double(x):
+    return ivy.astype(x, ivy.float64)
+
+
+@to_ivy_arrays_and_back
+def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
+    cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
+    x = ivy.linspace(
+        0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis
+    )
+    x = ivy.exp(x)
+    x = start * x
+    x[0] = (start * cr) / cr
+    if endpoint:
+        x[-1] = stop
+    return x.asarray(dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def csingle(x):
+    return ivy.astype(x, ivy.complex64)
+
+
+@to_ivy_arrays_and_back
+def cdouble(x):
+    return ivy.astype(x, ivy.complex128)

@@ -76,7 +76,7 @@ def jac(func):
     return grad_fn
 
 
-def grad(func):
+def grad(func, argnums=0):
     logging.warning(
         "NumPy does not support autograd, 'grad' "
         "has no effect on the array, as gradients are not supported in the first place."

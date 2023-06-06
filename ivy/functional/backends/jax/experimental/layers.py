@@ -114,56 +114,43 @@ def general_pool(
             for i in range(1, len(dims) - 1)
         ]
     )
-    inputs, window_shape, strides, depth_pooling = _determine_depth_max_pooling(
-        inputs, window_shape, strides, 2
-    )
-    if not depth_pooling:
-        # manually creating padding list
-        if isinstance(padding, str):
-            pad_list = _pad_str_to_list(
-                inputs, dims, padding, strides, new_window_shape
+
+    # manually creating padding list
+    if isinstance(padding, str):
+        pad_list = _pad_str_to_list(inputs, dims, padding, strides, new_window_shape)
+    else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dim
+        pad_list = [(0, 0)] + list(padding) + [(0, 0)]
+
+    if ceil_mode:
+        c = []
+        for i in range(len(dims) - 2):
+            pad_list[i + 1], ceil = _padding_ceil_mode(
+                inputs.shape[i + 1],
+                new_window_shape[i],
+                pad_list[i + 1],
+                strides[i + 1],
+                True,
+            )
+            c.append(ceil)
+
+    if count_include_pad:
+        # manually pad inputs with 0 if ceil_mode is True
+        # because they're not counted in average calculation
+        if ceil_mode:
+            ceil = [(0, c[i]) for i in range(len(dims) - 2)]
+            for i in range(len(dims) - 2):
+                pad_list[i + 1] = (pad_list[i + 1][0], pad_list[i + 1][1] - ceil[i][1])
+            inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
+            inputs = jnp.pad(
+                inputs, [(0, 0)] + ceil + [(0, 0)], mode="constant", constant_values=0.0
             )
         else:
-            if isinstance(padding, int):
-                padding = [(padding,) * 2] * dim
-            pad_list = [(0, 0)] + list(padding) + [(0, 0)]
-
-        if ceil_mode:
-            c = []
-            for i in range(len(dims) - 2):
-                pad_list[i + 1], ceil = _padding_ceil_mode(
-                    inputs.shape[i + 1],
-                    new_window_shape[i],
-                    pad_list[i + 1],
-                    strides[i + 1],
-                    True,
-                )
-                c.append(ceil)
-
-        if count_include_pad:
-            # manually pad inputs with 0 if ceil_mode is True
-            # because they're not counted in average calculation
-            if ceil_mode:
-                ceil = [(0, c[i]) for i in range(len(dims) - 2)]
-                for i in range(len(dims) - 2):
-                    pad_list[i + 1] = (
-                        pad_list[i + 1][0],
-                        pad_list[i + 1][1] - ceil[i][1],
-                    )
-                inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
-                inputs = jnp.pad(
-                    inputs,
-                    [(0, 0)] + ceil + [(0, 0)],
-                    mode="constant",
-                    constant_values=0.0,
-                )
-            else:
-                # manually pad inputs with 1s
-                # because they are counted in average calculation
-                inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
-            pad_list = [(0, 0)] * len(pad_list)
-    else:
-        pad_list = [(0, 0)] * (dim + 2)
+            # manually pad inputs with 1s
+            # because they are counted in average calculation
+            inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
+        pad_list = [(0, 0)] * len(pad_list)
 
     y = jlax.reduce_window(
         inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
@@ -650,7 +637,7 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
 
 def quantize(
     x: JaxArray,
-    dtype: Literal["quint8", "qint8", "quint16", "qint16", "qint32"],
+    dtype: Union[jnp.quint8, jnp.qint8, jnp.quint16, jnp.qint16, jnp.qint32],
     /,
     *,
     scale_factor: Union[Sequence[int], int],

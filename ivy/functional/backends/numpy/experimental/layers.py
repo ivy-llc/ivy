@@ -43,6 +43,38 @@ def _determine_depth_max_pooling(x, kernel, strides, dims):
     return x, kernel, strides, depth_pooling
 
 
+def _determine_depth_max_pooling(x, kernel, strides, dims):
+    # determine depth pooling
+    depth_pooling = False
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1]
+        if kernel[-1] != 1:
+            depth_pooling = True
+            if any(np.array(spatial_kernel) != 1):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if x.shape[-1] % kernel[-1] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            x = np.transpose(x, (0, dims + 1, *range(1, dims + 1)))
+            kernel = [kernel[-1], *[1] * (dims - 1)]
+            strides = [strides[-1], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            if len(strides) == dims + 2:
+                strides = strides[1:-1]
+    return x, kernel, strides, depth_pooling
+
+
 def max_pool1d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -815,7 +847,7 @@ def ifft(
 
 def quantize(
     x: np.Tensor,
-    dtype: Literal["quint8", "qint8", "quint16", "qint16", "qint32"],
+    dtype: Union[np.quint8, np.qint8, np.quint16, np.qint16, np.qint32],
     /,
     *,
     scale_factor: Union[Sequence[int], int],

@@ -52,7 +52,14 @@ def arange(
 @asarray_handle_nestable
 def asarray(
     obj: Union[
-        JaxArray, bool, int, float, NestedSequence, SupportsBufferProtocol, np.ndarray
+        JaxArray,
+        bool,
+        int,
+        float,
+        tuple,
+        NestedSequence,
+        SupportsBufferProtocol,
+        np.ndarray,
     ],
     /,
     *,
@@ -244,6 +251,7 @@ def meshgrid(
     *arrays: JaxArray,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[JaxArray] = None,
 ) -> List[JaxArray]:
     return jnp.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 

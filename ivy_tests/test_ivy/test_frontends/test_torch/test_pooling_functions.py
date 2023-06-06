@@ -108,6 +108,52 @@ def test_torch_avg_pool2d(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.avg_pool3d",
+    dtype_x_k_s=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=1,
+        max_side=4,
+        data_format="channel_first",
+        only_explicit_padding=True,
+    ),
+    count_include_pad=st.booleans(),
+    ceil_mode=st.booleans(),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
+    test_with_out=st.just(False),
+)
+def test_torch_avg_pool3d(
+    *,
+    dtype_x_k_s,
+    count_include_pad,
+    ceil_mode,
+    divisor_override,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
+
+    padding = [padding[i][0] for i in range(len(padding))]
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        ceil_mode=ceil_mode,
+        count_include_pad=count_include_pad,
+        divisor_override=divisor_override,
+    )
+
+
 # max_pool2d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.max_pool2d",
@@ -116,7 +162,7 @@ def test_torch_avg_pool2d(
         max_dims=4,
         min_side=1,
         max_side=4,
-        allow_explicit_padding=True,
+        explicit_or_str_padding=True,
         return_dilation=True,
     ).filter(lambda x: x[4] != "VALID" and x[4] != "SAME"),
     test_with_out=st.just(False),
@@ -266,6 +312,46 @@ def test_torch_lp_pool1d(
         input=x[0],
         norm_type=norm_type if norm_type > 0 else 1,
         kernel_size=kernel_size[0],
+        stride=stride[0],
+        ceil_mode=False,
+    )
+
+
+# avg_pool2d
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.lp_pool2d",
+    dtype_x_k_s=helpers.arrays_for_pooling(
+        min_dims=4,
+        max_dims=4,
+        min_side=1,
+        max_side=4,
+    ),
+    norm_type=helpers.number(min_value=0.1, max_value=6),
+    test_with_out=st.just(False),
+)
+def test_torch_lp_pool2d(
+    dtype_x_k_s,
+    norm_type,
+    *,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, kernel_size, stride, _ = dtype_x_k_s
+    # Torch ground truth func expects input to be consistent
+    # with a channels first format i.e. NCW
+    x[0] = x[0].transpose((0, 3, 1, 2))
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        norm_type=norm_type if norm_type > 0 else 1,
+        kernel_size=kernel_size,
         stride=stride[0],
         ceil_mode=False,
     )

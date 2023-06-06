@@ -1,7 +1,7 @@
 {
 	"name": "Ivy GPU Development Environment (image)",
 
-	"image": "unifyai/ivy:latest-gpu",
+	"image": "unifyai/multicuda:base_and_requirements",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -28,11 +28,19 @@
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
 	
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode",
+	// "remoteUser": "vscode",
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": true,
+			"configureZshAsDefaultShell": true,
+			"installOhMyZsh": true,
 			"upgradePackages": false
 		},
-        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": true,
+			"installDockerBuildx": true,
+			"version": "20.10",
+			"dockerDashComposeVersion": "v2"
+		}
     }
 }

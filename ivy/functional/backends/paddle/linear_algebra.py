@@ -217,7 +217,7 @@ def inv(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "float16", "bfloat16")}}, backend_version
 )
 def matmul(
     x1: paddle.Tensor,
@@ -309,12 +309,10 @@ def matrix_norm(
             keepdim=keepdims,
         )
     elif ord == 2:
-        ret = paddle.amax(
-            paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims
-        )
+        ret = paddle.amax(paddle.linalg.svd(x)[1], axis=axis[1], keepdim=keepdims)
         if keepdims:
             ret = ret.unsqueeze(-1)
-    
+
     if _expand_dims:
         ret = paddle.squeeze(ret, axis=0)
     return ret

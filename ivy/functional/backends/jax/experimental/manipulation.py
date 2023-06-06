@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 import jax.numpy as jnp
+import jax.lax as jlax
 from numbers import Number
 
 # local
@@ -24,6 +25,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.moveaxis(a, source, destination)
@@ -43,6 +45,7 @@ def flipud(
     m: JaxArray,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.flipud(m)
@@ -70,6 +73,7 @@ def rot90(
     m: JaxArray,
     /,
     *,
+    copy: Optional[bool] = None,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Optional[JaxArray] = None,
@@ -105,6 +109,7 @@ def fliplr(
     m: JaxArray,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.fliplr(m)
@@ -144,6 +149,7 @@ def pad(
     mode: Union[
         Literal[
             "constant",
+            "dilated",
             "edge",
             "linear_ramp",
             "maximum",
@@ -168,8 +174,15 @@ def pad(
     constant_values = _to_nested_tuple(constant_values)
     end_values = _to_nested_tuple(end_values)
     input_dtype = input.dtype
-    if jnp.issubdtype(input_dtype, jnp.integer) and mode in ["mean", "median"]:
-        input = input.astype(jnp.float64)
+
+    if mode == "dilated":
+        if ivy.as_ivy_dtype(type(constant_values)) != input_dtype:
+            padding_value = ivy.native_array(constant_values, dtype=input_dtype)
+        else:
+            padding_value = constant_values
+        padded = jlax.pad(input, padding_value, pad_width)
+        return padded
+
     if callable(mode):
         ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
@@ -220,6 +233,8 @@ def vsplit(
     ary: JaxArray,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[JaxArray]:
     return jnp.vsplit(ary, indices_or_sections)
 
@@ -228,6 +243,8 @@ def dsplit(
     ary: JaxArray,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[JaxArray]:
     if len(ary.shape) < 3:
         raise ivy.utils.exceptions.IvyError(
@@ -236,7 +253,9 @@ def dsplit(
     return jnp.dsplit(ary, indices_or_sections)
 
 
-def atleast_1d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
+def atleast_1d(
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
+) -> List[JaxArray]:
     return jnp.atleast_1d(*arys)
 
 
@@ -249,11 +268,13 @@ def dstack(
     return jnp.dstack(arrays)
 
 
-def atleast_2d(*arys: JaxArray) -> List[JaxArray]:
+def atleast_2d(*arys: JaxArray, copy: Optional[bool] = None) -> List[JaxArray]:
     return jnp.atleast_2d(*arys)
 
 
-def atleast_3d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
+def atleast_3d(
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
+) -> List[JaxArray]:
     return jnp.atleast_3d(*arys)
 
 
@@ -278,6 +299,8 @@ def hsplit(
     ary: JaxArray,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[JaxArray]:
     return jnp.hsplit(ary, indices_or_sections)
 
@@ -291,6 +314,7 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     shape = list(shape)
@@ -298,3 +322,22 @@ def expand(
         if dim < 0:
             shape[i] = x.shape[i]
     return jnp.broadcast_to(x, tuple(shape))
+
+
+def concat_from_sequence(
+    input_sequence: Union[Tuple[JaxArray], List[JaxArray]],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    is_tuple = type(input_sequence) is tuple
+    if is_tuple:
+        input_sequence = list(input_sequence)
+    if new_axis == 0:
+        ret = jnp.concatenate(input_sequence, axis=axis)
+        return ret
+    elif new_axis == 1:
+        ret = jnp.stack(input_sequence, axis=axis)
+        return ret
