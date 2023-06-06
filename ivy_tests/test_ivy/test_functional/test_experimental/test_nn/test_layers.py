@@ -834,17 +834,8 @@ def test_adaptive_avg_pool2d(
 
 @st.composite
 def _reduce_window_helper(draw, get_func_st):
-    # ToDo: remove the dtype filtering as soon as the issues in mixed functions'
-    #  supported dtypes have been resolved
-    dtype = draw(
-        helpers.get_dtypes("valid", full=False).filter(
-            lambda x: x[0]
-            not in ["bfloat16", "uint8", "uint32", "uint64", "int8", "int16"]
-        )
-    )
-
+    dtype = draw(helpers.get_dtypes("valid", full=False))
     py_func = draw(get_func_st(dtype[0]))
-
     init_value = draw(
         helpers.dtype_and_values(
             dtype=dtype,
@@ -852,9 +843,7 @@ def _reduce_window_helper(draw, get_func_st):
             allow_inf=True,
         )
     )[1]
-
     ndim = draw(st.integers(min_value=1, max_value=4))
-
     _, others = draw(
         helpers.dtype_and_values(
             num_arrays=4,
@@ -867,7 +856,6 @@ def _reduce_window_helper(draw, get_func_st):
         )
     )
     others = [other.tolist() for other in others]
-
     window, dilation = others[0], others[2]
     op_shape = []
     for i in range(ndim):
@@ -879,7 +867,6 @@ def _reduce_window_helper(draw, get_func_st):
             shape=op_shape,
         )
     )
-
     padding = draw(
         st.one_of(
             st.lists(
@@ -893,7 +880,6 @@ def _reduce_window_helper(draw, get_func_st):
             st.sampled_from(["SAME", "VALID"]),
         )
     )
-
     return dtype * 2, operand, init_value, py_func, others, padding
 
 
