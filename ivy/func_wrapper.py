@@ -1018,35 +1018,23 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
 
-        mixed_fn = (
-            original != to_wrap
-            and hasattr(original, "inputs_to_ivy_arrays")
-            and not original.__name__.startswith("inplace")
-        )
+        mixed_fn = getattr(to_wrap, "handle_backend_wrappers", {})
+        add_wrappers = mixed_fn.get("to_add", [])
+        skip_wrappers = mixed_fn.get("to_skip", [])
 
-        for attr in FN_DECORATORS:
-            if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
-                mixed_fn
-                and (
-                    attr
-                    in [
-                        "inputs_to_native_arrays",
-                        "outputs_to_ivy_arrays",
-                        "handle_mixed_function",
-                    ]
-                )
-            ):
-                if mixed_fn:
-                    if attr == "inputs_to_ivy_arrays":
-                        continue
-                    if attr == "handle_mixed_function":
-                        if hasattr(to_wrap, "partial_mixed_handler"):
-                            to_wrap.compos = original
-                            to_wrap = handle_mixed_function(
-                                getattr(to_wrap, "partial_mixed_handler")
-                            )(to_wrap)
-                        continue
-                to_wrap = getattr(ivy, attr)(to_wrap)
+    for attr in FN_DECORATORS:
+        if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or mixed_fn:
+            if attr in skip_wrappers and attr not in add_wrappers:
+                continue
+
+            if attr == "handle_mixed_function":
+                if hasattr(to_wrap, "partial_mixed_handler"):
+                    to_wrap.compos = original
+                    to_wrap = handle_mixed_function(getattr(to_wrap, "partial_mixed_handler"))(to_wrap)
+                continue
+
+            to_wrap = getattr(ivy, attr)(to_wrap)
+
 
     return to_wrap
 
