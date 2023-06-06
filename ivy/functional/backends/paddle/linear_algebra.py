@@ -101,8 +101,12 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle.linalg.det(x.cast("float32")).squeeze().cast(x.dtype)
-    return paddle.linalg.det(x).squeeze()
+        ret = paddle.linalg.det(x.cast("float32")).cast(x.dtype)
+    else:
+        ret = paddle.linalg.det(x)
+    if x.ndim == 2:
+        ret = paddle_backend.squeeze(ret, axis=0)
+    return ret
 
 
 def diagonal(
@@ -439,7 +443,11 @@ def slogdet(
         "slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)]
     )
     sign, logabsdet = paddle.linalg.slogdet(x)
-    return results(sign.squeeze(), logabsdet.squeeze())
+    if x.ndim == 2:
+        sign, logabsdet = paddle_backend.squeeze(sign, axis=0), paddle_backend.squeeze(
+            logabsdet, axis=0
+        )
+    return results(sign, logabsdet)
 
 
 def solve(

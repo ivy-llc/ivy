@@ -403,43 +403,6 @@ def isclose(
 
 
 @handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-def logaddexp2(
-    x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
-    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Calculate log2(2**x1 + 2**x2).
-
-    Parameters
-    ----------
-    x1
-        First array-like input.
-    x2
-        Second array-input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Element-wise logaddexp2 of x1 and x2.
-
-    Examples
-    --------
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> x2 = ivy.array([4, 5, 6])
-    >>> ivy.logaddexp2(x1, x2)
-    ivy.array([4.169925, 5.169925, 6.169925])
-    """
-    return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)
-
-
-@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -874,71 +837,6 @@ def xlogy(
     ivy.array([1.0986, 1.3863, 0.0000])
     """
     return ivy.current_backend(x, y).xlogy(x, y, out=out)
-
-
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-def real(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Test each element ``x_i`` of the input array ``x`` to
-    take only real part from it.
-    Returns a float array, where it only contains .
-    If element has complex type with zero complex part, the return value
-    will be that element, else it only returns real part.
-
-    Parameters
-    ----------
-    x
-        input array.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing test results. An element ``out_i`` is
-        ``real number`` if ``x_i`` contain real number part only
-        and if it is ``real number with complex part also`` then it
-        returns the real number part.
-        The returned array should have a data type of ``float``.
-
-    The descriptions above assume an array input for simplicity, but
-    the method also accepts :class:`ivy.Container` instances
-    in place of: class:`ivy.Array` or :class:`ivy.NativeArray`
-    instances, as shown in the type hints and also the examples below.
-
-    Examples
-    --------
-    With :class:`ivy.Array` inputs:
-    >>> x = ivy.array([[[1.1], [2], [-6.3]]])
-    >>> z = ivy.real(x)
-    >>> print(z)
-    ivy.array([[[1.1], [2.], [-6.3]]])
-
-    >>> x = ivy.array([4.2-0j, 3j, 7+5j])
-    >>> z = ivy.real(x)
-    >>> print(z)
-    ivy.array([4.2, 0., 7.])
-
-    With :class:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
-                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
-    >>> z = ivy.real(x)
-    >>> print(z)
-    {
-        a: ivy.array([-6.7, 0.314, 1.23]),
-        b: ivy.array([0., 5.32, 3.001])
-    }
-    """
-    return ivy.current_backend(x).real(x, out=out)
 
 
 @handle_exceptions
