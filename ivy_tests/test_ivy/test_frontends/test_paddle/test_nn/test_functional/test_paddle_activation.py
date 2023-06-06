@@ -246,3 +246,32 @@ def test_paddle_softsign(
         on_device=on_device,
         x=x[0],
     )
+
+
+# thresholded_relu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.thresholded_relu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    threshold=helpers.floats(min_value=1, max_value=10),
+)
+def test_paddle_thresholded_relu(
+    *,
+    dtype_and_x,
+    threshold,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        threshold=threshold,
+    )
