@@ -910,7 +910,6 @@ def _get_reduce_func(dtype):
     test_with_out=st.just(False),
     ground_truth_backend="jax",
     container_flags=st.just([False]),
-    test_instance_method=st.just(False),
 )
 def test_reduce_window(
     *,
