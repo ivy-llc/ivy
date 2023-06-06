@@ -85,3 +85,14 @@ def fftfreq(n, d=1.0):
     results[N:] = p2
 
     return results * val
+
+
+@to_ivy_arrays_and_back
+def fft2(a, s=None, axes=(-2, -1), norm=None):
+    a = ivy.array(a, dtype=ivy.complex128)
+    if norm is None:
+        norm = "backward"
+    if s is None:
+        s = a.shape
+    intermediate = ivy.fft(a, axes[0], norm=norm, n=s[0])
+    return ivy.fft(intermediate, axes[1], norm=norm, n=s[1])
