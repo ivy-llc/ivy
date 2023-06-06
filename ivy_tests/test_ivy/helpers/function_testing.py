@@ -114,13 +114,13 @@ def test_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     test_flags: FunctionTestFlags,
-    fw: str,
     fn_name: str,
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: bool = True,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
+    backend_to_test: str,
     ground_truth_backend: str,
     on_device: str,
     return_flat_np_arrays: bool = False,
@@ -238,7 +238,7 @@ def test_function(
             test_flags.container[0] for _ in range(total_num_arrays)
         ]
 
-    with update_backend(fw) as ivy_backend:
+    with update_backend(backend_to_test) as ivy_backend:
         # Update variable flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
             v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
@@ -252,7 +252,7 @@ def test_function(
     )
 
     args, kwargs = create_args_kwargs(
-        backend=fw,
+        backend=backend_to_test,
         args_np=args_np,
         arg_np_vals=arg_np_arrays,
         args_idxs=arrays_args_indices,
@@ -264,7 +264,7 @@ def test_function(
         on_device=on_device,
     )
 
-    with update_backend(fw) as ivy_backend:
+    with update_backend(backend_to_test) as ivy_backend:
         # If function doesn't have an out argument but an out argument is given
         # or a test with out flag is True
         if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
@@ -293,11 +293,11 @@ def test_function(
 
             if any(args_instance_mask):
                 instance, args = _find_instance_in_args(
-                    fw, args, arrays_args_indices, args_instance_mask
+                    backend_to_test, args, arrays_args_indices, args_instance_mask
                 )
             else:
                 instance, kwargs = _find_instance_in_args(
-                    fw, kwargs, arrays_kwargs_indices, kwargs_instance_mask
+                    backend_to_test, kwargs, arrays_kwargs_indices, kwargs_instance_mask
                 )
 
             if test_flags.test_compile:
@@ -311,7 +311,11 @@ def test_function(
             target_fn = ivy_backend.__dict__[fn_name]
 
         ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
-            fw, target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+            backend_to_test,
+            target_fn,
+            *args,
+            test_compile=test_flags.test_compile,
+            **kwargs,
         )
 
         # Assert indices of return if the indices of the out array provided
@@ -327,13 +331,21 @@ def test_function(
             if instance_method:
                 ret_from_target, ret_np_flat_from_target = (
                     get_ret_and_flattened_np_array(
-                        fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
+                        backend_to_test,
+                        instance.__getattribute__(fn_name),
+                        *args,
+                        **kwargs,
+                        out=out,
                     )
                 )
             else:
                 ret_from_target, ret_np_flat_from_target = (
                     get_ret_and_flattened_np_array(
-                        fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
+                        backend_to_test,
+                        ivy_backend.__dict__[fn_name],
+                        *args,
+                        **kwargs,
+                        out=out,
                     )
                 )
             test_ret = (
@@ -465,7 +477,7 @@ def test_function(
     assert (
         ret_device == ret_from_gt_device
     ), f"ground truth backend ({ground_truth_backend}) returned array on device "
-    f"{ret_from_gt_device} but target backend ({fw}) returned array on "
+    f"{ret_from_gt_device} but target backend ({backend_to_test}) returned array on "
     f"device {ret_device}"
     if ret_device is not None:
         assert ret_device == on_device, (
@@ -480,9 +492,9 @@ def test_function(
         return ret_from_target, ret_from_gt
 
     if isinstance(rtol_, dict):
-        rtol_ = _get_framework_rtol(rtol_, fw)
+        rtol_ = _get_framework_rtol(rtol_, backend_to_test)
     if isinstance(atol_, dict):
-        atol_ = _get_framework_atol(atol_, fw)
+        atol_ = _get_framework_atol(atol_, backend_to_test)
 
     # value test
     value_test(
@@ -490,7 +502,7 @@ def test_function(
         ret_np_from_gt_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
-        backend=fw,
+        backend=backend_to_test,
         ground_truth_backend=ground_truth_backend,
     )
 

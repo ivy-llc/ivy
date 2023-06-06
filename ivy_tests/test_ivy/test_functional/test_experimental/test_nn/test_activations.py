@@ -29,7 +29,7 @@ def test_logit(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -65,7 +65,7 @@ def test_thresholded_relu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -103,7 +103,7 @@ def test_prelu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -135,7 +135,7 @@ def test_relu6(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -168,7 +168,7 @@ def test_logsigmoid(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         input=x[0],
@@ -199,7 +199,7 @@ def test_selu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -231,7 +231,7 @@ def test_silu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,

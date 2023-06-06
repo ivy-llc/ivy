@@ -42,7 +42,7 @@ def test_invert_permutation(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -74,7 +74,7 @@ def test_lexsort(
         ground_truth_backend="numpy",
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         keys=x[0],
         axis=axis,

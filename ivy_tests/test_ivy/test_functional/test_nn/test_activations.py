@@ -31,7 +31,7 @@ def test_relu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -64,7 +64,7 @@ def test_leaky_relu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -100,7 +100,7 @@ def test_gelu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -134,7 +134,7 @@ def test_sigmoid(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -170,7 +170,7 @@ def test_softmax(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -211,7 +211,7 @@ def test_softplus(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -249,7 +249,7 @@ def test_log_softmax(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -283,7 +283,7 @@ def test_mish(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
