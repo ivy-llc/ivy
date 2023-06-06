@@ -4,8 +4,6 @@
 **/.idea/usage.statistics.xml
 **/.idea/shelf/
 **/.idea/markdown-navigator*
-**/.idea/runConfigurations/_template__of_py_test.xml
-**/.idea/runConfigurations/_template__of_Python.xml
 .run
 __pycache__/
 .pytest_cache/
