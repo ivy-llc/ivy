@@ -916,7 +916,7 @@ def handle_nestable(fn: Callable) -> Callable:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs
             )
-        if ivy.get_nestable_mode() and (
+        if ivy.nestable_mode and (
             ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
             or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
         ):

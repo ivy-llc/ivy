@@ -449,8 +449,8 @@ warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
 # global constants
-_MIN_DENOMINATOR = 1e-12
-_MIN_BASE = 1e-5
+# _MIN_DENOMINATOR = 1e-12
+# _MIN_BASE = 1e-5
 
 
 # local
@@ -1026,6 +1026,12 @@ globals_vars = GlobalsDict(
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
+        "show_func_wrapper_trace_mode_stack": (
+            general.show_func_wrapper_trace_mode_stack
+        ),
+        "min_denominator_stack": general.min_denominator_stack,
+        "min_base_stack": general.min_base_stack,
+        "tmp_dir_stack": general.tmp_dir_stack,
         "nestable_mode_stack": general.nestable_mode_stack,
         "exception_trace_mode_stack": general.exception_trace_mode_stack,
         "default_dtype_stack": data_type.default_dtype_stack,
@@ -1088,31 +1094,7 @@ vec_sig_fig = np.vectorize(_sf)
 vec_sig_fig.__name__ = "vec_sig_fig"
 
 
-def _get_array_significant_figures(sig_figs=None):
-    """
-    Summary.
-
-    Parameters
-    ----------
-    sig_figs
-        optional int, number of significant figures to be shown when printing
-
-    Returns
-    -------
-    ret
-    """
-    if ivy.exists(sig_figs):
-        _assert_array_significant_figures_formatting(sig_figs)
-        return sig_figs
-    global array_significant_figures_stack
-    if not array_significant_figures_stack:
-        ret = 10
-    else:
-        ret = array_significant_figures_stack[-1]
-    return ret
-
-
-array_significant_figures = 10
+ivy.array_significant_figures = 10
 
 
 def set_array_significant_figures(sig_figs):
@@ -1127,8 +1109,7 @@ def set_array_significant_figures(sig_figs):
     _assert_array_significant_figures_formatting(sig_figs)
     global array_significant_figures_stack
     array_significant_figures_stack.append(sig_figs)
-    global array_significant_figures
-    array_significant_figures = sig_figs
+    ivy.__setattr__("array_significant_figures", sig_figs, True)
 
 
 def unset_array_significant_figures():
@@ -1136,10 +1117,12 @@ def unset_array_significant_figures():
     global array_significant_figures_stack
     if array_significant_figures_stack:
         array_significant_figures_stack.pop(-1)
-    global array_significant_figures
-    array_significant_figures = (
-        array_significant_figures_stack[-1] if array_significant_figures_stack else 10
-    )
+        sig_figs = (
+            array_significant_figures_stack[-1]
+            if array_significant_figures_stack
+            else 10
+        )
+        ivy.__setattr__("array_significant_figures", sig_figs, True)
 
 
 # Decimal Values #
@@ -1150,31 +1133,6 @@ def _assert_array_decimal_values_formatting(dec_vals):
     ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True)
 
 
-def _get_array_decimal_values(dec_vals=None):
-    """
-    Summary.
-
-    Parameters
-    ----------
-    dec_vals
-        optional int, number of decimal values to be shown when printing
-
-    Returns
-    -------
-    ret
-    """
-    if ivy.exists(dec_vals):
-        _assert_array_decimal_values_formatting(dec_vals)
-        return dec_vals
-    global array_decimal_values_stack
-    if not array_decimal_values_stack:
-        ret = 8
-    else:
-        ret = array_decimal_values_stack[-1]
-    return ret
-
-
-# array_decimal_values = 8
 ivy.array_decimal_values = 8
 
 
@@ -1190,8 +1148,6 @@ def set_array_decimal_values(dec_vals):
     _assert_array_decimal_values_formatting(dec_vals)
     global array_decimal_values_stack
     array_decimal_values_stack.append(dec_vals)
-    global array_decimal_values
-    # ivy.array_decimal_values = dec_vals
     ivy.__setattr__("array_decimal_values", dec_vals, True)
 
 
@@ -1200,27 +1156,11 @@ def unset_array_decimal_values():
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
-    global array_decimal_values
-    globals()["array_decimal_values"] = (
-        array_decimal_values_stack[-1] if array_decimal_values_stack else 8
-    )
+        dec_vals = array_decimal_values_stack[-1] if array_decimal_values_stack else 8
+        ivy.__setattr__("array_decimal_values", dec_vals, True)
 
 
-def _get_warning_level():
-    """
-    Summary.
-
-    Returns
-    -------
-    ret
-        current warning level, default is "ivy_only"
-    """
-    global warning_level_stack
-    if not warning_level_stack:
-        ret = "ivy_only"
-    else:
-        ret = warning_level_stack[-1]
-    return ret
+ivy.warning_level = "ivy_only"
 
 
 def set_warning_level(warn_level):
@@ -1234,6 +1174,7 @@ def set_warning_level(warn_level):
     """
     global warning_level_stack
     warning_level_stack.append(warn_level)
+    ivy.__setattr__("warning_level", warn_level, True)
 
 
 def unset_warning_level():
@@ -1241,6 +1182,8 @@ def unset_warning_level():
     global warning_level_stack
     if warning_level_stack:
         warning_level_stack.pop(-1)
+        warn_level = warning_level_stack[-1] if warning_level_stack else "ivy_only"
+        ivy.__setattr__("warning_level", warn_level, True)
 
 
 def warn(warning_message, stacklevel=0):
@@ -1250,23 +1193,7 @@ def warn(warning_message, stacklevel=0):
 
 
 # nan policy #
-
-
-def _get_nan_policy():
-    """
-    Summary.
-
-    Returns
-    -------
-    ret
-        current nan policy, default is "nothing"
-    """
-    global nan_policy_stack
-    if not nan_policy_stack:
-        ret = "nothing"
-    else:
-        ret = nan_policy_stack[-1]
-    return ret
+ivy.nan_policy = "nothing"
 
 
 def set_nan_policy(warn_level):
@@ -1279,12 +1206,13 @@ def set_nan_policy(warn_level):
         string for the nan policy to be set, one of
         "nothing", "warns", "raise_exception"
     """
-    global nan_policy_stack
     if warn_level not in ["nothing", "warns", "raise_exception"]:
         raise ivy.utils.exceptions.IvyException(
             "nan_policy must be one of 'nothing', 'warns', 'raise_exception'"
         )
+    global nan_policy_stack
     nan_policy_stack.append(warn_level)
+    ivy.__setattr__("nan_policy", warn_level, True)
 
 
 def unset_nan_policy():
@@ -1292,9 +1220,14 @@ def unset_nan_policy():
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)
+        warn_level = nan_policy_stack[-1] if nan_policy_stack else "nothing"
+        ivy.__setattr__("nan_policy", warn_level, True)
 
 
 # Dynamic Backend
+
+
+# ivy.dynamic_backend = True
 
 
 def get_dynamic_backend():
@@ -1312,6 +1245,7 @@ def set_dynamic_backend(flag):
     if flag not in [True, False]:
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
     dynamic_backend_stack.append(flag)
+    # ivy.__setattr__("dynamic_backend", flag, True)
 
 
 def unset_dynamic_backend():
@@ -1323,6 +1257,8 @@ def unset_dynamic_backend():
     global dynamic_backend_stack
     if dynamic_backend_stack:
         dynamic_backend_stack.pop()
+        # flag = dynamic_backend_stack[-1] if dynamic_backend_stack else True
+        # ivy.__setattr__("dynamic_backend", flag, True)
 
 
 # Context Managers
@@ -1401,55 +1337,31 @@ def cast_data_types(val=True):
 
 
 # global parameter properties
-# _array_significant_figures  = property(lambda self: _get_array_significant_figures())
-# array_significant_figures = _array_significant_figures.__get__(ivy)
+GLOBAL_PROPS = [
+    "array_significant_figures",
+    "array_decimal_values",
+    "warning_level",
+    "nan_policy",
+    "array_mode",
+    "nestable_mode",
+    "exception_trace_mode",
+    "show_func_wrapper_trace_mode",
+    "min_denominator",
+    "min_base",
+    "queue_timeout",
+    "tmp_dir",
+    "shape_array_mode",
+]
 
-# _array_decimal_values  = property(lambda self: _get_array_decimal_values())
-# array_decimal_values = _array_decimal_values.__get__(ivy)
 
-# _warning_level  = property(lambda self: _get_warning_level())
-# warning_level = _warning_level.__get__(ivy)
-
-# _nan_policy  = property(lambda self: _get_nan_policy())
-# nan_policy = _nan_policy.__get__(ivy)
-
-# _array_mode  = property(lambda self: general._get_array_mode())
-# array_mode = _array_mode.__get__(ivy)
-
-
-# global parameter properties
-class IvyWithProperties(sys.modules[__name__].__class__):
+class IvyWithGlobalProps(sys.modules[__name__].__class__):
     def __setattr__(self, name, value, internal=False):
-        if not internal and name in ["array_decimal_values", "array_mode"]:
-            raise Exception("Read-only!")
+        if not internal and name in GLOBAL_PROPS:
+            raise Exception(
+                "Property: {} is read only! Please use the setter: set_{}() for setting"
+                " its value!".format(name, name)
+            )
         self.__dict__[name] = value
 
 
-# @property
-# def array_significant_figures(self):
-#     return _get_array_significant_figures()
-
-# @property
-# def array_decimal_values(self):
-#     return _get_array_decimal_values()
-
-# @property
-# def warning_level(self):
-#     return _get_warning_level()
-
-# @property
-# def nan_policy(self):
-#     return _get_nan_policy()
-
-# @property
-# def array_mode(self):
-#     return general._get_array_mode()
-
-# globals()["array_mode"] = True
-sys.modules[__name__].__class__ = IvyWithProperties
-
-# array_significant_figures = IvyWithProperties.array_significant_figures
-# array_decimal_values = IvyWithProperties.array_decimal_values
-# warning_level = IvyWithProperties.warning_level
-# nan_policy = IvyWithProperties.nan_policy
-# array_mode = general.array_mode
+sys.modules[__name__].__class__ = IvyWithGlobalProps
