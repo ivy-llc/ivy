@@ -458,7 +458,7 @@ def sigmoid(input, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def lerp(input, end, weight, *, out=None):
-    return ivy.lerp(input, end, weight, out=out)
+    return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
