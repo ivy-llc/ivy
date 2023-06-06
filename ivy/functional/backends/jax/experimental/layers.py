@@ -11,8 +11,11 @@ from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+
+from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
+
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -663,3 +666,16 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
     ]
     and recompute_scale_factor
 )
+
+def quantize(
+    x: JaxArray,
+    dtype: Union[jnp.quint8, jnp.qint8, jnp.quint16, jnp.qint16, jnp.qint32],
+    /,
+    *,
+    scale_factor: Union[Sequence[int], int],
+    zero_point: Union[Sequence[int], int],
+    min_range: Union[Sequence[int], int],
+    max_range: Union[Sequence[int], int],
+):
+    raise IvyNotImplementedException()
+

@@ -2,15 +2,48 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 
 # local
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+
+from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
+
+
+def _determine_depth_max_pooling(x, kernel, strides, dims):
+    # determine depth pooling
+    depth_pooling = False
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1]
+        if kernel[-1] != 1:
+            depth_pooling = True
+            if any(np.array(spatial_kernel) != 1):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if x.shape[-1] % kernel[-1] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            x = np.transpose(x, (0, dims + 1, *range(1, dims + 1)))
+            kernel = [kernel[-1], *[1] * (dims - 1)]
+            strides = [strides[-1], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            strides = strides[1:-1] if len(strides) == dims + 2 else strides
+    return x, kernel, strides, depth_pooling
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -831,3 +864,16 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
+
+
+def quantize(
+    x: np.Tensor,
+    dtype: Union[np.quint8, np.qint8, np.quint16, np.qint16, np.qint32],
+    /,
+    *,
+    scale_factor: Union[Sequence[int], int],
+    zero_point: Union[Sequence[int], int],
+    min_range: Union[Sequence[int], int],
+    max_range: Union[Sequence[int], int],
+):
+    raise IvyNotImplementedException()

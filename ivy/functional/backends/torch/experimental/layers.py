@@ -5,7 +5,9 @@ import math
 
 # local
 import ivy
+
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
@@ -822,3 +824,20 @@ def adaptive_avg_pool1d(input, output_size):
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool2d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
+
+def quantize(
+    x: torch.Tensor,
+    dtype: Union[torch.quint8, torch.qint8, torch.qint32,],
+    /,
+    *,
+    scale_factor: Union[Sequence[int], int],
+    zero_point: Union[Sequence[int], int],
+    min_range: Union[Sequence[int], int],
+    max_range: Union[Sequence[int], int],
+) -> torch.Tensor:
+    return torch.quantize_per_tensor(
+        x,
+        scale_factor,
+        zero_point,
+        dtype
+    )

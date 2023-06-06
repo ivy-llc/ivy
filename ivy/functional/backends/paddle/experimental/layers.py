@@ -188,3 +188,15 @@ def interpolate(
     antialias: Optional[bool] = False,
 ):
     raise IvyNotImplementedException()
+
+def quantize(
+    x: paddle.Tensor,
+    dtype: Union[paddle.quint8, paddle.qint8, paddle.quint16, paddle.qint16, paddle.qint32],
+    /,
+    *,
+    scale_factor: Union[Sequence[int], int],
+    zero_point: Union[Sequence[int], int],
+    min_range: Union[Sequence[int], int],
+    max_range: Union[Sequence[int], int],
+):
+    raise IvyNotImplementedException()

@@ -4,7 +4,9 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
+
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
@@ -93,6 +95,26 @@ def max_pool2d(
         x, kernel, strides, 2
     )
 
+
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
+
+    # determine depth pooling
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 2
+    )
+
+    if not depth_pooling:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * 2
+        elif isinstance(padding, tuple) and len(padding) == 1:
+            padding = [(padding[0],) * 2] * 2
+        elif isinstance(padding, tuple) and len(padding) == 2:
+            padding = [(padding[0],) * 2, (padding[1],) * 2]
     if not depth_pooling:
         if isinstance(padding, int):
             padding = [(padding,) * 2] * 2
@@ -113,6 +135,7 @@ def max_pool2d(
             ]
 
         x_shape = x.shape[1:-1]
+
 
         if ceil_mode:
             for i in range(2):
@@ -754,3 +777,22 @@ interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor
     and mode not in ["nearest", "area", "bicubic"]
     and recompute_scale_factor
 )
+
+
+def quantize(
+    x: Union[tf.Tensor, tf.Variable],
+    dtype: Union[tf.qint8, tf.quint8, tf.qint32, tf.qint16, tf.quint16],
+    /,
+    *,
+    scale_factor: Union[tf.Tensor, tf.Variable],
+    zero_point: Union[tf.Tensor, tf.Variable],
+    min_range: Union[tf.Tensor, tf.Variable],
+    max_range: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.quantization.quantize(
+        x,
+        min_range,
+        max_range,
+        dtype
+    )
+

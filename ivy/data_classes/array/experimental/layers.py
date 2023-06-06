@@ -704,17 +704,20 @@ class _ArrayWithLayersExperimental(abc.ABC):
         size: Union[Sequence[int], int],
         /,
         *,
-        mode: Union[
-            Literal[
-                "linear",
-                "bilinear",
-                "trilinear",
-                "nearest",
-                "area",
-                "nearest_exact",
-                "tf_area",
-                "bicubic",
-            ]
+        mode: Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest-exact",
+            "tf_area",
+            "bicubic",
+            "bicubic_tensorflow",
+            "mitchellcubic",
+            "lanczos3",
+            "lanczos5",
+            "gaussian",
         ] = "linear",
         scale_factor: Optional[Union[Sequence[int], int]] = None,
         recompute_scale_factor: Optional[bool] = None,
@@ -830,4 +833,62 @@ class _ArrayWithLayersExperimental(abc.ABC):
         return ivy.adaptive_avg_pool2d(
             self._data,
             output_size,
+        )
+
+    def quantize(
+        self,
+        dtype: Union[ivy.quint8, ivy.qint8, ivy.quint16, ivy.qint16, ivy.qint32],
+        /,
+        *,
+        scale_factor: Union[ivy.Array, ivy.NativeArray],
+        zero_point: Union[ivy.Array, ivy.NativeArray],
+        min_range: Union[ivy.Array, ivy.NativeArray],
+        max_range: Union[ivy.Array, ivy.NativeArray],
+    ) -> ivy.Array:
+        """
+        Converts a float tensor to a quantized tensor
+
+        Parameters
+        ----------
+        self 
+            Float tensor or list of tensors to quantize
+
+        scale_factor (float or Tensor)
+            scale to apply in quantization formula
+
+        zero_point (int or Tensor)
+            offset in integer value that maps to float zero
+
+        min_range 	
+            A Tensor of type float32. The minimum value of the quantization range. 
+            This value may be adjusted by the op depending on other parameters. 
+            The adjusted value is written to output_min. If the axis attribute is specified, 
+            this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+
+        max_range 	
+            A Tensor of type float32. The maximum value of the quantization range. 
+            This value may be adjusted by the op depending on other parameters. 
+            The adjusted value is written to output_max. If the axis attribute 
+            is specified, this must be a 1-D tensor whose size matches the
+            axis dimension of the input and output tensors.    
+
+        dtype (current_backend.dtype)
+            the desired data type of returned tensor.
+            Has to be one of the quantized dtypes: torch.quint8,
+            torch.qint8, torch.qint32, tf.qint8, tf.quint8, 
+            tf.qint32, tf.qint16, tf.quint16. 
+
+        Returns
+        -------
+            A newly quantized tensor or list of quantized tensors.
+
+        """
+
+        return ivy.quantize(
+            self._data, 
+            dtype, 
+            scale_factor=scale_factor, 
+            zero_point=zero_point, 
+            min_range=min_range, 
+            max_range=max_range, 
         )
