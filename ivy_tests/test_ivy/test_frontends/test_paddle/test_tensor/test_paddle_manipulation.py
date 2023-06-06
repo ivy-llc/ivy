@@ -96,9 +96,7 @@ def _arrays_axis_n_dtypes(draw):
             size=num_dims - 1,
         )
     )
-    axis = draw(
-        st.sampled_from(list(range(num_dims)))
-    )
+    axis = draw(st.sampled_from(list(range(num_dims))))
     xs = []
     input_dtypes = draw(
         helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("numeric")))
