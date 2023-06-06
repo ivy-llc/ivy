@@ -509,9 +509,9 @@ def test_paddle_cholesky(
     )
 
 # dot
-@handle_test(
+@handle_frontend_test(
     fn_tree="paddle.tensor.linalg.dot",
-    dtype_x1_x2_axis=dtype_value1_value2_axis(
+    dtype_x_y_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=100,
         small_abs_safety_factor=100,
@@ -524,24 +524,22 @@ def test_paddle_cholesky(
 )
 def test_paddle_dot(
     *,
-    dtype_x1_x2_axis,
+    dtype_x_y_axis,
     test_flags,
-    backend_fw,
-    fn_name,
+    frontend,
+    fn_tree,
     on_device,
-    ground_truth_backend,
 ):
-    dtype, x1, x2, axis = dtype_x1_x2_axis
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
+    dtype, x, y, axis = dtype_x_y_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype, 
+        frontend=frontend, 
         test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
+        fn_tree=fn_tree, 
+        on_device=on_device, 
         rtol_=5e-1,
         atol_=5e-1,
-        x1=x1,
-        x2=x2,
+        x=x,
+        x=y,
         axis=axis,
     )
