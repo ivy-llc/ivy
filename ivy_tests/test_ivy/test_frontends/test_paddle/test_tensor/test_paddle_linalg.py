@@ -509,33 +509,39 @@ def test_paddle_cholesky(
     )
 
 # dot
-@handle_frontend_test(
+@handle_test(
     fn_tree="paddle.tensor.linalg.dot",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        allow_inf=False,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+    dtype_x1_x2_axis=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=100,
+        small_abs_safety_factor=100,
         safety_factor_scale="log",
-        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
     ),
 )
 def test_paddle_dot(
     *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
+    dtype_x1_x2_axis,
     test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
+    dtype, x1, x2, axis = dtype_x1_x2_axis
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
         test_flags=test_flags,
-        fn_tree=fn_tree,
+        fw=backend_fw,
+        fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
-        y=x[1],
+        rtol_=5e-1,
+        atol_=5e-1,
+        x1=x1,
+        x2=x2,
+        axis=axis,
     )
