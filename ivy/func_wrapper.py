@@ -790,12 +790,9 @@ def handle_device_shifting_for_arrays(fn: Callable) -> Callable:
         -------
             The return of the function.
         """
-        if ivy.get_soft_device_mode() and ivy.get_array_mode():
-            device = ivy.default_device()
-            args, kwargs = ivy.nested_map(
-                [args, kwargs],
-                lambda x: (x.to_device(device) if isinstance(x, ivy.Array) else x),
-            )
+        args, kwargs = ivy.current_backend().handle_soft_device_variable(
+            *args, **kwargs
+        )
         return fn(*args, **kwargs)
 
     _handle_device_shifting_for_arrays.handle_device_shifting_for_arrays = True

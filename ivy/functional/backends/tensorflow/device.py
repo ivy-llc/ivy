@@ -99,6 +99,15 @@ def tpu_is_available() -> bool:
         return False
 
 
+def handle_soft_device_variable(*args, **kwargs):
+    if not ivy.get_soft_device_mode():
+        raise ivy.utils.exceptions.IvyBackendException(
+            "Soft device mode must be enabled for tensorflow "
+            "backend, set `ivy.set_soft_device_mode(True)`"
+        )
+    return args, kwargs
+
+
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         super(Profiler, self).__init__(save_dir)
