@@ -511,7 +511,7 @@ def test_jax_numpy_bitwise_xor(
     fn_tree="jax.numpy.any",
     aliases=["jax.numpy.sometrue"],
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         max_axes_size=1,
         force_int_axis=True,

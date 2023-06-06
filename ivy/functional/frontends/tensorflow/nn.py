@@ -1,8 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow import math
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 def _reduce_strides_dilations(dim, stride, dilations):
@@ -217,19 +216,6 @@ def dropout(x, rate, noise_shape=None, seed=None, name=None):
     return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.12.0": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-            "bfloat16",
-        )
-    },
-    "tensorflow",
-)
 @to_ivy_arrays_and_back
 def silu(features, beta: float = 1.0):
     beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
@@ -291,35 +277,27 @@ def weighted_cross_entropy_with_logits(
     return ivy.add(first_term, second_term)
 
 
-@with_supported_dtypes(
-    {"2.9.0 and below": ("float32", "float16", "bfloat16")}, "tensorflow"
-)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def local_response_normalization(
-    input, /, *, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
+    input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
 ):
     input_shape = ivy.shape(input)
+    depth = input_shape[-1]
     ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
         message="4D input, but got input with sizes " + str(input_shape),
     )
-    input_perm = ivy.astype(ivy.permute_dims(input, axes=[0, 3, 1, 2]), input.dtype)
-    bias = ivy.astype(ivy.array(bias), input.dtype)
-    alpha = ivy.astype(ivy.array(alpha), input.dtype)
-    beta = ivy.astype(ivy.array(beta), input.dtype)
-    sqr_sum = ivy.astype(ivy.zeros_like(input_perm), input.dtype)
-    for p in range(input_shape[0]):
-        sqr_sum[p] = [
-            sum(
-                ivy.pow(
-                    input_perm[p][max(c - depth_radius, 0) : c + depth_radius + 1], 2.0
-                )
-            )
-            for c in range(input_shape[3])
-        ]
-    div = ivy.multiply(input_perm, ivy.pow(math.add(sqr_sum * alpha, bias), -beta))
-    return ivy.permute_dims(div, [0, 2, 3, 1])
+    sqr_sum = ivy.empty(input_shape[:-1] + (0,), dtype=ivy.dtype(input))
+    for d in range(depth):
+        start = max(0, d - depth_radius)
+        end = min(d + depth_radius + 1, depth)
+        inter_channel_sum = ivy.sum(
+            input[:, :, :, start:end] ** 2, axis=3, keepdims=True
+        )
+        sqr_sum = ivy.concat([sqr_sum, inter_channel_sum], axis=-1)
+    return ivy.divide(input, ivy.pow(ivy.add(sqr_sum * alpha, bias), beta))
 
 
 @to_ivy_arrays_and_back
@@ -426,11 +404,13 @@ def convolution(
     )
 
 
+@with_unsupported_dtypes({"2.11.1 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def embedding_lookup(params, ids, max_norm=None, name=None):
     return ivy.embedding(params, ids, max_norm=max_norm)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def relu(features, name=None):
     return ivy.relu(features)
@@ -441,6 +421,7 @@ def relu6(features, name=None):
     return ivy.relu6(features)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
@@ -467,6 +448,13 @@ def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
 
 
+# avg_pool3d
 @to_ivy_arrays_and_back
 def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
     return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+# avg_pool1d
+@to_ivy_arrays_and_back
+def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
+    return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)

@@ -759,7 +759,7 @@ def vmap(
         # vectorisation - applying map_fn if only one arg provided as reduce requires
         # two elements to begin with.
         arr_results = [func(*arrays) for arrays in zip(*args)]
-        res = paddle_backend.stack(arr_results)
+        res = paddle_backend.concat(arr_results)
 
         if out_axes:
             res = paddle_backend.moveaxis(res, 0, out_axes)

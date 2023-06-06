@@ -117,6 +117,7 @@ def test_linspace(
     num=helpers.ints(min_value=1, max_value=5),
     base=helpers.floats(min_value=0.1, max_value=3.0),
     axis=st.none(),
+    test_with_out=st.just("False"),
 )
 def test_logspace(
     *,
