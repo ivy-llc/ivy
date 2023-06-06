@@ -923,8 +923,8 @@ def test_jax_numpy_compress(
         a=arr[0],
         axis=ax,
     )
-    
-    
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.iterable",
     dtype_and_x=helpers.dtype_and_values(
@@ -947,4 +947,3 @@ def test_jax_numpy_iterable(
         on_device=on_device,
         y=x[0],
     )
-
