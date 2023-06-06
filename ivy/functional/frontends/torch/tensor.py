@@ -928,6 +928,14 @@ class Tensor:
     # Special Methods #
     # -------------------#
 
+    def __bool__(self):
+        if len(self.shape) == sum(self.shape):
+            return self.ivy_array.to_scalar().__bool__()
+        raise ValueError(
+            "The truth value of an array with more than one element is ambiguous. "
+            "Use a.any() or a.all()"
+        )
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __add__(self, other):
         return self.add(other)
@@ -1170,7 +1178,7 @@ class Tensor:
 
     def normal_(self, mean=0, std=1, *, generator=None):
         self.ivy_array = ivy.random_normal(
-            mean=mean, std=std, shape=self.shape, dtype=self.dtype, device=self.device
+            mean=mean, std=std, shape=self.ivy_array.shape, dtype=self.dtype, device=self.device
         )
         return self
 

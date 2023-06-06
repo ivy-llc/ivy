@@ -249,3 +249,12 @@ def compress(condition, a, *, axis=None, out=None):
 @inputs_to_ivy_arrays
 def iterable(y):
     return hasattr(y, "__iter__") and y.ndim > 0
+
+
+@to_ivy_arrays_and_back
+def size(a, axis=None):
+    ivy.set_default_int_dtype("int64")
+    if axis is not None:
+        sh = ivy.shape(a)
+        return sh[axis]
+    return a.size

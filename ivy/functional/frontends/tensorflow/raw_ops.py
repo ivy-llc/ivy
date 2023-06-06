@@ -387,9 +387,16 @@ def PadV2(*, input, paddings, constant_values, name="PadV2"):
 
 
 Relu = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.keras.activations.relu,
-        kwargs_to_update={"features": "x"},
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex", "float16"),
+        },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.keras.activations.relu,
+            kwargs_to_update={"features": "x"},
+        )
     )
 )
 
@@ -471,9 +478,7 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-@to_ivy_arrays_and_back
-def Squeeze(*, input, axis, name="Squeeze"):
-    return ivy.squeeze(input, axis=axis)
+Squeeze = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.squeeze))
 
 
 Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))
