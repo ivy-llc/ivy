@@ -73,11 +73,11 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[paddle.dtype] = None,
+    dtype: Optional[paddle.dtype] = None,
     select_last_index: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = output_dtype if output_dtype is not None else paddle.int64
+    dtype = dtype if dtype is not None else paddle.int64
     if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
         x = x.cast("float32")
     if select_last_index:

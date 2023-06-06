@@ -338,7 +338,10 @@ def test_function(
         assert not ivy.nested_any(
             ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
             lambda x: not x,
-        ), f"the array: {test_ret} in out argument is not the same as the returned: {out}"
+        ), (
+            f"the array: {test_ret} in out argument is not the same as the returned:"
+            f" {out}"
+        )
         if not max(test_flags.container) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert not ivy.nested_any(
@@ -346,7 +349,10 @@ def test_function(
                     lambda x, _: x[0].data is x[1].data, [test_ret, out]
                 ),
                 lambda x: not x,
-            ), f"the array: {test_ret} in out argument is not the same as the returned: {out}"
+            ), (
+                f"the array: {test_ret} in out argument is not the same as the"
+                f" returned: {out}"
+            )
     # compute the return with a Ground Truth backend
 
     ivy.set_backend(ground_truth_backend)
@@ -430,13 +436,13 @@ def test_function(
 
         assert (
             ret_device == ret_from_gt_device
-        ), f"ground truth backend ({ground_truth_backend}) returned array on device "
-        f"{ret_from_gt_device} but target backend ({ivy.backend}) returned array on "
+        ), f"ground truth backend ({ground_truth_backend}) returned array on device "\
+           f"{ret_from_gt_device} but target backend ({ivy.backend}) returned array on "\
         f"device {ret_device}"
         assert (
             ret_device == on_device
-        ), f"device is set to {on_device}, but ground truth "
-        f"produced array on {ret_device}"
+        ), f"device is set to {on_device}, but ground truth "\
+           f"produced array on {ret_device}"
 
     # assuming value test will be handled manually in the test function
     if not test_values:
