@@ -98,3 +98,9 @@ def softsign(
     name=None,
 ):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def prelu(x, weight, data_format="NCHW", name=None):
+    return ivy.add(ivy.maximum(0, x), ivy.multiply(weight, ivy.minimum(0, x)))
