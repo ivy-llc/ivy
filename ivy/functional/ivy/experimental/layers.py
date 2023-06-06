@@ -2074,7 +2074,7 @@ def reduce_window(
     window_dilation: Union[int, Sequence[int]] = 1,
 ) -> ivy.Array:
     """
-    Applies a reduction function to all elements in each window of an array.
+    Apply a reduction function to all elements in each window of an array.
 
     Parameters
     ----------
