@@ -568,6 +568,67 @@ Ubuntu
 
 For windows users, the file path should be entered with "/" (forward-slashes), for other OS it would be the regular "\\" (back-slashes).
 
+WSL
+***
+ 
+It is understandable that working with computationally heavy tools like Docker and PyCharm is not always comfortable for developers.
+By utilizing WSL, you can run a Linux distribution on your Windows machine and in addition, venv is leveraged to create 
+isolated Python environments eliminating the need for a full-fledged containerization solution like Docker, and with VSCode being an appropriate alternative to PyCharm, 
+the steps explained below will help you in setting up a less resource-intensive Ivy environment.
+
+#. Install `WSL <https://learn.microsoft.com/en-us/windows/wsl/install>`_.
+#. Install `Visual Studio Code <https://code.visualstudio.com/>`_. 
+   You can follow `this guide <https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode>`_ to integrate WSL into VSCode.
+#. Open the WSL terminal by typing in the name of your Linux distribution in the windows start menu (e.g. :code:`Ubuntu`).
+#. Create a virtual environment by following the steps below:
+
+   a. Install the python virtual environment package :code:`venv`.
+
+      .. code-block:: none
+
+         sudo apt install python3-venv
+
+   b. Create your virtual environment named :code:`ivy_dev`.
+
+      .. code-block:: none
+
+         python3 -m venv ivy_dev
+
+   c. Activate your environment.
+
+      .. code-block:: none
+
+         source ivy_dev/bin/activate
+
+
+#. You can now install the Ivy package from Github by running:
+
+   .. code-block:: none
+
+      pip install git+https://github.com/unifyai/ivy.git
+
+#. If you want to set up a local repository, you can do so by following `this guide <https://unify.ai/docs/ivy/overview/contributing/setting_up.html#forking-and-cloning-the-repo>`_ 
+   as explained above and install the required development dependencies by running:
+
+   .. code-block:: none
+
+      cd ivy/
+
+   .. code-block:: none
+
+      pip install -r requirements/requirements.txt
+
+#. Once done, you can now open VSCode right from your terminal and get started with your development by just running:
+   
+   .. code-block:: none
+
+      code .
+
+#. To set up the Python Interpreter in VSCode, go to the command palette (Ctrl+Shift+P) and type **Python: Select Interpreter** and select the environment you created. 
+   For a more detailed explanation, you can follow `this guide <https://code.visualstudio.com/docs/python/environments#_working-with-python-interpreters>`_.
+#. Now that your development environment is set up, you can now run tests locally by running :code:`pytest test_fle_path::test_fn_name` in the terminal or
+   if you want to set up testing in VSCode, you may follow the guide **Setting Up Testing** for VSCode as explained below, next to this subsection.
+
 GitHub Codespaces
 *****************
 

@@ -2744,6 +2744,44 @@ def test_numpy_instance_array__(
     )
 
 
+# __array_wrap__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__array_wrap__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        num_arrays=2,
+    ),
+)
+def test_numpy_instance_array_wrap__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "array": x[1],
+            "context": None,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
