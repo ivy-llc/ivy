@@ -261,8 +261,6 @@ def xlogy(
         return x * np.log(y)
 
 
-
-
 def conj(
     x: np.ndarray,
     /,

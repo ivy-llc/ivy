@@ -335,7 +335,6 @@ def logaddexp2(
     return jnp.logaddexp2(x1, x2)
 
 
-
 def logical_and(
     x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
