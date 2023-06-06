@@ -38,46 +38,46 @@ def _get_type_dict(framework: str, kind: str):
     with WithBackendContext(framework) as ivy_backend:
         if kind == "valid":
             return ivy_backend.valid_dtypes
-        elif kind == "numeric":
+        if kind == "numeric":
             return ivy_backend.valid_numeric_dtypes
-        elif kind == "integer":
+        if kind == "integer":
             return ivy_backend.valid_int_dtypes
-        elif kind == "float":
+        if kind == "float":
             return ivy_backend.valid_float_dtypes
-        elif kind == "unsigned":
+        if kind == "unsigned":
             return ivy_backend.valid_uint_dtypes
-        elif kind == "signed_integer":
+        if kind == "signed_integer":
             return tuple(
                 set(ivy_backend.valid_int_dtypes).difference(
                     ivy_backend.valid_uint_dtypes
                 )
             )
-        elif kind == "complex":
+        if kind == "complex":
             return ivy_backend.valid_complex_dtypes
-        elif kind == "real_and_complex":
+        if kind == "real_and_complex":
             return tuple(
                 set(ivy_backend.valid_numeric_dtypes).union(
                     ivy_backend.valid_complex_dtypes
                 )
             )
-        elif kind == "float_and_complex":
+        if kind == "float_and_complex":
             return tuple(
                 set(ivy_backend.valid_float_dtypes).union(
                     ivy_backend.valid_complex_dtypes
                 )
             )
-        elif kind == "float_and_integer":
+        if kind == "float_and_integer":
             return tuple(
                 set(ivy_backend.valid_float_dtypes).union(ivy_backend.valid_int_dtypes)
             )
-        elif kind == "bool":
+        if kind == "bool":
             return tuple(
                 set(ivy_backend.valid_dtypes).difference(
                     ivy_backend.valid_numeric_dtypes
                 )
             )
-        else:
-            raise RuntimeError("{} is an unknown kind!".format(kind))
+
+        raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
 @st.composite
