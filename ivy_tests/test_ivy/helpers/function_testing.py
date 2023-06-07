@@ -732,7 +732,7 @@ def test_frontend_function(
                 # if returned reference is inputted reference
                 # and if inputted reference's content is correctly updated
                 copy_kwargs["inplace"] = True
-                first_array = ivy.func_wrapper._get_first_array(
+                first_array = ivy_backend.func_wrapper._get_first_array(
                     *copy_args, array_fn=array_fn, **copy_kwargs
                 )
                 ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
@@ -740,32 +740,40 @@ def test_frontend_function(
             else:
                 # the function provides inplace update by default
                 # check if returned reference is inputted reference
-                first_array = ivy.func_wrapper._get_first_array(
+                first_array = ivy_backend.func_wrapper._get_first_array(
                     *args, array_fn=array_fn, **kwargs
                 )
                 ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
                 assert first_array is ret_
                 args, kwargs = copy_args, copy_kwargs
-        # create NumPy args
 
+        # Assuming value test will be handled manually in the test function
+        if not test_values:
+            to_ret = (
+                ivy_backend.nested_map(
+                    ret, _frontend_array_to_ivy, include_derived={tuple: True}
+                ),
+            )
+
+    # temporarily set frontend framework as backend
+    with update_backend(frontend) as gt_backend:
+        # create NumPy args
         def arrays_to_numpy(x):
             if test_flags.generate_frontend_arrays:
-                return ivy_backend.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
-            return ivy_backend.to_numpy(x._data) if isinstance(x, ivy.Array) else x
+                return gt_backend.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
+            return gt_backend.to_numpy(x._data) if isinstance(x, ivy.Array) else x
 
-        args_np = ivy_backend.nested_map(
+        args_np = gt_backend.nested_map(
             args_for_test,
             arrays_to_numpy,
             shallow=False,
         )
-        kwargs_np = ivy_backend.nested_map(
+        kwargs_np = gt_backend.nested_map(
             kwargs_for_test,
             arrays_to_numpy,
             shallow=False,
         )
 
-    # temporarily set frontend framework as backend
-    with update_backend(frontend) as gt_backend:
         # create frontend framework args
         args_frontend = gt_backend.nested_map(
             args_np,
@@ -799,6 +807,7 @@ def test_frontend_function(
             )
 
         # compute the return via the frontend framework
+        # TODO remove magic value
         module_name = fn_tree[
             25 : fn_tree.rfind(".")
         ]  # TODO remove, pass from decorator
@@ -826,12 +835,8 @@ def test_frontend_function(
     else:
         ret_np_flat = flatten_and_to_np(backend=frontend, ret=ret)
 
-    # assuming value test will be handled manually in the test function
-    # if not test_values:
-    #     return (
-    #         ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True}),
-    #         frontend_ret,
-    #     )
+    if not test_values:
+        return to_ret, frontend_ret
 
     if isinstance(rtol, dict):
         rtol = _get_framework_rtol(rtol, backend_to_test)
