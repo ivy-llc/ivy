@@ -36,7 +36,6 @@ def geometric(p, size=None):
 
     return ivy.multiply(ivy.pow(oneMinusP, sizeMinusOne), p)
 
-
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def normal(loc=0.0, scale=1.0, size=None):
@@ -99,8 +98,6 @@ def standard_gamma(shape, size=None):
     return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
 
 # Binomial
-
-
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def binomial(n, p, size=None):
@@ -108,18 +105,9 @@ def binomial(n, p, size=None):
         raise ValueError("p must be in the interval (0, 1)")
     if n < 0:
         raise ValueError("n must be strictly positive")
-    def comb(k,n):
-        if k >= n:
-            KMinusn = k - n
-            return math.factorial(n) / (math.factorial(k) * math.factorial(KMinusn))
-        else:
-            raise ValueError("k < n")
-    if isinstance(size, int):
-        size = (size,)
-    oneMinusP = ivy.subtract(1, p)
-    nMinusSize = ivy.subtract(n, size)
-    return (ivy.pow(oneMinusP, nMinusSize)) * (ivy.pow(p, size)) * comb(size[0], n)
-
+    mean = n * p  # Calculate the mean for the Poisson distribution
+    poisson_numbers = ivy.poisson(lam=mean,shape=size)  # Generate random numbers from the Poisson distribution
+    return ivy.minimum(poisson_numbers, n)  # Truncate the random numbers to the range [0, n])
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar

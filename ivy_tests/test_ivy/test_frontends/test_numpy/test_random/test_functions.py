@@ -397,13 +397,13 @@ def test_numpy_standard_gamma(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5))
 )
 def test_numpy_binomial(
-    n,
     dtype,
     size,
     test_flags,
     frontend,
     fn_tree,
     on_device,
+    n,
     p,
 ):
     helpers.test_frontend_function(
