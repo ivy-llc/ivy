@@ -1189,8 +1189,6 @@ def test_avgpool1d_layer(
             "kernel_size": kernel_size,
             "stride": stride,
             "padding": padding,
-            "device": on_device,
-            "dtype": input_dtype[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"inputs": x[0]},

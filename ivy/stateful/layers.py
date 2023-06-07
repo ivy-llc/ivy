@@ -1604,9 +1604,6 @@ class AvgPool1D(Module):
         /,
         *,
         data_format="NWC",
-        device=None,
-        v=None,
-        dtype=None,
     ):
         """
         Class for applying Average Pooling over a mini-batch of inputs.
@@ -1619,16 +1616,16 @@ class AvgPool1D(Module):
             The stride of the window. Default value: 1
         padding
             Implicit zero padding to be added on both sides.
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        data_format
+            "NCW" or "NWC". Defaults to "NWC".
         """
         self._kernel_size = kernel_size
         self._stride = stride
         self._padding = padding
         self._data_format = data_format
-        Module.__init__(self, device=device, dtype=dtype)
+        Module.__init__(self)
 
-    def _forward(self, inputs):
+    def _forward(self, inputs, kernel_size, stride, padding, /, *, data_format=None):
         """
         Forward pass of the layer.
 
@@ -1643,8 +1640,8 @@ class AvgPool1D(Module):
         """
         return ivy.avg_pool1d(
             inputs,
-            self._kernel_size,
-            self._stride,
-            self._padding,
-            data_format=self._data_format,
+            ivy.default(kernel_size, self._kernel_size),
+            ivy.default(stride, self._stride),
+            ivy.default(padding, self._padding),
+            data_format=ivy.default(data_format, self._data_format),
         )
