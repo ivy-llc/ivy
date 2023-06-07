@@ -827,11 +827,84 @@ def dropout1d(
     >>> y = ivy.dropout1d(x, 0.5)
     >>> print(y)
     {
-    a: ivy.array([[[200., 400., 0.]]]),
-    b: ivy.array([[[0., 0., 0.]]])
+        a: ivy.array([[[200., 400., 0.]]]),
+        b: ivy.array([[[0., 0., 0.]]])
     }
     """
     return ivy.current_backend(x).dropout1d(
+        x, prob, training=training, data_format=data_format, out=out
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+def dropout2d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Randomly zero out entire channels with probability prob using samples from a
+    Bernoulli distribution and the remaining channels are scaled by (1/1-prob). In this
+    case, dropout2d performs a channel-wise dropout but assumes a channel is a 2D
+    feature map.
+
+    Parameters
+    ----------
+    x
+        a 3D or 4D input array. Should have a floating-point data type.
+    prob
+        probability of a channel to be zero-ed.
+    training
+        controls whether dropout2d is performed during training or ignored
+        during testing.
+    data_format
+        "NHWC" or "NCHW". Defaults to "NHWC".
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with some channels zero-ed and the rest of channels are
+         scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 1, 1]])
+    >>> y = ivy.dropout2d(x, 0.5)
+    >>> print(y)
+    ivy.array([[0., 2., 2.]])
+
+    >>> x = ivy.array([[1, 1, 1]])
+    >>> y = ivy.dropout2d(x, 1, training=False, data_format="NCW")
+    >>> print(y)
+    ivy.array([[1, 1, 1]])
+
+    With one :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([[100, 200, 300]]),
+                          b=ivy.array([[400, 500, 600]]))
+    >>> y = ivy.dropout2d(x, 0.5)
+    >>> print(y)
+    {
+        a: ivy.array([[200., 0., 600.]]),
+        b: ivy.array([[0., 0., 1200.]])
+    }
+    """
+    return ivy.current_backend(x).dropout2d(
         x, prob, training=training, data_format=data_format, out=out
     )
 

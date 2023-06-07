@@ -576,6 +576,24 @@ def fft(
     return ret
 
 
+def dropout(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    scale: bool = True,
+    dtype: tf.DType = None,
+    training: bool = True,
+    seed: Optional[int] = None,
+    noise_shape: Optional[Sequence[int]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x = ivy.astype(x, dtype) if dtype else x
+    res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed) if training else x
+    res = tf.multiply(res, (1.0 - prob)) if not scale else res
+    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+
+
 def dropout1d(
     x: Union[tf.Tensor, tf.Variable],
     prob: float,
@@ -586,17 +604,39 @@ def dropout1d(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if training:
+        is_batched = len(x.shape) == 3
         if data_format == "NCW":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            perm = (0, 2, 1) if is_batched else (1, 0)
             x = tf.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-2] = 1
-        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        res = tf.nn.dropout(x, prob)
         if data_format == "NCW":
             res = tf.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+
+
+def dropout2d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if training:
+        is_batched = len(x.shape) == 4
+        if data_format == "NCHW":
+            perm = (0, 2, 3, 1) if is_batched else (1, 2, 0)
+            x = tf.transpose(x, perm)
+        res = tf.nn.dropout(x, prob)
+        if data_format == "NCHW":
+            perm = (0, 3, 1, 2) if is_batched else (2, 0, 1)
+            res = tf.transpose(res, perm)
+    else:
+        res = x
+    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
 
 
 def dropout3d(
@@ -613,16 +653,13 @@ def dropout3d(
         if data_format == "NCDHW":
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = tf.transpose(x, perm)
-        noise_shape = list(x.shape)
-        sl = slice(1, -1) if is_batched else slice(-1)
-        noise_shape[sl] = [1] * 3
-        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        res = tf.nn.dropout(x, prob)
         if data_format == "NCDHW":
             perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
             res = tf.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
 
 
 def ifft(
