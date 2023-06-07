@@ -342,13 +342,19 @@ def test_isclose(
     fn_tree="functional.ivy.experimental.allclose",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
         num_arrays=2,
         shared_dtype=True,
-        min_num_dims=1,
-        max_num_dims=3,
+        allow_nan=True,
     ),
-    rtol=st.floats(min_value=1e-5, max_value=1e-5),
-    atol=st.floats(min_value=1e-5, max_value=1e-5),
+    rtol=st.floats(
+        min_value=1e-05, max_value=1e-01, exclude_min=True, exclude_max=True
+    ),
+    atol=st.floats(
+        min_value=1e-08, max_value=1e-01, exclude_min=True, exclude_max=True
+    ),
     equal_nan=st.booleans(),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
