@@ -7,7 +7,7 @@ import jax.numpy as jnp
 from numbers import Number
 from operator import mul
 from functools import reduce as _reduce
-from typing import Iterable, Optional, Union, Sequence, Callable, Tuple
+from typing import Optional, Union, Sequence, Callable, Tuple
 import multiprocessing as _multiprocessing
 import importlib
 
@@ -319,11 +319,13 @@ def scatter_nd(
     if (
         indices != Ellipsis
         and not (
-            isinstance(indices, (tuple, list)) and (Ellipsis in indices or len(indices) != 0)
+            isinstance(indices, (tuple, list))
+            and (Ellipsis in indices or len(indices) != 0)
         )
         and not isinstance(indices, slice)
         and not (
-            isinstance(indices, (tuple, list)) and any(isinstance(k, slice) for k in indices)
+            isinstance(indices, (tuple, list))
+            and any(isinstance(k, slice) for k in indices)
         )
     ):
         indices = [[indices]] if isinstance(indices, Number) else indices
