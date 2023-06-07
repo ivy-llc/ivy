@@ -1010,7 +1010,7 @@ def _wrap_function(
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
-            if attr.startswith("_") or hasattr(ivy, attr):
+            if attr.startswith("_") or hasattr(ivy, attr) or attr=="handle_backend_wrappers":
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
         # Copy docstring
@@ -1018,23 +1018,23 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
 
-        mixed_fn = getattr(to_wrap, "handle_backend_wrappers", {})
+        mixed_fn = getattr(original, "handle_backend_wrappers", {})
         add_wrappers = mixed_fn.get("to_add", [])
         skip_wrappers = mixed_fn.get("to_skip", [])
 
-    for attr in FN_DECORATORS:
-        if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or mixed_fn:
-            if attr in skip_wrappers and attr not in add_wrappers:
-                continue
+        for attr in FN_DECORATORS:
+            if (hasattr(original, attr) and not hasattr(to_wrap, attr)):
+                if attr not in skip_wrappers:
+                    to_wrap = getattr(ivy, attr)(to_wrap)
 
-            if attr == "handle_mixed_function":
-                if hasattr(to_wrap, "partial_mixed_handler"):
-                    to_wrap.compos = original
-                    to_wrap = handle_mixed_function(getattr(to_wrap, "partial_mixed_handler"))(to_wrap)
-                continue
-
-            to_wrap = getattr(ivy, attr)(to_wrap)
-
+            elif mixed_fn:
+                if attr == "handle_mixed_function":
+                    if hasattr(to_wrap, "partial_mixed_handler"):
+                        to_wrap.compos = original
+                        to_wrap = handle_mixed_function(getattr(to_wrap, "partial_mixed_handler"))(to_wrap)
+                    continue
+                if attr in add_wrappers:
+                    to_wrap = getattr(ivy, attr)(to_wrap)
 
     return to_wrap
 
