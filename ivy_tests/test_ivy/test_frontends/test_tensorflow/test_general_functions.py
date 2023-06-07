@@ -2046,7 +2046,6 @@ def test_tensorflow_truncatediv(
     fn_tree,
     on_device,
 ):
-    # todo: test for complex numbers
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
