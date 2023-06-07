@@ -1428,8 +1428,8 @@ def _upsample_bicubic2d_default(
     return result
 
 
+@handle_exceptions
 @handle_nestable
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def interpolate(
@@ -1755,6 +1755,16 @@ def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
     if return_added_padding:
         return p, added_padding
     return p
+
+
+interpolate.handle_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 def _compute_idx(in_size, out_size, device):
