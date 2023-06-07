@@ -100,6 +100,37 @@ def test_tensorflow_eigvalsh(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.linalg.eigh_tridiagonal",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=(3, 3),
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_eigh_tridiagonal(
+    *, dtype_x, frontend, test_flags, fn_tree, on_device
+):
+    input_dtype, x = dtype_x
+
+    matrix = np.array(x[0])
+    alpha = matrix.diagonal()
+    beta = matrix.diagonal(offset=1)
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-3,
+        alpha=alpha,
+        beta=beta,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.linalg.matrix_rank",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),

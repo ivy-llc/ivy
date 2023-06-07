@@ -31,6 +31,20 @@ def eigh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
+def eigh_tridiagonal(
+    alpha, beta, eigvals_only=True, select="a", select_range=None, tol=None, name=None
+):
+    return ivy.eigh_tridiagonal(
+        alpha,
+        beta,
+        eigvals_only=eigvals_only,
+        select=select,
+        select_range=select_range,
+        tol=tol,
+    )
+
+
+@to_ivy_arrays_and_back
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
