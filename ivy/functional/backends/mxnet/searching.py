@@ -26,7 +26,7 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[np.dtype, str]] = None,
+    dtype: Optional[Union[np.dtype, str]] = None,
     select_last_index: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
