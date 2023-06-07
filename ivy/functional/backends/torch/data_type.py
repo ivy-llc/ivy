@@ -93,10 +93,6 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
         raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("uint8", "uint16", "uint32", "uint64", "complex")},
-    backend_version,
-)
 def broadcast_to(
     x: torch.Tensor,
     /,
