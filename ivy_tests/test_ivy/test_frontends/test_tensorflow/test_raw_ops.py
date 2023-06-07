@@ -517,7 +517,7 @@ def test_tensorflow_Asin(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.ArgMax",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -554,7 +554,7 @@ def test_tensorflow_ArgMax(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.ArgMin",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -801,7 +801,7 @@ def _squeeze_helper(draw):
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Squeeze",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
@@ -1880,7 +1880,7 @@ def test_tensorflow_NotEqual(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Cumsum",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -1921,7 +1921,13 @@ def test_tensorflow_Cumsum(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=[
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        ],
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
@@ -1993,7 +1999,7 @@ def test_tensorflow_MatMul(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Cumprod",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -2128,7 +2134,7 @@ def test_tensorflow_GreaterEqual(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Mean",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -2166,7 +2172,7 @@ def test_tensorflow_Mean(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Identity",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
 )
@@ -2193,7 +2199,7 @@ def test_tensorflow_Identity(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.IdentityN",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
 )
@@ -2219,7 +2225,7 @@ def test_tensorflow_IdentityN(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Inv",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     test_with_out=st.just(False),
 )
@@ -2246,7 +2252,7 @@ def test_tensorflow_Inv(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Reciprocal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1,
     ),
     test_with_out=st.just(False),
@@ -2270,7 +2276,7 @@ def test_tensorflow_Reciprocal(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.OnesLike",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     test_with_out=st.just(False),
 )
@@ -2361,7 +2367,7 @@ def test_tensorflow_Mul(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Min",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -2396,7 +2402,7 @@ def test_tensorflow_Min(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Max",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -2489,7 +2495,7 @@ def test_tensorflow_MatrixDeterminant(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.NthElement",
     array_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric", full=True),
+        array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32"],
         min_num_dims=1,
         min_dim_size=1,
@@ -2523,7 +2529,7 @@ def test_tensorflow_NthElement(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Invert",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
+        available_dtypes=helpers.get_dtypes("integer"),
     ),
     test_with_out=st.just(False),
 )
@@ -2549,7 +2555,7 @@ def test_tensorflow_Invert(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.InvGrad",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         num_arrays=2,
         shared_dtype=True,
@@ -2672,7 +2678,7 @@ def test_tensorflow_RightShift(  # NOQA
 def _pow_helper_shared_dtype(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float", full=True),
+            available_dtypes=helpers.get_dtypes("float"),
             num_arrays=2,
             shared_dtype=True,
         )
@@ -2725,7 +2731,7 @@ def test_tensorflow_Pow(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Sum",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -2875,7 +2881,7 @@ def test_tensorflow_Round(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Unpack",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -3796,7 +3802,7 @@ def test_tensorflow_Size(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Prod",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,

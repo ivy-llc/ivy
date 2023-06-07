@@ -134,7 +134,6 @@ def broadcast_arrays(
     return result
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
     /,
