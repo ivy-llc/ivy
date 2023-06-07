@@ -101,20 +101,6 @@ def isclose(
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-def logaddexp2(
-    x1: Union[JaxArray, float, list, tuple],
-    x2: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    if not is_float_dtype(x1):
-        x1 = x1.astype(default_float_dtype(as_native=True))
-        x2 = x2.astype(default_float_dtype(as_native=True))
-    return jnp.logaddexp2(x1, x2)
-
-
 def signbit(
     x: Union[JaxArray, float, int, list, tuple],
     /,
@@ -427,10 +413,6 @@ def gradient(
 def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     x, y = promote_types_of_inputs(x, y)
     return js.special.xlogy(x, y)
-
-
-def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.real(x)
 
 
 def conj(
