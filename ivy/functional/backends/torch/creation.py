@@ -10,7 +10,6 @@ from torch import Tensor
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
-    with_unsupported_device_and_dtypes,
     _get_first_array,
 )
 from ivy.functional.ivy.creation import (
@@ -310,9 +309,6 @@ def _slice_at_axis(sl, axis):
     return (slice(None),) * axis + (sl,) + (...,)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.0.1 and below": {"cpu": ("float16",)}}, backend_version
-)
 def linspace(
     start: Union[torch.Tensor, float],
     stop: Union[torch.Tensor, float],
@@ -439,6 +435,7 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
         perm = list(range(0, ndim - 1))
         perm.insert(axis % (ndim + 1), ndim - 1)
         res = res.permute(perm)
+        res = torch.transpose(res, axis, -1)
     return res.to(device)
 
 
