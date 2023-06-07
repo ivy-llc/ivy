@@ -94,7 +94,7 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("uint8", "uint16", "uint32", "uint64", "complex")},
+    {"2.0.1 and below": ("uint8", "uint16", "uint32", "uint64")},
     backend_version,
 )
 def broadcast_to(
