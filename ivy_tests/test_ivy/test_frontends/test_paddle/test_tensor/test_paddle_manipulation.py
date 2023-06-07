@@ -137,3 +137,52 @@ def test_paddle_stack(
         x=xs,
         axis=axis,
     )
+
+
+# tile
+@st.composite
+def tile_helper(draw,
+                min_dim_size=2,
+                max_dim_size=5,
+                ):
+    x_dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_arrays=1,
+            ret_shape=True,
+            min_num_dims=min_dim_size,
+            max_num_dims=max_dim_size,
+        )
+    )
+    repeats = draw(
+        helpers.list_of_size(
+            x=helpers.ints(min_value=1, max_value=4),
+            size=len(x_shape),
+        )
+    )
+    return x_dtype, x, repeats
+
+
+@handle_frontend_test(
+    fn_tree="paddle.tile",
+    dtype_x_repeats=tile_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_tile(
+    *,
+    dtype_x_repeats,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags
+):
+    input_dtype, x, repeats = dtype_x_repeats
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        repeat_times=repeats,
+    )
