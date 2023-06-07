@@ -2589,9 +2589,10 @@ def test_tensorflow_conj(
     fn_tree="tensorflow.math.top_k",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
         shared_dtype=True,
     ),
-    k=st.integers(min_value=0, max_value=5),
+    k=st.integers(min_value=1, max_value=5),
     test_with_out=st.just(False),
 )
 def test_tensorflow_top_k(*, dtype_and_x, frontend, test_flags, fn_tree, on_device, k):
