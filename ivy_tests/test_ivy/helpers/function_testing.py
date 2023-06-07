@@ -319,8 +319,11 @@ def test_function(
             if hasattr(ivy.__dict__[fn_name], "out_index")
             else ret_from_target
         )
+        # defining and applying random dtype for out array
+        out_dtype = test_flags.out_dtypes[0][on_device]
+        zeros_fn = lambda x: ivy.zeros_like(x, dtype=out_dtype)
         out = ivy.nested_map(
-            test_ret, ivy.zeros_like, to_mutable=True, include_derived=True
+            test_ret, zeros_fn, to_mutable=True, include_derived=True
         )
         if instance_method:
             ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
@@ -383,7 +386,7 @@ def test_function(
             )
             out_from_gt = ivy.nested_map(
                 test_ret_from_gt,
-                ivy.zeros_like,
+                zeros_fn,
                 to_mutable=True,
                 include_derived=True,
             )
