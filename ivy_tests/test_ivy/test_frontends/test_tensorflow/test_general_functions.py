@@ -564,7 +564,7 @@ def test_tensorflow_ones_like(
 @handle_frontend_test(
     fn_tree="tensorflow.identity",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
 )
@@ -690,7 +690,7 @@ def _squeeze_helper(draw):
 @handle_frontend_test(
     fn_tree="tensorflow.squeeze",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
@@ -1503,7 +1503,7 @@ def test_tensorflow_tile(*, all_arguments, test_flags, frontend, fn_tree, on_dev
 @handle_frontend_test(
     fn_tree="tensorflow.one_hot",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=1,
         min_value=0,
         max_value=10,
