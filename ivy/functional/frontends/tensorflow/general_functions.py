@@ -11,6 +11,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 
 
 @to_ivy_arrays_and_back
@@ -430,8 +431,10 @@ def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("unsigned", "integer")}, "tensorflow")
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
 
 
