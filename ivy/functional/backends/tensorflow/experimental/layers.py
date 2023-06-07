@@ -481,10 +481,11 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    if x.dtype not in (tf.float32, tf.float64):
-        x = tf.cast(x, tf.float32)
+    # ToDo: Update this once tf.signal.dct supports axis other than -1
     if axis != -1:
         new_dims = list(range(len(x.shape)))
+        if axis < 0:
+            axis = len(x.shape) + axis
         new_dims[axis], new_dims[-1] = new_dims[-1], axis
         x = tf.transpose(x, new_dims)
         dct_out = tf.signal.dct(x, type=type, n=n, axis=-1, norm=norm)
@@ -492,6 +493,20 @@ def dct(
     else:
         dct_out = tf.signal.dct(x, type=type, n=n, axis=-1, norm=norm)
     return dct_out
+
+
+def idct(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
 
 def _fft_norm(
@@ -560,6 +575,7 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    x = tf.cast(x, tf.complex128)
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:
@@ -578,7 +594,7 @@ def fft(
         permute[dim], permute[-1] = permute[-1], permute[dim]
         x = tf.transpose(x, permute)
         ret = tf.signal.fft(x, operation_name)
-        x = tf.transpose(x, permute)
+        ret = tf.transpose(ret, permute)
         del permute
     else:
         ret = tf.signal.fft(x, operation_name)
