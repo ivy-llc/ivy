@@ -296,8 +296,6 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if type(updates) in (float, int):
-        updates = tf.Variable(updates)
     if ivy.exists(out) and not isinstance(updates, (Number, list, tuple)):
         out = (
             tf.cast(out, dtype=updates.dtype)
@@ -305,15 +303,15 @@ def scatter_nd(
             else out
         )
     # handle numeric updates
+    if hasattr(updates, "dtype"):
+        updates_dtype = updates.dtype
+    else:
+        updates_dtype = ivy.default_dtype(item=updates)
     if ivy.exists(out):
-        dtype = ivy.promote_types(out.dtype, updates.dtype)
+        dtype = ivy.promote_types(out.dtype, updates_dtype)
     updates = tf.cast(
         updates,
-        (
-            ivy.as_native_dtype(dtype)
-            if ivy.exists(out)
-            else ivy.default_dtype(item=updates)
-        ),
+        (ivy.as_native_dtype(dtype) if ivy.exists(out) else updates_dtype),
     )
     contains_slices = (
         any(isinstance(idx, slice) for idx in indices)
