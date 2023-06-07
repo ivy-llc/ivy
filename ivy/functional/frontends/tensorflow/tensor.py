@@ -235,7 +235,7 @@ class EagerTensor:
         ndim = len(self.shape)
         if ndim == 0:
             raise TypeError("iteration over a 0-d tensor not supported")
-        for i in range(ndim):
+        for i in range(self.shape[0]):
             yield self[i]
 
 

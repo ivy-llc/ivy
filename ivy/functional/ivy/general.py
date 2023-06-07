@@ -44,6 +44,7 @@ FN_CACHE = dict()
 INF = float("inf")
 TMP_DIR = "/tmp"
 
+precise_mode_stack = list()
 queue_timeout_stack = list()
 array_mode_stack = list()
 shape_array_mode_stack = list()
@@ -59,6 +60,114 @@ show_func_wrapper_trace_mode_stack = list()
 
 # Extra #
 # ------#
+
+
+class PreciseMode:
+    """Precise Mode Context Manager."""
+
+    # noinspection PyShadowingNames
+    def __init__(self, precise_mode):
+        self._precise_mode = precise_mode
+
+    def __enter__(self):
+        set_precise_mode(self._precise_mode)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        unset_precise_mode()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
+        return self
+
+
+@handle_exceptions
+def set_precise_mode(mode: bool) -> None:
+    """
+    Set the mode of whether to use a promotion table that avoids any precision loss or a
+    compute effecient table that avoids most wider-than-necessary promotions.
+
+    Parameter
+    ---------
+    mode
+        boolean whether to use high precision promtion table
+
+    Examples
+    --------
+    >>> ivy.set_precise_mode(False)
+    >>> ivy.get_precise_mode()
+    False
+
+    >>> ivy.set_precise_mode(True)
+    >>> ivy.get_precise_mode()
+    True
+    """
+    global precise_mode_stack
+    ivy.utils.assertions.check_isinstance(mode, bool)
+    precise_mode_stack.append(mode)
+    _update_promotion_table(precise=mode)
+
+
+@handle_exceptions
+def unset_precise_mode() -> None:
+    """
+    Reset the mode of whether to use a promotion table that avoids any precision loss or
+    a compute effecient table that avoids most wider-than-necessary promotions.
+
+    Examples
+    --------
+    >>> ivy.set_precise_mode(False)
+    >>> ivy.get_precise_mode()
+    False
+
+    >>> ivy.unset_precise_mode()
+    >>> ivy.get_array_mode()
+    True
+    """
+    global precise_mode_stack
+    if precise_mode_stack:
+        precise_mode_stack.pop(-1)
+        # TODO: change when it's not the default mode anymore
+        _update_promotion_table(
+            precise=precise_mode_stack[-1] if len(precise_mode_stack) != 0 else True
+        )
+
+
+@handle_exceptions
+def get_precise_mode() -> bool:
+    """
+    Get the current state of precise_mode.
+
+    Examples
+    --------
+    >>> ivy.get_precise_mode()
+    True
+
+    >>> ivy.set_precise_mode(False)
+    >>> ivy.get_precise_mode()
+    False
+    """
+    global precise_mode_stack
+    if not precise_mode_stack:
+        return True  # TODO: change when it's not the default mode anymore
+    return precise_mode_stack[-1]
+
+
+def _update_promotion_table(precise):
+    """Update the current datatype promotion table."""
+    if precise:
+        ivy.promotion_table = {
+            **ivy.array_api_promotion_table,
+            **ivy.common_extra_promotion_table,
+            **ivy.precise_extra_promotion_table,
+        }
+
+    else:
+        ivy.promotion_table = {
+            **ivy.array_api_promotion_table,
+            **ivy.common_extra_promotion_table,
+            **ivy.extra_promotion_table,
+        }
 
 
 class ArrayMode:
@@ -3872,3 +3981,19 @@ def strides(
     (4, 8)
     """
     return ivy.current_backend(x).strides(x)
+
+
+def is_ivy_nested_array(x: Any, /) -> bool:
+    """
+    Determine whether the input x is an Ivy Nested Array.
+
+    Parameters
+    ----------
+    x
+        The input to check
+    Returns
+    -------
+    ret
+        Boolean, whether or not x is an ivy nested array.
+    """
+    return isinstance(x, ivy.NestedArray)
