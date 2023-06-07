@@ -18,7 +18,7 @@ from .. import backend_version
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    {"2.4.2 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
