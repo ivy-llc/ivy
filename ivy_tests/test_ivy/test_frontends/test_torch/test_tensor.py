@@ -7889,12 +7889,16 @@ def test_torch_instance_div_(
 # divide
 @handle_frontend_method(
     class_tree=CLASS_TREE,
-    init_tree="torch_frontend.div",
+    init_tree="torch.tensor",
     method_name="divide",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
+    rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
 )
 def test_torch_instance_divide(
     dtype_and_x,
