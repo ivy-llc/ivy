@@ -460,6 +460,7 @@ def pool(
     ceil_mode: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # this function is from tensorflow
     return tf.nn.pool(
         x,
         window_shape,
