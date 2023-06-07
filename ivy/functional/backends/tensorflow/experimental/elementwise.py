@@ -21,6 +21,9 @@ def sinc(
     return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x), x.dtype)
 
 
+@with_supported_dtypes(
+    {"2.12.0 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
+)
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -31,8 +34,7 @@ def fmax(
     x1, x2 = promote_types_of_inputs(x1, x2)
     x1 = tf.where(tf.math.is_nan(x1), x2, x1)
     x2 = tf.where(tf.math.is_nan(x2), x1, x2)
-    ret = tf.experimental.numpy.maximum(x1, x2)
-    return ret
+    return tf.experimental.numpy.maximum(x1, x2)
 
 
 @with_unsupported_dtypes(

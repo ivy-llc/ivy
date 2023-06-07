@@ -48,15 +48,10 @@ def test_sinc(
     fn_tree="functional.ivy.experimental.fmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-10,
-        max_value=10,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
         num_arrays=2,
-        shared_dtype=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
-        allow_nan=True,
     ),
     test_gradients=st.just(False),
 )
@@ -657,7 +652,9 @@ def test_hypot(
 
 @handle_test(
     fn_tree="functional.ivy.experimental.binarizer",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     threshold=helpers.floats(),
     container_flags=st.just([False]),
 )
