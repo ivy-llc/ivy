@@ -1652,15 +1652,15 @@ class MaxPool1D(Module):
 
 class MaxPool3D(Module):
     def __init__(
-            self,
-            kernel_size,
-            stride,
-            padding,
-            /,
-            *,
-            data_format="NDHWC",
-            device=None,
-            dtype=None
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NDHWC",
+        device=None,
+        dtype=None,
     ):
         """
         Class for applying 3D Max Pooling over 5D inputs.
@@ -1692,14 +1692,13 @@ class MaxPool3D(Module):
         Returns
         -------
         The output of the layer.
-
         """
         return ivy.max_pool3d(
             x,
             self._kernel_size,
             self._stride,
             self._padding,
-            data_format=self._data_format
+            data_format=self._data_format,
         )
 
 
@@ -1711,10 +1710,10 @@ class AvgPool3D(Module):
         padding,
         /,
         *,
-        data_format = "NDHWC",
-        count_include_pad = False,
-        ceil_mode = False,
-        divisor_override = None,
+        data_format="NDHWC",
+        count_include_pad=False,
+        ceil_mode=False,
+        divisor_override=None,
     ):
         """
         Class for applying Average Pooling over a mini-batch of inputs.
@@ -1734,7 +1733,8 @@ class AvgPool3D(Module):
         ceil_mode
             Whether to use ceil or floor for creating the output shape.
         divisor_override
-            If specified, it will be used as divisor, otherwise kernel_size will be used.
+            If specified, it will be used as divisor,
+            otherwise kernel_size will be used.
         """
         self._kernel_size = kernel_size
         self._stride = strides
@@ -1767,4 +1767,56 @@ class AvgPool3D(Module):
             count_include_pad=self._count_include_pad,
             ceil_mode=self._ceil_mode,
             divisor_override=self._divisor_override,
+        )
+
+
+class AvgPool1D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NWC",
+    ):
+        """
+        Class for applying Average Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take an average over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        data_format
+            "NCW" or "NWC". Defaults to "NWC".
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.avg_pool1d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
         )
