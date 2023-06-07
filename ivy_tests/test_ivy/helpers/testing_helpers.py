@@ -260,10 +260,6 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
-        # need current device (we'll get it during testing) and testing 
-        # backend (we hope function_supported_devices_and_dtypes can handle it)
-        # if testing_backend == b:
-        #     dtypes = devices_and_dtypes
         try:
             # Issue with bfloat16 and tensorflow
             if "bfloat16" in devices_and_dtypes["gpu"]:
