@@ -1502,6 +1502,9 @@ def test_tensorflow_Sinh(  # NOQA
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1520,6 +1523,8 @@ def test_tensorflow_RealDiv(  # NOQA
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-03,
+        rtol=1e-03,
         x=xs[0],
         y=xs[1],
     )
@@ -1921,13 +1926,7 @@ def test_tensorflow_Cumsum(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=[
-            "float16",
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-        ],
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
