@@ -157,7 +157,8 @@ def sample_out_dtypes(draw, _fn):
         pass
 
     cpu_dtype = draw(st.sampled_from(devices_and_dtypes['cpu']))
-    if ivy.current_backend_str() == 'numpy':
+    # Adding paddle here since paddle gpu is not yet supported
+    if ivy.current_backend_str() in ['numpy', 'paddle']:
         return {'cpu': cpu_dtype, 'current_backend': current_backend}
 
     gpu_dtype = draw(st.sampled_from(devices_and_dtypes['gpu']))
