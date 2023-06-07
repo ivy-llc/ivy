@@ -967,7 +967,7 @@ def subtract(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
+    if x1.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
         x1, x2 = x1.astype("float32"), x2.astype("float32")
     if alpha not in (1, None):
         x2 = paddle_backend.multiply(x2, alpha)
