@@ -1,5 +1,3 @@
-#global
-import math
 # local
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
@@ -105,6 +103,8 @@ def binomial(n, p, size=None):
         raise ValueError("p must be in the interval (0, 1)")
     if n < 0:
         raise ValueError("n must be strictly positive")
+    if isinstance(size, int):
+        size = (size,)
     mean = n * p  # Calculate the mean for the Poisson distribution
     poisson_numbers = ivy.poisson(lam=mean,shape=size)  # Generate random numbers from the Poisson distribution
     return ivy.minimum(poisson_numbers, n)  # Truncate the random numbers to the range [0, n])
