@@ -536,7 +536,7 @@ def test_paddle_dot(
     helpers.test_frontend_function(
         input_dtypes=dtype, 
         frontend=frontend,
-        test_flags=test_flags,
+        test_flags=test_flags, 
         fn_tree=fn_tree, 
         on_device=on_device,
         # rtol_=5e-1,
