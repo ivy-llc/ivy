@@ -840,6 +840,42 @@ def logaddexp(
 
 
 @with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
+def logaddexp2(
+    x1: Union[paddle.Tensor, float, list, tuple],
+    x2: Union[paddle.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "float16",
+                "float32",
+                "float64",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    return paddle.real(x)
+
+
+@with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )

@@ -45,7 +45,7 @@ def test_torch_allclose(
 @handle_frontend_test(
     fn_tree="torch.equal",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid", full=False),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -173,7 +173,7 @@ def test_torch_greater_equal(
     fn_tree="torch.gt",
     aliases=["torch.greater"],
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -386,7 +386,7 @@ def test_torch_sort(
 @handle_frontend_test(
     fn_tree="torch.isnan",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid", full=False),
         min_value=-np.inf,
         max_value=np.inf,
     ),
@@ -475,7 +475,7 @@ def test_torch_less(
     fn_tree="torch.not_equal",
     aliases=["torch.ne"],
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid", full=False),
         num_arrays=2,
         shared_dtype=True,
     ),

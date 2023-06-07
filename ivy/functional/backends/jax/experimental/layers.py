@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, Literal, Sequence, Callable
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -7,10 +7,15 @@ import math
 
 # local
 import ivy
+from ivy import output_to_native_arrays
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
+from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
+from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -400,6 +405,7 @@ def avg_pool3d(
     return res
 
 
+@with_supported_dtypes({"0.4.11 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -419,7 +425,7 @@ def dct(
         if n <= signal_len:
             local_idx = [slice(None)] * len(x.shape)
             local_idx[axis] = slice(None, n)
-            x = x[local_idx]
+            x = x[tuple(local_idx)]
         else:
             pad_idx = [[0, 0] for _ in range(len(x.shape))]
             pad_idx[axis][1] = n - signal_len
@@ -472,6 +478,20 @@ def dct(
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * jlax.rsqrt(axis_dim_float)
     return dct_out
+
+
+def idct(
+    x: JaxArray,
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
 
 def fft(
@@ -646,3 +666,34 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
     ]
     and recompute_scale_factor
 )
+
+
+def reduce_window(
+    operand: JaxArray,
+    init_value: Union[int, float],
+    computation: Callable,
+    window_dimensions: Union[int, Sequence[int]],
+    /,
+    *,
+    window_strides: Union[int, Sequence[int]] = 1,
+    padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+    base_dilation: Union[int, Sequence[int]] = 1,
+    window_dilation: Union[int, Sequence[int]] = 1,
+) -> JaxArray:
+    computation = _correct_ivy_callable(computation)
+    computation = output_to_native_arrays(computation)
+    if not isinstance(padding, str):
+        # for containers the padding reaches the function as a list of lists instead of
+        # a list of tuples, which gives an unhashable dtype error
+        # this is similarly a problem in the jax backend of ivy.pad
+        padding = _to_nested_tuple(padding)
+    return jlax.reduce_window(
+        operand,
+        init_value,
+        computation,
+        window_dimensions,
+        window_strides,
+        padding,
+        base_dilation,
+        window_dilation,
+    )

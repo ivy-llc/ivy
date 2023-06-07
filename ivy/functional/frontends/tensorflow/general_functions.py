@@ -11,6 +11,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 
 
 @to_ivy_arrays_and_back
@@ -173,7 +174,7 @@ def cond(pred, true_fn=None, false_fn=None, name=None):
 
     if not pred:
         return false_fn()
-    
+
 
 @to_ivy_arrays_and_back
 def shape(input, out_type=ivy.int32, name=None):
@@ -211,7 +212,7 @@ def ensure_shape(x, shape, name=None):
 @with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
-def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
+def range(start, limit=None, delta=1, dtype=None, name=None):
     return ivy.arange(start, limit, delta, dtype=dtype)
 
 
@@ -430,8 +431,10 @@ def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("unsigned", "integer")}, "tensorflow")
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
 
 
@@ -478,6 +481,7 @@ def split(value, num_or_size_splits, axis=0, num=None, name=None):
     )
 
 
+@to_ivy_arrays_and_back
 def repeat(
     input,
     repeats,
@@ -548,3 +552,9 @@ def while_loop(
     name=None,
 ):
     return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def truncatediv(x, y, name=None):
+    return x.trunc_divide(y)

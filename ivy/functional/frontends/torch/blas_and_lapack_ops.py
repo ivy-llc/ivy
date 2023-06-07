@@ -190,22 +190,24 @@ def svd(input, some=True, compute_uv=True, *, out=None):
 
 @to_ivy_arrays_and_back
 def vdot(input, other, *, out=None):
-    if len(ivy.shape(input)) != 1 or len(ivy.shape(other)) != 1:
+    if len(input.shape) != 1 or len(other.shape) != 1:
         raise RuntimeError("input must be 1D vectors")
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
-    return ivy.vecdot(input, other, out=out)
+    ret = ivy.vecdot(input, other, out=out)
+    return ret.squeeze(0) if ret.ndim == 1 else ret
 
 
 @to_ivy_arrays_and_back
 def dot(input, other, *, out=None):
-    if len(ivy.shape(input)) == 1 and len(ivy.shape(other)) == 1:
+    if len(input.shape) == 1 and len(other.shape) == 1:
         input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
-        return ivy.dot(input, other, out=out)
+        return ivy.matmul(input, other, out=out)
     else:
         raise RuntimeError("input must be 1D vectors")
 
 
-@with_unsupported_dtypes({"1.13.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
 def trapezoid(y, x=None, *, dx=None, dim=-1):
     if x is not None:
         y, x = torch_frontend.promote_types_of_torch_inputs(y, x)

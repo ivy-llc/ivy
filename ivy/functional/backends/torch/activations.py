@@ -33,17 +33,7 @@ def leaky_relu(
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
-def elu(
-    x: torch.Tensor,
-    /,
-    *,
-    alpha: float = 1.0,
-    inplace: bool = False,
-) -> torch.Tensor:
-    return torch.nn.functional.elu(x, alpha=alpha, inplace=inplace)
-
-  
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def gelu(
     x: torch.Tensor,
     /,
@@ -99,7 +89,13 @@ def softplus(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("complex", "float16", "bfloat16")}, backend_version
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
 )
 def log_softmax(
     x: torch.Tensor,
@@ -114,7 +110,13 @@ def log_softmax(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("complex", "float16", "bfloat16")}, backend_version
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
 )
 def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.mish(x)

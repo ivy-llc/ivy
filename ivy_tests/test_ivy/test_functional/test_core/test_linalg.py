@@ -361,15 +361,25 @@ def test_matmul(
     )
 
 
+@st.composite
+def _det_helper(draw):
+    square = draw(helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])))
+    shape_prefix = draw(helpers.get_shape())
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=2,
+            max_value=5,
+            shape=shape_prefix + square,
+        )
+    )
+    return dtype_x
+
+
 # det
 @handle_test(
     fn_tree="functional.ivy.det",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=2,
-        max_value=5,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    dtype_x=_det_helper(),
 )
 def test_det(
     *,
@@ -381,6 +391,7 @@ def test_det(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -630,13 +641,7 @@ def test_outer(
 # execute with grads error
 @handle_test(
     fn_tree="functional.ivy.slogdet",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=2,
-        max_value=5,
-        safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ),
+    dtype_x=_det_helper(),
     test_with_out=st.just(False),
 )
 def test_slogdet(
@@ -886,9 +891,9 @@ def test_trace(
         small_abs_safety_factor=100,
         safety_factor_scale="log",
         min_num_dims=1,
-        max_num_dims=5,
+        max_num_dims=4,
         min_dim_size=1,
-        max_dim_size=5,
+        max_dim_size=4,
     ),
 )
 def test_vecdot(

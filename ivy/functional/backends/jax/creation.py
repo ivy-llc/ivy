@@ -94,11 +94,7 @@ def asarray(
     if copy is True:
         return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
     else:
-        # jnp.array is much slower than np.array when called on lists
-        # timing the function given a 7 million integer element list
-        # the execution time drops from 323 to 17 seconds
-        obj = np.asarray(_to_array(obj))
-        return _to_device(jnp.array(obj, dtype=dtype), device=device)
+        return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
 
 
 def empty(
