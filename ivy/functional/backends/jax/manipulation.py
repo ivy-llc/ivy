@@ -35,7 +35,10 @@ def concat(
                 xs[i] = jnp.ravel(xs[i])
         if is_tuple:
             xs = tuple(xs)
-    return jnp.concatenate(xs, axis)
+    try:
+        return jnp.concatenate(xs, axis)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def expand_dims(
@@ -49,8 +52,8 @@ def expand_dims(
     try:
         ret = jnp.expand_dims(x, axis)
         return ret
-    except IndexError as error:
-        raise ivy.utils.exceptions.IvyException(repr(error))
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def flip(
@@ -136,7 +139,10 @@ def stack(
     axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.stack(arrays, axis=axis)
+    try:
+        return jnp.stack(arrays, axis=axis)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 # Extra #
@@ -237,7 +243,7 @@ def clip(
     return jnp.where(x < x_min, x_min, x)
 
 
-@with_unsupported_dtypes({"0.4.10 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"0.4.11 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,

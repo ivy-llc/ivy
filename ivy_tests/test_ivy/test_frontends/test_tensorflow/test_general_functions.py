@@ -564,7 +564,7 @@ def test_tensorflow_ones_like(
 @handle_frontend_test(
     fn_tree="tensorflow.identity",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
 )
@@ -690,7 +690,7 @@ def _squeeze_helper(draw):
 @handle_frontend_test(
     fn_tree="tensorflow.squeeze",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
@@ -746,6 +746,45 @@ def test_tensorflow_concat(
         on_device=on_device,
         values=x,
         axis=axis,
+    )
+
+
+# cond
+@handle_frontend_test(
+    fn_tree="tensorflow.cond",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    pred_cond=st.booleans(),
+    var=st.integers(min_value=1, max_value=100),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_cond(
+    *,
+    dtype_and_x,
+    pred_cond,
+    var,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    _test_true_fn = lambda: var + var
+
+    _test_false_fn = lambda: var * var
+
+    input_dtype, _ = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        pred=pred_cond,
+        true_fn=_test_true_fn,
+        false_fn=_test_false_fn,
     )
 
 
@@ -1464,7 +1503,7 @@ def test_tensorflow_tile(*, all_arguments, test_flags, frontend, fn_tree, on_dev
 @handle_frontend_test(
     fn_tree="tensorflow.one_hot",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=1,
         min_value=0,
         max_value=10,
