@@ -50,7 +50,7 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
 
     if seed:
         rng_input = jax.random.PRNGKey(seed)
