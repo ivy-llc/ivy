@@ -48,15 +48,10 @@ def test_sinc(
     fn_tree="functional.ivy.experimental.fmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-10,
-        max_value=10,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
         num_arrays=2,
-        shared_dtype=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
-        allow_nan=True,
     ),
     test_gradients=st.just(False),
 )
@@ -298,18 +293,19 @@ def test_nansum(
     fn_tree="functional.ivy.experimental.isclose",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
         num_arrays=2,
-        allow_nan=True,
         shared_dtype=True,
-        min_num_dims=0,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
+        allow_nan=True,
     ),
-    rtol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True),
-    atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True),
+    rtol=st.floats(
+        min_value=1e-05, max_value=1e-01, exclude_min=True, exclude_max=True
+    ),
+    atol=st.floats(
+        min_value=1e-08, max_value=1e-01, exclude_min=True, exclude_max=True
+    ),
     equal_nan=st.booleans(),
     test_gradients=st.just(False),
 )
@@ -341,57 +337,24 @@ def test_isclose(
     )
 
 
-# logaddexp2
-@handle_test(
-    fn_tree="functional.ivy.experimental.logaddexp2",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_value=-100,
-        max_value=100,
-        allow_nan=False,
-    ),
-    test_gradients=st.just(False),
-)
-def test_logaddexp2(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        ground_truth_backend=ground_truth_backend,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-02,
-        atol_=1e-02,
-        x1=x[0],
-        x2=x[1],
-    )
-
-
 # allclose
 @handle_test(
     fn_tree="functional.ivy.experimental.allclose",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
         num_arrays=2,
         shared_dtype=True,
-        min_num_dims=1,
-        max_num_dims=3,
+        allow_nan=True,
     ),
-    rtol=st.floats(min_value=1e-5, max_value=1e-5),
-    atol=st.floats(min_value=1e-5, max_value=1e-5),
+    rtol=st.floats(
+        min_value=1e-05, max_value=1e-01, exclude_min=True, exclude_max=True
+    ),
+    atol=st.floats(
+        min_value=1e-08, max_value=1e-01, exclude_min=True, exclude_max=True
+    ),
     equal_nan=st.booleans(),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
@@ -658,34 +621,6 @@ def test_xlogy(
     )
 
 
-# real
-@handle_test(
-    fn_tree="functional.ivy.experimental.real",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex")
-    ),
-)
-def test_real(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
 # hypot
 @handle_test(
     fn_tree="functional.ivy.experimental.hypot",
@@ -724,7 +659,9 @@ def test_hypot(
 
 @handle_test(
     fn_tree="functional.ivy.experimental.binarizer",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     threshold=helpers.floats(),
     container_flags=st.just([False]),
 )

@@ -48,7 +48,7 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[torch.dtype] = None,
+    dtype: Optional[torch.dtype] = None,
     select_last_index: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -63,9 +63,9 @@ def argmin(
             ret = x.shape[axis] - ret - 1
     else:
         ret = torch.argmin(x, dim=axis, keepdim=keepdims)
-    if output_dtype:
-        output_dtype = ivy.as_native_dtype(output_dtype)
-        return ret.to(dtype=output_dtype)
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        return ret.to(dtype=dtype)
     return ret
 
 

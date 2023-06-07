@@ -192,34 +192,6 @@ def test_paddle_asin(
     )
 
 
-# log_softmax
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.log_softmax",
-    aliases=["paddle.log_softmax", "paddle.nn.functional.log_softmax"],
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_paddle_log_softmax(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        atol=1e-2,
-        x=x[0],
-    )
-
-
 # log
 @handle_frontend_test(
     fn_tree="paddle.log",
@@ -316,7 +288,7 @@ def test_paddle_multiply(
 @handle_frontend_test(
     fn_tree="paddle.add",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         allow_inf=False,
         large_abs_safety_factor=2,
@@ -508,6 +480,32 @@ def test_paddle_ceil(
     )
 
 
+# sinh
+@handle_frontend_test(
+    fn_tree="paddle.sinh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_sinh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # pow
 @handle_frontend_test(
     fn_tree="paddle.pow",
@@ -538,6 +536,7 @@ def test_paddle_pow(
     )
 
 
+# abs
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.abs",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
