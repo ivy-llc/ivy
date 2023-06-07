@@ -141,10 +141,11 @@ def test_paddle_stack(
 
 # tile
 @st.composite
-def tile_helper(draw,
-                min_dim_size=2,
-                max_dim_size=5,
-                ):
+def tile_helper(
+    draw,
+    min_dim_size=2,
+    max_dim_size=5,
+):
     x_dtype, x, x_shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
@@ -174,7 +175,7 @@ def test_paddle_tile(
     on_device,
     fn_tree,
     frontend,
-    test_flags
+    test_flags,
 ):
     input_dtype, x, repeats = dtype_x_repeats
     helpers.test_frontend_function(
