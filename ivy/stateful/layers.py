@@ -1625,7 +1625,7 @@ class AvgPool1D(Module):
         self._data_format = data_format
         Module.__init__(self)
 
-    def _forward(self, inputs, kernel_size, stride, padding, /, *, data_format=None):
+    def _forward(self, inputs):
         """
         Forward pass of the layer.
 
@@ -1640,8 +1640,8 @@ class AvgPool1D(Module):
         """
         return ivy.avg_pool1d(
             inputs,
-            ivy.default(kernel_size, self._kernel_size),
-            ivy.default(stride, self._stride),
-            ivy.default(padding, self._padding),
-            data_format=ivy.default(data_format, self._data_format),
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
         )
