@@ -552,3 +552,9 @@ def while_loop(
     name=None,
 ):
     return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def truncatediv(x, y, name=None):
+    return x.trunc_divide(y)
