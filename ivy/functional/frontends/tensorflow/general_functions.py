@@ -550,8 +550,9 @@ def while_loop(
     return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("int8", "int16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def truncate_mod(x, y):
+def truncatemod(x, y):
     x = ivy.broadcast_to(x, ivy.shape(y))
     y = ivy.broadcast_to(y, ivy.shape(x))
     return ivy.trunc(x / y) * y + (x % y)
