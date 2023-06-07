@@ -9,6 +9,8 @@ from hypothesis import assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
+import ivy_tests.test_ivy.helpers.globals as test_globals
 
 _zero = np.asarray(0, dtype="uint8")
 _one = np.asarray(1, dtype="uint8")
@@ -1419,8 +1421,12 @@ def pow_helper(draw, available_dtypes=None):
 
     def cast_filter(dtype1_x1_dtype2):
         dtype1, _, dtype2 = dtype1_x1_dtype2
-        if (ivy.as_ivy_dtype(dtype1), ivy.as_ivy_dtype(dtype2)) in ivy.promotion_table:
-            return True
+        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if (
+                ivy_backend.as_ivy_dtype(dtype1),
+                ivy_backend.as_ivy_dtype(dtype2),
+            ) in ivy_backend.promotion_table:
+                return True
         return False
 
     dtype1, x1, dtype2 = draw(
@@ -1428,10 +1434,12 @@ def pow_helper(draw, available_dtypes=None):
             cast_filter
         )
     )
-    if ivy.is_int_dtype(dtype2):
-        max_val = ivy.iinfo(dtype2).max
-    else:
-        max_val = ivy.finfo(dtype2).max
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_int_dtype(dtype2):
+            max_val = ivy_backend.iinfo(dtype2).max
+        else:
+            max_val = ivy_backend.finfo(dtype2).max
+
     max_x1 = np.max(np.abs(x1[0]))
     if max_x1 in [0, 1]:
         max_value = None
