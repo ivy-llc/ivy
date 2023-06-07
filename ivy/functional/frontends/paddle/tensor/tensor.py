@@ -121,3 +121,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(self, axis=None, keepdim=False, dtype=None, name=None):
         return ivy.argmax(self._ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def exp(self, name=None):
+        return ivy.exp(self._ivy_array)
