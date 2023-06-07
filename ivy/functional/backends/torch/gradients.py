@@ -175,7 +175,7 @@ def stop_gradient(
             x = x.detach()
             x.requires_grad = True
         elif x.grad:
-            x.grad.data.zero_
+            x.grad.data.zero_()
         return x
     return x.detach()
 

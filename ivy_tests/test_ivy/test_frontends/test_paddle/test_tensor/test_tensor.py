@@ -284,7 +284,7 @@ def test_paddle_instance_abs(
     init_tree="paddle.to_tensor",
     method_name="zero_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_paddle_instance_zero_(
@@ -301,7 +301,7 @@ def test_paddle_instance_zero_(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=[],
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
