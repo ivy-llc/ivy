@@ -901,7 +901,7 @@ def gradient_test(
 
         _, grads = ivy_backend.execute_with_gradients(
             _grad_fn,
-            [args, kwargs, 0, backend_to_test],
+            [args, kwargs, 0],
             xs_grad_idxs=xs_grad_idxs,
             ret_grad_idxs=ret_grad_idxs,
         )
@@ -1267,71 +1267,80 @@ def test_method(
             test_compile=test_compile,
             **kwargs_gt_method,
         )
-        # fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
-        # fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
-        # for k, v in fw_list2.items():
-        #     if k not in fw_list:
-        #         fw_list[k] = []
-        #     fw_list[k].extend(v)
+
+        # TODO optimize or cache
+        # Exhuastive replication for all examples
+        fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
+        fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
+        for k, v in fw_list2.items():
+            if k not in fw_list:
+                fw_list[k] = []
+            fw_list[k].extend(v)
 
         if isinstance(ret_from_gt, gt_backend.Array):
             ret_from_gt_device = gt_backend.dev(ret_from_gt)
         else:
             ret_from_gt_device = None
 
-    # gradient test
-    # TODO enable gradient testing
-    # if (
-    #     test_gradients
-    #     and not backend_to_test == "numpy"
-    #     and "bool" not in method_input_dtypes
-    #     and not any(ivy.is_complex_dtype(d) for d in method_input_dtypes)
-    # ):
-    #     if fw in fw_list:
-    #         if ivy.nested_argwhere(
-    #             method_all_as_kwargs_np,
-    #             lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
-    #         ):
-    #             pass
-    #         else:
-    #             gradient_test(
-    #                 fn=[
-    #                     ins.__getattribute__(method_name),
-    #                     ins_gt.__getattribute__(method_name),
-    #                 ],
-    #                 all_as_kwargs_np=method_all_as_kwargs_np,
-    #                 args_np=args_np_method,
-    #                 kwargs_np=kwargs_np_method,
-    #                 input_dtypes=method_input_dtypes,
-    #                 test_flags=method_flags,
-    #                 test_compile=test_compile,
-    #                 rtol_=rtol_,
-    #                 atol_=atol_,
-    #                 xs_grad_idxs=xs_grad_idxs,
-    #                 ret_grad_idxs=ret_grad_idxs,
-    #                 ground_truth_backend=ground_truth_backend,
-    #                 on_device=on_device,
-    #             )
+        # gradient test
+        # TODO enable gradient testing
+        if (
+            test_gradients
+            and not backend_to_test == "numpy"
+            and "bool" not in method_input_dtypes
+            and not any(gt_backend.is_complex_dtype(d) for d in method_input_dtypes)
+        ):
+            if backend_to_test in fw_list:
+                if gt_backend.nested_argwhere(
+                    method_all_as_kwargs_np,
+                    lambda x: (
+                        x.dtype in fw_list[backend_to_test]
+                        if isinstance(x, np.ndarray)
+                        else None
+                    ),
+                ):
+                    pass
+                else:
+                    gradient_test(
+                        fn=[
+                            ins.__getattribute__(method_name),
+                            ins_gt.__getattribute__(method_name),
+                        ],
+                        all_as_kwargs_np=method_all_as_kwargs_np,
+                        args_np=args_np_method,
+                        kwargs_np=kwargs_np_method,
+                        input_dtypes=method_input_dtypes,
+                        test_flags=method_flags,
+                        test_compile=test_compile,
+                        rtol_=rtol_,
+                        atol_=atol_,
+                        xs_grad_idxs=xs_grad_idxs,
+                        ret_grad_idxs=ret_grad_idxs,
+                        backend_to_test=backend_to_test,
+                        ground_truth_backend=ground_truth_backend,
+                        on_device=on_device,
+                    )
 
-    #     else:
-    #         gradient_test(
-    #             fn=[
-    #                 ins.__getattribute__(method_name),
-    #                 ins_gt.__getattribute__(method_name),
-    #             ],
-    #             all_as_kwargs_np=method_all_as_kwargs_np,
-    #             args_np=args_np_method,
-    #             kwargs_np=kwargs_np_method,
-    #             input_dtypes=method_input_dtypes,
-    #             test_flags=method_flags,
-    #             test_compile=test_compile,
-    #             rtol_=rtol_,
-    #             atol_=atol_,
-    #             xs_grad_idxs=xs_grad_idxs,
-    #             ret_grad_idxs=ret_grad_idxs,
-    #             ground_truth_backend=ground_truth_backend,
-    #             on_device=on_device,
-    #         )
+            else:
+                gradient_test(
+                    fn=[
+                        ins.__getattribute__(method_name),
+                        ins_gt.__getattribute__(method_name),
+                    ],
+                    all_as_kwargs_np=method_all_as_kwargs_np,
+                    args_np=args_np_method,
+                    kwargs_np=kwargs_np_method,
+                    input_dtypes=method_input_dtypes,
+                    test_flags=method_flags,
+                    test_compile=test_compile,
+                    rtol_=rtol_,
+                    atol_=atol_,
+                    xs_grad_idxs=xs_grad_idxs,
+                    ret_grad_idxs=ret_grad_idxs,
+                    backend_to_test=backend_to_test,
+                    ground_truth_backend=ground_truth_backend,
+                    on_device=on_device,
+                )
 
     assert (
         ret_device == ret_from_gt_device
