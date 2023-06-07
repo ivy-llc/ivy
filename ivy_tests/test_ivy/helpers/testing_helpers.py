@@ -157,8 +157,8 @@ def sample_out_dtypes(draw, _fn):
         pass
 
     cpu_dtype = draw(st.sampled_from(devices_and_dtypes['cpu']))
-    # Adding paddle here since paddle gpu is not yet supported
-    if ivy.current_backend_str() in ['numpy', 'paddle']:
+    # ToDo: Remove paddle from here once paddle gpu works correctly on the docker Image
+    if current_backend in ['numpy', 'paddle']:
         return {'cpu': cpu_dtype, 'current_backend': current_backend}
 
     gpu_dtype = draw(st.sampled_from(devices_and_dtypes['gpu']))
@@ -260,7 +260,8 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
-        # need current device (we'll get it during testing) and testing backend (we hope function_supported_devices_and_dtypes can handle it)
+        # need current device (we'll get it during testing) and testing 
+        # backend (we hope function_supported_devices_and_dtypes can handle it)
         # if testing_backend == b:
         #     dtypes = devices_and_dtypes
         try:
