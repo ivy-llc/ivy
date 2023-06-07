@@ -30,7 +30,7 @@ def random_uniform(
 ) -> np.ndarray:
     if seed:
         np.random.seed(seed)
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
 
