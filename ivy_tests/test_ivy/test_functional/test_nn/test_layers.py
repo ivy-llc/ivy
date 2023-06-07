@@ -776,9 +776,18 @@ def test_conv_general_dilated(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
-        x_f_d_df
-    )
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        fc,
+        ff_format,
+        bias,
+    ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,

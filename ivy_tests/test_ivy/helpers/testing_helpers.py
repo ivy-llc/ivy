@@ -31,7 +31,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
-
+from ivy_tests.test_ivy.conftest import mod_backend
 
 cmd_line_args = (
     "with_out",
@@ -156,6 +156,20 @@ def _import_fn(fn_tree: str):
     return callable_fn, fn_name, module_to_import
 
 
+def _get_method_supported_devices_dtypes_helper(method_name: str, class_module: str, class_name: str, backend_str:str):
+    # helper to delegate backend related
+    # computation outside the main function
+    # so as to ease multiprocessing
+    with update_backend(backend_str) as backend:
+        _fn = getattr(class_module.__dict__[class_name], method_name)
+        devices_and_dtypes = backend.function_supported_devices_and_dtypes(_fn)
+        organized_dtypes = {}
+        for device in devices_and_dtypes.keys():
+            organized_dtypes[device] = _partition_dtypes_into_kinds(
+                backend_str, devices_and_dtypes[device]
+            )
+    return organized_dtypes
+
 def _get_method_supported_devices_dtypes(
     method_name: str, class_module: str, class_name: str
 ):
@@ -179,17 +193,38 @@ def _get_method_supported_devices_dtypes(
     for the method
     """
     supported_device_dtypes = {}
+
     for backend_str in available_frameworks:
-        with update_backend(backend_str) as backend:
-            _fn = getattr(class_module.__dict__[class_name], method_name)
-            devices_and_dtypes = backend.function_supported_devices_and_dtypes(_fn)
-            organized_dtypes = {}
-            for device in devices_and_dtypes.keys():
-                organized_dtypes[device] = _partition_dtypes_into_kinds(
-                    backend_str, devices_and_dtypes[device]
-                )
-            supported_device_dtypes[backend_str] = organized_dtypes
+            if mod_backend[backend_str] :
+                # we gotta do this using multiprocessing
+                proc,input_queue,output_queue = mod_backend[backend_str]
+                input_queue.put(("method supported dtypes", method_name,class_module.__name__, class_name, backend_str))
+                supported_device_dtypes[backend_str]= output_queue.get()
+            else:
+                supported_device_dtypes[backend_str] = _get_method_supported_devices_dtypes_helper(method_name,class_module, class_name, backend_str)
     return supported_device_dtypes
+
+
+def _get_supported_devices_dtypes_helper(backend_str:str, fn_module: str, fn_name:str):
+    # helper function so as to ease multiprocessing
+    with update_backend(backend_str) as backend:
+        _tmp_mod = importlib.import_module(fn_module)  # TODO use dynamic import?
+        _fn = _tmp_mod.__dict__[fn_name]
+        devices_and_dtypes = backend.function_supported_devices_and_dtypes(_fn)
+        try:
+            # Issue with bfloat16 and tensorflow
+            if "bfloat16" in devices_and_dtypes["gpu"]:
+                tmp = list(devices_and_dtypes["gpu"])
+                tmp.remove("bfloat16")
+                devices_and_dtypes["gpu"] = tuple(tmp)
+        except KeyError:
+            pass
+        organized_dtypes = {}
+        for device in devices_and_dtypes.keys():
+            organized_dtypes[device] = _partition_dtypes_into_kinds(
+                backend_str, devices_and_dtypes[device]
+            )
+    return organized_dtypes
 
 
 def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
@@ -219,24 +254,14 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             fn_name = "_" + fn_name
 
     for backend_str in available_frameworks:
-        with update_backend(backend_str) as backend:
-            _tmp_mod = importlib.import_module(fn_module)  # TODO use dynamic import?
-            _fn = _tmp_mod.__dict__[fn_name]
-            devices_and_dtypes = backend.function_supported_devices_and_dtypes(_fn)
-            try:
-                # Issue with bfloat16 and tensorflow
-                if "bfloat16" in devices_and_dtypes["gpu"]:
-                    tmp = list(devices_and_dtypes["gpu"])
-                    tmp.remove("bfloat16")
-                    devices_and_dtypes["gpu"] = tuple(tmp)
-            except KeyError:
-                pass
-            organized_dtypes = {}
-            for device in devices_and_dtypes.keys():
-                organized_dtypes[device] = _partition_dtypes_into_kinds(
-                    backend_str, devices_and_dtypes[device]
-                )
-            supported_device_dtypes[backend_str] = organized_dtypes
+            if mod_backend[backend_str] :
+                # we know we need to use multiprocessing
+                # to get the devices and dtypes
+                proc,input_queue, output_queue = mod_backend[backend_str]
+                input_queue.put(("supported dtypes",fn_module, fn_name, backend_str))
+                supported_device_dtypes[backend_str]=output_queue.get()
+            else:
+                supported_device_dtypes[backend_str] = _get_supported_devices_dtypes_helper(backend_str,fn_module,fn_name)
     return supported_device_dtypes
 
 

@@ -746,6 +746,7 @@ def test_depthwise_conv2d_layer(
     bias_initializer=_sample_initializer(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
+
 )
 def test_conv3d_layer(
     _x_ic_oc_f_s_d_df_p,
@@ -759,6 +760,7 @@ def test_conv3d_layer(
     ground_truth_backend,
     init_flags,
     method_flags,
+    backend_fw
 ):
     (
         input_dtype,
@@ -779,6 +781,7 @@ def test_conv3d_layer(
         )
     )
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -824,6 +827,7 @@ def test_conv3d_layer(
     ),
 )
 def test_conv3d_transpose_layer(
+
     _x_ic_oc_f_s_d_df_p,
     weight_initializer,
     bias_initializer,
@@ -835,6 +839,7 @@ def test_conv3d_transpose_layer(
     ground_truth_backend,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     (
         input_dtype,
@@ -856,6 +861,7 @@ def test_conv3d_transpose_layer(
         )
     )
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,

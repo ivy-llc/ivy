@@ -8,7 +8,7 @@ import inspect
 from collections import OrderedDict
 
 from ivy.utils.exceptions import IvyException
-
+from ivy_tests.test_ivy.conftest import mod_backend
 
 try:
     import tensorflow as tf
@@ -110,6 +110,226 @@ def _find_instance_in_args(backend: str, args, array_indices, mask):
     return instance, new_args
 
 
+def test_function_backend_computation(fw,test_flags,all_as_kwargs_np,input_dtypes, on_device, fn_name):
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(
+        num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
+    )
+
+    # Extract all arrays from the arguments and keyword arguments
+    arg_np_arrays, arrays_args_indices, n_args_arrays = _get_nested_np_arrays(args_np)
+    kwarg_np_arrays, arrays_kwargs_indices, n_kwargs_arrays = _get_nested_np_arrays(
+        kwargs_np
+    )
+
+    # Make all array-specific test flags and dtypes equal in length
+    total_num_arrays = n_args_arrays + n_kwargs_arrays
+    if len(input_dtypes) < total_num_arrays:
+        input_dtypes = [input_dtypes[0] for _ in range(total_num_arrays)]
+    if len(test_flags.as_variable) < total_num_arrays:
+        test_flags.as_variable = [
+            test_flags.as_variable[0] for _ in range(total_num_arrays)
+        ]
+    if len(test_flags.native_arrays) < total_num_arrays:
+        test_flags.native_arrays = [
+            test_flags.native_arrays[0] for _ in range(total_num_arrays)
+        ]
+    if len(test_flags.container) < total_num_arrays:
+        test_flags.container = [
+            test_flags.container[0] for _ in range(total_num_arrays)
+        ]
+
+    with update_backend(fw) as ivy_backend:
+        # Update variable flags to be compatible with float dtype and with_out args
+        test_flags.as_variable = [
+            v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
+            for v, d in zip(test_flags.as_variable, input_dtypes)
+        ]
+
+    # update instance_method flag to only be considered if the
+    # first term is either an ivy.Array or ivy.Container
+    instance_method = test_flags.instance_method and (
+        not test_flags.native_arrays[0] or test_flags.container[0]
+    )
+
+    args, kwargs = create_args_kwargs(
+        backend=fw,
+        args_np=args_np,
+        arg_np_vals=arg_np_arrays,
+        args_idxs=arrays_args_indices,
+        kwargs_np=kwargs_np,
+        kwarg_np_vals=kwarg_np_arrays,
+        kwargs_idxs=arrays_kwargs_indices,
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+    )
+
+    # If function doesn't have an out argument but an out argument is given
+    # or a test with out flag is True
+
+    if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
+        getattr(ivy, fn_name)
+    ).parameters:
+        raise Exception(f"Function {fn_name} does not have an out parameter")
+
+    # Run either as an instance method or from the API directly
+    with update_backend(fw) as ivy_backend:
+        instance = None
+        if instance_method:
+            array_or_container_mask = [
+                (not native_flag) or container_flag
+                for native_flag, container_flag in zip(
+                    test_flags.native_arrays, test_flags.container
+                )
+            ]
+
+            # Boolean mask for args and kwargs True if an entry's
+            # test Array flag is True or test Container flag is true
+            args_instance_mask = array_or_container_mask[
+                                 : test_flags.num_positional_args
+                                 ]
+            kwargs_instance_mask = array_or_container_mask[
+                                   test_flags.num_positional_args:
+                                   ]
+
+            if any(args_instance_mask):
+                instance, args = _find_instance_in_args(
+                    fw, args, arrays_args_indices, args_instance_mask
+                )
+            else:
+                instance, kwargs = _find_instance_in_args(
+                    fw, kwargs, arrays_kwargs_indices, kwargs_instance_mask
+                )
+
+            if test_flags.test_compile:
+                target_fn = lambda instance, *args, **kwargs: instance.__getattribute__(
+                    fn_name
+                )(*args, **kwargs)
+                args = [instance, *args]
+            else:
+                target_fn = instance.__getattribute__(fn_name)
+        else:
+            target_fn = ivy_backend.__dict__[fn_name]
+
+        ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
+            fw, target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+        )
+
+        # Assert indices of return if the indices of the out array provided
+        if test_flags.with_out and not test_flags.test_compile:
+            test_ret = (
+                ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
+                if hasattr(ivy_backend.__dict__[fn_name], "out_index")
+                else ret_from_target
+            )
+            out = ivy_backend.nested_map(
+                test_ret, ivy_backend.zeros_like, to_mutable=True, include_derived=True
+            )
+            if instance_method:
+                ret_from_target, ret_np_flat_from_target = (
+                    get_ret_and_flattened_np_array(
+                        fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
+                    )
+                )
+            else:
+                ret_from_target, ret_np_flat_from_target = (
+                    get_ret_and_flattened_np_array(
+                        fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
+                    )
+                )
+            test_ret = (
+                ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
+                if hasattr(ivy_backend.__dict__[fn_name], "out_index")
+                else ret_from_target
+            )
+            assert not ivy_backend.nested_any(
+                ivy_backend.nested_multi_map(
+                    lambda x, _: x[0] is x[1], [test_ret, out]
+                ),
+                lambda x: not x,
+            )
+            if not max(test_flags.container) and ivy_backend.native_inplace_support:
+                # these backends do not always support native inplace updates
+                assert not ivy_backend.nested_any(
+                    ivy_backend.nested_multi_map(
+                        lambda x, _: x[0].data is x[1].data, [test_ret, out]
+                    ),
+                    lambda x: not x,
+                )
+            # TODO use context manager
+            test_ret = (
+                ret_from_target[getattr(ivy.__dict__[fn_name], "out_index")]
+                if hasattr(ivy.__dict__[fn_name], "out_index")
+                else ret_from_target
+            )
+            assert not ivy.nested_any(
+                ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
+                lambda x: not x,
+            ), "the array in out argument does not contain same value as the returned"
+            if not max(test_flags.container) and ivy.native_inplace_support:
+                # these backends do not always support native inplace updates
+                assert not ivy.nested_any(
+                    ivy.nested_multi_map(
+                        lambda x, _: x[0].data is x[1].data, [test_ret, out]
+                    ),
+                    lambda x: not x,
+                ), "the array in out argument does not contain same value as the returned"
+    ret_device = None
+    if isinstance(ret_from_target, ivy_backend.Array):  # TODO use str for now
+        ret_device = ivy_backend.dev(ret_from_target)
+    return (ret_from_target,ret_np_flat_from_target,ret_device,args_np,arg_np_arrays,arrays_args_indices,kwargs_np,arrays_kwargs_indices,kwarg_np_arrays, test_flags)
+
+def test_function_ground_truth_computation(ground_truth_backend, on_device,args_np,arg_np_arrays,arrays_args_indices,kwargs_np,arrays_kwargs_indices,kwarg_np_arrays,input_dtypes,test_flags,fn_name):
+    with update_backend(ground_truth_backend) as gt_backend:
+        gt_backend.set_default_device(on_device)  # TODO remove
+        args, kwargs = create_args_kwargs(
+            backend=ground_truth_backend,
+            args_np=args_np,
+            arg_np_vals=arg_np_arrays,
+            args_idxs=arrays_args_indices,
+            kwargs_np=kwargs_np,
+            kwargs_idxs=arrays_kwargs_indices,
+            kwarg_np_vals=kwarg_np_arrays,
+            input_dtypes=input_dtypes,
+            test_flags=test_flags,
+            on_device=on_device,
+        )
+        ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
+            ground_truth_backend,
+            gt_backend.__dict__[fn_name],
+            *args,
+            test_compile=test_flags.test_compile,
+            **kwargs,
+        )
+        if test_flags.with_out and not test_flags.test_compile:
+            test_ret_from_gt = (
+                ret_from_gt[getattr(gt_backend.__dict__[fn_name], "out_index")]
+                if hasattr(gt_backend.__dict__[fn_name], "out_index")
+                else ret_from_gt
+            )
+            out_from_gt = gt_backend.nested_map(
+                test_ret_from_gt,
+                gt_backend.zeros_like,
+                to_mutable=True,
+                include_derived=True,
+            )
+            ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
+                ground_truth_backend,
+                gt_backend.__dict__[fn_name],
+                *args,
+                test_compile=test_flags.test_compile,
+                **kwargs,
+                out=out_from_gt,
+            )
+
+        # TODO enable
+        fw_list = gradient_unsupported_dtypes(fn=gt_backend.__dict__[fn_name])
+        ret_from_gt_device = None
+        if isinstance(ret_from_gt, gt_backend.Array):  # TODO use str for now
+            ret_from_gt_device = gt_backend.dev(ret_from_gt)
+    return (ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device,test_flags,fw_list)
+
 def test_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
@@ -210,253 +430,57 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
-    # split the arguments into their positional and keyword components
-    args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
-    )
 
-    # Extract all arrays from the arguments and keyword arguments
-    arg_np_arrays, arrays_args_indices, n_args_arrays = _get_nested_np_arrays(args_np)
-    kwarg_np_arrays, arrays_kwargs_indices, n_kwargs_arrays = _get_nested_np_arrays(
-        kwargs_np
-    )
-
-    # Make all array-specific test flags and dtypes equal in length
-    total_num_arrays = n_args_arrays + n_kwargs_arrays
-    if len(input_dtypes) < total_num_arrays:
-        input_dtypes = [input_dtypes[0] for _ in range(total_num_arrays)]
-    if len(test_flags.as_variable) < total_num_arrays:
-        test_flags.as_variable = [
-            test_flags.as_variable[0] for _ in range(total_num_arrays)
-        ]
-    if len(test_flags.native_arrays) < total_num_arrays:
-        test_flags.native_arrays = [
-            test_flags.native_arrays[0] for _ in range(total_num_arrays)
-        ]
-    if len(test_flags.container) < total_num_arrays:
-        test_flags.container = [
-            test_flags.container[0] for _ in range(total_num_arrays)
-        ]
-
-    with update_backend(fw) as ivy_backend:
-        # Update variable flags to be compatible with float dtype and with_out args
-        test_flags.as_variable = [
-            v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
-            for v, d in zip(test_flags.as_variable, input_dtypes)
-        ]
-
-    # update instance_method flag to only be considered if the
-    # first term is either an ivy.Array or ivy.Container
-    instance_method = test_flags.instance_method and (
-        not test_flags.native_arrays[0] or test_flags.container[0]
-    )
-
-    args, kwargs = create_args_kwargs(
-        backend=fw,
-        args_np=args_np,
-        arg_np_vals=arg_np_arrays,
-        args_idxs=arrays_args_indices,
-        kwargs_np=kwargs_np,
-        kwarg_np_vals=kwarg_np_arrays,
-        kwargs_idxs=arrays_kwargs_indices,
-        input_dtypes=input_dtypes,
-        test_flags=test_flags,
-        on_device=on_device,
-    )
-
-    # If function doesn't have an out argument but an out argument is given
-    # or a test with out flag is True
-
-    if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
-        getattr(ivy, fn_name)
-    ).parameters:
-        raise Exception(f"Function {fn_name} does not have an out parameter")
-
-    # Run either as an instance method or from the API directly
-    with update_backend(fw) as ivy_backend:
-        instance = None
-        if instance_method:
-            array_or_container_mask = [
-                (not native_flag) or container_flag
-                for native_flag, container_flag in zip(
-                    test_flags.native_arrays, test_flags.container
-                )
-            ]
-
-            # Boolean mask for args and kwargs True if an entry's
-            # test Array flag is True or test Container flag is true
-            args_instance_mask = array_or_container_mask[
-                : test_flags.num_positional_args
-            ]
-            kwargs_instance_mask = array_or_container_mask[
-                test_flags.num_positional_args :
-            ]
-
-            if any(args_instance_mask):
-                instance, args = _find_instance_in_args(
-                    fw, args, arrays_args_indices, args_instance_mask
-                )
-            else:
-                instance, kwargs = _find_instance_in_args(
-                    fw, kwargs, arrays_kwargs_indices, kwargs_instance_mask
-                )
-
-            if test_flags.test_compile:
-                target_fn = lambda instance, *args, **kwargs: instance.__getattribute__(
-                    fn_name
-                )(*args, **kwargs)
-                args = [instance, *args]
-            else:
-                target_fn = instance.__getattribute__(fn_name)
-        else:
-            target_fn = ivy_backend.__dict__[fn_name]
-
-        ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
-            fw, target_fn, *args, test_compile=test_flags.test_compile, **kwargs
-        )
-
-        # Assert indices of return if the indices of the out array provided
-        if test_flags.with_out and not test_flags.test_compile:
-            test_ret = (
-                ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
-                if hasattr(ivy_backend.__dict__[fn_name], "out_index")
-                else ret_from_target
-            )
-            out = ivy_backend.nested_map(
-                test_ret, ivy_backend.zeros_like, to_mutable=True, include_derived=True
-            )
-            if instance_method:
-                ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
-                    )
-                )
-            else:
-                ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
-                    )
-                )
-            test_ret = (
-                ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
-                if hasattr(ivy_backend.__dict__[fn_name], "out_index")
-                else ret_from_target
-            )
-            assert not ivy_backend.nested_any(
-                ivy_backend.nested_multi_map(
-                    lambda x, _: x[0] is x[1], [test_ret, out]
-                ),
-                lambda x: not x,
-            )
-            if not max(test_flags.container) and ivy_backend.native_inplace_support:
-                # these backends do not always support native inplace updates
-                assert not ivy_backend.nested_any(
-                    ivy_backend.nested_multi_map(
-                        lambda x, _: x[0].data is x[1].data, [test_ret, out]
-                    ),
-                    lambda x: not x,
-                )
-        # TODO use context manager
-        test_ret = (
-            ret_from_target[getattr(ivy.__dict__[fn_name], "out_index")]
-            if hasattr(ivy.__dict__[fn_name], "out_index")
-            else ret_from_target
-        )
-        assert not ivy.nested_any(
-            ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
-            lambda x: not x,
-        ), "the array in out argument does not contain same value as the returned"
-        if not max(test_flags.container) and ivy.native_inplace_support:
-            # these backends do not always support native inplace updates
-            assert not ivy.nested_any(
-                ivy.nested_multi_map(
-                    lambda x, _: x[0].data is x[1].data, [test_ret, out]
-                ),
-                lambda x: not x,
-            ), "the array in out argument does not contain same value as the returned"
-    # compute the return with a Ground Truth backend
-
-        ret_device = None
-        if isinstance(ret_from_target, ivy_backend.Array):  # TODO use str for now
-            ret_device = ivy_backend.dev(ret_from_target)
+    if mod_backend[fw]:
+        # multiprocessing
+        proc, input_queue, output_queue = mod_backend[fw]
+        input_queue.put(
+            ('function_backend_computation',fw, test_flags, all_as_kwargs_np, input_dtypes, on_device, fn_name))
+        ret_from_target, ret_np_flat_from_target, ret_device, args_np, arg_np_arrays, arrays_args_indices, kwargs_np, arrays_kwargs_indices, kwarg_np_arrays, test_flags = output_queue.get()
+    else:
+        ret_from_target, ret_np_flat_from_target, ret_device, args_np, arg_np_arrays, arrays_args_indices, kwargs_np, arrays_kwargs_indices, kwarg_np_arrays, test_flags = test_function_backend_computation(
+            fw,test_flags, all_as_kwargs_np, input_dtypes, on_device, fn_name)
 
     # compute the return with a Ground Truth backend
-    with update_backend(ground_truth_backend) as gt_backend:
-        gt_backend.set_default_device(on_device)  # TODO remove
-        args, kwargs = create_args_kwargs(
-            backend=ground_truth_backend,
-            args_np=args_np,
-            arg_np_vals=arg_np_arrays,
-            args_idxs=arrays_args_indices,
-            kwargs_np=kwargs_np,
-            kwargs_idxs=arrays_kwargs_indices,
-            kwarg_np_vals=kwarg_np_arrays,
-            input_dtypes=input_dtypes,
-            test_flags=test_flags,
-            on_device=on_device,
-        )
-        ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-            ground_truth_backend,
-            gt_backend.__dict__[fn_name],
-            *args,
-            test_compile=test_flags.test_compile,
-            **kwargs,
-        )
-        if test_flags.with_out and not test_flags.test_compile:
-            test_ret_from_gt = (
-                ret_from_gt[getattr(gt_backend.__dict__[fn_name], "out_index")]
-                if hasattr(gt_backend.__dict__[fn_name], "out_index")
-                else ret_from_gt
-            )
-            out_from_gt = gt_backend.nested_map(
-                test_ret_from_gt,
-                gt_backend.zeros_like,
-                to_mutable=True,
-                include_derived=True,
-            )
-            ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-                ground_truth_backend,
-                gt_backend.__dict__[fn_name],
-                *args,
-                test_compile=test_flags.test_compile,
-                **kwargs,
-                out=out_from_gt,
-            )
+    if mod_backend[ground_truth_backend]:
+        proc, input_queue, output_queue = mod_backend[ground_truth_backend]
+        input_queue.put(('function_ground_truth_computation',ground_truth_backend, on_device,args_np,arg_np_arrays,arrays_args_indices,kwargs_np,arrays_kwargs_indices,kwarg_np_arrays,input_dtypes,test_flags,fn_name))
+        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, test_flags, fw_list= output_queue.get()
+    else:
+        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, test_flags, fw_list = test_function_ground_truth_computation(ground_truth_backend, on_device,args_np,arg_np_arrays,arrays_args_indices,kwargs_np,arrays_kwargs_indices,kwarg_np_arrays,input_dtypes,test_flags,fn_name)
 
-        # TODO enable
-        # fw_list = gradient_unsupported_dtypes(fn=gt_backend.__dict__[fn_name])
-        ret_from_gt_device = None
-        if isinstance(ret_from_gt, gt_backend.Array):  # TODO use str for now
-            ret_from_gt_device = gt_backend.dev(ret_from_gt)
-
-        # Gradient test
-        # TODO enable back
-        # if (
-        #     test_flags.test_gradients
-        #     and not instance_method
-        #     and "bool" not in input_dtypes
-        #     and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
-        # ):
-        #     if fw.backend not in fw_list or not ivy.nested_argwhere(
-        #         all_as_kwargs_np,
-        #         lambda x: (
-    #             x.dtype in fw_list[fw.backend] if isinstance(x, np.ndarray) else None
-    #         ),
-    #     ):
-    #         gradient_test(
-    #             fn=fn_name,
-    #             all_as_kwargs_np=all_as_kwargs_np,
-    #             args_np=args_np,
-    #             kwargs_np=kwargs_np,
-    #             input_dtypes=input_dtypes,
-    #             test_flags=test_flags,
-    #             rtol_=rtol_,
-    #             atol_=atol_,
-    #             xs_grad_idxs=xs_grad_idxs,
-    #             ret_grad_idxs=ret_grad_idxs,
-    #             ground_truth_backend=ground_truth_backend,
-    #             on_device=on_device,
-    #         )
+    # Gradient test
+    # TODO enable back
+    if mod_backend[fw]:
+        proc, input_queue, output_queue = mod_backend[fw]
+        input_queue.put(("gradient_computation",fn_name,all_as_kwargs_np,args_np,kwargs_np,input_dtypes,test_flags,rtol_,atol_,xs_grad_idxs,ret_grad_idxs,ground_truth_backend,on_device))
+    else:
+        if (
+            test_flags.test_gradients
+            and not test_flags.instance_method
+            and "bool" not in input_dtypes
+            and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
+        ):
+            if fw not in fw_list or not ivy.nested_argwhere(
+                all_as_kwargs_np,
+                lambda x: (
+                x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None
+            ),
+        ):
+                gradient_test(
+                    fn=fn_name,
+                    all_as_kwargs_np=all_as_kwargs_np,
+                    args_np=args_np,
+                    kwargs_np=kwargs_np,
+                    input_dtypes=input_dtypes,
+                    test_flags=test_flags,
+                    rtol_=rtol_,
+                    atol_=atol_,
+                    xs_grad_idxs=xs_grad_idxs,
+                    ret_grad_idxs=ret_grad_idxs,
+                    ground_truth_backend=ground_truth_backend,
+                    on_device=on_device,
+                )
 
     assert (
         ret_device == ret_from_gt_device
@@ -937,107 +961,7 @@ def gradient_test(
         )
 
 
-def test_method(
-    *,
-    init_input_dtypes: List[ivy.Dtype] = None,
-    method_input_dtypes: List[ivy.Dtype] = None,
-    init_all_as_kwargs_np: dict = None,
-    method_all_as_kwargs_np: dict = None,
-    init_flags: pf.MethodTestFlags,
-    method_flags: pf.MethodTestFlags,
-    class_name: str,
-    method_name: str = "__call__",
-    init_with_v: bool = False,
-    method_with_v: bool = False,
-    rtol_: float = None,
-    atol_: float = 1e-06,
-    test_values: Union[bool, str] = True,
-    test_gradients: bool = False,
-    xs_grad_idxs=None,
-    ret_grad_idxs=None,
-    test_compile: bool = False,
-    backend_to_test: str,
-    ground_truth_backend: str,
-    on_device: str,
-    return_flat_np_arrays: bool = False,
-):
-    """
-    Test a class-method that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
-
-    Parameters
-    ----------
-    init_input_dtypes
-        data types of the input arguments to the constructor in order.
-    init_as_variable_flags
-        dictates whether the corresponding input argument passed to the constructor
-        should be treated as an ivy.Array.
-    init_num_positional_args
-        number of input arguments that must be passed as positional arguments to the
-        constructor.
-    init_native_array_flags
-        dictates whether the corresponding input argument passed to the constructor
-        should be treated as a native array.
-    init_all_as_kwargs_np:
-        input arguments to the constructor as keyword arguments.
-    method_input_dtypes
-        data types of the input arguments to the method in order.
-    method_as_variable_flags
-        dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy.Array.
-    method_num_positional_args
-        number of input arguments that must be passed as positional arguments to the
-        method.
-    method_native_array_flags
-        dictates whether the corresponding input argument passed to the method should
-        be treated as a native array.
-    method_container_flags
-        dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy Container.
-    method_all_as_kwargs_np:
-        input arguments to the method as keyword arguments.
-    class_name
-        name of the class to test.
-    method_name
-        name of tthe method to test.
-    init_with_v
-        if the class being tested is an ivy.Module, then setting this flag as True will
-        call the constructor with the variables v passed explicitly.
-    method_with_v
-        if the class being tested is an ivy.Module, then setting this flag as True will
-        call the method with the variables v passed explicitly.
-    rtol_
-        relative tolerance value.
-    atol_
-        absolute tolerance value.
-    test_values
-        can be a bool or a string to indicate whether correctness of values should be
-        tested. If the value is `with_v`, shapes are tested but not values.
-    test_gradients
-        if True, test for the correctness of gradients.
-    xs_grad_idxs
-        Indices of the input arrays to compute gradients with respect to. If None,
-        gradients are returned with respect to all input arrays. (Default value = None)
-    ret_grad_idxs
-        Indices of the returned arrays for which to return computed gradients. If None,
-        gradients are returned for all returned arrays. (Default value = None)
-    test_compile
-        If True, test for the correctness of compilation.
-    ground_truth_backend
-        Ground Truth Backend to compare the result-values.
-    device_
-        The device on which to create arrays.
-    return_flat_np_arrays
-        If test_values is False, this flag dictates whether the original returns are
-        returned, or whether the flattened numpy arrays are returned.
-
-    Returns
-    -------
-    ret
-        optional, return value from the function
-    ret_gt
-        optional, return value from the Ground Truth function
-    """
+def test_method_backend_computation(init_input_dtypes,init_flags,backend_to_test,init_all_as_kwargs_np, on_device,method_input_dtypes, method_flags, method_all_as_kwargs_np, class_name, method_name,init_with_v,test_compile, method_with_v ):
     init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
@@ -1188,9 +1112,11 @@ def test_method(
             ret_device = ivy_backend.dev(ret)
         else:
             ret_device = None
+    fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
 
-    # Compute the return with a Ground Truth backend
+    return ret, ret_np_flat, ret_device, org_con_data, args_np_method, met_arg_np_vals, met_args_idxs, kwargs_np_method, met_kwarg_np_vals, met_kwargs_idxs, v_np, fw_list
 
+def test_method_ground_truth_computation(ground_truth_backend, on_device, org_con_data, args_np_method,met_arg_np_vals,met_args_idxs,kwargs_np_method,met_kwarg_np_vals,met_kwargs_idxs,method_input_dtypes,method_flags, class_name,method_name, test_compile, v_np,  ):
     with update_backend(ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)
         args_gt_constructor, kwargs_gt_constructor = create_args_kwargs(
@@ -1232,8 +1158,8 @@ def test_method(
             test_compile=test_compile,
             **kwargs_gt_method,
         )
-        # fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
-        # fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
+
+        fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
         # for k, v in fw_list2.items():
         #     if k not in fw_list:
         #         fw_list[k] = []
@@ -1243,6 +1169,138 @@ def test_method(
             ret_from_gt_device = gt_backend.dev(ret_from_gt)
         else:
             ret_from_gt_device = None
+
+    return ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2
+
+
+
+def test_method(
+    *,
+    init_input_dtypes: List[ivy.Dtype] = None,
+    method_input_dtypes: List[ivy.Dtype] = None,
+    init_all_as_kwargs_np: dict = None,
+    method_all_as_kwargs_np: dict = None,
+    init_flags: pf.MethodTestFlags,
+    method_flags: pf.MethodTestFlags,
+    class_name: str,
+    method_name: str = "__call__",
+    init_with_v: bool = False,
+    method_with_v: bool = False,
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    test_values: Union[bool, str] = True,
+    test_gradients: bool = False,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
+    test_compile: bool = False,
+    backend_to_test: str,
+    ground_truth_backend: str,
+    on_device: str,
+    return_flat_np_arrays: bool = False,
+):
+    """
+    Test a class-method that consumes (or returns) arrays for the current backend by
+    comparing the result with numpy.
+
+    Parameters
+    ----------
+    init_input_dtypes
+        data types of the input arguments to the constructor in order.
+    init_as_variable_flags
+        dictates whether the corresponding input argument passed to the constructor
+        should be treated as an ivy.Array.
+    init_num_positional_args
+        number of input arguments that must be passed as positional arguments to the
+        constructor.
+    init_native_array_flags
+        dictates whether the corresponding input argument passed to the constructor
+        should be treated as a native array.
+    init_all_as_kwargs_np:
+        input arguments to the constructor as keyword arguments.
+    method_input_dtypes
+        data types of the input arguments to the method in order.
+    method_as_variable_flags
+        dictates whether the corresponding input argument passed to the method should
+        be treated as an ivy.Array.
+    method_num_positional_args
+        number of input arguments that must be passed as positional arguments to the
+        method.
+    method_native_array_flags
+        dictates whether the corresponding input argument passed to the method should
+        be treated as a native array.
+    method_container_flags
+        dictates whether the corresponding input argument passed to the method should
+        be treated as an ivy Container.
+    method_all_as_kwargs_np:
+        input arguments to the method as keyword arguments.
+    class_name
+        name of the class to test.
+    method_name
+        name of the method to test.
+    init_with_v
+        if the class being tested is an ivy.Module, then setting this flag as True will
+        call the constructor with the variables v passed explicitly.
+    method_with_v
+        if the class being tested is an ivy.Module, then setting this flag as True will
+        call the method with the variables v passed explicitly.
+    rtol_
+        relative tolerance value.
+    atol_
+        absolute tolerance value.
+    test_values
+        can be a bool or a string to indicate whether correctness of values should be
+        tested. If the value is `with_v`, shapes are tested but not values.
+    test_gradients
+        if True, test for the correctness of gradients.
+    xs_grad_idxs
+        Indices of the input arrays to compute gradients with respect to. If None,
+        gradients are returned with respect to all input arrays. (Default value = None)
+    ret_grad_idxs
+        Indices of the returned arrays for which to return computed gradients. If None,
+        gradients are returned for all returned arrays. (Default value = None)
+    test_compile
+        If True, test for the correctness of compilation.
+    ground_truth_backend
+        Ground Truth Backend to compare the result-values.
+    device_
+        The device on which to create arrays.
+    return_flat_np_arrays
+        If test_values is False, this flag dictates whether the original returns are
+        returned, or whether the flattened numpy arrays are returned.
+
+    Returns
+    -------
+    ret
+        optional, return value from the function
+    ret_gt
+        optional, return value from the Ground Truth function
+    """
+
+    # check to see if multiprocessing is to be used
+
+    if mod_backend[backend_to_test]:
+        # yep, multiprocessing
+        proc,input_queue,output_queue=mod_backend[backend_to_test]
+        input_queue.put(('method_backend_computation',init_input_dtypes,init_flags,backend_to_test,init_all_as_kwargs_np, on_device,method_input_dtypes, method_flags, method_all_as_kwargs_np, class_name, method_name,init_with_v,test_compile, method_with_v))
+        ret, ret_np_flat, ret_device, org_con_data, args_np_method, met_arg_np_vals, met_args_idxs, kwargs_np_method, met_kwarg_np_vals, met_kwargs_idxs, v_np, fw_list = output_queue.get()
+    else:
+        ret, ret_np_flat, ret_device, org_con_data, args_np_method, met_arg_np_vals, met_args_idxs, kwargs_np_method, met_kwarg_np_vals, met_kwargs_idxs, v_np, fw_list = test_method_backend_computation(init_input_dtypes,init_flags,backend_to_test,init_all_as_kwargs_np, on_device,method_input_dtypes, method_flags, method_all_as_kwargs_np, class_name, method_name,init_with_v,test_compile, method_with_v)
+
+
+
+    # Compute the return with a Ground Truth backend
+    if mod_backend[ground_truth_backend]:
+        # yep, multiprocessing
+        proc,input_queue,output_queue=mod_backend[ground_truth_backend]
+        input_queue.put(("method_ground_truth_computation",ground_truth_backend, on_device, org_con_data, args_np_method,met_arg_np_vals,met_args_idxs,kwargs_np_method,met_kwarg_np_vals,met_kwargs_idxs,method_input_dtypes,method_flags, class_name,method_name, test_compile, v_np,) )
+        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2 = output_queue.get()
+    else:
+        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2 = test_method_ground_truth_computation(ground_truth_backend, on_device, org_con_data, args_np_method,met_arg_np_vals,met_args_idxs,kwargs_np_method,met_kwarg_np_vals,met_kwargs_idxs,method_input_dtypes,method_flags, class_name,method_name, test_compile, v_np,)
+
+    for k, v in fw_list2.items():
+        if k not in fw_list:
+            fw_list[k] = []
+        fw_list[k].extend(v)
 
     # gradient test
     # TODO enable gradient testing
@@ -1949,32 +2007,4 @@ def args_to_frontend(
             include_derived,
             shallow=False,
         )
-        frontend_kwargs = ivy_backend.nested_map(
-            kwargs,
-            arrays_to_frontend(backend=backend, frontend_array_fn=frontend_array_fn),
-            include_derived,
-            shallow=False,
-        )
-        return frontend_args, frontend_kwargs
-
-
-def arrays_to_frontend(backend: str, frontend_array_fn=None):
-    with update_backend(backend) as ivy_backend:
-
-        def _new_fn(x, *args, **kwargs):
-            if _is_frontend_array(x):
-                return x
-            elif ivy_backend.is_array(x):
-                if tuple(x.shape) == ():
-                    try:
-                        ret = frontend_array_fn(
-                            x, dtype=ivy_backend.Dtype(str(x.dtype))
-                        )
-                    except IvyException:
-                        ret = frontend_array_fn(x, dtype=ivy_backend.array(x).dtype)
-                else:
-                    ret = frontend_array_fn(x)
-                return ret
-            return x
-
-    return _new_fn
+        frontend_kw

@@ -938,10 +938,10 @@ def test_frombuffer(
 
 @handle_test(
     fn_tree="functional.ivy.triu_indices",
-    n_rows = st.integers(min_value=0, max_value=5),
-    n_cols = st.integers(min_value=0, max_value=5) | st.just(None),
-    k = st.integers(min_value=-5, max_value=5),
-    input_dtype = helpers.get_dtypes("integer"),
+    n_rows=st.integers(min_value=0, max_value=5),
+    n_cols=st.integers(min_value=0, max_value=5) | st.just(None),
+    k=st.integers(min_value=-5, max_value=5),
+    input_dtype=helpers.get_dtypes("integer"),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
