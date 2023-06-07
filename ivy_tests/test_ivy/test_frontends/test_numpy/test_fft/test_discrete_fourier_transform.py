@@ -1,6 +1,9 @@
+# global
+from hypothesis import strategies as st
+
+# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from hypothesis import strategies as st
 
 
 @handle_frontend_test(
@@ -122,11 +125,59 @@ def test_numpy_rfft(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.fft.ihfft",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        shape=(2,),
+        min_axis=-1,
+        force_int_axis=True,
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    n=st.integers(min_value=2, max_value=5),
+)
+def test_numpy_ihfft(
+    dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_device
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x[0],
+        n=n,
+        axis=axis,
+        norm=norm,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.fft.fftfreq",
     n=st.integers(min_value=10, max_value=100),
     sample_rate=st.integers(min_value=1, max_value=10),
 )
 def test_numpy_fftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device):
+    d = 1 / sample_rate
+    helpers.test_frontend_function(
+        input_dtypes=[int],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        n=n,
+        d=d,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.rfftfreq",
+    n=st.integers(min_value=10, max_value=100),
+    sample_rate=st.integers(min_value=1, max_value=10),
+)
+def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device):
     d = 1 / sample_rate
     helpers.test_frontend_function(
         input_dtypes=[int],

@@ -7,6 +7,7 @@ import importlib
 import inspect
 from collections import OrderedDict
 
+from ivy import frontend_outputs_to_ivy_arrays, output_to_native_arrays
 from ivy.utils.exceptions import IvyException
 
 
@@ -21,7 +22,6 @@ from .pipeline_helper import update_backend
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
-from ivy.functional.ivy.gradients import _variable
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
@@ -761,7 +761,9 @@ def test_frontend_function(
         def arrays_to_numpy(x):
             if test_flags.generate_frontend_arrays:
                 return gt_backend.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
-            return gt_backend.to_numpy(x._data) if isinstance(x, ivy.Array) else x
+            return (
+                gt_backend.to_numpy(x._data) if isinstance(x, gt_backend.Array) else x
+            )
 
         args_np = gt_backend.nested_map(
             args_for_test,
@@ -805,6 +807,14 @@ def test_frontend_function(
             kwargs_frontend["device"] = gt_backend.as_native_dev(
                 kwargs_frontend["device"]
             )
+
+        # wrap the frontend function objects in arguments to return native arrays
+        args_frontend = gt_backend.nested_map(
+            args_frontend, fn=wrap_frontend_function_args, max_depth=10
+        )
+        kwargs_frontend = gt_backend.nested_map(
+            kwargs_frontend, fn=wrap_frontend_function_args, max_depth=10
+        )
 
         # compute the return via the frontend framework
         # TODO remove magic value
@@ -1781,6 +1791,17 @@ def convtrue(argument):
     return argument
 
 
+def wrap_frontend_function_args(argument):
+    """Wrap frontend function arguments to return native arrays."""
+    if ivy.nested_any(
+        argument,
+        lambda x: hasattr(x, "__module__")
+        and x.__module__.startswith("ivy.functional.frontends"),
+    ):
+        return output_to_native_arrays(frontend_outputs_to_ivy_arrays(argument))
+    return argument
+
+
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
     """
     Split the kwargs into args and kwargs.
@@ -1937,11 +1958,6 @@ def args_to_container(array_args):
 def as_lists(*args):
     """Change the elements in args to be of type list."""
     return (a if isinstance(a, list) else [a] for a in args)
-
-
-def var_fn(x, *, dtype=None, device=None):
-    """Return x as a variable wrapping an Ivy Array with given dtype and device."""
-    return _variable(ivy.array(x, dtype=dtype, device=device))
 
 
 def gradient_incompatible_function(*, fn):

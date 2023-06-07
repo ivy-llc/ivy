@@ -575,7 +575,14 @@ def test_repeat(
 
 
 @st.composite
-def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
+def _get_splits(
+    draw,
+    allow_none=True,
+    min_num_dims=1,
+    axis=None,
+    allow_array_indices=True,
+    is_mod_split=False,
+):
     """Generate valid splits, either by generating an integer that evenly divides the
     axis or a list of splits that sum to the length of the axis being split."""
     shape = draw(
@@ -587,7 +594,7 @@ def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
         )
 
     @st.composite
-    def get_int_split(draw):
+    def _get_int_split(draw):
         if shape[axis] == 0:
             return 0
         factors = []
@@ -597,7 +604,7 @@ def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
         return draw(st.sampled_from(factors))
 
     @st.composite
-    def get_list_split(draw):
+    def _get_list_split(draw, allow_arr_indices=True, is_other_split=False):
         num_or_size_splits = []
         while sum(num_or_size_splits) < shape[axis]:
             split_value = draw(
@@ -607,12 +614,29 @@ def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
                 )
             )
             num_or_size_splits.append(split_value)
+        if is_other_split:
+            num_or_size_splits = list(set(num_or_size_splits))
+        if allow_arr_indices:
+            gen_random_native = draw(st.booleans())
+            if gen_random_native:
+                return np.asarray(num_or_size_splits, dtype=np.int32)
         return num_or_size_splits
 
     if allow_none:
-        return draw(get_list_split() | get_int_split() | st.none())
+        return draw(
+            _get_list_split(
+                allow_arr_indices=allow_array_indices, is_other_split=is_mod_split
+            )
+            | _get_int_split()
+            | st.none()
+        )
     else:
-        return draw(get_list_split() | get_int_split())
+        return draw(
+            _get_list_split(
+                allow_arr_indices=allow_array_indices, is_other_split=is_mod_split
+            )
+            | _get_int_split()
+        )
 
 
 @handle_test(
@@ -645,7 +669,6 @@ def test_split(
     ground_truth_backend,
 ):
     dtype, value = dtype_value
-
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,

@@ -148,19 +148,14 @@ class Array(
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
             )
-        self._size = (
-            functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
-        )
-        self._itemsize = ivy.itemsize(self._data)
-        self._strides = ivy.strides(self._data)
-        self._dtype = ivy.dtype(self._data)
-        self._device = ivy.dev(self._data)
-        self._dev_str = ivy.as_ivy_dev(self._device)
-        self._pre_repr = "ivy.array"
-        if "gpu" in self._dev_str:
-            self._post_repr = ", dev={})".format(self._dev_str)
-        else:
-            self._post_repr = ")"
+        self._size = None
+        self._strides = None
+        self._itemsize = None
+        self._dtype = None
+        self._device = None
+        self._dev_str = None
+        self._pre_repr = None
+        self._post_repr = None
         self.backend = ivy.current_backend_str()
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
@@ -218,11 +213,15 @@ class Array(
     @property
     def dtype(self) -> ivy.Dtype:
         """Data type of the array elements."""
+        if self._dtype is None:
+            self._dtype = ivy.dtype(self._data)
         return self._dtype
 
     @property
     def device(self) -> ivy.Device:
         """Hardware device the array data resides on."""
+        if self._device is None:
+            self._device = ivy.dev(self._data)
         return self._device
 
     @property
@@ -254,16 +253,26 @@ class Array(
     @property
     def size(self) -> Optional[int]:
         """Number of elements in the array."""
+        if self._size is None:
+            self._size = (
+                functools.reduce(mul, self._data.shape)
+                if len(self._data.shape) > 0
+                else 0
+            )
         return self._size
 
     @property
     def itemsize(self) -> Optional[int]:
         """Size of array elements in bytes."""
+        if self._itemsize is None:
+            self._itemsize = ivy.itemsize(self._data)
         return self._itemsize
 
     @property
     def strides(self) -> Optional[int]:
         """Get strides across each dimension."""
+        if self._strides is None:
+            self._strides = ivy.strides(self._data)
         return self._strides
 
     @property
@@ -344,6 +353,13 @@ class Array(
         return ivy
 
     def __repr__(self):
+        if self._dev_str is None:
+            self._dev_str = ivy.as_ivy_dev(self.device)
+            self._pre_repr = "ivy.array"
+            if "gpu" in self._dev_str:
+                self._post_repr = ", dev={})".format(self._dev_str)
+            else:
+                self._post_repr = ")"
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
         if self.backend == "" or ivy.is_local():
@@ -354,7 +370,7 @@ class Array(
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
         arr_np = backend.to_numpy(self._data)
-        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
+        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
             repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             return (
@@ -471,7 +487,7 @@ class Array(
         return ivy.pow(power, self._data)
 
     def __ipow__(self, power):
-        return ivy.pow(self._data, power, out=self)
+        return ivy.pow(self._data, power)
 
     def __add__(self, other):
         """
@@ -534,7 +550,7 @@ class Array(
         return ivy.add(other, self._data)
 
     def __iadd__(self, other):
-        return ivy.add(self._data, other, out=self)
+        return ivy.add(self._data, other)
 
     def __sub__(self, other):
         """
@@ -599,7 +615,7 @@ class Array(
         return ivy.subtract(other, self._data)
 
     def __isub__(self, other):
-        return ivy.subtract(self._data, other, out=self)
+        return ivy.subtract(self._data, other)
 
     def __mul__(self, other):
         return ivy.multiply(self._data, other)
@@ -608,7 +624,7 @@ class Array(
         return ivy.multiply(other, self._data)
 
     def __imul__(self, other):
-        return ivy.multiply(self._data, other, out=self)
+        return ivy.multiply(self._data, other)
 
     def __mod__(self, other):
         return ivy.remainder(self._data, other)
@@ -617,7 +633,7 @@ class Array(
         return ivy.remainder(other, self._data)
 
     def __imod__(self, other):
-        return ivy.remainder(self._data, other, out=self)
+        return ivy.remainder(self._data, other)
 
     def __divmod__(self, other):
         return tuple([ivy.divide(self._data, other), ivy.remainder(self._data, other)])
@@ -659,7 +675,7 @@ class Array(
         return ivy.divide(other, self._data)
 
     def __itruediv__(self, other):
-        return ivy.divide(self._data, other, out=self)
+        return ivy.divide(self._data, other)
 
     def __floordiv__(self, other):
         return ivy.floor_divide(self._data, other)
@@ -668,7 +684,7 @@ class Array(
         return ivy.floor_divide(other, self._data)
 
     def __ifloordiv__(self, other):
-        return ivy.floor_divide(self._data, other, out=self)
+        return ivy.floor_divide(self._data, other)
 
     def __matmul__(self, other):
         return ivy.matmul(self._data, other)
@@ -677,7 +693,7 @@ class Array(
         return ivy.matmul(other, self._data)
 
     def __imatmul__(self, other):
-        return ivy.matmul(self._data, other, out=self)
+        return ivy.matmul(self._data, other)
 
     def __abs__(self):
         """
@@ -972,7 +988,7 @@ class Array(
         return ivy.bitwise_and(other, self._data)
 
     def __iand__(self, other):
-        return ivy.bitwise_and(self._data, other, out=self)
+        return ivy.bitwise_and(self._data, other)
 
     def __or__(self, other):
         return ivy.bitwise_or(self._data, other)
@@ -981,7 +997,7 @@ class Array(
         return ivy.bitwise_or(other, self._data)
 
     def __ior__(self, other):
-        return ivy.bitwise_or(self._data, other, out=self)
+        return ivy.bitwise_or(self._data, other)
 
     def __invert__(self):
         return ivy.bitwise_invert(self._data)
@@ -1033,7 +1049,7 @@ class Array(
         return ivy.bitwise_xor(other, self._data)
 
     def __ixor__(self, other):
-        return ivy.bitwise_xor(self._data, other, out=self)
+        return ivy.bitwise_xor(self._data, other)
 
     def __lshift__(self, other):
         return ivy.bitwise_left_shift(self._data, other)
@@ -1042,7 +1058,7 @@ class Array(
         return ivy.bitwise_left_shift(other, self._data)
 
     def __ilshift__(self, other):
-        return ivy.bitwise_left_shift(self._data, other, out=self)
+        return ivy.bitwise_left_shift(self._data, other)
 
     def __rshift__(self, other):
         """
@@ -1109,7 +1125,7 @@ class Array(
         return ivy.bitwise_right_shift(other, self._data)
 
     def __irshift__(self, other):
-        return ivy.bitwise_right_shift(self._data, other, out=self)
+        return ivy.bitwise_right_shift(self._data, other)
 
     def __deepcopy__(self, memodict={}):
         try:

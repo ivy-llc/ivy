@@ -154,8 +154,10 @@ def gather(
         )
         return paddle_backend.reshape(result, shape=new_shape)
 
-    axis = axis % params.ndim
-    batch_dims = batch_dims % params.ndim
+    if axis is not None:
+        axis = axis % params.ndim
+    if batch_dims is not None:
+        batch_dims = batch_dims % params.ndim
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     if params.dtype in [
         paddle.int8,
@@ -759,7 +761,7 @@ def vmap(
         # vectorisation - applying map_fn if only one arg provided as reduce requires
         # two elements to begin with.
         arr_results = [func(*arrays) for arrays in zip(*args)]
-        res = paddle_backend.stack(arr_results)
+        res = paddle_backend.concat(arr_results)
 
         if out_axes:
             res = paddle_backend.moveaxis(res, 0, out_axes)
