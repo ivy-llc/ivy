@@ -125,3 +125,17 @@ def rfftfreq(n, d=1.0):
     N = n // 2 + 1
     results = ivy.arange(0, N, dtype=int)
     return results * val
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+def rfft2(a, s=None, axes=(-2, -1), norm=None):
+    a = ivy.array(a, dtype=ivy.float64)
+    if norm is None:
+        norm = "backward"
+    if s is not None:
+        s = tuple(s)
+    return ivy.dft(a, axes=axes, inverse=False, onesided=True, dft_length=s, norm=norm)
+
+    
+    
