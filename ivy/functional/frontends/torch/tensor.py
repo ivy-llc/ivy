@@ -1122,7 +1122,11 @@ class Tensor:
 
     def normal_(self, mean=0, std=1, *, generator=None):
         self.ivy_array = ivy.random_normal(
-            mean=mean, std=std, shape=self.shape, dtype=self.dtype, device=self.device
+            mean=mean,
+            std=std,
+            shape=self.shape,
+            dtype=self.dtype,
+            device=self.device
         )
         return self
 
