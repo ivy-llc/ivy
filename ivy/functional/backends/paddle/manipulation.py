@@ -302,13 +302,20 @@ def repeat(
     axis: int = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if isinstance(repeats, Number) and repeats == 0:
-        return paddle.to_tensor([], dtype=x.dtype)
-    elif isinstance(repeats, paddle.Tensor):
-        if max(repeats.shape) == 1:
-            repeats = repeats.item()
-            if repeats == 0:
-                return paddle.to_tensor([], dtype=x.dtype)
+    # handle the case when repeats contains 0 as paddle doesn't support it
+    if (isinstance(repeats, Number) and repeats == 0) or (
+        isinstance(repeats, paddle.Tensor) and repeats.size == 1 and repeats.item() == 0
+    ):
+        if axis is None:
+            return paddle.to_tensor([], dtype=x.dtype)
+        else:
+            shape = x.shape
+            shape[axis] = 0
+            return paddle.zeros(shape=shape).cast(x.dtype)
+
+    if isinstance(repeats, paddle.Tensor) and repeats.size == 1:
+        repeats = repeats.item()
+
     if axis is not None:
         axis = axis % x.ndim
     if x.dtype in [

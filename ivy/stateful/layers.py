@@ -1710,10 +1710,10 @@ class AvgPool3D(Module):
         padding,
         /,
         *,
-        data_format="NDHWC",
-        count_include_pad=False,
-        ceil_mode=False,
-        divisor_override=None,
+        data_format = "NDHWC",
+        count_include_pad = False,
+        ceil_mode = False,
+        divisor_override = None,
     ):
         """
         Class for applying Average Pooling over a mini-batch of inputs.
@@ -1733,8 +1733,7 @@ class AvgPool3D(Module):
         ceil_mode
             Whether to use ceil or floor for creating the output shape.
         divisor_override
-            If specified, it will be used as divisor,
-            otherwise kernel_size will be used.
+            If specified, it will be used as divisor, otherwise kernel_size will be used.
         """
         self._kernel_size = kernel_size
         self._stride = strides
@@ -1820,3 +1819,4 @@ class AvgPool1D(Module):
             self._padding,
             data_format=self._data_format,
         )
+      

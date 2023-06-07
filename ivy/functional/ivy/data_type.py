@@ -906,6 +906,28 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
 
 
 @handle_exceptions
+def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
+    """
+    Check if the given data type is hashable or not.
+
+    Parameters
+    ----------
+    dtype_in
+        The data type to check.
+
+    Returns
+    -------
+    ret
+        True if data type is hashable else False
+    """
+    try:
+        hash(dtype_in)
+        return True
+    except TypeError:
+        return False
+
+
+@handle_exceptions
 def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str], /) -> ivy.Dtype:
     """
     Convert native data type to string representation.
