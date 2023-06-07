@@ -532,7 +532,7 @@ def test_paddle_dot(
     fn_tree,
     on_device,    
 ):
-    dtype, x, y, axis = dtype_x_y_axis
+    dtype, x, y, _ = dtype_x_y_axis
     helpers.test_frontend_function(
         input_dtypes=dtype, 
         frontend=frontend,
@@ -543,5 +543,4 @@ def test_paddle_dot(
         # atol_=5e-1,
         x=x,
         y=y,
-        axis=axis,
     )  
