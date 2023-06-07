@@ -36,7 +36,7 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
     with tf.device(device):
