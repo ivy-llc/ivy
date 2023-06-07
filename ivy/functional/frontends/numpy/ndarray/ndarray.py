@@ -523,3 +523,14 @@ class ndarray:
         xmax = self.max(axis=axis, out=out, keepdims=keepdims)
         xmin = self.min(axis=axis, out=out, keepdims=keepdims)
         return np_frontend.subtract(xmax, xmin)
+    
+    def std(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True, ddof=0):
+        return np_frontend.std(
+            self,
+            axis=axis,
+            ddof=ddof,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            where=where,
+        )
