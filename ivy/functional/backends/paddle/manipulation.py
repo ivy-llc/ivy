@@ -50,11 +50,21 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.ndim >= 6:
-        # Paddle unsqueeze sets a maximum limit of 6 dims in the output
-        x_shape = x.shape
-        x_shape.insert(axis, 1)
-        return x.reshape(x_shape)
+    if isinstance(axis, int):
+        if x.ndim >= 6:
+            # Paddle unsqueeze sets a maximum limit of 6 dims in the output
+            x_shape = x.shape
+            x_shape.insert(axis, 1)
+            return x.reshape(x_shape)
+    elif isinstance(axis, (list, tuple)):
+        if x.ndim + len(axis) > 6:
+            x_shape = x.shape
+            for a in axis:
+                x_shape.insert(a, 1)
+            # TODO: reshape doesn't support >9 dims, find a workaround for consistency.
+            return x.reshape(x_shape)
+        elif len(axis) == 0:
+            return x
     if x.dtype == paddle.float16:
         return paddle.unsqueeze(x.cast("float32"), axis).cast(x.dtype)
     return paddle.unsqueeze(x, axis)
@@ -237,7 +247,7 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, List[int]]] = None,
+    num_or_size_splits: Optional[Union[int, List[int], paddle.Tensor]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
 ) -> List[paddle.Tensor]:
@@ -251,6 +261,9 @@ def split(
         return [x]
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
+    elif isinstance(num_or_size_splits, paddle.Tensor):
+        num_or_size_splits = num_or_size_splits.cast("int32")
+        num_or_size_splits = num_or_size_splits.tolist()
     elif isinstance(num_or_size_splits, int):
         num_chunks = x.shape[axis] // num_or_size_splits
         remainder = x.shape[axis] % num_or_size_splits
@@ -289,13 +302,20 @@ def repeat(
     axis: int = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if isinstance(repeats, Number) and repeats == 0:
-        return paddle.to_tensor([], dtype=x.dtype)
-    elif isinstance(repeats, paddle.Tensor):
-        if max(repeats.shape) == 1:
-            repeats = repeats.item()
-            if repeats == 0:
-                return paddle.to_tensor([], dtype=x.dtype)
+    # handle the case when repeats contains 0 as paddle doesn't support it
+    if (isinstance(repeats, Number) and repeats == 0) or (
+        isinstance(repeats, paddle.Tensor) and repeats.size == 1 and repeats.item() == 0
+    ):
+        if axis is None:
+            return paddle.to_tensor([], dtype=x.dtype)
+        else:
+            shape = x.shape
+            shape[axis] = 0
+            return paddle.zeros(shape=shape).cast(x.dtype)
+
+    if isinstance(repeats, paddle.Tensor) and repeats.size == 1:
+        repeats = repeats.item()
+
     if axis is not None:
         axis = axis % x.ndim
     if x.dtype in [
