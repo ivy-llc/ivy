@@ -138,7 +138,6 @@ def hypot(
     return tf.math.sqrt(tf.math.square(x1) + tf.math.square(x2))
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def allclose(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -164,7 +163,6 @@ def fix(
     return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, backend_version)
 def nextafter(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
