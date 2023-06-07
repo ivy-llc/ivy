@@ -439,40 +439,43 @@ def test_function(
                 out=out_from_gt,
             )
 
-        # TODO enable
-        # fw_list = gradient_unsupported_dtypes(fn=gt_backend.__dict__[fn_name])
         ret_from_gt_device = None
         if isinstance(ret_from_gt, gt_backend.Array):
             ret_from_gt_device = gt_backend.dev(ret_from_gt)
 
+        # TODO clearly this is not the best way to test gradients
+        # This should be more efficient and easier to read
         # Gradient test
-        # TODO enable back
-        # if (
-        #     test_flags.test_gradients
-        #     and not instance_method
-        #     and "bool" not in input_dtypes
-        #     and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
-        # ):
-        #     if fw.backend not in fw_list or not ivy.nested_argwhere(
-        #         all_as_kwargs_np,
-        #         lambda x: (
-    #             x.dtype in fw_list[fw.backend] if isinstance(x, np.ndarray) else None
-    #         ),
-    #     ):
-    #         gradient_test(
-    #             fn=fn_name,
-    #             all_as_kwargs_np=all_as_kwargs_np,
-    #             args_np=args_np,
-    #             kwargs_np=kwargs_np,
-    #             input_dtypes=input_dtypes,
-    #             test_flags=test_flags,
-    #             rtol_=rtol_,
-    #             atol_=atol_,
-    #             xs_grad_idxs=xs_grad_idxs,
-    #             ret_grad_idxs=ret_grad_idxs,
-    #             ground_truth_backend=ground_truth_backend,
-    #             on_device=on_device,
-    #         )
+        fw_list = gradient_unsupported_dtypes(fn=gt_backend.__dict__[fn_name])
+        if (
+            test_flags.test_gradients
+            and not instance_method
+            and "bool" not in input_dtypes
+            and not any(gt_backend.is_complex_dtype(d) for d in input_dtypes)
+        ):
+            if backend_to_test not in fw_list or not gt_backend.nested_argwhere(
+                all_as_kwargs_np,
+                lambda x: (
+                    x.dtype in fw_list[backend_to_test]
+                    if isinstance(x, np.ndarray)
+                    else None
+                ),
+            ):
+                gradient_test(
+                    fn=fn_name,
+                    all_as_kwargs_np=all_as_kwargs_np,
+                    args_np=args_np,
+                    kwargs_np=kwargs_np,
+                    input_dtypes=input_dtypes,
+                    test_flags=test_flags,
+                    rtol_=rtol_,
+                    atol_=atol_,
+                    xs_grad_idxs=xs_grad_idxs,
+                    ret_grad_idxs=ret_grad_idxs,
+                    ground_truth_backend=ground_truth_backend,
+                    backend_to_test=backend_to_test,
+                    on_device=on_device,
+                )
 
     assert (
         ret_device == ret_from_gt_device
@@ -865,21 +868,9 @@ def gradient_test(
     ground_truth_backend: str,
     on_device: str,
 ):
-    def grad_fn(all_args):
-        args, kwargs, i = all_args
-        call_fn = ivy.__dict__[fn] if isinstance(fn, str) else fn[i]
-        ret = compiled_if_required(
-            backend_to_test,
-            call_fn,
-            test_compile=test_compile,
-            args=args,
-            kwargs=kwargs,
-        )(*args, **kwargs)
-        return ivy.nested_map(ret, ivy.mean, include_derived=True)
-
     # extract all arrays from the arguments and keyword arguments
-    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
-    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+    arg_np_vals, args_idxs, _ = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, _ = _get_nested_np_arrays(kwargs_np)
 
     args, kwargs = create_args_kwargs(
         backend=backend_to_test,
@@ -893,45 +884,73 @@ def gradient_test(
         test_flags=test_flags,
         on_device=on_device,
     )
-    _, grads = ivy.execute_with_gradients(
-        grad_fn,
-        [args, kwargs, 0],
-        xs_grad_idxs=xs_grad_idxs,
-        ret_grad_idxs=ret_grad_idxs,
-    )
+
+    with update_backend(backend_to_test) as ivy_backend:
+
+        def _grad_fn(all_args):
+            args, kwargs, i = all_args
+            call_fn = ivy_backend.__dict__[fn] if isinstance(fn, str) else fn[i]
+            ret = compiled_if_required(
+                backend_to_test,
+                call_fn,
+                test_compile=test_compile,
+                args=args,
+                kwargs=kwargs,
+            )(*args, **kwargs)
+            return ivy_backend.nested_map(ret, ivy_backend.mean, include_derived=True)
+
+        _, grads = ivy_backend.execute_with_gradients(
+            _grad_fn,
+            [args, kwargs, 0, backend_to_test],
+            xs_grad_idxs=xs_grad_idxs,
+            ret_grad_idxs=ret_grad_idxs,
+        )
     grads_np_flat = flatten_and_to_np(backend=backend_to_test, ret=grads)
 
-    ivy.set_backend(ground_truth_backend)  # TODO remove
-    ivy.set_default_device(on_device)  # TODO remove
-    test_unsupported = check_unsupported_dtype(
-        fn=ivy.__dict__[fn] if isinstance(fn, str) else fn[1],
-        input_dtypes=input_dtypes,
-        all_as_kwargs_np=all_as_kwargs_np,
-    )
-    if test_unsupported:
-        return
-    args, kwargs = create_args_kwargs(
-        backend=backend_to_test,
-        args_np=args_np,
-        arg_np_vals=arg_np_vals,
-        args_idxs=args_idxs,
-        kwargs_np=kwargs_np,
-        kwarg_np_vals=kwarg_np_vals,
-        kwargs_idxs=kwargs_idxs,
-        input_dtypes=input_dtypes,
-        test_flags=test_flags,
-        on_device=on_device,
-    )
-    _, grads_from_gt = ivy.execute_with_gradients(
-        grad_fn,
-        [args, kwargs, 1],
-        xs_grad_idxs=xs_grad_idxs,
-        ret_grad_idxs=ret_grad_idxs,
-    )
-    grads_np_from_gt_flat = flatten_and_to_np(
-        backend=backend_to_test, ret=grads_from_gt
-    )
-    ivy.previous_backend()  # TODO remove
+    with update_backend(ground_truth_backend) as gt_backend:
+        gt_backend.set_default_device(on_device)  # TODO remove
+
+        if check_unsupported_dtype(
+            fn=gt_backend.__dict__[fn] if isinstance(fn, str) else fn[1],
+            input_dtypes=input_dtypes,
+            all_as_kwargs_np=all_as_kwargs_np,
+        ):
+            return
+
+        args, kwargs = create_args_kwargs(
+            backend=ground_truth_backend,
+            args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
+            kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
+            input_dtypes=input_dtypes,
+            test_flags=test_flags,
+            on_device=on_device,
+        )
+
+        def _gt_grad_fn(all_args):
+            args, kwargs, i = all_args
+            call_fn = gt_backend.__dict__[fn] if isinstance(fn, str) else fn[i]
+            ret = compiled_if_required(
+                backend_to_test,
+                call_fn,
+                test_compile=test_compile,
+                args=args,
+                kwargs=kwargs,
+            )(*args, **kwargs)
+            return gt_backend.nested_map(ret, gt_backend.mean, include_derived=True)
+
+        _, grads_from_gt = gt_backend.execute_with_gradients(
+            _gt_grad_fn,
+            [args, kwargs, 1],
+            xs_grad_idxs=xs_grad_idxs,
+            ret_grad_idxs=ret_grad_idxs,
+        )
+        grads_np_from_gt_flat = flatten_and_to_np(
+            backend=backend_to_test, ret=grads_from_gt
+        )
 
     assert len(grads_np_flat) == len(
         grads_np_from_gt_flat
