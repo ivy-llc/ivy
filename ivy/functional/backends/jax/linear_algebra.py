@@ -472,6 +472,8 @@ def vector_norm(
         x = jnp.expand_dims(x, 0)
         ret_scalar = True
 
+    if axis is None and ord == 2:
+        x = jnp.ravel(x)
     if isinstance(axis, list):
         axis = tuple(axis)
 
