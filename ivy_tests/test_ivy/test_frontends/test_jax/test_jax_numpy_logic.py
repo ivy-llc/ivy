@@ -426,9 +426,7 @@ def test_jax_numpy_bitwise_and(
 # bitwise_not
 @handle_frontend_test(
     fn_tree="jax.numpy.bitwise_not",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("bool")),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_bitwise_not(

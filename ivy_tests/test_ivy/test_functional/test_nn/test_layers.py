@@ -929,7 +929,7 @@ def x_and_lstm(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.lstm_update",
     dtype_lstm=x_and_lstm(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
 )
