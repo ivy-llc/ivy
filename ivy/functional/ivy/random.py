@@ -44,7 +44,7 @@ def _check_bounds_and_get_shape(low, high, shape):
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
-    return ()
+    return ivy.shape((0))
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):
