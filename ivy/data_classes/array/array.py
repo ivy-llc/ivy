@@ -5,6 +5,8 @@ import functools
 import numpy as np
 from operator import mul
 from typing import Optional
+from time import perf_counter
+
 
 # local
 import ivy
@@ -353,6 +355,8 @@ class Array(
         return ivy
 
     def __repr__(self):
+        # print('in the repr function')
+        # s = perf_counter()
         if self._dev_str is None:
             self._dev_str = ivy.as_ivy_dev(self.device)
             self._pre_repr = "ivy.array"
@@ -360,8 +364,17 @@ class Array(
                 self._post_repr = ", dev={})".format(self._dev_str)
             else:
                 self._post_repr = ")"
+        # print("computing time for first block",perf_counter()-s)
+
+        # s = perf_counter()
         sig_fig = ivy.array_significant_figures()
+        # print("computing time for second block",perf_counter()-s)
+
+        # s = perf_counter()
         dec_vals = ivy.array_decimal_values()
+        # print("computing time for third block",perf_counter()-s)
+
+        # s = perf_counter()
         if self.backend == "" or ivy.is_local():
             # If the array was constructed using implicit backend
             backend = ivy.current_backend()
@@ -369,20 +382,27 @@ class Array(
             # Requirerd in the case that backend is different
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
+        # print("computing time for fourth block",perf_counter()-s)
+        # s = perf_counter()
         arr_np = backend.to_numpy(self._data)
-        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
+        # print("computing time for fifth block",perf_counter()-s)
+        # s = perf_counter()
+        # rep = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
+        # print("computing time for sixth block",perf_counter()-s)
+        # s = perf_counter()
         with np.printoptions(precision=dec_vals):
-            repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
+            repr = arr_np.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
+            # print("computing time for seventh block",perf_counter()-s)
             return (
                 self._pre_repr
                 + repr[repr.find("(") :]
                 + self._post_repr.format(ivy.current_backend_str())
             )
-
     def __dir__(self):
         return self._data.__dir__()
 
     def __getattribute__(self, item):
+        # print('in the get attr function')
         return super().__getattribute__(item)
 
     def __getattr__(self, item):
