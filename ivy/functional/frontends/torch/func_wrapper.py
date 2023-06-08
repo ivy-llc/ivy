@@ -86,9 +86,17 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ivy.unset_default_int_dtype()
                 ivy.unset_default_float_dtype()
         # convert all arrays in the return to `torch_frontend.Tensor` instances
-        return _from_ivy_array_to_torch_frontend_tensor(
+        ret = _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
         )
+        if "inplace" in kwargs and kwargs["inplace"]:
+            first_array = ivy.func_wrapper._get_first_array(
+                *args, array_fn=lambda x: hasattr(x, "ivy_array"), **kwargs
+            )
+            ivy.inplace_update(first_array, ret.ivy_array)
+            return first_array
+        else:
+            return ret
 
     return outputs_to_frontend_arrays_torch
 

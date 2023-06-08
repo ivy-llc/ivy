@@ -846,19 +846,11 @@ def test_torch_unique(
 
 @st.composite
 def _get_axis_and_p(draw):
-    p = draw(
-        st.one_of(
-            helpers.ints(min_value=0, max_value=5),
-            helpers.floats(min_value=1.0, max_value=5.0),
-            st.sampled_from((float("inf"), -float("inf"))),
-        )
-    )
+    p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
     if p == "fro" or p == "nuc":
-        force_tuple_axis = True
         max_axes_size = 2
         min_axes_size = 2
     else:
-        force_tuple_axis = False
         min_axes_size = 1
         max_axes_size = 5
     dtype_x_axis = draw(
@@ -866,11 +858,13 @@ def _get_axis_and_p(draw):
             available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
             valid_axis=True,
+            min_value=-1e04,
+            max_value=1e04,
             min_axes_size=min_axes_size,
             max_axes_size=max_axes_size,
             large_abs_safety_factor=2,
             safety_factor_scale="log",
-            force_tuple_axis=force_tuple_axis,
+            force_int_axis=True,
         )
     )
     return p, dtype_x_axis
