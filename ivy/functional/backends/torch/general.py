@@ -449,7 +449,7 @@ def scatter_nd(
             torch.tensor(indices) if isinstance(indices, (tuple, list)) else indices
         )
         if len(indices.shape) < 2:
-            indices = torch.unsqueeze(indices, 0)
+            indices = torch.unsqueeze(indices, -1)
         if torch.any(indices == -1):
             shape = (
                 shape
@@ -477,7 +477,7 @@ def scatter_nd(
                 )
                 for index in indices
             ]
-            indices = torch.concat(indices, axis=0)
+            indices = torch.concat(indices, axis=-1)
 
     # broadcast updates to indices
     expected_shape = (

@@ -71,6 +71,9 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
             shape=shape1,
             min_value=-1001,
             max_value=999,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
         )
     )
     _, variance = draw(
@@ -79,6 +82,9 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
             shape=shape2,
             min_value=0,
             max_value=999,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
         )
     )
     _, offset = draw(
@@ -87,6 +93,9 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
             shape=shape3,
             min_value=-1001,
             max_value=999,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
         )
     )
     _, scale = draw(
@@ -95,6 +104,9 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
             shape=shape4,
             min_value=-1001,
             max_value=999,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
         )
     )
     eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
@@ -174,8 +186,8 @@ def test_batch_norm(
         fn_name=fn_name,
         on_device=on_device,
         xs_grad_idxs=[[0, 0]],
-        rtol_=1e-1,
-        atol_=1e-1,
+        rtol_=1e-2,
+        atol_=1e-2,
         input_dtypes=x_dtype,
         x=x,
         mean=mean,

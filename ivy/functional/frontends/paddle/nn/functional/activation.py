@@ -3,9 +3,6 @@ import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.paddle.tensor.math import tanh as paddle_tanh
-from ivy.functional.frontends.paddle.tensor.math import (
-    log_softmax as paddle_log_softmax,
-)
 
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
@@ -30,7 +27,6 @@ def selu(
 
 
 tanh = paddle_tanh
-log_softmax = paddle_log_softmax
 
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
@@ -87,3 +83,29 @@ def softshrink(
     up = ivy.where(ivy.greater(x, threshold), ivy.subtract(x, threshold), 0)
     add = ivy.add(low, up)
     return ivy.astype(add, x.dtype)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softsign(
+    x,
+    /,
+    *,
+    name=None,
+):
+    return ivy.divide(x, ivy.add(1, ivy.abs(x)))
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def log_softmax(x, axis=-1, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.log_softmax(x, axis=axis)
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def prelu(x, weight, data_format="NCHW", name=None):
+    return ivy.add(ivy.maximum(0, x), ivy.multiply(weight, ivy.minimum(0, x)))
