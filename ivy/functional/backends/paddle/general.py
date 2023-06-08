@@ -582,7 +582,7 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = paddle.to_tensor(indices)
         if len(indices.shape) < 2:
-            indices = paddle_backend.expand_dims(indices, axis=0)
+            indices = paddle_backend.expand_dims(indices, axis=-1)
         if paddle_backend.any(indices < 0):
             shape = list(shape) if ivy.exists(shape) else list(out.shape)
             indices = _parse_index(indices, shape)
@@ -615,7 +615,7 @@ def scatter_nd(
                 )
                 for index in indices
             ]
-            indices = paddle_backend.concat(indices, axis=0)
+            indices = paddle_backend.concat(indices, axis=-1)
     # broadcast updates to correct shape
     shape = list(shape) if shape is not None else None
     expected_shape = (
@@ -630,7 +630,8 @@ def scatter_nd(
         if sum(indices.shape) < sum(indices_shape):
             indices = paddle_backend.broadcast_to(indices, indices_shape)
         else:
-            updates = paddle_backend.broadcast_to(updates, expected_shape)
+            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
+                updates = paddle_backend.reshape(updates, expected_shape)
     # implementation
     target = out
     target_given = ivy.exists(target)
