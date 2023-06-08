@@ -169,7 +169,7 @@ def jac(func: Callable):
             y = grad_fn(x_in)
 
             # Deal with multiple outputs
-            if isinstance(y, tuple):
+            if not isinstance(y, ivy.NativeArray):
                 jacobian = ivy.nested_map(
                     y,
                     lambda yi: ivy.to_ivy(
@@ -178,7 +178,7 @@ def jac(func: Callable):
                     ),
                 )
             else:
-                jacobian = ivy.to_ivy(tape.jacobian(y, x_in), nested=True)
+                jacobian = ivy.to_ivy(tape.jacobian(y, x_in))
         return jacobian
 
     return callback_fn
