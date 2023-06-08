@@ -1254,6 +1254,10 @@ class Tensor:
     def greater(self, other, *, out=None):
         return torch_frontend.greater(self, other, out=out)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def eq_(self, other):
+        return torch_frontend.eq(self, other)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1270,11 +1274,13 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+      
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def eq_(self, other):
         return torch_frontend.eq(self, other)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
-    def lt(input, other, *, out=None):
-        return torch_frontend.lt(input, other, out=out)
+    def lt(self, other, *, out=None):
+        return torch_frontend.lt(self, other, out=out)
+
