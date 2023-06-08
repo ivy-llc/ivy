@@ -97,6 +97,36 @@ def standard_gamma(shape, size=None):
     return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
 
 
+# Binomial
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def binomial(n, p, size=None):
+    if p < 0 or p > 1:
+        raise ValueError("p must be in the interval (0, 1)")
+    if n < 0:
+        raise ValueError("n must be strictly positive")
+    if size is None:
+        size = 1
+    else:
+        size = size
+    if isinstance(size, int):
+        size = (size,)
+    binomial_numbers = ivy.zeros(
+        size, dtype=int
+    )  # Initialize an array to store the binomial numbers
+
+    for i in ivy.ndindex(size):
+        successes = 0
+        for j in range(n):
+            uniform_number = (
+                ivy.random_uniform()
+            )  # Generate a random number from a uniform distribution
+            if uniform_number < p:
+                successes += 1
+        binomial_numbers[i] = successes  # Store the number of successes
+    return binomial_numbers
+
+
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def chisquare(df, size=None):

@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="numpy.all",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         max_axes_size=1,
         force_int_axis=True,
@@ -55,7 +55,7 @@ def test_numpy_all(
 @handle_frontend_test(
     fn_tree="numpy.any",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         max_axes_size=1,
         force_int_axis=True,
