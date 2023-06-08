@@ -24,6 +24,12 @@ def linear(
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x = x.float()
+    weight = weight.float()
+    if bias is not None:
+        bias = bias.float()
+    if out is not None:
+        out = out.float()
     return torch.nn.functional.linear(x, weight, bias)
 
 
