@@ -5,7 +5,10 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, handle_numpy_arrays_in_specific_backend
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    handle_numpy_arrays_in_specific_backend,
+)
 from ivy import promote_types_of_inputs
 from . import backend_version
 
