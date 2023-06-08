@@ -1493,12 +1493,18 @@ def test_tensorflow_avg_pool1d(
 @handle_frontend_test(
     fn_tree="tensorflow.nn.weighted_moments",
     dtype_and_x_and_axis=_statistical_dtype_values(function="mean"),
+    dtype_and_fw=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=0,
+    ),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_tensorflow_moments(
+def test_tensorflow_weighted_moments(
     *,
     dtype_and_x_and_axis,
+    dtype_and_fw,
     keepdims,
     frontend,
     test_flags,
@@ -1506,6 +1512,7 @@ def test_tensorflow_moments(
     on_device,
 ):
     input_dtype, x, axis = dtype_and_x_and_axis
+    fw_dtype, fw = dtype_and_fw
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1515,6 +1522,7 @@ def test_tensorflow_moments(
         rtol=1e-1,
         atol=1e-1,
         x=x[0],
+        frequency_weights=fw[0],
         axes=axis,
         keepdims=keepdims,
     )
