@@ -180,69 +180,75 @@ def test_matmul(
     )
 
 
+# solve
 @st.composite
-def _solve_get_dtype_and_data(draw):
-    batch = draw(st.integers(min_value=1, max_value=5))
-    random_size = draw(st.integers(min_value=2, max_value=4))
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))),
-            key="shared_dtype",
-        )
+def _get_first_matrix(draw):
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))),
+        key="shared_dtype",
     )
-    shape = (random_size, random_size)
-    tmp = []
-    for i in range(batch):
-        tmp.append(
-            draw(
-                helpers.array_values(
-                    dtype=input_dtype,
-                    shape=shape,
-                    min_value=-10,
-                    max_value=10,
-                ).filter(
-                    lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon
-                )
-            )
-        )
-    shape = (batch, random_size, draw(st.integers(min_value=2, max_value=4)))
-    x = draw(
+    input_dtype = draw(input_dtype_strategy)
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=shape,
-            min_value=-10,
-            max_value=10,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+    )
+    return input_dtype, matrix
+
+
+# solve
+@st.composite
+def _get_second_matrix(draw):
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    return input_dtype, draw(
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
         )
     )
-
-    return [[input_dtype] * batch, input_dtype], [tmp, x[0]]
 
 
 # solve
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.solve",
-    dtype_and_x=_solve_get_dtype_and_data(),
+    x=_get_first_matrix(),
+    y=_get_second_matrix(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_solve(
     *,
-    dtype_and_x,
+    x,
+    y,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_x
+    input_dtype1, x1 = x
+    input_dtype2, x2 = y
     helpers.test_frontend_function(
-        input_dtypes=[input_dtypes[0][0], input_dtypes[1]],
+        input_dtypes=[input_dtype1, input_dtype2],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-3,
         atol=1e-3,
-        matrix=xs[0],
-        rhs=xs[1],
+        matrix=x1,
+        rhs=x2,
     )
 
 
