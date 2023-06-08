@@ -559,7 +559,9 @@ def test_paddle_abs(
         x=x[0],
     )
     
-    @handle_frontend_test(
+    
+# remainder
+@handle_frontend_test(
     fn_tree="paddle.remainder",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
