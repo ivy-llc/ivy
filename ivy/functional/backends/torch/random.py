@@ -28,11 +28,7 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    shape = (
-        _check_bounds_and_get_shape(low, high, shape).shape
-        if hasattr(shape, "shape")
-        else shape
-    )
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     rand_range = high - low
     if seed:
         torch.manual_seed(seed)

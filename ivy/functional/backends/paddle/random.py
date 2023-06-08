@@ -41,11 +41,7 @@ def random_uniform(
     dtype = ivy.as_native_dtype(dtype)
     low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
     high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
-    shape = (
-        _check_bounds_and_get_shape(low, high, shape).shape
-        if hasattr(shape, "shape")
-        else shape
-    )
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     # Set range and seed
     rng = high - low
     if seed:
