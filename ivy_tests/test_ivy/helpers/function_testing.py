@@ -459,7 +459,7 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
-
+    fw = backend_to_test
     if mod_backend[fw]:
         # multiprocessing
         proc, input_queue, output_queue = mod_backend[fw]
