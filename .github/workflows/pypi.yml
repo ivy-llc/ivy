@@ -1,5 +1,7 @@
 name: pypi
-on: [push]
+on:
+  push:
+  workflow_call:
 jobs:
   upload-if-tagged-commit:
     runs-on: ubuntu-latest
