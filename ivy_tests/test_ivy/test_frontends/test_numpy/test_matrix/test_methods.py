@@ -153,6 +153,7 @@ def test_numpy_matrix_argmax(
     to_str,
     init_flags,
     method_flags,
+    backend_fw,
     frontend_method_data,
     frontend,
 ):
@@ -162,6 +163,7 @@ def test_numpy_matrix_argmax(
         axis = axis[0]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
@@ -198,6 +200,7 @@ def test_numpy_matrix_any(
     to_str,
     init_flags,
     method_flags,
+    backend_fw,
     frontend_method_data,
     frontend,
 ):
@@ -207,6 +210,7 @@ def test_numpy_matrix_any(
         axis = axis[0]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
