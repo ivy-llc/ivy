@@ -591,7 +591,7 @@ def dropout(
     x = ivy.astype(x, dtype) if dtype else x
     res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed) if training else x
     res = tf.multiply(res, (1.0 - prob)) if not scale else res
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 def dropout1d(
@@ -613,7 +613,7 @@ def dropout1d(
             res = tf.transpose(res, perm)
     else:
         res = x
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 def dropout2d(
@@ -636,7 +636,7 @@ def dropout2d(
             res = tf.transpose(res, perm)
     else:
         res = x
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 def dropout3d(
@@ -659,7 +659,7 @@ def dropout3d(
             res = tf.transpose(res, perm)
     else:
         res = x
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 def ifft(

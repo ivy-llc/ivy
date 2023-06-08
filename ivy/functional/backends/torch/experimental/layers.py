@@ -676,7 +676,7 @@ def dropout(
     x = ivy.astype(x, dtype) if dtype else x
     res = torch.nn.functional.dropout(x, prob, training=training)
     res = torch.multiply(res, (1.0 - prob)) if not scale else res
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 dropout.partial_mixed_handler = lambda x, prob, **kwargs: (
@@ -704,7 +704,7 @@ def dropout1d(
     res = torch.nn.functional.dropout1d(x, prob, training=training)
     if data_format == "NWC":
         res = torch.permute(res, perm)
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 @with_unsupported_dtypes(
@@ -728,7 +728,7 @@ def dropout2d(
     if data_format == "NHWC":
         perm = (0, 2, 3, 1) if is_batched else (1, 2, 0)
         res = torch.permute(res, perm)
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 @with_unsupported_dtypes(
@@ -757,7 +757,7 @@ def dropout3d(
     if data_format == "NDHWC":
         perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
         res = torch.permute(res, perm)
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 def ifft(

@@ -766,6 +766,7 @@ def fft(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @to_native_arrays_and_back
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -839,6 +840,7 @@ def dropout1d(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @to_native_arrays_and_back
 def dropout2d(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -912,6 +914,7 @@ def dropout2d(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @to_native_arrays_and_back
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],

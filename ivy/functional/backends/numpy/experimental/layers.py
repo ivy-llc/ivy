@@ -772,7 +772,7 @@ def dropout1d(
             res = np.transpose(res, perm)
     else:
         res = x
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 def dropout2d(
@@ -798,7 +798,7 @@ def dropout2d(
             res = np.transpose(res, perm)
     else:
         res = x
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 def dropout3d(
@@ -824,7 +824,7 @@ def dropout3d(
             res = np.transpose(res, perm)
     else:
         res = x
-    return res if not ivy.exists(out) else ivy.inplace_update(out, res)
+    return res
 
 
 def ifft(
