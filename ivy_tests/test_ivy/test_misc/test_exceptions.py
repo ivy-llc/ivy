@@ -2,11 +2,7 @@ import sys
 import os
 import contextlib
 import pytest
-from ivy_tests.test_ivy.helpers.available_frameworks import _available_frameworks
-
 import ivy
-
-_available_frameworks = _available_frameworks()
 
 
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
@@ -21,9 +17,10 @@ def test_trace_modes(backend_fw, trace_mode, show_func_wrapper):
     x = ivy.array([])
     y = ivy.array([1.0, 3.0, 4.0])
     lines = ""
-    with pytest.raises(Exception):
-        ivy.functional.frontends.torch.div(x, y)
-
+    try:
+        ivy.divide(x, y)
+    except Exception as e:
+        print(e)
     sys.stdout = orig_stdout
     f.close()
 

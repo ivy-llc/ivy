@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
 import numpy as np
-from typing import Sequence
 
 # local
 import ivy
@@ -82,7 +81,7 @@ def test_moveaxis(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         a=a[0],
         source=source,
@@ -121,7 +120,7 @@ def test_heaviside(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x1=x[0],
         x2=x[0],
@@ -157,7 +156,7 @@ def test_flipud(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         m=m[0],
     )
@@ -191,7 +190,7 @@ def test_vstack(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         arrays=m,
     )
@@ -224,7 +223,7 @@ def test_hstack(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         arrays=m,
     )
@@ -306,7 +305,7 @@ def test_rot90(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         m=m,
         k=k,
@@ -345,7 +344,7 @@ def test_top_k(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -379,7 +378,7 @@ def test_fliplr(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         m=m[0],
@@ -414,7 +413,7 @@ def test_i0(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -455,7 +454,7 @@ def test_flatten(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -580,7 +579,7 @@ def test_pad(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         input=input,
@@ -614,14 +613,12 @@ def test_vsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    if isinstance(indices_or_sections, Sequence):
-        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         on_device=on_device,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         indices_or_sections=indices_or_sections,
@@ -649,13 +646,11 @@ def test_dsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    if isinstance(indices_or_sections, Sequence):
-        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -690,7 +685,7 @@ def test_atleast_1d(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         **kw,
@@ -724,7 +719,7 @@ def test_dstack(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         arrays=x,
@@ -759,7 +754,7 @@ def test_atleast_2d(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         **kw,
@@ -792,7 +787,7 @@ def test_atleast_3d(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         **kw,
@@ -829,7 +824,7 @@ def test_take_along_axis(
         ground_truth_backend="jax",
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         arr=x,
@@ -860,13 +855,11 @@ def test_hsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    if isinstance(indices_or_sections, Sequence):
-        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -900,7 +893,7 @@ def test_broadcast_shapes(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=["int64"],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         **shapes,
@@ -951,7 +944,7 @@ def test_expand(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -998,7 +991,7 @@ def test_as_strided(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x,
@@ -1052,7 +1045,7 @@ def test_concat_from_sequence(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         input_sequence=arrays,
@@ -1118,7 +1111,7 @@ def test_associative_scan(
     helpers.test_function(
         fn_name=fn_name,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -1162,7 +1155,7 @@ def test_unique_consecutive(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         axis=axis,

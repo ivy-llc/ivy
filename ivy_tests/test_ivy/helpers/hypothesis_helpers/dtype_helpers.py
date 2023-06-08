@@ -7,7 +7,7 @@ from typing import Optional
 
 # local
 import ivy
-from ..pipeline_helper import WithBackendContext
+from ..pipeline_helper import WithBackendContext, update_backend
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
@@ -38,46 +38,46 @@ def _get_type_dict(framework: str, kind: str):
     with WithBackendContext(framework) as ivy_backend:
         if kind == "valid":
             return ivy_backend.valid_dtypes
-        elif kind == "numeric":
+        if kind == "numeric":
             return ivy_backend.valid_numeric_dtypes
-        elif kind == "integer":
+        if kind == "integer":
             return ivy_backend.valid_int_dtypes
-        elif kind == "float":
+        if kind == "float":
             return ivy_backend.valid_float_dtypes
-        elif kind == "unsigned":
+        if kind == "unsigned":
             return ivy_backend.valid_uint_dtypes
-        elif kind == "signed_integer":
+        if kind == "signed_integer":
             return tuple(
                 set(ivy_backend.valid_int_dtypes).difference(
                     ivy_backend.valid_uint_dtypes
                 )
             )
-        elif kind == "complex":
+        if kind == "complex":
             return ivy_backend.valid_complex_dtypes
-        elif kind == "real_and_complex":
+        if kind == "real_and_complex":
             return tuple(
                 set(ivy_backend.valid_numeric_dtypes).union(
                     ivy_backend.valid_complex_dtypes
                 )
             )
-        elif kind == "float_and_complex":
+        if kind == "float_and_complex":
             return tuple(
                 set(ivy_backend.valid_float_dtypes).union(
                     ivy_backend.valid_complex_dtypes
                 )
             )
-        elif kind == "float_and_integer":
+        if kind == "float_and_integer":
             return tuple(
                 set(ivy_backend.valid_float_dtypes).union(ivy_backend.valid_int_dtypes)
             )
-        elif kind == "bool":
+        if kind == "bool":
             return tuple(
                 set(ivy_backend.valid_dtypes).difference(
                     ivy_backend.valid_numeric_dtypes
                 )
             )
-        else:
-            raise RuntimeError("{} is an unknown kind!".format(kind))
+
+        raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
 @st.composite
@@ -344,31 +344,36 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     ret
         A tuple of inputs and castable dtype.
     """
-    bound_dtype_bits = lambda d: (
-        ivy.dtype_bits(d) / 2 if ivy.is_complex_dtype(d) else ivy.dtype_bits(d)
-    )
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        bound_dtype_bits = lambda d: (
+            ivy_backend.dtype_bits(d) / 2
+            if ivy_backend.is_complex_dtype(d)
+            else ivy_backend.dtype_bits(d)
+        )
 
-    def cast_filter(d):
-        if ivy.is_int_dtype(d):
-            max_val = ivy.iinfo(d).max
-        elif ivy.is_float_dtype(d) or ivy.is_complex_dtype(d):
-            max_val = ivy.finfo(d).max
-        else:
-            max_val = 1
-        if x is None:
-            if ivy.is_int_dtype(dtype):
-                max_x = ivy.iinfo(dtype).max
-            elif ivy.is_float_dtype(dtype) or ivy.is_complex_dtype(dtype):
-                max_x = ivy.finfo(dtype).max
+        def cast_filter(d):
+            if ivy_backend.is_int_dtype(d):
+                max_val = ivy_backend.iinfo(d).max
+            elif ivy_backend.is_float_dtype(d) or ivy_backend.is_complex_dtype(d):
+                max_val = ivy_backend.finfo(d).max
             else:
-                max_x = 1
-        else:
-            max_x = np.max(np.abs(np.asarray(x)))
-        return max_x <= max_val and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+                max_val = 1
+            if x is None:
+                if ivy_backend.is_int_dtype(dtype):
+                    max_x = ivy_backend.iinfo(dtype).max
+                elif ivy_backend.is_float_dtype(dtype) or ivy_backend.is_complex_dtype(
+                    dtype
+                ):
+                    max_x = ivy_backend.finfo(dtype).max
+                else:
+                    max_x = 1
+            else:
+                max_x = np.max(np.abs(np.asarray(x)))
+            return max_x <= max_val and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
 
-    cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
-    if x is None:
-        return dtype, cast_dtype
-    if "uint" in cast_dtype:
-        x = np.abs(np.asarray(x))
-    return dtype, x, cast_dtype
+        cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
+        if x is None:
+            return dtype, cast_dtype
+        if "uint" in cast_dtype:
+            x = np.abs(np.asarray(x))
+        return dtype, x, cast_dtype

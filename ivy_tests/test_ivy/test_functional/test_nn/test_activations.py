@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -31,7 +31,7 @@ def test_relu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -64,7 +64,7 @@ def test_leaky_relu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -100,7 +100,7 @@ def test_gelu(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -134,7 +134,7 @@ def test_sigmoid(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -154,7 +154,10 @@ def test_sigmoid(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    axis=helpers.ints(min_value=-1, max_value=0),
+    axis=st.one_of(
+        helpers.ints(min_value=-1, max_value=0),
+        st.none(),
+    ),
 )
 def test_softmax(
     *,
@@ -170,7 +173,7 @@ def test_softmax(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -185,7 +188,7 @@ def test_softmax(
 @handle_test(
     fn_tree="functional.ivy.softplus",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
@@ -211,7 +214,7 @@ def test_softplus(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -249,7 +252,7 @@ def test_log_softmax(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -283,7 +286,7 @@ def test_mish(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,

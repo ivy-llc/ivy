@@ -32,7 +32,7 @@ def test_native_array(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
@@ -81,7 +81,7 @@ def test_linspace(
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -117,6 +117,7 @@ def test_linspace(
     num=helpers.ints(min_value=1, max_value=5),
     base=helpers.floats(min_value=0.1, max_value=3.0),
     axis=st.none(),
+    test_with_out=st.just("False"),
 )
 def test_logspace(
     *,
@@ -134,7 +135,7 @@ def test_logspace(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1,  # if It's less than one it'll test for inf
@@ -177,7 +178,7 @@ def test_arange(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         start=start,
         stop=stop,
@@ -268,7 +269,7 @@ def test_asarray(
         input_dtypes=x_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         object_in=x,
         dtype=dtype,
@@ -305,7 +306,7 @@ def test_empty(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         shape=shape,
         dtype=dtype[0],
@@ -339,7 +340,7 @@ def test_empty_like(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
@@ -380,7 +381,7 @@ def test_eye(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         n_rows=n_rows,
@@ -414,12 +415,12 @@ def test_from_dlpack(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         ground_truth_backend=ground_truth_backend,
@@ -466,7 +467,7 @@ def test_full(
         input_dtypes=dtypes,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         shape=shape,
         fill_value=fill_value,
@@ -510,7 +511,7 @@ def test_full_like(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         fill_value=fill_value,
@@ -556,7 +557,7 @@ def test_meshgrid(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         **kw,
         sparse=sparse,
@@ -593,7 +594,7 @@ def test_ones(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         shape=shape,
         dtype=dtype[0],
@@ -607,10 +608,6 @@ def test_ones(
     fn_tree="functional.ivy.ones_like",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
     ),
 )
 def test_ones_like(
@@ -627,7 +624,7 @@ def test_ones_like(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
@@ -658,13 +655,13 @@ def test_tril(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         k=k,
@@ -694,13 +691,13 @@ def test_triu(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         k=k,
@@ -718,7 +715,7 @@ def test_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -736,7 +733,7 @@ def test_zeros(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         shape=shape,
         dtype=dtype[0],
@@ -749,7 +746,7 @@ def test_zeros(
 @handle_test(
     fn_tree="functional.ivy.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -770,7 +767,7 @@ def test_zeros_like(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
@@ -874,7 +871,7 @@ def test_one_hot(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         indices=indices[0],
         depth=depth,
@@ -926,7 +923,7 @@ def test_frombuffer(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         buffer=buffer,
         dtype=input_dtype[0],
@@ -963,7 +960,7 @@ def test_triu_indices(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         n_rows=n_rows,

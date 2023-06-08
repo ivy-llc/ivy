@@ -242,7 +242,9 @@ class _ContainerWithManipulation(ContainerBase):
         /,
         *,
         copy: Optional[bool] = None,
-        num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+        num_or_size_splits: Optional[
+            Union[int, Sequence[int], ivy.Array, ivy.NativeArray]
+        ] = None,
         axis: int = 0,
         with_remainder: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -261,8 +263,9 @@ class _ContainerWithManipulation(ContainerBase):
             array to be divided into sub-arrays.
         num_or_size_splits
             Number of equal arrays to divide the array into along the given axis if an
-            integer. The size of each split element if a sequence of integers. Default
-            is to divide into as many 1-dimensional arrays as the axis dimension.
+            integer. The size of each split element if a sequence of integers
+            or 1-D array. Default is to divide into as many 1-dimensional arrays
+            as the axis dimension.
         axis
             The axis along which to split, default is ``0``.
         with_remainder
@@ -315,7 +318,9 @@ class _ContainerWithManipulation(ContainerBase):
         /,
         *,
         copy: Optional[bool] = None,
-        num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+        num_or_size_splits: Optional[
+            Union[int, Sequence[int], ivy.Array, ivy.NativeArray]
+        ] = None,
         axis: int = 0,
         with_remainder: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -334,8 +339,9 @@ class _ContainerWithManipulation(ContainerBase):
             array to be divided into sub-arrays.
         num_or_size_splits
             Number of equal arrays to divide the array into along the given axis if an
-            integer. The size of each split element if a sequence of integers. Default
-            is to divide into as many 1-dimensional arrays as the axis dimension.
+            integer. The size of each split element if a sequence of integers
+            or 1-D array. Default is to divide into as many 1-dimensional arrays
+            as the axis dimension.
         axis
             The axis along which to split, default is ``0``.
         with_remainder

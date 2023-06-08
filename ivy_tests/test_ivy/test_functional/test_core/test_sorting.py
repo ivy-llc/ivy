@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.argsort",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
         min_axis=-1,
@@ -39,7 +39,7 @@ def test_argsort(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -53,7 +53,7 @@ def test_argsort(
 @handle_test(
     fn_tree="functional.ivy.sort",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
         min_axis=-1,
@@ -79,7 +79,7 @@ def test_sort(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -117,7 +117,7 @@ def test_msort(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -200,7 +200,7 @@ def test_searchsorted(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=xs[0],

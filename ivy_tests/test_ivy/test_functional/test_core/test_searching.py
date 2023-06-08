@@ -75,7 +75,7 @@ def test_argmax(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -110,13 +110,13 @@ def test_argmin(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
         axis=axis,
         keepdims=keepdims,
-        output_dtype=output_dtype[0],
+        dtype=output_dtype[0],
         select_last_index=select_last_index,
     )
 
@@ -124,11 +124,9 @@ def test_argmin(
 @handle_test(
     fn_tree="functional.ivy.nonzero",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
     ),
     as_tuple=st.booleans(),
     size=st.integers(min_value=1, max_value=5),
@@ -152,7 +150,7 @@ def test_nonzero(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -181,7 +179,7 @@ def test_where(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=["bool"] + dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         condition=cond,
@@ -193,23 +191,23 @@ def test_where(
 # argwhere
 @handle_test(
     fn_tree="functional.ivy.argwhere",
-    x=helpers.dtype_and_values(available_dtypes=("bool",)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
 )
 def test_argwhere(
     *,
-    x,
+    dtype_and_x,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = x
+    input_dtype, x = dtype_and_x
     helpers.test_function(
         ground_truth_backend="torch",
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],

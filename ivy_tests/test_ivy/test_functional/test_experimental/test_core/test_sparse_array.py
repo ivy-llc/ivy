@@ -184,11 +184,12 @@ def test_sparse_coo(
     sparse_data,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
     on_device,
-    backend_fw
+    backend_fw,
 ):
     coo_ind, val_dtype, val, shp = sparse_data
     helpers.test_method(
@@ -222,6 +223,7 @@ def test_sparse_csr(
     sparse_data,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     on_device,
@@ -229,6 +231,7 @@ def test_sparse_csr(
 ):
     crow_indices, col_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -259,6 +262,7 @@ def test_sparse_csc(
     sparse_data,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     on_device,
@@ -266,6 +270,7 @@ def test_sparse_csc(
 ):
     ccol_indices, row_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -297,12 +302,14 @@ def test_sparse_bsc(
     class_name,
     method_name,
     on_device,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     ccol_indices, row_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -334,12 +341,14 @@ def test_sparse_bsr(
     class_name,
     method_name,
     on_device,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     crow_indices, col_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         on_device=on_device,

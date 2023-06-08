@@ -494,7 +494,7 @@ class ndarray:
         if not dtype:
             return self
         return np_frontend.array(self, dtype=dtype)
-    
+
     def __array_wrap__(self, array, context=None, /):
         if context is None:
             return np_frontend.array(array)
@@ -513,7 +513,7 @@ class ndarray:
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ndarray not supported")
-        for i in range(self.ndim):
+        for i in range(self.shape[0]):
             yield self[i]
 
     def __mod__(self, value, /):

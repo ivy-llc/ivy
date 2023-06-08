@@ -156,7 +156,9 @@ def _import_fn(fn_tree: str):
     return callable_fn, fn_name, module_to_import
 
 
-def _get_method_supported_devices_dtypes_helper(method_name: str, class_module: str, class_name: str, backend_str:str):
+def _get_method_supported_devices_dtypes_helper(
+    method_name: str, class_module: str, class_name: str, backend_str: str
+):
     # helper to delegate backend related
     # computation outside the main function
     # so as to ease multiprocessing
@@ -169,6 +171,7 @@ def _get_method_supported_devices_dtypes_helper(method_name: str, class_module: 
                 backend_str, devices_and_dtypes[device]
             )
     return organized_dtypes
+
 
 def _get_method_supported_devices_dtypes(
     method_name: str, class_module: str, class_name: str
@@ -195,17 +198,31 @@ def _get_method_supported_devices_dtypes(
     supported_device_dtypes = {}
 
     for backend_str in available_frameworks:
-            if mod_backend[backend_str] :
-                # we gotta do this using multiprocessing
-                proc,input_queue,output_queue = mod_backend[backend_str]
-                input_queue.put(("method supported dtypes", method_name,class_module.__name__, class_name, backend_str))
-                supported_device_dtypes[backend_str]= output_queue.get()
-            else:
-                supported_device_dtypes[backend_str] = _get_method_supported_devices_dtypes_helper(method_name,class_module, class_name, backend_str)
+        if mod_backend[backend_str]:
+            # we gotta do this using multiprocessing
+            proc, input_queue, output_queue = mod_backend[backend_str]
+            input_queue.put(
+                (
+                    "method supported dtypes",
+                    method_name,
+                    class_module.__name__,
+                    class_name,
+                    backend_str,
+                )
+            )
+            supported_device_dtypes[backend_str] = output_queue.get()
+        else:
+            supported_device_dtypes[backend_str] = (
+                _get_method_supported_devices_dtypes_helper(
+                    method_name, class_module, class_name, backend_str
+                )
+            )
     return supported_device_dtypes
 
 
-def _get_supported_devices_dtypes_helper(backend_str:str, fn_module: str, fn_name:str):
+def _get_supported_devices_dtypes_helper(
+    backend_str: str, fn_module: str, fn_name: str
+):
     # helper function so as to ease multiprocessing
     with update_backend(backend_str) as backend:
         _tmp_mod = importlib.import_module(fn_module)  # TODO use dynamic import?
@@ -254,14 +271,16 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             fn_name = "_" + fn_name
 
     for backend_str in available_frameworks:
-            if mod_backend[backend_str] :
-                # we know we need to use multiprocessing
-                # to get the devices and dtypes
-                proc,input_queue, output_queue = mod_backend[backend_str]
-                input_queue.put(("supported dtypes",fn_module, fn_name, backend_str))
-                supported_device_dtypes[backend_str]=output_queue.get()
-            else:
-                supported_device_dtypes[backend_str] = _get_supported_devices_dtypes_helper(backend_str,fn_module,fn_name)
+        if mod_backend[backend_str]:
+            # we know we need to use multiprocessing
+            # to get the devices and dtypes
+            proc, input_queue, output_queue = mod_backend[backend_str]
+            input_queue.put(("supported dtypes", fn_module, fn_name, backend_str))
+            supported_device_dtypes[backend_str] = output_queue.get()
+        else:
+            supported_device_dtypes[backend_str] = _get_supported_devices_dtypes_helper(
+                backend_str, fn_module, fn_name
+            )
     return supported_device_dtypes
 
 
@@ -378,8 +397,11 @@ def handle_test(
             def wrapped_test(*args, **kwargs):
                 try:
                     hypothesis_test_fn(*args, **kwargs)
-                except ivy.utils.exceptions.IvyNotImplementedException:
-                    pytest.skip("Function not implemented in backend.")
+                except Exception as e:
+                    # A string matching is used instead of actual exception due to
+                    # exception object in with_backend is different from global Ivy
+                    if e.__class__.__qualname__ == "IvyNotImplementedException":
+                        pytest.skip("Function not implemented in backend.")
 
         else:
             wrapped_test = test_fn
@@ -493,8 +515,11 @@ def handle_frontend_test(
             def wrapped_test(*args, **kwargs):
                 try:
                     hypothesis_test_fn(*args, **kwargs)
-                except ivy.utils.exceptions.IvyNotImplementedException:
-                    pytest.skip("Function not implemented in backend.")
+                except Exception as e:
+                    # A string matching is used instead of actual exception due to
+                    # exception object in with_backend is different from global Ivy
+                    if e.__class__.__qualname__ == "IvyNotImplementedException":
+                        pytest.skip("Function not implemented in backend.")
 
         else:
             wrapped_test = test_fn
@@ -610,8 +635,11 @@ def handle_method(
             def wrapped_test(*args, **kwargs):
                 try:
                     hypothesis_test_fn(*args, **kwargs)
-                except ivy.utils.exceptions.IvyNotImplementedException:
-                    pytest.skip("Function not implemented in backend.")
+                except Exception as e:
+                    # A string matching is used instead of actual exception due to
+                    # exception object in with_backend is different from global Ivy
+                    if e.__class__.__qualname__ == "IvyNotImplementedException":
+                        pytest.skip("Function not implemented in backend.")
 
         else:
             wrapped_test = test_fn
@@ -737,8 +765,11 @@ def handle_frontend_method(
             def wrapped_test(*args, **kwargs):
                 try:
                     hypothesis_test_fn(*args, **kwargs)
-                except ivy.utils.exceptions.IvyNotImplementedException:
-                    pytest.skip("Function not implemented in backend.")
+                except Exception as e:
+                    # A string matching is used instead of actual exception due to
+                    # exception object in with_backend is different from global Ivy
+                    if e.__class__.__qualname__ == "IvyNotImplementedException":
+                        pytest.skip("Function not implemented in backend.")
 
         else:
             wrapped_test = test_fn

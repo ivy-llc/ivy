@@ -49,7 +49,7 @@ def test_unravel_index(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         indices=np.asarray(x[0], dtype=input_dtype[0]),

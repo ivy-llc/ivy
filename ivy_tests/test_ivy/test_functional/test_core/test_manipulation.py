@@ -65,7 +65,7 @@ def test_concat(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         xs=xs,
@@ -103,7 +103,7 @@ def test_expand_dims(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -141,7 +141,7 @@ def test_flip(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -182,7 +182,7 @@ def test_permute_dims(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -220,7 +220,7 @@ def test_reshape(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -292,7 +292,7 @@ def test_roll(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=value_dtype + shift_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -338,7 +338,7 @@ def test_squeeze(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -387,7 +387,7 @@ def test_stack(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         arrays=arrays,
@@ -432,7 +432,7 @@ def test_clip(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes[0],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x_list,
@@ -483,7 +483,7 @@ def test_constant_pad(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -564,7 +564,7 @@ def test_repeat(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=value_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -575,7 +575,14 @@ def test_repeat(
 
 
 @st.composite
-def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
+def _get_splits(
+    draw,
+    allow_none=True,
+    min_num_dims=1,
+    axis=None,
+    allow_array_indices=True,
+    is_mod_split=False,
+):
     """Generate valid splits, either by generating an integer that evenly divides the
     axis or a list of splits that sum to the length of the axis being split."""
     shape = draw(
@@ -587,7 +594,7 @@ def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
         )
 
     @st.composite
-    def get_int_split(draw):
+    def _get_int_split(draw):
         if shape[axis] == 0:
             return 0
         factors = []
@@ -597,7 +604,7 @@ def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
         return draw(st.sampled_from(factors))
 
     @st.composite
-    def get_list_split(draw):
+    def _get_list_split(draw, allow_arr_indices=True, is_other_split=False):
         num_or_size_splits = []
         while sum(num_or_size_splits) < shape[axis]:
             split_value = draw(
@@ -607,12 +614,29 @@ def _get_splits(draw, allow_none=True, min_num_dims=1, axis=None):
                 )
             )
             num_or_size_splits.append(split_value)
+        if is_other_split:
+            num_or_size_splits = list(set(num_or_size_splits))
+        if allow_arr_indices:
+            gen_random_native = draw(st.booleans())
+            if gen_random_native:
+                return np.asarray(num_or_size_splits, dtype=np.int32)
         return num_or_size_splits
 
     if allow_none:
-        return draw(get_list_split() | get_int_split() | st.none())
+        return draw(
+            _get_list_split(
+                allow_arr_indices=allow_array_indices, is_other_split=is_mod_split
+            )
+            | _get_int_split()
+            | st.none()
+        )
     else:
-        return draw(get_list_split() | get_int_split())
+        return draw(
+            _get_list_split(
+                allow_arr_indices=allow_array_indices, is_other_split=is_mod_split
+            )
+            | _get_int_split()
+        )
 
 
 @handle_test(
@@ -645,12 +669,11 @@ def test_split(
     ground_truth_backend,
 ):
     dtype, value = dtype_value
-
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -691,7 +714,7 @@ def test_swapaxes(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -731,7 +754,7 @@ def test_tile(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype + repeat_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -761,7 +784,7 @@ def test_zero_pad(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -799,7 +822,7 @@ def test_unstack(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
