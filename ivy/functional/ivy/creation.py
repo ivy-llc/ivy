@@ -75,6 +75,8 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
 def _ivy_to_native(x):
     # checks the first element of the leaf list and
     # converts it to a native array if it is an ivy array
+    # assumes that either all elements in a leaf list are ivy arrays
+    # or none of them are
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
@@ -87,6 +89,23 @@ def _ivy_to_native(x):
     return x
 
 
+def _shape_to_native(x):
+    # checks the first element of the leaf list and
+    # converts it to a native array if it is an ivy array
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x = list(x) if isinstance(x, tuple) else x
+            x[i] = _shape_to_native(item)
+    else:
+        if (isinstance(x, (list, tuple)) and len(x) > 0) and (
+            isinstance(x[0], ivy.Shape) and ivy.get_array_mode()
+        ):
+            x = ivy.nested_map(x, lambda x: x.shape if isinstance(x, ivy.Shape) else x)
+        elif isinstance(x, ivy.Shape) and ivy.get_array_mode():
+            x = x.shape
+    return x
+
+
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
@@ -96,10 +115,12 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
 
         This wrapper is specifically for the backend implementations of
         asarray.
+
+        It assumes either all the elements in a leaf list are ivy arrays
+        or none of them are. It checks the first element of all the leaf
+        list. If it is an ivy array, it converts all the elements in the
+        leaf list to native otherwise it skips that leaf list.
         """
-        # When possible we want to not nest this
-        # because nested calls introduce massive overhead
-        # and the checks to see if we can avoid it are cheap
         new_arg = _ivy_to_native(args[0])
         new_args = (new_arg,) + args[1:]
         if dtype is not None:
@@ -146,6 +167,17 @@ def asarray_infer_device(fn: Callable) -> Callable:
 
     _asarray_infer_device.infer_device = True
     return _asarray_infer_device
+
+
+def asarray_inputs_to_native_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _inputs_to_native_shapes(*args, **kwargs):
+        new_arg = _shape_to_native(args[0])
+        new_args = (new_arg,) + args[1:]
+        return fn(*new_args, **kwargs)
+
+    _inputs_to_native_shapes.inputs_to_native_shapes = True
+    return _inputs_to_native_shapes
 
 
 # Type hints #
@@ -270,7 +302,6 @@ def arange(
 
 @handle_array_like_without_promotion
 @handle_out_argument
-@inputs_to_native_shapes
 @handle_array_function
 def asarray(
     obj: Union[
@@ -357,7 +388,7 @@ def asarray(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(obj).asarray(
+    return current_backend().asarray(
         obj, copy=copy, dtype=dtype, device=device, out=out
     )
 

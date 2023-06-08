@@ -8,6 +8,11 @@ from ivy.func_wrapper import with_unsupported_dtypes
 )
 @to_ivy_arrays_and_back
 def uniform(shape, minval=0, maxval=None, dtype=ivy.float32, seed=None, name=None):
+    if maxval is None:
+        if dtype != "int64":
+            maxval = 1.0
+        else:
+            raise ValueError("maxval must be specified for int64 dtype")
     return ivy.random_uniform(
         shape=shape, low=minval, high=maxval, dtype=dtype, seed=seed
     )

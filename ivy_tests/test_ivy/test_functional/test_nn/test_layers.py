@@ -754,6 +754,7 @@ def test_conv3d_transpose(
     )
 
 
+# conv_general_dilated
 @handle_test(
     fn_tree="functional.ivy.conv_general_dilated",
     dims=st.shared(st.integers(1, 3), key="dims"),
@@ -928,7 +929,7 @@ def x_and_lstm(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.lstm_update",
     dtype_lstm=x_and_lstm(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
 )

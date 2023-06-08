@@ -38,20 +38,18 @@ def argmax(
         x = x.cast("float32")
     if select_last_index:
         x = paddle_backend.flip(x, axis=axis)
-        ret = paddle.argmax(x, axis=axis)
+        ret = paddle.argmax(x, axis=axis, keepdim=keepdims)
         if axis is not None:
             ret = paddle.to_tensor(x.shape[axis] - ret - 1)
         else:
             ret = paddle.to_tensor(x.size - ret - 1)
     else:
-        ret = paddle.argmax(x, axis=axis)
+        ret = paddle.argmax(x, axis=axis, keepdim=keepdims)
 
-    if keepdims:
-        shape = [1] * x.ndim
-        ret = paddle_backend.reshape(ret, shape)
-    elif axis is None or x.ndim == 1:
+    if keepdims and axis is None:
+        ret = ret.reshape([1] * x.ndim)
+    if not keepdims and (x.ndim == 1 or axis is None):
         ret = paddle_backend.squeeze(ret, axis=-1)
-
     return ret.astype(dtype)
 
 
@@ -72,29 +70,27 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[paddle.dtype] = None,
+    dtype: Optional[paddle.dtype] = None,
     select_last_index: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = output_dtype if output_dtype is not None else paddle.int64
+    dtype = dtype if dtype is not None else paddle.int64
     if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
         x = x.cast("float32")
     if select_last_index:
         x = paddle_backend.flip(x, axis=axis)
-        ret = paddle.argmin(x, axis=axis)
+        ret = paddle.argmin(x, axis=axis, keepdim=keepdims)
         if axis is not None:
             ret = paddle.to_tensor(x.shape[axis] - ret - 1)
         else:
             ret = paddle.to_tensor(x.size - ret - 1)
     else:
-        ret = paddle.argmin(x, axis=axis)
+        ret = paddle.argmin(x, axis=axis, keepdim=keepdims)
 
-    if keepdims:
-        shape = [1] * x.ndim
-        ret = paddle_backend.reshape(ret, shape)
-    elif axis is None or x.ndim == 1:
+    if keepdims and axis is None:
+        ret = ret.reshape([1] * x.ndim)
+    if not keepdims and (x.ndim == 1 or axis is None):
         ret = paddle_backend.squeeze(ret, axis=-1)
-
     return ret.astype(dtype)
 
 
@@ -159,6 +155,7 @@ def where(
         if array.ndim == 0:
             arrays[i] = paddle_backend.expand_dims(array, axis=0)
     condition, x1, x2 = arrays
+    condition = condition.cast("bool") if condition.dtype != paddle.bool else condition
 
     if ret_dtype in [
         paddle.int8,
