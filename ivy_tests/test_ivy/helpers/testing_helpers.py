@@ -353,8 +353,11 @@ def handle_test(
             def wrapped_test(*args, **kwargs):
                 try:
                     hypothesis_test_fn(*args, **kwargs)
-                except ivy.utils.exceptions.IvyNotImplementedException:
-                    pytest.skip("Function not implemented in backend.")
+                except Exception as e:
+                    # A string matching is used instead of actual exception due to
+                    # exception object in with_backend is different from global Ivy
+                    if e.__class__.__qualname__ == "IvyNotImplementedException":
+                        pytest.skip("Function not implemented in backend.")
 
         else:
             wrapped_test = test_fn
@@ -468,8 +471,11 @@ def handle_frontend_test(
             def wrapped_test(*args, **kwargs):
                 try:
                     hypothesis_test_fn(*args, **kwargs)
-                except ivy.utils.exceptions.IvyNotImplementedException:
-                    pytest.skip("Function not implemented in backend.")
+                except Exception as e:
+                    # A string matching is used instead of actual exception due to
+                    # exception object in with_backend is different from global Ivy
+                    if e.__class__.__qualname__ == "IvyNotImplementedException":
+                        pytest.skip("Function not implemented in backend.")
 
         else:
             wrapped_test = test_fn
@@ -585,8 +591,11 @@ def handle_method(
             def wrapped_test(*args, **kwargs):
                 try:
                     hypothesis_test_fn(*args, **kwargs)
-                except ivy.utils.exceptions.IvyNotImplementedException:
-                    pytest.skip("Function not implemented in backend.")
+                except Exception as e:
+                    # A string matching is used instead of actual exception due to
+                    # exception object in with_backend is different from global Ivy
+                    if e.__class__.__qualname__ == "IvyNotImplementedException":
+                        pytest.skip("Function not implemented in backend.")
 
         else:
             wrapped_test = test_fn
@@ -712,8 +721,11 @@ def handle_frontend_method(
             def wrapped_test(*args, **kwargs):
                 try:
                     hypothesis_test_fn(*args, **kwargs)
-                except ivy.utils.exceptions.IvyNotImplementedException:
-                    pytest.skip("Function not implemented in backend.")
+                except Exception as e:
+                    # A string matching is used instead of actual exception due to
+                    # exception object in with_backend is different from global Ivy
+                    if e.__class__.__qualname__ == "IvyNotImplementedException":
+                        pytest.skip("Function not implemented in backend.")
 
         else:
             wrapped_test = test_fn
