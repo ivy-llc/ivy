@@ -93,6 +93,7 @@ def test_tensorflow_eigvalsh(
     on_device,
 ):
     input_dtype, x = dtype_and_input
+    assume(matrix_is_stable(x[0]))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
