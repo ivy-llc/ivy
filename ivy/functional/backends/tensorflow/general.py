@@ -472,7 +472,8 @@ def scatter_nd(
         if sum(indices.shape) < sum(indices_shape):
             indices = ivy.broadcast_to(indices, indices_shape)._data
         else:
-            updates = ivy.broadcast_to(updates, expected_shape)._data
+            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
+                updates = ivy.reshape(updates, expected_shape)._data
     # implementation
     target = out
     target_given = ivy.exists(target)
