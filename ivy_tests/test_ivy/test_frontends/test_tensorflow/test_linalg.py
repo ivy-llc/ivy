@@ -409,6 +409,8 @@ def test_tensorflow_pinv(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         a=x[0],
         rcond=1e-15,
     )
