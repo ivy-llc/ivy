@@ -454,6 +454,14 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
+        if not ivy.get_array_mode():
+            x = ivy.nested_map(args, lambda x: ivy.is_native_array(x))
+            x += tuple(ivy.nested_map(kwargs, lambda x: ivy.is_native_array(x)).values())
+            if any(x):
+                warnings.warn("In this case operators might cause inconsistent "
+                              "behavior when array_mode is set to False")
+            return fn(*args, **kwargs)
+
         has_out = False
         if "out" in kwargs:
             out = kwargs["out"]
