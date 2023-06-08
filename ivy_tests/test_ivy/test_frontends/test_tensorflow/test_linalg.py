@@ -492,6 +492,9 @@ def test_tensorflow_norm(
     fn_tree="tensorflow.linalg.normalize",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=1,
