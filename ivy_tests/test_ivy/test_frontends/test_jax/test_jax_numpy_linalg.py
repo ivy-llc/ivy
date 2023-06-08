@@ -41,6 +41,7 @@ def test_jax_numpy_svd(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -49,6 +50,7 @@ def test_jax_numpy_svd(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -96,10 +98,12 @@ def test_jax_numpy_det(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -133,6 +137,7 @@ def test_jax_numpy_eig(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -142,6 +147,7 @@ def test_jax_numpy_eig(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -190,6 +196,7 @@ def test_jax_numpy_eigh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -198,6 +205,7 @@ def test_jax_numpy_eigh(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -243,10 +251,12 @@ def test_jax_numpy_inv(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
@@ -282,6 +292,7 @@ def test_jax_numpy_eigvalsh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -289,6 +300,7 @@ def test_jax_numpy_eigvalsh(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -323,10 +335,12 @@ def test_jax_numpy_qr(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
@@ -361,6 +375,7 @@ def test_jax_numpy_eigvals(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -369,6 +384,7 @@ def test_jax_numpy_eigvals(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -401,6 +417,7 @@ def test_jax_numpy_cholesky(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -409,6 +426,7 @@ def test_jax_numpy_cholesky(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -440,10 +458,12 @@ def test_jax_slogdet(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -465,10 +485,12 @@ def test_jax_numpy_matrix_rank(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -501,6 +523,7 @@ def test_jax_numpy_solve(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, data = dtype_and_data
     a = data[0][:, :-1]
@@ -571,6 +594,7 @@ def test_jax_numpy_norm(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x, axis = dtype_values_axis
@@ -580,6 +604,7 @@ def test_jax_numpy_norm(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -618,10 +643,12 @@ def test_jax_numpy_matrix_power(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
@@ -683,6 +710,7 @@ def test_jax_numpy_tensorsolve(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, y = a_and_b
     helpers.test_frontend_function(
@@ -718,10 +746,12 @@ def test_jax_numpy_pinv(
     frontend,
     fn_tree,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -785,10 +815,12 @@ def test_jax_numpy_tensorinv(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, ind = params
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
@@ -818,10 +850,12 @@ def test_jax_numpy_cond(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         rtol=1e-01,
         atol=1e-01,

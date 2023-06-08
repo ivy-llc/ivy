@@ -72,6 +72,7 @@ def test_jax_numpy_clip(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
@@ -133,10 +134,12 @@ def test_jax_numpy_concat(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -175,6 +178,7 @@ def test_jax_numpy_repeat(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     value_dtype, value = dtype_value
 
@@ -234,6 +238,7 @@ def test_jax_numpy_reshape(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtype, x, shape = input_x_shape
     helpers.test_frontend_function(
@@ -272,10 +277,12 @@ def test_jax_numpy_ravel(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtypes, x = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -323,6 +330,7 @@ def test_jax_numpy_resize(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtype, x, new_shape = input_x_shape
     helpers.test_frontend_function(
@@ -394,10 +402,12 @@ def test_jax_numpy_moveaxis(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -429,10 +439,12 @@ def test_jax_numpy_flipud(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -459,10 +471,12 @@ def test_jax_numpy_transpose(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     array, dtype, axes = array_and_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -495,10 +509,12 @@ def test_jax_numpy_flip(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -524,10 +540,12 @@ def test_jax_numpy_fliplr(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -556,10 +574,12 @@ def test_jax_numpy_expand_dims(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -590,10 +610,12 @@ def test_jax_numpy_stack(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, values, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -623,10 +645,12 @@ def test_jax_numpy_take(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtypes, value, indices, axis, _ = dtype_indices_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -654,6 +678,7 @@ def test_jax_numpy_broadcast_arrays(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
     arrys = {}
@@ -662,6 +687,7 @@ def test_jax_numpy_broadcast_arrays(
     test_flags.num_positional_args = len(arrys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -685,6 +711,7 @@ def test_jax_numpy_broadcast_shapes(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     shape, _ = shapes
     shapes = {f"shape{i}": shape[i] for i in range(len(shape))}
@@ -735,6 +762,7 @@ def test_jax_numpy_broadcast_to(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtype, x, shape = input_x_broadcast
     helpers.test_frontend_function(
@@ -773,10 +801,12 @@ def test_jax_numpy_append(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, values, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -826,6 +856,7 @@ def test_jax_numpy_swapaxes(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     x_dtype, x, axis1, axis2 = input_x_axis1_axis2
     helpers.test_frontend_function(
@@ -856,6 +887,7 @@ def test_jax_numpy_atleast_3d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, arrays = dtype_and_x
     arys = {}
@@ -864,6 +896,7 @@ def test_jax_numpy_atleast_3d(
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -888,6 +921,7 @@ def test_jax_numpy_atleast_2d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, arrays = dtype_and_x
     arys = {}
@@ -896,6 +930,7 @@ def test_jax_numpy_atleast_2d(
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -920,6 +955,7 @@ def test_jax_numpy_atleast_1d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, arrays = dtype_and_x
     arys = {}
@@ -928,6 +964,7 @@ def test_jax_numpy_atleast_1d(
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -957,10 +994,12 @@ def test_jax_numpy_tril(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1012,6 +1051,7 @@ def test_jax_numpy_block(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtypes, xs = input_x_shape
     helpers.test_frontend_function(
@@ -1049,10 +1089,12 @@ def test_jax_numpy_squeeze(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, values = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1081,10 +1123,12 @@ def test_jax_numpy_rot90(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, m, k, axes = dtype_m_k_axes
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1123,10 +1167,12 @@ def test_jax_numpy_split(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1165,11 +1211,13 @@ def test_jax_numpy_array_split(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
     assume(isinstance(indices_or_sections, int))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1200,10 +1248,12 @@ def test_jax_numpy_dsplit(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1238,6 +1288,7 @@ def test_jax_numpy_tile(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, value = dtype_value
     repeat_dtype, repeat_list = repeat
@@ -1272,10 +1323,12 @@ def test_jax_numpy_dstack(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1304,10 +1357,12 @@ def test_jax_numpy_vsplit(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1337,10 +1392,12 @@ def test_jax_numpy_hsplit(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1396,6 +1453,7 @@ def test_jax_numpy_roll(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     value_dtype, value = dtype_value
     shift_dtype, shift_val = shift
@@ -1434,6 +1492,7 @@ def test_jax_numpy_row_stack(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
@@ -1509,6 +1568,7 @@ def test_jax_numpy_pad(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (
@@ -1528,6 +1588,7 @@ def test_jax_numpy_pad(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1549,6 +1610,7 @@ def test_jax_numpy_hamming(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
@@ -1571,6 +1633,7 @@ def test_jax_numpy_hanning(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
@@ -1595,6 +1658,7 @@ def test_jax_numpy_kaiser(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
@@ -1625,10 +1689,12 @@ def test_jax_numpy_tri(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1650,6 +1716,7 @@ def test_jax_numpy_blackman(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(

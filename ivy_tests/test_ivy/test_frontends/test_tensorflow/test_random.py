@@ -30,11 +30,13 @@ def test_tensorflow_uniform(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, shape = shape
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -74,9 +76,11 @@ def test_tensorflow_normal(
     dtype,
     seed,
     test_flags,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -104,10 +108,12 @@ def test_tensorflow_shuffle(
     dtype_value,
     seed,
     test_flags,
+    backend_fw,
 ):
     input_dtypes, values = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -146,6 +152,7 @@ def test_tensorflow_stateless_uniform(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     shape_input_dtypes, shape = shape
@@ -196,9 +203,11 @@ def test_tensorflow_poisson(
     dtype,
     seed,
     test_flags,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -239,10 +248,12 @@ def test_tensorflow_stateless_normal(
     stddev,
     dtype,
     test_flags,
+    backend_fw,
 ):
     input_dtypes, seed = seed
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -294,11 +305,13 @@ def test_tensorflow_stateless_poisson(
     shape_lam_dtype,
     seed,
     test_flags,
+    backend_fw,
 ):
     shape, lam, dtype = shape_lam_dtype
     input_dtypes, seed = seed
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -343,9 +356,11 @@ def test_tensorflow_gamma(
     dtype,
     seed,
     test_flags,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

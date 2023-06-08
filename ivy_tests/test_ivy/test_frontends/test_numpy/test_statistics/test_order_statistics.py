@@ -23,6 +23,7 @@ def test_numpy_nanpercentile(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     keep_dims,
 ):
@@ -41,6 +42,7 @@ def test_numpy_nanpercentile(
         q=values[0][1],
         axis=axis,
         out=None,
+        backend_to_test=backend_fw,
         overwrite_input=None,
         method=None,
         keepdims=keep_dims,

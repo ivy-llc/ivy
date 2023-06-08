@@ -38,6 +38,7 @@ def test_torch_multinomial(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     prob_dtype, batch_size, num_samples, replace, probs = everything
 
@@ -77,6 +78,7 @@ def test_torch_manual_seed(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     # just test calling the function
     frontend_fw = importlib.import_module(fn_tree[25 : fn_tree.rfind(".")])
@@ -103,6 +105,7 @@ def test_torch_poisson(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     lam_dtype, lam = dtype_and_lam
 
@@ -147,6 +150,7 @@ def test_torch_randint(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     def call():
         helpers.test_frontend_function(
@@ -234,6 +238,7 @@ def test_torch_normal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     mean_dtype, mean = dtype_and_mean
     _, std = dtype_and_std
@@ -388,6 +393,7 @@ def test_torch_bernoulli(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, probs = dtype_and_probs
 
@@ -429,6 +435,7 @@ def test_torch_randperm(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     def call():
         return helpers.test_frontend_function(

@@ -25,12 +25,14 @@ def test_numpy_solve(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype1, x1, _ = x
     dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[dtype1, dtype2],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -56,11 +58,13 @@ def test_numpy_inv(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -84,11 +88,13 @@ def test_numpy_pinv(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -153,10 +159,12 @@ def test_numpy_tensorinv(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     dtype, x, ind = params
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         rtol=1e-01,
         atol=1e-01,
@@ -181,6 +189,7 @@ def test_numpy_lstsq(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype1, a, _ = x

@@ -54,6 +54,7 @@ def test_torch_cross_entropy(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
@@ -108,6 +109,7 @@ def test_torch_binary_cross_entropy(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_vals
     pred_dtype, pred = input_dtype[0], x[0]
@@ -202,6 +204,7 @@ def test_torch_binary_cross_entropy_with_logits(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -260,6 +263,7 @@ def test_torch_cosine_embedding_loss(
     reduction,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
@@ -339,6 +343,7 @@ def test_torch_mse_loss(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -381,6 +386,7 @@ def test_torch_smooth_l1_loss(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -422,6 +428,7 @@ def test_torch_huber_loss(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -463,6 +470,7 @@ def test_torch_l1_loss(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -529,6 +537,7 @@ def test_torch_nll_loss(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
@@ -601,6 +610,7 @@ def test_torch_gaussian_nll_loss(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
@@ -643,6 +653,7 @@ def test_torch_soft_margin_loss(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -693,6 +704,7 @@ def test_torch_kl_div(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     inputs_dtype, inputs = dtype_and_inputs
@@ -735,6 +747,7 @@ def test_torch_margin_ranking_loss(
     reduction,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
@@ -796,6 +809,7 @@ def test_torch_poisson_nll_loss(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
@@ -839,6 +853,7 @@ def test_torch_hinge_embedding_loss(
     reduction,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
@@ -847,6 +862,7 @@ def test_torch_hinge_embedding_loss(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -893,6 +909,7 @@ def test_torch_triplet_margin_loss(
     reduction,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
@@ -940,6 +957,7 @@ def test_torch_multilabel_soft_margin_loss(
     reduction,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
@@ -989,6 +1007,7 @@ def test_torch_triplet_margin_with_distance_loss(
     reduction,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):

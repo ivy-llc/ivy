@@ -54,6 +54,7 @@ def test_jax_tree_leaves(
     tree,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
@@ -77,6 +78,7 @@ def test_jax_tree_map(
     tree,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
