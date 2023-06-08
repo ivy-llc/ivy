@@ -68,7 +68,7 @@ def beta(
     if not dtype:
         dtype = ivy.default_float_dtype()
     dtype = ivy.as_native_dtype(dtype)
-    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     alpha = tf.cast(alpha, dtype)
     beta = tf.cast(beta, dtype)
     with tf.device(device):
@@ -89,7 +89,7 @@ def gamma(
     if not dtype:
         dtype = ivy.default_float_dtype()
     dtype = ivy.as_native_dtype(dtype)
-    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     alpha = tf.cast(alpha, dtype)
     beta = tf.cast(beta, dtype)
     with tf.device(device):
