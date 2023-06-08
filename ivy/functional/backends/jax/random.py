@@ -50,7 +50,7 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
 
     if seed:
         rng_input = jax.random.PRNGKey(seed)
@@ -76,7 +76,7 @@ def random_normal(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
 
     if seed:
         rng_input = jax.random.PRNGKey(seed)
@@ -155,7 +155,7 @@ def randint(
         dtype = ivy.default_int_dtype()
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
 
     if seed:
         rng_input = jax.random.PRNGKey(seed)
@@ -168,6 +168,7 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     _setRNG(jax.random.PRNGKey(seed_value))
+    return
 
 
 def shuffle(

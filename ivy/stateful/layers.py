@@ -1652,15 +1652,15 @@ class MaxPool1D(Module):
 
 class MaxPool3D(Module):
     def __init__(
-            self,
-            kernel_size,
-            stride,
-            padding,
-            /,
-            *,
-            data_format="NDHWC",
-            device=None,
-            dtype=None
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NDHWC",
+        device=None,
+        dtype=None,
     ):
         """
         Class for applying 3D Max Pooling over 5D inputs.
@@ -1699,7 +1699,7 @@ class MaxPool3D(Module):
             self._kernel_size,
             self._stride,
             self._padding,
-            data_format=self._data_format
+            data_format=self._data_format,
         )
 
 

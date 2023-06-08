@@ -397,11 +397,15 @@ class Array(
         return ivy.get_item(self._data, query)
 
     def __setitem__(self, query, val):
+        if ivy.current_backend_str() == "torch":
+            self._data = self._data.detach()
+        if ivy.is_ivy_array(val):
+            val = val.data
+        if ivy.isscalar(val):
+            length_diff = len(query) - 1
+            if length_diff > 0:
+                val = ivy.asarray((val,) + (val,) * length_diff)
         try:
-            if ivy.current_backend_str() == "torch":
-                self._data = self._data.detach()
-            if ivy.is_ivy_array(val):
-                val = val.data
             self._data.__setitem__(query, val)
         except:
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
