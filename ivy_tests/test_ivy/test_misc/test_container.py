@@ -2662,7 +2662,6 @@ def test_container_to_and_from_disk_as_json(on_device):
     }
     container = Container(dict_in)
 
-
     # saving
     container.cont_to_disk_as_json(save_filepath)
     assert os.path.exists(save_filepath)
