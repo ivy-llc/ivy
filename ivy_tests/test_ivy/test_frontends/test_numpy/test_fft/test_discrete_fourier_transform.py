@@ -218,5 +218,3 @@ def test_numpy_rfft2(
         axes=axis,
         norm=norm,
     )
-
-
