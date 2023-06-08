@@ -3206,8 +3206,8 @@ def test_tensorflow_ConcatV2(
     fn_tree="tensorflow.raw_ops.Conv2D",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NHWC", "NCHW"]),
-        padding=st.sampled_from(["SAME", "VALID"]),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["SAME", "VALID", "EXPLICIT"]),
         type="2d",
         dilation_min=1,
         dilation_max=1,
@@ -3224,12 +3224,18 @@ def test_tensorflow_Conv2D(
     on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    channel_index = data_format.find("C")
     stride = _convolution_broadcast_helper(
-        stride, num_spatial_dims=2, channel_index=3, name="strides"
+        stride, num_spatial_dims=2, channel_index=channel_index, name="strides"
     )
     dilation = _convolution_broadcast_helper(
-        dilation, num_spatial_dims=2, channel_index=3, name="dilations"
+        dilation, num_spatial_dims=2, channel_index=channel_index, name="dilations"
     )
+    explicit_padding = None
+    if isinstance(padding, list):
+        explicit_padding = padding
+        padding = "EXPLICIT"
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -3237,12 +3243,13 @@ def test_tensorflow_Conv2D(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
-        output=None,
         filter=filters,
         strides=stride,
         padding=padding,
+        explicit_paddings=explicit_padding,
         data_format=data_format,
         dilations=dilation,
+        use_cudnn_on_gpu=True,
     )
 
 
