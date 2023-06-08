@@ -1274,3 +1274,7 @@ class Size(tuple):
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def eq_(self, other):
         return torch_frontend.eq(self, other)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def lt(input, other, *, out=None):
+        return torch_frontend.lt(input, other, out=out)
