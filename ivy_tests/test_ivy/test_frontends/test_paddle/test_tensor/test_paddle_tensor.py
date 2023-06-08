@@ -557,7 +557,7 @@ def test_paddle_cos(
     init_tree="paddle.to_tensor",
     method_name="atanh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_paddle_atanh(
