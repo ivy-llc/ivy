@@ -53,8 +53,7 @@ def ApproximateEqual(
     name="ApproximateEqual",
 ):
     x, y = check_tensorflow_casting(x, y)
-    ret = ivy.abs(x - y)
-    return ret < tolerance
+    return ivy.abs(x - y) < tolerance
 
 
 @to_ivy_arrays_and_back
@@ -64,15 +63,20 @@ def Angle(
     Tout=ivy.float32,
     name="Angle",
 ):
+    Tout = ivy.as_ivy_dtype(Tout) if Tout is not None else ivy.float32
     return ivy.astype(ivy.angle(input), Tout)
 
 
-@to_ivy_arrays_and_back
-def ArgMin(*, input, dimension, output_type=None, name=None):
-    output_type = to_ivy_dtype(output_type)
-    if output_type in ["int32", "int64"]:
-        return ivy.astype(ivy.argmin(input, axis=dimension), output_type)
-    return ivy.astype(ivy.argmin(input, axis=dimension), "int64")
+ArgMin = to_ivy_arrays_and_back(
+    with_unsupported_dtypes(
+        {"2.10.0 and below": ("complex",)},
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.argmin, kwargs_to_update={"dimension": "axis"}
+        )
+    )
+)
 
 
 @to_ivy_arrays_and_back

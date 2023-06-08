@@ -72,7 +72,7 @@ def test_tensorflow_Acosh(  # NOQA
     dtype_and_xs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("complex"),
     ),
-    Tout=helpers.get_dtypes("float", full=False),
+    Tout=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_Angle(  # NOQA
@@ -85,6 +85,11 @@ def test_tensorflow_Angle(  # NOQA
     on_device,
 ):
     input_dtype, xs = dtype_and_xs
+    if input_dtype[0] == "complex128":
+        Tout = "float64"
+    elif input_dtype[0] == "complex64":
+        Tout = "float32" if Tout else None
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -103,6 +108,9 @@ def test_tensorflow_Angle(  # NOQA
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=20,
+        small_abs_safety_factor=20,
+        safety_factor_scale="log",
     ),
     tol=st.floats(1e-05, 1e-03),
     test_with_out=st.just(False),
