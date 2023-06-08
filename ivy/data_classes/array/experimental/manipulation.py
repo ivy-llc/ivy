@@ -944,6 +944,42 @@ class _ArrayWithManipulationExperimental(abc.ABC):
                 input_sequence, new_axis=new_axis, axis=axis, out=out
             )
 
+    def quantize_linear(
+        self: ivy.Array,
+        scale: float,
+        zero_point: int,
+        /,
+        *,
+        axis: Optional[int] = None,
+        saturate: Optional[bool] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.quantize_linear. This method simply
+        wraps the function, and so the docstring for ivy.quantize_linear also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        scale
+            The scale factor.
+        zero_point
+            The zero point.
+        axis
+            The axis along which to quantize.
+        saturate
+            Whether to saturate the quantized value.
+
+        Returns
+        -------
+        ret
+            The quantized array.
+        """
+        return ivy.quantize_linear(
+            self._data, scale, zero_point, axis=axis, saturate=saturate
+        )
+
     @handle_view
     def associative_scan(
         self: ivy.Array,

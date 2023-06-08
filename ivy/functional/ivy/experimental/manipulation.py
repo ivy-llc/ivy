@@ -31,6 +31,22 @@ from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
+@inputs_to_ivy_arrays
+def quantize_linear(x, scale, zero_point, /, *, axis=None, saturate=False):
+    if axis is None:
+        y = ivy.round(x / scale + zero_point).astype(ivy.int8)
+    else:
+        y = ivy.zeros_like(x)
+        for idx in ivy.ndindex(x.shape[:axis] + x.shape[axis + 1 :]):
+            idx = idx[:axis] + (slice(None),) + idx[axis:]
+            y[idx] = ivy.round(x[idx] / scale + zero_point).astype(ivy.int8)
+
+    if saturate:
+        y = ivy.clip(y, 0, 255)
+
+    return y
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion

@@ -2715,6 +2715,60 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ivy.associative_scan(self, fn, reverse=reverse, axis=axis)
 
     @staticmethod
+    def _static_quantize_linear(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        scale: Union[int, float],
+        zero_point: Union[int, float],
+        /,
+        *,
+        axis: Optional[int] = None,
+        saturate: Optional[bool] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.quantize_linear.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.quantize_linear also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "quantize_linear",
+            x,
+            scale,
+            zero_point,
+            axis=axis,
+            saturate=saturate,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def quantize_linear(
+        self: ivy.Container,
+        scale: Union[int, float],
+        zero_point: Union[int, float],
+        /,
+        *,
+        axis: Optional[int] = None,
+        saturate: Optional[int] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.quantize_linear.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.quantize_linear also applies to this method with minimal
+        changes.
+        """
+        return self._static_quantize_linear(
+            self, scale, zero_point, axis=axis, saturate=saturate
+        )
+
+    @staticmethod
     def _static_unique_consecutive(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,

@@ -1122,6 +1122,51 @@ def test_associative_scan(
     )
 
 
+# quantize linear
+@handle_test(
+    fn_tree="quantize_linear",
+    test_gradients=st.just(False),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=["int32", "float32", "float64", "float16"],
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    scale=helpers.ints(min_value=1, max_value=10),
+    zero_point=helpers.ints(min_value=0, max_value=10),
+    saturate=st.booleans(),
+)
+def test_quantize_linear(
+    *,
+    dtype_x_axis,
+    scale,
+    zero_point,
+    saturate,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        scale=scale,
+        zero_point=zero_point,
+        saturate=saturate,
+    )
+
+
 # unique_consecutive
 @handle_test(
     fn_tree="unique_consecutive",
