@@ -25,11 +25,13 @@ def test_numpy_eigvalsh(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs = x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -63,6 +65,7 @@ def test_numpy_eig(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -72,6 +75,7 @@ def test_numpy_eig(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -118,6 +122,7 @@ def test_numpy_eigh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -126,6 +131,7 @@ def test_numpy_eigh(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

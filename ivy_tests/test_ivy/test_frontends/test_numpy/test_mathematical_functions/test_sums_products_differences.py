@@ -48,6 +48,7 @@ def test_numpy_sum(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
@@ -60,6 +61,7 @@ def test_numpy_sum(
     )
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -87,6 +89,7 @@ def test_numpy_prod(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
@@ -99,6 +102,7 @@ def test_numpy_prod(
     )
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -122,6 +126,7 @@ def test_numpy_cumsum(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
@@ -131,6 +136,7 @@ def test_numpy_cumsum(
         assume(not test_flags.as_variable[0])
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -151,6 +157,7 @@ def test_numpy_cumprod(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_x_axis_dtypes
@@ -160,6 +167,7 @@ def test_numpy_cumprod(
         assume(not test_flags.as_variable[0])
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -180,6 +188,7 @@ def test_numpy_nancumprod(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
@@ -187,6 +196,7 @@ def test_numpy_nancumprod(
         assume(not test_flags.as_variable[0])
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -207,6 +217,7 @@ def test_numpy_nancumsum(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
@@ -214,6 +225,7 @@ def test_numpy_nancumsum(
         assume(not test_flags.as_variable[0])
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -237,6 +249,7 @@ def test_numpy_nanprod(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     keepdims,
 ):
@@ -250,6 +263,7 @@ def test_numpy_nanprod(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -276,6 +290,7 @@ def test_numpy_nansum(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     keepdims,
 ):
@@ -289,6 +304,7 @@ def test_numpy_nansum(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -317,6 +333,7 @@ def test_numpy_diff(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -351,12 +368,14 @@ def test_numpy_ediff1d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
     to_end,
     to_begin,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

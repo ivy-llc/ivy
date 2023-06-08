@@ -27,10 +27,12 @@ def test_jax_numpy_allclose(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -61,10 +63,12 @@ def test_jax_numpy_array_equal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -91,10 +95,12 @@ def test_jax_numpy_array_equiv(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -126,10 +132,12 @@ def test_jax_numpy_isneginf(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -159,10 +167,12 @@ def test_jax_numpy_isposinf(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -186,10 +196,12 @@ def test_jax_numpy_less(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -213,10 +225,12 @@ def test_jax_numpy_less_equal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -240,10 +254,12 @@ def test_jax_numpy_greater(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -267,10 +283,12 @@ def test_jax_numpy_greater_equal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -300,10 +318,12 @@ def test_jax_numpy_isnan(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -327,10 +347,12 @@ def test_jax_numpy_equal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -354,10 +376,12 @@ def test_jax_numpy_not_equal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -382,10 +406,12 @@ def test_jax_numpy_all(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -410,10 +436,12 @@ def test_jax_numpy_bitwise_and(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -436,10 +464,12 @@ def test_jax_numpy_bitwise_not(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -464,10 +494,12 @@ def test_jax_numpy_bitwise_or(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -493,10 +525,12 @@ def test_jax_numpy_bitwise_xor(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -529,6 +563,7 @@ def test_jax_numpy_any(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -540,6 +575,7 @@ def test_jax_numpy_any(
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -566,6 +602,7 @@ def test_jax_numpy_logical_and(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtypes, x = dtypes_values
     np_helpers.test_frontend_function(
@@ -592,6 +629,7 @@ def test_jax_numpy_invert(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtypes, x = dtypes_values
     np_helpers.test_frontend_function(
@@ -619,10 +657,12 @@ def test_jax_numpy_isfinite(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -646,10 +686,12 @@ def test_jax_numpy_isinf(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -676,10 +718,12 @@ def test_jax_numpy_isclose(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -704,6 +748,7 @@ def test_jax_numpy_logical_not(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtypes, x = dtypes_values
     np_helpers.test_frontend_function(
@@ -730,6 +775,7 @@ def test_jax_numpy_logical_or(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtypes, x = dtypes_values
     np_helpers.test_frontend_function(
@@ -757,6 +803,7 @@ def test_jax_numpy_isscalar(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtypes, x = dtype_and_x
     np_helpers.test_frontend_function(
@@ -783,10 +830,12 @@ def test_jax_numpy_left_shift(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -816,10 +865,12 @@ def test_jax_numpy_isreal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -842,6 +893,7 @@ def test_jax_numpy_logical_xor(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_dtypes, x = dtypes_values
     np_helpers.test_frontend_function(
@@ -870,6 +922,7 @@ def test_jax_numpy_right_shift(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, xs = dtype_and_x
@@ -878,6 +931,7 @@ def test_jax_numpy_right_shift(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -902,10 +956,12 @@ def test_jax_numpy_iscomplex(
     *,
     fn_tree,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -928,10 +984,12 @@ def test_jax_numpy_isrealobj(
     *,
     fn_tree,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -955,10 +1013,12 @@ def test_jax_numpy_iscomplexobj(
     *,
     fn_tree,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

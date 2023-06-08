@@ -23,10 +23,12 @@ def test_jax_nn_relu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -52,10 +54,12 @@ def test_jax_nn_relu6(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -81,10 +85,12 @@ def test_jax_nn_soft_sign(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -110,10 +116,12 @@ def test_jax_nn_silu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -141,10 +149,12 @@ def test_jax_nn_leaky_relu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
@@ -175,10 +185,12 @@ def test_jax_nn_gelu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -207,10 +219,12 @@ def test_jax_nn_sigmoid(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -251,10 +265,12 @@ def test_jax_nn_one_hot(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, indices, num_classes, axis = dtype_indices_classes_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -285,6 +301,7 @@ def test_jax_nn_softmax(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     x_dtype, x, axis = dtype_x_axis
 
@@ -318,10 +335,12 @@ def test_jax_nn_softplus(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -349,10 +368,12 @@ def test_jax_nn_log_sigmoid(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         rtol=1e-02,
         atol=1e-02,
         frontend=frontend,
@@ -384,10 +405,12 @@ def test_jax_nn_log_softmax(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -423,10 +446,12 @@ def test_jax_nn_glu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -466,11 +491,13 @@ def test_jax_nn_normalize(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtypes, xs = dtype_and_x
 
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         rtol=1e-02,
         atol=1e-02,
         frontend=frontend,
@@ -503,11 +530,13 @@ def test_jax_nn_hard_tanh(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     # TODO: enable this test for all valid dtypes as jax.nn.hard_tanh supports
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -535,10 +564,12 @@ def test_jax_nn_celu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -568,10 +599,12 @@ def test_jax_nn_elu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -606,10 +639,12 @@ def test_jax_nn_logsumexp(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -639,10 +674,12 @@ def test_jax_nn_swish(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -668,10 +705,12 @@ def test_jax_nn_hard_swish(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         rtol=1e-02,
         atol=1e-02,
         frontend=frontend,
@@ -698,10 +737,12 @@ def test_jax_nn_hard_silu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -726,10 +767,12 @@ def test_jax_nn_hard_sigmoid(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -755,10 +798,12 @@ def test_jax_nn_selu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

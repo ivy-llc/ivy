@@ -20,10 +20,12 @@ def test_numpy_random_sample(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -56,11 +58,13 @@ def test_numpy_dirichlet(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -87,12 +91,14 @@ def test_numpy_uniform(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     low,
     high,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -120,12 +126,14 @@ def test_numpy_normal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     loc,
     scale,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -155,12 +163,14 @@ def test_numpy_poisson(
     size,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -191,11 +201,13 @@ def test_numpy_geometric(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     p,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -221,11 +233,13 @@ def test_numpy_multinomial(
     size,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -249,11 +263,13 @@ def test_numpy_permutation(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -283,12 +299,14 @@ def test_numpy_beta(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     a,
     b,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -312,11 +330,13 @@ def test_numpy_shuffle(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -338,10 +358,12 @@ def test_numpy_standard_normal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -371,6 +393,7 @@ def test_numpy_standard_gamma(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     assume("float16" not in shape_dtypes)
@@ -425,6 +448,7 @@ def test_numpy_chisquare(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     # make sure `size` is something `df` can be broadcast to
@@ -436,6 +460,7 @@ def test_numpy_chisquare(
         size = (*size, len(df))
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -467,12 +492,14 @@ def test_numpy_lognormal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     mean,
     sigma,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -517,12 +544,14 @@ def test_numpy_negative_binomial(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     n,
     p,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

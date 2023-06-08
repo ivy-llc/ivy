@@ -192,11 +192,13 @@ def test_paddle_cross(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x, y, axis = dtype_x_y_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -231,11 +233,13 @@ def test_paddle_matmul(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -260,11 +264,13 @@ def test_paddle_norm(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x, axis, p = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -290,6 +296,7 @@ def test_paddle_eig(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_input
@@ -299,6 +306,7 @@ def test_paddle_eig(
         input_dtype = [ivy.float64]
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -335,6 +343,7 @@ def test_paddle_eigvals(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_x
     x = np.array(x[0], dtype=dtype[0])
@@ -343,6 +352,7 @@ def test_paddle_eigvals(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -367,6 +377,7 @@ def test_paddle_eigvalsh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -375,6 +386,7 @@ def test_paddle_eigvalsh(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -399,6 +411,7 @@ def test_paddle_eigh(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_input
@@ -408,6 +421,7 @@ def test_paddle_eigh(
         input_dtype = [ivy.float64]
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -455,6 +469,7 @@ def test_paddle_pinv(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     # TODO: paddle returns nan for all values if the input
@@ -464,6 +479,7 @@ def test_paddle_pinv(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -492,6 +508,7 @@ def test_paddle_cholesky(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
@@ -500,6 +517,7 @@ def test_paddle_cholesky(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

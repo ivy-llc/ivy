@@ -60,6 +60,7 @@ def test_tensorflow_extract_patches(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (x_dtype, x), sizes, strides, rates, padding = dtype_values_and_other
@@ -100,6 +101,7 @@ def test_tensorflow_resize(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, mode, size, _, _, preserve = dtype_x_mode

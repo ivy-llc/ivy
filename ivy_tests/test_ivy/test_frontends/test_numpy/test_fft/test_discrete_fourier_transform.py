@@ -12,10 +12,11 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
     ),
 )
-def test_numpy_iftt(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+def test_numpy_iftt(dtype_and_x, frontend, test_flags, backend_fw, fn_tree, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -34,10 +35,13 @@ def test_numpy_iftt(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
     ),
 )
-def test_numpy_ifttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+def test_numpy_ifttshift(
+    dtype_and_x, frontend, test_flags, backend_fw, fn_tree, on_device
+):
     input_dtype, arr = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -59,10 +63,13 @@ def test_numpy_ifttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
     norm=st.sampled_from(["backward", "ortho", "forward"]),
     n=st.integers(min_value=2, max_value=10),
 )
-def test_numpy_fft(dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_device):
+def test_numpy_fft(
+    dtype_input_axis, norm, n, frontend, test_flags, backend_fw, fn_tree, on_device
+):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -81,10 +88,13 @@ def test_numpy_fft(dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_
         available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
     ),
 )
-def test_numpy_fttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+def test_numpy_fttshift(
+    dtype_and_x, frontend, test_flags, backend_fw, fn_tree, on_device
+):
     input_dtype, arr = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -107,11 +117,12 @@ def test_numpy_fttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
     n=st.integers(min_value=2, max_value=5),
 )
 def test_numpy_rfft(
-    dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_device
+    dtype_input_axis, norm, n, frontend, test_flags, backend_fw, fn_tree, on_device
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -136,11 +147,12 @@ def test_numpy_rfft(
     n=st.integers(min_value=2, max_value=5),
 )
 def test_numpy_ihfft(
-    dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_device
+    dtype_input_axis, norm, n, frontend, test_flags, backend_fw, fn_tree, on_device
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -158,7 +170,9 @@ def test_numpy_ihfft(
     n=st.integers(min_value=10, max_value=100),
     sample_rate=st.integers(min_value=1, max_value=10),
 )
-def test_numpy_fftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device):
+def test_numpy_fftfreq(
+    n, sample_rate, frontend, test_flags, backend_fw, fn_tree, on_device
+):
     d = 1 / sample_rate
     helpers.test_frontend_function(
         input_dtypes=[int],
@@ -177,7 +191,9 @@ def test_numpy_fftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device)
     n=st.integers(min_value=10, max_value=100),
     sample_rate=st.integers(min_value=1, max_value=10),
 )
-def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device):
+def test_numpy_rfftfreq(
+    n, sample_rate, frontend, test_flags, backend_fw, fn_tree, on_device
+):
     d = 1 / sample_rate
     helpers.test_frontend_function(
         input_dtypes=[int],

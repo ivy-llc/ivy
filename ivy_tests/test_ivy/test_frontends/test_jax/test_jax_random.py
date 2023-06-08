@@ -41,6 +41,7 @@ def test_jax_uniform(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
     minval, maxval = dtype_minval_maxval
@@ -96,6 +97,7 @@ def test_jax_normal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -155,6 +157,7 @@ def test_jax_beta(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -222,6 +225,7 @@ def test_jax_dirichlet(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
     _, alpha = dtype_alpha
@@ -276,6 +280,7 @@ def test_jax_cauchy(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -333,6 +338,7 @@ def test_jax_poisson(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -412,6 +418,7 @@ def test_jax_gamma(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
     a, shape = a_shape
@@ -470,6 +477,7 @@ def test_jax_gumbel(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -529,6 +537,7 @@ def test_jax_t(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -589,6 +598,7 @@ def test_jax_generalized_normal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -644,6 +654,7 @@ def test_jax_rademacher(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -700,6 +711,7 @@ def test_jax_randint(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
     minval, maxval = min_max
@@ -768,6 +780,7 @@ def test_jax_bernoulli(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
     dtype_p, shape = dtype_p_shape_
@@ -822,6 +835,7 @@ def test_jax_fold_in(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -875,6 +889,7 @@ def test_jax_permutation(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -931,6 +946,7 @@ def test_jax_loggamma(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
     a, shape = a_shape
@@ -990,6 +1006,7 @@ def test_jax_shuffle(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     key_dtype, key = dtype_key
     x_dtypes, x, axis = dtype_x_axis
@@ -1045,6 +1062,7 @@ def test_jax_exponential(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 

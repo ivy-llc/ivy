@@ -25,9 +25,11 @@ def test_jax_numpy_can_cast(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=[],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -55,9 +57,11 @@ def test_jax_numpy_promote_types(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=[],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
