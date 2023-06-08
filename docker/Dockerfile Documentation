@@ -1,0 +1,57 @@
+This is a Dockerfile that sets up a Debian-based environment for Ivy, a machine learning framework. Here's the documentation for the different sections of the Dockerfile:
+
+FROM debian:buster
+Specifies the base image to use for the container, which is Debian Buster.
+
+WORKDIR /ivy
+Sets the working directory within the container to /ivy.
+
+ARG CLI
+# python version for conda
+ARG pycon=3.10
+Declares two build-time arguments, CLI and pycon. These arguments can be overridden during the build process.
+
+ENV DEBIAN_FRONTEND=noninteractive
+Sets the DEBIAN_FRONTEND environment variable to noninteractive. This prevents Debian from prompting for any configuration during package installation.
+
+# Install miniconda
+ENV CONDA_DIR /opt/miniconda/
+RUN apt clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y wget  \
+    git -y && \
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/miniconda
+Installs Miniconda, a minimal version of the Anaconda Python distribution, and sets the CONDA_DIR environment variable to /opt/miniconda/.
+
+ENV PATH=$CONDA_DIR/bin:$PATH
+RUN conda create --name multienv python==$pycon
+Updates the PATH environment variable to include the Miniconda binary path, and creates a Conda environment named multienv with the specified Python version (pycon argument).
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
+ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
+RUN apt-get update && \
+    apt-get install -y python3-pip python3-tk && \
+    apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
+    apt-get install -y python-opengl && \
+    apt-get install -y git && \
+    apt-get install -y rsync && \
+    apt-get install -y libusb-1.0-0 && \
+    apt-get install -y libglib2.0-0 && \
+    apt-get install -y jq && \
+    pip3 install --upgrade pip && \
+    pip3 install pip-autoremove &&\
+    pip3 install setuptools==58.5.3
+Sets environment variables related to Protocol Buffers and updates the PATH to include the multienv Conda environment.
+Installs various system dependencies and Python packages using apt-get and pip3 commands.
+
+# Install Ivy Upstream
+RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
+    cd ivy && \
+    cd ivy_tests/array_api_testing/test_array_api && \
+    pip3 install --no-cache-dir -r requirements.txt
+Clones the Ivy repository from GitHub and installs the Python packages specified in the requirements.txt file.
+# Install local optional
+COPY requirements/optional.txt .
+COPY requirements/requirements.txt .
+Copies the optional.txt and requirements.txt files from the local build
