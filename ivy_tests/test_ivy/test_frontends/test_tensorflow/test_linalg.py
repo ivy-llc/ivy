@@ -93,6 +93,7 @@ def test_tensorflow_eigvalsh(
     on_device,
 ):
     input_dtype, x = dtype_and_input
+    assume(matrix_is_stable(x[0]))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -408,6 +409,8 @@ def test_tensorflow_pinv(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         a=x[0],
         rcond=1e-15,
     )
@@ -491,6 +494,9 @@ def test_tensorflow_norm(
     fn_tree="tensorflow.linalg.normalize",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=1,

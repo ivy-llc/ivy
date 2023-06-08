@@ -284,3 +284,44 @@ def test_paddle_log_softmax(
         axis=axis,
         dtype=ivy.as_ivy_dtype(dtypes[0]),
     )
+
+
+@st.composite
+def _generate_prelu_arrays(draw):
+    arr_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    input = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(arr_size), min_value=0, max_value=10
+        )
+    )
+    weight = draw(
+        helpers.array_values(dtype=dtype[0], shape=(1,), min_value=0, max_value=1.0)
+    )
+    input_weight = input, weight
+    return dtype, input_weight
+
+
+# prelu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.prelu",
+    dtype_input_and_weight=_generate_prelu_arrays(),
+)
+def test_paddle_prelu(
+    *,
+    dtype_input_and_weight,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_input_and_weight
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        weight=x[1],
+    )
