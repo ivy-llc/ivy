@@ -1291,11 +1291,11 @@ def array_for_adaptive(
     num_dims=3,
     max_dim_size=8,
     min_dim_size=3,
-    num_out_size=2
+    num_out_size=2,
 ):
     dtypes, arrays = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes('float'),
+            available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=num_dims,
             max_num_dims=num_dims,
             min_dim_size=min_dim_size,
@@ -1305,7 +1305,7 @@ def array_for_adaptive(
     size = draw(
         helpers.list_of_size(
             x=helpers.ints(min_value=3, max_value=5),
-            size=num_out_size
+            size=num_out_size,
         )
     )
     output_size = size[0] if num_out_size == 1 else size
