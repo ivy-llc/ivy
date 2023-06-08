@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     handle_array_like_without_promotion,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -35,6 +36,7 @@ def _get_promoted_type_of_operands(operands):
 
 
 @handle_array_function
+@handle_device_shifting_for_arrays
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -136,6 +138,7 @@ def min(
 
 
 @handle_array_function
+@handle_device_shifting_for_arrays
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -242,6 +245,7 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_array_function
 @integer_arrays_to_float
 @to_native_arrays_and_back
@@ -351,6 +355,7 @@ def mean(
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -474,6 +479,7 @@ def prod(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -607,6 +613,7 @@ def std(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -742,6 +749,7 @@ def sum(
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -856,6 +864,7 @@ def var(
 # ------#
 
 
+@handle_device_shifting_for_arrays
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -999,6 +1008,7 @@ def cumsum(
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -1135,6 +1145,7 @@ def cumprod(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -1234,6 +1245,7 @@ def cummax(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -1370,6 +1382,7 @@ def cummin(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument

@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,6 +19,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -134,6 +136,7 @@ def argsort(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -238,6 +241,7 @@ def sort(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -279,6 +283,7 @@ def msort(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument

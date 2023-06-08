@@ -8,12 +8,14 @@ from ivy.func_wrapper import (
     handle_nestable,
     infer_dtype,
     infer_device,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
 # dirichlet
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -80,6 +82,7 @@ def dirichlet(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
@@ -133,6 +136,7 @@ def beta(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
@@ -182,6 +186,7 @@ def gamma(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
@@ -248,6 +253,7 @@ def poisson(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes

@@ -10,11 +10,13 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_array_function,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -54,6 +56,7 @@ def l1_normalize(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -93,6 +96,7 @@ def l2_normalize(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -198,6 +202,7 @@ def batch_norm(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -313,6 +318,7 @@ def instance_norm(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back

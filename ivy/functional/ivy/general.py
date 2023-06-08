@@ -37,6 +37,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view_indexing,
+    handle_device_shifting_for_arrays,
 )
 from ivy.functional.ivy.device import dev
 
@@ -186,6 +187,7 @@ def get_referrers_recursive(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
@@ -222,6 +224,7 @@ def is_native_array(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
@@ -587,6 +590,7 @@ def get_show_func_wrapper_trace_mode() -> bool:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -726,6 +730,7 @@ def all_equal(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -797,6 +802,7 @@ def isscalar(x: Any, /) -> bool:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -853,6 +859,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -925,6 +932,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1014,6 +1022,7 @@ def clip_vector_norm(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_function
 @inputs_to_ivy_arrays
@@ -1096,6 +1105,7 @@ def clip_matrix_norm(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1202,6 +1212,7 @@ def fourier_encode(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1264,6 +1275,7 @@ def value_is_nan(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1527,6 +1539,7 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def to_native_shape(
     shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list]
 ) -> ivy.NativeShape:
@@ -1785,6 +1798,7 @@ def current_backend_str() -> Union[str, None]:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1910,6 +1924,7 @@ def einops_rearrange(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1983,6 +1998,7 @@ einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -2140,6 +2156,7 @@ def set_min_base(val: float) -> None:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -2241,6 +2258,7 @@ def stable_divide(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -2515,6 +2533,7 @@ def inplace_variables_supported() -> bool:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -2582,6 +2601,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
 @handle_array_function
@@ -2642,6 +2662,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     return True
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_view_indexing
 @to_native_arrays_and_back
@@ -2685,6 +2706,7 @@ def get_item(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -2786,6 +2808,7 @@ inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -2856,6 +2879,7 @@ def inplace_decrement(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -2913,6 +2937,7 @@ def inplace_increment(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3002,6 +3027,7 @@ def scatter_flat(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
 @handle_array_function
@@ -3084,6 +3110,7 @@ def scatter_nd(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3192,6 +3219,7 @@ def gather(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3291,6 +3319,7 @@ def multiprocessing(context: Optional[str] = None):
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @outputs_to_ivy_shapes
@@ -3398,6 +3427,7 @@ def shape_array_mode() -> bool:
     return shape_array_mode_stack[-1]
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -3763,6 +3793,7 @@ def vmap(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
 def isin(
@@ -3813,6 +3844,7 @@ def isin(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
 def itemsize(
@@ -3846,6 +3878,7 @@ def itemsize(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
 def strides(

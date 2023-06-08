@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     handle_array_like_without_promotion,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -98,6 +99,7 @@ ACTIVATION_FUNCTIONS = [
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -209,6 +211,7 @@ def get(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -275,6 +278,7 @@ def leaky_relu(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -347,6 +351,7 @@ def log_softmax(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -401,6 +406,7 @@ def relu(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -451,6 +457,7 @@ def sigmoid(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -501,6 +508,7 @@ def softmax(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -558,6 +566,7 @@ def softplus(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument

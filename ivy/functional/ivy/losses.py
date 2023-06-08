@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -29,6 +30,7 @@ def _reduce_loss(red, loss, axis, out):
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -85,6 +87,7 @@ def cross_entropy(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -268,6 +271,7 @@ def binary_cross_entropy(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays

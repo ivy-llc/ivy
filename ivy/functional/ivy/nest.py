@@ -8,6 +8,7 @@ from collections import UserDict
 
 # local
 import ivy
+from ivy.func_wrapper import handle_device_shifting_for_arrays
 from ivy.utils.exceptions import handle_exceptions
 
 
@@ -16,6 +17,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def index_nest(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray, ivy.Container],
     index: Union[List[int], Tuple[int], Iterable[int]],
@@ -111,6 +113,7 @@ def prune_nest_at_index(nest: Iterable, index: Tuple, /) -> None:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def set_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple],
     index: Sequence[Union[str, int]],
@@ -230,6 +233,7 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /) -> None:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def map_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
     index: Sequence[Union[str, int]],
@@ -338,6 +342,7 @@ def map_nest_at_index(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def multi_index_nest(
     nest: Union[List, Dict, Tuple, ivy.Array, ivy.NativeArray, ivy.Container],
     indices: Iterable[Iterable[int]],
@@ -424,6 +429,7 @@ def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def set_nest_at_indices(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
     indices: Union[List[int], Tuple[int], Iterable[int]],
@@ -793,6 +799,7 @@ def nested_argwhere(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def all_nested_indices(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray, ivy.Container] = None,
     /,
@@ -1233,6 +1240,7 @@ def nested_any(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def copy_nest(
     nest: Union[ivy.Array, ivy.NativeArray, Iterable],
     /,
@@ -1499,6 +1507,7 @@ def nested_multi_map(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def duplicate_array_index_chains(nest: Union[ivy.Array, ivy.NativeArray, Iterable]):
     """
     Group all unique index chains in a nest. This function is useful for finding all

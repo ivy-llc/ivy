@@ -19,6 +19,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     to_native_shapes_and_back,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -214,6 +215,7 @@ Iinfo = None
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -320,6 +322,7 @@ def astype(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
 @handle_array_function
@@ -397,6 +400,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -470,6 +474,7 @@ def broadcast_to(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -544,6 +549,7 @@ def can_cast(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @inputs_to_native_arrays
 def finfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
@@ -629,6 +635,7 @@ def finfo(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @inputs_to_native_arrays
 def iinfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
@@ -703,6 +710,7 @@ def iinfo(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
 def result_type(
@@ -998,6 +1006,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 def default_float_dtype(
@@ -1141,6 +1150,7 @@ def infer_default_dtype(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @inputs_to_ivy_arrays
 def default_dtype(
     *,
@@ -1201,6 +1211,7 @@ def default_dtype(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @inputs_to_ivy_arrays
 def default_int_dtype(
     *,
@@ -1314,6 +1325,7 @@ def default_int_dtype(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @inputs_to_ivy_arrays
 def default_uint_dtype(
     *,
@@ -1412,6 +1424,7 @@ def default_uint_dtype(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 def default_complex_dtype(
@@ -1509,6 +1522,7 @@ def default_complex_dtype(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
 def dtype(
@@ -1671,6 +1685,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> 
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
 def is_bool_dtype(
@@ -1717,6 +1732,7 @@ def is_bool_dtype(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
 def is_int_dtype(
@@ -1827,6 +1843,7 @@ def check_float(x: Any) -> bool:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
 def is_float_dtype(
@@ -1876,6 +1893,7 @@ def is_float_dtype(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
 def is_uint_dtype(
@@ -1922,6 +1940,7 @@ def is_uint_dtype(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 def is_complex_dtype(
@@ -2153,6 +2172,7 @@ def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def type_promote_arrays(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2324,6 +2344,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 def promote_types_of_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],
     x2: Union[ivy.NativeArray, Number, Iterable[Number]],

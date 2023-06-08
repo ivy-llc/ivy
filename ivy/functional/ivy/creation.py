@@ -30,6 +30,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting_for_arrays,
 )
 
 # Helpers #
@@ -199,6 +200,7 @@ class NestedSequence(Protocol[_T_co]):
 # -------------------#
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -300,6 +302,7 @@ def arange(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @handle_out_argument
 @handle_array_function
@@ -393,6 +396,7 @@ def asarray(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -455,6 +459,7 @@ def zeros(
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -540,6 +545,7 @@ def ones(
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -645,6 +651,7 @@ def full_like(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -762,6 +769,7 @@ def ones_like(
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -879,6 +887,7 @@ def zeros_like(
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -927,6 +936,7 @@ def tril(
     return current_backend(x).tril(x, k=k, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -975,6 +985,7 @@ def triu(
     return current_backend(x).triu(x, k=k, out=out)
 
 
+@handle_device_shifting_for_arrays
 @infer_device
 @infer_dtype
 @handle_array_function
@@ -1024,6 +1035,7 @@ def empty(
     return current_backend().empty(shape, dtype=dtype, device=device, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1074,6 +1086,7 @@ def empty_like(
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1220,6 +1233,7 @@ def eye(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1329,6 +1343,7 @@ def linspace(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1446,6 +1461,7 @@ def meshgrid(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1556,6 +1572,7 @@ def full(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1607,6 +1624,7 @@ def from_dlpack(
 array = asarray
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1716,6 +1734,7 @@ def copy_array(
     return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
@@ -1770,6 +1789,7 @@ def native_array(
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1883,6 +1903,7 @@ def one_hot(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument

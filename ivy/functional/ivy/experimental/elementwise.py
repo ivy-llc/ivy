@@ -10,11 +10,13 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_array_function,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -91,6 +93,7 @@ def sinc(
     return ivy.current_backend(x).sinc(x, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -135,6 +138,7 @@ def fmax(
     return ivy.current_backend().fmax(x1, x2, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -179,6 +183,7 @@ def fmin(
     return ivy.current_backend().fmin(x1, x2, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -236,6 +241,7 @@ def trapz(
     return ivy.current_backend().trapz(y, x=x, dx=dx, axis=axis, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -282,6 +288,7 @@ def float_power(
     return ivy.current_backend().float_power(x1, x2, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -319,6 +326,7 @@ def exp2(
     return ivy.current_backend().exp2(x, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -365,6 +373,7 @@ def copysign(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -421,6 +430,7 @@ def count_nonzero(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -476,6 +486,7 @@ def nansum(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -517,6 +528,7 @@ def gcd(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -580,6 +592,7 @@ def isclose(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -625,6 +638,7 @@ def angle(
     return ivy.current_backend(z).angle(z, deg=deg, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -661,6 +675,7 @@ def imag(
     return ivy.current_backend(val).imag(val, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -720,6 +735,7 @@ def nan_to_num(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -757,6 +773,7 @@ def logaddexp2(
     return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -792,6 +809,7 @@ def signbit(
     return ivy.current_backend(x).signbit(x, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -827,6 +845,7 @@ def hypot(
     return ivy.current_backend(x1, x2).hypot(x1, x2, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -881,6 +900,7 @@ def diff(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -954,6 +974,7 @@ def allclose(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -991,6 +1012,7 @@ def fix(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1031,6 +1053,7 @@ def nextafter(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1073,6 +1096,7 @@ def zeta(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -1150,6 +1174,7 @@ def gradient(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1195,6 +1220,7 @@ def xlogy(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1260,6 +1286,7 @@ def real(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1301,6 +1328,7 @@ def binarizer(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1358,6 +1386,7 @@ def conj(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1398,6 +1427,7 @@ def ldexp(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1511,6 +1541,7 @@ def lerp(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument

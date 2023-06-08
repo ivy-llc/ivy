@@ -7,11 +7,13 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
 def invert_permutation(
@@ -46,6 +48,7 @@ def invert_permutation(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back

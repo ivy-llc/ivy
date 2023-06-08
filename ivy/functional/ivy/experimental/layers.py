@@ -14,10 +14,12 @@ from ivy.func_wrapper import (
     integer_arrays_to_float,
     inputs_to_ivy_arrays,
     handle_array_function,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -81,6 +83,7 @@ def max_pool1d(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -162,6 +165,7 @@ def max_pool2d(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -232,6 +236,7 @@ def max_pool3d(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -313,6 +318,7 @@ def avg_pool1d(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -397,6 +403,7 @@ def avg_pool2d(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -485,6 +492,7 @@ def avg_pool3d(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -584,6 +592,7 @@ def dct(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -651,6 +660,7 @@ def fft(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -724,6 +734,7 @@ def dropout1d(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -773,6 +784,7 @@ def dropout3d(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -840,6 +852,7 @@ def ifft(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 def embedding(
@@ -897,6 +910,7 @@ def embedding(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1315,6 +1329,7 @@ def _upsample_bicubic2d_default(
     return result
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @inputs_to_ivy_arrays
@@ -1688,6 +1703,7 @@ def _mask(vals, length, range_max, dim):
         return vals, length
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
@@ -1755,6 +1771,7 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],

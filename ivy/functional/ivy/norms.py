@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_function,
     inputs_to_ivy_arrays,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -20,6 +21,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back

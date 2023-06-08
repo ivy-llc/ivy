@@ -26,12 +26,14 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_function,
     to_ivy_arrays_and_back,
+    handle_device_shifting_for_arrays,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -174,6 +176,7 @@ def flatten(
     return ivy.reshape(x, tuple(lst), order=order, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -220,6 +223,7 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -266,6 +270,7 @@ def heaviside(
     return ivy.current_backend().heaviside(x1, x2, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -306,6 +311,7 @@ def flipud(
     return ivy.current_backend().flipud(m, copy=copy, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -349,6 +355,7 @@ def vstack(
     return ivy.current_backend().vstack(arrays, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -389,6 +396,7 @@ def hstack(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -470,6 +478,7 @@ def rot90(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -551,6 +560,7 @@ def top_k(
     )
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -592,6 +602,7 @@ def fliplr(
     return ivy.current_backend().fliplr(m, copy=copy, out=out)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -907,6 +918,7 @@ def _check_arguments(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1167,6 +1179,7 @@ pad.mixed_function = True
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1212,6 +1225,7 @@ def vsplit(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1259,6 +1273,7 @@ def dsplit(
     return ivy.current_backend(ary).dsplit(ary, indices_or_sections, copy=copy)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1296,6 +1311,7 @@ def atleast_1d(
     return ivy.current_backend().atleast_1d(*arys, copy=copy)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1336,6 +1352,7 @@ def dstack(
     return ivy.current_backend().dstack(arrays)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1375,6 +1392,7 @@ def atleast_2d(
     return ivy.current_backend().atleast_2d(*arys, copy=copy)
 
 
+@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
 def atleast_3d(
@@ -1422,6 +1440,7 @@ def atleast_3d(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1472,6 +1491,7 @@ def take_along_axis(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1551,6 +1571,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1596,6 +1617,7 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
@@ -1659,6 +1681,7 @@ def as_strided(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1770,6 +1793,7 @@ def _interleave(a, b, axis):
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 def associative_scan(
@@ -1850,6 +1874,7 @@ def associative_scan(
 
 
 @handle_exceptions
+@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
