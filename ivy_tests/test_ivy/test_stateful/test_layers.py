@@ -84,6 +84,7 @@ def test_linear_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -92,6 +93,7 @@ def test_linear_layer(
     input_channels, input_dtype, x = ic_n_dtype_n_vals
     with_bias, bias_initializer = wb_n_b_init
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -143,12 +145,14 @@ def test_dropout_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x = dtype_and_x
     ret = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -260,6 +264,7 @@ def test_multi_head_attention_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -280,6 +285,7 @@ def test_multi_head_attention_layer(
         with_to_out_fn,
     ) = dtype_mha
     ret_np_flat, ret_np_from_gt_flat = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -408,6 +414,7 @@ def test_conv1d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -424,6 +431,7 @@ def test_conv1d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -474,6 +482,7 @@ def test_conv1d_transpose_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -490,14 +499,9 @@ def test_conv1d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow"
-            and on_device == "cpu"
-            and dilations > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -545,6 +549,7 @@ def test_conv2d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -561,6 +566,7 @@ def test_conv2d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -614,6 +620,7 @@ def test_conv2d_transpose_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -630,14 +637,9 @@ def test_conv2d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow"
-            and on_device == "cpu"
-            and dilations > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -689,6 +691,7 @@ def test_depthwise_conv2d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -704,12 +707,9 @@ def test_depthwise_conv2d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow" and dilations > 1 and strides > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and dilations > 1 and strides > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -756,6 +756,7 @@ def test_conv3d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -771,14 +772,9 @@ def test_conv3d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow"
-            and on_device == "cpu"
-            and dilations > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -832,6 +828,7 @@ def test_conv3d_transpose_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -848,14 +845,9 @@ def test_conv3d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow"
-            and on_device == "cpu"
-            and dilations > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -924,6 +916,7 @@ def test_lstm_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -932,6 +925,7 @@ def test_lstm_layer(
     return_sequence = return_sequence
     return_state = return_state
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1102,12 +1096,14 @@ def test_maxpool2d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1139,12 +1135,14 @@ def test_avgpool2d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1172,7 +1170,7 @@ def test_avgpool2d_layer(
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
     count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
-    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4))
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
 )
 def test_avgpool3d_layer(
     *,
@@ -1184,12 +1182,14 @@ def test_avgpool3d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1222,12 +1222,14 @@ def test_maxpool1d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1259,12 +1261,14 @@ def test_maxpool3d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
