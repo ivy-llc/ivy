@@ -168,6 +168,7 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     _setRNG(jax.random.PRNGKey(seed_value))
+    return
 
 
 def shuffle(
