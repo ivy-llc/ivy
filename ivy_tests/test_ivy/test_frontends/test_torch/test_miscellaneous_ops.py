@@ -669,7 +669,7 @@ def test_torch_flatten(
     fn_tree="torch.renorm",
     dtype_and_values=helpers.dtype_and_values(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         max_value=1e4,
         min_value=-1e4,
     ),
