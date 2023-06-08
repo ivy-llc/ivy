@@ -2,6 +2,8 @@
 	"name": "Ivy Development Environment (image)",
 
 	"image": "unifyai/ivy:latest",
+
+	// Customizations for Visual Studio Code (VSCode)
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -10,35 +12,40 @@
 		}
 	},
 
+	// Commands to be executed after the container is created
 	"postCreateCommand": {
-        "post_create": "bash .devcontainer/post_create_commands.sh", 
-        "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
-    },
+		"post_create": "bash .devcontainer/post_create_commands.sh", 
+		"bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
+	},
+
+	// Command to pull the Docker image before creating the container
 	"initializeCommand": "docker pull unifyai/ivy:latest",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-	
+
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
-	
+
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
-	
+
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode",
-    "features": {
+
+	// Additional features and configurations for the development environment
+	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
 			"installZsh": true,
 			"configureZshAsDefaultShell": true,
 			"installOhMyZsh": true,
 			"upgradePackages": false
 		},
-        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
 			"moby": true,
 			"installDockerBuildx": true,
 			"version": "20.10",
 			"dockerDashComposeVersion": "v2"
 		}
-    }
+	}
 }
