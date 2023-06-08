@@ -425,7 +425,7 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
-            indices = tf.expand_dims(indices, 0)
+            indices = tf.expand_dims(indices, -1)
         if tf.reduce_any(indices < 0):
             shape = list(shape) if ivy.exists(shape) else list(out.shape)
             indices = _parse_index(indices, shape)
@@ -458,7 +458,7 @@ def scatter_nd(
                 )
                 for index in indices
             ]
-            indices = tf.concat(indices, axis=0)
+            indices = tf.concat(indices, axis=-1)
     # broadcast updates to correct shape
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
