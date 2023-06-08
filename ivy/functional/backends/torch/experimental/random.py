@@ -53,6 +53,7 @@ def beta(
     return ret
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, torch.Tensor],
     beta: Union[float, torch.Tensor],
@@ -67,7 +68,10 @@ def gamma(
     shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     if seed is not None:
         torch.manual_seed(seed)
-    return torch.distributions.gamma.Gamma(alpha, beta).sample(shape).to(device)
+    ret = torch.distributions.gamma.Gamma(alpha, beta).sample(shape)
+    if device is not None:
+        return ret.to(device)
+    return ret
 
 
 def poisson(

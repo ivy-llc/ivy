@@ -13,6 +13,8 @@ from ivy.functional.ivy.random import (
     _check_shapes_broadcastable,
 )
 from ivy.functional.backends.jax.device import to_device
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
 
 # Extra #
 # ----- #
@@ -55,6 +57,7 @@ def beta(
     return to_device(jax.random.beta(rng_input, a, b, shape, dtype), device)
 
 
+@with_unsupported_dtypes({"0.4.11 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, JaxArray],
     beta: Union[float, JaxArray],
