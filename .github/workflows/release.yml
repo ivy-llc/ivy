@@ -1,7 +1,7 @@
 name: Release Workflow
 on:
   release:
-    types: [ published ] # TODO: Check this
+    types: [ published ]
   workflow_dispatch:
 
 jobs:
