@@ -11,6 +11,29 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
+
+'''
+- The functions below are all for trigonometric functions. The purpose of these functions is to convert numpy trigonometric functions 
+  to ivy trigonometric functions.
+  Each of these functions begin with decorators (@...) that are used for extending or customizing its (the function) functionality.
+
+- Here is an explanation of what is included within the functions:
+  - x: The input array on which the cosine operation will be performed.
+  - /: This is a positional-only parameter marker, which means x can only be passed positionally and not as a keyword argument.
+  - out=None: An optional argument that specifies an output array where the result will be stored.
+  - *: This separates the positional-only parameters from the keyword-only parameters that follow.
+  - where=True: An optional keyword argument that specifies a condition on elements of x for selecting values from ret.
+  - casting="same_kind": An optional keyword argument that specifies the casting rules when performing the operation.
+  - order="k": An optional keyword argument that specifies the memory layout of the output array.
+  - dtype=None: An optional keyword argument that specifies the data type of the output array.
+  - subok=True: An optional keyword argument that determines whether to return subclasses of the input type if possible.
+
+To get the mathematical functions, please refer to the following link: https://numpy.org/doc/stable/reference/routines.math.html#
+
+'''
+
+# This is the cosine (cos) function.
+# It returns the cosine input using the ivy cosine function.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -27,12 +50,18 @@ def _cos(
     dtype=None,
     subok=True,
 ):
+    # Perform the cosine operation on the input array x
     ret = ivy.cos(x, out=out)
+    
+    # Check if where argument is an array and conditionally update ret array
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    
+    return ret # Return result
 
 
+# This is the sine (sin) function
+# It returns the sine input using the ivy sine function.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -49,12 +78,18 @@ def _sin(
     dtype=None,
     subok=True,
 ):
+    # Perform the sine operation on the input array x
     ret = ivy.sin(x, out=out)
+    
+    # Check if where argument is an array and conditionally update ret array
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    
+    return ret # Return result
 
 
+# This is the tangent (tan) function
+# It returns the tangent input using the ivy tangent function.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -71,12 +106,18 @@ def _tan(
     dtype=None,
     subok=True,
 ):
+    # Perform the tangent operation on the input array x
     ret = ivy.tan(x, out=out)
+    
+    # # Check if where argument is an array and conditionally update ret array
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    
+    return ret # Return result
 
 
+# This is the inverse sine (arcsin) function
+# It returns the inverse sine input using the ivy inverse sine function.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -93,12 +134,18 @@ def _arcsin(
     dtype=None,
     subok=True,
 ):
+    # Perform the inverse sine operation on the input array x
     ret = ivy.asin(x, out=out)
+    
+    # Check if where argument is an array and conditionally update ret array
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    
+    return ret # Return result
 
 
+# This is the inverse cosine (arccos) function
+# It returns the inverse cosine input using the ivy inverse cosine function.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -115,12 +162,18 @@ def _arccos(
     dtype=None,
     subok=True,
 ):
+    # Perform the inverse cosine operation on the input array x
     ret = ivy.acos(x, out=out)
+    
+    # Check if where argument is an array and conditionally update ret array
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    
+    return ret # Return result
 
 
+# This is the inverse tangent (arctan) function
+# It returns the inverse tangent input using the ivy inverse tangent function.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -137,12 +190,50 @@ def _arctan(
     dtype=None,
     subok=True,
 ):
+    # Perform the inverse tangent operation on the input array x
     ret = ivy.atan(x, out=out)
+    
+    # Check if where argument is an array and conditionally update ret array
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    
+    return ret # Return result
 
 
+
+# This is the inverse tangent of y/x (arctan2) function
+# It returns the inverse tangent of y/x input using the ivy inverse tangent of y/x function.
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _arctan2(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+    signature=None,
+    extobj=None,
+):
+    # Perform the inverse tangent of y/x operation on the input array x
+    ret = ivy.atan2(x1, x2, out=out)
+    
+    # # Check if where argument is an array and conditionally update ret array
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ret # Return result
+
+
+# This is the degree to radians function
+# It returns the degree to radians input using the ivy degree to radians function.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -161,12 +252,18 @@ def _deg2rad(
     signature=None,
     extobj=None,
 ):
+    # Perform the degree to radian operation on the input array x
     ret = ivy.deg2rad(x, out=out)
+    
+    # Check if where argument is an array and conditionally update ret array
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    
+    return ret # Return result
 
 
+# This is the radians to degree function
+# It returns the radians to degree input using the ivy radians to degree function.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -183,12 +280,18 @@ def _rad2deg(
     dtype=None,
     subok=True,
 ):
+    # Perform the radian to degree operation on the input array x
     ret = ivy.rad2deg(x, out=out)
+    
+    # Check if where argument is an array and conditionally update ret array
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    
+    return ret # Return result
 
 
+# This is the degree function
+# It returns the degree input using the ivy degree function. It's the same operation as the function above.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -205,7 +308,86 @@ def _degrees(
     dtype=None,
     subok=True,
 ):
+    # Perform the radian to degree operation on the input array x
     ret = ivy.rad2deg(x, out=out)
+    
+    # Check if where argument is an array and conditionally update ret array
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    
+    return ret # Return result
+
+
+# This is the radian function
+# It returns the radian input using the ivy radian function. It's the same operation as the _deg2rad function.
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _radians(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+    signature=None,
+    extobj=None,
+):
+    # Perform the radian operation on the input array x
+    ret = ivy.deg2rad(x, out=ret)
+    
+    # Check if where argument is an array and conditionally update ret array
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    
+    return ret # Return result
+
+
+# This is the hypotenuse function
+# It returns the hypotenuse input using the ivy hypotenuse function.
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+def _hypot(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+): 
+    # Perform the hypotenuse operation on the input array x
+    ret = ivy.hypot(x1, x2, out=out)
+    
+    # # Check if where argument is an array and conditionally update ret array
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.zeros_like(ret), out=out)
+    
+    return ret # Return result
+
+
+# This is the unwrap function
+# It returns the unwrap input using the ivy unwrap function.
+# @handle_numpy_out
+# @handle_numpy_dtype
+# @to_ivy_arrays_and_back
+# @handle_numpy_casting
+# def _unwrap(
+#     p,
+#     discont=ivy.pi,
+#     axis=-1,
+# ):
+#     # Perform the unwrap operation on the input array x
+#     ret = ivy.unwrap(p, discont=discont, axis=axis)
+    
+#     return ret # Return result
