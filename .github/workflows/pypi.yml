@@ -1,5 +1,7 @@
 name: pypi
-on: [push]
+on:
+  push:
+  workflow_call:
 jobs:
   upload-if-tagged-commit:
     runs-on: ubuntu-latest
@@ -18,7 +20,7 @@ jobs:
           python3 -m pip install --upgrade twine
 
       - name: Upload to Pypi
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        if: startsWith(github.ref, 'refs/tags')
         env:
           PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
