@@ -105,7 +105,6 @@ def test_jax_device_put(
     dtype_and_x,
     test_flags,
     fn_tree,
-    backend_fw,
     frontend,
     on_device,
 ):
@@ -137,7 +136,6 @@ def test_jax_device_get(
     dtype_and_x,
     test_flags,
     fn_tree,
-    backend_fw,
     frontend,
     on_device,
 ):
