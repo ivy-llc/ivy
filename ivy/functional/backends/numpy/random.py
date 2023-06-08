@@ -45,7 +45,7 @@ def random_normal(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     if seed:
         np.random.seed(seed)
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)

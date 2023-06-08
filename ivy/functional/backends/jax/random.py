@@ -76,7 +76,7 @@ def random_normal(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
 
     if seed:
         rng_input = jax.random.PRNGKey(seed)

@@ -56,7 +56,7 @@ def random_normal(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     mean = tf.cast(mean, dtype)
     std = tf.cast(std, dtype)
     with tf.device(device):
