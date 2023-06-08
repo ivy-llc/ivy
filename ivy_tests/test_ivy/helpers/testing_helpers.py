@@ -358,6 +358,8 @@ def handle_test(
                     # exception object in with_backend is different from global Ivy
                     if e.__class__.__qualname__ == "IvyNotImplementedException":
                         pytest.skip("Function not implemented in backend.")
+                    else:
+                        raise e
 
         else:
             wrapped_test = test_fn
@@ -476,6 +478,8 @@ def handle_frontend_test(
                     # exception object in with_backend is different from global Ivy
                     if e.__class__.__qualname__ == "IvyNotImplementedException":
                         pytest.skip("Function not implemented in backend.")
+                    else:
+                        raise e
 
         else:
             wrapped_test = test_fn
@@ -596,6 +600,8 @@ def handle_method(
                     # exception object in with_backend is different from global Ivy
                     if e.__class__.__qualname__ == "IvyNotImplementedException":
                         pytest.skip("Function not implemented in backend.")
+                    else:
+                        raise e
 
         else:
             wrapped_test = test_fn
@@ -726,6 +732,8 @@ def handle_frontend_method(
                     # exception object in with_backend is different from global Ivy
                     if e.__class__.__qualname__ == "IvyNotImplementedException":
                         pytest.skip("Function not implemented in backend.")
+                    else:
+                        raise e
 
         else:
             wrapped_test = test_fn
