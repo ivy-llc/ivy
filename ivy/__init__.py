@@ -76,7 +76,7 @@ class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
             ivy.utils.assertions.check_elem_in_list(
-                dev_str[0:3], 
+                dev_str[0:3],
                 ["gpu", "tpu", "cpu"],
                 message="{} is an invalid device".format(dev_str[0:3]),
             )
