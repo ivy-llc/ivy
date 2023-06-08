@@ -386,9 +386,7 @@ def test_numpy_standard_gamma(
     )
 
 
-# Binomial
-
-
+# binomial
 @handle_frontend_test(
     fn_tree="numpy.random.binomial",
     n=st.integers(min_value=0, max_value=2),
@@ -422,13 +420,10 @@ def test_numpy_binomial(
         size=size,
     )
 
-    # chisquare
 
-
+# chisquare
 # The test values are restricted to (0, 1000] because df<=0 is invalid
 # and very large df can cause problems with type conversions
-
-
 @handle_frontend_test(
     fn_tree="numpy.random.chisquare",
     dtypes=helpers.get_dtypes("float", full=False),
@@ -474,7 +469,6 @@ def test_numpy_chisquare(
         and (len(size) == 0 or size[-1] != len(df))
     ):
         size = (*size, len(df))
-
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         frontend=frontend,
