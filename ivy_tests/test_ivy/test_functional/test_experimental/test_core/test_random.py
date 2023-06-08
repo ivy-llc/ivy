@@ -177,12 +177,6 @@ def test_gamma(
         max_value=5,
         min_num_dims=0,
     ),
-    shape=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
@@ -190,7 +184,6 @@ def test_gamma(
 def test_poisson(
     *,
     dtype_and_lam,
-    shape,
     dtype,
     seed,
     test_flags,
@@ -200,7 +193,6 @@ def test_poisson(
     ground_truth_backend,
 ):
     lam_dtype, lam = dtype_and_lam
-    shape = shape + ivy.shape(lam[0])
 
     def call():
         return helpers.test_function(
@@ -212,7 +204,7 @@ def test_poisson(
             fn_name=fn_name,
             test_values=False,
             lam=lam[0],
-            shape=shape,
+            shape=None,
             dtype=dtype[0],
             seed=seed,
         )
