@@ -109,15 +109,6 @@ def celu(
     alpha=1.0,
     name=None,
 ):
-    prod = ivy.multiply(
-        alpha,
-        ivy.subtract(
-            ivy.exp(ivy.divide(x, alpha)),
-            1,
-        ),
-    )
-    ret = ivy.add(
-        ivy.maximum(0, x),
-        ivy.minimum(0, prod),
-    )
+    prod = alpha * (ivy.exp(x / alpha) - 1)
+    ret = ivy.maximum(0, x) + ivy.minimum(0, prod)
     return ret

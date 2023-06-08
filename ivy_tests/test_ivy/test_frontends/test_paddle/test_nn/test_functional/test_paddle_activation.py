@@ -253,7 +253,6 @@ def test_paddle_softsign(
     fn_tree="paddle.nn.functional.celu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        small_abs_safety_factor=20,
     ),
     alpha=helpers.ints(min_value=1, max_value=10),
 )
