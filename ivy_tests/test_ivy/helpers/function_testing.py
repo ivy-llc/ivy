@@ -697,9 +697,8 @@ def test_frontend_function(
                     )
                 else:
                     flatten_ret = flatten(backend=backend_to_test, ret=ret)
-                    flatten_out = flatten(backend=backend_to_test, ret=out)
                 for ret_array, out_array in zip(flatten_ret, flatten_out):
-                    if ivy.native_inplace_support and not any(
+                    if ivy_backend.native_inplace_support and not any(
                         (ivy_backend.isscalar(ret), ivy_backend.isscalar(out))
                     ):
                         if test_flags.generate_frontend_arrays:
@@ -824,7 +823,7 @@ def test_frontend_function(
         frontend_fw = importlib.import_module(module_name)
         frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
-        if ivy.isscalar(frontend_ret):
+        if gt_backend.isscalar(frontend_ret):
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
         else:
             # tuplify the frontend return
