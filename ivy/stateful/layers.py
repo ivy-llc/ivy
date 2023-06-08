@@ -1767,3 +1767,44 @@ class AvgPool3D(Module):
             ceil_mode=self._ceil_mode,
             divisor_override=self._divisor_override,
         )
+
+
+class AdaptiveAvgPool2d(Module):
+    def __init__(
+        self,
+        output_size,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying a 2D adaptive average pooling over mini-batch of inputs.
+
+        Parameters
+        ----------
+        output_size
+            the target output size of the image.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._output_size = output_size
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs
+            The input to the layer of shape (N, C, W_in,H_in)
+            where N is the batch dimension, C is the feature dimension,
+            and H_in and W_in are the 2 spatial dimensions..
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.adaptive_avg_pool2d(
+            inputs,
+            self._output_size
+        )
