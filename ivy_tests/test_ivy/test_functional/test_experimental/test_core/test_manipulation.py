@@ -1136,7 +1136,7 @@ def test_associative_scan(
         valid_axis=True,
     ),
     scale=helpers.ints(min_value=1, max_value=10),
-    zero_point=helpers.ints(min_value=0, max_value=10),
+    zero_point=helpers.ints(min_value=0, max_value=100),
     saturate=st.booleans(),
 )
 def test_quantize_linear(

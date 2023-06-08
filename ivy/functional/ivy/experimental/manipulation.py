@@ -33,13 +33,50 @@ from ivy.utils.exceptions import handle_exceptions
 
 @inputs_to_ivy_arrays
 def quantize_linear(x, scale, zero_point, /, *, axis=None, saturate=False):
+    """
+    Quantizes the input array using the given scale and zero point.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    scale
+        The scale factor.
+    zero_point
+        The zero point offset for quantization.
+    axis
+        The axis along which to quantize. If not set, the array is flattened.
+    saturate
+        Whether to saturate the quantized values to the range [0, 255].
+        Defaults to False.
+
+    Returns
+    -------
+    ret
+        The quantized array.
+
+    Examples
+    --------
+    >>> x = ivy.array([-1.5, 0.3, 2.7, 1.8], dtype=ivy.float32)
+    >>> scale = 0.5
+    >>> zero_point = 128
+    >>> ivy.quantize_linear(x, scale, zero_point)
+    ivy.array([127, 129, 133, 135])
+
+    >>> x = ivy.array([[1.5, 2.7], [0.8, 3.2]], dtype=ivy.float32)
+    >>> scale = 0.1
+    >>> zero_point = 128
+    >>> axis = 1
+    >>> ivy.quantize_linear(x, scale, zero_point, axis=axis)
+    ivy.array([[143., 155.], [136., 160.]])
+    """
     if axis is None:
-        y = ivy.round(x / scale + zero_point).astype(ivy.int8)
+        y = ivy.round(x / scale + zero_point).astype(ivy.uint8)
     else:
         y = ivy.zeros_like(x)
         for idx in ivy.ndindex(x.shape[:axis] + x.shape[axis + 1 :]):
             idx = idx[:axis] + (slice(None),) + idx[axis:]
-            y[idx] = ivy.round(x[idx] / scale + zero_point).astype(ivy.int8)
+            y[idx] = ivy.round(x[idx] / scale + zero_point).astype(ivy.uint8)
 
     if saturate:
         y = ivy.clip(y, 0, 255)

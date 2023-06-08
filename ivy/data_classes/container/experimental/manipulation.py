@@ -2734,6 +2734,31 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.quantize_linear also applies to this method with minimal
         changes.
+
+        Parameters
+        ----------
+        x
+            Container with array inputs
+        scale
+            The scale factor.
+        zero_point
+            The zero point offset for quantization.
+        axis
+            The axis along which to quantize. If not set, the array is flattened.
+        saturate
+            Whether to saturate the quantized values to the range [0, 255].
+            Defaults to False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         """
         return ContainerBase.cont_multi_map_in_function(
             "quantize_linear",
@@ -2763,6 +2788,20 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.quantize_linear also applies to this method with minimal
         changes.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        scale
+            The scale factor.
+        zero_point
+            The zero point offset for quantization.
+        axis
+            The axis along which to quantize. If not set, the array is flattened.
+        saturate
+            Whether to saturate the quantized values to the range [0, 255].
+            Defaults to False.
         """
         return self._static_quantize_linear(
             self, scale, zero_point, axis=axis, saturate=saturate
