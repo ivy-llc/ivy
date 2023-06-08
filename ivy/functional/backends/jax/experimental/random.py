@@ -47,7 +47,7 @@ def beta(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    shape = _check_bounds_and_get_shape(a, b, shape)
+    shape = _check_bounds_and_get_shape(a, b, shape).shape
     RNG_, rng_input = jax.random.split(_getRNG())
     _setRNG(RNG_)
     if seed is not None:
@@ -66,7 +66,7 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     RNG_, rng_input = jax.random.split(_getRNG())
     _setRNG(RNG_)
     if seed is not None:

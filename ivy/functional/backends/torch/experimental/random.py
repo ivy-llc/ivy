@@ -43,7 +43,7 @@ def beta(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     if seed is not None:
         torch.manual_seed(seed)
     return torch.distributions.beta.Beta(alpha, beta).sample(shape).to(device, dtype)
@@ -60,7 +60,7 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     if seed is not None:
         torch.manual_seed(seed)
     return torch.distributions.gamma.Gamma(alpha, beta).sample(shape).to(device)
