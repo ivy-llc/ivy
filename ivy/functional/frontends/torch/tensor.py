@@ -666,6 +666,7 @@ class Tensor:
     def argwhere(self):
         return torch_frontend.argwhere(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self, dim=dim, keepdim=keepdim)
 
@@ -1178,7 +1179,11 @@ class Tensor:
 
     def normal_(self, mean=0, std=1, *, generator=None):
         self.ivy_array = ivy.random_normal(
-            mean=mean, std=std, shape=self.shape, dtype=self.dtype, device=self.device
+            mean=mean,
+            std=std,
+            shape=self.ivy_array.shape,
+            dtype=self.dtype,
+            device=self.device,
         )
         return self
 
@@ -1254,6 +1259,10 @@ class Tensor:
     def greater_(self, other):
         self.ivy_array = ivy.astype(self.greater(other).ivy_array, self.dtype)
         return self
+      
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def eq_(self, other):
+        return torch_frontend.eq(self, other)
 
 
 class Size(tuple):

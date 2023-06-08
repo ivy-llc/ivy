@@ -1283,6 +1283,7 @@ def test_logaddexp2(
         x2=x[1],
     )
 
+
 # logical_and
 @handle_test(
     fn_tree="functional.ivy.logical_and",
