@@ -666,6 +666,7 @@ class Tensor:
     def argwhere(self):
         return torch_frontend.argwhere(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self, dim=dim, keepdim=keepdim)
 
