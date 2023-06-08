@@ -1252,3 +1252,28 @@ def test_torch_multi_dot(
         test_values=True,
         tensors=x,
     )
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.ldl_factor_ex",
+    dtype_and_input=helpers.dtype_and_values(
+    available_dtypes=helpers.get_dtypes("float")),
+)
+def test_torch_ldl_factor_ex(
+    *,
+    dtype_and_input,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    input_dtype, x, N = dtype_and_input
+    test_flags.num_positional_args = 1
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        x=x[0],
+        N=N,
+    )
