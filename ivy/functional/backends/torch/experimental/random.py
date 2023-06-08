@@ -32,6 +32,7 @@ def dirichlet(
     )
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def beta(
     alpha: Union[float, torch.Tensor],
     beta: Union[float, torch.Tensor],
@@ -46,7 +47,10 @@ def beta(
     shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     if seed is not None:
         torch.manual_seed(seed)
-    return torch.distributions.beta.Beta(alpha, beta).sample(shape).to(device, dtype)
+    ret = torch.distributions.beta.Beta(alpha, beta).sample(shape)
+    if device is not None:
+        return ret.to(device)
+    return ret
 
 
 def gamma(

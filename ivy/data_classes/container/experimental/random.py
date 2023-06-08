@@ -216,10 +216,9 @@ class _ContainerWithRandomExperimental(ContainerBase):
 
     def beta(
         self: ivy.Container,
+        beta,
         /,
         *,
-        alpha: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
-        beta: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -273,7 +272,6 @@ class _ContainerWithRandomExperimental(ContainerBase):
         """
         return self.static_beta(
             self,
-            alpha,
             beta,
             shape=shape,
             key_chains=key_chains,

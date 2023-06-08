@@ -62,10 +62,10 @@ class _ArrayWithRandomExperimental(abc.ABC):
 
     def beta(
         self: ivy.Array,
-        alpha: Union[int, ivy.Array, ivy.NativeArray],
         beta: Union[int, ivy.Array, ivy.NativeArray],
         /,
         *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         seed: Optional[int] = None,
@@ -102,9 +102,9 @@ class _ArrayWithRandomExperimental(abc.ABC):
             the array.
         """
         return ivy.beta(
-            alpha,
+            self,
             beta,
-            shape=self.shape,
+            shape=shape,
             device=device,
             dtype=dtype,
             seed=seed,
