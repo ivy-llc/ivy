@@ -1723,6 +1723,7 @@ def test_jax_special_getitem(
     input_dtype, x, index = dtype_x_index
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"object": x},
         method_input_dtypes=[input_dtype[1]],
         method_all_as_kwargs_np={"idx": index},
