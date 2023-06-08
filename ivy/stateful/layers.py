@@ -1806,5 +1806,5 @@ class AdaptiveAvgPool2d(Module):
         """
         return ivy.adaptive_avg_pool2d(
             inputs,
-            self._output_size
+            self._output_size,
         )
