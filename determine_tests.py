@@ -91,9 +91,9 @@ def main():
         old_tests = tests["index_mapping"]
         added_tests = set(new_tests) - set(old_tests)
         removed_tests = set(old_tests) - set(new_tests)
-        # with open("tests_to_remove", "w") as f:
-        #     for test in removed_tests:
-        #         f.write(test + "\n")
+        with open("tests_to_remove", "w") as f:
+            for test in removed_tests:
+                f.write(test + "\n")
         added_tests = list(added_tests)
         if len(added_tests) > 1:
             added_tests = added_tests[:1]
