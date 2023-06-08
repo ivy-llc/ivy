@@ -1878,7 +1878,11 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
+@handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -2066,6 +2070,16 @@ def _get_identity(func, dtype, init):
         identity = identities[func_name]
         return _cast_init(identity, dtype)
     return init
+
+
+avg_pool2d.handle_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions
