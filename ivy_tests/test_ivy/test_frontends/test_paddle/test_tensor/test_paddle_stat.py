@@ -35,3 +35,30 @@ def test_paddle_mean(
         axis=axis,
         keepdims=keepdims,
     )
+
+
+# numel
+@handle_frontend_test(
+    fn_tree="paddle.numel",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+    ),
+)
+def test_paddle_numel(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
