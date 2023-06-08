@@ -212,7 +212,7 @@ def ensure_shape(x, shape, name=None):
 @with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
-def range(start, limit=None, delta=1, dtype=None, name=None):
+def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
     return ivy.arange(start, limit, delta, dtype=dtype)
 
 
@@ -481,7 +481,6 @@ def split(value, num_or_size_splits, axis=0, num=None, name=None):
     )
 
 
-@to_ivy_arrays_and_back
 def repeat(
     input,
     repeats,
