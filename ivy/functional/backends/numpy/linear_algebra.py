@@ -428,8 +428,6 @@ def vector_norm(
         x = np.expand_dims(x, 0)
         ret_scalar = True
 
-    if axis is None and ord == 2:
-        x = x.flatten()
     if isinstance(axis, list):
         axis = tuple(axis)
 
