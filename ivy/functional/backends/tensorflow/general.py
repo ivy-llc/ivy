@@ -472,9 +472,7 @@ def scatter_nd(
         if sum(indices.shape) < sum(indices_shape):
             indices = ivy.broadcast_to(indices, indices_shape)._data
         else:
-            # updates = ivy.broadcast_to(updates, expected_shape)._data
-            # replaced ivy.broadcast_to because it asserts len(x1_shape)>len(x2_shape)
-            if _check_broadcastable(updates.shape, expected_shape):
+            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
                 updates = ivy.reshape(updates, expected_shape)._data
     # implementation
     target = out
@@ -505,16 +503,6 @@ def scatter_nd(
 
 
 scatter_nd.support_native_out = True
-
-
-def _check_broadcastable(x1, x2):
-    # ivy.assertions.check_one_way_broadcastable but not checking if len(x1) > len(x2)
-    for a, b in zip(x1[::-1], x2[::-1]):
-        if a == 1 or a == b:
-            pass
-        else:
-            return False
-    return True
 
 
 def shape(
