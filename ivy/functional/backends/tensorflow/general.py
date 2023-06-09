@@ -50,7 +50,7 @@ def current_backend_str() -> str:
 
 # tensorflow does not support uint indexing
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def get_item(x: tf.Tensor, /, query: tf.Tensor, *, copy: bool = None) -> tf.Tensor:
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
@@ -286,7 +286,7 @@ def scatter_flat(
 scatter_flat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -303,21 +303,15 @@ def scatter_nd(
             else out
         )
     # handle numeric updates
-    updates = tf.constant(
-        updates,
-        dtype=(
-            ivy.dtype(out, as_native=True)
-            if ivy.exists(out)
-            else ivy.default_dtype(item=updates)
-        ),
-    )
+    if hasattr(updates, "dtype"):
+        updates_dtype = updates.dtype
+    else:
+        updates_dtype = ivy.default_dtype(item=updates)
+    if ivy.exists(out):
+        dtype = ivy.promote_types(out.dtype, updates_dtype)
     updates = tf.cast(
         updates,
-        (
-            ivy.dtype(out, as_native=True)
-            if ivy.exists(out)
-            else ivy.default_dtype(item=updates)
-        ),
+        (ivy.as_native_dtype(dtype) if ivy.exists(out) else updates_dtype),
     )
     contains_slices = (
         any(isinstance(idx, slice) for idx in indices)
@@ -431,7 +425,7 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
-            indices = tf.expand_dims(indices, 0)
+            indices = tf.expand_dims(indices, -1)
         if tf.reduce_any(indices < 0):
             shape = list(shape) if ivy.exists(shape) else list(out.shape)
             indices = _parse_index(indices, shape)
@@ -464,7 +458,7 @@ def scatter_nd(
                 )
                 for index in indices
             ]
-            indices = tf.concat(indices, axis=0)
+            indices = tf.concat(indices, axis=-1)
     # broadcast updates to correct shape
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
@@ -478,7 +472,8 @@ def scatter_nd(
         if sum(indices.shape) < sum(indices_shape):
             indices = ivy.broadcast_to(indices, indices_shape)._data
         else:
-            updates = ivy.broadcast_to(updates, expected_shape)._data
+            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
+                updates = ivy.reshape(updates, expected_shape)._data
     # implementation
     target = out
     target_given = ivy.exists(target)
@@ -606,7 +601,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "complex")}, backend_version)
 def isin(
     elements: tf.Tensor,
     test_elements: tf.Tensor,

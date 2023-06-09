@@ -386,6 +386,41 @@ def test_numpy_standard_gamma(
     )
 
 
+# binomial
+@handle_frontend_test(
+    fn_tree="numpy.random.binomial",
+    n=st.integers(min_value=0, max_value=2),
+    dtype=helpers.get_dtypes("float", full=False, index=2),
+    p=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, max_value=1
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_binomial(
+    dtype,
+    size,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    n,
+    p,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        n=n,
+        p=p,
+        size=size,
+    )
+
+
 # chisquare
 # The test values are restricted to (0, 1000] because df<=0 is invalid
 # and very large df can cause problems with type conversions
@@ -480,5 +515,55 @@ def test_numpy_lognormal(
         test_values=False,
         mean=mean,
         sigma=sigma,
+        size=size,
+    )
+
+
+# negative_binomial
+@handle_frontend_test(
+    fn_tree="numpy.random.negative_binomial",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    # max value for n and min value for p are restricted in testing
+    # as they can blow up poisson lambda, which will cause an
+    # error (lam value too large).
+    n=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=100000,
+        exclude_min=True,
+    ),
+    p=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=9.999999747378752e-06,
+        exclude_min=True,
+        max_value=1,
+        exclude_max=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_negative_binomial(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    n,
+    p,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        n=n,
+        p=p,
         size=size,
     )
