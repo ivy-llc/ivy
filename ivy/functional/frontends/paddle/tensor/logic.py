@@ -152,8 +152,6 @@ def logical_not(x, /, *, name=None, out=None):
             "int64",
             "float32",
             "float64",
-            "complex64",
-            "complex128"
         )
     },
     "paddle",
