@@ -1,3 +1,5 @@
+import numpy as np
+
 import ivy
 
 
@@ -135,14 +137,14 @@ def check_shape(x1, x2, message=""):
 
 
 def check_same_dtype(x1, x2, message=""):
-    message = (
-        message
-        if message != ""
-        else "{} and {} must have the same dtype ({} vs {})".format(
-            x1, x2, ivy.dtype(x1), ivy.dtype(x2)
-        )
-    )
     if ivy.dtype(x1) != ivy.dtype(x2):
+        message = (
+            message
+            if message != ""
+            else "{} and {} must have the same dtype ({} vs {})".format(
+                x1, x2, ivy.dtype(x1), ivy.dtype(x2)
+            )
+        )
         raise ivy.utils.exceptions.IvyException(message)
 
 
@@ -161,7 +163,7 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
         )
         and not (
             ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, float)
+            and isinstance(fill_value, (float, np.float32))
             or isinstance(fill_value, bool)
         )
     ):
@@ -222,8 +224,14 @@ def check_gather_nd_input_valid(params, indices, batch_dims):
 
 
 def check_one_way_broadcastable(x1, x2):
+    if len(x1) > len(x2):
+        return False
+    return check_broadcastable(x1, x2)
+
+
+def check_broadcastable(x1, x2):
     for a, b in zip(x1[::-1], x2[::-1]):
-        if b == 1 or a == b:
+        if a == 1 or a == b:
             pass
         else:
             return False
@@ -231,17 +239,17 @@ def check_one_way_broadcastable(x1, x2):
 
 
 def check_inplace_sizes_valid(var, data):
-    if not check_one_way_broadcastable(var.shape, data.shape):
+    if not check_one_way_broadcastable(data.shape, var.shape):
         raise ivy.utils.exceptions.IvyException(
             "Could not output values of shape {} into array with shape {}.".format(
-                data.shape, var.shape
+                var.shape, data.shape
             )
         )
 
 
 def check_shapes_broadcastable(var, data):
     if not check_one_way_broadcastable(var, data):
-        raise ivy.utils.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(
             "Could not broadcast shape {} to shape {}.".format(data, var)
         )
 
