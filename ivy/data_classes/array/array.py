@@ -161,6 +161,7 @@ class Array(
             self._dynamic_backend = dynamic_backend
         else:
             self._dynamic_backend = ivy.get_dynamic_backend()
+        self.weak_type = False  # to handle 0-D jax front weak typed arrays
 
     def _view_attributes(self, data):
         self._base = None
@@ -401,10 +402,9 @@ class Array(
             self._data = self._data.detach()
         if ivy.is_ivy_array(val):
             val = val.data
-        if ivy.isscalar(val):
-            length_diff = len(query) - 1
-            if length_diff > 0:
-                val = ivy.asarray((val,) + (val,) * length_diff)
+        target = self.__getitem__(query)
+        if not ivy.isscalar(target) and ivy.isscalar(val):
+            val = ivy.ones_like(target) * val
         try:
             self._data.__setitem__(query, val)
         except:

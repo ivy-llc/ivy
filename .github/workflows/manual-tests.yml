@@ -47,7 +47,7 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
-          pip install pymongo
+          pip3 install pymongo
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
@@ -81,7 +81,7 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
-          pip install pymongo
+          pip3 install pymongo
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
