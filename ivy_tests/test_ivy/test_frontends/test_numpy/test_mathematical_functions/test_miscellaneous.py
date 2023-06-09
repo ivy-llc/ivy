@@ -731,7 +731,7 @@ def test_numpy_lcm(
 @handle_frontend_test(
     fn_tree="numpy.gcd",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=False,
         min_num_dims=1,
