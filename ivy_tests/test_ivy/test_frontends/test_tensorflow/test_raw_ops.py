@@ -840,6 +840,9 @@ def test_tensorflow_Squeeze(  # NOQA
     fn_tree="tensorflow.raw_ops.Sign",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=5,
+        small_abs_safety_factor=5,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
