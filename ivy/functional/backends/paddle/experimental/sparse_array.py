@@ -4,14 +4,23 @@ from ivy.functional.ivy.experimental.sparse_array import (
     _verify_csr_components,
     _is_data_not_indices_values_and_shape,
 )
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+)
 from ivy.utils.exceptions import IvyNotImplementedException
 import paddle
+
+# local
+from .. import backend_version
 
 
 def is_native_sparse_array(x: paddle.Tensor) -> bool:
     return x.is_sparse_coo() or x.is_sparse_csr()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8",)}}, backend_version
+)
 def native_sparse_array(
     data=None,
     *,
