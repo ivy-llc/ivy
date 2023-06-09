@@ -141,13 +141,14 @@ def logical_not(x, /, *, name=None, out=None):
     return ivy.logical_not(x, out=out)
 
 
-@with_unsupported_dtypes(
-    {   
+@with_supported_dtypes(
+    {
         "2.4.2 and below": (
             "bool",
             "uint8",
             "int8",
             "int16",
+            "int32",
             "int64",
             "float32",
             "float64",
