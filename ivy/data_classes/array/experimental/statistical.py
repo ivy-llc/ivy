@@ -419,3 +419,43 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
             minlength=minlength,
             out=out,
         )
+
+    def igamma(
+        self: ivy.Array,
+        /,
+        *,
+        x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.igamma. This method simply wraps the
+        function, and so the docstring for ivy.igamma also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        x
+            An additional input array.
+            `x` has the same type as `a`.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The lower incomplete gamma function of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([2.5])
+        >>> x = ivy.array([1.7, 1.2])
+        >>> a.igamma(x)
+            ivy.array([0.3614, 0.2085])
+        """
+        return ivy.igamma(
+            self._data,
+            x=x,
+            out=out,
+        )

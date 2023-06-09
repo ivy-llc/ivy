@@ -171,7 +171,7 @@ def matmul(
     # torch does not support inplace matmul (same storage in out=)
     # https://github.com/pytorch/pytorch/issues/58742
     # https://github.com/pytorch/pytorch/issues/48900
-    if out in (x1, x2):
+    if out is x1 or out is x2:
         out = None
     if transpose_a:
         x1 = torch.swapaxes(x1, -1, -2)
@@ -521,7 +521,15 @@ def vander(
     return ret
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex",
+            "unsigned",
+        )
+    },
+    backend_version,
+)
 def vector_to_skew_symmetric_matrix(
     vector: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:

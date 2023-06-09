@@ -11,7 +11,7 @@ from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .elementwise import _elementwise_helper
 
 # Array API Standard #
@@ -28,8 +28,7 @@ from .elementwise import _elementwise_helper
                 "int64",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
+                "complex",
                 "bool",
             )
         }
@@ -88,7 +87,7 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -101,8 +100,12 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle.linalg.det(x.cast("float32")).squeeze().cast(x.dtype)
-    return paddle.linalg.det(x).squeeze()
+        ret = paddle.linalg.det(x.cast("float32")).cast(x.dtype)
+    else:
+        ret = paddle.linalg.det(x)
+    if x.ndim == 2:
+        ret = paddle_backend.squeeze(ret, axis=0)
+    return ret
 
 
 def diagonal(
@@ -160,7 +163,8 @@ def eigvalsh(
 def inner(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
     if x1.dtype in [
         paddle.int8,
         paddle.int16,
@@ -175,7 +179,7 @@ def inner(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def inv(
@@ -252,7 +256,11 @@ def matrix_norm(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if ord == "nuc":
-        x = paddle.moveaxis(x, axis, [-2, -1])
+        if isinstance(axis, int):
+            axis_ = [axis]
+        else:
+            axis_ = list(axis)
+        x = paddle.moveaxis(x, axis_, [-2, -1])
         ret = paddle.sum(
             paddle.linalg.svd(x)[1],
             axis=-1,
@@ -322,7 +330,7 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def matrix_rank(
@@ -375,7 +383,8 @@ def matrix_transpose(
 def outer(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
     if x1.dtype in [
         paddle.int8,
         paddle.int16,
@@ -433,7 +442,11 @@ def slogdet(
         "slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)]
     )
     sign, logabsdet = paddle.linalg.slogdet(x)
-    return results(sign.squeeze(), logabsdet.squeeze())
+    if x.ndim == 2:
+        sign, logabsdet = paddle_backend.squeeze(sign, axis=0), paddle_backend.squeeze(
+            logabsdet, axis=0
+        )
+    return results(sign, logabsdet)
 
 
 def solve(
@@ -461,7 +474,7 @@ def solve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def svd(
@@ -546,7 +559,7 @@ def vecdot(
 ) -> paddle.Tensor:
     axes = [axis % x1.ndim]
 
-    paddle_backend.tensordot(x1, x2, axes=axes)
+    return paddle_backend.tensordot(x1, x2, axes=axes)
 
 
 def vector_norm(
@@ -641,6 +654,10 @@ def vander(
     )
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("unsigned", "int8", "int16", "float16")},
+    backend_version,
+)
 def vector_to_skew_symmetric_matrix(
     vector: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
