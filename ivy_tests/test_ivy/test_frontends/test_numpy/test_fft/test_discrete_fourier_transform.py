@@ -139,6 +139,7 @@ def test_numpy_fftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device)
         d=d,
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.fft.fft2",
     dtype_and_x=helpers.dtype_and_values(
@@ -146,7 +147,10 @@ def test_numpy_fftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device)
         shape=(2, 2),
         array_api_dtypes=True
     ),
-    s=st.sampled_from([(2, 2), (3, 3), (4, 4)]),
+    s=st.tuples(
+        st.integers(min_value=2, max_value=5),
+        st.integers(min_value=2, max_value=5)
+    ),
     axes=st.sampled_from([(0, 1), (-2, -1)]),
     norm=st.sampled_from([None, "backward", "ortho", "forward"]),
 )
