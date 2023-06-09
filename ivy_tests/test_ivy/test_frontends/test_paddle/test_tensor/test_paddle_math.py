@@ -536,6 +536,8 @@ def test_paddle_pow(
     )
 
 
+
+
 # abs
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.abs",
