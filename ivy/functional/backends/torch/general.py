@@ -297,7 +297,6 @@ def inplace_update(
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
         if is_variable(x_native):
             x_native.data = val_native
         else:

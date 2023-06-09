@@ -179,8 +179,8 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        if ensure_in_backend or ivy.is_native_array(x):
-            raise ivy.exceptions.IvyException(
+        if ensure_in_backend or (ivy.is_native_array(x) and not ivy.get_array_mode()):
+            raise ivy.utils.exceptions.IvyException(
                 "TensorFlow does not support inplace updates of the tf.Tensor"
             )
         if keep_input_dtype:
