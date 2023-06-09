@@ -4,10 +4,7 @@ FROM unifyai/multicuda:base
 WORKDIR /ivy
 ARG fw
 
-
-
-
-ARG pycon=3.8.10
+ARG pycon=3.10
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -25,7 +22,7 @@ RUN apt clean && \
 
 
 ENV PATH=$CONDA_DIR/bin:$PATH
-RUN conda create --name multienv python==$pycon
+RUN conda create --name multienv python==$pycon -y
 
 # to fix protobuf conflicts
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
