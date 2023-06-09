@@ -1781,12 +1781,17 @@ def test_round(
 @handle_test(
     fn_tree="functional.ivy.sign",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=5,
+        small_abs_safety_factor=5,
+        safety_factor_scale="log",
     ),
+    np_variant=st.booleans(),
 )
 def test_sign(
     *,
     dtype_and_x,
+    np_variant,
     test_flags,
     backend_fw,
     fn_name,
@@ -1803,6 +1808,7 @@ def test_sign(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        np_variant=np_variant,
     )
 
 
