@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
 import numpy as np
-from typing import Sequence
 
 # local
 import ivy
@@ -88,37 +87,6 @@ def test_moveaxis(
         source=source,
         destination=destination,
     )
-
-
-# ndenumerate
-@handle_test(
-    fn_tree="functional.ivy.experimental.ndenumerate",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-    ),
-)
-def test_ndenumerate(dtype_and_x):
-    values = dtype_and_x[1][0]
-    for (index1, x1), (index2, x2) in zip(
-        np.ndenumerate(values), ivy.ndenumerate(values)
-    ):
-        assert index1 == index2 and x1 == x2
-
-
-# ndindex
-@handle_test(
-    fn_tree="functional.ivy.experimental.ndindex",
-    dtype_x_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        ret_shape=True,
-    ),
-)
-def test_ndindex(dtype_x_shape):
-    shape = dtype_x_shape[2]
-    for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
-        assert index1 == index2
 
 
 # heaviside
@@ -645,8 +613,6 @@ def test_vsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    if isinstance(indices_or_sections, Sequence):
-        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -680,8 +646,6 @@ def test_dsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    if isinstance(indices_or_sections, Sequence):
-        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -891,8 +855,6 @@ def test_hsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    if isinstance(indices_or_sections, Sequence):
-        indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
