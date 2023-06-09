@@ -7,7 +7,7 @@ import jax.numpy as jnp
 from numbers import Number
 from operator import mul
 from functools import reduce as _reduce
-from typing import Iterable, Optional, Union, Sequence, Callable, Tuple
+from typing import Optional, Union, Sequence, Callable, Tuple
 import multiprocessing as _multiprocessing
 import importlib
 
@@ -319,17 +319,19 @@ def scatter_nd(
     if (
         indices != Ellipsis
         and not (
-            isinstance(indices, Iterable) and (Ellipsis in indices or len(indices) != 0)
+            isinstance(indices, (tuple, list))
+            and (Ellipsis in indices or len(indices) != 0)
         )
         and not isinstance(indices, slice)
         and not (
-            isinstance(indices, Iterable) and any(isinstance(k, slice) for k in indices)
+            isinstance(indices, (tuple, list))
+            and any(isinstance(k, slice) for k in indices)
         )
     ):
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = jnp.array(indices)
         if len(indices.shape) < 2:
-            indices = jnp.expand_dims(indices, 0)
+            indices = jnp.expand_dims(indices, -1)
     # keep below commented out, array API tests are passing without this
     # updates = [updates] if isinstance(updates, Number) else updates
 

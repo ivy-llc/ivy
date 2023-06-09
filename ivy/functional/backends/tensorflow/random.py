@@ -36,7 +36,7 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
     with tf.device(device):
@@ -56,7 +56,7 @@ def random_normal(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     mean = tf.cast(mean, dtype)
     std = tf.cast(std, dtype)
     with tf.device(device):
@@ -141,7 +141,7 @@ def randint(
         dtype = ivy.default_int_dtype()
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     low = tf.cast(low, "float32")
     high = tf.cast(high, "float32")
     with tf.device(device):
@@ -152,6 +152,7 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     tf.random.set_seed(seed_value)
+    return
 
 
 def shuffle(
