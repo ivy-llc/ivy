@@ -1060,7 +1060,7 @@ def test_explicit_ivy_framework_handles():
     ivy.previous_backend()
 
     # set with explicit handle caught
-    ivy_exp = ivy.get_backend(fw_str)
+    ivy_exp = ivy.with_backend(fw_str)
     assert ivy_exp.current_backend_str() == fw_str
 
     # assert backend implemented function is accessible
@@ -1805,7 +1805,7 @@ _composition_2.test_unsupported_devices_and_dtypes = {
     [_composition_1, _composition_2],
 )
 def test_function_supported_device_and_dtype(func):
-    res = ivy.function_supported_devices_and_dtypes(func)
+    res = ivy.function_supported_devices_and_dtypes(func, recurse=True)
     exp = {"cpu": func.test_unsupported_devices_and_dtypes.copy()["cpu"]}
     for dev in exp:
         exp[dev] = tuple(
@@ -2085,9 +2085,9 @@ def _fn3(x, y):
     func=st.sampled_from([_fn1, _fn2, _fn3]),
     dtype_and_arrays_and_axes=helpers.arrays_and_axes(
         allow_none=False,
-        min_num_dims=2,
+        min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=2,
+        min_dim_size=1,
         max_dim_size=10,
         num=2,
         return_dtype=True,
