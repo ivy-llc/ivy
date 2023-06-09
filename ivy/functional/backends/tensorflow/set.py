@@ -4,6 +4,7 @@ from typing import Tuple, Union, Optional
 from collections import namedtuple
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+import ivy.functional.backends.tensorflow as tf_backend
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
@@ -58,8 +59,13 @@ def unique_all(
     if by_value:
         values_ = tf.experimental.numpy.moveaxis(values, axis, 0)
         values_ = tf.reshape(values_, (values_.shape[0], -1))
-        first_elements = values_[:, 0]
-        sort_idx = tf.argsort(first_elements)
+        sort_idx = tf_backend.lexsort(
+            tf.stack(
+                tuple(values_[:, i] for i in range(values_.shape[1])),
+                axis=0,
+            )
+        )
+        sort_idx = tf.cast(sort_idx, tf.int32)
         values = tf.gather(values, sort_idx, axis=axis)
         counts = tf.gather(counts, sort_idx)
         indices = tf.gather(indices, sort_idx)

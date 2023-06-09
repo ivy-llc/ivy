@@ -66,9 +66,7 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
-)
+@with_unsupported_dtypes({"2.0.1 and below": ("int8", "uint8", "int16")}, "torch")
 @to_ivy_arrays_and_back
 def tril_indices(row, col, offset=0, *, dtype=ivy.int64, device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
@@ -126,7 +124,7 @@ def flatten(input, start_dim=0, end_dim=-1):
     return ivy.flatten(input, start_dim=start_dim, end_dim=end_dim)
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number
@@ -293,10 +291,10 @@ def rot90(input, k, dims):
 
 @to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
-    if N == 0:
-        return ivy.array([], dtype=x.dtype)
-    else:
-        return ivy.vander(x, N=N, increasing=increasing, out=None)
+    # if N == 0:
+    #     return ivy.array([], dtype=x.dtype)
+    # else:
+    return ivy.vander(x, N=N, increasing=increasing, out=None)
 
 
 @to_ivy_arrays_and_back

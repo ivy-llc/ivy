@@ -18,7 +18,7 @@ from .. import backend_version
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    {"2.4.2 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
@@ -93,7 +93,10 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+    result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+    if result.shape == [1]:
+        result = paddle.fluid.layers.squeeze(x)
+    return result
 
 
 @with_unsupported_device_and_dtypes(
