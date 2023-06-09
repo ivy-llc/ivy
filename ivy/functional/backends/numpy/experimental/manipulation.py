@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 from numbers import Number
+from collections import namedtuple
 import numpy as np
 
 # local
@@ -106,16 +107,18 @@ def top_k(
     *,
     axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
+    k = min(k, x.shape[axis])
     if not largest:
         indices = np.argsort(x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
     else:
-        x = -x
-        indices = np.argsort(x, axis=axis)
+        indices = np.argsort(-x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
-        x = -x
+    if not sorted:
+        indices = np.sort(indices, axis=axis)
     topk_res = NamedTuple("top_k", [("values", np.ndarray), ("indices", np.ndarray)])
     val = np.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
@@ -229,9 +232,11 @@ def pad(
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if mode == "dilated":
-        padding_value = ivy.native_array(constant_values)
-        operand = _flat_array_to_1_dim_array(input).astype(padding_value.dtype)
-        padded = _interior_pad(operand, padding_value, pad_width)
+        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
+            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
+        else:
+            padding_value = constant_values
+        padded = _interior_pad(input, padding_value, pad_width)
         return ivy.native_array(padded)
 
     if callable(mode):
@@ -279,14 +284,18 @@ def pad(
 
 def vsplit(
     ary: np.ndarray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], np.ndarray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
     if copy:
         ary = ary.copy()
-    return np.vsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
@@ -302,7 +311,7 @@ def dsplit(
         )
     if copy:
         ary = ary.copy()
-    return np.dsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
@@ -361,13 +370,18 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = np.clip(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
-        if "float" in str(arr.dtype):
+    elif mode in ("fill", "drop"):
+        if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = np.NAN
         elif "uint" in str(arr.dtype):
             fill_value = np.iinfo(arr.dtype).max
-        else:
+        elif "int" in str(arr.dtype):
             fill_value = -np.iinfo(arr.dtype).max - 1
+        else:
+            raise TypeError(
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex',"
+                " 'uint', 'int'."
+            )
         indices = np.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
         arr_shape = list(arr_shape)
         arr_shape[axis] = 1
@@ -385,7 +399,9 @@ def hsplit(
 ) -> List[np.ndarray]:
     if copy:
         ary = ary.copy()
-    return np.hsplit(ary, indices_or_sections)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 take_along_axis.support_native_out = False
@@ -435,3 +451,46 @@ def concat_from_sequence(
     elif new_axis == 1:
         ret = np.stack(input_sequence, axis=axis)
         return ret
+
+
+def unique_consecutive(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    x_shape = None
+    if axis is None:
+        x_shape = x.shape
+        x = x.flatten()
+        axis = -1
+    if axis < 0:
+        axis += x.ndim
+    sub_arrays = np.split(
+        x,
+        np.where(
+            np.any(
+                np.diff(x, axis=axis) != 0,
+                axis=tuple(i for i in np.arange(x.ndim) if i != axis),
+            )
+        )[0]
+        + 1,
+        axis=axis,
+    )
+    output = np.concatenate(
+        [np.unique(sub_array, axis=axis) for sub_array in sub_arrays],
+        axis=axis,
+    )
+    counts = np.array([sub_array.shape[axis] for sub_array in sub_arrays])
+    inverse_indices = np.repeat(np.arange(len(counts)), counts)
+    if x_shape:
+        inverse_indices = np.reshape(inverse_indices, x_shape)
+    return Results(
+        output.astype(x.dtype),
+        inverse_indices,
+        counts,
+    )

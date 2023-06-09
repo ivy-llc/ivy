@@ -127,7 +127,7 @@ def test_torch_tanh(
     fn_tree="torch.abs",
     aliases=["torch.absolute"],
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
     ),
 )
 def test_torch_abs(
@@ -993,10 +993,8 @@ def test_torch_sign(
 
 # absolute
 @handle_frontend_test(
-    fn_tree="torch.abs",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+    fn_tree="torch.absolute",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_torch_absolute(
     *,
@@ -1223,6 +1221,32 @@ def _get_clip_inputs(draw):
     input_and_ranges=_get_clip_inputs(),
 )
 def test_torch_clamp(
+    *,
+    input_and_ranges,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, min, max = input_and_ranges
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        min=min,
+        max=max,
+    )
+
+
+# clip
+@handle_frontend_test(
+    fn_tree="torch.clip",
+    input_and_ranges=_get_clip_inputs(),
+)
+def test_torch_clip(
     *,
     input_and_ranges,
     on_device,
@@ -1879,7 +1903,7 @@ def test_torch_logaddexp2(
 @handle_frontend_test(
     fn_tree="torch.i0",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=1
     ),
 )
 def test_torch_i0(
@@ -1898,7 +1922,7 @@ def test_torch_i0(
         fn_tree=fn_tree,
         on_device=on_device,
         atol=1e-03,
-        x=x[0],
+        input=x[0],
     )
 
 
@@ -2149,6 +2173,8 @@ def test_torch_sigmoid(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        min_value=-1e3,
+        max_value=1e3,
     ),
 )
 def test_torch_lerp(
@@ -2203,7 +2229,7 @@ def test_torch_signbit(
 @handle_frontend_test(
     fn_tree="torch.angle",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float64", "complex64", "complex128"],
     ),
 )
 def test_torch_angle(
@@ -2255,7 +2281,7 @@ def test_torch_arctan(
 @handle_frontend_test(
     fn_tree="torch.conj_physical",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_torch_conj_physical(
@@ -2282,6 +2308,8 @@ def test_torch_conj_physical(
     fn_tree="torch.nextafter",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_torch_nextafter(
@@ -2300,6 +2328,7 @@ def test_torch_nextafter(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+        other=x[1],
     )
 
 
@@ -2420,6 +2449,36 @@ def test_torch_erf(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.frexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+)
+def test_torch_frexp(
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
     )
 
 

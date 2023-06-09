@@ -18,7 +18,7 @@ from ivy.functional.ivy.random import (
 # dirichlet
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.12.0 and below": (
             "blfoat16",
             "float16",
         )
@@ -68,7 +68,7 @@ def beta(
     if not dtype:
         dtype = ivy.default_float_dtype()
     dtype = ivy.as_native_dtype(dtype)
-    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     alpha = tf.cast(alpha, dtype)
     beta = tf.cast(beta, dtype)
     with tf.device(device):
@@ -89,14 +89,14 @@ def gamma(
     if not dtype:
         dtype = ivy.default_float_dtype()
     dtype = ivy.as_native_dtype(dtype)
-    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     alpha = tf.cast(alpha, dtype)
     beta = tf.cast(beta, dtype)
     with tf.device(device):
         return tfp.distributions.Gamma(alpha, beta).sample(shape, seed=seed)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, tf.Tensor, tf.Variable],
     *,

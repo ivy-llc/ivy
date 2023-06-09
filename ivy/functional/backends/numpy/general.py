@@ -4,7 +4,7 @@
 from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 from operator import mul
-from functools import reduce
+from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 from numbers import Number
 
@@ -92,7 +92,7 @@ def gather_nd_helper(params, indices):
     else:
         num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = np.array(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -424,7 +424,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,

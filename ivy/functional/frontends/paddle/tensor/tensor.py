@@ -1,5 +1,10 @@
+# local
 import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
+from ivy.functional.frontends.paddle.func_wrapper import (
+    _to_ivy_array,
+)
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 class Tensor:
@@ -22,13 +27,14 @@ class Tensor:
 
     # Properties #
     # ---------- #
+
     @property
     def ivy_array(self):
         return self._ivy_array
 
     @property
     def place(self):
-        return ivy.dev(self._ivy_array)
+        return self.ivy_array.device
 
     @property
     def dtype(self):
@@ -38,16 +44,40 @@ class Tensor:
     def shape(self):
         return self._ivy_array.shape
 
+    @property
+    def ndim(self):
+        return self.dim()
+
     # Setters #
     # --------#
+
     @ivy_array.setter
     def ivy_array(self, array):
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
 
+    # Special Methods #
+    # -------------------#
+
+    def __getitem__(self, item):
+        ivy_args = ivy.nested_map([self, item], _to_ivy_array)
+        ret = ivy.get_item(*ivy_args)
+        return paddle_frontend.Tensor(ret)
+
+    def __setitem__(self, item, value):
+        item, value = ivy.nested_map([item, value], _to_ivy_array)
+        self.ivy_array[item] = value
+
+    def __iter__(self):
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d tensor not supported")
+        for i in range(self.shape[0]):
+            yield self[i]
+
     # Instance Methods #
     # ---------------- #
+
     def reshape(self, *args, shape=None):
         if args and shape:
             raise TypeError("reshape() got multiple values for argument 'shape'")
@@ -61,8 +91,44 @@ class Tensor:
                 return paddle_frontend.reshape(self._ivy_array, args)
         return paddle_frontend.reshape(self._ivy_array)
 
-    # Implement methods
+    def dim(self):
+        return self.ivy_array.ndim
 
-    def __getitem__(self, query):
-        ret = ivy.get_item(self._ivy_array, query)
-        return paddle_frontend.Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def abs(self):
+        return paddle_frontend.abs(self)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def ceil(self):
+        return paddle_frontend.ceil(self)
+
+    def asinh(self, name=None):
+        return ivy.asinh(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def asin(self, name=None):
+        return ivy.asin(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def log(self, name=None):
+        return ivy.log(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def sin(self, name=None):
+        return ivy.sin(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def sinh(self, name=None):
+        return ivy.sinh(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def argmax(self, axis=None, keepdim=False, dtype=None, name=None):
+        return ivy.argmax(self._ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def cos(self, name=None):
+        return ivy.cos(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def exp(self, name=None):
+        return ivy.exp(self._ivy_array)
