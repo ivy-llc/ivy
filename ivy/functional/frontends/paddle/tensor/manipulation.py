@@ -18,3 +18,8 @@ def abs(x, name=None):
 
 
 absolute = abs
+
+
+@to_ivy_arrays_and_back
+def stack(x, axis=0, name=None):
+    return ivy.stack(x, axis=axis)
