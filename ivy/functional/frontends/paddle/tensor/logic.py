@@ -156,5 +156,5 @@ def logical_not(x, /, *, name=None, out=None):
 )
 @to_ivy_arrays_and_back
 @handle_out_argument
-def bitwise_or(x, y, /, *, name=None, out=None):
+def bitwise_or(x, y, name=None, out=None):
     return ivy.bitwise_or(x, y, out=out)
