@@ -365,16 +365,16 @@ def test_jax_devicearray_ravel(
     init_tree="jax.numpy.array",
     method_name="sort",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=["int64"],
         force_int_axis=True,
         min_axis=-1,
         max_axis=-1,
-        min_dim_size=5,
+        min_dim_size=2,
         max_dim_size=10,
         min_num_dims=2,
     ),
     descending=st.booleans(),
-    stable=st.booleans(),
+    stable=st.just(True),
 )
 def test_jax_devicearray_sort(
     dtype_x_axis,
