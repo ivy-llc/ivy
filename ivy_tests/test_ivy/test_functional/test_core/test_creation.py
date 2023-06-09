@@ -25,7 +25,6 @@ def test_native_array(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
@@ -37,7 +36,6 @@ def test_native_array(
         x=x[0],
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
