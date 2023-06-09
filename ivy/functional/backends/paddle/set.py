@@ -2,10 +2,10 @@
 import paddle
 from typing import Tuple, Optional
 from collections import namedtuple
+import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # local
-
 from . import backend_version
 
 
@@ -17,6 +17,7 @@ def unique_all(
     /,
     *,
     axis: Optional[int] = None,
+    by_value: bool = True,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     Results = namedtuple(
         "Results",
@@ -27,7 +28,8 @@ def unique_all(
         x, x_dtype = x.cast("float32"), x.dtype
     else:
         x_dtype = x.dtype
-
+    if axis is not None:
+        axis = axis % x.ndim
     values, indices, inverse_indices, counts = paddle.unique(
         x,
         return_index=True,
@@ -47,6 +49,16 @@ def unique_all(
         )
         counts = paddle.concat(
             (counts, paddle.ones(shape=nan_count, dtype=counts.dtype))
+        )
+
+    if not by_value:
+        sort_idx = paddle.argsort(indices)
+        values = paddle.gather(values, sort_idx, axis=axis)
+        counts = paddle.gather(counts, sort_idx)
+        indices = paddle.gather(indices, sort_idx)
+        inv_sort_idx = paddle_backend.invert_permutation(sort_idx)
+        inverse_indices = paddle_backend.vmap(lambda y: paddle.gather(inv_sort_idx, y))(
+            inverse_indices
         )
 
     return Results(

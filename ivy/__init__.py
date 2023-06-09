@@ -212,6 +212,15 @@ class Shape:
         else:
             self._shape = None
 
+    @staticmethod
+    def _shape_casting_helper(ivy_shape, other):
+        if isinstance(other, tuple) and not isinstance(ivy_shape, tuple):
+            return tuple(ivy_shape)
+        elif isinstance(other, list) and not isinstance(ivy_shape, list):
+            return list(ivy_shape)
+        else:
+            return ivy_shape
+
     def __repr__(self):
         pattern = r"\d+(?:,\s*\d+)*"
         shape_repr = re.findall(pattern, self._shape.__str__())
@@ -242,19 +251,75 @@ class Shape:
         self._shape = self._shape * other
         return self
 
+    def __rmul__(self, other):
+        self._shape = other * self._shape
+        return self
+
+    def __bool__(self):
+        return self._shape.__bool__()
+
+    def __div__(self, other):
+        return self._shape // other
+
+    def __mod__(self, other):
+        return self._shape % other
+
+    def __rdiv__(self, other):
+        return other // self._shape
+
+    def __rmod__(self, other):
+        return other % self._shape
+
+    def __reduce__(self):
+        return (self._shape,)
+
+    def as_dimension(self, other):
+        if isinstance(other, self._shape):
+            return other
+        else:
+            return self._shape
+
+    def __sub__(self, other):
+        try:
+            self._shape = self._shape - other
+        except TypeError:
+            self._shape = self._shape - list(other)
+        return self
+
+    def __rsub__(self, other):
+        try:
+            self._shape = other - self._shape
+        except TypeError:
+            self._shape = list(other) - self._shape
+        return self
+
     def __eq__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
 
+    def __int__(self):
+        if hasattr(self._shape, "__int__"):
+            res = self._shape.__int__()
+        else:
+            res = int(self._shape)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
     def __ge__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape >= other
 
     def __gt__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape > other
 
     def __le__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape <= other
 
     def __lt__(self, other):
+        self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape < other
 
     def __getattribute__(self, item):
@@ -266,9 +331,28 @@ class Shape:
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
 
+    def __delattr__(self, item):
+        return super().__delattr__(item)
+
+    def __hash__(self):
+        return hash(self._shape)
+
+    def __sizeof__(self):
+        return len(self._shape) if self._shape is not None else 0
+
+    def __dir__(self):
+        return self._shape.__dir__()
+
     @property
     def shape(self):
         return self._shape
+
+    def as_list(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot convert a partially known Shape to a list"
+            )
+        return [dim for dim in self._shape]
 
 
 class IntDtype(Dtype):
@@ -515,243 +599,7 @@ invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
 invalid_complex_dtypes = ()
 
-# data type promotion
-array_api_promotion_table = {
-    (int8, int8): int8,
-    (int8, int16): int16,
-    (int8, int32): int32,
-    (int8, int64): int64,
-    (int16, int8): int16,
-    (int16, int16): int16,
-    (int16, int32): int32,
-    (int16, int64): int64,
-    (int32, int8): int32,
-    (int32, int16): int32,
-    (int32, int32): int32,
-    (int32, int64): int64,
-    (int64, int8): int64,
-    (int64, int16): int64,
-    (int64, int32): int64,
-    (int64, int64): int64,
-    (uint8, uint8): uint8,
-    (uint8, uint16): uint16,
-    (uint8, uint32): uint32,
-    (uint8, uint64): uint64,
-    (uint16, uint8): uint16,
-    (uint16, uint16): uint16,
-    (uint16, uint32): uint32,
-    (uint16, uint64): uint64,
-    (uint32, uint8): uint32,
-    (uint32, uint16): uint32,
-    (uint32, uint32): uint32,
-    (uint32, uint64): uint64,
-    (uint64, uint8): uint64,
-    (uint64, uint16): uint64,
-    (uint64, uint32): uint64,
-    (uint64, uint64): uint64,
-    (int8, uint8): int16,
-    (int8, uint16): int32,
-    (int8, uint32): int64,
-    (int16, uint8): int16,
-    (int16, uint16): int32,
-    (int16, uint32): int64,
-    (int32, uint8): int32,
-    (int32, uint16): int32,
-    (int32, uint32): int64,
-    (int64, uint8): int64,
-    (int64, uint16): int64,
-    (int64, uint32): int64,
-    (uint8, int8): int16,
-    (uint16, int8): int32,
-    (uint32, int8): int64,
-    (uint8, int16): int16,
-    (uint16, int16): int32,
-    (uint32, int16): int64,
-    (uint8, int32): int32,
-    (uint16, int32): int32,
-    (uint32, int32): int64,
-    (uint8, int64): int64,
-    (uint16, int64): int64,
-    (uint32, int64): int64,
-    (float16, float16): float16,
-    (float16, float32): float32,
-    (float16, float64): float64,
-    (float32, float16): float32,
-    (float32, float32): float32,
-    (float32, float64): float64,
-    (float64, float16): float64,
-    (float64, float32): float64,
-    (float64, float64): float64,
-    (bool, bool): bool,
-}
 locks = {"backend_setter": threading.Lock()}
-
-# the extra promotion table follows numpy safe casting convention
-# the following link discusses the different approaches to dtype promotions
-# https://jax.readthedocs.io/en/latest/jep/9407-type-promotion.html
-extra_promotion_table = {
-    (bool, uint16): uint16,
-    (bool, int32): int32,
-    (bool, float16): float16,
-    (bool, uint64): uint64,
-    (bool, float64): float64,
-    (bool, int8): int8,
-    (bool, int64): int64,
-    (bool, int16): int16,
-    (bool, bfloat16): bfloat16,
-    (bool, uint32): uint32,
-    (bool, uint8): uint8,
-    (bool, float32): float32,
-    (bool, complex64): complex64,
-    (bool, complex128): complex128,
-    (uint16, bool): uint16,
-    (int32, bool): int32,
-    (float16, bool): float16,
-    (uint64, bool): uint64,
-    (float64, bool): float64,
-    (int8, bool): int8,
-    (int64, bool): int64,
-    (int16, bool): int16,
-    (bfloat16, bool): bfloat16,
-    (uint32, bool): uint32,
-    (uint8, bool): uint8,
-    (float32, bool): float32,
-    (complex64, bool): complex64,
-    (complex128, bool): complex128,
-    (uint64, int8): float64,
-    (int8, uint64): float64,
-    (uint64, int16): float64,
-    (int16, uint64): float64,
-    (uint64, int32): float64,
-    (int32, uint64): float64,
-    (uint64, int64): float64,
-    (int64, uint64): float64,
-    (int8, float16): float16,
-    (float16, int8): float16,
-    (int8, float32): float32,
-    (float32, int8): float32,
-    (int8, float64): float64,
-    (float64, int8): float64,
-    (int16, float16): float32,
-    (float16, int16): float32,
-    (int16, float32): float32,
-    (float32, int16): float32,
-    (int16, float64): float64,
-    (float64, int16): float64,
-    (int32, float16): float64,
-    (float16, int32): float64,
-    (int32, float32): float64,
-    (float32, int32): float64,
-    (int32, float64): float64,
-    (float64, int32): float64,
-    (int64, float16): float64,
-    (float16, int64): float64,
-    (int64, float32): float64,
-    (float32, int64): float64,
-    (int64, float64): float64,
-    (float64, int64): float64,
-    (uint8, float16): float16,
-    (float16, uint8): float16,
-    (uint8, float32): float32,
-    (float32, uint8): float32,
-    (uint8, float64): float64,
-    (float64, uint8): float64,
-    (uint16, float16): float32,
-    (float16, uint16): float32,
-    (uint16, float32): float32,
-    (float32, uint16): float32,
-    (uint16, float64): float64,
-    (float64, uint16): float64,
-    (uint32, float16): float64,
-    (float16, uint32): float64,
-    (uint32, float32): float64,
-    (float32, uint32): float64,
-    (uint32, float64): float64,
-    (float64, uint32): float64,
-    (uint64, float16): float64,
-    (float16, uint64): float64,
-    (uint64, float32): float64,
-    (float32, uint64): float64,
-    (uint64, float64): float64,
-    (float64, uint64): float64,
-    (bfloat16, bfloat16): bfloat16,
-    (bfloat16, uint8): bfloat16,
-    (uint8, bfloat16): bfloat16,
-    (bfloat16, uint16): float32,
-    (uint16, bfloat16): float32,
-    (bfloat16, uint32): float64,
-    (uint32, bfloat16): float64,
-    (bfloat16, uint64): float64,
-    (uint64, bfloat16): float64,
-    (bfloat16, int8): bfloat16,
-    (int8, bfloat16): bfloat16,
-    (bfloat16, int16): float32,
-    (int16, bfloat16): float32,
-    (bfloat16, int32): float64,
-    (int32, bfloat16): float64,
-    (bfloat16, int64): float64,
-    (int64, bfloat16): float64,
-    (bfloat16, float16): float32,
-    (float16, bfloat16): float32,
-    (bfloat16, float32): float32,
-    (float32, bfloat16): float32,
-    (bfloat16, float64): float64,
-    (float64, bfloat16): float64,
-    (complex64, int8): complex64,
-    (int8, complex64): complex64,
-    (complex64, int16): complex64,
-    (int16, complex64): complex64,
-    (complex64, int32): complex128,
-    (int32, complex64): complex128,
-    (complex64, int64): complex128,
-    (int64, complex64): complex128,
-    (complex64, uint8): complex64,
-    (uint8, complex64): complex64,
-    (complex64, uint16): complex64,
-    (uint16, complex64): complex64,
-    (complex64, uint32): complex128,
-    (uint32, complex64): complex128,
-    (complex64, uint64): complex128,
-    (uint64, complex64): complex128,
-    (complex64, float16): complex64,
-    (float16, complex64): complex64,
-    (complex64, float32): complex64,
-    (float32, complex64): complex64,
-    (complex64, float64): complex128,
-    (float64, complex64): complex128,
-    (complex64, bfloat16): complex64,
-    (bfloat16, complex64): complex64,
-    (complex64, complex64): complex64,
-    (complex64, complex128): complex128,
-    (complex128, int8): complex128,
-    (int8, complex128): complex128,
-    (complex128, int16): complex128,
-    (int16, complex128): complex128,
-    (complex128, int32): complex128,
-    (int32, complex128): complex128,
-    (complex128, int64): complex128,
-    (int64, complex128): complex128,
-    (complex128, uint8): complex128,
-    (uint8, complex128): complex128,
-    (complex128, uint16): complex128,
-    (uint16, complex128): complex128,
-    (complex128, uint32): complex128,
-    (uint32, complex128): complex128,
-    (complex128, uint64): complex128,
-    (uint64, complex128): complex128,
-    (complex128, float16): complex128,
-    (float16, complex128): complex128,
-    (complex128, float32): complex128,
-    (float32, complex128): complex128,
-    (complex128, float64): complex128,
-    (float64, complex128): complex128,
-    (complex128, bfloat16): complex128,
-    (bfloat16, complex128): complex128,
-    (complex128, complex64): complex128,
-    (complex128, complex128): complex128,
-}
-
-promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
 from .func_wrapper import *
@@ -764,7 +612,7 @@ from .data_classes.container import (
     Container,
     add_ivy_container_instance_methods,
 )
-from .nested_array import NestedArray
+from .data_classes.nested_array import NestedArray
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -942,6 +790,7 @@ globals_vars = GlobalsDict(
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
+        "precise_mode_stack": general.precise_mode_stack,
         "nestable_mode_stack": general.nestable_mode_stack,
         "exception_trace_mode_stack": general.exception_trace_mode_stack,
         "default_dtype_stack": data_type.default_dtype_stack,
@@ -1262,3 +1111,203 @@ from ivy.utils.backend.sub_backend_handler import (
 
 def current_sub_backends():
     return []
+
+
+# casting modes
+
+downcast_dtypes = False
+upcast_dtypes = False
+crosscast_dtypes = False
+cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
+
+
+def downcast_data_types(val=True):
+    global downcast_dtypes
+    downcast_dtypes = val
+
+
+def upcast_data_types(val=True):
+    global upcast_dtypes
+    upcast_dtypes = val
+
+
+def crosscast_data_types(val=True):
+    global crosscast_dtypes
+    crosscast_dtypes = val
+
+
+def cast_data_types(val=True):
+    global upcast_dtypes
+    global downcast_dtypes
+    global crosscast_dtypes
+    upcast_dtypes = val
+    downcast_dtypes = val
+    crosscast_dtypes = val
+
+
+# Promotion Tables #
+# ---------------- #
+
+
+# data type promotion
+array_api_promotion_table = {
+    (int8, int8): int8,
+    (int16, int8): int16,
+    (int32, int8): int32,
+    (int64, int8): int64,
+    (int16, int16): int16,
+    (int16, int32): int32,
+    (int16, int64): int64,
+    (int32, int32): int32,
+    (int32, int64): int64,
+    (int64, int64): int64,
+    (uint8, uint8): uint8,
+    (uint16, uint8): uint16,
+    (uint32, uint8): uint32,
+    (uint64, uint8): uint64,
+    (uint16, uint16): uint16,
+    (uint16, uint32): uint32,
+    (uint16, uint64): uint64,
+    (uint32, uint32): uint32,
+    (uint32, uint64): uint64,
+    (uint64, uint64): uint64,
+    (int8, uint8): int16,
+    (int8, uint16): int32,
+    (int8, uint32): int64,
+    (int16, uint8): int16,
+    (int16, uint16): int32,
+    (int16, uint32): int64,
+    (int32, uint8): int32,
+    (int32, uint16): int32,
+    (int32, uint32): int64,
+    (int64, uint8): int64,
+    (int64, uint16): int64,
+    (int64, uint32): int64,
+    (float16, float16): float16,
+    (float16, float32): float32,
+    (float16, float64): float64,
+    (float32, float32): float32,
+    (float32, float64): float64,
+    (float64, float64): float64,
+    (bool, bool): bool,
+}
+
+# the extra promotion table follows numpy safe casting convention
+# the following link discusses the different approaches to dtype promotions
+# https://jax.readthedocs.io/en/latest/jep/9407-type-promotion.html
+common_extra_promotion_table = {
+    (bool, uint16): uint16,
+    (bool, int32): int32,
+    (bool, float16): float16,
+    (bool, uint64): uint64,
+    (bool, float64): float64,
+    (bool, int8): int8,
+    (bool, int64): int64,
+    (bool, int16): int16,
+    (bfloat16, bool): bfloat16,
+    (bool, uint32): uint32,
+    (bool, uint8): uint8,
+    (bool, float32): float32,
+    (bool, complex64): complex64,
+    (bool, complex128): complex128,
+    (int8, uint64): float64,
+    (int16, uint64): float64,
+    (int32, uint64): float64,
+    (int64, uint64): float64,
+    (float16, int8): float16,
+    (float32, int8): float32,
+    (float64, int8): float64,
+    (float32, int16): float32,
+    (float64, int16): float64,
+    (float64, int32): float64,
+    (float64, int64): float64,
+    (float16, uint8): float16,
+    (float32, uint8): float32,
+    (float64, uint8): float64,
+    (float32, uint16): float32,
+    (float64, uint16): float64,
+    (float64, uint32): float64,
+    (float64, uint64): float64,
+    (bfloat16, bfloat16): bfloat16,
+    (bfloat16, uint8): bfloat16,
+    (bfloat16, int8): bfloat16,
+    (bfloat16, float16): float32,
+    (bfloat16, float32): float32,
+    (bfloat16, float64): float64,
+    (complex64, int8): complex64,
+    (complex64, int16): complex64,
+    (complex64, uint8): complex64,
+    (complex64, uint16): complex64,
+    (complex64, float16): complex64,
+    (complex64, float32): complex64,
+    (complex64, float64): complex128,
+    (bfloat16, complex64): complex64,
+    (complex64, complex64): complex64,
+    (complex128, complex64): complex128,
+    (complex128, int8): complex128,
+    (complex128, int16): complex128,
+    (complex128, int32): complex128,
+    (complex128, int64): complex128,
+    (complex128, uint8): complex128,
+    (complex128, uint16): complex128,
+    (complex128, uint32): complex128,
+    (complex128, uint64): complex128,
+    (complex128, float16): complex128,
+    (complex128, float32): complex128,
+    (complex128, float64): complex128,
+    (bfloat16, complex128): complex128,
+    (complex128, complex128): complex128,
+}
+# Avoiding All Precision Loss (Numpy Approach)
+precise_extra_promotion_table = {
+    (float16, int16): float32,
+    (float16, int32): float64,
+    (float32, int32): float64,
+    (float16, int64): float64,
+    (float32, int64): float64,
+    (float16, uint16): float32,
+    (float16, uint32): float64,
+    (float32, uint32): float64,
+    (float16, uint64): float64,
+    (float32, uint64): float64,
+    (bfloat16, uint16): float32,
+    (bfloat16, uint32): float64,
+    (bfloat16, uint64): float64,
+    (bfloat16, int16): float32,
+    (bfloat16, int32): float64,
+    (bfloat16, int64): float64,
+    (complex64, int32): complex128,
+    (complex64, int64): complex128,
+    (complex64, uint32): complex128,
+    (complex64, uint64): complex128,
+}
+
+extra_promotion_table = {
+    (float16, int16): float16,
+    (float16, int32): float16,
+    (float32, int32): float32,
+    (float16, int64): float16,
+    (float32, int64): float32,
+    (float16, uint16): float16,
+    (float16, uint32): float16,
+    (float32, uint32): float32,
+    (float16, uint64): float16,
+    (float32, uint64): float32,
+    (bfloat16, uint16): bfloat16,
+    (bfloat16, uint32): bfloat16,
+    (bfloat16, uint64): bfloat16,
+    (bfloat16, int16): bfloat16,
+    (bfloat16, int32): bfloat16,
+    (bfloat16, int64): bfloat16,
+    (complex64, int32): complex64,
+    (complex64, int64): complex64,
+    (complex64, uint32): complex64,
+    (complex64, uint64): complex64,
+}
+
+# TODO: change when it's not the default mode anymore
+promotion_table = {
+    **array_api_promotion_table,
+    **common_extra_promotion_table,
+    **precise_extra_promotion_table,
+}

@@ -1,6 +1,4 @@
 # global
-import numpy as np
-from typing import Optional, Sequence, Union
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
@@ -15,40 +13,20 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def var(
-    a: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[np.dtype] = None,
-    correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
-):
-    if dtype is not None:
-        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-
-    if axis is None:
-        axis = tuple(range(len(a.shape)))
-    axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    if isinstance(correction, int):
-        ret = np.var(a, axis=axis, ddof=correction, keepdims=keepdims, out=out)
-        return ivy.astype(ret, a.dtype, copy=False)
-    if a.size == 0:
-        return np.asarray(float("nan"))
-    size = 1
-    for a in axis:
-        size *= a.shape[a]
-    if size == correction:
-        size += 0.0001  # to avoid division by zero in return
-    return ivy.astype(
-        np.multiply(
-            np.var(a, axis=axis, keepdims=keepdims, out=out),
-            size / np.abs(size - correction),
-        ),
-        a.dtype,
-        copy=False,
+def var(x, /, *, axis=None, ddof=0.0, keepdims=False, out=None, dtype=None, where=True):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    dtype = (
+        dtype
+        if dtype is not None
+        else ivy.float64 if ivy.is_int_dtype(x.dtype) else x.dtype
     )
+    ret = ivy.var(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    ret = (
+        ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        if ivy.is_array(where)
+        else ret
+    )
+    return ret.astype(dtype, copy=False)
 
 
 @handle_numpy_out
@@ -255,137 +233,23 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
 
-    if not ivy.any(is_nan):
-        if dtype:
-            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        else:
-            dtype = "float" if ivy.is_int_dtype(a) else a.dtype
-
-        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
-
-        if ivy.is_array(where):
-            where = ivy.array(where, dtype=ivy.bool)
-            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
-    else:
+    if ivy.any(is_nan):
         a = [i for i in a if ivy.isnan(i) is False]
 
-        if dtype:
-            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        else:
-            dtype = "float" if ivy.is_int_dtype(a) else a.dtype
+    if dtype is None:
+        dtype = "float" if ivy.is_int_dtype(a) else a.dtype
 
-        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+    ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
 
-        if ivy.is_array(where):
-            where = ivy.array(where, dtype=ivy.bool)
-            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
-    all_nan = ivy.isnan(ret)
-    if ivy.all(all_nan):
+    if ivy.all(ivy.isnan(ret)):
         ret = ivy.astype(ret, ivy.array([float("inf")]))
+
     return ret
-
-
-def _quantile_is_valid(q):
-    # avoid expensive reductions, relevant for arrays with < O(1000) elements
-    if q.ndim == 1 and q.size < 10:
-        for i in range(q.size):
-            if not (0.0 <= q[i] <= 1.0):
-                return False
-    else:
-        if not (ivy.all(0 <= q) and ivy.all(q <= 1)):
-            return False
-    return True
-
-
-def cpercentile(N, percent, key=lambda x: x):
-    """
-    Find the percentile   of a list of values.
-
-    @parameter N - is a list of values. Note N MUST BE already sorted.
-    @parameter percent - a float value from 0.0 to 1.0.
-    @parameter key - optional key function to compute value from each element of N.
-
-    @return - the percentile  of the values
-    """
-    N.sort()
-    k = (len(N) - 1) * percent
-    f = ivy.math.floor(k)
-    c = ivy.math.ceil(k)
-    if f == c:
-        return key(N[int(k)])
-    d0 = key(N[int(f)]) * (c - k)
-    d1 = key(N[int(c)]) * (k - f)
-    return d0 + d1
-
-
-def nanpercentile(
-    a,
-    /,
-    *,
-    q,
-    axis=None,
-    out=None,
-    overwrite_input=False,
-    method="linear",
-    keepdims=False,
-    interpolation=None,
-):
-    a = ivy.array(a)
-    q = ivy.divide(q, 100.0)
-    q = ivy.array(q)
-    # print(q)
-    if not _quantile_is_valid(q):
-        raise ValueError("percentile s must be in the range [0, 100]")
-    if axis is None:
-        resultarray = []
-        nanlessarray = []
-        for x in a:
-            for i in x:
-                if not ivy.isnan(i):
-                    nanlessarray.append(i)
-
-        for i in q:
-            resultarray.append(cpercentile(nanlessarray, i))
-        return resultarray
-    elif axis == 1:
-        resultarray = []
-        nanlessarrayofarrays = []
-        for i in a:
-            nanlessarray = []
-            for t in i:
-                if not ivy.isnan(t):
-                    nanlessarray.append(t)
-            nanlessarrayofarrays.append(nanlessarray)
-        for i in q:
-            arrayofpercentiles = []
-            for ii in nanlessarrayofarrays:
-                arrayofpercentiles.append(cpercentile(ii, i))
-            resultarray.append(arrayofpercentiles)
-        return resultarray
-    elif axis == 0:
-        resultarray = []
-
-        try:
-            a = ivy.swapaxes(a, 0, 1)
-        except ivy.utils.exceptions.IvyError:
-            ivy.logging.warning("axis is 0 but couldn't swap")
-
-        finally:
-            nanlessarrayofarrays = []
-            for i in a:
-                nanlessarray = []
-                for t in i:
-                    if not ivy.isnan(t):
-                        nanlessarray.append(t)
-                nanlessarrayofarrays.append(nanlessarray)
-            for i in q:
-                arrayofpercentiles = []
-                for ii in nanlessarrayofarrays:
-                    arrayofpercentiles.append(cpercentile(ii, i))
-                resultarray.append(arrayofpercentiles)
-        return resultarray
 
 
 # nanmedian
