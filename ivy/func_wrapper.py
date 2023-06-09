@@ -27,10 +27,10 @@ FN_DECORATORS = [
     "handle_view_indexing",
     "handle_view",
     "handle_array_like_without_promotion",
+    "handle_mixed_function",
     "handle_nestable",
     "handle_exceptions",
     "handle_nans",
-    "handle_mixed_function",
 ]
 
 
@@ -1019,22 +1019,31 @@ def _wrap_function(
             and hasattr(original, "inputs_to_ivy_arrays")
             and not original.__name__.startswith("inplace")
         )
+
         for attr in FN_DECORATORS:
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
                 mixed_fn
                 and (
-                    attr == "inputs_to_native_arrays" or attr == "outputs_to_ivy_arrays"
+                    attr
+                    in [
+                        "inputs_to_native_arrays",
+                        "outputs_to_ivy_arrays",
+                        "handle_mixed_function",
+                    ]
                 )
             ):
-                if mixed_fn and attr == "inputs_to_ivy_arrays":
-                    continue
+                if mixed_fn:
+                    if attr == "inputs_to_ivy_arrays":
+                        continue
+                    if attr == "handle_mixed_function":
+                        if hasattr(to_wrap, "partial_mixed_handler"):
+                            to_wrap.compos = original
+                            to_wrap = handle_mixed_function(
+                                getattr(to_wrap, "partial_mixed_handler")
+                            )(to_wrap)
+                        continue
                 to_wrap = getattr(ivy, attr)(to_wrap)
 
-        if hasattr(to_wrap, "partial_mixed_handler"):
-            to_wrap.compos = original
-            to_wrap = handle_mixed_function(getattr(to_wrap, "partial_mixed_handler"))(
-                to_wrap
-            )
     return to_wrap
 
 

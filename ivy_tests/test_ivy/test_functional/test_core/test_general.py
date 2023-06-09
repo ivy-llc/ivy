@@ -2085,9 +2085,9 @@ def _fn3(x, y):
     func=st.sampled_from([_fn1, _fn2, _fn3]),
     dtype_and_arrays_and_axes=helpers.arrays_and_axes(
         allow_none=False,
-        min_num_dims=2,
+        min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=2,
+        min_dim_size=1,
         max_dim_size=10,
         num=2,
         return_dtype=True,

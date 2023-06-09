@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 import sys
 import ivy
 
@@ -9,6 +9,9 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test, assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_value1_value2_axis_for_tensordot,
+)
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    matrix_is_stable,
 )
 
 
@@ -65,6 +68,7 @@ def test_tensorflow_eigh(
     on_device,
 ):
     input_dtype, x = dtype_and_input
+    assume(matrix_is_stable(x[0]))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

@@ -4097,3 +4097,19 @@ def strides(
     (4, 8)
     """
     return ivy.current_backend(x).strides(x)
+
+
+def is_ivy_nested_array(x: Any, /) -> bool:
+    """
+    Determine whether the input x is an Ivy Nested Array.
+
+    Parameters
+    ----------
+    x
+        The input to check
+    Returns
+    -------
+    ret
+        Boolean, whether or not x is an ivy nested array.
+    """
+    return isinstance(x, ivy.NestedArray)

@@ -30,7 +30,7 @@ def random_uniform(
 ) -> np.ndarray:
     if seed:
         np.random.seed(seed)
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
 
@@ -45,7 +45,7 @@ def random_normal(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     if seed:
         np.random.seed(seed)
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
@@ -104,7 +104,7 @@ def randint(
         dtype = ivy.default_int_dtype()
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     if seed:
         np.random.seed(seed)
     return np.random.randint(low, high, shape, dtype=dtype)
@@ -112,6 +112,7 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     np.random.seed(seed_value)
+    return
 
 
 def shuffle(

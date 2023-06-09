@@ -23,7 +23,9 @@ def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer):
         )
 
 
-def _write_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode, buffer):
+def _write_new_stack_trace(
+    old_stack_trace, trace_mode, func_wrapper_trace_mode, buffer
+):
     _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer)
     new_stack_trace = []
     for st in old_stack_trace:
@@ -63,11 +65,14 @@ def _write_traceback_history(buffer):
         buffer.write("".join(tb.format_tb(sys.exc_info()[2])))
     else:
         _write_new_stack_trace(
-            tb.extract_tb(sys.exc_info()[2]
-                          ), trace_mode, func_wrapper_trace_mode, buffer
+            tb.extract_tb(sys.exc_info()[2]),
+            trace_mode,
+            func_wrapper_trace_mode,
+            buffer,
         )
     buffer.write(
-        "During the handling of the above exception, another exception occurred:\n")
+        "During the handling of the above exception, another exception occurred:\n"
+    )
 
 
 sys.excepthook = _custom_exception_handle
@@ -182,7 +187,6 @@ class IvyDtypePromotionError(IvyException):
 
 
 def handle_exceptions(fn: Callable) -> Callable:
-
     buffer = io.StringIO()
 
     @functools.wraps(fn)
@@ -210,7 +214,8 @@ def handle_exceptions(fn: Callable) -> Callable:
         except IvyError as e:
             _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyError(
-                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True)
+                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
+            )
         except IvyBroadcastShapeError as e:
             _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyBroadcastShapeError(
