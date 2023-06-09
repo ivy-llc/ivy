@@ -10,9 +10,10 @@ from .testing_helpers import (
 from .function_testing import (
     test_function_backend_computation,
     test_function_ground_truth_computation,
-    gradient_test,
     test_method_backend_computation,
     test_method_ground_truth_computation,
+    test_gradient_backend_computation,
+    test_gradient_ground_truth_computation,
 )
 
 
@@ -33,7 +34,7 @@ def backend_proc(input_queue, output_queue):
         if data[0] == "supported dtypes":
             # stage 1, calculating and returning supported dtypes
             # of each backend
-            import ivy
+            pass
 
             _, fn_module, fn_name, b = data
             output_queue.put(
@@ -124,51 +125,82 @@ def backend_proc(input_queue, output_queue):
                     fw_list,
                 )
             )
-        elif data[0] == "function_gradient_computation":
-            # it's gradient testing
-            import numpy as np
-
+        elif data[0] == "gradient_backend_computation":
+            # gradient testing , part where it uses the backend
             (
                 _,
-                fn_name,
-                all_as_kwargs_np,
+                backend_to_test,
                 args_np,
+                arg_np_vals,
+                args_idxs,
                 kwargs_np,
+                kwarg_np_vals,
+                kwargs_idxs,
                 input_dtypes,
                 test_flags,
-                rtol_,
-                atol_,
+                on_device,
+                fn,
+                test_compile,
                 xs_grad_idxs,
                 ret_grad_idxs,
+            ) = data
+            grads_np_flat = test_gradient_backend_computation(
+                backend_to_test,
+                args_np,
+                arg_np_vals,
+                args_idxs,
+                kwargs_np,
+                kwarg_np_vals,
+                kwargs_idxs,
+                input_dtypes,
+                test_flags,
+                on_device,
+                fn,
+                test_compile,
+                xs_grad_idxs,
+                ret_grad_idxs,
+            )
+            output_queue.put(grads_np_flat)
+
+        elif data[0] == "gradient_ground_truth_computation":
+            # gradient testing, part where it uses ground truth
+            (
+                _,
                 ground_truth_backend,
                 on_device,
+                fn,
+                input_dtypes,
+                all_as_kwargs_np,
+                args_np,
+                arg_np_vals,
+                args_idxs,
+                kwargs_np,
+                kwarg_np_vals,
+                test_flags,
+                kwargs_idxs,
+                test_compile,
+                xs_grad_idxs,
+                ret_grad_idxs,
             ) = data
-            if (
-                test_flags.test_gradients
-                and not test_flags.instance_method
-                and "bool" not in input_dtypes
-                and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
-            ):
-                if fw not in fw_list or not ivy.nested_argwhere(
-                    all_as_kwargs_np,
-                    lambda x: (
-                        x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None
-                    ),
-                ):
-                    gradient_test(
-                        fn=fn_name,
-                        all_as_kwargs_np=all_as_kwargs_np,
-                        args_np=args_np,
-                        kwargs_np=kwargs_np,
-                        input_dtypes=input_dtypes,
-                        test_flags=test_flags,
-                        rtol_=rtol_,
-                        atol_=atol_,
-                        xs_grad_idxs=xs_grad_idxs,
-                        ret_grad_idxs=ret_grad_idxs,
-                        ground_truth_backend=ground_truth_backend,
-                        on_device=on_device,
-                    )
+            grads_np_from_gt_flat = test_gradient_ground_truth_computation(
+                ground_truth_backend,
+                on_device,
+                fn,
+                input_dtypes,
+                all_as_kwargs_np,
+                args_np,
+                arg_np_vals,
+                args_idxs,
+                kwargs_np,
+                kwarg_np_vals,
+                test_flags,
+                kwargs_idxs,
+                test_compile,
+                xs_grad_idxs,
+                ret_grad_idxs,
+            )
+            output_queue.put(grads_np_from_gt_flat)
+
         elif data[0] == "method_backend_computation":
             (
                 _,
@@ -281,6 +313,7 @@ def backend_proc(input_queue, output_queue):
         # process the data
 
 
+# TODO incomplete
 def frontend_proc(input_queue, output_queue):
     # first argument is going to be the framework and its path
     framework = input_queue.get()

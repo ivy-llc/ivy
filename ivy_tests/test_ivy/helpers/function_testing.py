@@ -7,6 +7,7 @@ import importlib
 import inspect
 from collections import OrderedDict
 
+
 from ivy import frontend_outputs_to_ivy_arrays, output_to_native_arrays
 from ivy_tests.test_ivy.conftest import mod_backend
 
@@ -542,53 +543,32 @@ def test_function(
         )
 
     # Gradient test
-    # TODO enable back
-    if mod_backend[fw]:
-        proc, input_queue, output_queue = mod_backend[fw]
-        input_queue.put(
-            (
-                "gradient_computation",
-                fn_name,
-                all_as_kwargs_np,
-                args_np,
-                kwargs_np,
-                input_dtypes,
-                test_flags,
-                rtol_,
-                atol_,
-                xs_grad_idxs,
-                ret_grad_idxs,
-                ground_truth_backend,
-                on_device,
-            )
-        )
-    else:
-        if (
-            test_flags.test_gradients
-            and not test_flags.instance_method
-            and "bool" not in input_dtypes
-            and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
+    # TODO enable back , ADD backend_to_test to the call below
+
+    if (
+        test_flags.test_gradients
+        and not test_flags.instance_method
+        and "bool" not in input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
+    ):
+        if fw not in fw_list or not ivy.nested_argwhere(
+            all_as_kwargs_np,
+            lambda x: (x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None),
         ):
-            if fw not in fw_list or not ivy.nested_argwhere(
-                all_as_kwargs_np,
-                lambda x: (
-                    x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None
-                ),
-            ):
-                gradient_test(
-                    fn=fn_name,
-                    all_as_kwargs_np=all_as_kwargs_np,
-                    args_np=args_np,
-                    kwargs_np=kwargs_np,
-                    input_dtypes=input_dtypes,
-                    test_flags=test_flags,
-                    rtol_=rtol_,
-                    atol_=atol_,
-                    xs_grad_idxs=xs_grad_idxs,
-                    ret_grad_idxs=ret_grad_idxs,
-                    ground_truth_backend=ground_truth_backend,
-                    on_device=on_device,
-                )
+            gradient_test(
+                fn=fn_name,
+                all_as_kwargs_np=all_as_kwargs_np,
+                args_np=args_np,
+                kwargs_np=kwargs_np,
+                input_dtypes=input_dtypes,
+                test_flags=test_flags,
+                rtol_=rtol_,
+                atol_=atol_,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+                ground_truth_backend=ground_truth_backend,
+                on_device=on_device,
+            )
 
     assert (
         ret_device == ret_from_gt_device
@@ -978,27 +958,22 @@ def test_frontend_function(
 # Method testing
 
 
-def gradient_test(
-    *,
-    fn,
-    all_as_kwargs_np,
+def test_gradient_backend_computation(
+    backend_to_test,
     args_np,
+    arg_np_vals,
+    args_idxs,
     kwargs_np,
+    kwarg_np_vals,
+    kwargs_idxs,
     input_dtypes,
     test_flags,
-    test_compile: bool = False,
-    rtol_: float = None,
-    atol_: float = 1e-06,
-    xs_grad_idxs=None,
-    ret_grad_idxs=None,
-    backend_to_test: str,
-    ground_truth_backend: str,
-    on_device: str,
+    on_device,
+    fn,
+    test_compile,
+    xs_grad_idxs,
+    ret_grad_idxs,
 ):
-    # extract all arrays from the arguments and keyword arguments
-    arg_np_vals, args_idxs, _ = _get_nested_np_arrays(args_np)
-    kwarg_np_vals, kwargs_idxs, _ = _get_nested_np_arrays(kwargs_np)
-
     args, kwargs = create_args_kwargs(
         backend=backend_to_test,
         args_np=args_np,
@@ -1033,7 +1008,26 @@ def gradient_test(
             ret_grad_idxs=ret_grad_idxs,
         )
     grads_np_flat = flatten_and_to_np(backend=backend_to_test, ret=grads)
+    return grads_np_flat
 
+
+def test_gradient_ground_truth_computation(
+    ground_truth_backend,
+    on_device,
+    fn,
+    input_dtypes,
+    all_as_kwargs_np,
+    args_np,
+    arg_np_vals,
+    args_idxs,
+    kwargs_np,
+    kwarg_np_vals,
+    test_flags,
+    kwargs_idxs,
+    test_compile,
+    xs_grad_idxs,
+    ret_grad_idxs,
+):
     with update_backend(ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)  # TODO remove
 
@@ -1061,7 +1055,7 @@ def gradient_test(
             args, kwargs, i = all_args
             call_fn = gt_backend.__dict__[fn] if isinstance(fn, str) else fn[i]
             ret = compiled_if_required(
-                backend_to_test,
+                ground_truth_backend,
                 call_fn,
                 test_compile=test_compile,
                 args=args,
@@ -1076,7 +1070,116 @@ def gradient_test(
             ret_grad_idxs=ret_grad_idxs,
         )
         grads_np_from_gt_flat = flatten_and_to_np(
-            backend=backend_to_test, ret=grads_from_gt
+            backend=ground_truth_backend, ret=grads_from_gt
+        )
+
+    return grads_np_from_gt_flat
+
+
+def gradient_test(
+    *,
+    fn,
+    all_as_kwargs_np,
+    args_np,
+    kwargs_np,
+    input_dtypes,
+    test_flags,
+    test_compile: bool = False,
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
+    backend_to_test: str,
+    ground_truth_backend: str,
+    on_device: str,
+):
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, _ = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, _ = _get_nested_np_arrays(kwargs_np)
+
+    if mod_backend[backend_to_test]:
+        # do this using multiprocessing
+        proc, input_queue, output_queue = mod_backend[backend_to_test]
+        input_queue.put(
+            (
+                "gradient_backend_computation",
+                backend_to_test,
+                args_np,
+                arg_np_vals,
+                args_idxs,
+                kwargs_np,
+                kwarg_np_vals,
+                kwargs_idxs,
+                input_dtypes,
+                test_flags,
+                on_device,
+                fn,
+                test_compile,
+                xs_grad_idxs,
+                ret_grad_idxs,
+            )
+        )
+        grads_np_flat = output_queue.get()
+
+    else:
+        grads_np_flat = test_gradient_backend_computation(
+            backend_to_test,
+            args_np,
+            arg_np_vals,
+            args_idxs,
+            kwargs_np,
+            kwarg_np_vals,
+            kwargs_idxs,
+            input_dtypes,
+            test_flags,
+            on_device,
+            fn,
+            test_compile,
+            xs_grad_idxs,
+            ret_grad_idxs,
+        )
+
+    if mod_backend[ground_truth_backend]:
+        # do this using multiprocessing
+        proc, input_queue, output_queue = mod_backend[ground_truth_backend]
+        input_queue.put(
+            (
+                "gradient_ground_truth_computation",
+                ground_truth_backend,
+                on_device,
+                fn,
+                input_dtypes,
+                all_as_kwargs_np,
+                args_np,
+                arg_np_vals,
+                args_idxs,
+                kwargs_np,
+                kwarg_np_vals,
+                test_flags,
+                kwargs_idxs,
+                test_compile,
+                xs_grad_idxs,
+                ret_grad_idxs,
+            )
+        )
+        grads_np_from_gt_flat = output_queue.get()
+    else:
+        grads_np_from_gt_flat = test_gradient_ground_truth_computation(
+            ground_truth_backend,
+            on_device,
+            fn,
+            input_dtypes,
+            all_as_kwargs_np,
+            args_np,
+            arg_np_vals,
+            args_idxs,
+            kwargs_np,
+            kwarg_np_vals,
+            test_flags,
+            kwargs_idxs,
+            test_compile,
+            xs_grad_idxs,
+            ret_grad_idxs,
         )
 
     assert len(grads_np_flat) == len(
