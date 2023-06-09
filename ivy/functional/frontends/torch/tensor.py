@@ -1105,6 +1105,10 @@ class Tensor:
     def exp(self):
         return torch_frontend.exp(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+    def expm1(self):
+        return torch_frontend.expm1(self)
+
     # fmt: off
     @with_unsupported_dtypes({"2.0.1 and below": ("int8", "int16", "int32", "int64", "uint8", "bool", "float16",)},"torch",)  # noqa
     def exp_(self):
