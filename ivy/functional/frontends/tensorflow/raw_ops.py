@@ -278,7 +278,14 @@ def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
 
-LessEqual = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.less_equal))
+LessEqual = to_ivy_arrays_and_back(
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex",),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.less_equal))
+)
 
 
 @to_ivy_arrays_and_back
@@ -328,20 +335,29 @@ Max = to_ivy_arrays_and_back(
 
 
 Maximum = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.math.maximum,
-        kwargs_to_update={"x": "a", "y": "b"},
-    )
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex",),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.maximum))
 )
 
 
 Min = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.math.reduce_min,
-        kwargs_to_update={
-            "input": "input_tensor",
-            "keep_dims": "keepdims",
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex",),
         },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.reduce_min,
+            kwargs_to_update={
+                "input": "input_tensor",
+                "keep_dims": "keepdims",
+            },
+        )
     )
 )
 
@@ -455,14 +471,7 @@ def Sinh(*, x, name="Sinh"):
 
 
 @with_unsupported_dtypes(
-    {
-        "2.10.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-        )
-    },
+    {"2.12.0 and below": ("unsigned",)},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
