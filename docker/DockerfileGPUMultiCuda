@@ -4,9 +4,6 @@ FROM unifyai/multicuda:base
 WORKDIR /ivy
 ARG fw
 
-
-
-
 ARG pycon=3.8.10
 
 ENV DEBIAN_FRONTEND=noninteractive
