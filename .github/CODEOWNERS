@@ -10,6 +10,8 @@ ivy_tests/test_ivy/helpers/ @CatB1t
 # Docs builder
 docs/index.rst @KareemMAX
 docs/make_docs.sh @KareemMAX
-docs/partial_docs.sh @KareemMAX
+docs/partial_conf.py @KareemMAX
 docs/prebuild.sh @KareemMAX
+docs/overview/contributing/building_the_docs.rst @KareemMAX
+docs/overview/deep_dive/building_the_docs_pipline.rst @KareemMAX
 docs/_templates @KareemMAX

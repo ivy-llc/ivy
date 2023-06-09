@@ -29,6 +29,34 @@ def _get_dtype_and_square_matrix(draw):
 
 
 @st.composite
+def _get_dtype_and_matrix_non_singular(draw):
+    while True:
+        matrix = draw(
+            helpers.dtype_and_values(
+                available_dtypes=(
+                    ivy.float64,
+                    ivy.double,
+                ),
+                min_value=-10,
+                max_value=10,
+                min_num_dims=2,
+                max_num_dims=2,
+                min_dim_size=1,
+                max_dim_size=5,
+                shape=st.tuples(st.integers(1, 5), st.integers(1, 5)).filter(
+                    lambda x: x[0] == x[1]
+                ),
+                allow_inf=False,
+                allow_nan=False,
+            )
+        )
+        if np.linalg.det(matrix[1][0]) != 0:
+            break
+
+    return matrix[0], matrix[1]
+
+
+@st.composite
 def _get_dtype_and_matrix(draw):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
     random_size = draw(st.integers(min_value=1, max_value=4))
@@ -47,14 +75,18 @@ def _get_dtype_and_matrix(draw):
 @handle_frontend_test(
     fn_tree="torch.linalg.vector_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         min_value=-1e04,
         max_value=1e04,
     ),
     kd=st.booleans(),
-    ord=helpers.ints(min_value=1, max_value=2),
-    dtype=helpers.get_dtypes("valid"),
+    ord=st.one_of(
+        helpers.ints(min_value=0, max_value=5),
+        helpers.floats(min_value=1.0, max_value=5.0),
+        st.sampled_from((float("inf"), -float("inf"))),
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_vector_norm(
     *,
@@ -103,6 +135,7 @@ def test_torch_inv(
     test_flags,
 ):
     dtype, x = dtype_and_x
+    test_flags.num_positional_args = 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -111,7 +144,7 @@ def test_torch_inv(
         on_device=on_device,
         rtol=1e-03,
         atol=1e-02,
-        input=x[0],
+        A=x[0],
     )
 
 
@@ -142,7 +175,7 @@ def test_torch_inv_ex(
         on_device=on_device,
         rtol=1e-03,
         atol=1e-02,
-        input=x[0],
+        A=x[0],
     )
 
 
@@ -192,13 +225,14 @@ def test_torch_det(
     test_flags,
 ):
     dtype, x = dtype_and_x
+    test_flags.num_positional_args = len(x)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
+        A=x,
     )
 
 
@@ -223,7 +257,7 @@ def test_torch_qr(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        A=x[0],
         test_values=False,
     )
     ret = [ivy.to_numpy(x) for x in ret]
@@ -256,13 +290,14 @@ def test_torch_slogdet(
     test_flags,
 ):
     dtype, x = dtype_and_x
+    test_flags.num_positional_args = len(x)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
+        A=x,
     )
 
 
@@ -316,12 +351,12 @@ def _get_symmetrix_matrix(draw):
     test_with_out=st.just(False),
 )
 def test_torch_eigvals(
-        *,
-        dtype_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    *,
+    dtype_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_x
 
@@ -334,11 +369,8 @@ def test_torch_eigvals(
         input=x[0],
         test_values=False,
     )
-
-    """
-    In "ret" we have out eigenvalues calculated with our backend and
-    in "frontend_ret" are our eigenvalues calculated with the specified frontend
-    """
+    """In "ret" we have out eigenvalues calculated with our backend and in
+    "frontend_ret" are our eigenvalues calculated with the specified frontend."""
 
     """
     Depending on the chosen framework there may be small differences between our
@@ -361,9 +393,9 @@ def test_torch_eigvals(
     frontend_ret = np.sort(frontend_ret)
     frontend_ret_modulus = np.zeros(len(frontend_ret), dtype=np.float64)
     for i in range(len(frontend_ret)):
-        frontend_ret_modulus[i] = math.sqrt(math.pow(frontend_ret[i].real,
-                                                     2) + math.pow(frontend_ret[i].imag,
-                                                                   2))
+        frontend_ret_modulus[i] = math.sqrt(
+            math.pow(frontend_ret[i].real, 2) + math.pow(frontend_ret[i].imag, 2)
+        )
 
     ret = ivy.to_numpy(ret).astype(str(frontend_ret.dtype))
     ret = np.sort(ret)
@@ -410,6 +442,27 @@ def test_torch_eigvalsh(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.linalg.cond",
+    dtype_and_x=_get_dtype_and_matrix_non_singular(),
+    p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+)
+def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x[0],
+        rtol=1e-2,
+        atol=1e-3,
+        p=p,
+    )
+
+
 # matrix_power
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_power",
@@ -427,6 +480,7 @@ def test_torch_matrix_power(
     test_flags,
 ):
     dtype, x = dtype_and_x
+    test_flags.num_positional_args = len(x) + 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -434,7 +488,7 @@ def test_torch_matrix_power(
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-01,
-        input=x,
+        A=x,
         n=n,
     )
 
@@ -442,45 +496,38 @@ def test_torch_matrix_power(
 # matrix_norm
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
-    dtype_and_x=helpers.dtype_and_values(
-        num_arrays=1,
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=5,
-        min_value=-1e20,
-        max_value=1e20,
-        large_abs_safety_factor=10,
-        small_abs_safety_factor=10,
-        safety_factor_scale="log",
+        min_axes_size=2,
+        max_axes_size=2,
+        valid_axis=True,
+        force_tuple_axis=True,
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
-    axis=st.just((-2, -1)),
     dtype=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_torch_matrix_norm(
     *,
-    dtype_and_x,
+    dtype_values_axis,
     ord,
     keepdim,
-    axis,
     dtype,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-04,
-        atol=1e-04,
+        # rtol=1e-04,
+        # atol=1e-04,
         input=x[0],
         ord=ord,
         dim=axis,
@@ -548,6 +595,7 @@ def test_torch_vecdot(
     fn_tree,
 ):
     dtype, input, other, dim = dtype_input_other_dim
+    test_flags.num_positional_args = len(dtype_input_other_dim) - 2
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -555,8 +603,8 @@ def test_torch_vecdot(
         fn_tree=fn_tree,
         rtol=1e-2,
         atol=1e-3,
-        input=input,
-        other=other,
+        x=input,
+        y=other,
         dim=dim,
     )
 
@@ -577,7 +625,6 @@ def _matrix_rank_helper(draw):
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_rank",
-    aliases=["torch.matrix_rank"],
     dtype_and_x=_matrix_rank_helper(),
     atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
     rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
@@ -813,6 +860,8 @@ def test_torch_svdvals(
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+        safety_factor_scale="log",
+        small_abs_safety_factor=6,
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -832,14 +881,15 @@ def test_torch_solve(
     input_dtype, data = dtype_and_data
     input = data[0][:, :-1]
     other = data[0][:, -1].reshape(-1, 1)
+    test_flags.num_positional_args = 2
     helpers.test_frontend_function(
         input_dtypes=[input_dtype[0], input_dtype[0]],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input,
-        other=other,
+        A=input,
+        B=other,
     )
 
 
@@ -904,7 +954,6 @@ def test_torch_tensorinv(
     frontend,
     test_flags,
 ):
-
     dtype, x, ind = dtype_input_ind
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -975,7 +1024,7 @@ def test_torch_tensorsolve(
     test_flags,
 ):
     input_dtype, A, B = a_and_b
-    test_flags.num_positional_args = 2
+    test_flags.num_positional_args = len(a_and_b) - 1
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         test_flags=test_flags,
@@ -994,9 +1043,7 @@ def test_torch_tensorsolve(
 def _lu_factor_helper(draw):
     # generate input matrix of shape (*, m, n) and where '*' is one or more
     # batch dimensions
-    input_dtype = draw(
-        helpers.get_dtypes("float")
-    )
+    input_dtype = draw(helpers.get_dtypes("float"))
 
     dim1 = draw(helpers.ints(min_value=2, max_value=3))
     dim2 = draw(helpers.ints(min_value=2, max_value=3))
@@ -1058,7 +1105,7 @@ def test_torch_lu_factor(
     assert_all_close(
         ret_np=[LU, pivot],
         ret_from_gt_np=[frontend_LU, frontend_pivot],
-        ground_truth_backend=frontend
+        ground_truth_backend=frontend,
     )
 
 
@@ -1102,15 +1149,16 @@ def _vander_helper(draw):
     # generate input matrix of shape (*, n) and where '*' is one or more
     # batch dimensions
     N = draw(helpers.ints(min_value=2, max_value=5))
-    if draw(helpers.floats(min_value=0, max_value=1.)) < 0.5:
+    if draw(helpers.floats(min_value=0, max_value=1.0)) < 0.5:
         N = None
 
-    shape = draw(helpers.get_shape(min_num_dims=1,
-                                   max_num_dims=5,
-                                   min_dim_size=2,
-                                   max_dim_size=10))
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
     dtype = "float"
-    if draw(helpers.floats(min_value=0, max_value=1.)) < 0.5:
+    if draw(helpers.floats(min_value=0, max_value=1.0)) < 0.5:
         dtype = "integer"
 
     x = draw(
@@ -1145,5 +1193,67 @@ def test_torch_vander(
         fn_tree=fn_tree,
         on_device=on_device,
         test_flags=test_flags,
-        x=x[0], N=N
+        x=x[0],
+        N=N,
+    )
+
+
+@st.composite
+def _generate_multi_dot_dtype_and_arrays(draw):
+    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
+    matrices_dims = draw(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
+    )
+    shape_1 = (matrices_dims[0], matrices_dims[1])
+    shape_2 = (matrices_dims[1], matrices_dims[2])
+    shape_3 = (matrices_dims[2], matrices_dims[3])
+
+    matrix_1 = draw(
+        helpers.dtype_and_values(
+            shape=shape_1,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_2 = draw(
+        helpers.dtype_and_values(
+            shape=shape_2,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_3 = draw(
+        helpers.dtype_and_values(
+            shape=shape_3,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.multi_dot",
+    dtype_x=_generate_multi_dot_dtype_and_arrays(),
+)
+def test_torch_multi_dot(
+    dtype_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_values=True,
+        tensors=x,
     )

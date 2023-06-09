@@ -33,15 +33,17 @@ def _to_ivy_array(x):
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_ivy_arrays_torch(*args, **kwargs):
         """
-        Converts all `Tensor` instances in both the positional and keyword
-        arguments into `ivy.Array` instances, and then calls the function with the
-        updated arguments.
+        Convert `Tensor` into `ivy.Array` instances.
+
+        Convert all `Tensor` instances in both the positional and
+        keyword arguments into `ivy.Array` instances, and then calls the
+        function with the updated arguments.
         """
         # Remove out argument if present in kwargs
-        if "out" in kwargs and not isinstance(
-            kwargs["out"], (torch_frontend.Tensor, type(None))
+        if "out" in kwargs and not ivy.nested_any(
+            kwargs["out"], lambda x: isinstance(x, (torch_frontend.Tensor, type(None)))
         ):
             raise ivy.utils.exceptions.IvyException(
                 "Out argument must be an ivy.frontends.torch.Tensor object"
@@ -55,15 +57,17 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         return fn(*new_args, **new_kwargs)
 
-    return new_fn
+    return _inputs_to_ivy_arrays_torch
 
 
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def outputs_to_frontend_arrays_torch(*args, **kwargs):
         """
-        Calls the function, and then converts all `ivy.Array` instances returned
-        by the function into `Tensor` instances.
+        Convert `ivy.Array` into `Tensor` instances.
+
+        Call the function, and then converts all `ivy.Array` instances
+        returned by the function into `Tensor` instances.
         """
         # call unmodified function
         # ToDo: Remove this default dtype setting
@@ -82,16 +86,37 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ivy.unset_default_int_dtype()
                 ivy.unset_default_float_dtype()
         # convert all arrays in the return to `torch_frontend.Tensor` instances
-        return _from_ivy_array_to_torch_frontend_tensor(
+        ret = _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
         )
+        if "inplace" in kwargs and kwargs["inplace"]:
+            first_array = ivy.func_wrapper._get_first_array(
+                *args, array_fn=lambda x: hasattr(x, "ivy_array"), **kwargs
+            )
+            ivy.inplace_update(first_array, ret.ivy_array)
+            return first_array
+        else:
+            return ret
 
-    return new_fn
+    return outputs_to_frontend_arrays_torch
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     """
-    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
-    and return arrays are all converted to `Tensor` instances.
+    Wrap `fn` so it receives and returns `ivy.Array` instances.
+
+    Wrap `fn` so that input arrays are all converted to `ivy.Array`
+    instances and return arrays are all converted to `Tensor` instances.
     """
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
+
+
+def outputs_to_native_arrays(fn: Callable):
+    @functools.wraps(fn)
+    def outputs_to_native_arrays_torch(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        if isinstance(ret, torch_frontend.Tensor):
+            ret = ret.ivy_array.data
+        return ret
+
+    return outputs_to_native_arrays_torch

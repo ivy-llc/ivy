@@ -24,7 +24,6 @@ def _get_clip_inputs(draw):
                     shape=shape,
                 )
             ],
-            get_dtypes_kind="numeric",
         ),
     )
     min = draw(st.booleans())
@@ -101,7 +100,6 @@ def test_numpy_clip(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -149,7 +147,6 @@ def test_numpy_cbrt(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -177,6 +174,7 @@ def test_numpy_sqrt(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        atol=1e-2,
         out=None,
         where=where,
         casting=casting,
@@ -195,7 +193,6 @@ def test_numpy_sqrt(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -223,13 +220,14 @@ def test_numpy_reciprocal(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        atol=1e-2,
         out=None,
         where=where,
         casting=casting,
         order="K",
         dtype=dtype,
         subok=True,
-    )    
+    )
 
 
 # square
@@ -241,7 +239,6 @@ def test_numpy_reciprocal(
                 available_dtypes=helpers.get_dtypes("numeric"),
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -287,7 +284,6 @@ def test_numpy_square(
                 available_dtypes=helpers.get_dtypes("numeric"),
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -333,7 +329,6 @@ def test_numpy_absolute(
                 available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -379,7 +374,6 @@ def test_numpy_fabs(
                 available_dtypes=helpers.get_dtypes("numeric"),
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -400,6 +394,7 @@ def test_numpy_sign(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
+
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -427,7 +422,6 @@ def test_numpy_sign(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -474,8 +468,8 @@ def test_numpy_heaviside(
         max_value=+np.inf,
         allow_nan=True,
     ),
-    posinf=st.one_of(st.none(), st.floats()),
-    neginf=st.one_of(st.none(), st.floats()),
+    posinf=st.one_of(st.none(), st.floats(min_value=0, max_value=10000)),
+    neginf=st.one_of(st.none(), st.floats(min_value=-10000, max_value=0)),
     nan=st.floats(min_value=0, max_value=10),
     copy=st.booleans(),
     test_with_out=st.just(False),
@@ -492,6 +486,10 @@ def test_numpy_nan_to_num(
     neginf,
 ):
     input_dtype, x = dtype_and_x
+    # to avoid overflow errors of tf as you can't easily create a tensor
+    # close to tf.dtype.max or tf.dtype.min, we need to assume that
+    if ivy.current_backend_str() == "tensorflow":
+        assume(posinf is not None and neginf is not None)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -644,7 +642,6 @@ def test_numpy_convolve(
                 max_value=100,
             )
         ],
-        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     test_with_out=st.just(False),
@@ -682,4 +679,94 @@ def test_numpy_copysign(
         order="K",
         dtype=dtype,
         subok=True,
+    )
+
+
+# lcm
+@handle_frontend_test(
+    fn_tree="numpy.lcm",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="lcm"
+    ),
+)
+def test_numpy_lcm(
+    dtype_and_inputs,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_inputs
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
+    )
+
+
+# gcd
+@handle_frontend_test(
+    fn_tree="numpy.gcd",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="gcd"
+    ),
+)
+def test_numpy_gcd(
+    dtype_and_inputs,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_inputs
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
     )

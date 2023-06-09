@@ -2,8 +2,39 @@
 from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.max_pool1d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    test_gradients=st.just(False),
+)
+def test_max_pool1d(
+    *,
+    x_k_s_p,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        ground_truth_backend="jax",
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x[0],
+        kernel=kernel,
+        strides=stride,
+        padding=pad,
+    )
 
 
 @handle_test(
@@ -13,11 +44,12 @@ from ivy_tests.test_ivy.helpers import handle_test
         max_dims=4,
         min_side=2,
         max_side=4,
-        allow_explicit_padding=True,
+        explicit_or_str_padding=True,
         return_dilation=True,
     ),
     ceil_mode=st.just(True),
     test_gradients=st.just(False),
+    ground_truth_backend="jax",
     # problem with containers converting tuple padding to
     # lists which jax does not support
     container_flags=st.just([False]),
@@ -29,6 +61,8 @@ def test_max_pool2d(
     test_flags,
     backend_fw,
     fn_name,
+    ground_truth_backend,
+    on_device,
 ):
     dtype, x, kernel, stride, pad, dilation = x_k_s_p
     assume(
@@ -44,74 +78,20 @@ def test_max_pool2d(
         )
     )
     helpers.test_function(
-        ground_truth_backend="jax",
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
+        on_device=on_device,
         x=x[0],
         kernel=kernel,
         strides=stride,
         padding=pad,
         dilation=dilation,
         ceil_mode=ceil_mode,
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.max_pool1d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
-    test_gradients=st.just(False),
-)
-def test_max_pool1d(
-    *,
-    x_k_s_p,
-    test_flags,
-    backend_fw,
-    fn_name,
-):
-    dtype, x, kernel, stride, pad = x_k_s_p
-    helpers.test_function(
-        ground_truth_backend="jax",
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x=x[0],
-        kernel=kernel,
-        strides=stride,
-        padding=pad,
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.avg_pool1d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
-    test_gradients=st.just(False),
-)
-def test_avg_pool1d(
-    *,
-    x_k_s_p,
-    test_flags,
-    backend_fw,
-):
-    dtype, x, kernel, stride, pad = x_k_s_p
-    helpers.test_function(
-        ground_truth_backend="jax",
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name="avg_pool1d",
-        rtol_=1e-2,
-        atol_=1e-2,
-        x=x[0],
-        kernel=kernel,
-        strides=stride,
-        padding=pad,
     )
 
 
@@ -144,16 +124,20 @@ def test_max_pool3d(
 
 
 @handle_test(
-    fn_tree="functional.ivy.experimental.avg_pool3d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    fn_tree="functional.ivy.experimental.avg_pool1d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    count_include_pad=st.booleans(),
+    ceil_mode=st.booleans(),
     test_gradients=st.just(False),
 )
-def test_avg_pool3d(
+def test_avg_pool1d(
     *,
     x_k_s_p,
+    count_include_pad,
+    ceil_mode,
     test_flags,
     backend_fw,
-    fn_name,
+    on_device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -161,26 +145,37 @@ def test_avg_pool3d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
-        fn_name=fn_name,
-        rtol_=1e-1,
-        atol_=1e-1,
+        fn_name="avg_pool1d",
+        rtol_=1e-2,
+        atol_=1e-2,
+        on_device=on_device,
         x=x[0],
         kernel=kernel,
         strides=stride,
         padding=pad,
+        count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
     )
 
 
+# avg_pool2d
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    count_include_pad=st.booleans(),
+    ceil_mode=st.booleans(),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
     test_gradients=st.just(False),
 )
 def test_avg_pool2d(
     *,
     x_k_s_p,
+    count_include_pad,
+    ceil_mode,
+    divisor_override,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
@@ -189,6 +184,7 @@ def test_avg_pool2d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -196,6 +192,48 @@ def test_avg_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.avg_pool3d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    count_include_pad=st.booleans(),
+    ceil_mode=st.booleans(),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
+    test_gradients=st.just(False),
+)
+def test_avg_pool3d(
+    *,
+    x_k_s_p,
+    count_include_pad,
+    ceil_mode,
+    divisor_override,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        ground_truth_backend="jax",
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        x=x[0],
+        kernel=kernel,
+        strides=stride,
+        padding=pad,
+        count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
     )
 
 
@@ -203,7 +241,7 @@ def test_avg_pool2d(
 def valid_dct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             max_value=65280,
             min_value=-65280,
             min_num_dims=1,
@@ -215,7 +253,7 @@ def valid_dct(draw):
     )
     dims_len = len(x[0].shape)
     n = draw(st.sampled_from([None, "int"]))
-    axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len))
+    axis = draw(helpers.ints(min_value=-dims_len, max_value=dims_len - 1))
     norm = draw(st.sampled_from([None, "ortho"]))
     type = draw(helpers.ints(min_value=1, max_value=4))
     if n == "int":
@@ -233,10 +271,43 @@ def valid_dct(draw):
     test_gradients=st.just(False),
 )
 def test_dct(
+    *,
     dtype_x_and_args,
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, type, n, axis, norm = dtype_x_and_args
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        type=type,
+        n=n,
+        axis=axis,
+        norm=norm,
+        rtol_=1e-3,
+        atol_=1e-1,
+    )
+
+
+@handle_test(
+    fn_tree="idct",
+    dtype_x_and_args=valid_dct(),
+    test_gradients=st.just(False),
+)
+def test_idct(
+    dtype_x_and_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
@@ -253,6 +324,7 @@ def test_dct(
         norm=norm,
         rtol_=1e-3,
         atol_=1e-1,
+        on_device=on_device,
     )
 
 
@@ -307,8 +379,8 @@ def _interp_args(draw, mode=None, mode_list=None):
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=num_dims,
             max_num_dims=num_dims,
-            min_dim_size=1,
-            max_dim_size=3,
+            min_dim_size=2,
+            max_dim_size=5,
             large_abs_safety_factor=50,
             small_abs_safety_factor=50,
             safety_factor_scale="log",
@@ -368,37 +440,29 @@ def test_interpolate(
         scale_factor,
         recompute_scale_factor,
     ) = dtype_x_mode
-    try:
-        helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
-            input_dtypes=input_dtype,
-            test_flags=test_flags,
-            fw=backend_fw,
-            fn_name=fn_name,
-            on_device=on_device,
-            rtol_=1e-01,
-            atol_=1e-01,
-            x=x[0],
-            size=size,
-            mode=mode,
-            align_corners=align_corners,
-            antialias=antialias,
-            scale_factor=scale_factor,
-            recompute_scale_factor=recompute_scale_factor,
-        )
-    except Exception as e:
-        if hasattr(e, "message") and (
-            "output dimensions must be positive" in e.message
-            or "Input and output sizes should be greater than 0" in e.message
-        ):
-            assume(False)
-        raise e
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-01,
+        atol_=1e-01,
+        x=x[0],
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+        antialias=antialias,
+        scale_factor=scale_factor,
+        recompute_scale_factor=recompute_scale_factor,
+    )
 
 
 @st.composite
-def x_and_fft(draw, dtypes):
+def x_and_fft(draw):
     min_fft_points = 2
-    dtype = draw(dtypes)
+    dtype = draw(helpers.get_dtypes("valid", full=False))
     x_dim = draw(
         helpers.get_shape(
             min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
@@ -408,11 +472,15 @@ def x_and_fft(draw, dtypes):
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
+            min_value=-1e5,
+            max_value=1e5,
+            allow_inf=False,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
         )
     )
-    dim = draw(
-        helpers.get_axis(shape=x_dim, allow_neg=True, allow_none=False, max_size=1)
-    )
+    dim = draw(helpers.get_axis(shape=x_dim, allow_neg=True, force_int=True))
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
     n = draw(st.integers(min_fft_points, 256))
     return dtype, x, dim, norm, n
@@ -420,8 +488,8 @@ def x_and_fft(draw, dtypes):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft",
-    d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
-    ground_truth_backend="numpy",
+    d_x_d_n_n=x_and_fft(),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_fft(
@@ -429,6 +497,7 @@ def test_fft(
     d_x_d_n_n,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
     ground_truth_backend,
 ):
@@ -441,7 +510,7 @@ def test_fft(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=False,
+        on_device=on_device,
         x=x,
         dim=dim,
         norm=norm,
@@ -466,6 +535,7 @@ def test_fft(
     training=st.booleans(),
     data_format=st.sampled_from(["NWC", "NCW"]),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_dropout1d(
     *,
@@ -484,9 +554,10 @@ def test_dropout1d(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
         test_values=False,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
         x=x[0],
         prob=prob,
         training=training,
@@ -535,9 +606,10 @@ def test_dropout3d(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
+        test_values=False,
+        on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_values=False,
         x=x[0],
         prob=prob,
         training=training,
@@ -640,7 +712,7 @@ def test_embedding(
 
 @handle_test(
     fn_tree="dft",
-    d_xfft_axis_n_length=x_and_fft(helpers.get_dtypes("complex")),
+    d_xfft_axis_n_length=x_and_fft(),
     d_xifft_axis_n_length=x_and_ifft(),
     inverse=st.booleans(),
     onesided=st.booleans(),
@@ -654,6 +726,7 @@ def test_dft(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     if inverse:
@@ -667,14 +740,13 @@ def test_dft(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x,
         axis=axis,
         inverse=inverse,
         onesided=onesided,
         dft_length=dft_length,
         norm=norm,
-        rtol_=1e-2,
-        atol_=1e-2,
     )
 
 
@@ -757,4 +829,96 @@ def test_adaptive_avg_pool2d(
         fn_name=fn_name,
         input=x[0],
         output_size=output_size,
+    )
+
+
+@st.composite
+def _reduce_window_helper(draw, get_func_st):
+    dtype = draw(helpers.get_dtypes("valid", full=False))
+    py_func = draw(get_func_st(dtype[0]))
+    init_value = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=(),
+            allow_inf=True,
+        )
+    )[1]
+    ndim = draw(st.integers(min_value=1, max_value=4))
+    _, others = draw(
+        helpers.dtype_and_values(
+            num_arrays=4,
+            dtype=["int64"] * 4,
+            shape=(ndim,),
+            min_value=1,
+            max_value=3,
+            small_abs_safety_factor=1,
+            large_abs_safety_factor=1,
+        )
+    )
+    others = [other.tolist() for other in others]
+    window, dilation = others[0], others[2]
+    op_shape = []
+    for i in range(ndim):
+        min_x = window[i] + (window[i] - 1) * (dilation[i] - 1)
+        op_shape.append(draw(st.integers(min_x, min_x + 1)))
+    dtype, operand = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=op_shape,
+        )
+    )
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=ndim,
+                max_size=ndim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
+    return dtype * 2, operand, init_value, py_func, others, padding
+
+
+def _get_reduce_func(dtype):
+    if dtype == "bool":
+        return st.sampled_from([ivy.logical_and, ivy.logical_or])
+    else:
+        return st.sampled_from([ivy.add, ivy.maximum, ivy.minimum, ivy.multiply])
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.reduce_window",
+    all_args=_reduce_window_helper(_get_reduce_func),
+    test_with_out=st.just(False),
+    ground_truth_backend="jax",
+)
+def test_reduce_window(
+    *,
+    all_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtypes, operand, init_value, computation, others, padding = all_args
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        operand=operand[0],
+        init_value=init_value[0],
+        computation=computation,
+        window_dimensions=others[0],
+        window_strides=others[1],
+        padding=padding,
+        base_dilation=others[2],
+        window_dilation=None,
     )

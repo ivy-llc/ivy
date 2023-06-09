@@ -1,17 +1,17 @@
 # global
-import math
-
 import paddle
+from typing import Optional, Tuple, Union, Any
+
+# local
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
-from typing import Optional, Tuple
-
-import ivy
-
 from .. import backend_version
 
-from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+)
 def diagflat(
     x: paddle.Tensor,
     /,
@@ -42,6 +42,9 @@ def diagflat(
         )(diag)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+)
 def kron(
     a: paddle.Tensor,
     b: paddle.Tensor,
@@ -80,3 +83,28 @@ def adjoint(
 ) -> paddle.Tensor:
     _check_valid_dimension_size(x)
     return paddle.moveaxis(x, -2, -1).conj()
+
+
+def cond(
+    x: paddle.Tensor,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> Any:
+    raise IvyNotImplementedException()
+
+
+def cov(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[paddle.Tensor] = None,
+    aweights: Optional[paddle.Tensor] = None,
+    dtype: Optional[paddle.dtype] = None,
+):
+    raise IvyNotImplementedException()

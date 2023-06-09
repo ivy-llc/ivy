@@ -13,4 +13,6 @@ def while_loop(test_fn, body_fn, vars):
     result = vars
     while test_fn(*result):
         result = body_fn(*result)
+        if not isinstance(result, tuple):
+            result = (result,)
     return result

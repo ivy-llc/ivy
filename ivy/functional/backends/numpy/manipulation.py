@@ -174,7 +174,7 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    num_or_size_splits: Optional[Union[int, Sequence[int], np.ndarray]] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[np.ndarray]:
@@ -199,6 +199,8 @@ def split(
             num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
                 int(remainder * num_or_size_splits)
             ]
+    elif isinstance(num_or_size_splits, np.ndarray):
+        num_or_size_splits = num_or_size_splits.tolist()
     if isinstance(num_or_size_splits, (list, tuple)):
         num_or_size_splits = np.cumsum(num_or_size_splits[:-1])
     if copy:
@@ -207,7 +209,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,
@@ -293,3 +295,16 @@ def clip(
 
 
 clip.support_native_out = True
+
+
+def as_strided(
+    x: np.ndarray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    strides: Sequence[int],
+    /,
+) -> np.ndarray:
+    return np.lib.stride_tricks.as_strided(
+        x,
+        shape=shape,
+        strides=strides,
+    )

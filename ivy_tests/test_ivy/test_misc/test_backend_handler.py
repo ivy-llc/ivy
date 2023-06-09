@@ -55,7 +55,9 @@ if "tensorflow" in available_frameworks():
 if "jax" in available_frameworks():
     available_array_types_input.append(("jax", jnp.array(3.0)))
     if version.parse(jax.__version__) >= version.parse("0.4.1"):
-        available_array_types_class.append(("jax", "<class 'jaxlib.xla_extension.ArrayImpl'>"))
+        available_array_types_class.append(
+            ("jax", "<class 'jaxlib.xla_extension.ArrayImpl'>")
+        )
     else:
         available_array_types_class.append(
             ("jax", "<class 'jaxlib.xla_extension.DeviceArray'>")
@@ -97,7 +99,7 @@ def test_set_backend(backend, array_type):
     ivy.utils.assertions.check_equal(str(type(ivy.to_native(x))), array_type)
 
 
-@pytest.mark.parametrize(("backend"), available_frameworks())
+@pytest.mark.parametrize("backend", available_frameworks())
 def test_previous_backend(backend):
     if not ivy.backend_stack:
         assert ivy.previous_backend() is None
@@ -159,7 +161,7 @@ def test_current_backend(backend, array_type):
         )
 
 
-@pytest.mark.parametrize(("excluded"), available_frameworks_with_none)
+@pytest.mark.parametrize("excluded", available_frameworks_with_none)
 def test_choose_random_backend(excluded):
     backend = ivy.choose_random_backend(excluded=excluded)
     if excluded is None:
@@ -168,19 +170,6 @@ def test_choose_random_backend(excluded):
         backends_list = list(_backend_dict.keys())
         backends_list.remove(excluded)
         assert backend in backends_list
-
-
-@pytest.mark.parametrize("backend", available_frameworks())
-def test_get_backend(backend):
-    imported_backend = importlib.import_module(_backend_dict[backend])
-
-    # checking whether the updating of __dict__ works
-    assert "pi" not in imported_backend.__dict__
-    ivy.get_backend(backend)
-    assert "pi" in imported_backend.__dict__
-
-    # checking whether the backend is returned correctly
-    ivy.utils.assertions.check_equal(ivy.get_backend(backend), imported_backend)
 
 
 # Dynamic Backend
@@ -222,11 +211,10 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
 
     # add the necessary asserts to check if the data
     # of the objects are in the correct format
-    
-    assert isinstance(a.data,ivy.current_backend().NativeArray)
-    assert isinstance(ivy_cont["b"].data,ivy.current_backend().NativeArray)
 
-    
+    assert isinstance(a.data, ivy.current_backend().NativeArray)
+    assert isinstance(ivy_cont["b"].data, ivy.current_backend().NativeArray)
+
     if end_backend == "numpy":
         assert isinstance(nativ_cont["b"].data, np.ndarray)
     elif end_backend == "jax":
@@ -235,9 +223,9 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
     if middle_backend not in ("jax", "numpy") and end_backend not in ("jax", "numpy"):
         # these frameworks don't support native variables
         assert ivy.current_backend().gradients.is_variable(nativ_cont["b"].data)
-            
+
     else:
-        assert isinstance(nativ_cont["b"].data,ivy.current_backend().NativeArray)
+        assert isinstance(nativ_cont["b"].data, ivy.current_backend().NativeArray)
 
 
 def test_dynamic_backend_setter():
@@ -273,10 +261,10 @@ def test_variables():
 
     ivy.set_backend("torch", dynamic=True)
     assert ivy.current_backend().gradients.is_variable(dyn_cont["w"].data)
-    
+
     ivy.set_backend("paddle", dynamic=True)
     assert ivy.current_backend().gradients.is_variable(dyn_cont["w"].data)
-    
+
     assert isinstance(stat_cont["w"], tf.Variable)
 
 

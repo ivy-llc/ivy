@@ -1,6 +1,6 @@
 # global
 from typing import Optional, Union, Sequence, List
-
+import numpy as np
 import torch
 
 # local
@@ -87,13 +87,12 @@ def astype(
 
 
 def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
-    return list(torch.broadcast_tensors(*arrays))
+    try:
+        return list(torch.broadcast_tensors(*arrays))
+    except RuntimeError as e:
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
 
 
-@with_unsupported_dtypes(
-    {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64", "complex")},
-    backend_version,
-)
 def broadcast_to(
     x: torch.Tensor,
     /,
@@ -101,21 +100,22 @@ def broadcast_to(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     if x.ndim > len(shape):
         return torch.broadcast_to(x.reshape(-1), shape)
     return torch.broadcast_to(x, shape)
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[torch.dtype, str, torch.Tensor], /) -> Finfo:
-    if isinstance(type, torch.Tensor):
+def finfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> Finfo:
+    if isinstance(type, (torch.Tensor, np.ndarray)):
         type = type.dtype
     return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[torch.dtype, str, torch.Tensor], /) -> torch.iinfo:
-    if isinstance(type, torch.Tensor):
+def iinfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> torch.iinfo:
+    if isinstance(type, (torch.Tensor, np.ndarray)):
         type = type.dtype
     return torch.iinfo(ivy.as_native_dtype(type))
 
@@ -140,7 +140,7 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dty
 
 
 def as_ivy_dtype(
-    dtype_in: Union[torch.dtype, str, int, float, complex, bool],
+    dtype_in: Union[torch.dtype, str, int, float, complex, bool, np.dtype],
     /,
 ) -> ivy.Dtype:
     if dtype_in is int:
@@ -151,7 +151,8 @@ def as_ivy_dtype(
         return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
-
+    if isinstance(dtype_in, np.dtype):
+        dtype_in = dtype_in.name
     if isinstance(dtype_in, str):
         if dtype_in in native_dtype_dict:
             dtype_str = dtype_in
@@ -179,8 +180,10 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
-def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torch.dtype:
+@with_unsupported_dtypes({"2.0.1 and below": ("uint16",)}, backend_version)
+def as_native_dtype(
+    dtype_in: Union[torch.dtype, str, bool, int, float, np.dtype]
+) -> torch.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
@@ -189,24 +192,25 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torc
         return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return torch.bool
+    if isinstance(dtype_in, np.dtype):
+        dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
     if dtype_in in native_dtype_dict.keys():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(
-            "Cannot convert to PyTorch dtype."
-            f" {dtype_in} is not supported by PyTorch."
+            f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
         )
 
 
-def dtype(x: torch.tensor, *, as_native: bool = False) -> ivy.Dtype:
+def dtype(x: Union[torch.tensor, np.ndarray], *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
-        return ivy.to_native(x).dtype
+        return ivy.as_native_dtype(x.dtype)
     return as_ivy_dtype(x.dtype)
 
 
-def dtype_bits(dtype_in: Union[torch.dtype, str], /) -> int:
+def dtype_bits(dtype_in: Union[torch.dtype, str, np.dtype], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
@@ -218,3 +222,12 @@ def dtype_bits(dtype_in: Union[torch.dtype, str], /) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
+
+
+def is_native_dtype(dtype_in: Union[torch.dtype, str], /) -> bool:
+    if not ivy.is_hashable_dtype(dtype_in):
+        return False
+    if dtype_in in ivy_dtype_dict and isinstance(dtype_in, torch.dtype):
+        return True
+    else:
+        return False

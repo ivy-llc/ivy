@@ -9,9 +9,18 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
-def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
-    return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
+def imag(input, name=None):
+    return ivy.imag(input)
+
+
+@to_ivy_arrays_and_back
+def accumulate_n(inputs, shape=None, tensor_dtype=None, name=None):
+    return ivy.sum(inputs, axis=0)
 
 
 @to_ivy_arrays_and_back
@@ -23,6 +32,11 @@ def add(x, y, name=None):
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     return ivy.exp(x)
+
+
+@to_ivy_arrays_and_back
+def expm1(x, name=None):
+    return ivy.expm1(x)
 
 
 @to_ivy_arrays_and_back
@@ -157,6 +171,11 @@ def erfcinv(x, name="erfcinv"):
 
 
 @to_ivy_arrays_and_back
+def is_inf(x, name=None):
+    return ivy.isinf(x)
+
+
+@to_ivy_arrays_and_back
 def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
@@ -180,6 +199,16 @@ def log_sigmoid(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def logical_not(x, name="logical_not"):
+    return ivy.logical_not(x)
+
+
+@to_ivy_arrays_and_back
+def log1p(x, name=None):
+    return ivy.log1p(x)
+
+
+@to_ivy_arrays_and_back
 def logical_and(x, y, name="LogicalAnd"):
     return ivy.logical_and(x, y)
 
@@ -187,6 +216,11 @@ def logical_and(x, y, name="LogicalAnd"):
 @to_ivy_arrays_and_back
 def logical_xor(x, y, name="LogicalXor"):
     return ivy.logical_xor(x, y)
+
+
+@to_ivy_arrays_and_back
+def logical_or(x, y, name="logical_or"):
+    return ivy.logical_or(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -225,6 +259,11 @@ def pow(x, y, name="pow"):
 
 
 @to_ivy_arrays_and_back
+def reciprocal(x, name="reciprocal"):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
 def reciprocal_no_nan(x, name="reciprocal_no_nan"):
     return ivy.where(
         x == 0,
@@ -255,7 +294,7 @@ def reduce_euclidean_norm(
 @to_ivy_arrays_and_back
 def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
     # stable logsumexp trick
-    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=True)
+    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=False)
     return (
         ivy.log(
             ivy.sum(
@@ -299,6 +338,7 @@ def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
 
 @to_ivy_arrays_and_back
 def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
+    input_tensor = ivy.array(input_tensor)
     return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
         input_tensor.dtype
     )
@@ -321,10 +361,47 @@ def subtract(x, y, name=None):
     return ivy.subtract(x, y)
 
 
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def squared_difference(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
-    return ivy.square(ivy.subtract(x, y))
+    res = ivy.square(ivy.subtract(x, y))
+    if isinstance(res, complex):
+        res = res.real - res.imag * 1j  # Changing the sign of the imaginary part
+        return res
+    return res
+
+
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def sin(x, name=None):
+    return ivy.sin(x)
 
 
 @to_ivy_arrays_and_back
@@ -416,8 +493,18 @@ def floor(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def floordiv(x, y, name=None):
+    return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
+
+
+@to_ivy_arrays_and_back
+def round(x, name=None):
+    return ivy.round(x)
 
 
 @to_ivy_arrays_and_back
@@ -452,12 +539,16 @@ def nextafter(x1, x2, name=None):
 @with_unsupported_dtypes(
     {
         "1.2.0": ("float16", "complex64", "complex128"),
-        "1.8.0 and below": ("float16"),
+        "1.8.0 and below": ("float16",),
         "2.9.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
     },
     "tensorflow",
 )
+@to_ivy_arrays_and_back
 def abs(x, name=None):
+    dtype = ivy.dtype(x)
+    if dtype in ["complex64", "complex128"]:
+        return ivy.sqrt(ivy.square(ivy.real(x)) + ivy.square(ivy.imag(x)))
     return ivy.abs(x)
 
 
@@ -477,6 +568,11 @@ def acos(x, name="acos"):
 
 
 @to_ivy_arrays_and_back
+def acosh(x, name="acosh"):
+    return ivy.acosh(x)
+
+
+@to_ivy_arrays_and_back
 def square(x, name=None):
     return ivy.square(x)
 
@@ -492,6 +588,7 @@ def is_nan(x, name=None):
     },
     "tensorflow",
 )
+@to_ivy_arrays_and_back
 def is_finite(x, name=None):
     return ivy.isfinite(x)
 
@@ -502,12 +599,18 @@ def atan(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def atan2(y, x, name=None):
+    return ivy.atan2(y, x)
+
+
+@to_ivy_arrays_and_back
 def log(x, name=None):
     return ivy.log(x)
 
 
 @to_ivy_arrays_and_back
 def add_n(inputs, name=None):
+    inputs = ivy.array(inputs)
     return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
 
@@ -517,9 +620,21 @@ def floormod(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def less_equal(x, y, name="LessEqual"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.less_equal(x, y)
+
+
+@to_ivy_arrays_and_back
 def greater(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
+
+
+@to_ivy_arrays_and_back
+def less(x, y, name="None"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.less(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -530,3 +645,56 @@ def cos(x, name=None):
 @to_ivy_arrays_and_back
 def sinh(x, name=None):
     return ivy.sinh(x)
+
+
+@to_ivy_arrays_and_back
+def softmax(logits, axis=None, name=None):
+    return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def softplus(features, name=None):
+    return ivy.softplus(features)
+
+
+@to_ivy_arrays_and_back
+def xlogy(x, y, name=None):
+    return ivy.xlogy(x, y)
+
+
+@to_ivy_arrays_and_back
+def cosh(x, name=None):
+    return ivy.cosh(x)
+
+
+@to_ivy_arrays_and_back
+def angle(input, name=None):
+    return ivy.angle(input)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": ("float32", "float64"),
+    },
+    "tensorflow",
+)
+def zeta(x, q, name=None):
+    return ivy.zeta(x, q)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater_equal(x, y)
+
+
+@to_ivy_arrays_and_back
+def in_top_k(target, pred, k, name=None):
+    top_k = ivy.top_k(target, k)
+    return ivy.array([val in top_k.values for val in target])
+
+
+@to_ivy_arrays_and_back
+def conj(x, name=None):
+    return ivy.conj(x)

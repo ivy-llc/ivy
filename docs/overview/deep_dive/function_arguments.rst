@@ -114,7 +114,7 @@ We present both the Ivy API signature and also a backend-specific signature for 
 
 
 Positional and Keyword Arguments
-------
+--------------------------------
 In both signatures, we follow the `Array API Standard convention`_ about positional and keyword arguments.
 
 * Positional parameters must be positional-only parameters.
@@ -131,7 +131,7 @@ Therefore, given that Ivy fully adheres to the Array API Standard, Ivy also adop
 
 
 Input Arrays
-------
+------------
 
 In each example, we can see that the input arrays have type :code:`Union[ivy.Array, ivy.NativeArray]` whereas the output arrays have type :class:`ivy.Array`.
 This is the case for all functions in the Ivy API.

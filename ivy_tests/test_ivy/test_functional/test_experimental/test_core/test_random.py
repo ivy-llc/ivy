@@ -63,7 +63,7 @@ def test_dirichlet(
         assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         u, v = ivy.array(u), ivy.array(v)
         assert ivy.all(ivy.sum(u, axis=-1) == ivy.sum(v, axis=-1))
         assert ivy.all(u >= 0) and ivy.all(u <= 1)
@@ -88,19 +88,12 @@ def test_beta(
     *,
     dtype_and_alpha_beta,
     seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
     test_flags,
 ):
-
     dtype, alpha_beta = dtype_and_alpha_beta
     if "float16" in dtype:
         return
@@ -120,7 +113,7 @@ def test_beta(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert ivy.all(u >= 0) and ivy.all(u <= 1)
         assert ivy.all(v >= 0) and ivy.all(v <= 1)
 
@@ -168,7 +161,7 @@ def test_gamma(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert ivy.all(u >= 0)
         assert ivy.all(v >= 0)
 
@@ -184,12 +177,6 @@ def test_gamma(
         max_value=5,
         min_num_dims=0,
     ),
-    shape=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
@@ -197,7 +184,6 @@ def test_gamma(
 def test_poisson(
     *,
     dtype_and_lam,
-    shape,
     dtype,
     seed,
     test_flags,
@@ -207,7 +193,6 @@ def test_poisson(
     ground_truth_backend,
 ):
     lam_dtype, lam = dtype_and_lam
-    shape = shape + ivy.shape(lam[0])
 
     def call():
         return helpers.test_function(
@@ -219,7 +204,7 @@ def test_poisson(
             fn_name=fn_name,
             test_values=False,
             lam=lam[0],
-            shape=shape,
+            shape=None,
             dtype=dtype[0],
             seed=seed,
         )
@@ -230,7 +215,7 @@ def test_poisson(
         assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 

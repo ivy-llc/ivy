@@ -1,13 +1,9 @@
 # global
 import paddle
 from typing import Union, Optional, Sequence
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from . import backend_version
+import ivy.functional.backends.paddle as paddle_backend
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def all(
     x: paddle.Tensor,
     /,
@@ -16,23 +12,27 @@ def all(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x = paddle.to_tensor(x, dtype=paddle.bool)
+    x = x.cast("bool")
     if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
+        axis = list(range(x.ndim))
     if isinstance(axis, int):
-        return paddle.all(x, axis=axis, keepdim=keepdims)
-    dims = len(x.shape)
-    axis = [i % dims for i in axis]
-    axis.sort()
-    for i, a in enumerate(axis):
-        x = paddle.all(x, axis=a if keepdims else a - i, keepdim=keepdims)
-    return x
+        ret = paddle.all(x, axis=axis, keepdim=keepdims)
+    else:
+        axis = [i % x.ndim for i in axis]
+        axis.sort()
+        ret = x.clone()
+        for i, a in enumerate(axis):
+            ret = paddle.all(ret, axis=a if keepdims else a - i, keepdim=keepdims)
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = paddle_backend.squeeze(ret, axis=-1)
+    return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def any(
     x: paddle.Tensor,
     /,
@@ -41,15 +41,22 @@ def any(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x = paddle.to_tensor(x, dtype=paddle.bool)
+    x = x.cast("bool")
     if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
+        axis = list(range(x.ndim))
     if isinstance(axis, int):
-        return paddle.any(x, axis=axis, keepdim=keepdims)
-    dims = len(x.shape)
-    axis = [i % dims for i in axis]
-    axis.sort()
-    for i, a in enumerate(axis):
-        x = paddle.any(x, axis=a if keepdims else a - i, keepdim=keepdims)
-    return x
+        ret = paddle.any(x, axis=axis, keepdim=keepdims)
+    else:
+        axis = [i % x.ndim for i in axis]
+        axis.sort()
+        ret = x.clone()
+        for i, a in enumerate(axis):
+            ret = paddle.any(ret, axis=a if keepdims else a - i, keepdim=keepdims)
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = paddle_backend.squeeze(ret, axis=-1)
+    return ret

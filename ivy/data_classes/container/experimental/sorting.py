@@ -8,62 +8,32 @@ import ivy
 
 class _ContainerWithSortingExperimental(ContainerBase):
     @staticmethod
-    def static_msort(
-        a: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
+    def static_invert_permutation(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.msort. This method simply wraps the
-        function, and so the docstring for ivy.msort also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.invert_permutation.
 
-        Parameters
-        ----------
-        a
-            array-like or container input.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            a container containing sorted input arrays.
-
-        Examples
-        --------
-        With :class:`ivy.Container` input:
-
-        >>> a = ivy.Container(x = ivy.asarray([[8, 9, 6],[6, 2, 6]]),
-        ...                   y = ivy.asarray([[7, 2],[3, 4]])
-        >>> ivy.Container.static_lexsort(a)
-        {
-            x: ivy.array(
-                [[6, 2, 6],
-                 [8, 9, 6]]
-                ),
-            y: ivy.array(
-                [[3, 4],
-                 [7, 2]]
-                )
-        }
+        This method simply wraps the function, and so the docstring for
+        ivy.invert_permutation also applies to this method with minimal
+        changes.
         """
         return ContainerBase.cont_multi_map_in_function(
-            "msort",
-            a,
+            "invert_permutation",
+            x,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
-    def msort(
+    def invert_permutation(
         self: ivy.Container,
         /,
         *,
@@ -71,49 +41,20 @@ class _ContainerWithSortingExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.msort.
-        This method simply wraps the function, and
-        so the docstring for ivy.msort also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.invert_permutation.
 
-        Parameters
-        ----------
-        self
-            input container with array-like inputs to sort.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            a container containing the sorted input arrays.
-
-        Examples
-        --------
-        >>> a = ivy.Container(x = ivy.asarray([[8, 9, 6],[6, 2, 6]]),
-        ...                   y = ivy.asarray([[7, 2],[3, 4]])
-        >>> a.msort()
-        {
-            x: ivy.array(
-                [[6, 2, 6],
-                 [8, 9, 6]]
-                ),
-            y: ivy.array(
-                [[3, 4],
-                 [7, 2]]
-                )
-        }
+        This method simply wraps the function, and so the docstring for
+        ivy.invert_permutation also applies to this method with minimal
+        changes.
         """
-        return self.static_msort(
+        return self.static_invert_permutation(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -130,8 +71,8 @@ class _ContainerWithSortingExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.lexsort. This method simply wraps the
-        function, and so the docstring for ivy.lexsort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.lexsort also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -183,9 +124,8 @@ class _ContainerWithSortingExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.lexsort.
-        This method simply wraps the function, and
-        so the docstring for ivy.lexsort also applies to this method
+        ivy.Container instance method variant of ivy.lexsort. This method simply wraps
+        the function, and so the docstring for ivy.lexsort also applies to this method
         with minimal changes.
 
         Parameters

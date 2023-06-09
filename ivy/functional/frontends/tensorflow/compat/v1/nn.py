@@ -50,7 +50,12 @@ def fused_batch_norm(
             scale * (x_rest_by_depth - mean) / ivy.sqrt(variance + epsilon) + offset,
             x.shape,
         )
-        variance = variance * rest_size / (rest_size - 1) if rest_size > 1 else variance
+        float_rest_size = ivy.astype(rest_size, x.dtype)
+        variance = (
+            variance * float_rest_size / (float_rest_size - 1)
+            if rest_size > 1
+            else variance
+        )
         mean = ivy.reshape(
             mean * exponential_avg_factor + old_mean * (1 - exponential_avg_factor),
             old_mean.shape,
@@ -128,4 +133,23 @@ def separable_conv2d(
         padding,
         data_format=data_format,
         dilations=dilations,
+    )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("float16",)},
+    "tensorflow",
+)
+def max_pool(value, ksize, strides, padding, data_format="NHWC", name=None, input=None):
+    if input is not None and value is not None:
+        raise ivy.utils.exceptions.IvyException(
+            "Cannot specify both 'value' and 'input'."
+        )
+    return tf_nn.max_pool2d(
+        input if input is not None else value,
+        ksize,
+        strides,
+        padding,
+        data_format=data_format,
     )

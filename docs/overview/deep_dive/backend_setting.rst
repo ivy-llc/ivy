@@ -22,7 +22,7 @@ When calling `this function`_ for setting the backend, the following steps are p
    All functions in this unmodified backend module are *primary* functions, because only primary functions are stored in :mod:`ivy.functional.backends.backend_name`.
    This backend module does not include any *compositional* functions.
 #. loop through the original :code:`ivy_original_dict` (which has all functions, including compositional), and (a) add the primary function from the backend if it exists, (b) else add the compositional function from :code:`ivy_original_dict`.
-#. `wrap the functions`_ where necessary, extending them with shared repeated functionality and `writing the function`_ to :attr:`ivy.__dict__`
+#. `wrap the functions`_ where necessary, extending them with shared repeated functionality and `writing the function`_ to :attr:`ivy.__dict__`.
    Wrapping is used in order to avoid excessive code duplication in every backend function implementation.
    This is explained in more detail in the next section: :ref:`Function Wrapping`.
 
@@ -55,6 +55,9 @@ However when the current backend is set to the previous using the :func:`ivy.pre
 While the `implicit_backend`_ functionality gives more freedom to the user, the recommended way of doing things would be set the backend explicitly.
 In addition, all the previously set backends can be cleared by calling :func:`ivy.unset_backend`.
 
+:func:`set_dynamic_backend`. Dynamic backend setting is a feature which allows conversion of the ivy arrays to the newly set backend by the user.
+When the user calls `ivy` function with a native array of one backend with another backend set,doing a `set_backend` with `dynamic=True`, the function would 
+get converted based on the newly set backend which gets it working.
 
 Backend and Frontend Version Support
 ------------------------------------

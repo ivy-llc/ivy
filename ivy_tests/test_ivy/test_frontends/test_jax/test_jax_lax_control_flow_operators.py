@@ -113,3 +113,91 @@ def test_jax_switch(
         branches=[_test_branch_1, _test_branch_2],
         operand=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.fori_loop",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-1000,
+        max_value=1000,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    lower=st.integers(min_value=-10, max_value=10),
+    upper=st.integers(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_fori_loop(
+    *,
+    dtype_and_x,
+    lower,
+    upper,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    def _test_body_fn(x, y):
+        return x + y
+
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lower=lower,
+        upper=upper,
+        body_fun=_test_body_fn,
+        init_val=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.while_loop",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-1000,
+        max_value=1000,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+)
+def test_jax_lax_while_loop(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    def _test_cond_fn(x):
+        def any_negative_real(arr):
+            for elem in arr:
+                if isinstance(elem, (int, float)) and elem < 0:
+                    return True
+                elif isinstance(elem, complex):
+                    return False
+                elif isinstance(elem, (list, tuple)):
+                    if any_negative_real(elem):
+                        return True
+            return False
+
+        return any_negative_real(x)
+
+    def _test_body_fn(x):
+        return x + 1
+
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        cond_fun=_test_cond_fn,
+        body_fun=_test_body_fn,
+        init_val=x[0],
+    )

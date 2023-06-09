@@ -8,8 +8,6 @@ from typing import Optional, Union, Sequence, List
 import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
 
 ivy_dtype_dict = {
     jnp.dtype("int8"): "int8",
@@ -62,6 +60,27 @@ native_dtype_dict = {
     "bool": jnp.dtype("bool"),
 }
 
+char_rep_dtype_dict = {
+    "?": "bool",
+    "i": int,
+    "i1": "int8",
+    "i2": "int16",
+    "i4": "int32",
+    "i8": "int64",
+    "f": float,
+    "f2": "float16",
+    "f4": "float32",
+    "f8": "float64",
+    "c": complex,
+    "c8": "complex64",
+    "c16": "complex128",
+    "u": "uint32",
+    "u1": "uint8",
+    "u2": "uint16",
+    "u4": "uint32",
+    "u8": "uint64",
+}
+
 
 class Finfo:
     def __init__(self, jnp_finfo: jnp.finfo):
@@ -111,13 +130,12 @@ def astype(
 
 
 def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
-    return jnp.broadcast_arrays(*arrays)
+    try:
+        return jnp.broadcast_arrays(*arrays)
+    except ValueError as e:
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
 
 
-@with_unsupported_dtypes(
-    {"0.3.14 and below": ("complex")},
-    backend_version,
-)
 def broadcast_to(
     x: JaxArray,
     /,
@@ -125,18 +143,23 @@ def broadcast_to(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     if x.ndim > len(shape):
         return jnp.broadcast_to(x.reshape(-1), shape)
     return jnp.broadcast_to(x, shape)
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[jnp.dtype, str, JaxArray], /) -> Finfo:
+def finfo(type: Union[jnp.dtype, str, JaxArray, np.ndarray], /) -> Finfo:
+    if isinstance(type, np.ndarray):
+        type = type.dtype.name
     return Finfo(jnp.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[jnp.dtype, str, JaxArray], /) -> np.iinfo:
+def iinfo(type: Union[jnp.dtype, str, JaxArray, np.ndarray], /) -> np.iinfo:
+    if isinstance(type, np.ndarray):
+        type = type.dtype.name
     return jnp.iinfo(ivy.as_native_dtype(type))
 
 
@@ -155,7 +178,7 @@ def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> ivy.Dtype:
 
 
 def as_ivy_dtype(
-    dtype_in: Union[jnp.dtype, str, int, float, complex, bool],
+    dtype_in: Union[jnp.dtype, str, int, float, complex, bool, np.dtype],
     /,
 ) -> ivy.Dtype:
     if dtype_in is int:
@@ -166,8 +189,11 @@ def as_ivy_dtype(
         return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
-
+    if isinstance(dtype_in, np.dtype):
+        dtype_in = dtype_in.name
     if isinstance(dtype_in, str):
+        if dtype_in in char_rep_dtype_dict:
+            return as_ivy_dtype(char_rep_dtype_dict[dtype_in])
         if dtype_in in native_dtype_dict:
             dtype_str = dtype_in
         else:
@@ -194,7 +220,9 @@ def as_ivy_dtype(
         )
 
 
-def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float], /) -> jnp.dtype:
+def as_native_dtype(
+    dtype_in: Union[jnp.dtype, str, bool, int, float, np.dtype],
+) -> jnp.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
@@ -203,8 +231,12 @@ def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float], /) -> jnp
         return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return jnp.dtype("bool")
+    if isinstance(dtype_in, np.dtype):
+        dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
+    if dtype_in in char_rep_dtype_dict:
+        return as_native_dtype(char_rep_dtype_dict[dtype_in])
     if dtype_in in native_dtype_dict.values():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
@@ -213,13 +245,13 @@ def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float], /) -> jnp
         )
 
 
-def dtype(x: JaxArray, *, as_native: bool = False) -> ivy.Dtype:
+def dtype(x: Union[JaxArray, np.ndarray], *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
-        return ivy.to_native(x).dtype
+        return ivy.as_native_dtype(x.dtype)
     return as_ivy_dtype(x.dtype)
 
 
-def dtype_bits(dtype_in: Union[jnp.dtype, str], /) -> int:
+def dtype_bits(dtype_in: Union[jnp.dtype, str, np.dtype], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
@@ -230,3 +262,12 @@ def dtype_bits(dtype_in: Union[jnp.dtype, str], /) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
+
+
+def is_native_dtype(dtype_in: Union[jnp.dtype, str], /) -> bool:
+    if not ivy.is_hashable_dtype(dtype_in):
+        return False
+    if dtype_in in ivy_dtype_dict:
+        return True
+    else:
+        return False

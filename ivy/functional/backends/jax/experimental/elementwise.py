@@ -8,33 +8,14 @@ from ivy import (
     is_float_dtype,
 )
 from ivy.functional.backends.jax import JaxArray
-from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
 import jax.numpy as jnp
 import jax.scipy as js
 
 jax_ArrayLike = Union[JaxArray, Number]
 
 
-def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.lcm(x1, x2)
-
-
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
-
-
-@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
-def fmod(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.fmod(x1, x2)
 
 
 def fmax(
@@ -46,28 +27,6 @@ def fmax(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmax(x1, x2)
-
-
-def fmin(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.fmin(x1, x2)
-
-
-def trapz(
-    y: JaxArray,
-    /,
-    *,
-    x: Optional[JaxArray] = None,
-    dx: float = 1.0,
-    axis: int = -1,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.trapz(y, x=x, dx=dx, axis=axis)
 
 
 def float_power(
@@ -83,15 +42,6 @@ def float_power(
     else:
         out_dtype = jnp.float64
     return jnp.float_power(x1, x2).astype(out_dtype)
-
-
-def exp2(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.power(2, x)
 
 
 def copysign(
@@ -138,17 +88,6 @@ def nansum(
     return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
-def gcd(
-    x1: Union[JaxArray, float, list, tuple],
-    x2: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.gcd(x1, x2)
-
-
 def isclose(
     a: JaxArray,
     b: JaxArray,
@@ -160,33 +99,6 @@ def isclose(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
-
-def nan_to_num(
-    x: JaxArray,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
-
-
-def logaddexp2(
-    x1: Union[JaxArray, float, list, tuple],
-    x2: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    if not is_float_dtype(x1):
-        x1 = x1.astype(default_float_dtype(as_native=True))
-        x2 = x2.astype(default_float_dtype(as_native=True))
-    return jnp.logaddexp2(x1, x2)
 
 
 def signbit(
@@ -256,25 +168,6 @@ def nextafter(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nextafter(x1, x2)
-
-
-def angle(
-    z: JaxArray,
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.angle(z, deg=deg)
-
-
-def imag(
-    val: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.imag(val)
 
 
 def zeta(
@@ -520,10 +413,6 @@ def gradient(
 def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     x, y = promote_types_of_inputs(x, y)
     return js.special.xlogy(x, y)
-
-
-def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.real(x)
 
 
 def conj(
