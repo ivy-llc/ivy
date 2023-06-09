@@ -139,3 +139,24 @@ def logical_xor(x, y, /, *, name=None, out=None):
 @handle_out_argument
 def logical_not(x, /, *, name=None, out=None):
     return ivy.logical_not(x, out=out)
+
+
+@with_unsupported_dtypes(
+    {   
+        "2.4.2 and below": (
+            "bool",
+            "uint8",
+            "int8",
+            "int16",
+            "int64",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128"
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def is_empty(x, name=None):
+    return ivy.is_empty(x)
