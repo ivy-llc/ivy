@@ -24,9 +24,13 @@ Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 
 ArgMax = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.math.argmax,
-        kwargs_to_update={"dimension": "axis"},
+    with_unsupported_dtypes(
+        {"2.10.0 and below": ("complex",)},
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.argmax, kwargs_to_update={"dimension": "axis"}
+        )
     )
 )
 
@@ -618,33 +622,51 @@ def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
 ConcatV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.concat))
 
 
+def _tf_to_ivy_ivy_arguments_for_conv(
+    padding, ex_pading, strides, dilations, data_format
+):
+    if data_format.find("C") == 1:
+        strides = strides[2:]
+        dilations = dilations[2:]
+        data_format = "channel_first"
+        pad_index = [4, 8]
+    else:
+        strides = strides[1:-1]
+        dilations = dilations[1:-1]
+        data_format = "channel_last"
+        pad_index = [2, 6]
+    if padding == "EXPLICIT":
+        padding = [
+            (ex_pading[i], ex_pading[i + 1])
+            for i in range(pad_index[0], pad_index[1], 2)
+        ]
+    return padding, strides, dilations, data_format
+
+
 @to_ivy_arrays_and_back
 def Conv2D(
     *,
     input,
-    output,
+    filter,
     strides,
     padding,
+    use_cudnn_on_gpu,
+    explicit_paddings,
     data_format="NHWC",
     dilations=[1, 1, 1, 1],
     name="Conv2D",
 ):
-    if data_format == "NDHWC":
-        strides = [1] + strides[1:-1] + [1]
-        dilations = [1] + dilations[1:-1] + [1]
-    elif data_format == "NCDHW":
-        strides = [1, 1] + strides[2:] + [1]
-        dilations = [1, 1] + dilations[2:] + [1]
-    filter = ivy.variable(ivy.random_normal(shape=output + input, stddev=0.1))
-    return ivy.conv2d(
+    padding, strides, dilations, data_format = _tf_to_ivy_ivy_arguments_for_conv(
+        padding, explicit_paddings, strides, dilations, data_format
+    )
+    return ivy.conv_general_dilated(
         input,
-        output,
         filter,
         strides,
         padding,
         data_format=data_format,
         dilations=dilations,
-        name=name,
+        dims=2,
     )
 
 
