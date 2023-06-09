@@ -4,5 +4,4 @@
   "numpy": ["numpy"],
   "mxnet": ["mxnet"],
   "torch": ["torch-scatter"],
-  "paddle": []
 }

@@ -37,7 +37,7 @@ def install_pkg(path, pkg, base="fw/"):
     elif pkg.split("==")[0] if "==" in pkg else pkg == "paddle":
         subprocess.run(
             (
-                f"pip install --upgrade paddlepaddle-gpu --target {path} -f"
+                f"pip install  paddlepaddle-gpu --target {path} "
                 " -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
                 " --no-cache-dir"
             ),
