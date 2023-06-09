@@ -6,7 +6,7 @@ from typing import List
 import ivy
 
 
-class NestedArray(abc.ABC):
+class NestedArrayBase(abc.ABC):
     """Base class for nested array objects."""
 
     def __init__(self, data, dtype, device, internal=False):
@@ -44,21 +44,6 @@ class NestedArray(abc.ABC):
             data[i] = ivy.to_device(data[i], device)
         return cls(data, dtype, device, internal=True)
 
-    @classmethod
-    def from_row_lengths(cls, values, row_lengths):
-        ivy_arrays = list()
-        for i in range(len(row_lengths)):
-            ivy_arrays.append(values[: row_lengths[i]])
-            values = values[row_lengths[i] :]
-        return cls.nested_array(ivy_arrays)
-
-    @classmethod
-    def from_row_split(cls, values, row_split):
-        row_lengths = list()
-        for i in range(1, len(row_split)):
-            row_lengths.append(row_split[i] - row_split[i - 1])
-        return cls.from_row_lengths(values, row_lengths)
-
     def _generate_shape(
         self,
     ):
@@ -85,8 +70,27 @@ class NestedArray(abc.ABC):
                 final_shape.append(None)
         return final_shape
 
+    @staticmethod
+    def nested_multi_map_in_static_method(fn_name, *args, **kwargs):
+        arg_nest_idxs = ivy.nested_argwhere(
+            args, ivy.is_ivy_nested_array, to_ignore=ivy.Container
+        )
+        kwarg_nest_idxs = ivy.nested_argwhere(
+            kwargs, ivy.is_ivy_nested_array, to_ignore=ivy.Container
+        )
+        # retrieve all the nested_array in args and kwargs
+        arg_nest = ivy.multi_index_nest(args, arg_nest_idxs)
+        kwarg_nest = ivy.multi_index_nest(kwargs, kwarg_nest_idxs)
+        num_nest = len(arg_nest) + len(kwarg_nest)
+        fn = ivy.__dict__[fn_name]
+
+        if num_nest == 1:
+            return ivy.nested_map(
+                fn,
+            )
+
     def unbind(self):
-        return tuple(self._data)
+        return tuple(ivy.copy_nest(self._data))
 
     def reshape(self, shape):
         assert shape[0] == self._shape[0], "batch dimension is not changeable"

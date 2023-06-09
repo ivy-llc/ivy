@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, Literal, Sequence, Callable
 
 # local
 import ivy
@@ -830,4 +830,65 @@ class _ArrayWithLayersExperimental(abc.ABC):
         return ivy.adaptive_avg_pool2d(
             self._data,
             output_size,
+        )
+
+    def reduce_window(
+        self: ivy.Array,
+        init_value: Union[int, float],
+        computation: Callable,
+        window_dimensions: Union[int, Sequence[int]],
+        /,
+        *,
+        window_strides: Union[int, Sequence[int]] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+        base_dilation: Union[int, Sequence[int]] = 1,
+        window_dilation: Union[int, Sequence[int]] = 1,
+    ) -> ivy.Array:
+        """
+        Apply a reduction function to all elements in each window of an array.
+
+        Parameters
+        ----------
+        self
+            An array representing the base area on which the window is going to slide
+            over.
+        init_value
+            The starting value for the reduction.
+        computation
+            The reduction function to apply to elements in each window.
+        window_dimensions
+            A sequence containing the window dimensions.
+        window_strides
+            A sequence containing the window strides.
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding
+            to apply before and after each spatial dimension.
+        base_dilation
+            A sequence containing the base dilation values.
+        window_dilation
+            A sequence containing the window dilation values.
+
+        Returns
+        -------
+        ret
+            The result of the pooling-like operation.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3, 4],
+        >>>                [5, 6, 7, 8],
+        >>>                [9, 10, 11, 12]])
+        >>> x.reduce_window(0, ivy.sum, (2, 2))
+        ivy.array([[32.]])
+        """
+        return ivy.reduce_window(
+            self._data,
+            init_value,
+            computation,
+            window_dimensions,
+            window_strides=window_strides,
+            padding=padding,
+            base_dilation=base_dilation,
+            window_dilation=window_dilation,
         )
