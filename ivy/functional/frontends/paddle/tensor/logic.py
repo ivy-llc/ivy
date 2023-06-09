@@ -158,5 +158,5 @@ def logical_not(x, /, *, name=None, out=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def is_empty(x, name=None):
+def is_empty(x, /, *, name=None):
     return ivy.is_empty(x)
