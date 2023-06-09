@@ -107,7 +107,7 @@ def tensorsolve(a, b, axes=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, "jax")
 def tensorinv(a, ind=2):
     old_shape = ivy.shape(a)
     prod = 1
@@ -137,8 +137,8 @@ def cond(x, p=None):
     else:
         if ivy.get_num_dims(x) < 2:
             raise ValueError(
-                "%d-dimensional array given."
-                "Array must be at least two-dimensional" % ivy.get_num_dims(x)
+                "%d-dimensional array given. Array must be at least two-dimensional"
+                % ivy.get_num_dims(x)
             )
         m, n = ivy.shape(x)[-2:]
         if m != n:

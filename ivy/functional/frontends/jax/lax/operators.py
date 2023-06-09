@@ -2,11 +2,14 @@
 from typing import Any
 import itertools
 import string
-from builtins import slice as py_slice
+import builtins
 
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_unsupported_dtypes, frontend_outputs_to_ivy_arrays
+
+_slice = builtins.slice
 
 
 @to_ivy_arrays_and_back
@@ -98,7 +101,6 @@ def conv(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
-    rhs = ivy.permute_dims(rhs, axes=(*range(2, dims + 2), 1, 0))
     return ivy.conv_general_dilated(
         lhs,
         rhs,
@@ -106,6 +108,7 @@ def conv(
         padding,
         dims=dims,
         data_format="channel_first",
+        filter_format="channel_first",
     )
 
 
@@ -352,16 +355,19 @@ def full_like(x, fill_value, dtype=None, shape=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def ge(x, y):
     return ivy.greater_equal(x, y)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def gt(x, y):
     return ivy.greater(x, y)
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def le(x, y):
     return ivy.less_equal(x, y)
@@ -410,6 +416,13 @@ def neg(x):
 @to_ivy_arrays_and_back
 def pow(x, y):
     return ivy.pow(x, y)
+
+
+@to_ivy_arrays_and_back
+def pad(operand, padding_value, padding_config):
+    return ivy.pad(
+        operand, padding_config, mode="dilated", constant_values=padding_value
+    )
 
 
 @to_ivy_arrays_and_back
@@ -475,45 +488,6 @@ def sinh(x):
 
 @to_ivy_arrays_and_back
 def slice(operand, start_indices, limit_indices, strides=None):
-    if operand.ndim != len(start_indices):
-        msg = (
-            "slice start_indices must have length equal to the number of "
-            "dimensions of the operand, got indices {} for operand shape {}."
-        )
-        raise TypeError(msg.format(start_indices, operand.shape))
-
-    if len(start_indices) != len(limit_indices):
-        msg = (
-            "slice limit_indices must have the same length as start_indices, "
-            "got start_indices {} and limit_indices {}."
-        )
-        raise TypeError(msg.format(start_indices, limit_indices))
-
-    if not tuple(limit_indices) <= operand.shape:
-        msg = (
-            "slice limit_indices must be less than or equal to operand shape, "
-            "got limit_indices {} for operand shape {}."
-        )
-        raise TypeError(msg.format(limit_indices, operand.shape))
-
-    if not all(si >= 0 for si in start_indices):
-        msg = (
-            "slice start_indices must be greater than or equal to zero, "
-            "got start_indices of {}."
-        )
-        raise TypeError(msg.format(start_indices))
-
-    if not limit_indices >= start_indices:
-        msg = (
-            "slice limit_indices must be greater than or equal to start_indices,"
-            " got start_indices {} and limit_indices {}."
-        )
-        raise TypeError(msg.format(start_indices, limit_indices))
-
-    start_indices, limit_indices = map(
-        lambda x: ivy.array(x) if isinstance(x, int) else x,
-        [start_indices, limit_indices],
-    )
     strides = [1] * len(operand.shape) if strides is None else strides
 
     full_slice = ()
@@ -521,10 +495,8 @@ def slice(operand, start_indices, limit_indices, strides=None):
         strides_i = int(strides[i])
         start_i = int(start_indices[i])
         limit_i = int(limit_indices[i])
-        full_slice += (py_slice(start_i, limit_i, strides_i),)
-    ret = operand[full_slice] if full_slice else operand
-
-    return ivy.expand_dims(ret)
+        full_slice += (_slice(start_i, limit_i, strides_i),)
+    return operand[full_slice]
 
 
 @to_ivy_arrays_and_back
@@ -608,6 +580,30 @@ def top_k(operand, k):
 
 
 @to_ivy_arrays_and_back
+def reduce_window(
+    operand,
+    init_value,
+    computation,
+    window_dimensions,
+    window_strides,
+    padding,
+    base_dilation=None,
+    window_dilation=None,
+):
+    computation = frontend_outputs_to_ivy_arrays(computation)
+    return ivy.reduce_window(
+        operand,
+        init_value,
+        computation,
+        window_dimensions,
+        window_strides=window_strides,
+        padding=padding,
+        base_dilation=base_dilation,
+        window_dilation=window_dilation,
+    )
+
+
+@to_ivy_arrays_and_back
 def squeeze(array, dimensions):
     return ivy.squeeze(array, dimensions)
 
@@ -620,3 +616,13 @@ def real(x):
 @to_ivy_arrays_and_back
 def nextafter(x1, x2):
     return ivy.nextafter(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def conj(x):
+    return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def is_finite(x):
+    return ivy.isfinite(x)

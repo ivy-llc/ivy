@@ -50,8 +50,9 @@ def _verify_common_row_format_components(
         dense_shape,
         fn=ivy.exists,
         type="all",
-        message="crow_indices, col_indices, values and dense_shape\
-must all be specified.",
+        message=(
+            "crow_indices, col_indices, values and dense_shape must all be specified."
+        ),
     )
 
     ivy.utils.assertions.check_equal(
@@ -157,8 +158,9 @@ def _verify_common_column_format_components(
         dense_shape,
         fn=ivy.exists,
         type="all",
-        message="ccol_indices, row_indices, values and dense_shape must all \
-        be specified",
+        message=(
+            "ccol_indices, row_indices, values and dense_shape must all be specified"
+        ),
     )
     ivy.utils.assertions.check_equal(
         len(ivy.shape(ccol_indices)), 1, message="ccol_indices must be 1D"
@@ -269,9 +271,11 @@ def _is_data_not_indices_values_and_shape(
             fn=ivy.exists,
             type="any",
             limit=[0],
-            message="Only specify data, coo_indices for COO format\
-, crow_indices and col_indices for CSR and BSR, ccol_indices and row_indices\
-for CSC and BSC.",
+            message=(
+                "Only specify data, coo_indices for COO format, crow_indices and"
+                " col_indices for CSR and BSR, ccol_indices and row_indicesfor CSC and"
+                " BSC."
+            ),
         )
         return True
     return False
@@ -389,13 +393,13 @@ class SparseArray:
             )
 
             raise ivy.utils.exceptions.IvyException(
-                "specify all coo components (coo_indices, values \
-            and dense_shape), all csr components (crow_indices, \
-            col_indices, values and dense_shape), all csc components \
-            (ccol_indices, row_indices, values and dense_shape). \
-            all bsc components (ccol_indices, row_indices, values \
-            and dense_shape), or all bsr components (crow_indices, \
-                col_indices, values and dense_shape)."
+                "specify all coo components (coo_indices, values and "
+                " dense_shape), all csr components (crow_indices, "
+                "col_indices, values and dense_shape), all csc components "
+                "(ccol_indices, row_indices, values and dense_shape). all "
+                "bsc components (ccol_indices, row_indices, values and "
+                "dense_shape), or all bsr components (crow_indices, "
+                "col_indices, values and dense_shape)."
             )
 
     def _init_data(self, data):
@@ -755,14 +759,14 @@ def is_ivy_sparse_array(x):
     return isinstance(x, ivy.SparseArray)
 
 
-@inputs_to_native_arrays
 @handle_exceptions
+@inputs_to_native_arrays
 def is_native_sparse_array(x):
     return ivy.current_backend().is_native_sparse_array(x)
 
 
-@inputs_to_native_arrays
 @handle_exceptions
+@inputs_to_native_arrays
 def native_sparse_array(
     data=None,
     *,

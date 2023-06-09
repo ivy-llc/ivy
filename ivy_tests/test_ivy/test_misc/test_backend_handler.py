@@ -99,7 +99,7 @@ def test_set_backend(backend, array_type):
     ivy.utils.assertions.check_equal(str(type(ivy.to_native(x))), array_type)
 
 
-@pytest.mark.parametrize(("backend"), available_frameworks())
+@pytest.mark.parametrize("backend", available_frameworks())
 def test_previous_backend(backend):
     if not ivy.backend_stack:
         assert ivy.previous_backend() is None
@@ -161,7 +161,7 @@ def test_current_backend(backend, array_type):
         )
 
 
-@pytest.mark.parametrize(("excluded"), available_frameworks_with_none)
+@pytest.mark.parametrize("excluded", available_frameworks_with_none)
 def test_choose_random_backend(excluded):
     backend = ivy.choose_random_backend(excluded=excluded)
     if excluded is None:
@@ -170,19 +170,6 @@ def test_choose_random_backend(excluded):
         backends_list = list(_backend_dict.keys())
         backends_list.remove(excluded)
         assert backend in backends_list
-
-
-@pytest.mark.parametrize("backend", available_frameworks())
-def test_get_backend(backend):
-    imported_backend = importlib.import_module(_backend_dict[backend])
-
-    # checking whether the updating of __dict__ works
-    assert "pi" not in imported_backend.__dict__
-    ivy.get_backend(backend)
-    assert "pi" in imported_backend.__dict__
-
-    # checking whether the backend is returned correctly
-    ivy.utils.assertions.check_equal(ivy.get_backend(backend), imported_backend)
 
 
 # Dynamic Backend

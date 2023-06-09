@@ -1,5 +1,5 @@
 import abc
-from hypothesis import strategies as st  # NOQA
+from hypothesis import strategies as st
 from . import globals as test_globals
 
 import ivy
@@ -21,15 +21,11 @@ def _as_varaible_strategy(draw):
     ):
         return draw(st.just([False]))
     if not test_globals.CURRENT_FRONTEND_STR:
-        # non multiversion changes go here
         if (
             test_globals.CURRENT_FRONTEND is not test_globals._Notsetval
             and test_globals.CURRENT_FRONTEND().backend == "numpy"
         ):
             return draw(st.just([False]))
-    elif test_globals.CURRENT_FRONTEND_STR[0].split("/")[0] == "numpy":
-        # multiversion changes go here
-        return draw(st.just([False]))
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
 
 
@@ -67,9 +63,9 @@ def build_flag(key: str, value: bool):
     if value is not None:
         value = st.just(value)
     # Prevent silently passing if variables names were changed
-    assert flags_mapping[key] in globals().keys(), (
-        f"{flags_mapping[key]} is not " f"a valid flag variable."
-    )
+    assert (
+        flags_mapping[key] in globals().keys()
+    ), f"{flags_mapping[key]} is not a valid flag variable."
     globals()[flags_mapping[key]] = value
 
 

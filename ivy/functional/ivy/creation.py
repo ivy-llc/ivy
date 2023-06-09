@@ -17,6 +17,7 @@ import numpy as np
 # local
 import ivy
 from ivy import to_ivy
+from ivy.utils.exceptions import handle_exceptions
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
@@ -74,6 +75,8 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
 def _ivy_to_native(x):
     # checks the first element of the leaf list and
     # converts it to a native array if it is an ivy array
+    # assumes that either all elements in a leaf list are ivy arrays
+    # or none of them are
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
@@ -86,6 +89,23 @@ def _ivy_to_native(x):
     return x
 
 
+def _shape_to_native(x):
+    # checks the first element of the leaf list and
+    # converts it to a native array if it is an ivy array
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x = list(x) if isinstance(x, tuple) else x
+            x[i] = _shape_to_native(item)
+    else:
+        if (isinstance(x, (list, tuple)) and len(x) > 0) and (
+            isinstance(x[0], ivy.Shape) and ivy.get_array_mode()
+        ):
+            x = ivy.nested_map(x, lambda x: x.shape if isinstance(x, ivy.Shape) else x)
+        elif isinstance(x, ivy.Shape) and ivy.get_array_mode():
+            x = x.shape
+    return x
+
+
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
@@ -95,10 +115,12 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
 
         This wrapper is specifically for the backend implementations of
         asarray.
+
+        It assumes either all the elements in a leaf list are ivy arrays
+        or none of them are. It checks the first element of all the leaf
+        list. If it is an ivy array, it converts all the elements in the
+        leaf list to native otherwise it skips that leaf list.
         """
-        # When possible we want to not nest this
-        # because nested calls introduce massive overhead
-        # and the checks to see if we can avoid it are cheap
         new_arg = _ivy_to_native(args[0])
         new_args = (new_arg,) + args[1:]
         if dtype is not None:
@@ -147,6 +169,17 @@ def asarray_infer_device(fn: Callable) -> Callable:
     return _asarray_infer_device
 
 
+def asarray_inputs_to_native_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _inputs_to_native_shapes(*args, **kwargs):
+        new_arg = _shape_to_native(args[0])
+        new_args = (new_arg,) + args[1:]
+        return fn(*new_args, **kwargs)
+
+    _inputs_to_native_shapes.inputs_to_native_shapes = True
+    return _inputs_to_native_shapes
+
+
 # Type hints #
 # -----------#
 
@@ -166,12 +199,12 @@ class NestedSequence(Protocol[_T_co]):
 # -------------------#
 
 
-@infer_device
-@handle_array_function
-@outputs_to_ivy_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_device
 def arange(
     start: Number,
     /,
@@ -267,13 +300,15 @@ def arange(
     )
 
 
-@handle_array_function
-@handle_out_argument
 @handle_array_like_without_promotion
+@handle_out_argument
+@handle_array_function
 def asarray(
     obj: Union[
         ivy.Array,
         ivy.NativeArray,
+        ivy.Shape,
+        ivy.NativeShape,
         bool,
         int,
         float,
@@ -353,22 +388,22 @@ def asarray(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(obj).asarray(
+    return current_backend().asarray(
         obj, copy=copy, dtype=dtype, device=device, out=out
     )
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@outputs_to_ivy_arrays
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_dtype
+@infer_device
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -377,8 +412,6 @@ def zeros(
 
     Parameters
     ----------
-    size
-        list, tuple or a sequence of integers representing the output array shape.
     shape
        output array shape.
     dtype
@@ -407,16 +440,6 @@ def zeros(
 
     Examples
     --------
-    With `Sequence[int]` input:
-    >>> x = ivy.zeros(1,1)
-    >>> print(x)
-    ivy.array([[0.]])
-
-    With :class:`tuple` input:
-    >>> x = ivy.zeros((1,1))
-    >>> print(x)
-    ivy.array([[0.]])
-
     With :class:`ivy.NativeShape` input:
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
@@ -429,24 +452,20 @@ def zeros(
     >>> print(x)
     ivy.array([0., 0., 0., 0., 0.])
     """
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    return current_backend().zeros(
-        size, shape=shape, dtype=dtype, device=device, out=out
-    )
+    return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@outputs_to_ivy_arrays
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_dtype
+@infer_device
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -455,8 +474,6 @@ def ones(
 
     Parameters
     ----------
-    size
-        list, tuple or a sequence of integers representing the output array shape.
     shape
         output array shape.
     dtype
@@ -485,17 +502,6 @@ def ones(
 
     Examples
     --------
-    With `Sequence[int]` input:
-
-    >>> x = ivy.ones(1,1)
-    >>> print(x)
-    ivy.array([[1.]])
-
-    With :class:`tuple` input:
-    >>> x = ivy.ones((1,1))
-    >>> print(x)
-    ivy.array([[1.]])
-
     With :class:`ivy.Shape` input:
 
     >>> shape = (2,2)
@@ -531,20 +537,16 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    return current_backend().ones(
-        size, shape=shape, dtype=dtype, device=device, out=out
-    )
+    return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -643,13 +645,13 @@ def full_like(
     )
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -760,13 +762,13 @@ def ones_like(
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -877,11 +879,11 @@ def zeros_like(
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -925,11 +927,11 @@ def tril(
     return current_backend(x).tril(x, k=k, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -982,8 +984,8 @@ def triu(
 @handle_array_like_without_promotion
 @handle_nestable
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -993,8 +995,6 @@ def empty(
 
     Parameters
     ----------
-    size
-        list, tuple or a sequence of integers representing the output array shape.
     shape
        output array shape.
     dtype
@@ -1021,20 +1021,16 @@ def empty(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    return current_backend().empty(
-        size, shape=shape, dtype=dtype, device=device, out=out
-    )
+    return current_backend().empty(shape, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1078,13 +1074,13 @@ def empty_like(
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@outputs_to_ivy_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_dtype
+@infer_device
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -1224,13 +1220,13 @@ def eye(
     )
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1333,16 +1329,16 @@ def linspace(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
 @handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
     indexing: str = "xy",
-    out: Optional(ivy.Array) = None,
+    out: Optional[ivy.Array] = None,
 ) -> List[ivy.Array]:
     """
     Return coordinate matrices from coordinate vectors.
@@ -1450,14 +1446,14 @@ def meshgrid(
     )
 
 
-@infer_device
-@handle_array_function
-@inputs_to_native_arrays
-@outputs_to_ivy_arrays
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@outputs_to_ivy_arrays
+@inputs_to_native_arrays
+@handle_array_function
+@infer_device
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
@@ -1560,11 +1556,11 @@ def full(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1611,11 +1607,11 @@ def from_dlpack(
 array = asarray
 
 
-@handle_array_function
-@inputs_to_native_arrays
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_arrays
+@handle_array_function
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1774,12 +1770,12 @@ def native_array(
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
-@infer_device
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_device
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -1887,13 +1883,13 @@ def one_hot(
     )
 
 
-@infer_device
-@infer_dtype
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@infer_device
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1998,3 +1994,161 @@ def logspace(
         device=device,
         out=out,
     )
+
+
+@handle_nestable
+@outputs_to_ivy_arrays
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> ivy.Array:
+    r"""
+    Interpret a buffer as a 1-dimensional array.
+
+    .. note::
+        Note that either of the following must be true:
+        1. count is a positive non-zero number, and the total number of bytes
+        in the buffer is equal or greater than offset plus count times the size
+        (in bytes) of dtype.
+        2. count is negative, and the length (number of bytes) of the buffer
+        subtracted by the offset is a multiple of the size (in bytes) of dtype.
+
+    Parameters
+    ----------
+    buffer
+        An object that exposes the buffer interface.
+    dtype
+        Data-type of the returned array; default: float.
+    count
+        Number of items to read. -1 means all data in the buffer.
+    offset
+        Start reading the buffer from this offset (in bytes); default: 0.
+
+    Returns
+    -------
+    out
+        1-dimensional array.
+
+    Examples
+    --------
+    With :class:`bytes` inputs:
+
+    >>> x = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
+    >>> y = ivy.frombuffer(x)
+    >>> print(y)
+    (ivy.array([1., 2.]))
+
+    >>> x = b'\x01\x02\x03\x04'
+    >>> y = ivy.frombuffer(x, dtype='int8', count=-2, offset=1)
+    >>> print(y)
+    (ivy.array([2, 3, 4]))
+
+    >>> x = b'\x00<\x00@\x00B\x00D\x00E'
+    >>> y = ivy.frombuffer(x, dtype='float16', count=4, offset=2)
+    >>> print(y)
+    (ivy.array([2., 3., 4., 5.]))
+    """
+    return current_backend().frombuffer(
+        buffer,
+        dtype=dtype,
+        count=count,
+        offset=offset,
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@outputs_to_ivy_arrays
+@infer_device
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> Tuple[ivy.Array]:
+    """Return the indices of the upper triangular part of a row by col matrix in a
+    2-by-N shape (tuple of two N dimensional arrays), where the first row contains
+    row coordinates of all indices and the second row contains column coordinates.
+    Indices are ordered based on rows and then columns.  The upper triangular part
+    of the matrix is defined as the elements on and above the diagonal.  The argument
+    k controls which diagonal to consider. If k = 0, all elements on and above the main
+    diagonal are retained. A positive value excludes just as many diagonals above the
+    main diagonal, and similarly a negative value includes just as many diagonals
+    below the main diagonal. The main diagonal are the set of indices
+    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].
+
+    Notes
+    -----
+    Primary purpose of this function is to slice an array of shape (n,m). See
+    https://numpy.org/doc/stable/reference/generated/numpy.triu_indices.html
+    for examples
+
+    Tensorflow does not support slicing 2-D tensor with tuple of tensor of indices
+
+    Parameters
+    ----------
+    n_rows
+       number of rows in the 2-d matrix.
+    n_cols
+       number of columns in the 2-d matrix. If None n_cols will be the same as n_rows
+    k
+       number of shifts from the main diagonal. k = 0 includes main diagonal,
+       k > 0 moves upwards and k < 0 moves downwards
+    device
+       device on which to place the created array. Default: ``None``.
+
+    Returns
+    -------
+    ret
+        an 2xN shape, tuple of two N dimensional, where first subarray (i.e. ret[0])
+        contains row coordinates of all indices and the second subarray (i.e ret[1])
+        contains columns indices.
+
+    Function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.triu_indices(4,4,0)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 0, 1, 1, 1, 2, 2, 3]),
+    ivy.array([0, 1, 2, 3, 1, 2, 3, 2, 3, 3]))
+
+    >>> x = ivy.triu_indices(4,4,1)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 1, 1, 2]),
+    ivy.array([1, 2, 3, 2, 3, 3]))
+
+    >>> x = ivy.triu_indices(4,4,-2)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3]),
+    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3]))
+
+    >>> x = ivy.triu_indices(4,2,0)
+    >>> print(x)
+    (ivy.array([0, 0, 1]),
+    ivy.array([0, 1, 1]))
+
+    >>> x = ivy.triu_indices(2,4,0)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 0, 1, 1, 1]),
+    ivy.array([0, 1, 2, 3, 1, 2, 3]))
+
+    >>> x = ivy.triu_indices(4,-4,0)
+    >>> print(x)
+    (ivy.array([]), ivy.array([]))
+
+    >>> x = ivy.triu_indices(4,4,100)
+    >>> print(x)
+    (ivy.array([]), ivy.array([]))
+
+    >>> x = ivy.triu_indices(2,4,-100)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))
+
+    """
+    return current_backend().triu_indices(n_rows, n_cols, k, device=device)

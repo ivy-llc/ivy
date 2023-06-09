@@ -36,7 +36,9 @@ def assert_all_close(
     """
     ret_dtype = str(ret_np.dtype)
     ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
-    assert ret_dtype == ret_from_gt_dtype, (
+    assert (
+        ret_dtype == ret_from_gt_dtype
+    ), (
         "the ground truth framework {} returned a {} datatype while "
         "the backend {} returned a {} datatype".format(
             ground_truth_backend,
@@ -61,12 +63,19 @@ def assert_all_close(
 
 
 def assert_same_type_and_shape(values, this_key_chain=None):
-    x, y = values
-    if isinstance(x, np.ndarray):
-        x_dtype = str(x.dtype)
-        y_dtype = str(y.dtype).replace("longlong", "int64")
-        assert x.shape == y.shape, "x.shape = {}, y.shape = {}".format(x.shape, y.shape)
-        assert x_dtype == y_dtype, "x.dtype = {}, y.dtype = {}".format(x_dtype, y_dtype)
+    x_, y_ = values
+    for x, y in zip(x_, y_):
+        if isinstance(x, np.ndarray):
+            x_d = str(x.dtype).replace("longlong", "int64")
+            y_d = str(y.dtype).replace("longlong", "int64")
+            assert (
+                x.shape == y.shape
+            ), "returned shape = {}, ground-truth returned shape = {}".format(
+                x.shape, y.shape
+            )
+            assert (
+                x_d == y_d
+            ), "returned dtype = {}, ground-truth returned dtype = {}".format(x_d, y_d)
 
 
 def value_test(
@@ -105,7 +114,9 @@ def value_test(
         ret_np_flat = [ret_np_flat]
     if type(ret_np_from_gt_flat) != list:
         ret_np_from_gt_flat = [ret_np_from_gt_flat]
-    assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
+    assert len(
+        ret_np_flat
+    ) == len(ret_np_from_gt_flat), (
         "The length of results from backend {} and ground truth"
         "framework {} does not match\n\n"
         "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"

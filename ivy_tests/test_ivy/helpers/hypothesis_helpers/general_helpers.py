@@ -17,9 +17,9 @@ def matrix_is_stable(x, cond_limit=30):
 
     Parameters
     ----------
-    matrix
+    x
         The original matrix whose condition number is to be determined.
-    condition_index
+    cond_limit
         The greater the condition number, the more ill-conditioned the matrix
         will be, the more it will be prone to numerical instabilities.
 
@@ -36,14 +36,14 @@ def matrix_is_stable(x, cond_limit=30):
 
         The limit should always be in the range "1-30", greater the number greater
         the computational instability. Should not increase 30, it leads to strong
-        multicollinearity which leads to singularity.
+        multi-collinearity which leads to singularity.
 
     Returns
     -------
-    A bool, either True or False. Which tells whether the matrix is suitable for
-    further numerical computations or not.
+    ret
+        If True, the matrix is suitable for further numerical computations.
     """
-    return np.linalg.cond(x.astype("float64")) <= cond_limit
+    return np.all(np.linalg.cond(x.astype("float64")) <= cond_limit)
 
 
 def apply_safety_factor(
@@ -62,17 +62,23 @@ def apply_safety_factor(
     Parameters
     ----------
     dtype
+        the data type to apply safety factor scaling to.
     min_value
+        the minimum value of the data type.
     max_value
+        the maximum value of the data type.
     abs_smallest_val
+        the absolute smallest representable value of the data type.
     large_abs_safety_factor
+        the safety factor to apply to the maximum value.
     small_abs_safety_factor
+        the safety factor to apply to the minimum value.
     safety_factor_scale
+        the scale to apply the safety factor to, either 'linear' or 'log'.
 
     Returns
     -------
-    the result of applying safety scaling to minimum value, maximum value and
-    absolute smallest representable value (only for float dtypes).
+        A tuple of the minimum value, maximum value and absolute smallest representable
     """
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
@@ -109,7 +115,7 @@ def apply_safety_factor(
     else:
         raise ValueError(
             f"{safety_factor_scale} is not a valid safety factor scale."
-            f" use 'log' or 'linear'."
+            " use 'log' or 'linear'."
         )
     if kind_dtype == "int":
         return int(min_value), int(max_value), None
@@ -137,7 +143,7 @@ def reshape_shapes(draw, *, shape):
 
     Returns
     -------
-    A strategy that draws a tuple.
+        A strategy that draws a tuple.
     """
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
@@ -166,7 +172,7 @@ def subsets(draw, *, elements):
 
     Returns
     -------
-    A strategy that draws a subset of elements.
+        A strategy that draws a subset of elements.
     """
     return tuple(e for e in elements if draw(st.booleans()))
 
@@ -204,7 +210,7 @@ def get_shape(
 
     Returns
     -------
-    A strategy that draws a tuple.
+        A strategy that draws a tuple.
     """
     if allow_none:
         shape = draw(
@@ -255,7 +261,7 @@ def get_mean_std(draw, *, dtype):
 @st.composite
 def get_bounds(draw, *, dtype):
     """
-    Draws two integers low, high for a given data type such that low < high.
+    Draws two numbers; low and high, for a given data type such that low < high.
 
     Parameters
     ----------
@@ -267,7 +273,7 @@ def get_bounds(draw, *, dtype):
 
     Returns
     -------
-    A strategy that can be used in the @given hypothesis decorator.
+        A strategy that draws a list of two numbers.
     """
     if "int" in dtype:
         values = draw(array_helpers.array_values(dtype=dtype, shape=2))
@@ -294,7 +300,7 @@ def get_axis(
     shape,
     allow_neg=True,
     allow_none=False,
-    sorted=True,
+    sort_values=True,
     unique=True,
     min_size=1,
     max_size=None,
@@ -316,7 +322,7 @@ def get_axis(
         boolean; if True, allow negative axes to be drawn
     allow_none
         boolean; if True, allow None to be drawn
-    sorted
+    sort_values
         boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing
         fashion
     unique
@@ -337,11 +343,11 @@ def get_axis(
 
     Returns
     -------
-    A strategy that can be used in the @given hypothesis decorator.
+        A strategy that draws an axis or axes.
     """
-    assert not (force_int and force_tuple), (
-        "Cannot return an int and a tuple. If " "both are valid then set both to False."
-    )
+    assert not (
+        force_int and force_tuple
+    ), "Cannot return an int and a tuple. If both are valid then set both to False."
 
     # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
@@ -387,14 +393,16 @@ def get_axis(
 
     axis = draw(
         st.one_of(*valid_strategies).filter(
-            lambda x: all([i != axes + j for i in x for j in x])
-            if (isinstance(x, list) and unique and allow_neg)
-            else True
+            lambda x: (
+                all([i != axes + j for i in x for j in x])
+                if (isinstance(x, list) and unique and allow_neg)
+                else True
+            )
         )
     )
 
     if type(axis) == list:
-        if sorted:
+        if sort_values:
 
             def sort_key(ele, max_len):
                 if ele < 0:
@@ -408,6 +416,25 @@ def get_axis(
 
 @st.composite
 def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+    """
+    Draws a random x and filters for a convolution.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dim
+        the dimension of the convolution
+    transpose
+        if True, draw a transpose convolution
+    depthwise
+        if True, draw a depthwise convolution
+
+    Returns
+    -------
+        A strategy that draws a random x and filters for a convolution.
+    """
     strides = draw(st.integers(min_value=1, max_value=2))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
     batch_size = draw(st.integers(1, 5))
@@ -452,8 +479,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         x_shape = (batch_size, input_channels) + x_dim
     vals = draw(
         array_helpers.array_values(
-            dtype=dtype[0],
             shape=x_shape,
+            dtype=dtype[0],
             large_abs_safety_factor=3,
             small_abs_safety_factor=4,
             safety_factor_scale="log",
@@ -461,8 +488,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
     )
     filters = draw(
         array_helpers.array_values(
-            dtype=dtype[0],
             shape=filter_shape,
+            dtype=dtype[0],
             large_abs_safety_factor=3,
             small_abs_safety_factor=4,
             safety_factor_scale="log",
@@ -484,6 +511,19 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
 
 @st.composite
 def embedding_helper(draw):
+    """
+    Obtain weights for embeddings, the corresponding indices, the padding indices.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+
+    Returns
+    -------
+        A strategy for generating a tuple
+    """
     dtype_weight, weight = draw(
         array_helpers.dtype_and_values(
             available_dtypes=[

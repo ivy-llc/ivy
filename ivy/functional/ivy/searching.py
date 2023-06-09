@@ -19,12 +19,12 @@ from ivy.func_wrapper import (
 # -------------------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -123,19 +123,19 @@ def argmax(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -156,7 +156,7 @@ def argmin(
         singleton dimensions, and, accordingly, the result must be compatible with the
         input array (see Broadcasting). Otherwise, if False, the reduced axes
         (dimensions) must not be included in the result. Default = False.
-    output_dtype
+    dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
     out
         if axis is None, a zero-dimensional array containing the index of the first
@@ -222,17 +222,17 @@ def argmin(
         x,
         axis=axis,
         keepdims=keepdims,
-        output_dtype=output_dtype,
+        dtype=dtype,
         select_last_index=select_last_index,
         out=out,
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -366,12 +366,12 @@ def nonzero(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -457,12 +457,12 @@ def where(
 # ------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
