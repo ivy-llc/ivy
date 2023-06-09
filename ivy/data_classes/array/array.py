@@ -161,7 +161,7 @@ class Array(
             self._dynamic_backend = dynamic_backend
         else:
             self._dynamic_backend = ivy.get_dynamic_backend()
-        self.weak_type = False # to handle 0-D jax front weak typed arrays
+        self.weak_type = False  # to handle 0-D jax front weak typed arrays
 
     def _view_attributes(self, data):
         self._base = None
@@ -1149,10 +1149,11 @@ class Array(
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ivy.Array not supported")
-        if ivy.current_backend_str() == "paddle":
-            if self.ndim == 1:
-                ret = [to_ivy(i).squeeze(0) for i in self._data]
-                return iter(ret)
-            elif self.dtype in ["int8", "int16", "uint8", "float16"]:
-                return iter([to_ivy(i) for i in ivy.unstack(self._data)])
+        if ivy.current_backend_str() == "paddle" and self.dtype in [
+            "int8",
+            "int16",
+            "uint8",
+            "float16",
+        ]:
+            return iter([to_ivy(i) for i in ivy.unstack(self._data)])
         return iter([to_ivy(i) for i in self._data])
