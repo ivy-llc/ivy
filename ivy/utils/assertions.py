@@ -11,7 +11,7 @@ def _broadcast_inputs(x1, x2):
     if isinstance(x1, (int, float, bool)):
         x1, x2 = x2, x1
         if not isinstance(x1, (list, tuple, ivy.Shape)):
-            return x1, x2
+            return [x1], [x2]
     if isinstance(x2, (int, float, bool)):
         x2 = [x2] * len(x1)
     return x1, x2
