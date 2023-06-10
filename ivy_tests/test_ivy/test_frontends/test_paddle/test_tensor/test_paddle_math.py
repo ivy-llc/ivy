@@ -558,8 +558,8 @@ def test_paddle_abs(
         on_device=on_device,
         x=x[0],
     )
-    
-    
+
+
 # remainder
 @handle_frontend_test(
     fn_tree="paddle.remainder",
@@ -573,7 +573,6 @@ def test_paddle_abs(
         shared_dtype=True,
     ),
 )
- 
 def test_paddle_remainder(
     *,
     dtype_and_x,
@@ -592,5 +591,3 @@ def test_paddle_remainder(
         x=x[0],
         y=x[1],
     )
-
-
