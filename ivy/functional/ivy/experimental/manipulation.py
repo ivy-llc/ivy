@@ -32,7 +32,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @inputs_to_ivy_arrays
-def quantize_linear(x, scale, zero_point, /, *, axis=None, saturate=False):
+def quantize_linear(x, scale, zero_point, /, *, saturate=False):
     """
     Quantizes the input array using the given scale and zero point.
 
@@ -70,13 +70,7 @@ def quantize_linear(x, scale, zero_point, /, *, axis=None, saturate=False):
     >>> ivy.quantize_linear(x, scale, zero_point, axis=axis)
     ivy.array([[143., 155.], [136., 160.]])
     """
-    if axis is None:
-        y = ivy.round(x / scale + zero_point).astype(ivy.uint8)
-    else:
-        y = ivy.zeros_like(x)
-        for idx in ivy.ndindex(x.shape[:axis] + x.shape[axis + 1 :]):
-            idx = idx[:axis] + (slice(None),) + idx[axis:]
-            y[idx] = ivy.round(x[idx] / scale + zero_point).astype(ivy.uint8)
+    y = ivy.round(x / scale + zero_point).astype(ivy.uint8)
 
     if saturate:
         y = ivy.clip(y, 0, 255)
