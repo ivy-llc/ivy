@@ -549,3 +549,49 @@ def test_paddle_cos(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+# matmul
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="matmul",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
+    ),
+    transpose_x=st.booleans(),
+    transpose_y=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_paddle_matmul(
+    dtype_x,
+    transpose_x,
+    transpose_y,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "transpose_x": transpose_x,
+            "transpose_y": transpose_y,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )

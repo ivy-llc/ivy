@@ -94,6 +94,11 @@ class Tensor:
     def dim(self):
         return self.ivy_array.ndim
 
+    def matmul(self, transpose_x=False, transpose_y=False, name=None):
+        return paddle_frontend.matmul(
+            self._ivy_array, transpose_x=transpose_x, transpose_y=transpose_y
+        )
+
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def abs(self):
         return paddle_frontend.abs(self)
