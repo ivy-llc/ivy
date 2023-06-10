@@ -17,8 +17,7 @@ from . import backend_version
                 "int16",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
+                "complex",
                 "bool",
             )
         }
@@ -216,18 +215,7 @@ def _compute_quantile(
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "float16",
-                "complex64",
-                "complex128",
-            )
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "float16", "complex")}},
     backend_version,
 )
 def quantile(
@@ -310,8 +298,6 @@ def nanmedian(
                 "int16",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
                 "bool",
             )
         }
@@ -346,8 +332,6 @@ def unravel_index(
                 "float16",
                 "float32",
                 "float64",
-                "complex64",
-                "complex128",
                 "bool",
             )
         }

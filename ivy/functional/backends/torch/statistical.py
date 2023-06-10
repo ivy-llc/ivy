@@ -92,7 +92,7 @@ def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
 # the function to break the upcasting rule defined in the Array API Standard
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
+        "2.0.1 and below": "bfloat16",
     },
     backend_version,
 )
@@ -119,10 +119,6 @@ def prod(
     return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("int8", "int16", "int32", "int64", "float16")},
-    backend_version,
-)
 def std(
     x: torch.Tensor,
     /,
@@ -157,7 +153,6 @@ def std(
 
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
-@with_unsupported_dtypes({"2.0.1": ("uint8",)}, backend_version)
 def sum(
     x: torch.Tensor,
     /,
@@ -220,7 +215,6 @@ def var(
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,
 )
@@ -264,8 +258,7 @@ cumprod.support_native_out = True
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
+        "2.0.1 and below": "bfloat16",
     },
     backend_version,
 )
@@ -299,8 +292,7 @@ cummin.support_native_out = True
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
+        "2.0.1 and below": "bfloat16",
     },
     backend_version,
 )
@@ -345,7 +337,7 @@ cumsum.support_native_out = True
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("uint8", "bfloat16", "float16")},
+    {"2.0.1 and below": "bfloat16"},
     backend_version,
 )
 def cummax(

@@ -11,7 +11,6 @@ import ivy
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
-            "uint8",
             "int8",
             "int16",
             "int32",
