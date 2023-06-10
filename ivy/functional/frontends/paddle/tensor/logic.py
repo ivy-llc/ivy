@@ -1,161 +1,376 @@
 # global
-import ivy
-import ivy.functional.frontends.paddle as paddle
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-    handle_out_argument,
-    with_supported_dtypes,
+import numpy as np
+from hypothesis import strategies as st
+
+# local
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+
+# Helpers #
+# ------- #
+
+
+# Tests #
+# ----- #
+
+
+# equal
+@handle_frontend_test(
+    fn_tree="paddle.equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
 )
-from ivy.functional.frontends.paddle.func_wrapper import (
-    to_ivy_arrays_and_back,
+def test_paddle_equal(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# not_equal
+@handle_frontend_test(
+    fn_tree="paddle.not_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
 )
+def test_paddle_not_equal(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"
+# greater_than
+@handle_frontend_test(
+    fn_tree="paddle.greater_than",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
 )
-@to_ivy_arrays_and_back
-def equal(x, y, /, *, name=None):
-    return ivy.equal(x, y)
+def test_paddle_greater_than(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"
+# greater_equal
+@handle_frontend_test(
+    fn_tree="paddle.greater_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
 )
-@to_ivy_arrays_and_back
-def not_equal(x, y, /, *, name=None):
-    return ivy.not_equal(x, y)
+def test_paddle_greater_equal(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "uint8",
-            "int8",
-            "int16",
-            "float16",
-            "complex64",
-            "complex128",
-        )
-    },
-    "paddle",
+# less_than
+@handle_frontend_test(
+    fn_tree="paddle.less_than",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
 )
-@to_ivy_arrays_and_back
-def equal_all(x, y, /, *, name=None):
-    return paddle.to_tensor([ivy.array_equal(x, y)])
+def test_paddle_less_than(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
-    "paddle",
+# less_equal
+@handle_frontend_test(
+    fn_tree="paddle.less_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
 )
-@to_ivy_arrays_and_back
-def greater_than(x, y, /, *, name=None):
-    return ivy.greater(x, y)
+def test_paddle_less_equal(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
-    "paddle",
+@handle_frontend_test(
+    fn_tree="paddle.equal_all",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-np.inf,
+        max_value=np.inf,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
 )
-@to_ivy_arrays_and_back
-def greater_equal(x, y, /, *, name=None):
-    return ivy.greater_equal(x, y)
+def test_paddle_equal_all(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
-    "paddle",
+# logical_or
+@handle_frontend_test(
+    fn_tree="paddle.logical_or",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(True),
 )
-@to_ivy_arrays_and_back
-def less_than(x, y, /, *, name=None):
-    return ivy.less(x, y)
+def test_paddle_logical_or(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
-    "paddle",
+# logical_xor
+@handle_frontend_test(
+    fn_tree="paddle.logical_xor",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(True),
 )
-@to_ivy_arrays_and_back
-def less_equal(x, y, /, *, name=None):
-    return ivy.less_equal(x, y)
+def test_paddle_logical_xor(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_supported_dtypes(
-    {
-        "2.4.2 and below": (
-            "bool",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "float32",
-            "float64",
-        )
-    },
-    "paddle",
+@handle_frontend_test(
+    fn_tree="paddle.logical_not",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(True),
 )
-@to_ivy_arrays_and_back
-@handle_out_argument
-def logical_or(x, y, /, *, name=None, out=None):
-    return ivy.logical_or(x, y, out=out)
+def test_paddle_logical_not(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
 
 
-@with_supported_dtypes(
-    {
-        "2.4.2 and below": (
-            "bool",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "float32",
-            "float64",
-        )
-    },
-    "paddle",
+# bitwise_or
+@handle_frontend_test(
+    fn_tree="paddle.bitwise_or",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(True),
 )
-@to_ivy_arrays_and_back
-@handle_out_argument
-def logical_xor(x, y, /, *, name=None, out=None):
-    return ivy.logical_xor(x, y, out=out)
+def test_paddle_bitwise_or(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_supported_dtypes(
-    {
-        "2.4.2 and below": (
-            "bool",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "float32",
-            "float64",
-        )
-    },
-    "paddle",
+@handle_frontend_test(
+    fn_tree="paddle.bitwise_and",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(True),
 )
-@to_ivy_arrays_and_back
-@handle_out_argument
-def logical_not(x, /, *, name=None, out=None):
-    return ivy.logical_not(x, out=out)
+def test_paddle_bitwise_and(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
 
 
-@with_supported_dtypes(
-    {
-        "2.4.2 and below": (
-            "bool",
-            "uint8",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "float32",
-            "float64",
-        )
-    },
-    "paddle",
+@handle_frontend_test(
+    fn_tree="paddle.is_empty",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(True),
 )
-@to_ivy_arrays_and_back
-def is_empty(x, /, *, name=None):
-    return ivy.is_empty(x)
+def test_paddle_is_empty(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
