@@ -1338,7 +1338,7 @@ def test_adaptive_avg_pool2d_layer(
             "dtype": input_dtype[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"inputs": x[0]},
+        method_all_as_kwargs_np={"x": x[0]},
         class_name=class_name,
         method_name=method_name,
         test_gradients=test_gradients,

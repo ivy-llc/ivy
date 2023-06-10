@@ -1789,22 +1789,20 @@ class AdaptiveAvgPool2d(Module):
         self._output_size = output_size
         Module.__init__(self, device=device, dtype=dtype)
 
-    def _forward(self, inputs):
+    def _forward(self, x):
         """
         Forward pass of the layer.
 
         Parameters
         ----------
-        inputs
-            The input to the layer of shape (N, C, W_in,H_in)
-            where N is the batch dimension, C is the feature dimension,
-            and H_in and W_in are the 2 spatial dimensions..
+        x
+            The input array to the layer.
 
         Returns
         -------
-        The output of the layer.
+            The output array of the layer.
         """
         return ivy.adaptive_avg_pool2d(
-            inputs,
+            x,
             self._output_size,
         )
