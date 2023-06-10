@@ -22,7 +22,7 @@ def _broadcast_inputs(x1, x2):
 
 
 def check_less(x1, x2, allow_equal=False, message="", as_array=True):
-    comp_fn = lambda x1, x2: ivy.any(x1 > x2), ivy.any(x1 >= x2)
+    comp_fn = lambda x1, x2: (ivy.any(x1 > x2), ivy.any(x1 >= x2))
     if not as_array:
         iter_comp_fn = lambda x1_, x2_: (
             any(x1 > x2 for x1, x2 in zip(x1_, x2_)),
@@ -45,7 +45,7 @@ def check_less(x1, x2, allow_equal=False, message="", as_array=True):
 
 
 def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
-    comp_fn = lambda x1, x2: ivy.any(x1 < x2), ivy.any(x1 <= x2)
+    comp_fn = lambda x1, x2: (ivy.any(x1 < x2), ivy.any(x1 <= x2))
     if not as_array:
         iter_comp_fn = lambda x1_, x2_: (
             any(x1 < x2 for x1, x2 in zip(x1_, x2_)),
