@@ -8,12 +8,13 @@ import ivy
 
 
 def _broadcast_inputs(x1, x2):
-    if isinstance(x1, (int, float, bool)):
-        x1, x2 = x2, x1
-        if not isinstance(x1, (list, tuple, ivy.Shape)):
+    x1_, x2_ = x1, x2
+    if isinstance(x1_, (int, float, bool)):
+        x1_, x2_ = x2, x1
+        if not isinstance(x1_, (list, tuple, ivy.Shape)):
             return [x1], [x2]
-    if isinstance(x2, (int, float, bool)):
-        x2 = [x2] * len(x1)
+    if isinstance(x2_, (int, float, bool)):
+        x1 = [x1] * len(x2)
     return x1, x2
 
 
@@ -53,6 +54,7 @@ def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
         )
         comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
     lt, lt_eq = comp_fn(x1, x2)
+    print(allow_equal, lt_eq)
     # greater_equal
     if allow_equal and lt:
         raise ivy.utils.exceptions.IvyException(
