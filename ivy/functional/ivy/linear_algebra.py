@@ -2659,7 +2659,7 @@ def vander(
         [ 1,  5, 25]]
         )
     """
-    return current_backend().vander(x, N=N, increasing=increasing, out=out)
+    return current_backend(x).vander(x, N=N, increasing=increasing, out=out)
 
 
 @handle_exceptions
