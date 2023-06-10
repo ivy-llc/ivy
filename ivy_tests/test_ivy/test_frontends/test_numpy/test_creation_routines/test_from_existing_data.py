@@ -127,4 +127,5 @@ def test_numpy_frombuffer(
         fn_tree=fn_tree,
         on_device=on_device,
         buffer=a,
+        dtype=dtype[0]
     )
