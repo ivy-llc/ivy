@@ -485,7 +485,6 @@ def test_paddle_argmax(
     )
 
 
-
 # exp
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -496,7 +495,6 @@ def test_paddle_argmax(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-
 def test_paddle_exp(
 
     dtype_and_x,
@@ -521,7 +519,7 @@ def test_paddle_exp(
         on_device=on_device,
     )
 
- 
+
 # cos
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -556,7 +554,7 @@ def test_paddle_cos(
         frontend=frontend,
         on_device=on_device,
     )
-   
+  
 # sqrt
 @handle_frontend_method(
     class_tree=CLASS_TREE,
