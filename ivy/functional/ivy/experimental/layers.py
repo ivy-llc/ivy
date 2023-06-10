@@ -992,7 +992,7 @@ def embedding(
                 [7., 8., 9.]])
     """
     ivy.utils.assertions.check_equal(
-        len(weights.shape), 2, message="weights must be 2-d"
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
     )
 
     ret = ivy.empty(
@@ -1100,9 +1100,9 @@ def interp(x, xp, fp, left=None, right=None, period=None):
     x = ivy.astype(x_arr, "float64")
     xp = ivy.astype(ivy.array(xp), "float64")
     fp = ivy.astype(ivy.array(fp), "float64")
-    ivy.utils.assertions.check_equal(xp.ndim, 1)
-    ivy.utils.assertions.check_equal(fp.ndim, 1)
-    ivy.utils.assertions.check_equal(xp.shape[0], fp.shape[0])
+    ivy.utils.assertions.check_equal(xp.ndim, 1, as_array=False)
+    ivy.utils.assertions.check_equal(fp.ndim, 1, as_array=False)
+    ivy.utils.assertions.check_equal(xp.shape[0], fp.shape[0], as_array=False)
     if period is not None:
         ivy.utils.assertions.check_equal(period, 0, inverse=True)
         period = ivy.abs(period)
