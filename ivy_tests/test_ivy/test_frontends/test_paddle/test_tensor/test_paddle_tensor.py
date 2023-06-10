@@ -278,18 +278,15 @@ def test_torch_instance_abs(
     )
 
 
-
 # sin
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="sin",
-
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-
 def test_paddle_sin(
     dtype_and_x,
     frontend_method_data,
@@ -312,7 +309,6 @@ def test_paddle_sin(
         frontend=frontend,
         on_device=on_device,
     )
-
 
 
 # sinh
@@ -346,6 +342,7 @@ def test_paddle_sinh(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # asin
 @handle_frontend_method(
@@ -520,18 +517,17 @@ def test_paddle_exp(
         on_device=on_device,
     )
 
+
 # cos
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="cos",
-
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-
+)
 def test_paddle_cos(
-
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -554,7 +550,8 @@ def test_paddle_cos(
         on_device=on_device,
     )
 
-#acosh
+
+# acosh
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -585,4 +582,3 @@ def test_paddle_acosh(
         frontend=frontend,
         on_device=on_device,
     )
-
