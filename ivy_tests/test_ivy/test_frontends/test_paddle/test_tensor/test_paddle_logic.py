@@ -295,12 +295,15 @@ def test_paddle_logical_not(
     )
 
 
+# bitwise_or
 @handle_frontend_test(
-    fn_tree="paddle.is_empty",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    fn_tree="paddle.bitwise_or",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
     test_with_out=st.just(True),
 )
-def test_paddle_is_empty(
+def test_paddle_bitwise_or(
     *,
     dtype_and_x,
     on_device,
@@ -316,6 +319,7 @@ def test_paddle_is_empty(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        y=x[1],
     )
 
 
@@ -345,4 +349,28 @@ def test_paddle_bitwise_and(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.is_empty",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(True),
+)
+def test_paddle_is_empty(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
