@@ -161,7 +161,7 @@ class Array(
             self._dynamic_backend = dynamic_backend
         else:
             self._dynamic_backend = ivy.get_dynamic_backend()
-        self.weak_type = False # to handle 0-D jax front weak typed arrays
+        self.weak_type = False  # to handle 0-D jax front weak typed arrays
 
     def _view_attributes(self, data):
         self._base = None

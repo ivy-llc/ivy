@@ -550,7 +550,6 @@ def test_paddle_cos(
         on_device=on_device,
     )
 
-
 # subtract
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -580,3 +579,4 @@ def test_paddle_instance_subtract(
         frontend=frontend,
         on_device=on_device,
     )
+
