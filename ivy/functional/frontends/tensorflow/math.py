@@ -604,6 +604,11 @@ def atan(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def atanh(x, name=None):
+    return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
 def atan2(y, x, name=None):
     return ivy.atan2(y, x)
 
