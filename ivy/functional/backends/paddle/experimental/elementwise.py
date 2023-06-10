@@ -95,7 +95,7 @@ def nansum(
 ) -> paddle.Tensor:
     result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
     if result.shape == [1]:
-        result = paddle.fluid.layers.squeeze(x)
+        result = paddle.fluid.layers.squeeze(x, [0])
     return result
 
 
