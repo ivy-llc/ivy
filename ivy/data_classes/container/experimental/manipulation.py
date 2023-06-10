@@ -2721,7 +2721,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         zero_point: Union[int, float],
         /,
         *,
-        axis: Optional[int] = None,
         saturate: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -2765,7 +2764,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             x,
             scale,
             zero_point,
-            axis=axis,
             saturate=saturate,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2779,7 +2777,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         zero_point: Union[int, float],
         /,
         *,
-        axis: Optional[int] = None,
         saturate: Optional[int] = None,
     ):
         """
@@ -2803,9 +2800,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             Whether to saturate the quantized values to the range [0, 255].
             Defaults to False.
         """
-        return self._static_quantize_linear(
-            self, scale, zero_point, axis=axis, saturate=saturate
-        )
+        return self._static_quantize_linear(self, scale, zero_point, saturate=saturate)
 
     @staticmethod
     def _static_unique_consecutive(

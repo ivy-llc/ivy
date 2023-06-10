@@ -950,7 +950,6 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         zero_point: int,
         /,
         *,
-        axis: Optional[int] = None,
         saturate: Optional[bool] = None,
     ) -> ivy.Array:
         """
@@ -976,9 +975,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ret
             The quantized array.
         """
-        return ivy.quantize_linear(
-            self._data, scale, zero_point, axis=axis, saturate=saturate
-        )
+        return ivy.quantize_linear(self._data, scale, zero_point, saturate=saturate)
 
     @handle_view
     def associative_scan(
