@@ -498,7 +498,7 @@ from .ufunc import ufunc
 
 from . import linalg
 from .linalg.matrix_and_vector_products import (
-    # dot,
+    dot,
     # vdot,
     inner,
     outer,
