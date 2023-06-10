@@ -831,7 +831,7 @@ supports_gradients = None
 
 def _assert_array_significant_figures_formatting(sig_figs):
     ivy.utils.assertions.check_isinstance(sig_figs, int)
-    ivy.utils.assertions.check_greater(sig_figs, 0)
+    ivy.utils.assertions.check_greater(sig_figs, 0, as_array=False)
 
 
 # ToDo: SF formating for complex number
@@ -903,7 +903,7 @@ def unset_array_significant_figures():
 
 def _assert_array_decimal_values_formatting(dec_vals):
     ivy.utils.assertions.check_isinstance(dec_vals, int)
-    ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True)
+    ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True, as_array=False)
 
 
 def array_decimal_values(dec_vals=None):

@@ -225,6 +225,7 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
             direction,
             "DESCENDING",
             message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
+            as_array=False,
         )
     return ivy.sort(values, axis=axis, descending=descending)
 
@@ -286,6 +287,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
             n,
             allow_equal=True,
             message="Value of axis must be such that axis + dim(mask) <= dim(tensor)",
+            as_array=False,
         )
         tensor_shape = ivy.shape(tensor)
         for i in range(axis - 1, -1, -1):

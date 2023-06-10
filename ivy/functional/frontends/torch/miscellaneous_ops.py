@@ -21,6 +21,7 @@ def fliplr(input):
         2,
         allow_equal=True,
         message="requires tensor to be at least 2D",
+        as_array=False,
     )
     return ivy.fliplr(input)
 
@@ -32,6 +33,7 @@ def flipud(input):
         1,
         allow_equal=True,
         message="requires tensor to be at least 1D",
+        as_array=False,
     )
     return ivy.flipud(input)
 
@@ -220,6 +222,7 @@ def rot90(input, k, dims):
         2,
         allow_equal=True,
         message="expected total dims >= 2, but got total dims = " + str(total_dims),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -227,6 +230,7 @@ def rot90(input, k, dims):
         2,
         message="expected total rotation dims == 2, but got dims = "
         + str(total_rot_dims),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -237,6 +241,7 @@ def rot90(input, k, dims):
         + str(dims[0])
         + " and dim1 = "
         + str(dims[1]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -254,6 +259,7 @@ def rot90(input, k, dims):
         dims[0],
         total_dims,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_greater(
@@ -261,12 +267,14 @@ def rot90(input, k, dims):
         -total_dims,
         allow_equal=True,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_less(
         dims[1],
         total_dims,
         message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_greater(
@@ -274,6 +282,7 @@ def rot90(input, k, dims):
         -total_dims,
         allow_equal=True,
         message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
+        as_array=False,
     )
 
     k = (4 + (k % 4)) % 4
