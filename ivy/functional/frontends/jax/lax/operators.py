@@ -283,7 +283,10 @@ def dot_general(
 ):
     (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch) = dimension_numbers
     ivy.utils.assertions.check_less(
-        len(lhs.shape), 52, "number of dimensions greater than 52 is not supported"
+        len(lhs.shape),
+        52,
+        "number of dimensions greater than 52 is not supported",
+        as_array=False,
     )
     new_id = itertools.count()
     lhs_axis_ids = [next(new_id) for _ in lhs.shape]
