@@ -9,11 +9,12 @@ import ivy
 
 def _broadcast_inputs(x1, x2):
     x1_, x2_ = x1, x2
-    if isinstance(x1_, (int, float, bool)):
+    iterables = (list, tuple, ivy.Shape)
+    if not isinstance(x1_, iterables):
         x1_, x2_ = x2, x1
-        if not isinstance(x1_, (list, tuple, ivy.Shape)):
+        if not isinstance(x1_, iterables):
             return [x1], [x2]
-    if isinstance(x2_, (int, float, bool)):
+    if not isinstance(x2_, iterables):
         x1 = [x1] * len(x2)
     return x1, x2
 
