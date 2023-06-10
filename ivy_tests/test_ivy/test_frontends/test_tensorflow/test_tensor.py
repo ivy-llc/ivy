@@ -47,7 +47,7 @@ def test_tensorflow_tensor_property_device(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = EagerTensor(data)
-    ivy.utils.assertions.check_equal(x.device, ivy.dev(data))
+    ivy.utils.assertions.check_equal(x.device, ivy.dev(data), as_array=False)
 
 
 @given(
@@ -60,7 +60,7 @@ def test_tensorflow_tensor_property_dtype(
 ):
     dtype, data = dtype_x
     x = EagerTensor(data[0])
-    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]), as_array=False)
 
 
 @given(
@@ -74,7 +74,9 @@ def test_tensorflow_tensor_property_shape(
 ):
     dtype, data, shape = dtype_x
     x = EagerTensor(data[0])
-    ivy.utils.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(
+        x.ivy_array.shape, ivy.Shape(shape), as_array=False
+    )
 
 
 # __add__
