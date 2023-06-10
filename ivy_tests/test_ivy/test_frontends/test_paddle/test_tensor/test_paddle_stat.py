@@ -42,7 +42,7 @@ def test_paddle_mean(
     fn_tree="paddle.numel",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
+        # min_num_dims=1,
     ),
 )
 def test_paddle_numel(
@@ -60,5 +60,5 @@ def test_paddle_numel(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        x=x[0],
     )
