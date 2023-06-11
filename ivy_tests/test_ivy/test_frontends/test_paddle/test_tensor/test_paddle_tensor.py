@@ -1,7 +1,7 @@
 # global
 import ivy
 from hypothesis import strategies as st, assume, given
-import numpy as np
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
@@ -55,16 +55,7 @@ def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
     )
     return input_dtype + val_dtype, x, index, val[0]
 
-@st.composite
-def _get_dtype_and_square_matrix(draw):
-    dim_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    mat = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
-        )
-    )
-    return dtype, mat
+
 # Tests #
 # ----- #
 
@@ -562,9 +553,20 @@ def test_paddle_cos(
         frontend=frontend,
         on_device=on_device,
     )
-
-
 # cholesky
+import numpy as np
+
+@st.composite
+def _get_dtype_and_square_matrix(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    mat = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
+        )
+    )
+    return dtype, mat
+
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
