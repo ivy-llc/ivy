@@ -810,6 +810,7 @@ def _to_pairs(x, n):
                 "ndim pairs where ndim is the number of "
                 "the input's dimensions"
             ),
+            as_array=False,
         )
     return x
 
@@ -828,6 +829,7 @@ def _to_dilated(x, n):
                 "ndim groups where ndim is the number of "
                 "the input's dimensions"
             ),
+            as_array=False,
         )
     return x
 

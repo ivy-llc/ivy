@@ -71,7 +71,9 @@ def test_paddle_tensor_property_device(
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.place, ivy.dev(ivy.array(data[0])))
+    ivy.utils.assertions.check_equal(
+        x.place, ivy.dev(ivy.array(data[0])), as_array=False
+    )
 
 
 @given(
@@ -85,7 +87,7 @@ def test_paddle_tensor_property_dtype(
     dtype, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.dtype, dtype[0])
+    ivy.utils.assertions.check_equal(x.dtype, dtype[0], as_array=False)
 
 
 @given(
@@ -97,7 +99,9 @@ def test_paddle_tensor_property_dtype(
 def test_paddle_tensor_property_shape(dtype_x):
     _, data, shape = dtype_x
     x = Tensor(data[0])
-    ivy.utils.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(
+        x.ivy_array.shape, ivy.Shape(shape), as_array=False
+    )
 
 
 @given(
@@ -110,7 +114,7 @@ def test_paddle_tensor_property_ndim(
 ):
     _, data = dtype_x
     x = Tensor(data[0])
-    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim)
+    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
 
 
 # reshape
@@ -485,7 +489,6 @@ def test_paddle_argmax(
     )
 
 
-
 # exp
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -495,7 +498,6 @@ def test_paddle_argmax(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-
 def test_paddle_exp(
     dtype_and_x,
     frontend_method_data,
@@ -518,7 +520,8 @@ def test_paddle_exp(
         frontend=frontend,
         on_device=on_device,
     )
- 
+
+
 # cos
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -550,4 +553,3 @@ def test_paddle_cos(
         frontend=frontend,
         on_device=on_device,
     )
-

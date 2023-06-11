@@ -2241,7 +2241,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.round(self._data, decimals=decimals, out=out)
 
-    def sign(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def sign(
+        self: ivy.Array,
+        *,
+        np_variant: Optional[bool] = True,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sign. This method simply wraps the
         function, and so the docstring for ivy.sign also applies to this method with
@@ -2279,7 +2284,7 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[-1., -1.,  0.,  1.,  1.],
         [ 1., -1.,  1., -1.,  1.]])
         """
-        return ivy.sign(self._data, out=out)
+        return ivy.sign(self._data, np_variant=np_variant, out=out)
 
     def sin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
