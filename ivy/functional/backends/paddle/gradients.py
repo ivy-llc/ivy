@@ -191,11 +191,45 @@ def stop_gradient(
     return x
 
 
+def _get_jac_one_arg_fn(grad_fn, xs, out_idx):
+    nested_indices = iter(ivy.all_nested_indices(xs))
+
+    def one_arg_fn(x):
+        idx = next(nested_indices)
+        new_xs = ivy.set_nest_at_index(xs, idx, x) if idx else x
+        ret = grad_fn(new_xs)
+        for i in out_idx:
+            ret = ret[i]
+        return ret
+
+    return one_arg_fn
+
+
+def _get_one_out_fn(grad_fn, xs, fn_ret):
+    out_nested_indices = iter(ivy.all_nested_indices(fn_ret))
+
+    def one_out_fn(o):
+        out_idx = next(out_nested_indices)
+        one_arg_fn = _get_jac_one_arg_fn(grad_fn, xs, out_idx)
+        jacobian = ivy.nested_map(
+            xs,
+            lambda x: paddle.incubate.autograd.Jacobian(one_arg_fn, ivy.to_native(x)),
+            shallow=False,
+        )
+        return jacobian
+
+    return one_out_fn
+
+
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(
-        paddle.incubate.autograd.Jacobian(grad_fn, ivy.to_native(x_in))
-    )
+    grad_fn = lambda x_in: ivy.to_native(func(x_in), nested=True)
+
+    def callback_fn(xs):
+        fn_ret = grad_fn(xs)
+        one_out_fn = _get_one_out_fn(grad_fn, xs, fn_ret)
+        jacobian = ivy.nested_map(fn_ret, one_out_fn)
+        return jacobian
+
     return callback_fn
 
 

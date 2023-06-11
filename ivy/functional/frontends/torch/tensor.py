@@ -329,7 +329,7 @@ class Tensor:
     def amin(self, dim=None, keepdim=False):
         return torch_frontend.amin(self, dim=dim, keepdim=keepdim)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, "torch")
     def aminmax(self, dim=None, keepdim=False):
         return torch_frontend.aminmax(self, dim=dim, keepdim=keepdim)
 
