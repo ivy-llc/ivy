@@ -135,4 +135,3 @@ def fft2(a, s=None, axes=(-2, -1), norm=None):
         s = a.shape
     intermediate = ivy.fft(a, axes[0], norm=norm, n=s[0])
     return ivy.fft(intermediate, axes[1], norm=norm, n=s[1])
-
