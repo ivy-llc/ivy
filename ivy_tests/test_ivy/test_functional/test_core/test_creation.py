@@ -216,7 +216,7 @@ def _asarray_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.asarray",
     x_dtype_x_and_dtype=_asarray_helper(),
-    as_list=st.just(True),  # st.booleans(),
+    as_list=st.booleans(),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
 )
