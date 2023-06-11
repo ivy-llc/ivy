@@ -221,7 +221,17 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.asinh(x)
 
 
-def sign(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
+def sign(
+    x: paddle.Tensor,
+    /,
+    *,
+    np_variant: Optional[bool] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -840,6 +850,42 @@ def logaddexp(
 
 
 @with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
+def logaddexp2(
+    x1: Union[paddle.Tensor, float, list, tuple],
+    x2: Union[paddle.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "float16",
+                "float32",
+                "float64",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    return paddle.real(x)
+
+
+@with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
@@ -922,10 +968,6 @@ def exp2(
         return ivy.pow(2, x)
 
 
-@with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
-    backend_version,
-)
 def subtract(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -935,6 +977,8 @@ def subtract(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
+        x1, x2 = x1.astype("float32"), x2.astype("float32")
     if alpha not in (1, None):
         x2 = paddle_backend.multiply(x2, alpha)
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)

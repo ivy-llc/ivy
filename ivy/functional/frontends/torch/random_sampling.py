@@ -2,12 +2,8 @@ import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
-try:
-    from torch import Generator
-except ImportError:
-    from types import SimpleNamespace
 
-    Generator = SimpleNamespace
+# ToDo: will need to create a Generator class to be able to fully test these functions
 
 
 def seed() -> int:
@@ -18,7 +14,7 @@ def seed() -> int:
 @to_ivy_arrays_and_back
 def manual_seed(seed: int):
     ivy.seed(seed_value=seed)
-    return Generator().manual_seed(seed)
+    return None
 
 
 @with_supported_dtypes(
@@ -32,12 +28,14 @@ def manual_seed(seed: int):
 )
 @to_ivy_arrays_and_back
 def multinomial(input, num_samples, replacement=False, *, generator=None, out=None):
+    seed = generator.initial_seed() if generator is not None else None
     return ivy.multinomial(
         num_samples + 1,  # doesn't matter because `probs` is provided, but should be
         # greater than the number of samples
         num_samples,
         probs=input,
         replace=replacement,
+        seed=seed,
         out=out,
     )
 
@@ -53,7 +51,8 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
 )
 @to_ivy_arrays_and_back
 def poisson(input, generator=None):
-    return ivy.poisson(input, shape=None)
+    seed = generator.initial_seed() if generator is not None else None
+    return ivy.poisson(input, seed=seed, shape=None)
 
 
 @to_ivy_arrays_and_back
@@ -69,10 +68,12 @@ def randint(
     device=None,
     requires_grad=False
 ):
+    seed = generator.initial_seed() if generator is not None else None
     return ivy.randint(
         low,
         high,
         shape=size,
+        seed=seed,
         out=out,
         dtype=dtype,
         device=device,
@@ -91,8 +92,10 @@ def rand(
     requires_grad=False,
     pin_memory=False
 ):
+    seed = generator.initial_seed() if generator is not None else None
     return ivy.random_uniform(
         shape=size,
+        seed=seed,
         out=out,
         dtype=dtype,
         device=device,
@@ -110,7 +113,8 @@ def rand(
 )
 @to_ivy_arrays_and_back
 def normal(mean, std, *, generator=None, out=None):
-    return ivy.random_normal(mean=mean, std=std, out=out)
+    seed = generator.initial_seed() if generator is not None else None
+    return ivy.random_normal(mean=mean, std=std, seed=seed, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -146,8 +150,10 @@ def randn(
     requires_grad=False,
     pin_memory=False
 ):
+    seed = generator.initial_seed() if generator is not None else None
     return ivy.random_normal(
         shape=size,
+        seed=seed,
         out=out,
         dtype=dtype,
         device=device,
@@ -186,7 +192,8 @@ def randn_like(
 )
 @to_ivy_arrays_and_back
 def bernoulli(input, *, generator=None, out=None):
-    return ivy.bernoulli(input, out=out)
+    seed = generator.initial_seed() if generator is not None else None
+    return ivy.bernoulli(input, seed=seed, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -201,7 +208,7 @@ def randperm(
     requires_grad=False,
     pin_memory=False
 ):
+    seed = generator.initial_seed() if generator is not None else None
     arr = ivy.arange(n, device=device, dtype=dtype)
-    ret = ivy.shuffle(arr, out=out)
-
+    ret = ivy.shuffle(arr, seed=seed, out=out)
     return ret
