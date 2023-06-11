@@ -126,6 +126,7 @@ def pow(x, y, name=None):
     return ivy.pow(x, y)
 
 
+@with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
 @to_ivy_arrays_and_back
 def conj(x, name=None):
     return ivy.conj(x)
