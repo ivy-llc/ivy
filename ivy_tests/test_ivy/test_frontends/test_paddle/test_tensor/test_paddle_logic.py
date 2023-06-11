@@ -323,6 +323,7 @@ def test_paddle_bitwise_or(
     )
 
 
+# bitwise_and
 @handle_frontend_test(
     fn_tree="paddle.bitwise_and",
     dtype_and_x=helpers.dtype_and_values(
