@@ -105,6 +105,7 @@ def confusion_matrix(
             ivy.shape(predictions),
             ivy.shape(weights),
             message="weights shape do not match predictions",
+            as_array=False,
         )
         weights = ivy.astype(weights, dtype, copy=False)
 
@@ -294,7 +295,7 @@ def reduce_euclidean_norm(
 @to_ivy_arrays_and_back
 def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
     # stable logsumexp trick
-    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=True)
+    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=False)
     return (
         ivy.log(
             ivy.sum(
@@ -413,7 +414,9 @@ def tan(x, name=None):
 def unsorted_segment_mean(
     data, segment_ids, num_segments, name="unsorted_segment_mean"
 ):
-    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -428,7 +431,9 @@ def unsorted_segment_mean(
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
-    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):

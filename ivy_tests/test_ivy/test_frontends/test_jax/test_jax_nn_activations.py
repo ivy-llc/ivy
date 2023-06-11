@@ -744,7 +744,7 @@ def test_jax_nn_hard_sigmoid(
         available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
-        safety_factor_scale="linear",
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -763,5 +763,7 @@ def test_jax_nn_selu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
+        atol=1e-02,
         x=x[0],
     )

@@ -343,8 +343,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(len(target.shape), 1)
-        ivy.utils.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1, as_array=False)
+        ivy.utils.assertions.check_equal(target.shape[0], size, as_array=False)
     dtype = updates.dtype
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
@@ -449,7 +449,7 @@ def scatter_nd(
             torch.tensor(indices) if isinstance(indices, (tuple, list)) else indices
         )
         if len(indices.shape) < 2:
-            indices = torch.unsqueeze(indices, 0)
+            indices = torch.unsqueeze(indices, -1)
         if torch.any(indices == -1):
             shape = (
                 shape
@@ -477,7 +477,7 @@ def scatter_nd(
                 )
                 for index in indices
             ]
-            indices = torch.concat(indices, axis=0)
+            indices = torch.concat(indices, axis=-1)
 
     # broadcast updates to indices
     expected_shape = (
@@ -494,7 +494,9 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(
+            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
+        )
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     indices_shape = indices.shape
