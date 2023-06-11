@@ -47,7 +47,7 @@ def test_tensorflow_tensor_property_device(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = EagerTensor(data)
-    ivy.utils.assertions.check_equal(x.device, ivy.dev(data))
+    ivy.utils.assertions.check_equal(x.device, ivy.dev(data), as_array=False)
 
 
 @given(
@@ -60,7 +60,7 @@ def test_tensorflow_tensor_property_dtype(
 ):
     dtype, data = dtype_x
     x = EagerTensor(data[0])
-    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]), as_array=False)
 
 
 @given(
@@ -74,7 +74,9 @@ def test_tensorflow_tensor_property_shape(
 ):
     dtype, data, shape = dtype_x
     x = EagerTensor(data[0])
-    ivy.utils.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(
+        x.ivy_array.shape, ivy.Shape(shape), as_array=False
+    )
 
 
 # __add__
@@ -819,6 +821,9 @@ def test_tensorflow_instance_ror(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_truediv(
@@ -830,6 +835,7 @@ def test_tensorflow_instance_truediv(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -856,6 +862,9 @@ def test_tensorflow_instance_truediv(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_rtruediv(

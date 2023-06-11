@@ -476,7 +476,7 @@ def Sinh(*, x, name="Sinh"):
 )
 @to_ivy_arrays_and_back
 def Sign(*, x, name="Sign"):
-    return ivy.sign(x)
+    return ivy.sign(x, np_variant=False)
 
 
 Size = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.size))
@@ -564,9 +564,7 @@ Mean = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def Pow(*, x, y, name="Pow"):
-    return ivy.pow(x, y)
+Pow = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.pow))
 
 
 Relu6 = to_ivy_arrays_and_back(
