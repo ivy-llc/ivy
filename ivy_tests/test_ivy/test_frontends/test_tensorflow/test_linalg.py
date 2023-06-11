@@ -875,3 +875,48 @@ def test_tensorflow_diag(
         v=x[0],
         k=k,
     )
+
+
+@st.composite
+def _get_dtype_and_matrix_and_num(draw):
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    random_size = draw(st.integers(min_value=1, max_value=4))
+    shape = (*arbitrary_dims, random_size, random_size)
+    dtype_and_values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    num_lower = draw(st.integers(min_value=-1, max_value=random_size - 1))
+    num_upper = draw(st.integers(min_value=-1, max_value=random_size - 1))
+    return (*dtype_and_values, num_lower, num_upper)
+
+
+# band_part
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.band_part",
+    dtype_and_input=_get_dtype_and_matrix_and_num(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_band_part(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, num_lower, num_upper = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        num_lower=num_lower,
+        num_upper=num_upper,
+    )
