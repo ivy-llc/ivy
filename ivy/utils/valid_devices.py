@@ -14,7 +14,6 @@ def jax_valid_device(device: str, /):
     return True, ""
 
 
-
 def mxnet_valid_device(device: str, /):
     if device not in mxn.valid_devices:
         if device in mxn.invalid_devices:
@@ -31,7 +30,6 @@ def numpy_valid_device(device: str, /):
     return True, ""
 
 
-
 def paddle_valid_device(device: str, /):
     if device not in pdl.valid_devices:
         if device in pdl.invalid_devices:
@@ -40,14 +38,12 @@ def paddle_valid_device(device: str, /):
     return True, ""
 
 
-
 def tensorflow_valid_device(device: str, /):
     if device not in tf.valid_devices:
         if device in tf.invalid_devices:
             return False, "{} is an invalid device for tensorflow".format(device)
         return False, "{} is not a device".format(device)
     return True, ""
-
 
 
 def torch_valid_device(device: str, /):
