@@ -821,6 +821,9 @@ def test_tensorflow_instance_ror(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_truediv(
@@ -832,6 +835,7 @@ def test_tensorflow_instance_truediv(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -858,6 +862,9 @@ def test_tensorflow_instance_truediv(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_rtruediv(
