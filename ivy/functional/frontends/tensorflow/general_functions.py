@@ -560,7 +560,7 @@ def truncatediv(x, y, name=None):
     return x.trunc_divide(y)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("int8", "int16")}, "tensorflow")
+@with_supported_dtypes({"2.12.0 and below": ("int32", "int64", "bfloat16", "half", "float32", "float64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def truncatemod(x, y):
     x = ivy.broadcast_to(x, ivy.shape(y))
