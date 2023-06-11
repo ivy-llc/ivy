@@ -23,6 +23,11 @@ def einsum(
     return ivy.einsum(subscripts, *operands, out=out)
 
 
+@to_ivy_arrays_and_back
+def histogram(a, bins=10, range=None, weights=None, density=None):
+    return ivy.histogram(a, bins, range, weights, density)
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):

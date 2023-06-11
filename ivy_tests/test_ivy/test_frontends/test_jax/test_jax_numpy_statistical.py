@@ -13,6 +13,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
     _get_castable_dtype,
 )
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa: E501
+    _histogram_helper,
+)
 from ivy import inf
 
 
@@ -60,6 +63,45 @@ def test_jax_numpy_einsum(
         optimize="optimal",
         precision=None,
         _use_xeinsum=False,
+    )
+
+
+# histogram
+@handle_frontend_test(
+    fn_tree="jax.numpy.histogram",
+    values=_histogram_helper(),
+)
+def test_jax_numpy_histogram(
+    *,
+    values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    (
+        a,
+        bins,
+        axis,
+        extend_lower_interval,
+        extend_upper_interval,
+        dtype,
+        range,
+        weights,
+        density,
+        dtype_input,
+    ) = values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        bins=bins,
+        range=range,
+        weights=weights,
+        density=density,
     )
 
 
@@ -994,8 +1036,8 @@ def test_jax_numpy_nanmedian(
     test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
-    # TODO: overwrite as a boolean when there's a way around jax.numpy.nanquantile does not
-    #  support overwrite_input=True.
+    # TODO: overwrite as a boolean when there's a way around
+    # jax.numpy.nanquantile does not support overwrite_input=True.
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
