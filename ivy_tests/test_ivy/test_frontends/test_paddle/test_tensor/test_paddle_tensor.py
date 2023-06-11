@@ -2,7 +2,6 @@
 import ivy
 from hypothesis import strategies as st, assume, given
 import numpy as np
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
@@ -13,7 +12,6 @@ CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 
 
 # Helpers #
-
 # ------- #
 
 
@@ -56,7 +54,7 @@ def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
         )
     )
     return input_dtype + val_dtype, x, index, val[0]
-# helpers
+
 @st.composite
 def _get_dtype_and_square_matrix(draw):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
@@ -67,7 +65,6 @@ def _get_dtype_and_square_matrix(draw):
         )
     )
     return dtype, mat
-
 # Tests #
 # ----- #
 
@@ -83,7 +80,9 @@ def test_paddle_tensor_property_device(
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.place, ivy.dev(ivy.array(data[0])))
+    ivy.utils.assertions.check_equal(
+        x.place, ivy.dev(ivy.array(data[0])), as_array=False
+    )
 
 
 @given(
@@ -97,7 +96,7 @@ def test_paddle_tensor_property_dtype(
     dtype, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.dtype, dtype[0])
+    ivy.utils.assertions.check_equal(x.dtype, dtype[0], as_array=False)
 
 
 @given(
@@ -109,7 +108,9 @@ def test_paddle_tensor_property_dtype(
 def test_paddle_tensor_property_shape(dtype_x):
     _, data, shape = dtype_x
     x = Tensor(data[0])
-    ivy.utils.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(
+        x.ivy_array.shape, ivy.Shape(shape), as_array=False
+    )
 
 
 @given(
@@ -122,7 +123,7 @@ def test_paddle_tensor_property_ndim(
 ):
     _, data = dtype_x
     x = Tensor(data[0])
-    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim)
+    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
 
 
 # reshape
@@ -323,6 +324,39 @@ def test_paddle_sin(
     )
 
 
+# sinh
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="sinh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_sinh(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # asin
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -463,9 +497,74 @@ def test_paddle_argmax(
         on_device=on_device,
     )
 
+
+# exp
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="exp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_exp(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# cos
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="cos",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_cos(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # cholesky
-
-
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -499,5 +598,3 @@ def test_paddle_cholesky(
         method_flags=method_flags,
         on_device=on_device,
     )
-
-
