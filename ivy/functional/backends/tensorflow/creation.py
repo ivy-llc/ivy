@@ -94,9 +94,6 @@ def asarray(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    def _infer_dtype(x):
-        return x.dtype if hasattr(x, "dtype") else ivy.default_dtype(item=x)
-
     def _tf_to_tensor(x, dtype):
         if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorShape)):
             return tf.cast(x, dtype) if dtype is not None else x
@@ -108,12 +105,12 @@ def asarray(
 
     with tf.device(device):
         if dtype is None:
-            # this needs to be changed to a function that infers the dtype correctly
-            # because the dtype returned change when the elements order change
             if isinstance(obj, tf.TensorShape):
                 dtype = ivy.default_int_dtype()
             else:
-                dtype = ivy.default_dtype(item=obj)
+                dtype = (
+                    obj.dtype if hasattr(obj, "dtype") else ivy.default_dtype(item=obj)
+                )
         # convert the input to a tensor using the appropriate function
         tensor = _tf_to_tensor(obj, dtype)
         return tf.identity(tensor) if copy else tensor
