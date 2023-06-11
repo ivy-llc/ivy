@@ -207,7 +207,7 @@ def _asarray_helper(draw):
             draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
         )
     )[-1]
-    # dtype = draw(st.sampled_from([dtype, draw(st.none())]))
+    dtype = draw(st.sampled_from([dtype, draw(st.none())]))
     return x_dtype, x, dtype
 
 
@@ -220,7 +220,6 @@ def _asarray_helper(draw):
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
 )
-# @reproduce_failure('6.75.3', b'AXicY2BkZEAGAAAtAAM=')
 def test_asarray(
     *,
     x_dtype_x_and_dtype,
@@ -253,7 +252,7 @@ def test_asarray(
         fw=backend_fw,
         fn_name=fn_name,
         object_in=x,
-        dtype=None,  # dtype,
+        dtype=dtype,
         device=on_device,
         ground_truth_backend=ground_truth_backend,
     )

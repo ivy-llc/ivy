@@ -94,23 +94,39 @@ def asarray(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    def _infer_dtype(obj):
+        if isinstance(obj, tf.TensorShape):
+            return ivy.default_int_dtype()
+        elif hasattr(obj, "dtype"):
+            return obj.dtype
+        else:
+            return ivy.default_dtype(item=obj)
+
     def _tf_to_tensor(x, dtype):
         if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorShape)):
-            return tf.cast(x, dtype) if dtype is not None else x
+            return tf.cast(x, dtype)
         try:
             ret = tf.convert_to_tensor(x, dtype)
         except (TypeError, ValueError):
             ret = tf.cast(x, dtype)
         return ret
 
+    if dtype is None:
+        # get default dtypes for all elements
+        dtype_list = ivy.nested_map(obj, lambda x: _infer_dtype(x), shallow=False)
+        # flatten the nested structure
+        dtype_list = tf.nest.flatten(dtype_list)
+        # keep unique dtypes
+        dtype_list = list(set(dtype_list))
+        # promote all dtypes to a single dtype
+        dtype = dtype_list[0]
+        # we disable precise mode to avoid wider than necessary casting
+        # that might result from the mixing of int32 and float32
+        with ivy.PreciseMode(False):
+            for dt in dtype_list[1:]:
+                dtype = ivy.promote_types(dtype, dt)
+
     with tf.device(device):
-        if dtype is None:
-            if isinstance(obj, tf.TensorShape):
-                dtype = ivy.default_int_dtype()
-            else:
-                dtype = (
-                    obj.dtype if hasattr(obj, "dtype") else ivy.default_dtype(item=obj)
-                )
         # convert the input to a tensor using the appropriate function
         tensor = _tf_to_tensor(obj, dtype)
         return tf.identity(tensor) if copy else tensor
