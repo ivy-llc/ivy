@@ -205,8 +205,11 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
     axes=st.sampled_from([(0, 1), (-2, -1)]),
     norm=st.sampled_from([None, "backward", "ortho", "forward"]),
 )
-def test_numpy_fft2(dtype_and_x, s, axes, norm, frontend, test_flags, fn_tree, on_device):
+def test_numpy_fft2(
+        dtype_and_x, s, axes, norm, frontend, test_flags, fn_tree, on_device
+):
     input_dtype, a = dtype_and_x
+    ax1, ax2 = axes
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -216,6 +219,6 @@ def test_numpy_fft2(dtype_and_x, s, axes, norm, frontend, test_flags, fn_tree, o
         test_values=True,
         a=a,
         s=s,
-        axes=axes,
+        axes=(ax1, ax2),
         norm=norm,
     )
