@@ -1,0 +1,4 @@
+git clone https://github.com/your-github-username/ivy.git
+cd ivy
+pip install -r requirements/requirements.txt
+python3 -m pip install pre-commit
