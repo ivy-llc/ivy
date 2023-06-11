@@ -821,7 +821,9 @@ def test_tensorflow_linalg_einsum(
 # adjoint
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.adjoint",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=_get_dtype_and_matrix().filter(
+        lambda x: "float16" not in x[0] and "bfloat16" not in x[0]
+    ),  # TODO : remove this filter when paddle.conj supports float16
     test_with_out=st.just(False),
 )
 def test_tensorflow_adjoint(
