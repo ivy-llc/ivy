@@ -670,6 +670,7 @@ class Tensor:
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def argmin(self, dim=None, keepdim=False):
         return torch_frontend.argmin(self, dim=dim, keepdim=keepdim)
 
