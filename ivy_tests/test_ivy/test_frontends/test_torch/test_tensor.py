@@ -1492,26 +1492,33 @@ def test_torch_instance_asin(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="amax",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        valid_axis=True,
+        force_int_axis=True,
     ),
+    keepdim=st.booleans(),
 )
 def test_torch_instance_amax(
-    dtype_x,
+    dtype_x_axis,
+    keepdim,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "keepdim": keepdim,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1591,26 +1598,33 @@ def test_torch_instance_abs_(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="amin",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        valid_axis=True,
+        force_int_axis=True,
     ),
+    keepdim=st.booleans(),
 )
 def test_torch_instance_amin(
-    dtype_x,
+    dtype_x_axis,
+    keepdim,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "keepdim": keepdim,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
