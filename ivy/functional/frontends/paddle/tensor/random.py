@@ -11,5 +11,5 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     "paddle",
 )
 @to_ivy_arrays_and_back
-def uniform(shape, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
+def uniform(shape, /, *, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
     return ivy.random_uniform(low=min, high=max, shape=shape, dtype=dtype, seed=seed)
