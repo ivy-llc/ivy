@@ -78,7 +78,10 @@ def copysign(
     with ivy.ArrayMode(False):
         x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)), ivy.divide(1, x2), x2)
         signs = ivy.sign(x2)
-        return ivy.multiply(ivy.abs(x1), signs)
+        result = ivy.multiply(ivy.abs(x1), signs)
+        if result.shape == [1]:
+            result = paddle.fluid.layers.squeeze(result, [0])
+        return result
 
 
 @with_unsupported_device_and_dtypes(
@@ -95,7 +98,7 @@ def nansum(
 ) -> paddle.Tensor:
     result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
     if result.shape == [1]:
-        result = paddle.fluid.layers.squeeze(x)
+        result = paddle.fluid.layers.squeeze(result, [0])
     return result
 
 
