@@ -18,4 +18,8 @@ def mean(input, axis=None, keepdim=False, out=None):
 @to_ivy_arrays_and_back
 def numel(x, name=None):
     prod = ivy.prod(x.size, dtype=ivy.int64)
-    return ivy.array([prod if prod > 0 else ivy.array(1, dtype=ivy.int64)])
+    try:
+        length = len(x)
+    except (ValueError, TypeError):
+        length = 1  # if 0 dimensional tensor with 1 element
+    return ivy.array([prod if prod > 0 else ivy.array(length, dtype=ivy.int64)])
