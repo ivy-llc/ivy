@@ -44,7 +44,6 @@ def test_paddle_mean(
     fn_tree="paddle.numel",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        # min_num_dims=1,
     ),
 )
 def test_paddle_numel(
