@@ -186,11 +186,6 @@ class IvyDtypePromotionError(IvyException):
         super().__init__(*messages, include_backend=include_backend)
 
 
-class IvyDeviceError(IvyException):
-    def __init__(self, *messages, include_backend=False):
-        super().__init__(*messages, include_backend=include_backend)
-
-
 def handle_exceptions(fn: Callable) -> Callable:
     buffer = io.StringIO()
 
