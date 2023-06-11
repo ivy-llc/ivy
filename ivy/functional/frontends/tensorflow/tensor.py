@@ -159,12 +159,9 @@ class EagerTensor:
         return tf_frontend.math.add(self, x, name=name)
 
     def __rand__(self, x, name="rand"):
-        return tf_frontend.math.logical_and(self, x, name=name)
+        return tf_frontend.raw_ops.BitwiseAnd(self, x, name=name)
 
     def __rfloordiv__(self, x, name="rfloordiv"):
-        _, x = tf_frontend.check_tensorflow_casting(
-            self, x.ivy_array if hasattr(x, "ivy_array") else x
-        )
         return tf_frontend.raw_ops.FloorDiv(x=x, y=self, name=name)
 
     def __rmatmul__(self, x, name="rmatmul"):
@@ -177,46 +174,24 @@ class EagerTensor:
         return tf_frontend.raw_ops.Mul(x=self, y=x, name=name)
 
     def __ror__(self, x, name="ror"):
-        return tf_frontend.raw_ops.LogicalOr(x=self, y=x, name=name)
+        return tf_frontend.raw_ops.BitwiseOr(x=self, y=x, name=name)
 
     def __rpow__(self, x, name="rpow"):
-        _, x = tf_frontend.check_tensorflow_casting(
-            self, x.ivy_array if hasattr(x, "ivy_array") else x
-        )
-        return tf_frontend.raw_ops.Pow(x=x, y=self, name=name)
+        return tf_frontend.math.pow(x=x, y=self, name=name)
 
     def __rsub__(self, x, name="rsub"):
-        _, x = tf_frontend.check_tensorflow_casting(
-            self, x.ivy_array if hasattr(x, "ivy_array") else x
-        )
         return tf_frontend.math.subtract(x, self, name=name)
 
     def __rtruediv__(self, x, name="rtruediv"):
-        _, x = tf_frontend.check_tensorflow_casting(
-            self, x.ivy_array if hasattr(x, "ivy_array") else x
-        )
         return tf_frontend.math.truediv(x, self, name=name)
 
     def __rxor__(self, x, name="rxor"):
-        return tf_frontend.math.logical_xor(self, x, name=name)
+        return tf_frontend.raw_ops.BitwiseXor(x=self, y=x, name=name)
 
     def __sub__(self, y, name="sub"):
         return tf_frontend.math.subtract(self, y, name=name)
 
     def __truediv__(self, y, name="truediv"):
-        dtype = ivy.dtype(self.ivy_array)
-        if str(dtype) in ["uint8", "int8", "uint16", "int16"]:
-            return tf_frontend.math.truediv(
-                tf_frontend.cast(self, ivy.float32),
-                tf_frontend.cast(y, ivy.float32),
-                name=name,
-            )
-        if str(dtype) in ["uint32", "int32", "uint64", "int64"]:
-            return tf_frontend.math.truediv(
-                tf_frontend.cast(self, ivy.float64),
-                tf_frontend.cast(y, ivy.float64),
-                name=name,
-            )
         return tf_frontend.math.truediv(self, y, name=name)
 
     def __len__(self):
