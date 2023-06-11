@@ -2,7 +2,7 @@
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
-
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 
 def _reduce_strides_dilations(dim, stride, dilations):
     if not isinstance(stride, int):
@@ -463,16 +463,29 @@ def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
 #weighted_moments
 @to_ivy_arrays_and_back
 def weighted_moments(x, axes, frequency_weights, name=None, keep_dims=False, keepdims=None):
+    fw_x_prod=frequency_weights * x
+    fw_x_prod=ivy.array(fw_x_prod)
+    weighted_input_sum = ivy.sum(fw_x_prod, axis=axes, keepdims=True).astype(fw_x_prod.dtype)
 
-    weighted_input_sum = ivy.sum(frequency_weights * x, axes, keepdims=True)
     broadcasted_weights = frequency_weights + ivy.zeros_like(x)
-    sum_of_weights = ivy.sum(broadcasted_weights, axes, keepdims=True)
+    broadcasted_weights=ivy.array(broadcasted_weights)
+    sum_of_weights = ivy.sum(broadcasted_weights, axis=axes, keepdims=True).astype(broadcasted_weights.dtype)
+
     divisor = ivy.reciprocal(sum_of_weights)
+
+    weighted_input_sum, divisor = check_tensorflow_casting(weighted_input_sum, divisor)
     weighted_mean = ivy.multiply(weighted_input_sum, divisor)
 
-    # x, y = check_tensorflow_casting(x, weighted_mean)
+    x, weighted_mean = check_tensorflow_casting(x, weighted_mean)
     squared_difference = ivy.square(ivy.subtract(x, weighted_mean))
-    weighted_distsq = ivy.sum(frequency_weights * squared_difference, axes, keepdims=True)
+    if isinstance(squared_difference, complex):
+        squared_difference = squared_difference.real - squared_difference.imag*1j
+
+    fw_sq_diff_prod=frequency_weights * squared_difference
+    fw_sq_diff_prod=ivy.array(fw_sq_diff_prod)
+    weighted_distsq = ivy.sum(fw_sq_diff_prod, axis=axes, keepdims=True).astype(fw_sq_diff_prod.dtype)
+
+    weighted_distsq, divisor=check_tensorflow_casting(weighted_distsq, divisor)
     weighted_variance = ivy.multiply(weighted_distsq, divisor)
 
     if not keep_dims:
