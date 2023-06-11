@@ -199,7 +199,9 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
         min_axis=-1,
         force_int_axis=True,
     ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),  # Include "ortho" and "forward"
+    norm=st.sampled_from(
+        ["backward", "ortho", "forward"]
+    ),  # Include "ortho" and "forward"
     n=st.integers(min_value=2, max_value=5),
 )
 def test_numpy_rfft2(
