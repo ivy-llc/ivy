@@ -4612,12 +4612,15 @@ def test_torch_instance_argmin(
     method_name="argsort",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
+        force_int_axis=True,
         min_num_dims=1,
-        max_num_dims=5,
+        max_num_dims=3,
         min_dim_size=1,
         max_dim_size=3,
-        min_axis=-1,
-        max_axis=0,
+        min_value=1,
+        max_value=5,
+        valid_axis=True,
+        allow_neg_axes=True,
     ),
     descending=st.booleans(),
 )
