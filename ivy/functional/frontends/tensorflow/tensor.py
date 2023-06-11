@@ -198,7 +198,7 @@ class EagerTensor:
         return tf_frontend.math.truediv(x, self, name=name)
 
     def __rxor__(self, x, name="rxor"):
-        return tf_frontend.math.logical_xor(self, x, name=name)
+        return tf_frontend.raw_ops.BitwiseXor(x=self, y=x, name=name)
 
     def __sub__(self, y, name="sub"):
         return tf_frontend.math.subtract(self, y, name=name)

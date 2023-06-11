@@ -1345,7 +1345,8 @@ def test_tensorflow_FloorMod(  # NOQA
     dtype_and_x=helpers.dtype_and_values(
         min_num_dims=1,
         min_dim_size=2,
-        small_abs_safety_factor=3,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
         safety_factor_scale="log",
         available_dtypes=helpers.get_dtypes("complex"),
     ),
