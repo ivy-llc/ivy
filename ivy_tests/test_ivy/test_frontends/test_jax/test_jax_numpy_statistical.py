@@ -92,7 +92,7 @@ def test_jax_numpy_histogram(
         dtype_input,
     ) = values
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtype_input,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
