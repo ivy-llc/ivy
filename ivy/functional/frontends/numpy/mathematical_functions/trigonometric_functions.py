@@ -11,27 +11,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
-
-'''
-- The functions below are all for trigonometric functions. The purpose of these functions is to convert numpy trigonometric functions 
-  to ivy trigonometric functions.
-  Each of these functions begin with decorators (@...) that are used for extending or customizing its (the function) functionality.
-
-- Here is an explanation of what is included within the functions:
-  - x: The input array on which the cosine operation will be performed.
-  - /: This is a positional-only parameter marker, which means x can only be passed positionally and not as a keyword argument.
-  - out=None: An optional argument that specifies an output array where the result will be stored.
-  - *: This separates the positional-only parameters from the keyword-only parameters that follow.
-  - where=True: An optional keyword argument that specifies a condition on elements of x for selecting values from ret.
-  - casting="same_kind": An optional keyword argument that specifies the casting rules when performing the operation.
-  - order="k": An optional keyword argument that specifies the memory layout of the output array.
-  - dtype=None: An optional keyword argument that specifies the data type of the output array.
-  - subok=True: An optional keyword argument that determines whether to return subclasses of the input type if possible.
-
-To get the mathematical functions, please refer to the following link: https://numpy.org/doc/stable/reference/routines.math.html#
-
-'''
-
 # This is the cosine (cos) function.
 # It returns the cosine input using the ivy cosine function.
 @handle_numpy_out
