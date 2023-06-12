@@ -5,7 +5,6 @@ import functools
 import numpy as np
 from operator import mul
 from typing import Optional
-from time import perf_counter
 
 
 # local
