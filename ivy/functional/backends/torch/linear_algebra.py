@@ -235,6 +235,7 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if len(x.shape) < 2:
