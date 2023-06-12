@@ -553,8 +553,8 @@ def test_paddle_cos(
         frontend=frontend,
         on_device=on_device,
     )
-    
- 
+
+
 # argmin
 @handle_frontend_method(
     class_tree=CLASS_TREE,
