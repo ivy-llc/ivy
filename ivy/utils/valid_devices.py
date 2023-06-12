@@ -1,14 +1,6 @@
 # global
 import ivy
 
-# local
-import ivy.functional.backends.jax
-import ivy.functional.backends.mxnet
-import ivy.functional.backends.numpy
-import ivy.functional.backends.paddle
-import ivy.functional.backends.tensorflow
-import ivy.functional.backends.torch
-
 
 def is_valid_device(device: str, /):
     if device not in ivy.current_backend().__init__.valid_devices:
