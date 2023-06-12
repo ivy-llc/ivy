@@ -204,3 +204,9 @@ def exp(x, name=None):
 @to_ivy_arrays_and_back
 def reciprocal(x, name=None):
     return ivy.reciprocal(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def log10(x, name=None):
+    return ivy.log10(x)
