@@ -342,7 +342,7 @@ cumsum.support_native_out = True
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
 @with_unsupported_dtypes(
-    {"2.0.1 and below": "bfloat16"},
+    {"2.0.1 and below": ("uint8", "bfloat16", "float16")},
     backend_version,
 )
 def cummax(
