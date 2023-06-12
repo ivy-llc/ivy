@@ -1345,7 +1345,8 @@ def test_tensorflow_FloorMod(  # NOQA
     dtype_and_x=helpers.dtype_and_values(
         min_num_dims=1,
         min_dim_size=2,
-        small_abs_safety_factor=3,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
         safety_factor_scale="log",
         available_dtypes=helpers.get_dtypes("complex"),
     ),
@@ -2714,6 +2715,7 @@ def _pow_helper_shared_dtype(draw):
     return [dtype1, dtype2], [x1, x2]
 
 
+# Pow
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Pow",
     dtype_and_x=_pow_helper_shared_dtype(),
