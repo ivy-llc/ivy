@@ -50,15 +50,15 @@ def max_pool1d(
     return res.astype(dtype)
 
 
-# @with_supported_dtypes(
-#     {
-#         "2.4.2 and below": (
-#             "float32",
-#             "float64",
-#         )
-#     },
-#     backend_version,
-# )
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def max_pool2d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
