@@ -1,11 +1,11 @@
 # global
 from typing import Optional, Union, Tuple, Sequence
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 
 # local
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
 

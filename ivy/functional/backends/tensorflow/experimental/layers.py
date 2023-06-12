@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
@@ -444,6 +444,7 @@ def avg_pool3d(
     return res
 
 
+@with_supported_dtypes({"2.12.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -454,10 +455,11 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    if x.dtype not in (tf.float32, tf.float64):
-        x = tf.cast(x, tf.float32)
+    # ToDo: Update this once tf.signal.dct supports axis other than -1
     if axis != -1:
         new_dims = list(range(len(x.shape)))
+        if axis < 0:
+            axis = len(x.shape) + axis
         new_dims[axis], new_dims[-1] = new_dims[-1], axis
         x = tf.transpose(x, new_dims)
         dct_out = tf.signal.dct(x, type=type, n=n, axis=-1, norm=norm)
@@ -467,6 +469,20 @@ def dct(
     return dct_out
 
 
+def idct(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
+
+
 def _fft_norm(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -474,13 +490,13 @@ def _fft_norm(
     *,
     norm: str = "backward",
 ):
-    n = tf.constant(x.shape[dim])
+    n = tf.constant(x.shape[dim], dtype=x.dtype)
     if norm == "backward":
         return x
     elif norm == "ortho":
-        return x / tf.sqrt(n)
+        return x / tf.cast(tf.sqrt(tf.cast(n, tf.float32)), x.dtype)
     elif norm == "forward":
-        return x / n
+        return x / tf.cast(n, x.dtype)
     else:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
@@ -502,6 +518,7 @@ def _ifft_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
+@with_supported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def fft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -532,6 +549,7 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    x = tf.cast(x, tf.complex128)
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:
@@ -550,12 +568,30 @@ def fft(
         permute[dim], permute[-1] = permute[-1], permute[dim]
         x = tf.transpose(x, permute)
         ret = tf.signal.fft(x, operation_name)
-        x = tf.transpose(x, permute)
+        ret = tf.transpose(ret, permute)
         del permute
     else:
         ret = tf.signal.fft(x, operation_name)
     ret = _fft_norm(ret, dim, norm=norm)
     return ret
+
+
+def dropout(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    scale: bool = True,
+    dtype: tf.DType = None,
+    training: bool = True,
+    seed: Optional[int] = None,
+    noise_shape: Optional[Sequence[int]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x = ivy.astype(x, dtype) if dtype else x
+    res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed) if training else x
+    res = tf.multiply(res, (1.0 - prob)) if not scale else res
+    return res
 
 
 def dropout1d(
@@ -568,17 +604,39 @@ def dropout1d(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if training:
+        is_batched = len(x.shape) == 3
         if data_format == "NCW":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            perm = (0, 2, 1) if is_batched else (1, 0)
             x = tf.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-2] = 1
-        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        res = tf.nn.dropout(x, prob)
         if data_format == "NCW":
             res = tf.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
+
+
+def dropout2d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if training:
+        is_batched = len(x.shape) == 4
+        if data_format == "NCHW":
+            perm = (0, 2, 3, 1) if is_batched else (1, 2, 0)
+            x = tf.transpose(x, perm)
+        res = tf.nn.dropout(x, prob)
+        if data_format == "NCHW":
+            perm = (0, 3, 1, 2) if is_batched else (2, 0, 1)
+            res = tf.transpose(res, perm)
+    else:
+        res = x
+    return res
 
 
 def dropout3d(
@@ -595,16 +653,13 @@ def dropout3d(
         if data_format == "NCDHW":
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = tf.transpose(x, perm)
-        noise_shape = list(x.shape)
-        sl = slice(1, -1) if is_batched else slice(-1)
-        noise_shape[sl] = [1] * 3
-        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        res = tf.nn.dropout(x, prob)
         if data_format == "NCDHW":
             perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
             res = tf.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
 
 
 def ifft(

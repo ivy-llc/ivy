@@ -8,6 +8,7 @@ import copy as python_copy
 from types import FunctionType
 from typing import Callable
 import inspect
+import numpy as np
 
 
 # for wrapping (sequence matters)
@@ -26,11 +27,10 @@ FN_DECORATORS = [
     "handle_view_indexing",
     "handle_view",
     "handle_array_like_without_promotion",
+    "handle_mixed_function",
     "handle_nestable",
     "handle_exceptions",
-    "with_unsupported_dtypes",
     "handle_nans",
-    "handle_mixed_function",
 ]
 
 
@@ -415,7 +415,7 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with native arrays passed in the arguments.
         """
-        if not ivy.get_array_mode():
+        if not ivy.array_mode:
             return fn(*args, **kwargs)
         # check if kwargs contains an out argument, and if so, remove it
         has_out = False
@@ -476,9 +476,7 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
     def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
@@ -491,9 +489,7 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
@@ -536,7 +532,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         # convert all arrays in the return to `ivy.Array` instances
         return (
             ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
-            if ivy.get_array_mode()
+            if ivy.array_mode
             else ret
         )
 
@@ -591,6 +587,27 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
     `ivy.Array` instances.
     """
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+
+
+def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
+    """
+    Wrap `fn` and convert all frontend arrays in its return to ivy arrays.
+
+    Used in cases when a frontend function receives a callable (frontend
+    function) argument. To be able to use that callable in a composition
+    of ivy functions, its outputs need to be converted to ivy arrays.
+    """
+
+    @functools.wraps(fn)
+    def _outputs_to_ivy_arrays(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        return ivy.nested_map(
+            ret,
+            lambda x: x.ivy_array if hasattr(x, "ivy_array") else x,
+            shallow=False,
+        )
+
+    return _outputs_to_ivy_arrays
 
 
 def handle_view(fn: Callable) -> Callable:
@@ -658,6 +675,33 @@ def handle_view_indexing(fn: Callable) -> Callable:
 
     _handle_view_indexing.handle_view_indexing = True
     return _handle_view_indexing
+
+
+def _convert_numpy_arrays_to_backend_specific(*args):
+    if isinstance(args, np.ndarray):
+        np_arr_idxs = ivy.nested_argwhere(args, lambda x: isinstance(x, np.ndarray))
+        np_arr_val = ivy.multi_index_nest(args, np_arr_idxs)
+        backend_arr_vals = [ivy.array(x).to_native() for x in np_arr_val]
+        ivy.set_nest_at_indices(args, np_arr_idxs, backend_arr_vals)
+    return args
+
+
+def handle_numpy_arrays_in_specific_backend(fn: Callable) -> Callable:
+    """
+    Wrap `fn` and converts all `numpy.ndarray` inputs to `torch.Tensor` instances.
+
+    Used for functional backends (PyTorch). Converts all `numpy.ndarray`
+    inputs to `torch.Tensor` instances.
+    """
+
+    @functools.wraps(fn)
+    def _handle_numpy_array_in_torch(*args, **kwargs):
+        args = _convert_numpy_arrays_to_backend_specific(*args)
+        ret = fn(*args, **kwargs)
+        return ret
+
+    _handle_numpy_array_in_torch.handle_numpy_arrays_in_specific_backend = True
+    return _handle_numpy_array_in_torch
 
 
 # Data Type Handling #
@@ -900,7 +944,7 @@ def handle_nestable(fn: Callable) -> Callable:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs
             )
-        if ivy.get_nestable_mode() and (
+        if ivy.nestable_mode and (
             ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
             or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
         ):
@@ -970,18 +1014,36 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
 
-        mixed_fn = original != to_wrap and hasattr(original, "inputs_to_ivy_arrays")
+        mixed_fn = (
+            original != to_wrap
+            and hasattr(original, "inputs_to_ivy_arrays")
+            and not original.__name__.startswith("inplace")
+        )
+
         for attr in FN_DECORATORS:
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
-                mixed_fn and attr == "to_native_arrays_and_back"
+                mixed_fn
+                and (
+                    attr
+                    in [
+                        "inputs_to_native_arrays",
+                        "outputs_to_ivy_arrays",
+                        "handle_mixed_function",
+                    ]
+                )
             ):
+                if mixed_fn:
+                    if attr == "inputs_to_ivy_arrays":
+                        continue
+                    if attr == "handle_mixed_function":
+                        if hasattr(to_wrap, "partial_mixed_handler"):
+                            to_wrap.compos = original
+                            to_wrap = handle_mixed_function(
+                                getattr(to_wrap, "partial_mixed_handler")
+                            )(to_wrap)
+                        continue
                 to_wrap = getattr(ivy, attr)(to_wrap)
 
-        if hasattr(to_wrap, "partial_mixed_handler"):
-            to_wrap.compos = original
-            to_wrap = handle_mixed_function(getattr(to_wrap, "partial_mixed_handler"))(
-                to_wrap
-            )
     return to_wrap
 
 
@@ -1205,7 +1267,7 @@ def handle_nans(fn: Callable) -> Callable:
             The return of the function, with handling of inputs based
             on the selected `nan_policy`.
         """
-        nan_policy = ivy.get_nan_policy()
+        nan_policy = ivy.nan_policy
         # skip the check if the current nan policy is `nothing``
         if nan_policy == "nothing":
             return fn(*args, **kwargs)
@@ -1540,7 +1602,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
 class override(contextlib.ContextDecorator):
     def __call__(self, func=None):
         if func:
-            setattr(func, "override")
+            setattr(func, "override", "override")
             return func
 
     def __enter__(self):

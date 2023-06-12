@@ -117,6 +117,7 @@ def test_linspace(
     num=helpers.ints(min_value=1, max_value=5),
     base=helpers.floats(min_value=0.1, max_value=3.0),
     axis=st.none(),
+    test_with_out=st.just("False"),
 )
 def test_logspace(
     *,
@@ -414,9 +415,9 @@ def test_from_dlpack(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -607,10 +608,6 @@ def test_ones(
     fn_tree="functional.ivy.ones_like",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
     ),
 )
 def test_ones_like(
@@ -658,10 +655,10 @@ def test_tril(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -694,10 +691,10 @@ def test_triu(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -718,7 +715,7 @@ def test_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -749,7 +746,7 @@ def test_zeros(
 @handle_test(
     fn_tree="functional.ivy.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
