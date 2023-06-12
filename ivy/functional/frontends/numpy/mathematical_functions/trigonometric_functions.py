@@ -10,7 +10,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_out,
 )
 
-
 # This is the cosine (cos) function.
 # It returns the cosine input using the ivy cosine function.
 @handle_numpy_out
