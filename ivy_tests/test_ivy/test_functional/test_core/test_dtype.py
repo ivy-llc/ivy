@@ -173,14 +173,6 @@ def test_broadcast_to(
     on_device,
     ground_truth_backend,
 ):
-    if backend_fw.current_backend_str() == "torch":
-        if input_dtype == "bfloat16" or (
-            "uint" in input_dtype and "uint8" not in input_dtype
-        ):
-            # Torch has no inference strategy for bfloat16
-            # Torch has no support for uint above uint8
-            return
-
     array, to_shape = array_and_shape
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,

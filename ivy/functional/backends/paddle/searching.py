@@ -38,21 +38,18 @@ def argmax(
         x = x.cast("float32")
     if select_last_index:
         x = paddle_backend.flip(x, axis=axis)
-        ret = paddle.argmax(x, axis=axis)
+        ret = paddle.argmax(x, axis=axis, keepdim=keepdims)
         if axis is not None:
             ret = paddle.to_tensor(x.shape[axis] - ret - 1)
         else:
             ret = paddle.to_tensor(x.size - ret - 1)
     else:
-        ret = paddle.argmax(x, axis=axis)
+        ret = paddle.argmax(x, axis=axis, keepdim=keepdims)
 
-    if keepdims:
-        shape = list(x.shape)
-        shape[axis] = 1
-        ret = paddle_backend.reshape(ret, shape)
-    elif axis is None or x.ndim == 1:
+    if keepdims and axis is None:
+        ret = ret.reshape([1] * x.ndim)
+    if not keepdims and (x.ndim == 1 or axis is None):
         ret = paddle_backend.squeeze(ret, axis=-1)
-
     return ret.astype(dtype)
 
 
@@ -82,21 +79,18 @@ def argmin(
         x = x.cast("float32")
     if select_last_index:
         x = paddle_backend.flip(x, axis=axis)
-        ret = paddle.argmin(x, axis=axis)
+        ret = paddle.argmin(x, axis=axis, keepdim=keepdims)
         if axis is not None:
             ret = paddle.to_tensor(x.shape[axis] - ret - 1)
         else:
             ret = paddle.to_tensor(x.size - ret - 1)
     else:
-        ret = paddle.argmin(x, axis=axis)
+        ret = paddle.argmin(x, axis=axis, keepdim=keepdims)
 
-    if keepdims:
-        shape = list(x.shape)
-        shape[axis] = 1
-        ret = paddle_backend.reshape(ret, shape)
-    elif axis is None or x.ndim == 1:
+    if keepdims and axis is None:
+        ret = ret.reshape([1] * x.ndim)
+    if not keepdims and (x.ndim == 1 or axis is None):
         ret = paddle_backend.squeeze(ret, axis=-1)
-
     return ret.astype(dtype)
 
 

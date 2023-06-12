@@ -4764,6 +4764,7 @@ def sign(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    np_variant: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return an indication of the sign of a number for each element ``x_i`` of the
@@ -4774,11 +4775,17 @@ def sign(
     - If ``x_i`` is less than ``0``, the result is ``-1``.
     - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
     - If ``x_i`` is greater than ``0``, the result is ``+1``.
+    - For complex numbers ``sign(x.real) + 0j if x.real != 0 else sign(x.imag) + 0j``
 
     Parameters
     ----------
     x
         input array. Should have a numeric data type.
+    np_variant
+        Handles complex numbers like numpy does If ``True``,
+        ``sign(x.real) + 0j if x.real != 0 else sign(x.imag) + 0j``.
+        otherwise, For complex numbers, ``y = sign(x) = x / |x| if x != 0, otherwise y = 0.``
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -4828,7 +4835,7 @@ def sign(
         c: ivy.array([-1., -1., -1., 1.])
     }
     """
-    return ivy.current_backend(x).sign(x, out=out)
+    return ivy.current_backend(x).sign(x, np_variant=np_variant, out=out)
 
 
 @handle_exceptions
