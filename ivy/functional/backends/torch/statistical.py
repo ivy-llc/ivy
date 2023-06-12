@@ -296,7 +296,8 @@ cummin.support_native_out = True
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": "bfloat16",
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),	
+        "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,
 )
