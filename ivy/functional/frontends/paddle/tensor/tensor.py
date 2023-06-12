@@ -133,3 +133,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def exp(self, name=None):
         return ivy.exp(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def erf(self, name=None):
+        return ivy.erf(self._ivy_array)
