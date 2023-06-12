@@ -327,7 +327,11 @@ class Shape:
         return super().__getattribute__(item)
 
     def __getitem__(self, key):
-        return self._shape[key] if self._shape is not None else None
+        try:
+            self._shape = self._shape[key]
+            return self
+        except (TypeError, IndexError):
+            return None
 
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
