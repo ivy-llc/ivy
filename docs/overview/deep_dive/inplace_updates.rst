@@ -45,7 +45,7 @@ While :class:`ivy.Array` instances will always be inplace updated consistently, 
 
 .. code-block:: python
 
-    def inplace_update(
+        def inplace_update(
         x: Union[ivy.Array, JaxArray],
         val: Union[ivy.Array, JaxArray],
         /,
@@ -105,7 +105,7 @@ JAX functions also never returns views so additional logic is added to functiona
 
 .. code-block:: python
 
-    def inplace_update(
+        def inplace_update(
         x: Union[ivy.Array, np.ndarray],
         val: Union[ivy.Array, np.ndarray],
         /,
@@ -146,7 +146,7 @@ Following this, an inplace update is then also performed on the :class:`ivy.Arra
 
 .. code-block:: python
 
-    def inplace_update(
+        def inplace_update(
         x: Union[ivy.Array, tf.Tensor],
         val: Union[ivy.Array, tf.Tensor],
         /,
@@ -212,7 +212,7 @@ TensorFlow functions also never returns views so additional logic is added to fu
 
 .. code-block:: python
 
-    def inplace_update(
+        def inplace_update(
         x: Union[ivy.Array, torch.Tensor],
         val: Union[ivy.Array, torch.Tensor],
         /,
@@ -287,9 +287,10 @@ The implementations of :func:`ivy.tan` for each backend are as follows.
 
 .. code-block:: python
 
-    @_handle_0_dim_output
+    @_scalar_output_to_0d_array
     def tan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
         return np.tan(x, out=out)
+
 
     tan.support_native_out = True
 
@@ -298,19 +299,22 @@ The implementations of :func:`ivy.tan` for each backend are as follows.
 .. code-block:: python
 
     def tan(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     ) -> Union[tf.Tensor, tf.Variable]:
-        return tf.tan(x)
+    return tf.tan(x)
 
 **PyTorch** (includes :code:`support_native_out` attribute):
 
 .. code-block:: python
 
+    
     def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        x = _cast_for_unary_op(x)
         return torch.tan(x, out=out)
+
 
     tan.support_native_out = True
 
@@ -328,7 +332,7 @@ Take a function which has multiple possible "paths" through the code:
 
 .. code-block:: python
 
-    def cholesky(
+        def cholesky(
         x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
         if not upper:
@@ -356,6 +360,7 @@ Another case where we need to use :func:`ivy.inplace_update`_ with a function th
 
 .. code-block:: python
 
+    
     def remainder(
         x1: Union[float, torch.Tensor],
         x2: Union[float, torch.Tensor],
@@ -379,6 +384,9 @@ Another case where we need to use :func:`ivy.inplace_update`_ with a function th
         return torch.remainder(x1, x2, out=out).to(x1.dtype)
 
 
+    remainder.support_native_out = True
+
+
 Here, even though the :func:`torch.round` function natively supports the :code:`out` argument, in case the :code:`dtype` of the :code:`out` argument is different
 from the :code:`dtype` of the result of the function, we need to use :func:`ivy.inplace_update`, while still trying to utilize the native :code:`out` argument whenever
 the :code:`dtype` is the same for maximum possible extent of the native inplace update.
@@ -399,20 +407,23 @@ The second and third points are the most important points.
 
 We'll use :func:`ivy.cross_entropy` as an example:
 
+
 .. code-block:: python
 
     def cross_entropy(
-        true: Union[ivy.Array, ivy.NativeArray],
-        pred: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        axis: Optional[int] = -1,
-        epsilon: float =1e-7,
-        out: Optional[ivy.Array] = None
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = -1,
+    epsilon: float = 1e-7,
+    reduction: str = "sum",
+    out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
         log_pred = ivy.log(pred)
-        return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
+        return _reduce_loss(reduction, log_pred * true, axis, out)
 
 By handling the :code:`out` argument in the function, we are able to get the benefits outlined above.
 Firstly, the return of :func:`ivy.sum` is the same shape and type as the return of the entire function, and so we can also write this output to the :code:`out` argument inplace.
@@ -437,6 +448,21 @@ This decorator is needed in order to ensure the :code:`out` argument is handled 
 In such cases, the mixed function behaves like a primary function.
 If the backend-specific implementation does not handle the :code:`out` argument explicitly (there is no attribute :code:`support_native_out` specified on the backend function), then it will need to be handled `in the decorator`_. The :code:`handle_out_argument` decorator also `checks the module`_ of the function to see if it's being called with respect to a compositional function in which case the out argument can be handled directly and therefore is `passed as a keyword argument`_ to the function.
 
+
+
+copy argument
+-------------
+
+As well as the :code:`out` argument, many also support the :code:`copy` argument.
+The functions with support for the :code:`copy` argument are either in the `Array API Standard`_, and the standard mandates the inclusion of :code:`copy` in each case.
+Or they are expected to return views with specific backends (hence being decorated with the :code:`@handle_view` wrapper) and the :code:`copy` is added to allow a way to prevent views from being created.
+
+The :code:`copy` argument dictates whether a new copy should be created, or whether the input array should be updated inplace.
+When :code:`copy` is not specified explicitly, then an inplace update is performed with the same behaviour as :code:`copy=False`.
+Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
+If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
+If both are specified, then priority is given to the more general :code:`out` argument.
+As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
 
 
 Views
@@ -490,20 +516,6 @@ Here's a brief description of what happens during an inplace operation with a Py
    If populated it performs the reverse functional operation with itself as the input and inplace updates the view that made it (reverses the operation that made it).
    If the manipulation stack is empty or already exhausted it goes to the array’s PyTorch base and repeats the recursively until everything is exhausted and the base is None.
 #. All other views are expected to be updated automatically through PyTorch's native view handling.
-
-copy argument
--------------
-
-As well as the :code:`out` argument, many also support the :code:`copy` argument.
-The functions with support for the :code:`copy` argument are either in the `Array API Standard`_, and the standard mandates the inclusion of :code:`copy` in each case.
-Or they are expected to return views with specific backends (hence being decorated with the :code:`@handle_view` wrapper) and the :code:`copy` is added to allow a way to prevent views from being created.
-
-The :code:`copy` argument dictates whether a new copy should be created, or whether the input array should be updated inplace.
-When :code:`copy` is not specified explicitly, then an inplace update is performed with the same behaviour as :code:`copy=False`.
-Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
-If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
-If both are specified, then priority is given to the more general :code:`out` argument.
-As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
 
 **Round Up**
 
