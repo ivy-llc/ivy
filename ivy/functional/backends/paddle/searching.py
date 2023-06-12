@@ -13,7 +13,14 @@ from .elementwise import _elementwise_helper
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex",)}},
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "complex64",
+                "complex128",
+            )
+        }
+    },
     backend_version,
 )
 def argmax(
@@ -47,7 +54,14 @@ def argmax(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": "complex"}},
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "complex64",
+                "complex128",
+            )
+        }
+    },
     backend_version,
 )
 def argmin(
