@@ -2025,15 +2025,23 @@ def promote_types(
     query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
     query.sort(key=lambda x: str(x))
     query = tuple(query)
-    try:
+
+    def _promote(query):
         if array_api_promotion:
-            ret = ivy.array_api_promotion_table[query]
-        else:
-            ret = ivy.promotion_table[query]
+            return ivy.array_api_promotion_table[query]
+        return ivy.promotion_table[query]
+
+    try:
+        ret = _promote(query)
     except KeyError:
-        raise ivy.utils.exceptions.IvyDtypePromotionError(
-            "these dtypes ({} and {}) are not type promotable, ".format(type1, type2)
-        )
+        # try again with the dtypes swapped
+        query = (query[1], query[0])
+        try:
+            ret = _promote(query)
+        except KeyError:
+            raise ivy.utils.exceptions.IvyDtypePromotionError(
+                "these dtypes ({} and {}) are not type promotable, ".format(type1, type2)
+            )
     return ret
 
 
