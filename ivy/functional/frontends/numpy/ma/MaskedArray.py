@@ -166,7 +166,7 @@ class MaskedArray(np_frontend.ndarray):
         return self
 
     def __repr__(self):
-        dec_vals = ivy.array_decimal_values()
+        dec_vals = ivy.array_decimal_values
         with np.printoptions(precision=dec_vals):
             return (
                 "ivy.MaskedArray("
