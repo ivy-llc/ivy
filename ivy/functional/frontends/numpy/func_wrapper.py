@@ -402,7 +402,7 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
                 if set_default_dtype:
                     ivy.unset_default_int_dtype()
                     ivy.unset_default_float_dtype()
-        if not ivy.get_array_mode():
+        if not ivy.array_mode:
             return ret
         # convert all returned arrays to `ndarray` instances
         if order == "F":
