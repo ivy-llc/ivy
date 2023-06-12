@@ -98,10 +98,10 @@ def _shape_to_native(x):
             x[i] = _shape_to_native(item)
     else:
         if (isinstance(x, (list, tuple)) and len(x) > 0) and (
-            isinstance(x[0], ivy.Shape) and ivy.get_array_mode()
+            isinstance(x[0], ivy.Shape) and ivy.array_mode
         ):
             x = ivy.nested_map(x, lambda x: x.shape if isinstance(x, ivy.Shape) else x)
-        elif isinstance(x, ivy.Shape) and ivy.get_array_mode():
+        elif isinstance(x, ivy.Shape) and ivy.array_mode:
             x = x.shape
     return x
 
