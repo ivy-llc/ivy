@@ -139,14 +139,12 @@ def test_paddle_stack(
     )
 
 
-
 # tile
 @st.composite
-def tile_helper(
-    draw,
-    min_dim_size=2,
-    max_dim_size=5,
-):
+def tile_helper(draw,
+                min_dim_size=2,
+                max_dim_size=5,
+                ):
     x_dtype, x, x_shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
@@ -173,8 +171,23 @@ def tile_helper(
 def test_paddle_tile(
     *,
     dtype_x_repeats,
-
- 
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags
+):
+    input_dtype, x, repeats = dtype_x_repeats
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        repeat_times=repeats,
+    )
+    
+    
 # concat
 @st.composite
 def _arrays_idx_n_dtypes(draw):
