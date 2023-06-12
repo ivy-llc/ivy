@@ -13,14 +13,7 @@ from .elementwise import _elementwise_helper
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "complex64",
-                "complex128",
-            )
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def argmax(
@@ -54,14 +47,7 @@ def argmax(
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "complex64",
-                "complex128",
-            )
-        }
-    },
+    {"2.4.2 and below": {"cpu": "complex"}},
     backend_version,
 )
 def argmin(
@@ -106,8 +92,7 @@ def nonzero(
         paddle.int8,
         paddle.uint8,
         paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
+        paddle.complex,
     ]:
         if paddle.is_complex(x):
             real_idx = paddle.nonzero(x.real())
@@ -190,8 +175,7 @@ def argwhere(
         paddle.int8,
         paddle.uint8,
         paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
+        paddle.complex,
     ]:
         if paddle.is_complex(x):
             real_idx = paddle.nonzero(x.real())
