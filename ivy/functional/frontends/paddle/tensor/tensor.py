@@ -102,6 +102,10 @@ class Tensor:
     def ceil(self):
         return paddle_frontend.ceil(self)
 
+    @with_unsupported_dtypes({"2.4.2 and below": ("complex", "int8")}, "paddle")
+    def numel(self):
+        return paddle_frontend.numel(self)
+
     @with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, "paddle")
     def asinh(self, name=None):
         return ivy.asinh(self._ivy_array)
