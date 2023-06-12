@@ -12,7 +12,6 @@ from ivy.functional.ivy.gradients import _is_variable
 import numpy as np
 
 
-
 # for wrapping (sequence matters)
 FN_DECORATORS = [
     "infer_device",
@@ -852,8 +851,6 @@ def handle_out_argument(fn: Callable) -> Callable:
 
         if _is_variable(out):
             handle_out_in_backend = False
-
-        print(handle_out_in_backend)
 
         if handle_out_in_backend:
             # extract underlying native array for out
