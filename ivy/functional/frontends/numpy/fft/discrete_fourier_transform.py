@@ -3,6 +3,23 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
+_SWAP_DIRECTION_MAP = {
+    None: "forward",
+    "backward": "forward",
+    "ortho": "ortho",
+    "forward": "backward",
+}
+
+
+def _swap_direction(norm):
+    try:
+        return _SWAP_DIRECTION_MAP[norm]
+    except KeyError:
+        raise ValueError(
+            f'Invalid norm value {norm}; should be "backward", "ortho" or "forward".'
+        ) from None
+
+
 @to_ivy_arrays_and_back
 def ifft(a, n=None, axis=-1, norm=None):
     a = ivy.array(a, dtype=ivy.complex128)
@@ -58,7 +75,7 @@ def fftshift(x, axes=None):
     return roll
 
 
-@with_unsupported_dtypes({"1.9.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def rfft(a, n=None, axis=-1, norm=None):
     if norm is None:
@@ -67,7 +84,17 @@ def rfft(a, n=None, axis=-1, norm=None):
     return ivy.dft(a, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("int",)}, "paddle")
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def ihfft(a, n=None, axis=-1, norm=None):
+    if n is None:
+        n = a.shape[axis]
+    norm = _swap_direction(norm)
+    output = ivy.conj(rfft(a, n, axis, norm=norm).ivy_array)
+    return output
+
+
+@with_unsupported_dtypes({"1.24.3 and below": ("int",)}, "numpy")
 @to_ivy_arrays_and_back
 def fftfreq(n, d=1.0):
     if not isinstance(

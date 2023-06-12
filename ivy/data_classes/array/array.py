@@ -160,7 +160,8 @@ class Array(
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
-            self._dynamic_backend = ivy.get_dynamic_backend()
+            self._dynamic_backend = ivy.dynamic_backend
+        self.weak_type = False  # to handle 0-D jax front weak typed arrays
 
     def _view_attributes(self, data):
         self._base = None
@@ -237,7 +238,9 @@ class Array(
             ``(..., M, N)``, the returned array must have shape ``(..., N, M)``).
             The returned array must have the same data type as the original array.
         """
-        ivy.utils.assertions.check_greater(len(self._data.shape), 2, allow_equal=True)
+        ivy.utils.assertions.check_greater(
+            len(self._data.shape), 2, allow_equal=True, as_array=False
+        )
         return ivy.matrix_transpose(self._data)
 
     @property
@@ -286,7 +289,7 @@ class Array(
             two-dimensional array whose first and last dimensions (axes) are
             permuted in reverse order relative to original array.
         """
-        ivy.utils.assertions.check_equal(len(self._data.shape), 2)
+        ivy.utils.assertions.check_equal(len(self._data.shape), 2, as_array=False)
         return ivy.matrix_transpose(self._data)
 
     @property
@@ -360,8 +363,8 @@ class Array(
                 self._post_repr = ", dev={})".format(self._dev_str)
             else:
                 self._post_repr = ")"
-        sig_fig = ivy.array_significant_figures()
-        dec_vals = ivy.array_decimal_values()
+        sig_fig = ivy.array_significant_figures
+        dec_vals = ivy.array_decimal_values
         if self.backend == "" or ivy.is_local():
             # If the array was constructed using implicit backend
             backend = ivy.current_backend()
@@ -397,11 +400,14 @@ class Array(
         return ivy.get_item(self._data, query)
 
     def __setitem__(self, query, val):
+        if ivy.current_backend_str() == "torch":
+            self._data = self._data.detach()
+        if ivy.is_ivy_array(val):
+            val = val.data
+        target = self.__getitem__(query)
+        if not ivy.isscalar(target) and ivy.isscalar(val):
+            val = ivy.ones_like(target) * val
         try:
-            if ivy.current_backend_str() == "torch":
-                self._data = self._data.detach()
-            if ivy.is_ivy_array(val):
-                val = val.data
             self._data.__setitem__(query, val)
         except:
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
@@ -487,7 +493,7 @@ class Array(
         return ivy.pow(power, self._data)
 
     def __ipow__(self, power):
-        return ivy.pow(self._data, power, out=self)
+        return ivy.pow(self._data, power)
 
     def __add__(self, other):
         """
@@ -550,7 +556,7 @@ class Array(
         return ivy.add(other, self._data)
 
     def __iadd__(self, other):
-        return ivy.add(self._data, other, out=self)
+        return ivy.add(self._data, other)
 
     def __sub__(self, other):
         """
@@ -615,7 +621,7 @@ class Array(
         return ivy.subtract(other, self._data)
 
     def __isub__(self, other):
-        return ivy.subtract(self._data, other, out=self)
+        return ivy.subtract(self._data, other)
 
     def __mul__(self, other):
         return ivy.multiply(self._data, other)
@@ -624,7 +630,7 @@ class Array(
         return ivy.multiply(other, self._data)
 
     def __imul__(self, other):
-        return ivy.multiply(self._data, other, out=self)
+        return ivy.multiply(self._data, other)
 
     def __mod__(self, other):
         return ivy.remainder(self._data, other)
@@ -633,7 +639,7 @@ class Array(
         return ivy.remainder(other, self._data)
 
     def __imod__(self, other):
-        return ivy.remainder(self._data, other, out=self)
+        return ivy.remainder(self._data, other)
 
     def __divmod__(self, other):
         return tuple([ivy.divide(self._data, other), ivy.remainder(self._data, other)])
@@ -675,7 +681,7 @@ class Array(
         return ivy.divide(other, self._data)
 
     def __itruediv__(self, other):
-        return ivy.divide(self._data, other, out=self)
+        return ivy.divide(self._data, other)
 
     def __floordiv__(self, other):
         return ivy.floor_divide(self._data, other)
@@ -684,7 +690,7 @@ class Array(
         return ivy.floor_divide(other, self._data)
 
     def __ifloordiv__(self, other):
-        return ivy.floor_divide(self._data, other, out=self)
+        return ivy.floor_divide(self._data, other)
 
     def __matmul__(self, other):
         return ivy.matmul(self._data, other)
@@ -693,7 +699,7 @@ class Array(
         return ivy.matmul(other, self._data)
 
     def __imatmul__(self, other):
-        return ivy.matmul(self._data, other, out=self)
+        return ivy.matmul(self._data, other)
 
     def __abs__(self):
         """
@@ -988,7 +994,7 @@ class Array(
         return ivy.bitwise_and(other, self._data)
 
     def __iand__(self, other):
-        return ivy.bitwise_and(self._data, other, out=self)
+        return ivy.bitwise_and(self._data, other)
 
     def __or__(self, other):
         return ivy.bitwise_or(self._data, other)
@@ -997,7 +1003,7 @@ class Array(
         return ivy.bitwise_or(other, self._data)
 
     def __ior__(self, other):
-        return ivy.bitwise_or(self._data, other, out=self)
+        return ivy.bitwise_or(self._data, other)
 
     def __invert__(self):
         return ivy.bitwise_invert(self._data)
@@ -1049,7 +1055,7 @@ class Array(
         return ivy.bitwise_xor(other, self._data)
 
     def __ixor__(self, other):
-        return ivy.bitwise_xor(self._data, other, out=self)
+        return ivy.bitwise_xor(self._data, other)
 
     def __lshift__(self, other):
         return ivy.bitwise_left_shift(self._data, other)
@@ -1058,7 +1064,7 @@ class Array(
         return ivy.bitwise_left_shift(other, self._data)
 
     def __ilshift__(self, other):
-        return ivy.bitwise_left_shift(self._data, other, out=self)
+        return ivy.bitwise_left_shift(self._data, other)
 
     def __rshift__(self, other):
         """
@@ -1125,7 +1131,7 @@ class Array(
         return ivy.bitwise_right_shift(other, self._data)
 
     def __irshift__(self, other):
-        return ivy.bitwise_right_shift(self._data, other, out=self)
+        return ivy.bitwise_right_shift(self._data, other)
 
     def __deepcopy__(self, memodict={}):
         try:
