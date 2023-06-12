@@ -1679,8 +1679,8 @@ def put_along_axis(
     if out is None:
         out = ivy.zeros_like(arr)
 
-    indices = ivy.expand_dims(indices, axis)
-    values = ivy.expand_dims(values, axis)
+    indices = ivy.expand_dims(indices, axis=axis)
+    values = ivy.expand_dims(values, axis=axis)
 
     stacked = ivy.concat((arr, values), axis=axis)
 
