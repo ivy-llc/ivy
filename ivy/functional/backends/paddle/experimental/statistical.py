@@ -332,6 +332,7 @@ def unravel_index(
                 "float16",
                 "float32",
                 "float64",
+                "complex",
                 "bool",
             )
         }
