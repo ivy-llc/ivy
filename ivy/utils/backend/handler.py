@@ -456,6 +456,11 @@ def set_backend(backend: str, dynamic: bool = False):
         backend_stack.append(backend)
         set_backend_to_specific_version(backend)
         _set_backend_as_ivy(ivy_original_dict, ivy, backend)
+        # following snippet is required to update the ivy.functional namespace with
+        # backend-specific functions
+        for key, _ in ivy.__dict__.items():
+            if key in ivy.functional.__dict__ and not key.startswith("__"):
+                ivy.functional.__dict__[key] = ivy.__dict__[key]
 
         if dynamic:
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
@@ -601,6 +606,7 @@ def choose_random_backend(excluded=None):
             inverse=True,
             message="""Unable to select backend, all backends are excluded,\
             or not installed.""",
+            as_array=False,
         )
         f = np.random.choice(
             [f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded]

@@ -5,13 +5,14 @@ from typing import Union, Optional, List, Sequence, Tuple
 
 import jax.dlpack
 import jax.numpy as jnp
+import jax._src as _src
 import jaxlib.xla_extension
 
 # local
 import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax.device import _to_device, _to_array
+from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -229,7 +230,7 @@ def linspace(
         if endpoint:
             out = jax.lax.concatenate(
                 [out, jax.lax.expand_dims(broadcast_stop, (axis,))],
-                jax._src.util.canonicalize_axis(axis, out.ndim),
+                _src.util.canonicalize_axis(axis, out.ndim),
             )
 
     elif num == 1:
