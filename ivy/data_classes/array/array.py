@@ -362,7 +362,6 @@ class Array(
                 self._post_repr = ", dev={})".format(self._dev_str)
             else:
                 self._post_repr = ")"
-        sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
         if self.backend == "" or ivy.is_local():
             # If the array was constructed using implicit backend
@@ -384,7 +383,6 @@ class Array(
         return self._data.__dir__()
 
     def __getattribute__(self, item):
-        # print('in the get attr function')
         return super().__getattribute__(item)
 
     def __getattr__(self, item):
