@@ -1,10 +1,9 @@
-# global
-import ivy
+from ivy.utils.backend import current_backend
 
 
 def is_valid_device(device: str, /):
-    if device not in ivy.current_backend().__init__.valid_devices:
-        if device in ivy.current_backend().__init__.invalid_devices:
+    if device not in current_backend().__init__.valid_devices:
+        if device in current_backend().__init__.invalid_devices:
             return False, "{} is an invalid device".format(device)
         return False, "{} is not a device".format(device)
     return True, ""
