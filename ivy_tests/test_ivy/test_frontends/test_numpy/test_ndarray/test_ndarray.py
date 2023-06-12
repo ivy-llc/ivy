@@ -115,6 +115,17 @@ def test_numpy_ndarray_property_T(
         ground_truth_backend="numpy",
     )
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        ret_shape=True,
+    ),
+    item=helpers.item(
+        available_items = helpers.ints(1,dtype_x[3]),
+        ret_shape=True,
+    ),
+)    
+
 def test_numpy_ndarray_property_flat(
     dtype_x,
     item,
@@ -124,12 +135,6 @@ def test_numpy_ndarray_property_flat(
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.flat[item],data[0].flat[item],asarray=False)
 
-@given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
-        ret_shape=True,
-    ),
-)    
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
