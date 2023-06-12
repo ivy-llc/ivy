@@ -105,7 +105,7 @@ def cov(
     ddof: Optional[int] = None,
     fweights: Optional[paddle.Tensor] = None,
     aweights: Optional[paddle.Tensor] = None,
-    dtype: Optional[type] = None,
+    dtype: Optional[paddle.dtype] = None,
 ) -> paddle.Tensor:
     if fweights is not None:
         fweights = fweights.astype("float64")
