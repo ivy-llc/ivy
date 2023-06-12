@@ -11,7 +11,7 @@ import jaxlib.xla_extension
 import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax.device import _to_device, _to_array
+from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,

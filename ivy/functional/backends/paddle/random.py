@@ -68,7 +68,7 @@ def random_normal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     if seed:
         paddle.seed(seed)
     if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
@@ -130,6 +130,7 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     _ = paddle.seed(seed_value)
+    return
 
 
 def shuffle(
