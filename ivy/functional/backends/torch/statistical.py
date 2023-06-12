@@ -92,7 +92,7 @@ def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
 # the function to break the upcasting rule defined in the Array API Standard
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": "bfloat16",
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
     },
     backend_version,
 )
