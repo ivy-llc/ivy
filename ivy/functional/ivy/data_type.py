@@ -2032,7 +2032,7 @@ def promote_types(
             ret = ivy.promotion_table[query]
     except KeyError:
         raise ivy.utils.exceptions.IvyDtypePromotionError(
-            "these dtypes are not type promotable"
+            "these dtypes ({} and {}) are not type promotable, ".format(type1, type2)
         )
     return ret
 
