@@ -20,36 +20,19 @@ def _get_clip_inputs(draw):
         np_frontend_helpers.dtypes_values_casting_dtype(
             arr_func=[
                 lambda: helpers.dtype_and_values(
-                    available_dtypes=helpers.get_dtypes("numeric"),
+                    available_dtypes=helpers.get_dtypes("valid"),
                     shape=shape,
                 )
             ],
         ),
     )
-    min = draw(st.booleans())
-    if min:
-        min = draw(
-            helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5
-            )
-        )
-        max = draw(st.booleans())
-        max = (
-            draw(
-                helpers.array_values(
-                    dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
-                )
-            )
-            if max
-            else None
-        )
-    else:
-        min = None
-        max = draw(
-            helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
-            )
-        )
+
+    min = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5)
+    )
+    max = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=6, max_value=50)
+    )
     return x_dtype, x, min, max, casting, dtype
 
 
@@ -58,6 +41,10 @@ def _get_clip_inputs(draw):
     fn_tree="numpy.clip",
     input_and_ranges=_get_clip_inputs(),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="clip"
+    ),
+    test_with_out=st.just(False),
 )
 def test_numpy_clip(
     input_and_ranges,
@@ -731,7 +718,7 @@ def test_numpy_lcm(
 @handle_frontend_test(
     fn_tree="numpy.gcd",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=False,
         min_num_dims=1,

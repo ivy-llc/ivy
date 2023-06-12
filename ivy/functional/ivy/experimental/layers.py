@@ -1,8 +1,9 @@
 # global
 import math
 import itertools
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, Literal, Sequence, Callable
 from functools import reduce as _reduce
+import builtins
 
 # local
 import ivy
@@ -15,7 +16,12 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_function,
 )
+from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.utils.exceptions import handle_exceptions
+
+_min = builtins.min
+_slice = builtins.slice
+_max = builtins.max
 
 
 @handle_nestable
@@ -760,6 +766,7 @@ def fft(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @to_native_arrays_and_back
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -821,8 +828,8 @@ def dropout1d(
     >>> y = ivy.dropout1d(x, 0.5)
     >>> print(y)
     {
-    a: ivy.array([[[200., 400., 0.]]]),
-    b: ivy.array([[[0., 0., 0.]]])
+        a: ivy.array([[[200., 400., 0.]]]),
+        b: ivy.array([[[0., 0., 0.]]])
     }
     """
     return ivy.current_backend(x).dropout1d(
@@ -833,6 +840,81 @@ def dropout1d(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def dropout2d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Randomly zero out entire channels with probability prob using samples from a
+    Bernoulli distribution and the remaining channels are scaled by (1/1-prob). In this
+    case, dropout2d performs a channel-wise dropout but assumes a channel is a 2D
+    feature map.
+
+    Parameters
+    ----------
+    x
+        a 3D or 4D input array. Should have a floating-point data type.
+    prob
+        probability of a channel to be zero-ed.
+    training
+        controls whether dropout2d is performed during training or ignored
+        during testing.
+    data_format
+        "NHWC" or "NCHW". Defaults to "NHWC".
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with some channels zero-ed and the rest of channels are
+         scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 1, 1]])
+    >>> y = ivy.dropout2d(x, 0.5)
+    >>> print(y)
+    ivy.array([[0., 2., 2.]])
+
+    >>> x = ivy.array([[1, 1, 1]])
+    >>> y = ivy.dropout2d(x, 1, training=False, data_format="NCW")
+    >>> print(y)
+    ivy.array([[1, 1, 1]])
+
+    With one :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([[100, 200, 300]]),
+                          b=ivy.array([[400, 500, 600]]))
+    >>> y = ivy.dropout2d(x, 0.5)
+    >>> print(y)
+    {
+        a: ivy.array([[200., 0., 600.]]),
+        b: ivy.array([[0., 0., 1200.]])
+    }
+    """
+    return ivy.current_backend(x).dropout2d(
+        x, prob, training=training, data_format=data_format, out=out
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
 @to_native_arrays_and_back
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -986,7 +1068,7 @@ def embedding(
                 [7., 8., 9.]])
     """
     ivy.utils.assertions.check_equal(
-        len(weights.shape), 2, message="weights must be 2-d"
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
     )
 
     ret = ivy.empty(
@@ -1000,7 +1082,7 @@ def embedding(
             ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
         else:
             ret[i] = weights[x, :]
-    return ret
+    return ret if not ivy.exists(out) else ivy.inplace_update(out, ret)
 
 
 @handle_exceptions
@@ -1076,7 +1158,7 @@ def dft(
 
     if onesided:
         slices = [slice(0, a) for a in res.shape]
-        slices[axis] = slice(0, res.shape[axis] // 2 + 1)
+        slices[axis] = slice(0, ivy.shape(res, as_array=True)[axis] // 2 + 1)
         res = res[tuple(slices)]
     return res
 
@@ -1094,9 +1176,9 @@ def interp(x, xp, fp, left=None, right=None, period=None):
     x = ivy.astype(x_arr, "float64")
     xp = ivy.astype(ivy.array(xp), "float64")
     fp = ivy.astype(ivy.array(fp), "float64")
-    ivy.utils.assertions.check_equal(xp.ndim, 1)
-    ivy.utils.assertions.check_equal(fp.ndim, 1)
-    ivy.utils.assertions.check_equal(xp.shape[0], fp.shape[0])
+    ivy.utils.assertions.check_equal(xp.ndim, 1, as_array=False)
+    ivy.utils.assertions.check_equal(fp.ndim, 1, as_array=False)
+    ivy.utils.assertions.check_equal(xp.shape[0], fp.shape[0], as_array=False)
     if period is not None:
         ivy.utils.assertions.check_equal(period, 0, inverse=True)
         period = ivy.abs(period)
@@ -1937,3 +2019,186 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
+
+
+def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
+    def _pad(arr, pads, pad_value):
+        out = ivy.astype(
+            ivy.pad(
+                arr,
+                ivy.maximum(0, pads).to_list(),
+                mode="constant",
+                constant_values=ivy.to_scalar(pad_value),
+            ),
+            arr.dtype,
+        )
+        slices = tuple(
+            _slice(abs(lo) if lo < 0 else 0, hi % dim if hi < 0 else None)
+            for (lo, hi), dim in zip(pads, arr.shape)
+        )
+        return out[slices]
+
+    if (
+        _min(lhs.ndim, len(rhs_shape)) < 2
+        or lhs.ndim != len(rhs_shape)
+        or lhs.shape[1] != rhs_shape[1]
+    ):
+        raise ValueError("Dimension mismatch")
+    if len(window_strides) != len(rhs_shape) - 2:
+        raise ValueError("Wrong number of strides for spatial dimensions")
+    if len(pads) != len(rhs_shape) - 2:
+        raise ValueError("Wrong number of pads for spatial dimensions")
+
+    lhs = _pad(lhs, [(0, 0)] * 2 + list(pads), pad_value)
+    in_shape = lhs.shape[2:]
+    filter_shape = rhs_shape[2:]
+    dim = len(filter_shape)
+
+    out_strides = ivy.multiply(window_strides, lhs.strides[2:]).to_list()
+    view_strides = lhs.strides[:1] + tuple(out_strides) + lhs.strides[1:]
+
+    out_shape = [
+        (in_shape[i] - filter_shape[i]) // s + 1 for i, s in enumerate(window_strides)
+    ]
+    view_shape = list(lhs.shape[:1]) + out_shape + rhs_shape[1:]
+
+    view = ivy.as_strided(lhs, view_shape, view_strides)
+
+    view_axes = list(range(view.ndim))
+    sum_axes = view_axes[-dim - 1 :]
+    rhs_axes = [view.ndim] + sum_axes
+    out_axes = [0, view.ndim] + list(range(1, dim + 1))
+
+    return view, view_axes, rhs_axes, out_axes
+
+
+def _dilate(operand, factors, fill_value):
+    outspace = list(operand.shape[:2]) + [
+        shape + (factors[i] - 1) * (shape - 1)
+        for i, shape in enumerate(operand.shape[2:])
+    ]
+    out = ivy.full(
+        outspace,
+        ivy.to_scalar(fill_value),
+        dtype=fill_value.dtype,
+    )
+    lhs_slices = tuple(_slice(None, None, step) for step in factors)
+    out[(_slice(None),) * 2 + lhs_slices] = operand
+    return out
+
+
+def _padtype_to_pads(in_shape, filter_shape, window_strides, padding):
+    if padding.upper() == "SAME":
+        out_shape = [
+            math.ceil(in_size / stride)
+            for in_size, stride in zip(in_shape, window_strides)
+        ]
+        pad_sizes = [
+            _max((out_size - 1) * stride + filter_size - in_size, 0)
+            for out_size, stride, filter_size, in_size in zip(
+                out_shape, window_strides, filter_shape, in_shape
+            )
+        ]
+        return [(pad_size // 2, pad_size - pad_size // 2) for pad_size in pad_sizes]
+    else:
+        return [(0, 0)] * len(in_shape)
+
+
+identities = {
+    "max": -float("inf"),
+    "min": float("inf"),
+    "add": 0,
+    "mul": 1,
+    "multiply": 1,
+    "logical_and": True,
+    "logical_or": False,
+}
+
+
+def _cast_init(init, dtype):
+    if not ivy.is_bool_dtype(dtype) and ivy.isinf(init):
+        if ivy.is_float_dtype(dtype):
+            info = ivy.finfo(dtype)
+        else:
+            info = ivy.iinfo(dtype)
+        if "float64" not in str(dtype):
+            init = info.max if init > 0 else info.min
+    return ivy.array(init, dtype=dtype)
+
+
+def _get_identity(func, dtype, init):
+    func_name = func.__name__
+    if func_name in identities:
+        identity = identities[func_name]
+        return _cast_init(identity, dtype)
+    return init
+
+
+@handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+def reduce_window(
+    operand: Union[ivy.Array, ivy.NativeArray],
+    init_value: Union[int, float],
+    computation: Callable,
+    window_dimensions: Union[int, Sequence[int]],
+    /,
+    *,
+    window_strides: Union[int, Sequence[int]] = 1,
+    padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+    base_dilation: Union[int, Sequence[int]] = 1,
+    window_dilation: Union[int, Sequence[int]] = 1,
+) -> ivy.Array:
+    """
+    Apply a reduction function to all elements in each window of an array.
+
+    Parameters
+    ----------
+    operand
+        An array representing the base area on which the window is going to slide over.
+    init_value
+        The starting value for the reduction.
+    computation
+        The reduction function to apply to elements in each window.
+    window_dimensions
+        A sequence containing the window dimensions.
+    window_strides
+        A sequence containing the window strides.
+    padding
+        Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
+    base_dilation
+        A sequence containing the base dilation values.
+    window_dilation
+        A sequence containing the window dilation values.
+
+    Returns
+    -------
+    ret
+        The result of the pooling-like operation.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1, 2, 3, 4],
+    >>>                [5, 6, 7, 8],
+    >>>                [9, 10, 11, 12]])
+    >>> ivy.reduce_window(x, 0, ivy.sum, (2, 2))
+    ivy.array([[32.]])
+    """
+    # ToDo: add support for window_dilation
+    computation = _correct_ivy_callable(computation)
+    op, dims, strides = operand, window_dimensions, window_strides
+    init_value = _cast_init(init_value, op.dtype)
+    identity = _get_identity(computation, operand.dtype, init_value)
+    if isinstance(padding, str):
+        pads = _padtype_to_pads(op.shape, dims, strides, padding)
+    else:
+        pads = padding
+    op = op.reshape((1, 1) + op.shape)
+    if base_dilation:
+        op = _dilate(op, base_dilation, identity)
+    view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
+    view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
+    ret = ivy.reduce(view, init_value, computation, axes=-1)
+    return ret.astype(operand.dtype)
