@@ -87,7 +87,7 @@ class Device(str):
                     dev_str[4:].isnumeric(),
                     message="{} must be numeric".format(dev_str[4:]),
                 )
-            valid, msg = valid_devices.is_valid_device(dev_str):
+            valid, msg = valid_devices.is_valid_device(dev_str[0:3]):
             if not valid:
                 raise ivy.utils.exceptions.IvyException(msg)
         return str.__new__(cls, dev_str)
