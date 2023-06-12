@@ -4,9 +4,10 @@ from typing import Tuple, Union, Optional
 from collections import namedtuple
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+import ivy.functional.backends.tensorflow as tf_backend
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def unique_all(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -34,12 +35,9 @@ def unique_all(
     )
 
     tensor_list = x.numpy().tolist()
-    if (
-        x.dtype.is_floating
-        and tf.math.reduce_sum(tf.cast(tf.math.is_nan(values), "float32")).numpy()
-    ):
-        unique_nan = tf.math.is_nan(values).numpy()
-        nan_index = tf.where(tf.math.is_nan(x)).numpy().reshape([-1])
+    if x.dtype.is_floating and tf.reduce_any(tf.math.is_nan(values)):
+        unique_nan = tf.math.is_nan(values)
+        nan_index = tf.reshape(tf.where(tf.math.is_nan(x)), [-1])
         non_nan_index = tf.experimental.numpy.array(
             [tensor_list.index(val) for val in values if not tf.math.is_nan(val)]
         )
@@ -48,25 +46,33 @@ def unique_all(
         ).numpy()
         indices[unique_nan] = nan_index
         indices[~unique_nan] = non_nan_index
-        indices = tf.convert_to_tensor(indices)
     else:
         decimal = tf.range(tf.size(inverse_indices)) / tf.size(inverse_indices)
-        inv_sorted = tf.argsort(tf.cast(inverse_indices, dtype=decimal.dtype) + decimal)
-        tot_counts = tf.concat(
+        inv_sorted = tf.argsort(
+            tf.cast(inverse_indices, dtype=decimal.dtype) + decimal
+        ).numpy()
+        total_counts = tf.concat(
             [tf.zeros((1,), dtype=counts.dtype), tf.cumsum(counts, axis=0)[:-1]], 0
         )
-        indices = inv_sorted.numpy()[tot_counts]
+        indices = inv_sorted[total_counts]
 
     if by_value:
         values_ = tf.experimental.numpy.moveaxis(values, axis, 0)
         values_ = tf.reshape(values_, (values_.shape[0], -1))
-        first_elements = values_[:, 0]
-        sort_idx = tf.argsort(first_elements)
+        sort_idx = tf_backend.lexsort(
+            tf.stack(
+                tuple(values_[:, i] for i in range(values_.shape[1])),
+                axis=0,
+            )
+        )
+        sort_idx = tf.cast(sort_idx, tf.int32)
         values = tf.gather(values, sort_idx, axis=axis)
         counts = tf.gather(counts, sort_idx)
         indices = tf.gather(indices, sort_idx)
         inv_sort_idx = tf.math.invert_permutation(sort_idx)
-        inverse_indices = tf.map_fn(lambda y: tf.gather(inv_sort_idx, y), inverse_indices)
+        inverse_indices = tf.map_fn(
+            lambda y: tf.gather(inv_sort_idx, y), inverse_indices
+        )
 
     return Results(
         tf.cast(values, dtype=x.dtype),
@@ -76,7 +82,7 @@ def unique_all(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def unique_counts(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -88,7 +94,7 @@ def unique_counts(
     return Results(v, c)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -105,7 +111,7 @@ def unique_inverse(
     return Results(values, inverse_indices)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def unique_values(
     x: Union[tf.Tensor, tf.Variable],
     /,

@@ -31,7 +31,7 @@ def _check_bounds_and_get_shape(low, high, shape):
             type="all",
             message="low and high bounds must be numerics when shape is specified",
         )
-        return shape
+        return ivy.Shape(shape)
 
     valid_types = (ivy.Array,)
     if len(backend_stack) == 0:
@@ -40,11 +40,13 @@ def _check_bounds_and_get_shape(low, high, shape):
         valid_types += (ivy.NativeArray,)
     if isinstance(low, valid_types):
         if isinstance(high, valid_types):
-            ivy.utils.assertions.check_equal(ivy.shape(low), ivy.shape(high))
+            ivy.utils.assertions.check_equal(
+                ivy.shape(low), ivy.shape(high), as_array=False
+            )
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
-    return ()
+    return ivy.Shape(())
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):
@@ -525,18 +527,21 @@ def seed(*, seed_value: int = 0) -> None:
 @handle_array_function
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Shuffles the given array along axis 0.
+    Shuffles the given array along a given axis.
 
     Parameters
     ----------
     x
         Input array. Should have a numeric data type.
+    axis
+        The axis which x is shuffled along. Default is 0.
     seed
         A python integer. Used to create a random seed distribution
     out
@@ -546,7 +551,7 @@ def shuffle(
     Returns
     -------
     ret
-        An array object, shuffled along the first dimension.
+        An array object, shuffled along the specified axis.
 
     Examples
     --------
@@ -599,4 +604,4 @@ def shuffle(
         b: ivy.array([3, 0, 9])
     }
     """
-    return ivy.current_backend(x).shuffle(x, seed=seed, out=out)
+    return ivy.current_backend(x).shuffle(x, axis, seed=seed, out=out)

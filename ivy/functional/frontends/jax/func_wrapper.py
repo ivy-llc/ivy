@@ -15,7 +15,8 @@ def _from_jax_frontend_array_to_ivy_array(x):
         and x.weak_type
         and x.ivy_array.shape == ()
     ):
-        return ivy.to_scalar(x.ivy_array)
+        setattr(x.ivy_array, "weak_type", True)
+        return x.ivy_array
     if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
@@ -86,7 +87,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     def _outputs_to_frontend_arrays_jax(*args, **kwargs):
         weak_type = not any(
             (isinstance(arg, jax_frontend.DeviceArray) and arg.weak_type is False)
-            or ivy.is_array(arg)
+            or (isinstance(arg, ivy.Array) and arg.weak_type is False)
             or isinstance(arg, (tuple, list))
             for arg in args
         )

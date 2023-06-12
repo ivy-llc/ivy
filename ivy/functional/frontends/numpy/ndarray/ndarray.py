@@ -209,7 +209,7 @@ class ndarray:
             dtype=dtype,
             subok=subok,
         )
-    
+
     def conj(
         self,
         /,
@@ -335,6 +335,9 @@ class ndarray:
             where=where,
             out=out,
         )
+
+    def tofile(self, fid, sep="", format_="%s"):
+        return self._ivy_array.to_file(fid, sep=sep, format_=format_)
 
     def tolist(self) -> list:
         return self._ivy_array.to_list()
@@ -492,6 +495,12 @@ class ndarray:
             return self
         return np_frontend.array(self, dtype=dtype)
 
+    def __array_wrap__(self, array, context=None, /):
+        if context is None:
+            return np_frontend.array(array)
+        else:
+            return np_frontend.asarray(self)
+
     def __getitem__(self, key, /):
         ivy_args = ivy.nested_map([self, key], _to_ivy_array)
         ret = ivy.get_item(*ivy_args)
@@ -504,7 +513,7 @@ class ndarray:
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ndarray not supported")
-        for i in range(self.ndim):
+        for i in range(self.shape[0]):
             yield self[i]
 
     def __mod__(self, value, /):
