@@ -2,12 +2,12 @@
 import ivy
 
 # local
-import ivy.functional.backends.jax.__init__
-import ivy.functional.backends.mxnet.__init__
-import ivy.functional.backends.numpy.__init__
-import ivy.functional.backends.paddle.__init__
-import ivy.functional.backends.tensorflow.__init__
-import ivy.functional.backends.torch.__init__
+import ivy.functional.backends.jax
+import ivy.functional.backends.mxnet
+import ivy.functional.backends.numpy
+import ivy.functional.backends.paddle
+import ivy.functional.backends.tensorflow
+import ivy.functional.backends.torch
 
 
 def is_valid_device(device: str, /):
