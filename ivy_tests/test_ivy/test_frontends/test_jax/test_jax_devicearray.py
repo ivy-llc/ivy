@@ -370,16 +370,12 @@ def test_jax_devicearray_ravel(
         min_axis=-1,
         max_axis=-1,
         min_dim_size=2,
-        max_dim_size=10,
+        max_dim_size=100,
         min_num_dims=2,
     ),
-    descending=st.booleans(),
-    stable=st.just(True),
 )
 def test_jax_devicearray_sort(
     dtype_x_axis,
-    descending,
-    stable,
     on_device,
     frontend,
     frontend_method_data,
@@ -395,8 +391,6 @@ def test_jax_devicearray_sort(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "axis": axis,
-            # "descending": descending,
-            # "stable": stable,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
