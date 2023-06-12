@@ -28,7 +28,7 @@ class LayerNorm(Module):
             Trailing shape to applying the normalization to.
         epsilon
             small constant to add to the denominator,
-            use global ivy._MIN_BASE by default.
+            use global ivy.min_base by default.
         elementwise_affine
             Whether to include learnable affine parameters, default is ``True``.
         new_std
@@ -111,7 +111,7 @@ class BatchNorm2D(Module):
             Trailing shape to applying the normalization to.
         epsilon
             small constant to add to the denominator,
-            use global ivy._MIN_BASE by default.
+            use global ivy.min_base by default.
         data_format
             The ordering of the dimensions in the input, one of "NSC" or "NCS",
             where N is the batch dimension, S represents any number of spatial

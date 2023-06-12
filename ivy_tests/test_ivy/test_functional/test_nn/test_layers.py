@@ -112,6 +112,7 @@ def _dropout_helper(draw):
     seed=helpers.ints(min_value=0, max_value=100),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_with_out=st.just(True),
 )
 def test_dropout(
     *,
@@ -929,7 +930,7 @@ def x_and_lstm(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.lstm_update",
     dtype_lstm=x_and_lstm(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
 )
