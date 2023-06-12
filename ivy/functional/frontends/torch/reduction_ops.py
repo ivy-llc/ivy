@@ -160,6 +160,7 @@ def moveaxis(input, source, destination):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     temp_std = ivy.std(
         input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
@@ -252,8 +253,18 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("bfloat16",)},
+    "torch",
+)
 def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
-    if (type(dim) in [tuple, list]) and (len(dim) == 2):
+    if (
+        p == "fro" and (dim is None or isinstance(dim, int) or len(dim) <= 2)
+    ) or p is None:
+        p = 2
+    if isinstance(p, str):
+        if dim is None:
+            dim = tuple(range(input.dim()))
         return ivy.matrix_norm(input, ord=p, axis=dim, keepdims=keepdim, out=out)
     else:
         return ivy.vector_norm(
