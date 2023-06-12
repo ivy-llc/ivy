@@ -8,6 +8,7 @@ import copy as python_copy
 from types import FunctionType
 from typing import Callable
 import inspect
+from ivy.functional.ivy.gradients import _is_variable
 
 
 # for wrapping (sequence matters)
@@ -823,6 +824,12 @@ def handle_out_argument(fn: Callable) -> Callable:
         """
         if out is None or is_compos_fn:
             return fn(*args, out=out, **kwargs)
+
+        if _is_variable(out):
+            handle_out_in_backend = False
+
+        print(handle_out_in_backend)
+
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
