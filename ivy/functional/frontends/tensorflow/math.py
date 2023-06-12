@@ -105,6 +105,7 @@ def confusion_matrix(
             ivy.shape(predictions),
             ivy.shape(weights),
             message="weights shape do not match predictions",
+            as_array=False,
         )
         weights = ivy.astype(weights, dtype, copy=False)
 
@@ -413,7 +414,9 @@ def tan(x, name=None):
 def unsorted_segment_mean(
     data, segment_ids, num_segments, name="unsorted_segment_mean"
 ):
-    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -428,7 +431,9 @@ def unsorted_segment_mean(
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
-    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -698,3 +703,8 @@ def in_top_k(target, pred, k, name=None):
 @to_ivy_arrays_and_back
 def conj(x, name=None):
     return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def top_k(input, k=1, sorted=True, name=None):
+    return ivy.top_k(input, k, sorted=sorted)

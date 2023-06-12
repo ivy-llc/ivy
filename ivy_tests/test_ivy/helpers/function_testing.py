@@ -434,15 +434,15 @@ def test_function(
     if gt_returned_array:
         ret_device = ivy.dev(ret_from_target)
 
-        assert (
-            ret_device == ret_from_gt_device
-        ), f"ground truth backend ({ground_truth_backend}) returned array on device "
-        f"{ret_from_gt_device} but target backend ({ivy.backend}) returned array on "
-        f"device {ret_device}"
-        assert (
-            ret_device == on_device
-        ), f"device is set to {on_device}, but ground truth "
-        f"produced array on {ret_device}"
+        assert ret_device == ret_from_gt_device, (
+            f"ground truth backend ({ground_truth_backend}) returned array on device"
+            f" {ret_from_gt_device} but target backend ({ivy.backend}) returned array"
+            f" on device {ret_device}"
+        )
+        assert ret_device == on_device, (
+            f"device is set to {on_device}, but ground truth "
+            f"produced array on {ret_device}"
+        )
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1643,6 +1643,8 @@ def wrap_frontend_function_args(argument):
         and x.__module__.startswith("ivy.functional.frontends"),
     ):
         return output_to_native_arrays(frontend_outputs_to_ivy_arrays(argument))
+    if ivy.nested_any(argument, lambda x: isinstance(x, ivy.Shape)):
+        return argument.shape
     return argument
 
 

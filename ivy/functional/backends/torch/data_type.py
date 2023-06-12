@@ -93,10 +93,6 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
         raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("uint8", "uint16", "uint32", "uint64", "complex")},
-    backend_version,
-)
 def broadcast_to(
     x: torch.Tensor,
     /,
@@ -229,7 +225,7 @@ def dtype_bits(dtype_in: Union[torch.dtype, str, np.dtype], /) -> int:
 
 
 def is_native_dtype(dtype_in: Union[torch.dtype, str], /) -> bool:
-    if dtype_in.__hash__ is None:
+    if not ivy.is_hashable_dtype(dtype_in):
         return False
     if dtype_in in ivy_dtype_dict and isinstance(dtype_in, torch.dtype):
         return True

@@ -45,7 +45,7 @@ def convolve(a, v, mode="full"):
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def clip(
+def _clip(
     a,
     a_min,
     a_max,
@@ -66,7 +66,6 @@ def clip(
         limit=[1, 2],
         message="at most one of a_min and a_max can be None",
     )
-    a = ivy.array(a, dtype=dtype)
     if a_min is None:
         ret = ivy.minimum(a, a_max, out=out)
     elif a_max is None:
