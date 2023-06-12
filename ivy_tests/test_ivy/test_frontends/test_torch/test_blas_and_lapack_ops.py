@@ -6,6 +6,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
 
 # helpers
@@ -543,30 +544,27 @@ def test_torch_matmul(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.matrix_rank",
-    dtype_and_x=_get_dtype_and_square_matrix(),
-    rtol=st.floats(1e-05, 1e-03),
-    sym=st.booleans(),
+    dtype_x_hermitian=_matrix_rank_helper(),
+    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_torch_matrix_rank(
-    dtype_and_x,
-    rtol,
-    sym,
+    dtype_x_hermitian,
+    tol,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, symmetric = dtype_x_hermitian
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-01,
         input=x,
-        tol=rtol,
-        symmetric=sym,
+        tol=tol,
+        symmetric=symmetric,
     )
 
 
