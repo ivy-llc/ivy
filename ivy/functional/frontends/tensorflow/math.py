@@ -604,7 +604,7 @@ def atan(x, name=None):
 
 
 @to_ivy_arrays_and_back
-def atanh(x, name=None):
+def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
 
