@@ -137,12 +137,12 @@ def avg_pool2d(
 
 def avg_pool3d(
     x: paddle.Tensor,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
-    data_format: str = "NHWC",
+    data_format: str = "NDHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
     divisor_override: Optional[int] = None,
