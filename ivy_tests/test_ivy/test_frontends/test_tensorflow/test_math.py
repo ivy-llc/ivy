@@ -2595,6 +2595,7 @@ def test_tensorflow_conj(
         shared_dtype=True,
     ),
     k=st.integers(min_value=0, max_value=5),
+    sorted=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_top_k(*, dtype_and_x, frontend, test_flags, fn_tree, on_device, k):
@@ -2607,4 +2608,5 @@ def test_tensorflow_top_k(*, dtype_and_x, frontend, test_flags, fn_tree, on_devi
         on_device=on_device,
         input=x[0],
         k=k,
+        sorted=sorted
     )
