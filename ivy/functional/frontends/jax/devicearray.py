@@ -98,12 +98,11 @@ class DeviceArray:
             order=order,
         )
 
-    def sort(self, axis=-1, descending=False, stable=True, out=None):
+    def sort(self, axis=-1, stable=True):
         out_arr = jax_frontend.numpy.zeros_like(self)
         return jax_frontend.numpy.sort(
             self,
             axis=axis,
-            descending=descending,
             stable=stable,
             out=out_arr,
         )
