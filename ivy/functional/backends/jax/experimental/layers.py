@@ -188,12 +188,14 @@ def general_pool(
 
 def max_pool1d(
     x: JaxArray,
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: Union[str, int, Tuple[int]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format == "NCW":
@@ -209,7 +211,17 @@ def max_pool1d(
     elif len(kernel) == 1:
         kernel = (kernel[0],)
 
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding, 1)
+    res = general_pool(
+        x,
+        -jnp.inf,
+        jlax.max,
+        kernel,
+        strides,
+        padding,
+        1,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
 
     if data_format == "NCW":
         res = jnp.transpose(x, (0, 2, 1))

@@ -48,15 +48,58 @@ def _determine_depth_max_pooling(
     return x, kernel, strides, depth_pooling
 
 
+def _determine_depth_max_pooling_2(
+    x, kernel, strides, dims, data_format="channel_last", filter_format="channel_last"
+):
+    # TODO : Merge changes with '_determine_depth_max_pooling'
+    # determine depth pooling
+    depth_pooling = False
+    channels = x.shape[1] if data_format == "channel_first" else x.shape[-1]
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1] if filter_format == "channel_last" else kernel[2:]
+        channel_kernel_idx = -1 if filter_format == "channel_last" else 1
+        if kernel[channel_kernel_idx] != 1:
+            depth_pooling = True
+            if any(torch.tensor(spatial_kernel) != 1):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if (
+                len(strides) != dims + 2
+                or strides[channel_kernel_idx] != kernel[channel_kernel_idx]
+            ):
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if channels % kernel[-1] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            kernel = [kernel[channel_kernel_idx], *[1] * (dims - 1)]
+            strides = [strides[channel_kernel_idx], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            if len(strides) == dims + 2:
+                strides = (
+                    strides[1:-1] if filter_format == "channel_last" else strides[2:]
+                )
+    return kernel, strides, depth_pooling
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool1d(
     x: torch.Tensor,
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: Union[str, int, Tuple[int]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -69,15 +112,49 @@ def max_pool1d(
     elif len(kernel) == 1:
         kernel = (kernel[0],)
 
+    if isinstance(padding, int):
+        padding = (padding,)
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = (padding[0],) * 2
+
+    if isinstance(padding, (tuple, list)):
+        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
+
+    x_format, kernel_format = ("channel_first",) * 2
     if data_format == "NWC":
         x = x.permute((0, 2, 1))
-    x_shape = x.shape[2]
-    pad_w = _handle_padding(x_shape, strides[0], kernel[0], padding)
-    x = torch.nn.functional.pad(
-        x, [pad_w // 2, pad_w - pad_w // 2], value=float("-inf")
+        kernel_format = "channel_last"
+
+    kernel, strides, depth_pooling = _determine_depth_max_pooling_2(
+        x, kernel, strides, 1, data_format=x_format, filter_format=kernel_format
     )
 
-    res = torch.nn.functional.max_pool1d(x, kernel, strides, 0)
+    if isinstance(padding, str):
+        x_shape = x.shape[2]
+        pad_w = _handle_padding(x_shape, strides[0], kernel[0], padding)
+        padding = (pad_w // 2, pad_w - pad_w // 2)
+
+    if depth_pooling:
+        if any(torch.tensor(padding) != 0):
+            raise NotImplementedError(
+                "Nonzero explicit padding is not supported for depthwise max pooling"
+            )
+        x = x.permute((0, 2, 1))
+        res = torch.nn.functional.max_pool1d(
+            x, kernel[0], strides[0], 0, dilation, ceil_mode
+        )
+        res = res.permute((0, 2, 1))
+    else:
+        if isinstance(padding, tuple) and len(padding) == 2:
+            x = torch.nn.functional.pad(
+                x,
+                padding,
+                value=float("-inf"),
+            )
+            padding = 0
+        res = torch.nn.functional.max_pool1d(
+            x, kernel, strides, padding, dilation, ceil_mode
+        )
 
     if data_format == "NWC":
         res = res.permute((0, 2, 1))

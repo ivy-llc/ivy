@@ -47,12 +47,14 @@ def _determine_depth_max_pooling(x, kernel, strides, dims):
 
 def max_pool1d(
     x: np.ndarray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: Union[str, int, Tuple[int]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(kernel, int):
@@ -65,23 +67,59 @@ def max_pool1d(
     elif len(strides) == 1:
         strides = [strides[0]]
 
+    if isinstance(dilation, int):
+        dilation = [dilation]
+    elif len(dilation) == 1:
+        dilation = [dilation[0]]
+
+    if isinstance(padding, int):
+        padding = [(padding,) * 2]
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2]
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [padding[0], padding[1]]
+
+    if isinstance(padding, (tuple, list)):
+        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
+
     if data_format == "NCW":
         x = np.swapaxes(x, 1, 2)
 
-    pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            (pad_w // 2, pad_w - pad_w // 2),
-            (0, 0),
-        ],
-        "edge",
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 1
     )
+    x_shape = list(x.shape[1:2])
+    filters = np.ones((list(kernel)), dtype=x.dtype)
+    if not depth_pooling:
+        if dilation[0] > 1:
+            filters = _add_dilations(filters, dilation[0], axis=0, values=0)
+        kernel = list(filters.shape)
+        pad_list = padding
+        if isinstance(padding, str):
+            pad_w = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+            pad_list = [
+                (pad_w // 2, pad_w - pad_w // 2),
+            ]
+        pad_list = list(pad_list)
+        if ceil_mode:
+            pad_list[0] = _padding_ceil_mode(
+                x_shape[0], kernel[0], pad_list[0], strides[0]
+            )
+
+        x = np.pad(
+            x,
+            [
+                (0, 0),
+                *pad_list,
+                (0, 0),
+            ],
+            "constant",
+            constant_values=-math.inf,
+        )
 
     x_shape = x.shape
     new_w = (x_shape[1] - kernel[0]) // strides[0] + 1
-    new_shape = [x_shape[0], new_w, kernel[0]] + [x_shape[-1]]
+    new_shape = [x_shape[0], new_w] + list(kernel) + [x_shape[-1]]
     new_strides = (
         x.strides[0],
         x.strides[1] * strides[0],
@@ -95,8 +133,10 @@ def max_pool1d(
 
     res = sub_matrices.max(axis=(2))
 
+    if depth_pooling:
+        res = np.swapaxes(res, 1, 2)
     if data_format == "NCW":
-        return res.swapaxes(1, 2)
+        res = np.swapaxes(res, 1, 2)
     return res
 
 
