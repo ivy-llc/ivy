@@ -620,6 +620,7 @@ def handle_frontend_method(
     class_tree: str,
     init_tree: str,
     method_name: str,
+    aliases: List[str] = None,
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
@@ -659,6 +660,10 @@ def handle_frontend_method(
     )
     class_module = importlib.import_module(class_module_path)
     method_class = getattr(class_module, class_name)
+
+    if aliases is not None:
+        for i in range(len(aliases)):
+            aliases[i] = "ivy.functional.frontends." + aliases[i]
 
     if is_hypothesis_test:
         callable_method = getattr(method_class, method_name)
@@ -707,6 +712,11 @@ def handle_frontend_method(
                 "init_flags": init_flags,
                 "method_flags": method_flags,
                 "frontend_method_data": st.just(frontend_helper_data),
+                "init_tree": (
+                    st.sampled_from([init_tree] + aliases)
+                    if aliases is not None
+                    else st.just(init_tree)
+                ),
             }
 
             filtered_args = set(param_names).intersection(possible_arguments.keys())
