@@ -1,3 +1,24 @@
+# global
+import ivy
+
+# local
+import ivy.functional.backends.jax.__init__
+import ivy.functional.backends.mxnet.__init__
+import ivy.functional.backends.numpy.__init__
+import ivy.functional.backends.paddle.__init__
+import ivy.functional.backends.tensorflow.__init__
+import ivy.functional.backends.torch.__init__
+
+
+def is_valid_device(device: str, /):
+    if device not in ivy.current_backend().__init__.valid_devices:
+        if device in ivy.current_backend().__init__.invalid_devices:
+            return False, "{} is an invalid device".format(device)
+        return False, "{} is not a device".format(device)
+    return True, ""
+
+
+"""
 import ivy.functional.backends.jax.__init__ as jx
 import ivy.functional.backends.mxnet.__init__ as mxn
 import ivy.functional.backends.numpy.__init__ as np
@@ -52,3 +73,4 @@ def torch_valid_device(device: str, /):
             return False, "{} is an invalid device for pytorch".format(device)
         return False, "{} is not a device".format(device)
     return True, ""
+"""
