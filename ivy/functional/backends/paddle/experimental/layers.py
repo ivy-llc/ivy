@@ -156,6 +156,30 @@ def dropout1d(
     raise IvyNotImplementedException()
 
 
+def dropout2d(
+    x: paddle.Tensor,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
+def dropout3d(
+    x: paddle.Tensor,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
 def ifft(
     x: paddle.Tensor,
     dim: int,
