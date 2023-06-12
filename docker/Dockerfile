@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM debian:buster
 WORKDIR /ivy
 ARG CLI
 # python version for conda
@@ -27,6 +27,7 @@ ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
 RUN apt-get update && \
     apt-get install -y python3-pip python3-tk && \
     apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
+    apt-get install -y python-opengl && \
     apt-get install -y git && \
     apt-get install -y rsync && \
     apt-get install -y libusb-1.0-0 && \
@@ -34,9 +35,7 @@ RUN apt-get update && \
     apt-get install -y jq && \
     pip3 install --upgrade pip && \
     pip3 install pip-autoremove &&\
-    pip3 install setuptools==58.5.3 && \
-    pip3 install PyOpenGL PyOpenGL_accelerate
-
+    pip3 install setuptools==58.5.3
 
 
 # Install Ivy Upstream

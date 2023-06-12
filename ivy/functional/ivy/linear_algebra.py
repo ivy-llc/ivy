@@ -10,7 +10,6 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1274,6 +1273,7 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1300,6 +1300,12 @@ def matrix_rank(
         where ``eps`` must be the machine epsilon associated with the floating-point
         data type determined by :ref:`type-promotion` (as applied to ``x``).
         Default: ``None``.
+    
+    hermitian
+        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed to be Hermitian,
+        enabling a more efficient method for finding eigenvalues, but x is not checked inside the function. 
+        Instead, We just use the lower triangular of the matrix to compute.
+        Default: ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1362,7 +1368,9 @@ def matrix_rank(
         b:ivy.array(1.)
     }
     """
-    return current_backend(x).matrix_rank(x, atol=atol, rtol=rtol, out=out)
+    return current_backend(x).matrix_rank(
+        x, atol=atol, rtol=rtol, hermitian=hermitian, out=out
+    )
 
 
 @handle_exceptions
@@ -2141,7 +2149,7 @@ def tensordot(
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
-@inputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_array_function
 def tensorsolve(
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -2660,7 +2668,7 @@ def vander(
         [ 1,  5, 25]]
         )
     """
-    return current_backend().vander(x, N=N, increasing=increasing, out=out)
+    return current_backend(x).vander(x, N=N, increasing=increasing, out=out)
 
 
 @handle_exceptions

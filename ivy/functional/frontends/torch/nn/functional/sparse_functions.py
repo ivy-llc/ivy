@@ -15,7 +15,9 @@ def embedding(
     sparse=False,
 ):
     # TODO: add support for the remaining arguments
-    ivy.utils.assertions.check_equal(len(weight.shape), 2, message="weight must be 2-d")
+    ivy.utils.assertions.check_equal(
+        len(weight.shape), 2, message="weight must be 2-d", as_array=False
+    )
     ret = ivy.empty(
         input.shape + (weight.shape[1],), dtype=weight.dtype, device=weight.device
     )
@@ -32,7 +34,7 @@ def embedding(
     return ivy.astype(ret, ret_dtype)
 
 
-@with_supported_dtypes({"1.11.0 and below": ("int64",)}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("int64",)}, "torch")
 @to_ivy_arrays_and_back
 def one_hot(tensor, num_classes=-1):
     return ivy.astype(ivy.one_hot(tensor, num_classes), tensor.dtype)
