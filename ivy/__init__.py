@@ -1297,7 +1297,7 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         filename = inspect.getframeinfo(previous_frame)[0]
         internal = internal and _is_from_internal(filename)
         if not internal and name in GLOBAL_PROPS:
-            raise Exception(
+            raise ivy.utils.exceptions.IvyException(
                 "Property: {} is read only! Please use the setter: set_{}() for setting"
                 " its value!".format(name, name)
             )
