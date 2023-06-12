@@ -25,7 +25,7 @@ def einsum(
 
 @to_ivy_arrays_and_back
 def histogram(a, bins=10, range=None, weights=None, density=None):
-    return ivy.histogram(a, bins, range, weights, density)
+    return ivy.histogram(a, bins=bins, range=range, weights=weights, density=density)
 
 
 @handle_jax_dtype
