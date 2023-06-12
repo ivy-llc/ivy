@@ -119,6 +119,10 @@ def prod(
     return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
+@with_unsupported_dtypes(	
+    {"2.0.1 and below": ("int8", "int16", "int32", "int64", "float16")},	
+    backend_version,	
+)
 def std(
     x: torch.Tensor,
     /,
