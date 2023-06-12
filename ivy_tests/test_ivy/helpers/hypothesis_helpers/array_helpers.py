@@ -486,7 +486,7 @@ def dtype_and_values(
         min_dim_size = draw(min_dim_size)
     if isinstance(max_dim_size, st._internal.SearchStrategy):
         max_dim_size = draw(max_dim_size)
-    if isinstance(available_dtypes, st._internal.SearchStrategy):
+    if isinstance(available_dtypes, st._internal.SearchStrategy) and dtype is None:
         available_dtypes = draw(available_dtypes)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)

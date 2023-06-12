@@ -7348,6 +7348,7 @@ class _ContainerWithElementwise(ContainerBase):
         x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        np_variant: Optional[bool] = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -7398,6 +7399,7 @@ class _ContainerWithElementwise(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "sign",
             x,
+            np_variant=np_variant,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -7408,6 +7410,7 @@ class _ContainerWithElementwise(ContainerBase):
     def sign(
         self: ivy.Container,
         *,
+        np_variant: Optional[bool] = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -7459,6 +7462,7 @@ class _ContainerWithElementwise(ContainerBase):
         """
         return self._static_sign(
             self,
+            np_variant=np_variant,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
