@@ -5,6 +5,7 @@ import warnings
 import builtins
 import numpy as np
 import sys
+import inspect
 
 
 import ivy.utils.backend.handler
@@ -1274,8 +1275,27 @@ GLOBAL_PROPS = [
 ]
 
 
+INTERNAL_FILENAMES = [
+    "ivy/compiler",
+    "ivy/functional",
+    "ivy/data_classes",
+    "ivy/stateful",
+    "ivy/utils",
+    "ivy_tests/test_ivy",
+    "ivy/func_wrapper.py",
+    "ivy/__init__.py",
+]
+
+
+def _is_from_internal(filename):
+    return ivy.any([fn in filename for fn in INTERNAL_FILENAMES])
+
+
 class IvyWithGlobalProps(sys.modules[__name__].__class__):
     def __setattr__(self, name, value, internal=False):
+        previous_frame = inspect.currentframe().f_back
+        filename = inspect.getframeinfo(previous_frame)[0]
+        internal = internal and _is_from_internal(filename)
         if not internal and name in GLOBAL_PROPS:
             raise Exception(
                 "Property: {} is read only! Please use the setter: set_{}() for setting"
