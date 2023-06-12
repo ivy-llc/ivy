@@ -3,7 +3,10 @@ import paddle.nn.functional as F
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from typing import Optional, Tuple
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 from . import backend_version
 
 
@@ -105,8 +108,15 @@ batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
 )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}},
+@with_supported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
     backend_version,
 )
 def l1_normalize(
@@ -119,15 +129,12 @@ def l1_normalize(
     else:
         axis = list(axis)
 
-    # Compute the L1 norm along the given axis
     norm = paddle.norm(x, p=1, axis=axis, keepdim=True)
 
-    # Divide x by the L1 norm to obtain the normalized array
-    norm = paddle.where(norm == 0, paddle.to_tensor([1], dtype=x.dtype), norm)
     if out is None:
-        return x / norm
+        return paddle.divide(x, norm)
     else:
-        out[:] = x / norm
+        out[:] = paddle.divide(x, norm)
         return out
 
 

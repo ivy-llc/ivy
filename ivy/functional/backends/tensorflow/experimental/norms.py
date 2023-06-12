@@ -1,9 +1,26 @@
 import tensorflow as tf
 from typing import Union, Optional, Tuple
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_device_and_dtypes
 from . import backend_version
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.12.0 and below": {
+            "cpu": (
+                "float16",
+                "bfloat16",
+                "float32",
+                "float64",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        }
+    },
+    backend_version,
+)
 def l1_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -12,8 +29,7 @@ def l1_normalize(
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
     denorm = tf.norm(x, ord=1, axis=axis, keepdims=True)
-    denorm = tf.math.maximum(denorm, 1e-12)
-    return tf.math.divide(x, denorm)
+    return tf.divide(x, denorm)
 
 
 def l2_normalize(

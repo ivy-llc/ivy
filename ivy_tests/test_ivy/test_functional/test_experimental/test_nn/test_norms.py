@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.l1_normalize",
     dtype_and_x=helpers.arrays_and_axes(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num=1,
         return_dtype=True,
         force_int_axis=True,

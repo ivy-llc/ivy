@@ -1,10 +1,21 @@
 import numpy as np
 from typing import Optional
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_device_and_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+@with_supported_device_and_dtypes(
+    {
+        "1.24.3 and below": {
+            "cpu": (
+                "float16",
+                "float32",
+                "float64",
+            )
+        }
+    },
+    backend_version,
+)
 def l1_normalize(
     x: np.ndarray,
     /,
@@ -13,10 +24,9 @@ def l1_normalize(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
-        denorm = np.linalg.norm(x.flatten(), 1, axis)
+        denorm = np.linalg.norm(x.flatten(), 1, axis, keepdims=False)
     else:
         denorm = np.linalg.norm(x, 1, axis, keepdims=True)
-        denorm = np.maximum(denorm, 1e-12)
     return np.divide(x, denorm, out=out)
 
 

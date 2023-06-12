@@ -1,8 +1,22 @@
 import jax.numpy as jnp
 from typing import Optional
 from ivy.functional.backends.jax import JaxArray
+from ivy.func_wrapper import with_supported_device_and_dtypes
+from . import backend_version
 
 
+@with_supported_device_and_dtypes(
+    {
+        "0.4.10 and below": {
+            "cpu": (
+                "float16",
+                "float32",
+                "float64",
+            )
+        }
+    },
+    backend_version,
+)
 def l1_normalize(
     x: JaxArray,
     /,
@@ -10,11 +24,7 @@ def l1_normalize(
     axis: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if axis is None:
-        denorm = jnp.linalg.norm(x.flatten(), 1, axis)
-    else:
-        denorm = jnp.linalg.norm(x, 1, axis, keepdims=True)
-        denorm = jnp.maximum(denorm, 1e-12)
+    denorm = jnp.linalg.norm(x, 1, axis, keepdims=True)
     return jnp.divide(x, denorm)
 
 

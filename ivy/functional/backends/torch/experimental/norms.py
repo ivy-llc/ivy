@@ -1,11 +1,24 @@
 import torch
 from typing import Optional, Tuple
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_device_and_dtypes
 from .. import backend_version
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_supported_device_and_dtypes(
+    {
+        "2.0.1 and below": {
+            "cpu": (
+                "float16",
+                "float32",
+                "float64",
+                "complex32",
+                "complex64",
+            )
+        }
+    },
+    backend_version,
+)
 def l1_normalize(
     x: torch.Tensor,
     /,
@@ -13,7 +26,8 @@ def l1_normalize(
     axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nn.functional.normalize(x, p=1, dim=axis, out=out)
+    denorm = torch.norm(x, p=1, dim=axis, keepdim=True)
+    return torch.div(x, denorm, out=out)
 
 
 l1_normalize.support_native_out = True
