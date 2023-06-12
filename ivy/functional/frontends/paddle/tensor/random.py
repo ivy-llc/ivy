@@ -20,5 +20,5 @@ def uniform(shape, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def randn(shape, dtype=None, name=None):
-    return ivy.random_normal(shape=shape, dtype=dtype)
+def randn(shape, dtype=None, seed=0, name=None):
+    return ivy.random_normal(shape=shape, dtype=dtype, seed=seed)
