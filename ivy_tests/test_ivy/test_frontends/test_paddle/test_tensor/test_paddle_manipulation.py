@@ -139,6 +139,7 @@ def test_paddle_stack(
     )
 
 
+
 # tile
 @st.composite
 def tile_helper(draw,
@@ -169,12 +170,12 @@ def tile_helper(draw,
     test_with_out=st.just(False),
 )
 def test_paddle_tile(
-    *,
-    dtype_x_repeats,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags
+        *,
+        dtype_x_repeats,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags
 ):
     input_dtype, x, repeats = dtype_x_repeats
     helpers.test_frontend_function(
@@ -186,8 +187,8 @@ def test_paddle_tile(
         x=x[0],
         repeat_times=repeats,
     )
-    
-    
+
+
 # concat
 @st.composite
 def _arrays_idx_n_dtypes(draw):
@@ -231,16 +232,13 @@ def _arrays_idx_n_dtypes(draw):
     test_with_out=st.just(False),
 )
 def test_paddle_concat(
-    *,
-    xs_n_input_dtypes_n_unique_idx,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        xs_n_input_dtypes_n_unique_idx,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
-    input_dtype, x, repeats = dtype_x_repeats
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -248,8 +246,6 @@ def test_paddle_concat(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        repeat_times=repeats,
         x=xs,
         axis=unique_idx,
     )
