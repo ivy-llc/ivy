@@ -61,20 +61,24 @@ def test_trace_modes(backend_fw, trace_mode, show_func_wrapper):
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
 def test_set_trace_mode(trace_mode):
     ivy.set_exception_trace_mode(trace_mode)
-    ivy.utils.assertions.check_equal(ivy.get_exception_trace_mode(), trace_mode)
+    ivy.utils.assertions.check_equal(
+        ivy.exception_trace_mode, trace_mode, as_array=False
+    )
 
 
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
 def test_unset_trace_mode(trace_mode):
     ivy.set_exception_trace_mode(trace_mode)
     ivy.set_exception_trace_mode("ivy")
-    ivy.utils.assertions.check_equal(ivy.get_exception_trace_mode(), "ivy")
+    ivy.utils.assertions.check_equal(ivy.exception_trace_mode, "ivy", as_array=False)
     ivy.unset_exception_trace_mode()
-    ivy.utils.assertions.check_equal(ivy.get_exception_trace_mode(), trace_mode)
+    ivy.utils.assertions.check_equal(
+        ivy.exception_trace_mode, trace_mode, as_array=False
+    )
 
 
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
 def test_get_trace_mode(trace_mode):
     ivy.set_exception_trace_mode(trace_mode)
     ivy.set_exception_trace_mode("ivy")
-    ivy.utils.assertions.check_equal(ivy.get_exception_trace_mode(), "ivy")
+    ivy.utils.assertions.check_equal(ivy.exception_trace_mode, "ivy", as_array=False)
