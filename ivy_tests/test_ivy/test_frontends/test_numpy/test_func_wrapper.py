@@ -22,11 +22,17 @@ def _fn(*args, check_default=False, dtype=None):
         and any([not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args])
         and not ivy.exists(dtype)
     ):
-        ivy.utils.assertions.check_equal(ivy.default_float_dtype(), "float64")
+        ivy.utils.assertions.check_equal(
+            ivy.default_float_dtype(), "float64", as_array=False
+        )
         if platform.system() != "Windows":
-            ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int64")
+            ivy.utils.assertions.check_equal(
+                ivy.default_int_dtype(), "int64", as_array=False
+            )
         else:
-            ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int32")
+            ivy.utils.assertions.check_equal(
+                ivy.default_int_dtype(), "int32", as_array=False
+            )
     if not ivy.exists(args[0]):
         return dtype
     return args[0]

@@ -1953,7 +1953,7 @@ def is_uint_dtype(
 def is_complex_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
-) -> complex:
+) -> bool:
     """
     Determine whether the input data type is a complex dtype.
 
