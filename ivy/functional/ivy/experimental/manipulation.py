@@ -34,14 +34,14 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_exceptions
 def flatten(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    start_dim: int = 0,
-    end_dim: int = -1,
-    order: str = "C",
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        copy: Optional[bool] = None,
+        start_dim: int = 0,
+        end_dim: int = -1,
+        order: str = "C",
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Flattens input by reshaping it into a one-dimensional tensor. If start_dim or
@@ -178,13 +178,13 @@ flatten.mixed_function = True
 @handle_array_like_without_promotion
 @handle_nestable
 def moveaxis(
-    a: Union[ivy.Array, ivy.NativeArray],
-    source: Union[int, Sequence[int]],
-    destination: Union[int, Sequence[int]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        a: Union[ivy.Array, ivy.NativeArray],
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        copy: Optional[bool] = None,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Move axes of an array to new positions..
@@ -231,7 +231,7 @@ def _iter_product(*args, repeat=1):
 @inputs_to_ivy_arrays
 @handle_exceptions
 def ndenumerate(
-    input: Iterable,
+        input: Iterable,
 ) -> Generator:
     """
     Multidimensional index iterator.
@@ -271,7 +271,7 @@ def ndenumerate(
 
 @handle_exceptions
 def ndindex(
-    shape: Tuple,
+        shape: Tuple,
 ) -> Generator:
     """
     Multidimensional index iterator.
@@ -305,11 +305,11 @@ def ndindex(
 @handle_array_like_without_promotion
 @handle_nestable
 def heaviside(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the Heaviside step function for each element in x1.
@@ -352,11 +352,11 @@ def heaviside(
 @handle_array_like_without_promotion
 @handle_nestable
 def flipud(
-    m: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        m: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        copy: Optional[bool] = None,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Flip array in the up/down direction. Flip the entries in each column in the up/down
@@ -390,10 +390,10 @@ def flipud(
 @handle_out_argument
 @handle_nestable
 def vstack(
-    arrays: Sequence[ivy.Array],
-    /,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        arrays: Sequence[ivy.Array],
+        /,
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
     Stack arrays in sequence vertically (row wise).
@@ -433,10 +433,10 @@ def vstack(
 @handle_out_argument
 @handle_nestable
 def hstack(
-    arrays: Sequence[ivy.Array],
-    /,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        arrays: Sequence[ivy.Array],
+        /,
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
     Stack arrays in sequence horizotally (column wise).
@@ -475,13 +475,13 @@ def hstack(
 @handle_nestable
 @handle_exceptions
 def rot90(
-    m: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    k: int = 1,
-    axes: Tuple[int, int] = (0, 1),
-    out: Optional[ivy.Array] = None,
+        m: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        copy: Optional[bool] = None,
+        k: int = 1,
+        axes: Tuple[int, int] = (0, 1),
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Rotate an array by 90 degrees in the plane specified by axes. Rotation direction is
@@ -555,13 +555,13 @@ def rot90(
 @handle_nestable
 @handle_exceptions
 def top_k(
-    x: Union[ivy.Array, ivy.NativeArray],
-    k: int,
-    /,
-    *,
-    axis: Optional[int] = None,
-    largest: bool = True,
-    out: Optional[tuple] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        k: int,
+        /,
+        *,
+        axis: Optional[int] = None,
+        largest: bool = True,
+        out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """
     Return the `k` largest elements of the given input array along a given axis.
@@ -632,11 +632,11 @@ def top_k(
 @handle_array_like_without_promotion
 @handle_nestable
 def fliplr(
-    m: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        m: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        copy: Optional[bool] = None,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Flip array in the left/right direction. Flip the entries in each column in the
@@ -672,10 +672,10 @@ def fliplr(
 @handle_array_like_without_promotion
 @handle_nestable
 def i0(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the Bessel i0 function of x element-wise.
@@ -882,8 +882,8 @@ def _to_pairs(x, n):
             ivy.asarray(list(x)).shape,
             (n, 2),
             message="tuple argument should contain "
-            "ndim pairs where ndim is the number of "
-            "the input's dimensions",
+                    "ndim pairs where ndim is the number of "
+                    "the input's dimensions",
         )
     return x
 
@@ -914,12 +914,12 @@ def _check_tuple_arg(arg, name, b_float=False):
 
 
 def _check_arguments(
-    mode,
-    pad_width,
-    stat_length,
-    constant_values,
-    end_values,
-    reflect_type,
+        mode,
+        pad_width,
+        stat_length,
+        constant_values,
+        end_values,
+        reflect_type,
 ):
     ivy.utils.assertions.check_true(
         callable(mode)
@@ -966,31 +966,31 @@ def _check_arguments(
 @handle_exceptions
 @to_native_arrays_and_back
 def pad(
-    input: Union[ivy.Array, ivy.NativeArray],
-    pad_width: Union[Iterable[Tuple[int]], int],
-    /,
-    *,
-    mode: Union[
-        Literal[
-            "constant",
-            "edge",
-            "linear_ramp",
-            "maximum",
-            "mean",
-            "median",
-            "minimum",
-            "reflect",
-            "symmetric",
-            "wrap",
-            "empty",
-        ],
-        Callable,
-    ] = "constant",
-    stat_length: Union[Iterable[Tuple[int]], int] = 1,
-    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
-    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
-    reflect_type: Literal["even", "odd"] = "even",
-    **kwargs: Optional[Any],
+        input: Union[ivy.Array, ivy.NativeArray],
+        pad_width: Union[Iterable[Tuple[int]], int],
+        /,
+        *,
+        mode: Union[
+            Literal[
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+                "empty",
+            ],
+            Callable,
+        ] = "constant",
+        stat_length: Union[Iterable[Tuple[int]], int] = 1,
+        constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+        end_values: Union[Iterable[Tuple[Number]], Number] = 0,
+        reflect_type: Literal["even", "odd"] = "even",
+        **kwargs: Optional[Any],
 ) -> ivy.Array:
     """
     Pad an array.
@@ -1217,11 +1217,11 @@ pad.mixed_function = True
 @handle_array_like_without_promotion
 @handle_nestable
 def vsplit(
-    ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
-    /,
-    *,
-    copy: Optional[bool] = None,
+        ary: Union[ivy.Array, ivy.NativeArray],
+        indices_or_sections: Union[int, Tuple[int, ...]],
+        /,
+        *,
+        copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Split an array vertically into multiple sub-arrays.
@@ -1260,11 +1260,11 @@ def vsplit(
 @handle_array_like_without_promotion
 @handle_nestable
 def dsplit(
-    ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
-    /,
-    *,
-    copy: Optional[bool] = None,
+        ary: Union[ivy.Array, ivy.NativeArray],
+        indices_or_sections: Union[int, Tuple[int, ...]],
+        /,
+        *,
+        copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Split an array into multiple sub-arrays along the 3rd axis.
@@ -1307,8 +1307,8 @@ def dsplit(
 @handle_array_like_without_promotion
 @handle_nestable
 def atleast_1d(
-    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = None,
+        *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
+        copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least one dimension. Scalar inputs are converted to
@@ -1343,10 +1343,10 @@ def atleast_1d(
 @handle_out_argument
 @handle_nestable
 def dstack(
-    arrays: Sequence[ivy.Array],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        arrays: Sequence[ivy.Array],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Stack arrays in sequence depth wise (along third axis).
@@ -1384,8 +1384,8 @@ def dstack(
 @handle_array_like_without_promotion
 @handle_nestable
 def atleast_2d(
-    *arys: Union[ivy.Array, ivy.NativeArray],
-    copy: Optional[bool] = None,
+        *arys: Union[ivy.Array, ivy.NativeArray],
+        copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least two dimension. Scalar inputs are converted to
@@ -1421,8 +1421,8 @@ def atleast_2d(
 @to_native_arrays_and_back
 @handle_nestable
 def atleast_3d(
-    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = None,
+        *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
+        copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least three dimension. Scalar inputs are converted
@@ -1470,13 +1470,13 @@ def atleast_3d(
 @handle_nestable
 @handle_exceptions
 def take_along_axis(
-    arr: Union[ivy.Array, ivy.NativeArray],
-    indices: Union[ivy.Array, ivy.NativeArray],
-    axis: int,
-    /,
-    *,
-    mode: str = "fill",
-    out: Optional[ivy.Array] = None,
+        arr: Union[ivy.Array, ivy.NativeArray],
+        indices: Union[ivy.Array, ivy.NativeArray],
+        axis: int,
+        /,
+        *,
+        mode: str = "fill",
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Take values from the input array by matching 1d index and data slices.
@@ -1519,11 +1519,11 @@ def take_along_axis(
 @handle_array_like_without_promotion
 @handle_nestable
 def hsplit(
-    ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
-    /,
-    *,
-    copy: Optional[bool] = None,
+        ary: Union[ivy.Array, ivy.NativeArray],
+        indices_or_sections: Union[int, Tuple[int, ...]],
+        /,
+        *,
+        copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Split an array into multiple sub-arrays horizontally.
@@ -1599,12 +1599,12 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 @handle_nestable
 @handle_exceptions
 def expand(
-    x: Union[ivy.Array, ivy.NativeArray],
-    shape: Union[ivy.Shape, ivy.NativeShape],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        shape: Union[ivy.Shape, ivy.NativeShape],
+        /,
+        *,
+        copy: Optional[bool] = None,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Broadcast the input Array following the given shape and the broadcast rule.
@@ -1626,22 +1626,24 @@ def expand(
     """
     return ivy.current_backend(x).expand(x, shape, out=out, copy=None)
 
+
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
 def put_along_axis(
-    arr: Union[ivy.Array, ivy.NativeArray],
-    indices: Union[ivy.Array, ivy.NativeArray],
-    values: Union[ivy.Array, ivy.NativeArray],
-    axis: int,
-    /,
-    *,
-    mode: str = "raise",
-    out: Optional[ivy.Array] = None
+        arr: Union[ivy.Array, ivy.NativeArray],
+        indices: Union[ivy.Array, ivy.NativeArray],
+        values: Union[ivy.Array, ivy.NativeArray],
+        axis: int,
+        /,
+        *,
+        mode: str = "raise",
+        out: Optional[ivy.Array] = None
 ) -> None:
     """
-    Put values into the input array by matching 1d index and data slices along a specified axis.
+    Put values into the input array by matching 1d index and data slices
+    along a specified axis.
 
     Parameters
     ----------
@@ -1654,13 +1656,16 @@ def put_along_axis(
     axis : int
         The axis over which to put the `values`.
     mode : {'raise', 'wrap', 'clip'}, optional
-        Specifies how out-of-bounds indices will be handled. The following modes are available:
+        Specifies how out-of-bounds indices will be handled.
+        The following modes are available:
 
         - 'raise': a `ValueError` is raised when an index is out of bounds.
-        - 'wrap': the index is wrapped around to the corresponding index at the other end of the axis.
+        - 'wrap': the index is wrapped around to the corresponding index at the
+        other end of the axis.
         - 'clip': the index is clipped to the closest in-bounds index.
     out : ndarray, optional
-        Output array in which to place the result. If not specified, a new array is created.
+        Output array in which to place the result.
+        If not specified, a new array is created.
 
     Returns
     -------
@@ -1713,10 +1718,10 @@ def put_along_axis(
 @handle_nestable
 @handle_exceptions
 def as_strided(
-    x: Union[ivy.Array, ivy.NativeArray],
-    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-    strides: Sequence[int],
-    /,
+        x: Union[ivy.Array, ivy.NativeArray],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        strides: Sequence[int],
+        /,
 ) -> ivy.Array:
     """
     Create a copy of the input array with the given shape and strides.
@@ -1755,9 +1760,9 @@ def as_strided(
     for index in ivy.ndindex(shape):
         src_index = sum(index[i] * min(strides[i], itemsize) for i in range(len(shape)))
         dst_index = sum(
-            index[i] * math.prod(shape[i + 1 :]) * itemsize for i in range(len(shape))
+            index[i] * math.prod(shape[i + 1:]) * itemsize for i in range(len(shape))
         )
-        dst[dst_index : dst_index + itemsize] = src[src_index : src_index + itemsize]
+        dst[dst_index: dst_index + itemsize] = src[src_index: src_index + itemsize]
 
     return ivy.reshape(
         ivy.frombuffer(buffer, dtype=x.dtype, count=size),
@@ -1774,15 +1779,15 @@ as_strided.mixed_function = True
 @handle_exceptions
 @handle_array_function
 def concat_from_sequence(
-    input_sequence: Union[
-        Tuple[Union[ivy.Array, ivy.NativeArray]],
-        List[Union[ivy.Array, ivy.NativeArray]],
-    ],
-    /,
-    *,
-    new_axis: int = 0,
-    axis: int = 0,
-    out: Optional[ivy.Array] = None,
+        input_sequence: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            List[Union[ivy.Array, ivy.NativeArray]],
+        ],
+        /,
+        *,
+        new_axis: int = 0,
+        axis: int = 0,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Concatenate a sequence of arrays along a new or an existing axis.
@@ -1859,12 +1864,12 @@ def _interleave(a, b, axis):
 @handle_nestable
 @handle_exceptions
 def associative_scan(
-    x: Union[ivy.Array, ivy.NativeArray],
-    fn: Callable,
-    /,
-    *,
-    reverse: bool = False,
-    axis: int = 0,
+        x: Union[ivy.Array, ivy.NativeArray],
+        fn: Callable,
+        /,
+        *,
+        reverse: bool = False,
+        axis: int = 0,
 ) -> ivy.Array:
     """
     Perform an associative scan over the given array.
