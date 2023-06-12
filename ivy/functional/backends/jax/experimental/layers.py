@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, Literal, Sequence, Callable
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -7,12 +7,15 @@ import math
 
 # local
 import ivy
+from ivy import output_to_native_arrays
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
+from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
+from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -534,19 +537,47 @@ def dropout1d(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if training:
-        if data_format == "NWC":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+        x_shape = x.shape
+        is_batched = len(x_shape) == 3
+        if data_format == "NCW":
+            perm = (0, 2, 1) if is_batched else (1, 0)
             x = jnp.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-1] = 1
+            x_shape = x.shape
         _, rng_input = jax.random.split(RNG.key)
-        mask = jax.random.bernoulli(rng_input, 1 - prob, noise_shape)
+        mask = jax.random.bernoulli(rng_input, 1 - prob, x_shape)
         res = jnp.where(mask, x / (1 - prob), 0)
-        if data_format == "NWC":
+        if data_format == "NCW":
             res = jnp.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
+
+
+def dropout2d(
+    x: JaxArray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if training:
+        x_shape = x.shape
+        is_batched = len(x.shape) == 4
+        if data_format == "NCHW":
+            perm = (0, 2, 3, 1) if is_batched else (1, 2, 0)
+            x = jnp.transpose(x, perm)
+            x_shape = x.shape
+        _, rng_input = jax.random.split(RNG.key)
+        mask = jax.random.bernoulli(rng_input, 1 - prob, x_shape)
+        res = jnp.where(mask, x / (1 - prob), 0)
+        if data_format == "NCHW":
+            perm = (0, 3, 1, 2) if is_batched else (2, 0, 1)
+            res = jnp.transpose(res, perm)
+    else:
+        res = x
+    return res
 
 
 def dropout3d(
@@ -559,22 +590,21 @@ def dropout3d(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if training:
-        is_batched = len(x.shape) == 5
+        x_shape = x.shape
+        is_batched = len(x_shape) == 5
         if data_format == "NCDHW":
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = jnp.transpose(x, perm)
-        noise_shape = list(x.shape)
-        sl = slice(1, -1) if is_batched else slice(-1)
-        noise_shape[sl] = [1] * 3
+            x_shape = x.shape
         _, rng_input = jax.random.split(RNG.key)
-        mask = jax.random.bernoulli(rng_input, 1 - prob, noise_shape)
+        mask = jax.random.bernoulli(rng_input, 1 - prob, x_shape)
         res = jnp.where(mask, x / (1 - prob), 0)
         if data_format == "NCDHW":
             perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
             res = jnp.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
 
 
 def ifft(
@@ -663,3 +693,34 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
     ]
     and recompute_scale_factor
 )
+
+
+def reduce_window(
+    operand: JaxArray,
+    init_value: Union[int, float],
+    computation: Callable,
+    window_dimensions: Union[int, Sequence[int]],
+    /,
+    *,
+    window_strides: Union[int, Sequence[int]] = 1,
+    padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+    base_dilation: Union[int, Sequence[int]] = 1,
+    window_dilation: Union[int, Sequence[int]] = 1,
+) -> JaxArray:
+    computation = _correct_ivy_callable(computation)
+    computation = output_to_native_arrays(computation)
+    if not isinstance(padding, str):
+        # for containers the padding reaches the function as a list of lists instead of
+        # a list of tuples, which gives an unhashable dtype error
+        # this is similarly a problem in the jax backend of ivy.pad
+        padding = _to_nested_tuple(padding)
+    return jlax.reduce_window(
+        operand,
+        init_value,
+        computation,
+        window_dimensions,
+        window_strides,
+        padding,
+        base_dilation,
+        window_dilation,
+    )

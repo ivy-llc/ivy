@@ -8,6 +8,7 @@ import copy as python_copy
 from types import FunctionType
 from typing import Callable
 import inspect
+import numpy as np
 
 
 # for wrapping (sequence matters)
@@ -26,10 +27,10 @@ FN_DECORATORS = [
     "handle_view_indexing",
     "handle_view",
     "handle_array_like_without_promotion",
+    "handle_mixed_function",
     "handle_nestable",
     "handle_exceptions",
     "handle_nans",
-    "handle_mixed_function",
 ]
 
 
@@ -680,6 +681,33 @@ def handle_view_indexing(fn: Callable) -> Callable:
     return _handle_view_indexing
 
 
+def _convert_numpy_arrays_to_backend_specific(*args):
+    if isinstance(args, np.ndarray):
+        np_arr_idxs = ivy.nested_argwhere(args, lambda x: isinstance(x, np.ndarray))
+        np_arr_val = ivy.multi_index_nest(args, np_arr_idxs)
+        backend_arr_vals = [ivy.array(x).to_native() for x in np_arr_val]
+        ivy.set_nest_at_indices(args, np_arr_idxs, backend_arr_vals)
+    return args
+
+
+def handle_numpy_arrays_in_specific_backend(fn: Callable) -> Callable:
+    """
+    Wrap `fn` and converts all `numpy.ndarray` inputs to `torch.Tensor` instances.
+
+    Used for functional backends (PyTorch). Converts all `numpy.ndarray`
+    inputs to `torch.Tensor` instances.
+    """
+
+    @functools.wraps(fn)
+    def _handle_numpy_array_in_torch(*args, **kwargs):
+        args = _convert_numpy_arrays_to_backend_specific(*args)
+        ret = fn(*args, **kwargs)
+        return ret
+
+    _handle_numpy_array_in_torch.handle_numpy_arrays_in_specific_backend = True
+    return _handle_numpy_array_in_torch
+
+
 # Data Type Handling #
 # -------------------#
 
@@ -995,22 +1023,31 @@ def _wrap_function(
             and hasattr(original, "inputs_to_ivy_arrays")
             and not original.__name__.startswith("inplace")
         )
+
         for attr in FN_DECORATORS:
             if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
                 mixed_fn
                 and (
-                    attr == "inputs_to_native_arrays" or attr == "outputs_to_ivy_arrays"
+                    attr
+                    in [
+                        "inputs_to_native_arrays",
+                        "outputs_to_ivy_arrays",
+                        "handle_mixed_function",
+                    ]
                 )
             ):
-                if mixed_fn and attr == "inputs_to_ivy_arrays":
-                    continue
+                if mixed_fn:
+                    if attr == "inputs_to_ivy_arrays":
+                        continue
+                    if attr == "handle_mixed_function":
+                        if hasattr(to_wrap, "partial_mixed_handler"):
+                            to_wrap.compos = original
+                            to_wrap = handle_mixed_function(
+                                getattr(to_wrap, "partial_mixed_handler")
+                            )(to_wrap)
+                        continue
                 to_wrap = getattr(ivy, attr)(to_wrap)
 
-        if hasattr(to_wrap, "partial_mixed_handler"):
-            to_wrap.compos = original
-            to_wrap = handle_mixed_function(getattr(to_wrap, "partial_mixed_handler"))(
-                to_wrap
-            )
     return to_wrap
 
 
@@ -1569,7 +1606,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
 class override(contextlib.ContextDecorator):
     def __call__(self, func=None):
         if func:
-            setattr(func, "override")
+            setattr(func, "override", "override")
             return func
 
     def __enter__(self):

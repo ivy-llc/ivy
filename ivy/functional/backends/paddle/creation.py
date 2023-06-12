@@ -453,8 +453,7 @@ def linspace(
                 "int16",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
+                "complex",
                 "bool",
             )
         }
@@ -522,8 +521,7 @@ def ones_like(
                 "int8",
                 "int16",
                 "uint8",
-                "complex64",
-                "complex128",
+                "complex",
             )
         }
     },
@@ -542,8 +540,7 @@ def tril(
                 "int8",
                 "int16",
                 "uint8",
-                "complex64",
-                "complex128",
+                "complex",
             )
         }
     },
@@ -649,14 +646,7 @@ def one_hot(
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "complex64",
-                "complex128",
-            )
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def frombuffer(
