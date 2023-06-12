@@ -636,7 +636,8 @@ def full_like(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]),b=ivy.array([4.123,5.23,6.23])) # noqa
+    >>> x = ivy.Container(a=ivy.array([1.2, 2.2324, 3.234]),
+    ...                   b=ivy.array([4.123, 5.23, 6.23]))
     >>> fill_value = 15.0
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
@@ -1198,7 +1199,9 @@ def eye(
                 [0., 1., 0.]]])
     >>> x1.shape
     (3, 2, 3)
-    # Suppose batch_shape = [a, b] then the returning identity array shape is [a, b, numRows, numColumns] # noqa
+
+    Suppose batch_shape = [a, b] then the returning identity
+    array shape is [a, b, numRows, numColumns]
 
 
     With :'out' input:

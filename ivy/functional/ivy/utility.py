@@ -104,7 +104,8 @@ def all(
     ivy.array(False)
 
     >>> x = ivy.array(False)
-    >>> y = ivy.all(ivy.array([[[0],[1]],[[1],[1]]]),axis=(0,1,2), out=x, keepdims=False)   # noqa
+    >>> y = ivy.all(ivy.array([[[0], [1]], [[1], [1]]]), axis=(0,1,2), out=x,
+    ...             keepdims=False)
     >>> print(y)
     ivy.array(False)
 
