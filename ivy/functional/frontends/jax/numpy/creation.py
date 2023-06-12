@@ -178,6 +178,8 @@ def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
 )
 def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
     ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
+    if ivy.current_backend_str() == "torch":
+        ret = ivy.swapaxes(ret, -1, axis)
     if retstep:
         if endpoint:
             num -= 1

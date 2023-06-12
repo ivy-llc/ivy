@@ -427,7 +427,8 @@ def slice(input_, begin, size, name=None):
 
 @to_ivy_arrays_and_back
 def linspace(start, stop, num, name=None, axis=0):
-    return ivy.linspace(start, stop, num, axis=axis)
+    ret = ivy.linspace(start, stop, num, axis=axis)
+    return ivy.swapaxes(ret, -1, axis) if ivy.current_backend_str() == "torch" else ret
 
 
 @to_ivy_arrays_and_back
