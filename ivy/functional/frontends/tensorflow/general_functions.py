@@ -83,20 +83,32 @@ def fill(dims, value, name=None):
 
 
 @to_ivy_arrays_and_back
-def foldl(fn, elems, initializer=None):
+def foldl(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    name=None,
+):
     try:
-        iter(elems)
-    except TypeError:
-        raise TypeError("elems must be an iterable object")
+        ivy.utils.assertions.check_isinstance(elems, ivy.Array)
+    except ivy.utils.exceptions.IvyException:
+        ivy.utils.exceptions.IvyException("elems must be an iterable object")
+    if not callable(fn):
+        ivy.utils.exceptions.IvyException(f"{fn.__name__} must be a callable function")
 
-    arr = ivy.array(elems)
-
-    if initializer is None and len(arr) > 0:
-        return functools.reduce(fn, arr)
+    if initializer is None and elems.shape[0] > 0:
+        result = functools.reduce(fn, elems)
+        if isinstance(result, (int, float)):
+            return ivy.array([result])
+        else:
+            return result
     elif initializer is not None:
-        return functools.reduce(fn, arr, initializer)
+        return functools.reduce(fn, elems, initializer)
     else:
-        return arr
+        return elems
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
