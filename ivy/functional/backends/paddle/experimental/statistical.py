@@ -17,7 +17,8 @@ from . import backend_version
                 "int16",
                 "uint8",
                 "float16",
-                "complex",
+                "complex64",
+                "complex128",
                 "bool",
             )
         }
@@ -342,7 +343,8 @@ def unravel_index(
                 "float16",
                 "float32",
                 "float64",
-                "complex",
+                "complex64",
+                "complex128",
                 "bool",
             )
         }
