@@ -233,7 +233,6 @@ def _arrays_idx_n_dtypes(draw):
 def test_paddle_concat(
     *,
     xs_n_input_dtypes_n_unique_idx,
-    master
     on_device,
     fn_tree,
     frontend,
