@@ -31,6 +31,33 @@ def _remove_so_log(old_stack_trace):
     return new_stack_trace
 
 
+# from ivy.compiler.utils.VVX import trace_obj
+
+
+def _align_source(old_stack_trace):
+    new_stack_trace = []
+    track = False
+    for st in old_stack_trace:
+        if "<string>" in repr(st):
+            track = True
+            continue
+        if track and "func_wrapper" not in repr(st):
+            _find_source_loc(st)
+            track = False
+        new_stack_trace.append(st)
+    return new_stack_trace
+
+
+def _find_source_loc(st):
+    print("custom test:", repr(st))
+    print("test target filename:", st.filename)
+    print("test target lineno:", st.lineno)
+    print("test target name:", st.name)
+    print("test target line:", st.line)
+    # print(trace_obj)
+    return
+
+
 def _write_new_stack_trace(
     old_stack_trace, trace_mode, func_wrapper_trace_mode, buffer
 ):
