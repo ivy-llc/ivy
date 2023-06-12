@@ -436,7 +436,7 @@ def leaky_relu(features, alpha=0.2, name=None):
 
 @to_ivy_arrays_and_back
 def crelu(features, axis=-1, name=None):
-    c = ivy.concat([features, -features], axis=axis)
+    c = ivy.concat([features, -features], axis=axis)w
     return ivy.relu(c)
 
 

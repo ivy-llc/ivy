@@ -2727,3 +2727,28 @@ def lu_factor(
         A named tuple (LU, pivots).
     """
     return current_backend(A).lu_factor(A, pivot=pivot, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def global_norm(
+    t_list: Union[ivy.List, ivy.Tuple],
+    /,
+) -> Union[ivy.float16, ivy.float32, ivy.float64]:
+    """
+    Parameters
+    ----------
+    t_list
+        A tuple or list of mixed Tensors, IndexedSlices, or None. 
+
+    Returns
+    -------
+    ret
+        A 0-D (scalar) Tensor of type float. 
+
+    """
+    return current_backend(t_list).global_norm(t_list)

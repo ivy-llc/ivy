@@ -803,3 +803,9 @@ def vector_to_skew_symmetric_matrix(
     # BS x 3 x 3
     ret = tf.concat((row1, row2, row3), -2)
     return ret
+
+def global_norm(
+    t_list: Union[tf.Tensor, tf.IndexedSlices]
+):
+
+    return tf.sqrt(tf.reduce_sum([tf.linalg.norm(k)**2 for k in t_list]))
