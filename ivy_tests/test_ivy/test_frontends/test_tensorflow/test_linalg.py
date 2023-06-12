@@ -13,6 +13,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     matrix_is_stable,
 )
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
 
 @st.composite
@@ -106,34 +107,28 @@ def test_tensorflow_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.matrix_rank",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        min_value=-1e05,
-        max_value=1e05,
-    ),
-    tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    dtype_x_hermitian=_matrix_rank_helper(),
+    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
     test_with_out=st.just(False),
 )
 def test_matrix_rank(
     *,
-    dtype_x,
-    tolr,
+    dtype_x_hermitian,
+    tol,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_x
+    dtype, x, hermitian = dtype_x_hermitian
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1.0,
-        a=x[0],
-        tol=tolr,
+        a=x,
+        tol=tol,
     )
 
 
