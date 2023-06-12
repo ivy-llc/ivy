@@ -92,7 +92,7 @@ def _add_native_error(default):
     ret
         list containing all the messages, with the native error appended if it exists
     """
-    trace_mode = ivy.get_exception_trace_mode()
+    trace_mode = ivy.exception_trace_mode
     if isinstance(default[-1], Exception):
         if isinstance(default[-1], IvyException):
             if default[-1].native_error is not None:

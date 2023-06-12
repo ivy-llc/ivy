@@ -136,7 +136,7 @@ class ContainerBase(dict, abc.ABC):
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
-            self._dynamic_backend = ivy.get_dynamic_backend()
+            self._dynamic_backend = ivy.dynamic_backend
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)

@@ -160,7 +160,7 @@ class Array(
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
-            self._dynamic_backend = ivy.get_dynamic_backend()
+            self._dynamic_backend = ivy.dynamic_backend
 
     def _view_attributes(self, data):
         self._base = None

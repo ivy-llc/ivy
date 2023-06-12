@@ -42,7 +42,6 @@ from ivy.functional.ivy.device import dev
 
 FN_CACHE = dict()
 INF = float("inf")
-# TMP_DIR = "/tmp"
 
 precise_mode_stack = list()
 queue_timeout_stack = list()
@@ -124,7 +123,7 @@ def unset_precise_mode() -> None:
     False
 
     >>> ivy.unset_precise_mode()
-    >>> ivy.get_array_mode()
+    >>> ivy.array_mode
     True
     """
     global precise_mode_stack
@@ -536,27 +535,6 @@ def unset_nestable_mode() -> None:
         ivy.__setattr__("nestable_mode", mode, True)
 
 
-# @handle_exceptions
-# def get_nestable_mode() -> bool:
-#     """
-#     Get the current mode of whether to check if function inputs are ivy.Container.
-#     Default is ``True``.
-
-#     Examples
-#     --------
-#     >>> ivy.get_exception_trace_mode()
-#     True
-
-#     >>> ivy.set_nestable_mode(False)
-#     >>> ivy.get_exception_trace_mode()
-#     False
-#     """
-#     global nestable_mode_stack
-#     if not nestable_mode_stack:
-#         return True
-#     return nestable_mode_stack[-1]
-
-
 ivy.exception_trace_mode = "full"
 
 
@@ -610,23 +588,6 @@ def unset_exception_trace_mode() -> None:
         exception_trace_mode_stack.pop(-1)
         mode = exception_trace_mode_stack[-1] if exception_trace_mode_stack else "full"
         ivy.__setattr__("exception_trace_mode", mode, True)
-
-
-# @handle_exceptions
-# def get_exception_trace_mode() -> str:
-#     """
-#     Get the current state of exception_trace_mode.
-
-#     Examples
-#     --------
-#     >>> ivy.set_exception_trace_mode("full")
-#     >>> ivy.get_exception_trace_mode()
-#     'full'
-#     """
-#     global exception_trace_mode_stack
-#     if not exception_trace_mode_stack:
-#         return "full"
-#     return exception_trace_mode_stack[-1]
 
 
 ivy.show_func_wrapper_trace_mode = True
@@ -683,28 +644,6 @@ def unset_show_func_wrapper_trace_mode() -> None:
             else True
         )
         ivy.__setattr__("show_func_wrapper_trace_mode", mode, True)
-
-
-# @handle_exceptions
-# def get_show_func_wrapper_trace_mode() -> bool:
-#     """
-#     Get the current state of whether to show the full
-# stack trace with function wrapping
-#     traces. Default is True (function wrapping traces are shown)
-
-#     Examples
-#     --------
-#     >>> ivy.get_show_func_wrapper_trace_mode()
-#     True
-
-#     >>> ivy.set_show_func_wrapper_trace_mode(False)
-#     >>> ivy.get_show_func_wrapper_trace_mode()
-#     False
-#     """
-#     global show_func_wrapper_trace_mode_stack
-#     if not show_func_wrapper_trace_mode_stack:
-#         return True
-#     return show_func_wrapper_trace_mode_stack[-1]
 
 
 @handle_exceptions
@@ -2174,25 +2113,6 @@ def einops_repeat(
 ivy.min_denominator = 1e-12
 
 
-# @handle_exceptions
-# def get_min_denominator() -> float:
-#     """
-#     Get the global minimum denominator used by ivy for numerically stable division.
-
-#     Returns
-#     -------
-#     ret
-#         The value of the global minimum denominator.
-
-#     Examples
-#     --------
-#     >>> x = ivy.get_min_denominator()
-#     >>> print(x)
-#     1e-12
-#     """
-#     return ivy._MIN_DENOMINATOR
-
-
 @handle_exceptions
 @handle_array_function
 def set_min_denominator(val: float) -> None:
@@ -2215,7 +2135,6 @@ def set_min_denominator(val: float) -> None:
     >>> print(y)
     1e-13
     """
-    # ivy._MIN_DENOMINATOR = val
     global min_denominator_stack
     ivy.utils.assertions.check_isinstance(val, (int, float))
     min_denominator_stack.append(val)
@@ -2246,26 +2165,6 @@ def unset_min_denominator() -> None:
         ivy.__setattr__("min_denominator", val, True)
 
 
-# @handle_exceptions
-# def get_min_base() -> float:
-#     """
-#     Get the global minimum base used by ivy for numerically stable power raising.
-
-#     Returns
-#     -------
-#     ret
-#         Global minimum base number
-
-#     Examples
-#     --------
-#     >>> x = ivy.get_min_base()
-#     >>> print(x)
-#     1e-05
-#     """
-#     # noinspection PyProtectedMember
-#     return ivy._MIN_BASE
-
-
 ivy.min_base = 1e-05
 
 
@@ -2291,7 +2190,6 @@ def set_min_base(val: float) -> None:
     >>> print(y)
     1e-04
     """
-    # ivy._MIN_BASE = val
     global min_base_stack
     ivy.utils.assertions.check_isinstance(val, (int, float))
     min_base_stack.append(val)
@@ -2435,8 +2333,8 @@ def stable_pow(
     min_base: float = None,
 ) -> Any:
     """
-    Raise the base by the power, with MIN_BASE added to the base when exponent > 1 for
-    numerical stability.
+    Raise the base by the power, with ivy.min_base added to the base when exponent > 1
+    for numerical stability.
 
     Parameters
     ----------
@@ -2445,7 +2343,7 @@ def stable_pow(
     exponent
         The exponent number.
     min_base
-        The minimum base to use, use global ivy._MIN_BASE by default.
+        The minimum base to use, use global ivy.min_base by default.
 
     Returns
     -------
@@ -2573,31 +2471,6 @@ def set_queue_timeout(timeout: float):
     ivy.__setattr__("queue_timeout", timeout, True)
 
 
-# @handle_exceptions
-# def get_queue_timeout() -> float:
-#     """
-#     Get the global queue timeout value (in seconds).
-
-#     The default value without this function being called is 15 seconds.
-
-#     Returns
-#     -------
-#     ret
-#        The global queue timeout value (in seconds).
-
-#     Examples
-#     --------
-#     >>> ivy.set_queue_timeout(10.0)
-#     >>> y = ivy.get_queue_timeout()
-#     >>> print(y)
-#     10.0
-#     """
-#     global queue_timeout_stack
-#     if not queue_timeout_stack:
-#         return 15.0
-#     return queue_timeout_stack[-1]
-
-
 @handle_exceptions
 def unset_queue_timeout() -> None:
     """
@@ -2619,19 +2492,6 @@ def unset_queue_timeout() -> None:
         queue_timeout_stack.pop(-1)
         timeout = queue_timeout_stack[-1] if queue_timeout_stack else 15.0
         ivy.__setattr__("queue_timeout", timeout, True)
-
-
-# @handle_exceptions
-# def get_tmp_dir():
-#     """
-#     Get the path for directory that saves temporary files.
-
-#     Returns
-#     -------
-#     ret
-#         The path of directory that saves temporary files.
-#     """
-#     return TMP_DIR
 
 
 ivy.tmp_dir = "/tmp"
@@ -2658,8 +2518,6 @@ def set_tmp_dir(tmp_dr: str) -> None:
     >>> print(y)
     /my_tmp
     """
-    # global TMP_DIR
-    # TMP_DIR = tmp_dr
     global tmp_dir_stack
     ivy.utils.assertions.check_isinstance(tmp_dr, str)
     tmp_dir_stack.append(tmp_dr)
@@ -3601,26 +3459,6 @@ def unset_shape_array_mode() -> None:
         shape_array_mode_stack.pop(-1)
         mode = shape_array_mode_stack[-1] if shape_array_mode_stack else False
         ivy.__setattr__("shape_array_mode", mode, True)
-
-
-# @handle_exceptions
-# def shape_array_mode() -> bool:
-#     """
-#     Get the current state of shape_array_mode.
-
-#     Examples
-#     --------
-#     >>> ivy.shape_array_mode()
-#     False
-
-#     >>> ivy.set_shape_array_mode(True)
-#     >>> ivy.shape_array_mode()
-#     True
-#     """
-#     global shape_array_mode_stack
-#     if not shape_array_mode_stack:
-#         return False
-#     return shape_array_mode_stack[-1]
 
 
 @handle_nestable

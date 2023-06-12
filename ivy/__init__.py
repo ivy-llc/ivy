@@ -448,11 +448,6 @@ dynamic_backend_stack = list()
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
-# global constants
-# _MIN_DENOMINATOR = 1e-12
-# _MIN_BASE = 1e-5
-
-
 # local
 import threading
 
@@ -992,16 +987,7 @@ def unset_nan_policy():
 # Dynamic Backend
 
 
-# ivy.dynamic_backend = True
-
-
-def get_dynamic_backend():
-    """Return the current dynamic backend setting, with the default being True."""
-    global dynamic_backend_stack
-    if not dynamic_backend_stack:
-        return True
-    else:
-        return dynamic_backend_stack[-1]
+ivy.dynamic_backend = True
 
 
 def set_dynamic_backend(flag):
@@ -1010,7 +996,7 @@ def set_dynamic_backend(flag):
     if flag not in [True, False]:
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
     dynamic_backend_stack.append(flag)
-    # ivy.__setattr__("dynamic_backend", flag, True)
+    ivy.__setattr__("dynamic_backend", flag, True)
 
 
 def unset_dynamic_backend():
@@ -1022,8 +1008,8 @@ def unset_dynamic_backend():
     global dynamic_backend_stack
     if dynamic_backend_stack:
         dynamic_backend_stack.pop()
-        # flag = dynamic_backend_stack[-1] if dynamic_backend_stack else True
-        # ivy.__setattr__("dynamic_backend", flag, True)
+        flag = dynamic_backend_stack[-1] if dynamic_backend_stack else True
+        ivy.__setattr__("dynamic_backend", flag, True)
 
 
 # Context Managers
@@ -1035,7 +1021,7 @@ class DynamicBackendContext:
         self.original = None
 
     def __enter__(self):
-        self.original = get_dynamic_backend()
+        self.original = ivy.dynamic_backend
         set_dynamic_backend(self.value)
 
     def __exit__(self, type, value, traceback):
@@ -1284,6 +1270,7 @@ GLOBAL_PROPS = [
     "queue_timeout",
     "tmp_dir",
     "shape_array_mode",
+    "dynamic_backend",
 ]
 
 
@@ -1298,4 +1285,3 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
 
 
 sys.modules[__name__].__class__ = IvyWithGlobalProps
-
