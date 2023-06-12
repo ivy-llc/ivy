@@ -30,6 +30,8 @@ def max_pool1d(
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     raise IvyNotImplementedException()
