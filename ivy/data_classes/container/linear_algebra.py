@@ -1522,6 +1522,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         *,
         atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
+        hermitian: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1555,6 +1556,13 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             with the floating-point data type determined by :ref:`type-promotion`
             (as applied to ``x``).
             Default: ``None``.
+
+        hermitian
+            indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is
+            assumed to be Hermitian, enabling a more efficient method for finding
+            eigenvalues, but x is not checked inside the function. Instead, We just use
+            the lower triangular of the matrix to compute.
+            Default: ``False``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1599,6 +1607,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
             atol=atol,
             rtol=rtol,
+            hermitian=hermitian,
             out=out,
         )
 
@@ -1608,6 +1617,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         *,
         atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
+        hermitian: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1639,6 +1649,13 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated
             with the floating-point data type determined by :ref:`type-promotion`
             (as applied to ``x``). Default: ``None``.
+
+        hermitian
+            indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is
+            assumed to be Hermitian, enabling a more efficient method for finding
+            eigenvalues, but x is not checked inside the function. Instead, We just use
+            the lower triangular of the matrix to compute.
+            Default: ``False``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1677,6 +1694,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             self,
             atol=atol,
             rtol=rtol,
+            hermitian=hermitian,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

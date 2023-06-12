@@ -160,7 +160,8 @@ class Array(
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
-            self._dynamic_backend = ivy.get_dynamic_backend()
+            self._dynamic_backend = ivy.dynamic_backend
+        self.weak_type = False  # to handle 0-D jax front weak typed arrays
 
     def _view_attributes(self, data):
         self._base = None
@@ -237,7 +238,9 @@ class Array(
             ``(..., M, N)``, the returned array must have shape ``(..., N, M)``).
             The returned array must have the same data type as the original array.
         """
-        ivy.utils.assertions.check_greater(len(self._data.shape), 2, allow_equal=True)
+        ivy.utils.assertions.check_greater(
+            len(self._data.shape), 2, allow_equal=True, as_array=False
+        )
         return ivy.matrix_transpose(self._data)
 
     @property
@@ -286,7 +289,7 @@ class Array(
             two-dimensional array whose first and last dimensions (axes) are
             permuted in reverse order relative to original array.
         """
-        ivy.utils.assertions.check_equal(len(self._data.shape), 2)
+        ivy.utils.assertions.check_equal(len(self._data.shape), 2, as_array=False)
         return ivy.matrix_transpose(self._data)
 
     @property
@@ -360,8 +363,8 @@ class Array(
                 self._post_repr = ", dev={})".format(self._dev_str)
             else:
                 self._post_repr = ")"
-        sig_fig = ivy.array_significant_figures()
-        dec_vals = ivy.array_decimal_values()
+        sig_fig = ivy.array_significant_figures
+        dec_vals = ivy.array_decimal_values
         if self.backend == "" or ivy.is_local():
             # If the array was constructed using implicit backend
             backend = ivy.current_backend()
@@ -397,11 +400,14 @@ class Array(
         return ivy.get_item(self._data, query)
 
     def __setitem__(self, query, val):
+        if ivy.current_backend_str() == "torch":
+            self._data = self._data.detach()
+        if ivy.is_ivy_array(val):
+            val = val.data
+        target = self.__getitem__(query)
+        if not ivy.isscalar(target) and ivy.isscalar(val):
+            val = ivy.ones_like(target) * val
         try:
-            if ivy.current_backend_str() == "torch":
-                self._data = self._data.detach()
-            if ivy.is_ivy_array(val):
-                val = val.data
             self._data.__setitem__(query, val)
         except:
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
