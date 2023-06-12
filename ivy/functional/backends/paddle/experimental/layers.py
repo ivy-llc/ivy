@@ -3,8 +3,12 @@ from typing import Optional, Union, Tuple, Literal, Sequence
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.layers import _handle_padding
-import ivy
-
+from ivy.utils.assertions import check_kernel_padding_size
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
+)
+from .. import backend_version
 
 # local
 
@@ -46,6 +50,15 @@ def max_pool1d(
     return res.astype(dtype)
 
 
+# @with_supported_dtypes(
+#     {
+#         "2.4.2 and below": (
+#             "float32",
+#             "float64",
+#         )
+#     },
+#     backend_version,
+# )
 def max_pool2d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -59,6 +72,7 @@ def max_pool2d(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = x.dtype
+
     x = x.astype("float32")
     if isinstance(strides, int):
         strides = (strides, strides)
@@ -83,7 +97,7 @@ def max_pool2d(
         padding = [(padding[0],) * 2, (padding[1],) * 2]
 
     if isinstance(padding, (tuple, list)):
-        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
+        check_kernel_padding_size(kernel, padding)
 
     if data_format == "NHWC":
         x = paddle.transpose(x, perm=[0, 3, 1, 2])
