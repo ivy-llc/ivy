@@ -128,4 +128,4 @@ def celu(
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def thresholded_relu(x, threshold=1.0, name=None):
-    return ivy.where(ivy.greater(x, threshold), x, 0).astype(x.dtype)
+    return ivy.thresholded_relu(x, threshold=threshold)
