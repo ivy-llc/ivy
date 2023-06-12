@@ -635,4 +635,4 @@ def is_finite(x):
 def approx_min_k(operand, k): # takes in two arguments, operand and k
     values, indices = ivy.top_k(operand, k, axis=-1) # ivy function to get top k values and indices
     indices = ivy.astype(indices, ivy.int32, copy=False) # convert indices to int32
-    return [values, indices] # return values and indices
+    return [values, indices] # return values and indices 
