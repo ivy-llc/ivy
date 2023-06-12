@@ -413,7 +413,7 @@ def test_paddle_asinh(
         on_device=on_device,
     )
 
-    
+
 # cosh
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -446,7 +446,7 @@ def test_paddle_cosh(
         on_device=on_device,
     )
 
-    
+
 # log
 @handle_frontend_method(
     class_tree=CLASS_TREE,
