@@ -36,4 +36,4 @@ def lexsort(keys, /, *, axis=-1):
 
 @to_ivy_arrays_and_back
 def argpartition(a, kth, axis=-1, kind='introselect', order=None):
-    return ivy.argpartition(a, kth=kth, axis=axis, kind=kind)
+    return ivy.argpartition(a, kth, axis=axis, kind=kind)
