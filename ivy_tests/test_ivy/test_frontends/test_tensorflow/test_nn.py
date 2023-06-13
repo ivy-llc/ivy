@@ -1522,7 +1522,7 @@ def test_tensorflow_weighted_moments(
         rtol=1e-1,
         atol=1e-1,
         x=x[0],
-        frequency_weights=fw[0],
         axes=axis,
+        frequency_weights=fw[0],
         keepdims=keepdims,
     )
