@@ -48,7 +48,7 @@ def test_paddle_uniform(
     x=st.lists(
         st.floats(allow_nan=False, allow_infinity=False, min_value=0, max_value=1),
         min_size=2,
-        max_size=9,
+        max_size=8,
     ),
 )
 def test_paddle_poisson(x, input_dtypes, frontend, test_flags, fn_tree):
@@ -58,5 +58,5 @@ def test_paddle_poisson(x, input_dtypes, frontend, test_flags, fn_tree):
         test_flags=test_flags,
         fn_tree=fn_tree,
         test_values=False,
-        x
+        x = x
     )
