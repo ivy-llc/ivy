@@ -785,7 +785,10 @@ def nested_argwhere(
         if check_nests and fn(nest):
             _indices.append(_index)
     else:
-        cond_met = fn(nest)
+        if hasattr(nest, 'ivy_array'):
+            cond_met = fn(nest.ivy_array)
+        else:
+            cond_met = fn(nest)
         if cond_met:
             return [_index]
         return False
