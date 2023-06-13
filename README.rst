@@ -40,7 +40,7 @@
 ------------------------------------------------------
 
 Status
-------
+^^^^^^
 
 .. raw:: html
 
@@ -76,7 +76,7 @@ Status
 ------------------------------------------------------
 
 All of AI, at your fingertips
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. raw:: html
         
@@ -117,18 +117,7 @@ and take a look at the `open tasks`_ if you'd like to dive straight in 🧑‍�
 
 **Let's** `unify.ai <https://unify.ai>`_ **together 🦾**
 
-
-Contents
---------
-
-* `Ivy as a transpiler`_
-* `Ivy as a framework`_
-* `Setting up Ivy`_
-* `Documentation`_
-* `Examples`_
-* `Contributing`_
-* `Community`_
-* `Citation`_
+------------------------------------------------------
 
 Ivy as a transpiler
 -------------------
