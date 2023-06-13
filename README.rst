@@ -34,7 +34,21 @@
 .. raw:: html
 
     <div style="display: block;" align="center">
-    <b><a href="https://unify.ai/">Website</a></b> | <b><a href="https://unify.ai/docs/ivy/">Docs</a></b> | <b><a href="https://unify.ai/demos/">Examples</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/design.html">Design</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/faq.html">FAQ</a></b><br><br>
+    <a href="https://unify.ai/">
+        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_example.png">
+    </a>
+    <a href="https://unify.ai/docs/ivy">
+        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_example.png">
+    </a>
+    <a href="https://unify.ai/demos">
+        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_example.png">
+    </a>
+    <a href="https://unify.ai/docs/ivy/overview/design.html">
+        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_example.png">
+    </a>
+    <a href="https://unify.ai/docs/ivy/overview/faq.html">
+        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_example.png">
+    </a>
     </div>
 
 ------------------------------------------------------
@@ -85,19 +99,19 @@ All of AI, at your fingertips
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
         </a>
         <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
-        |
+        
         <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://www.tensorflow.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
         </a>
         <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
-        |
+        
         <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://pytorch.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
         </a>
         <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
-        |
+        
         <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://numpy.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
