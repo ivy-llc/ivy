@@ -133,3 +133,15 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def exp(self, name=None):
         return ivy.exp(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def log10(self, name=None):
+        return ivy.log10(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def argsort(self, axis=-1, descending=False, name=None):
+        return ivy.argsort(self._ivy_array, axis=axis, descending=descending)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def floor(self, name=None):
+        return ivy.floor(self._ivy_array)
