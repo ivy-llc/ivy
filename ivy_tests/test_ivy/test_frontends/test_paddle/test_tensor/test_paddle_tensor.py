@@ -673,7 +673,6 @@ def test_paddle_floor(
     ),
 )
 def test_paddle_sqrt(
-
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -695,7 +694,8 @@ def test_paddle_sqrt(
         frontend=frontend,
         on_device=on_device,
     )
-    
+
+
 # tanh
 @handle_frontend_method(
     class_tree=CLASS_TREE,
