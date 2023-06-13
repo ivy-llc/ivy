@@ -198,14 +198,17 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
         available_dtypes=None,
         shape=None,
         min_axis=None,
+        max_axis=2,
         force_int_axis=True,
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
     n=st.integers(min_value=2, max_value=5),
+    s=st.lists(st.integers(), min_size=2, max_size=2),  # Specify s as a sequence of integers
+    axes=st.lists(st.integers(), min_size=2, max_size=2),  # Specify axes as a sequence of integers
 )
-@with_supported_dtypes(complex_only=True)
+@with_supported_dtypes
 def test_numpy_rfft2(
-    dtype_input_axis, norm, n, frontend, test_flags, fn_tree, on_device
+    dtype_input_axis, norm, n, s, axes, frontend, test_flags, fn_tree, on_device
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -216,7 +219,7 @@ def test_numpy_rfft2(
         on_device=on_device,
         test_values=True,
         a=x,
-        s=n,
-        axes=axis,
+        s=s,
+        axes=axes,
         norm=norm,
     )
