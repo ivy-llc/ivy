@@ -1022,6 +1022,7 @@ def _wrap_function(
             setattr(to_wrap, attr, getattr(original, attr))
 
         mixed_fn = hasattr(original, "mixed_backend_wrappers") and original != to_wrap
+        partial_mixed = mixed_fn and hasattr(to_wrap, "partial_mixed_handler")
         add_wrappers, skip_wrappers = [], []
         if mixed_fn:
             backend_wrappers = getattr(original, "mixed_backend_wrappers")
@@ -1035,7 +1036,7 @@ def _wrap_function(
 
             elif mixed_fn:
                 if attr == "handle_mixed_function":
-                    if hasattr(to_wrap, "partial_mixed_handler"):
+                    if partial_mixed:
                         to_wrap.compos = original
                         to_wrap = handle_mixed_function(
                             getattr(to_wrap, "partial_mixed_handler")
@@ -1043,6 +1044,20 @@ def _wrap_function(
                     continue
                 if attr in add_wrappers:
                     to_wrap = getattr(ivy, attr)(to_wrap)
+
+        # we should remove the all the decorators
+        # after handle_mixed_fuction in FN_DECORATORS
+        # from the compos function because these will
+        #  be run from the primary implementation.
+        if partial_mixed:
+            array_spec = to_wrap.compos.__dict__["array_spec"]
+            if hasattr(to_wrap.compos, "handle_exceptions") and hasattr(
+                to_wrap.compos, "handle_nestable"
+            ):
+                to_wrap.compos = to_wrap.compos.__wrapped__.__wrapped__
+            else:
+                to_wrap.compos = to_wrap.compos.__wrapped__
+            to_wrap.compos.__dict__["array_spec"] = array_spec
 
     return to_wrap
 
