@@ -342,3 +342,16 @@ def unique_consecutive(
         tf.cast(inverse_indices, tf.int64),
         tf.cast(counts, tf.int64),
     )
+
+
+def trim_zeros(
+    filt: Union[List[tf.Tensor], Sequence[tf.Tensor]],
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> Union[List[tf.Tensor], Sequence[tf.Tensor]]:
+    filt = tf.experimental.numpy.asarray(filt)
+    nz = filt == 0
+    start = tf.argmin(nz) if "f" in trim.lower() else 0
+    end = tf.argmin(nz[::-1]) if "b" in trim.lower() else 0
+    return filt[start : len(filt) - end]

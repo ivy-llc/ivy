@@ -2767,3 +2767,91 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def _static_trim_zeros(
+        filt: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        trim: Optional[str] = "fb",
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        filt
+            input array.
+
+        trim
+            A string with ‘f’ representing trim from front and ‘b’ to trim from back.
+            Default is ‘fb’, trim zeros from both front and back of the array.
+
+        Returns
+        -------
+        ret
+            The result of trimming the input. The input data type is preserved.
+
+        >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([0, 3., 4.,0]))
+        >>> y = ivy.trim_zeros(x)
+        >>> print(y)
+        {
+            a:ivy.array([-1., 2.]),
+            b:ivy.array([3., 4.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function("trim_zeros", filt, trim=trim)
+
+    def trim_zeros(
+        self: ivy.Container, /, *, trim: Optional[str] = "fb"
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        trim
+            A string with ‘f’ representing trim from front and ‘b’ to trim from back.
+            Default is ‘fb’, trim zeros from both front and back of the array.
+
+        Returns
+        -------
+        ret
+            The result of trimming the input. The input data type is preserved.
+
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([0, 3., 4.,0]))
+        >>> y = x.argmin()
+        >>> print(y)
+        {
+            a:ivy.array([-1., 2.]),
+            b:ivy.array([3., 4.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0. -1., 2., 0., 0.]),\
+        ...                   b=ivy.array([0., 0., 3., 5., 0.])
+        >>> y = x.argmin(trim="f")
+        >>> print(y)
+        {
+            a: ivy.array([-1., 2., 0., 0.]),
+            b: ivy.array([3., 5., 0.])
+        }
+        """
+        return self._static_trim_zeros(
+            self,
+            trim=trim,
+        )

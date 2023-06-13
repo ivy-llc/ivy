@@ -393,3 +393,12 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def trim_zeros(
+    filt: Union[List[JaxArray], Sequence[JaxArray]],
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> Union[List[JaxArray], Sequence[JaxArray]]:
+    return jnp.trim_zeros(filt=filt, trim=trim)

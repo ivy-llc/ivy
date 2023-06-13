@@ -988,3 +988,51 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         changes.
         """
         return ivy.unique_consecutive(self._data, axis=axis)
+
+    @handle_view
+    def trim_zeros(
+        self: ivy.Array,
+        /,
+        *,
+        trim: Optional[str] = "fb",
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        trim
+            A string with ‘f’ representing trim from front and ‘b’ to trim from back.
+            Default is ‘fb’, trim zeros from both front and back of the array.
+
+        Returns
+        -------
+        ret
+            The result of trimming the input. The input data type is preserved.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+        >>> x = ivy.array([0, 1, 0])
+        >>> y = ivy.trim_zeros(x)
+        >>> print(y)
+        ivy.array([1])
+
+        >>> x = ivy.array([0, 1, 2, 0])
+        >>> y = ivy.trim_zeros(x, trim="f")
+        >>> print(y)
+        ivy.array([1, 2, 0])
+
+        >>> x = ivy.array([0, 0, 0, 1, 2, 0, 0])
+        >>> y = ivy.trim_zeros(x, trim="b")
+        >>> print(y)
+        ivy.array([0, 0, 0, 1, 2])
+        """
+        return ivy.trim_zeros(self._data, trim=trim)

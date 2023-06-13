@@ -364,3 +364,16 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def trim_zeros(
+    filt: Union[List[torch.Tensor], Sequence[torch.Tensor]],
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> Union[List[torch.Tensor], Sequence[torch.Tensor]]:
+    filt = torch.asarray(filt)
+    nz = filt == 0
+    start = torch.argmin(nz) if "f" in trim.lower() else 0
+    end = torch.argmin(nz[::-1]) if "b" in trim.lower() else 0
+    return filt[start : len(filt) - end]

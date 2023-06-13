@@ -494,3 +494,12 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def trim_zeros(
+    filt: Union[List[np.ndarray], Sequence[np.ndarray]],
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> Union[List[np.ndarray], Sequence[np.ndarray]]:
+    return np.trim_zeros(filt=filt, trim=trim)

@@ -1980,3 +1980,68 @@ def unique_consecutive(
         counts=ivy.array([2, 2, 1, 2, 1]))
     """
     return ivy.current_backend(x).unique_consecutive(x, axis=axis)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+def trim_zeros(
+    filt: Union[
+        List[Union[ivy.Array, ivy.NativeArray]],
+        Sequence[Union[ivy.Array, ivy.NativeArray]],
+    ],
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> Union[
+    List[Union[ivy.Array, ivy.NativeArray]],
+    Sequence[Union[ivy.Array, ivy.NativeArray]],
+]:
+    """
+    Trim the leading and/or trailing zeros from a 1-D array or sequence.
+
+    Parameters
+    ----------
+    filt
+        input array.
+
+    trim
+        A string with ‘f’ representing trim from front and ‘b’ to trim from back.
+        Default is ‘fb’, trim zeros from both front and back of the array.
+
+    Returns
+    -------
+    ret
+        The result of trimming the input. The input data type is preserved.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([0, 1, 0])
+    >>> y = ivy.trim_zeros(x)
+    >>> print(y)
+    ivy.array([1])
+
+    >>> x = ivy.array([0, 1, 2, 0])
+    >>> y = ivy.trim_zeros(x, trim="f")
+    >>> print(y)
+    ivy.array([1, 2, 0])
+
+    >>> x = ivy.array([0, 0, 0, 1, 2, 0, 0])
+    >>> y = ivy.trim_zeros(x, trim="b")
+    >>> print(y)
+    ivy.array([0, 0, 0, 1, 2])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([0, 3., 4., 5.,0]))
+    >>> y = ivy.trim_zeros(x)
+    >>> print(y)
+    {
+        a:ivy.array([-1., 2.]),
+        b:ivy.array([3., 4., 5.])
+    }
+    """
+    return ivy.current_backend(filt).trim_zeros(filt, trim=trim)
