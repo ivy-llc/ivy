@@ -29,6 +29,18 @@
    :width: 100%
    :class: only-light
 
+------------------------------------------------------
+
+.. raw:: html
+
+    <div style="display: block;" align="center">
+    <b><a href="https://unify.ai/">Website</a></b> | <b><a href="https://unify.ai/docs/ivy/">Docs</a></b> | <b><a href="https://unify.ai/demos/">Examples</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/design.html">Design</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/faq.html">FAQ</a></b><br><br>
+
+------------------------------------------------------
+
+Status
+------
+
 .. raw:: html
 
     <br/>
@@ -60,17 +72,13 @@
     </div>
     <br clear="all" />
 
-.. raw:: html
+------------------------------------------------------
 
-    <div style="display: block;" align="center">
-    <b><a href="https://unify.ai/">Website</a></b> | <b><a href="https://unify.ai/docs/ivy/">Docs</a></b> | <b><a href="https://unify.ai/demos/">Examples</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/design.html">Design</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/faq.html">FAQ</a></b><br><br>
-    
-    <b>All of AI, at your fingertips</b>
-    
-    </div>
-    
-    <br>
-    
+All of AI, at your fingertips
+-----------------------------
+
+.. raw:: html
+        
     <div style="display: block;" align="center">
         <div>
         <a href="https://jax.readthedocs.io">
