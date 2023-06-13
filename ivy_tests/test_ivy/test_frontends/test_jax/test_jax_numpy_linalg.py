@@ -834,3 +834,52 @@ def test_jax_numpy_cond(
         x=x[0],
         p=p,
     )
+
+
+@st.composite
+def _get_dtype_inputs_for_multi_dot(draw):
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+    )
+    matrix_dims = draw(
+        st.lists(
+            st.integers(min_value=2, max_value=4),
+            min_size=num_arrays + 1,
+            max_size=num_arrays + 1,
+        )
+    )
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
+    )
+    xs = []
+    for i in range(num_arrays):
+        shape = matrix_dims[i : i + 2]
+        dtype = input_dtypes[i]
+        x = draw(helpers.array_values(shape=shape, dtype=dtype))
+        xs.append(x)
+    return xs, input_dtypes
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.linalg.multi_dot",
+    dtypes_and_xs=_get_dtype_inputs_for_multi_dot(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_multi_dot(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    xs, input_dtypes = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arrays=xs,
+        precision=None,
+    )
