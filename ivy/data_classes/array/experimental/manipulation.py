@@ -713,7 +713,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def atleast_3d(
         self: ivy.Array,
         *arys: Union[ivy.Array, bool, Number],
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_3d. This method simply wraps

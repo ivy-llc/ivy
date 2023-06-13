@@ -325,7 +325,7 @@ def dsplit(
 
 
 def atleast_1d(
-    *arys: paddle.Tensor, copy: Optional[bool] = None
+    *arys: paddle.Tensor, copy: Optional[bool] = False
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -373,7 +373,7 @@ def atleast_2d(
 
 
 def atleast_3d(
-    *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
+    *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = False
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:

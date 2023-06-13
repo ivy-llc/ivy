@@ -280,7 +280,7 @@ def atleast_2d(*arys: JaxArray, copy: Optional[bool] = None) -> List[JaxArray]:
 
 
 def atleast_3d(
-    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = False
 ) -> List[JaxArray]:
     return jnp.atleast_3d(*arys)
 

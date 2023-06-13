@@ -1379,7 +1379,7 @@ def atleast_2d(
 @to_native_arrays_and_back
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least three dimension. Scalar inputs are converted
@@ -1591,18 +1591,18 @@ def expand(
 @handle_exceptions
 @handle_array_like_without_promotion
 def put_along_axis(
-        arr: Union[ivy.Array, ivy.NativeArray],
-        indices: Union[ivy.Array, ivy.NativeArray],
-        values: Union[ivy.Array, ivy.NativeArray],
-        axis: int,
-        /,
-        *,
-        mode: str = "raise",
-        out: Optional[ivy.Array] = None
+    arr: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    values: Union[ivy.Array, ivy.NativeArray],
+    axis: int,
+    /,
+    *,
+    mode: str = "raise",
+    out: Optional[ivy.Array] = None,
 ) -> None:
     """
-    Put values into the input array by matching 1d index and data slices
-    along a specified axis.
+    Put values into the input array by matching 1d index and data slices along a
+    specified axis.
 
     Parameters
     ----------
@@ -1654,18 +1654,16 @@ def put_along_axis(
     arr = ivy.where(
         ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis),
         sorted_stacked,
-        arr
+        arr,
     )
 
-    if mode == 'clip':
+    if mode == "clip":
         indices = ivy.clip(indices, 0, arr.shape[axis] - 1)
-    elif mode == 'wrap':
+    elif mode == "wrap":
         indices = ivy.mod(indices, arr.shape[axis])
 
     arr = ivy.where(
-        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis),
-        arr,
-        values
+        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis), arr, values
     )
 
     ivy.assign(out, arr)

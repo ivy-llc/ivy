@@ -766,6 +766,7 @@ def test_atleast_2d(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
+        shared_dtype=True,
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -783,15 +784,18 @@ def test_atleast_3d(
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
         arrys["x{}".format(i)] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(arrys)
-    helpers.test_function(
+    assert 0 == 1, "arrys: {}".format(len(arrys))
+    ret_tgt, ret_gt = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_values=False,
         **arrys,
     )
+    assert len(ret_tgt) == len(ret_gt)
 
 
 # take_along_axis

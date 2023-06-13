@@ -338,7 +338,7 @@ def atleast_2d(*arys: np.ndarray, copy: Optional[bool] = None) -> List[np.ndarra
 
 
 def atleast_3d(
-    *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
+    *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = False
 ) -> List[np.ndarray]:
     if copy:
         arys = ivy.nested_map(arys, np.copy)

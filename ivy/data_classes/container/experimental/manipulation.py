@@ -1853,7 +1853,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_3d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1913,7 +1913,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def atleast_3d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,

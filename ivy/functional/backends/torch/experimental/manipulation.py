@@ -231,7 +231,7 @@ def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.T
 
 
 def atleast_3d(
-    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = None
+    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = False
 ) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
