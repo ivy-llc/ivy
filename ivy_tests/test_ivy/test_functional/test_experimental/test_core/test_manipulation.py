@@ -1137,11 +1137,12 @@ def scale_helper(draw):
     test_gradients=st.just(False),
     test_with_out=st.just(False),
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=["int32", "float16", "bfloat16"],
+        available_dtypes=["float32", "float64", "int32", "int64"],
         min_value=1,
         max_value=100,
         min_num_dims=1,
         max_num_dims=1,
+        min_dim_size=5,
     ),
     scale=scale_helper(),
     zero_point=helpers.ints(min_value=0, max_value=100),
