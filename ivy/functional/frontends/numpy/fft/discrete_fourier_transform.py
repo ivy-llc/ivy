@@ -130,7 +130,7 @@ def rfftfreq(n, d=1.0):
 @to_ivy_arrays_and_back
 @with_supported_dtypes
 def rfft2(a, s=None, axes=(-2, -1), norm=None):
-    a = ivy.array(a, dtype=ivy.float64)
+    a = ivy.array(a)
     if norm is None:
         norm = "backward"
     elif norm not in ["backward", "ortho", "forward"]:
