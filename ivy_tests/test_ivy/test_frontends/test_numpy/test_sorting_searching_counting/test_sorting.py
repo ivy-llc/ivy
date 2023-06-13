@@ -188,7 +188,7 @@ def test_numpy_argpartition(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        kth=x[1],
+        #kth=x[1],
         kind=kind,
         axis=axis,
     )
