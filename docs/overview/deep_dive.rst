@@ -76,7 +76,10 @@ We're excited for you to get involved! 🦾
 | (u) :ref:`Gradients` 🔁
 | Everything about our Gradients API
 |
-| (v) :ref:`Building the Docs Pipeline` 📚
+| (v) :ref:`Operating Modes` 🧮
+| Everything about modes Ivy can operate in, along with their purposes
+|
+| (w) :ref:`Building the Docs Pipeline` 📚
 | How are we building our docs
 .. toctree::
    :hidden:
@@ -104,4 +107,5 @@ We're excited for you to get involved! 🦾
    deep_dive/exception_handling.rst
    deep_dive/continuous_integration.rst
    deep_dive/gradients.rst
+   deep_dive/operating_modes.rst
    deep_dive/building_the_docs_pipline.rst
