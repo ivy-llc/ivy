@@ -404,8 +404,6 @@ class Tensor:
             return torch_frontend.zeros(
                 size[0], dtype=dtype, device=device, requires_grad=requires_grad
             )
-        if isinstance(size, tuple) and None in size:
-            size = tuple(item for item in size if item is not None)
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
