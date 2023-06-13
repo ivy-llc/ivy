@@ -564,9 +564,7 @@ Mean = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def Pow(*, x, y, name="Pow"):
-    return ivy.pow(x, y)
+Pow = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.pow))
 
 
 Relu6 = to_ivy_arrays_and_back(
