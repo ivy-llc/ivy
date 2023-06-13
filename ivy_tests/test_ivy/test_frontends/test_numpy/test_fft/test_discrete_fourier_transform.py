@@ -203,10 +203,9 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
     n=st.integers(min_value=2, max_value=5),
-    s=st.lists(st.integers(), min_size=2, max_size=2).filter(lambda x: len(x) == 2),  # Filter out length-zero sequences for 's'
-    axes=st.lists(st.integers(), min_size=2, max_size=2).filter(lambda x: len(x) == 2),  # Filter out length-zero sequences for 'axes'
+    s=st.lists(st.integers(), min_size=2, max_size=2).filter(lambda x: len(x) == 2),
+    axes=st.lists(st.integers(), min_size=2, max_size=2).filter(lambda x: len(x) == 2),
 )
-@with_supported_dtypes
 def test_numpy_rfft2(
     dtype_input_axis, norm, n, s, axes, frontend, test_flags, fn_tree, on_device
 ):
