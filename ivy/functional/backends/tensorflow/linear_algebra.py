@@ -371,6 +371,7 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     def dim_reduction(array):
@@ -726,9 +727,9 @@ def vector_norm(
             tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
                 1.0 / ord
             )
-        tn_normalized_vector = tf.cast(
-            tn_normalized_vector, tn_normalized_vector.dtype.real_dtype
-        )
+    tn_normalized_vector = tf.cast(
+        tn_normalized_vector, tn_normalized_vector.dtype.real_dtype
+    )
 
     return tn_normalized_vector
 

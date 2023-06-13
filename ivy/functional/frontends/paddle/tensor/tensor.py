@@ -99,6 +99,10 @@ class Tensor:
         return paddle_frontend.abs(self)
 
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def ceil(self):
+        return paddle_frontend.ceil(self)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, "paddle")
     def asinh(self, name=None):
         return ivy.asinh(self._ivy_array)
 
@@ -114,3 +118,30 @@ class Tensor:
     def sin(self, name=None):
         return ivy.sin(self._ivy_array)
 
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def sinh(self, name=None):
+        return ivy.sinh(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def argmax(self, axis=None, keepdim=False, dtype=None, name=None):
+        return ivy.argmax(self._ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def cos(self, name=None):
+        return ivy.cos(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def exp(self, name=None):
+        return ivy.exp(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def log10(self, name=None):
+        return ivy.log10(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def argsort(self, axis=-1, descending=False, name=None):
+        return ivy.argsort(self._ivy_array, axis=axis, descending=descending)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def floor(self, name=None):
+        return ivy.floor(self._ivy_array)

@@ -947,3 +947,38 @@ def test_jax_numpy_iterable(
         on_device=on_device,
         y=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.size",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        abs_smallest_val=0,
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=100,
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+    ),
+)
+def test_jax_numpy_size(
+    dtype_x_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+    )
