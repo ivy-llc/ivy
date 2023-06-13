@@ -1278,6 +1278,7 @@ GLOBAL_PROPS = [
     "tmp_dir",
     "shape_array_mode",
     "dynamic_backend",
+    "precise_mode",
 ]
 
 
