@@ -15,12 +15,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         force_int_axis=True,
     ),
     keepdim=st.booleans(),
-    dtype=st.sampled_from(("int64", "int32")),
 )
 def test_paddle_argmax(
     dtype_x_and_axis,
     keepdim,
-    dtype,
     frontend,
     test_flags,
     fn_tree,
@@ -34,5 +32,8 @@ def test_paddle_argmax(
         x=x[0],
         axis=axis,
         keepdim=keepdim,
-        dtype=dtype,
     )
+
+
+# Skipped dtype test due to paddle functions only accepting str and np.ndarray,
+# but test_frontend_function changes dtype kwargs to native dtype
