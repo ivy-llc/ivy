@@ -372,6 +372,10 @@ def atleast_2d(
     return res
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def atleast_3d(
     *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = False
 ) -> List[paddle.Tensor]:

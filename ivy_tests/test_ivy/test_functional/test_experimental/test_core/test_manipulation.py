@@ -785,17 +785,15 @@ def test_atleast_3d(
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
         arrys["x{}".format(i)] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(arrys)
-    ret_tgt, ret_gt = helpers.test_function(
+    helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_values=False,
         **arrys,
     )
-    assert len(ret_tgt) == len(ret_gt)
 
 
 # take_along_axis
