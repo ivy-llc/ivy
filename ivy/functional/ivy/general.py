@@ -1668,6 +1668,7 @@ def to_native_shape(
     ivy.utils.assertions.check_all(
         [isinstance(v, int) for v in shape if not is_array(v)],
         "shape must take integers only",
+        as_array=False,
     )
     ivy.utils.assertions.check_true(
         not is_array(shape) or ivy.is_int_dtype(shape), "shape must take integers only"
@@ -3585,6 +3586,7 @@ def arg_info(fn: Callable, *, name: Optional[str] = None, idx: Optional[int] = N
         type="any",
         limit=[1],
         message="exactly one of the keyword arguments name or idx must be provided",
+        as_array=False,
     )
     params = inspect.signature(fn).parameters
     if ivy.exists(name):

@@ -238,7 +238,9 @@ class Array(
             ``(..., M, N)``, the returned array must have shape ``(..., N, M)``).
             The returned array must have the same data type as the original array.
         """
-        ivy.utils.assertions.check_greater(len(self._data.shape), 2, allow_equal=True)
+        ivy.utils.assertions.check_greater(
+            len(self._data.shape), 2, allow_equal=True, as_array=False
+        )
         return ivy.matrix_transpose(self._data)
 
     @property
@@ -287,7 +289,7 @@ class Array(
             two-dimensional array whose first and last dimensions (axes) are
             permuted in reverse order relative to original array.
         """
-        ivy.utils.assertions.check_equal(len(self._data.shape), 2)
+        ivy.utils.assertions.check_equal(len(self._data.shape), 2, as_array=False)
         return ivy.matrix_transpose(self._data)
 
     @property

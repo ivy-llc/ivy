@@ -1052,7 +1052,7 @@ class ContainerBase(dict, abc.ABC):
         containers
             containers to check.
         """
-        ivy.utils.assertions.check_greater(len(containers), 1)
+        ivy.utils.assertions.check_greater(len(containers), 1, as_array=False)
         configs = [cont.cont_config for cont in containers]
         config0 = configs[0]
         for k, v in config0.items():
@@ -2961,6 +2961,7 @@ class ContainerBase(dict, abc.ABC):
             type="any",
             limit=[1, 2],
             message="at least one of absolute or containing must be specified",
+            as_array=False,
         )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():
@@ -3002,6 +3003,7 @@ class ContainerBase(dict, abc.ABC):
             type="any",
             limit=[1, 2],
             message="at least one of absolute or containing must be specified",
+            as_array=False,
         )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():

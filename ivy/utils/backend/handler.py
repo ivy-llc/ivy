@@ -601,6 +601,7 @@ def choose_random_backend(excluded=None):
             inverse=True,
             message="""Unable to select backend, all backends are excluded,\
             or not installed.""",
+            as_array=False,
         )
         f = np.random.choice(
             [f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded]
