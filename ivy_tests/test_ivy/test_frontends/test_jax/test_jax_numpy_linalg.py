@@ -455,25 +455,28 @@ def test_jax_slogdet(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.matrix_rank",
-    dtype_and_x=_matrix_rank_helper(),
+    dtype_x_hermitian=_matrix_rank_helper(),
     test_with_out=st.just(False),
+    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_jax_numpy_matrix_rank(
     *,
-    dtype_and_x,
+    dtype_x_hermitian,
+    tol,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, hermitian = dtype_x_hermitian
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        M=x[0],
+        M=x,
+        tol=tol,
     )
 
 
