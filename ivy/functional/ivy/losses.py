@@ -1,3 +1,4 @@
+
 """Collection of Ivy loss functions."""
 
 # local
@@ -381,4 +382,44 @@ def sparse_cross_entropy(
     true = ivy.one_hot(true, pred.shape[axis])
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
-    )
+
+
+        )
+def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, ivy.NativeArray]):
+    """
+    Compute the mean square error
+
+    Parameters
+
+    ----------
+
+    true
+        input array containing true labels
+    pred
+        input array containing predicted labels
+
+    Return
+        the mean square loss between two arrays
+
+
+    Functional Example
+
+    -------------------
+    >>x = [1,1,1]
+    >>y = [0,0,0]
+    >>z = ivy.mse_loss(x,y)
+    >>print(z)
+    ivy.array([1])
+
+    """
+    true = ivy.negative(true)
+    diff = ivy.add(pred,true)
+    s_diff = ivy.multiply(diff,diff)
+    s_diff = ivy.sum(s_diff)
+    mse_diff = s_diff/true.shape[1]
+    return mse_diff
+
+
+
+
+
