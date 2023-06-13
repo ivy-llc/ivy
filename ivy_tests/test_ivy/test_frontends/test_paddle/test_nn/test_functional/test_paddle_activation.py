@@ -70,6 +70,33 @@ def test_paddle_hardshrink(
     )
 
 
+# hardswish
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.hardswish",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
+    ),
+)
+def test_paddle_hardswish(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # hardtanh
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.hardtanh",
