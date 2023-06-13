@@ -35,19 +35,19 @@
 
     <div style="display: block;" align="center">
     <a href="https://unify.ai/">
-        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.png">
+        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.png">
     </a>
     <a href="https://unify.ai/docs/ivy">
-        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.png">
+        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.png">
     </a>
     <a href="https://unify.ai/demos">
-        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.png">
+        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.png">
     </a>
     <a href="https://unify.ai/docs/ivy/overview/design.html">
-        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.png">
+        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.png">
     </a>
     <a href="https://unify.ai/docs/ivy/overview/faq.html">
-        <img width="12%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.png">
+        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.png">
     </a>
     </div>
 
