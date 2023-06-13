@@ -2591,6 +2591,12 @@ def test_container_pickle(on_device):
 
     # without module attribute
     cont = Container(dict_in)
+
+    # paddle tansor can't be pickled directly as mentioned
+    # in the issue https://github.com/PaddlePaddle/Paddle/issues/41107
+    if ivy.backend == "paddle":
+        cont = cont.to_numpy()
+
     assert cont._local_ivy is None
     pickled = pickle.dumps(cont)
     cont_again = pickle.loads(pickled)
@@ -2600,6 +2606,12 @@ def test_container_pickle(on_device):
 
     # with module attribute
     cont = Container(dict_in, ivyh=ivy)
+
+    # paddle tansor can't be pickled directly as mentioned
+    # in the issue https://github.com/PaddlePaddle/Paddle/issues/41107
+    if ivy.backend == "paddle":
+        cont = cont.to_numpy()
+
     assert cont._local_ivy is ivy
     pickled = pickle.dumps(cont)
     cont_again = pickle.loads(pickled)
@@ -2619,6 +2631,11 @@ def test_container_to_and_from_disk_as_pickled(on_device):
         },
     }
     container = Container(dict_in)
+
+    # paddle tansor can't be pickled directly as mentioned
+    # in the issue https://github.com/PaddlePaddle/Paddle/issues/41107
+    if ivy.backend == "paddle":
+        container = container.to_numpy()
 
     # saving
     container.cont_to_disk_as_pickled(save_filepath)

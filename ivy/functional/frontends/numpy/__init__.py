@@ -530,6 +530,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _square,
     _lcm,
     _gcd,
+    _clip,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
@@ -546,7 +547,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _power,
     _reciprocal,
     _subtract,
-    _true_divide,
     _divmod,
 )
 
@@ -564,7 +564,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
     _conj,
-    _conjugate,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -710,9 +709,10 @@ frexp = ufunc("_frexp")
 conj = ufunc("_conj")
 rint = ufunc("_rint")
 nextafter = ufunc("_nextafter")
-conjugate = ufunc("_conjugate")
+conjugate = ufunc("_conj")
 lcm = ufunc("_lcm")
 gcd = ufunc("_gcd")
+clip = ufunc("_clip")
 
 # setting to specific version #
 # --------------------------- #
