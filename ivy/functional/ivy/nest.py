@@ -197,7 +197,7 @@ def set_nest_at_index(
         if shallow:
             _result = nest_type(nest)
         else:
-            _result = copy_nest(nest)
+            _result = copy_nest(nest, include_derived=True)
     _result = list(_result) if is_tuple else _result
     if len(index) == 1:
         if shallow:
@@ -316,7 +316,7 @@ def map_nest_at_index(
         if shallow:
             _result = nest_type(nest)
         else:
-            _result = copy_nest(nest)
+            _result = copy_nest(nest, include_derived=True)
     _result = list(_result) if is_tuple else _result
     if len(index) == 1:
         ret = fn(nest[index[0]])
@@ -494,7 +494,7 @@ def set_nest_at_indices(
     if shallow:
         result = nest_type(nest)
     else:
-        result = copy_nest(nest)
+        result = copy_nest(nest, include_derived=True)
     result = list(result) if is_tuple else result
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
@@ -601,7 +601,7 @@ def map_nest_at_indices(
     if shallow:
         result = nest_type(nest)
     else:
-        result = copy_nest(nest)
+        result = copy_nest(nest, include_derived=True)
     result = list(result) if is_tuple else result
     for i, index in enumerate(indices):
         result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
