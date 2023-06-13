@@ -26,14 +26,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_dim_size=2,
         shape=(5,),
     ),
-    name=None,
     reduction=st.sampled_from(["mean", "none", "sum"]),
 )
 def test_paddle_binary_cross_entropy(
     *,
     dtype_and_vals,
     reduction,
-    name,
     on_device,
     fn_tree,
     frontend,
@@ -54,7 +52,6 @@ def test_paddle_binary_cross_entropy(
         label=true,
         weight=weight,
         reduction=reduction,
-        name=name,
         rtol=1e-02,
         atol=1e-02,
     )
