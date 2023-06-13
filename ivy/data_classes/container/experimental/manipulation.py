@@ -1913,8 +1913,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def atleast_3d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = False,
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
+        copy: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

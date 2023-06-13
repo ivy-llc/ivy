@@ -680,7 +680,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def atleast_2d(
         self: ivy.Array,
         *arys: ivy.Array,
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_2d. This method simply wraps

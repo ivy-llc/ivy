@@ -1376,6 +1376,8 @@ def atleast_2d(
 
 
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
 @to_native_arrays_and_back
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],

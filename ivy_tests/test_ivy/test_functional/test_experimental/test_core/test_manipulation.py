@@ -772,6 +772,7 @@ def test_atleast_2d(
     test_gradients=st.just(False),
 )
 def test_atleast_3d(
+    *,
     dtype_and_x,
     test_flags,
     backend_fw,
@@ -784,7 +785,6 @@ def test_atleast_3d(
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
         arrys["x{}".format(i)] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(arrys)
-    assert 0 == 1, "arrys: {}".format(len(arrys))
     ret_tgt, ret_gt = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
