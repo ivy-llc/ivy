@@ -494,13 +494,11 @@ def test_paddle_argmax(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="exp",
-
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_paddle_exp(
-
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -533,10 +531,7 @@ def test_paddle_exp(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-
-
 def test_paddle_cos(
-
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -559,17 +554,16 @@ def test_paddle_cos(
         on_device=on_device,
     )
 
+
 # log10
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="log10",
-
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-
 def test_paddle_log10(
     dtype_and_x,
     frontend_method_data,
@@ -592,7 +586,6 @@ def test_paddle_log10(
         frontend=frontend,
         on_device=on_device,
     )
-
 
 
 # argsort
@@ -635,13 +628,15 @@ def test_paddle_argsort(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
 # sqrt
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="sqrt",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_sqrt(
@@ -666,4 +661,3 @@ def test_paddle_sqrt(
         frontend=frontend,
         on_device=on_device,
     )
-
