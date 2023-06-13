@@ -37,15 +37,19 @@
     <a href="https://unify.ai/">
         <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.png">
     </a>
+    <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/docs/ivy">
         <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.png">
     </a>
+    <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/demos">
         <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.png">
     </a>
+    <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/docs/ivy/overview/design.html">
         <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.png">
     </a>
+    <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/docs/ivy/overview/faq.html">
         <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.png">
     </a>
