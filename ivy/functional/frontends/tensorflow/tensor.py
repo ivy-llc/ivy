@@ -2,6 +2,7 @@
 
 # local
 import ivy
+from ivy import with_unsupported_dtypes
 import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_dtype, _to_ivy_array
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
@@ -76,7 +77,7 @@ class EagerTensor:
         return self.__radd__(y)
 
     def __div__(self, y, name="div"):
-        if "int" in self.dtype:
+        if "int" in self._ivy_array.dtype:
             return tf_frontend.raw_ops.FloorDiv(x=self, y=y, name=name)
         ret = tf_frontend.math.divide(self, y, name=name)
         return tf_frontend.cast(ret, self.dtype)
@@ -85,21 +86,15 @@ class EagerTensor:
         return self.__rand__(y)
 
     def __array__(self, dtype=None, name="array"):
-        dtype = to_ivy_dtype(dtype)
-        return array(ivy.asarray(self.ivy_array, dtype=dtype))
+        return array(ivy.asarray(self.ivy_array, dtype=to_ivy_dtype(dtype)))
 
     def __bool__(self, name="bool"):
-        if isinstance(self.ivy_array, int):
-            return self.ivy_array != 0
-
-        temp = ivy.squeeze(ivy.asarray(self.ivy_array), axis=None)
-        shape = ivy.shape(temp)
-        if shape:
+        temp = ivy.squeeze(self.ivy_array, None)
+        if temp.shape != ():
             raise ValueError(
                 "The truth value of an array with more than one element is ambiguous. "
                 "Use a.any() or a.all()"
             )
-
         return temp != 0
 
     def __eq__(self, other):
@@ -110,6 +105,10 @@ class EagerTensor:
     def __floordiv__(self, y, name="floordiv"):
         return tf_frontend.raw_ops.FloorDiv(x=self, y=y, name=name)
 
+    @with_unsupported_dtypes(
+        {"2.12.0 and below": ("complex",)},
+        "tensorflow",
+    )
     def __ge__(self, y, name="ge"):
         return tf_frontend.raw_ops.GreaterEqual(x=self, y=y, name=name)
 
@@ -118,24 +117,40 @@ class EagerTensor:
         ret = ivy.get_item(*ivy_args)
         return EagerTensor(ret)
 
+    @with_unsupported_dtypes(
+        {"2.12.0 and below": ("complex",)},
+        "tensorflow",
+    )
     def __gt__(self, y, name="gt"):
         return tf_frontend.raw_ops.Greater(x=self, y=y, name=name)
 
     def __invert__(self, name="invert"):
         return tf_frontend.raw_ops.Invert(x=self, name=name)
 
+    @with_unsupported_dtypes(
+        {"2.12.0 and below": ("complex",)},
+        "tensorflow",
+    )
     def __le__(self, y, name="le"):
         return tf_frontend.raw_ops.LessEqual(x=self, y=y, name=name)
 
+    @with_unsupported_dtypes(
+        {"2.12.0 and below": ("complex",)},
+        "tensorflow",
+    )
     def __lt__(self, y, name="lt"):
         return tf_frontend.raw_ops.Less(x=self, y=y, name=name)
 
     def __matmul__(self, y, name="matmul"):
-        return self.__rmatmul__(y)
+        return tf_frontend.linalg.matmul(a=self, b=y, name=name)
 
     def __mul__(self, y, name="mul"):
         return tf_frontend.math.multiply(self, y, name=name)
 
+    @with_unsupported_dtypes(
+        {"2.12.0 and below": ("complex",)},
+        "tensorflow",
+    )
     def __mod__(self, y, name="mod"):
         return tf_frontend.floormod(self, y, name=name)
 
@@ -159,16 +174,13 @@ class EagerTensor:
         return tf_frontend.math.add(self, x, name=name)
 
     def __rand__(self, x, name="rand"):
-        return tf_frontend.raw_ops.BitwiseAnd(self, x, name=name)
+        return tf_frontend.raw_ops.BitwiseAnd(y=self, x=x, name=name)
 
     def __rfloordiv__(self, x, name="rfloordiv"):
         return tf_frontend.raw_ops.FloorDiv(x=x, y=self, name=name)
 
     def __rmatmul__(self, x, name="rmatmul"):
-        _, x = tf_frontend.check_tensorflow_casting(
-            self, x.ivy_array if hasattr(x, "ivy_array") else x
-        )
-        return tf_frontend.raw_ops.MatMul(a=x, b=self, name=name)
+        return tf_frontend.linalg.matmul(a=x, b=self, name=name)
 
     def __rmul__(self, x, name="rmul"):
         return tf_frontend.raw_ops.Mul(x=self, y=x, name=name)
