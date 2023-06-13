@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import given,strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -40,3 +40,33 @@ def test_paddle_uniform(
         max=max,
         seed=seed,
     )
+
+
+@handle_frontend_test(
+    fn_tree = "paddle.poisson",
+    input_dtypes = helpers.get_dtypes("float"),
+    x = st.lists(st.floats(allow_nan=False, allow_infinity=False, min_value = 0, max_value = 1),min_size = 2, max_size = 9)
+
+
+)
+
+def test_paddle_poisson(
+    x,
+    input_dtypes,
+    frontend,
+    test_flags,
+    fn_tree
+):
+
+    helpers.test_frontend_function(
+        input_dtypes = input_dtypes,
+        x=x,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        
+    )
+
+
+
