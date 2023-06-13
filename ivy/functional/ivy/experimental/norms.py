@@ -202,7 +202,7 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-batch_norm.handle_backend_wrappers = {
+batch_norm.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
         "inputs_to_native_arrays",
@@ -329,7 +329,7 @@ def instance_norm(
     return (xnormalized, runningmean, runningvariance)
 
 
-instance_norm.handle_backend_wrappers = {
+instance_norm.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
         "inputs_to_native_arrays",

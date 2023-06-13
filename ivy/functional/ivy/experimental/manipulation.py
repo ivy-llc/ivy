@@ -173,7 +173,7 @@ def flatten(
     return ivy.reshape(x, tuple(lst), order=order, out=out)
 
 
-flatten.handle_backend_wrappers = {
+flatten.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
         "inputs_to_native_arrays",

@@ -1089,7 +1089,7 @@ def lerp(
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
 
-lerp.handle_backend_wrappers = {
+lerp.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
         "inputs_to_native_arrays",

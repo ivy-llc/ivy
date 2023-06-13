@@ -166,7 +166,7 @@ def linear(
     return y
 
 
-linear.handle_backend_wrappers = {
+linear.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
         "inputs_to_native_arrays",

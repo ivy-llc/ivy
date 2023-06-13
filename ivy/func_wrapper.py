@@ -1021,10 +1021,10 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
 
-        mixed_fn = hasattr(original, "handle_backend_wrappers") and original != to_wrap
+        mixed_fn = hasattr(original, "mixed_backend_wrappers") and original != to_wrap
         add_wrappers, skip_wrappers = [], []
         if mixed_fn:
-            backend_wrappers = getattr(original, "handle_backend_wrappers")
+            backend_wrappers = getattr(original, "mixed_backend_wrappers")
             add_wrappers = backend_wrappers.get("to_add")
             skip_wrappers = backend_wrappers.get("to_skip")
 

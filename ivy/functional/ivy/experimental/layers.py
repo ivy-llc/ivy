@@ -1757,7 +1757,7 @@ def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
     return p
 
 
-interpolate.handle_backend_wrappers = {
+interpolate.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
         "inputs_to_native_arrays",
@@ -2072,7 +2072,7 @@ def _get_identity(func, dtype, init):
     return init
 
 
-avg_pool2d.handle_backend_wrappers = {
+avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
         "inputs_to_native_arrays",
