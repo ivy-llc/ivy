@@ -25,7 +25,6 @@ from ivy.func_wrapper import (
     handle_view,
     inputs_to_ivy_arrays,
     handle_array_function,
-    to_ivy_arrays_and_back,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -1591,18 +1590,18 @@ def expand(
 @handle_exceptions
 @handle_array_like_without_promotion
 def put_along_axis(
-        arr: Union[ivy.Array, ivy.NativeArray],
-        indices: Union[ivy.Array, ivy.NativeArray],
-        values: Union[ivy.Array, ivy.NativeArray],
-        axis: int,
-        /,
-        *,
-        mode: str = "raise",
-        out: Optional[ivy.Array] = None
+    arr: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    values: Union[ivy.Array, ivy.NativeArray],
+    axis: int,
+    /,
+    *,
+    mode: str = "raise",
+    out: Optional[ivy.Array] = None,
 ) -> None:
     """
-    Put values into the input array by matching 1d index and data slices
-    along a specified axis.
+    Put values into the input array by matching 1d index and data slices along a
+    specified axis.
 
     Parameters
     ----------
@@ -1654,18 +1653,16 @@ def put_along_axis(
     arr = ivy.where(
         ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis),
         sorted_stacked,
-        arr
+        arr,
     )
 
-    if mode == 'clip':
+    if mode == "clip":
         indices = ivy.clip(indices, 0, arr.shape[axis] - 1)
-    elif mode == 'wrap':
+    elif mode == "wrap":
         indices = ivy.mod(indices, arr.shape[axis])
 
     arr = ivy.where(
-        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis),
-        arr,
-        values
+        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis), arr, values
     )
 
     ivy.assign(out, arr)
@@ -1684,7 +1681,7 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
-@to_ivy_arrays_and_back
+@inputs_to_ivy_arrays
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
