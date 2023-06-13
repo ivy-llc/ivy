@@ -4,6 +4,7 @@ from typing import Callable
 import sys
 import traceback as tb
 import io
+import inspect
 
 # Helpers #
 # ------- #
@@ -23,37 +24,60 @@ def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer):
         )
 
 
-def _remove_so_log(old_stack_trace):
+def _remove_so_log(trace):
+    transpile_frame = None
+    old_stack_trace = tb.extract_tb(trace)
+    old_frames = inspect.getinnerframes(trace)
+
     new_stack_trace = []
-    for st in old_stack_trace:
-        if ".pyx" not in repr(st):
-            new_stack_trace.append(st)
+    track = False
+    for idx, st in enumerate(old_stack_trace):
+        if ".pyx" in repr(st):
+            continue
+        if "compiled_fn" in repr(st):
+            track = True
+            continue
+        if (
+            transpile_frame is None
+            and "ivy/compiler" in st.filename
+            and st.name in ["compile", "transpile"]
+        ):
+            transpile_frame = old_frames[idx]
+        elif track and "func_wrapper" not in repr(st):
+            _align_source(st, old_frames[idx], transpile_frame)
+            track = False
+        new_stack_trace.append(st)
     return new_stack_trace
 
 
 # from ivy.compiler.utils.VVX import trace_obj
 
 
-def _align_source(old_stack_trace):
-    new_stack_trace = []
-    track = False
-    for st in old_stack_trace:
-        if "<string>" in repr(st):
-            track = True
-            continue
-        if track and "func_wrapper" not in repr(st):
-            _find_source_loc(st)
-            track = False
-        new_stack_trace.append(st)
-    return new_stack_trace
+def _align_source(st, frame, transpile_frame):
+    # frame.code_context
+    # frame.filename
+    # frame.lineno
+    # frame.function
+    # frame.index
 
+    # print("current frame")
+    # print(frame)
+    # t_v = inspect.getargvalues(frame.frame)
+    # print(t_v.args)
+    # print(t_v.locals)
 
-def _find_source_loc(st):
-    print("custom test:", repr(st))
-    print("test target filename:", st.filename)
-    print("test target lineno:", st.lineno)
-    print("test target name:", st.name)
-    print("test target line:", st.line)
+    print("transpile frame obj")
+    print(transpile_frame)
+    t_v = inspect.getargvalues(transpile_frame.frame)
+    # print(t_v.args)
+    print(t_v.varargs)
+    print(t_v.locals[t_v.varargs])
+
+    # print("custom test:", repr(st))
+    # print("test target filename:", st.filename)
+    # print("test target lineno:", st.lineno)
+    # print("test target name:", st.name)
+    # print("test target line:", st.line)
     # print(trace_obj)
     return
 
@@ -79,7 +103,7 @@ def _custom_exception_handle(type, value, tb_history):
     trace_mode = ivy.exception_trace_mode
     func_wrapper_trace_mode = ivy.show_func_wrapper_trace_mode
     buffer = io.StringIO()
-    tb_history = _remove_so_log(tb.extract_tb(tb_history))
+    tb_history = _remove_so_log(tb_history)
     if trace_mode == "none":
         return
     if trace_mode == "full" and func_wrapper_trace_mode:
