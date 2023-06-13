@@ -143,5 +143,10 @@ class Tensor:
         return ivy.argsort(self._ivy_array, axis=axis, descending=descending)
 
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def floor(self, name=None):
+        return ivy.floor(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def cholesky(self,upper=False, name=None):
         return ivy.cholesky(self._ivy_array,upper=upper)
+

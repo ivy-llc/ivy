@@ -328,8 +328,7 @@ class Shape:
 
     def __getitem__(self, key):
         try:
-            self._shape = self._shape[key]
-            return self
+            return self._shape[key]
         except (TypeError, IndexError):
             return None
 
@@ -1278,6 +1277,7 @@ GLOBAL_PROPS = [
     "tmp_dir",
     "shape_array_mode",
     "dynamic_backend",
+    "precise_mode",
 ]
 
 

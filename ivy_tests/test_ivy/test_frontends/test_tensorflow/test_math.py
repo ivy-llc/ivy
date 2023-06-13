@@ -2608,5 +2608,5 @@ def test_tensorflow_top_k(*, dtype_and_x, frontend, test_flags, fn_tree, on_devi
         on_device=on_device,
         input=x[0],
         k=k,
-        sorted=sorted
+        sorted=sorted,
     )
