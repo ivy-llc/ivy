@@ -21,4 +21,4 @@ def uniform(shape, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
 )
 @to_ivy_arrays_and_back
 def poisson(x, name=None):
-    return ivy.poisson(*x, shape=None, device=None, dtype=None, seed=None, out=None)
+    return ivy.poisson(x, shape=None, device=None, dtype=None, seed=None, out=None)
