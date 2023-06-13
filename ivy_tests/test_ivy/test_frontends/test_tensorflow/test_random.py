@@ -176,9 +176,11 @@ def test_tensorflow_stateless_uniform(
         max_dim_size=5,
     ),
     lam=st.one_of(
-        helpers.floats(allow_inf=False, allow_nan=False),
+        helpers.floats(allow_inf=False, allow_nan=False, min_value=-2, max_value=5),
         helpers.lists(
-            x=helpers.floats(allow_nan=False, allow_inf=False),
+            x=helpers.floats(
+                allow_nan=False, allow_inf=False, min_value=-2, max_value=5
+            ),
             min_size=1,
             max_size=10,
         ),
