@@ -1,6 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 _SWAP_DIRECTION_MAP = {
@@ -127,8 +127,8 @@ def rfftfreq(n, d=1.0):
     return results * val
 
 
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
-@with_supported_dtypes(ivy.valid_dtype(), "ivy")
 def rfft2(a, s=None, axes=(-2, -1), norm=None):
     a = ivy.array(a)
     if norm is None:
