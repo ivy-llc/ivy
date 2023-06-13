@@ -142,7 +142,7 @@ def gamma(
     beta: Union[float, ivy.NativeArray, ivy.Array],
     /,
     *,
-    shape: Union[float, ivy.NativeArray, ivy.Array],
+    shape: Optional[Union[float, ivy.NativeArray, ivy.Array]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     seed: Optional[int] = None,
