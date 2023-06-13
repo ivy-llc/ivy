@@ -1,6 +1,6 @@
 # global
 import ivy
-import numpy
+import numpy as np
 from hypothesis import strategies as st, assume, given
 
 # local
@@ -57,6 +57,7 @@ def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
     return input_dtype + val_dtype, x, index, val[0]
 
   
+    
 @st.composite
 def _reshape_helper(draw):
     # generate a shape s.t len(shape) > 0
@@ -79,6 +80,7 @@ def _reshape_helper(draw):
         )
     )
     return dtypes, x, reshape_shape
+
 
 # Tests #
 # ----- #
@@ -686,7 +688,10 @@ def test_paddle_floor(
         on_device=on_device,
     )
     
-   
+
+    
+    
+    
 #cholesky
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -705,6 +710,7 @@ def test_paddle_cholesky(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    
     x = np.matmul(x.T, x) + np.identity(x.shape[0])  
 
     helpers.test_frontend_method(
