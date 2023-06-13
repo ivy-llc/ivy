@@ -85,6 +85,14 @@ class DeviceArray:
             out=out,
         )
 
+    def cumsum(self, axis=None, dtype=None, out=None):
+        return jax_frontend.numpy.cumsum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
+    
     def nonzero(self, *, size=None, fill_value=None):
         return jax_frontend.numpy.nonzero(
             self,
