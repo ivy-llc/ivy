@@ -779,10 +779,10 @@ def test_atleast_3d(
     ground_truth_backend,
 ):
     input_dtypes, arrays = dtype_and_x
-    kw = {}
+    arrys = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
-        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
-    test_flags.num_positional_args = len(kw)
+        arrys["x{}".format(i)] = np.asarray(array, dtype=idtype)
+    test_flags.num_positional_args = len(arrys)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
@@ -790,7 +790,7 @@ def test_atleast_3d(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        **kw,
+        **arrys,
     )
 
 
