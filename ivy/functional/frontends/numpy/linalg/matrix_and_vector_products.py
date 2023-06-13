@@ -73,14 +73,15 @@ def multi_dot(arrays, *, out=None):
 @handle_numpy_out
 @to_ivy_arrays_and_back
 def dot(a, b, out=None):
-    # a, b = promote_types_of_numpy_inputs(a, b)
     if a.ndim == 0 or b.ndim == 0:
         return ivy.multiply(a, b, out=out)
     elif a.ndim == 1 and b.ndim == 1:
         return ivy.inner(a, b, out=out)
     elif a.ndim == 2 and b.ndim == 2:
         return ivy.matmul(a, b, out=out)
+    elif b.ndim == 1:
+        return ivy.sum(ivy.multiply(a, b), axis=a.ndim - 1, out=out)
     elif b.ndim >= 2:
-        return ivy.sum(ivy.multiply(a[..., :], ivy.swapaxes(b, -2, -1)[..., :]))
+        return ivy.tensordot(a, b, axes=([a.ndim - 1], [b.ndim - 2]))
     else:
-        raise ValueError()
+        raise ivy.utils.exceptions.IvyException("Input shapes are incompatible")
