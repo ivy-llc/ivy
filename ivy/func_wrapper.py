@@ -13,6 +13,7 @@ import inspect
 # for wrapping (sequence matters)
 FN_DECORATORS = [
     "infer_device",
+    "handle_device_shifting_for_arrays",
     "infer_dtype",
     "handle_array_function",
     "integer_arrays_to_float",
@@ -31,7 +32,6 @@ FN_DECORATORS = [
     "with_unsupported_dtypes",
     "handle_nans",
     "handle_mixed_function",
-    "handle_device_shifting_for_arrays",
 ]
 
 

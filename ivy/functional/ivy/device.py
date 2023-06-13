@@ -343,7 +343,7 @@ def get_soft_device_mode() -> bool:
     """
     global soft_device_mode_stack
     if not soft_device_mode_stack:
-        return True
+        return False
     return soft_device_mode_stack[-1]
 
 

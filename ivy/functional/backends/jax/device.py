@@ -123,6 +123,25 @@ def tpu_is_available() -> bool:
     return _dev_is_available("tpu")
 
 
+def handle_soft_device_variable(*args, **kwargs):
+    default_device = ivy.default_device()
+    if ivy.get_soft_device_mode():
+        args, kwargs = ivy.nested_map(
+            [args, kwargs],
+            lambda x: (to_device(x, as_native_dev(default_device)) if isinstance(x, JaxArray) else x),
+        )
+    else:
+        indices = ivy.nested_argwhere(args, lambda x: ivy.dev(x) != default_device, stop_after_n_found=1)
+        if len(indices) > 0:
+            raise ivy.utils.exceptions.IvyBackendException(
+                "Expected all input arrays to be on the same device "
+                "but found atleast two devices! "
+                "Set `ivy.set_soft_device_mode(True)` to handle this problem."
+            )
+    return args, kwargs
+
+
+
 # noinspection PyMethodMayBeStatic
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
