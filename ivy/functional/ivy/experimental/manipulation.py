@@ -810,6 +810,7 @@ def _to_pairs(x, n):
                 "ndim pairs where ndim is the number of "
                 "the input's dimensions"
             ),
+            as_array=False,
         )
     return x
 
@@ -828,26 +829,27 @@ def _to_dilated(x, n):
                 "ndim groups where ndim is the number of "
                 "the input's dimensions"
             ),
+            as_array=False,
         )
     return x
 
 
-def _check_tuple_arg(arg, name, b_float=False):
-    scalar_types = (int, float) if b_float else int
+def _check_tuple_arg(arg, name, force_integer=True):
+    is_scalar = ivy.isscalar if not force_integer else ivy.is_int_dtype
     flag_assert = False
     if isinstance(arg, (tuple, list)):
         for nested in arg:
             if isinstance(nested, (tuple, list)):
                 for sub_nested in nested:
-                    if not isinstance(sub_nested, scalar_types):
+                    if not is_scalar(sub_nested):
                         flag_assert = True
                         break
-            elif not isinstance(nested, scalar_types):
+            elif not is_scalar(nested):
                 flag_assert = True
-    elif not isinstance(arg, scalar_types):
+    elif not is_scalar(arg):
         flag_assert = True
     if flag_assert:
-        if b_float:
+        if not force_integer:
             raise ivy.utils.exceptions.IvyException(
                 name + " should be scalar, tuple of scalars or tuple of scalar tuples"
             )
@@ -897,9 +899,9 @@ def _check_arguments(
             message="the stat lengths must be greater than zero",
         )
     elif mode == "constant":
-        _check_tuple_arg(constant_values, "constant_values", b_float=True)
+        _check_tuple_arg(constant_values, "constant_values", force_integer=False)
     elif mode == "linear_ramp":
-        _check_tuple_arg(end_values, "end_values", b_float=True)
+        _check_tuple_arg(end_values, "end_values", force_integer=False)
     ivy.utils.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
@@ -1581,7 +1583,90 @@ def expand(
     ret
         Output Array
     """
-    return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
+    return ivy.current_backend(x).expand(x, shape, out=out, copy=None)
+
+
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def put_along_axis(
+    arr: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    values: Union[ivy.Array, ivy.NativeArray],
+    axis: int,
+    /,
+    *,
+    mode: str = "raise",
+    out: Optional[ivy.Array] = None,
+) -> None:
+    """
+    Put values into the input array by matching 1d index and data slices along a
+    specified axis.
+
+    Parameters
+    ----------
+    arr : array_like
+        The input array to modify.
+    indices : array_like
+        The indices of the values to put into `arr`.
+    values : array_like
+        The values to put into `arr`.
+    axis : int
+        The axis over which to put the `values`.
+    mode : {'raise', 'wrap', 'clip'}, optional
+        Specifies how out-of-bounds indices will be handled.
+        The following modes are available:
+
+        - 'raise': a `ValueError` is raised when an index is out of bounds.
+        - 'wrap': the index is wrapped around to the corresponding index
+        at the other end of the axis.
+        - 'clip': the index is clipped to the closest in-bounds index.
+    out : ndarray, optional
+        Output array in which to place the result.
+        If not specified, a new array is created.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
+    >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
+    >>> values = ivy.array([[9, 8, 7], [6, 5, 4]])
+    >>> put_along_axis(arr, indices, values, 1, mode='clip')
+    >>> print(arr)
+    ivy.array([[3, 7, 5],
+               [6, 4, 1]])
+    """
+    if out is None:
+        out = ivy.zeros_like(arr)
+
+    indices = ivy.expand_dims(indices, axis=axis)
+    values = ivy.expand_dims(values, axis=axis)
+
+    stacked = ivy.concat((arr, values), axis=axis)
+
+    sorted_indices = ivy.argsort(indices, axis=axis)
+    sorted_stacked = ivy.take_along_axis(stacked, sorted_indices, axis=axis)
+
+    arr = ivy.where(
+        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis),
+        sorted_stacked,
+        arr,
+    )
+
+    if mode == "clip":
+        indices = ivy.clip(indices, 0, arr.shape[axis] - 1)
+    elif mode == "wrap":
+        indices = ivy.mod(indices, arr.shape[axis])
+
+    arr = ivy.where(
+        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis), arr, values
+    )
+
+    ivy.assign(out, arr)
 
 
 def _check_bounds(shape0, shape1, strides1, itemsize):

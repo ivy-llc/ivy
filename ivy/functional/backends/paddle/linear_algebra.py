@@ -28,8 +28,7 @@ from .elementwise import _elementwise_helper
                 "int64",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
+                "complex",
                 "bool",
             )
         }
@@ -88,7 +87,7 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -101,8 +100,12 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle.linalg.det(x.cast("float32")).squeeze().cast(x.dtype)
-    return paddle.linalg.det(x).squeeze()
+        ret = paddle.linalg.det(x.cast("float32")).cast(x.dtype)
+    else:
+        ret = paddle.linalg.det(x)
+    if x.ndim == 2:
+        ret = paddle_backend.squeeze(ret, axis=0)
+    return ret
 
 
 def diagonal(
@@ -176,7 +179,7 @@ def inner(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def inv(
@@ -327,7 +330,7 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def matrix_rank(
@@ -336,6 +339,7 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.ndim < 2:
@@ -439,7 +443,11 @@ def slogdet(
         "slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)]
     )
     sign, logabsdet = paddle.linalg.slogdet(x)
-    return results(sign.squeeze(), logabsdet.squeeze())
+    if x.ndim == 2:
+        sign, logabsdet = paddle_backend.squeeze(sign, axis=0), paddle_backend.squeeze(
+            logabsdet, axis=0
+        )
+    return results(sign, logabsdet)
 
 
 def solve(
@@ -467,7 +475,7 @@ def solve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def svd(
