@@ -1878,6 +1878,7 @@ def _mask(vals, length, range_max, dim):
 
 
 @handle_nestable
+@inputs_to_ivy_arrays
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,

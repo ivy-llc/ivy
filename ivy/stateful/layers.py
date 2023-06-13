@@ -1733,7 +1733,8 @@ class AvgPool3D(Module):
         ceil_mode
             Whether to use ceil or floor for creating the output shape.
         divisor_override
-            If specified, it will be used as divisor, otherwise kernel_size will be used.
+            If specified, it will be used as divisor,
+            otherwise kernel_size will be used.
         """
         self._kernel_size = kernel_size
         self._stride = strides
@@ -1802,8 +1803,52 @@ class AdaptiveAvgPool2d(Module):
         -------
             The output array of the layer.
         """
-        # TODO: test again once adaptive_avg_pool2d is implemnted for the missing backends.
+        # TODO: test again once adaptive_avg_pool2d is
+        #  implemented for the missing backends.
         return ivy.adaptive_avg_pool2d(
+            x,
+            self._output_size,
+        )
+
+
+class AdaptiveAvgPool1d(Module):
+    def __init__(
+        self,
+        output_size,
+        device=None,
+        dtype=None,
+    ):
+        # TODO: add data_format param
+        """
+        Class for applying a 1D adaptive average pooling over mini-batch of inputs.
+
+        Parameters
+        ----------
+        output_size
+            An integer or tuple/list of a single integer
+            specifying new size of output channels.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._output_size = output_size
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        # TODO: test again once adaptive_avg_pool2d is
+        #  implemented for the missing backends.
+        return ivy.adaptive_avg_pool1d(
             x,
             self._output_size,
         )
