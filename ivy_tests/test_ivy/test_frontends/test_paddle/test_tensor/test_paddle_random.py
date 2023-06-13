@@ -50,13 +50,21 @@ def test_paddle_uniform(
 )
 
 
-def test_paddle_poisson(x, input_dtypes, frontend, test_flags, fn_tree):
+def test_paddle_poisson(
+    x,  
+    frontend, 
+    test_flags,
+    fn_tree
+    ):
+
+
+
     helpers.test_frontend_function(
-        x=x,
         name = None,
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         test_values=False,
+        x = x[0]
     )
