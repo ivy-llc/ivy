@@ -1802,7 +1802,7 @@ class AdaptiveAvgPool2d(Module):
         -------
             The output array of the layer.
         """
-        #TODO: test again once adaptive_avg_pool2d is implemnted for the missing backends. 
+        # TODO: test again once adaptive_avg_pool2d is implemnted for the missing backends.
         return ivy.adaptive_avg_pool2d(
             x,
             self._output_size,

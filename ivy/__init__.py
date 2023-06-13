@@ -262,6 +262,9 @@ class Shape:
     def __div__(self, other):
         return self._shape // other
 
+    def __floordiv__(self, other):
+        return self._shape // other
+
     def __mod__(self, other):
         return self._shape % other
 
