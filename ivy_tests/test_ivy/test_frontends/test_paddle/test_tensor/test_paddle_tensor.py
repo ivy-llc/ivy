@@ -674,7 +674,7 @@ def test_paddle_floor(
         shared_dtype=True,
     ),
 )
-def test_torch_instance_multiply(
+def test_paddle_instance_multiply(
     dtype_and_x,
     frontend_method_data,
     init_flags,
