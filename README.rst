@@ -35,6 +35,7 @@
 
     <div style="display: block;" align="center">
     <b><a href="https://unify.ai/">Website</a></b> | <b><a href="https://unify.ai/docs/ivy/">Docs</a></b> | <b><a href="https://unify.ai/demos/">Examples</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/design.html">Design</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/faq.html">FAQ</a></b><br><br>
+    </div>
 
 ------------------------------------------------------
 
