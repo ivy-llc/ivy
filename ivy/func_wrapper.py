@@ -848,9 +848,7 @@ def handle_out_argument(fn: Callable) -> Callable:
         """
         if out is None or is_compos_fn:
             return fn(*args, out=out, **kwargs)
-
         handle_out_in_backend = handle_out_in_backend and not _is_variable(out)
-
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
