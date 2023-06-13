@@ -1160,3 +1160,35 @@ def test_unique_consecutive(
         x=x[0],
         axis=axis,
     )
+
+
+@handle_test(
+    fn_tree="trim_zeros",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_num_dims=1,
+    ),
+    trim=st.sampled_from(("fb", "f", "b")),
+    ground_truth_backend="numpy",
+)
+def test_trim_zeros(
+    *,
+    dtype_and_x,
+    trim,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        filt=x[0],
+        trim=trim,
+    )
