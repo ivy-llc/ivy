@@ -59,8 +59,8 @@ def test_paddle_poisson(
 ):
 
     helpers.test_frontend_function(
+        x = x,
         input_dtypes = input_dtypes,
-        x=x,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
