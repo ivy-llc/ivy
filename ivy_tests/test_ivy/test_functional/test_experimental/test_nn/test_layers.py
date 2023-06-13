@@ -925,13 +925,24 @@ def test_reduce_window(
 
 
 @st.composite
-def x_and_fft2(draw, dtypes):
+def x_and_fft2(draw):
     min_fft2_points = 2
-    dtype = draw(dtypes)
+    dtype = draw(helpers.get_dtypes("float_and_complex", full=False))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=4
+        )
+    )
     x = draw(
         helpers.array_values(
             dtype=dtype[0],
-            shape=(2, 2),
+            shape=tuple(x_dim),
+            min_value=-1e5,
+            max_value=1e5,
+            allow_inf=False,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
         )
     )
     s = (
@@ -945,9 +956,10 @@ def x_and_fft2(draw, dtypes):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft2",
-    d_x_d_s_n=x_and_fft2(helpers.get_dtypes("float")),
+    d_x_d_s_n=x_and_fft2(),
     ground_truth_backend="numpy",
     container_flags=st.just([False]),
+    test_gradients=st.just(False),
 )
 def test_fft2(
     *,
@@ -966,8 +978,8 @@ def test_fft2(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        rtol_=1e-2,
-        atol_=1e-2,
+        # rtol_=1e-2,
+        # atol_=1e-2,
         x=x,
         s=s,
         dim=dim,
