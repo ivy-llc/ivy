@@ -1012,7 +1012,7 @@ def _wrap_function(
             if (
                 attr.startswith("_")
                 or hasattr(ivy, attr)
-                or attr == "handle_backend_wrappers"
+                or attr == "mixed_backend_wrappers"
             ):
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
@@ -1048,7 +1048,7 @@ def _wrap_function(
         # we should remove the all the decorators
         # after handle_mixed_fuction in FN_DECORATORS
         # from the compos function because these will
-        #  be run from the primary implementation.
+        # be run from the primary implementation.
         if partial_mixed:
             array_spec = to_wrap.compos.__dict__["array_spec"]
             if hasattr(to_wrap.compos, "handle_exceptions") and hasattr(
