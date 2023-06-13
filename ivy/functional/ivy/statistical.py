@@ -52,15 +52,17 @@ def min(
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
        minimum value is implementation-defined. Specification-compliant libraries may
-       choose to raise an error, return a sentinel value (e.g., if ``x`` is a floating-point
-       input array, return ``NaN``), or return the maximum possible value for the input array ``x``
-       data type (e.g., if ``x`` is a floating-point array, return ``+infinity``).
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
+       floating-point input array, return ``NaN``), or return the maximum possible value
+       for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,
+       return ``+infinity``).
 
     **Special Cases**
 
     For floating-point operands,
 
-    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN`` (i.e., ``NaN`` values propagate).
+    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN``
+        (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
@@ -72,10 +74,11 @@ def min(
         minimum values must be computed over multiple axes. Default: ``None``.
 
     keepdims
-        optional boolean, if ``True``, the reduced axes (dimensions) must be included in the
-        result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
-        (dimensions) must not be included in the result. Default: ``False``.
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included
+        in the result as singleton dimensions, and, accordingly, the result must be
+        compatible with the input array (see :ref:`broadcasting`). Otherwise,
+        if ``False``, the reduced axes (dimensions) must not be included in the result.
+        Default: ``False``.
     out
         optional output array, for writing the result to.
 
@@ -90,7 +93,8 @@ def min(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.min.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -193,7 +197,8 @@ def max(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.max.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.max.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -411,7 +416,8 @@ def prod(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.prod.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.prod.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -495,8 +501,10 @@ def std(
 
     Let ``N`` equal the number of elements over which to compute the standard deviation.
 
-    -   If ``N - correction`` is less than or equal to ``0``, the standard deviation is ``NaN``.
-    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values propagate).
+    -   If ``N - correction`` is less than or equal to ``0``,
+        the standard deviation is ``NaN``.
+    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN``
+        (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
@@ -508,16 +516,17 @@ def std(
         integers, standard deviations must be computed over multiple axes.
         Default: ``None``.
     correction
-        degrees of freedom adjustment. Setting this parameter to a value other than ``0``
-        has the effect of adjusting the divisor during the calculation of the standard
-        deviation according to ``N-c`` where ``N`` corresponds to the total number of
-        elements over which the standard deviation is computed and ``c`` corresponds to
-        the provided degrees of freedom adjustment. When computing the standard deviation
-        of a population, setting this parameter to ``0`` is the standard choice (i.e.,
-        the provided array contains data constituting an entire population). When computing
-        the corrected sample standard deviation, setting this parameter to ``1`` is the
-        standard choice (i.e., the provided array contains data sampled from a larger
-        population; this is commonly referred to as Bessel's correction).
+        degrees of freedom adjustment. Setting this parameter to a value other
+        than ``0`` has the effect of adjusting the divisor during the calculation of the
+        standard deviation according to ``N-c`` where ``N`` corresponds to the total
+        number of elements over which the standard deviation is computed and ``c``
+        corresponds to the provided degrees of freedom adjustment. When computing the
+        standard deviation of a population, setting this parameter to ``0`` is the
+        standard choice (i.e., the provided array contains data constituting an
+        entire population). When computing the corrected sample standard deviation,
+        setting this parameter to ``1`` is the standard choice (i.e., the provided array
+        contains data sampled from a larger population; this is commonly referred to as
+        Bessel's correction).
         Default: ``0``.
     keepdims
         if ``True``, the reduced axes (dimensions) must be included in the result as
@@ -538,14 +547,15 @@ def std(
         .. note::
            While this specification recommends that this function only accept input
            arrays having a real-valued floating-point data type, specification-compliant
-           array libraries may choose to accept input arrays having an integer data type.
-           While mixed data type promotion is implementation-defined, if the input array
-           ``x`` has an integer data type, the returned array must have the default
-           real-valued floating-point data type.
+           array libraries may choose to accept input arrays having an integer data
+           type. While mixed data type promotion is implementation-defined, if the input
+           array ``x`` has an integer data type, the returned array must have
+           the default real-valued floating-point data type.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.std.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -805,7 +815,8 @@ def var(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.var.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.var.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
