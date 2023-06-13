@@ -26,7 +26,6 @@ def test_paddle_randint(
     shape,
     fn_tree,
 ):
-    print("shape" + str(shape))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
