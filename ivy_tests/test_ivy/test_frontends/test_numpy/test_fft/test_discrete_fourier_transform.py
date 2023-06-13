@@ -3,7 +3,6 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy import with_supported_dtypes
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
