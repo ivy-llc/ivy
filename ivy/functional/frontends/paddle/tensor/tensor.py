@@ -145,3 +145,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def floor(self, name=None):
         return ivy.floor(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def multiply(self, y, name="multiply"):
+        return paddle_frontend.multiply(self, y, name=name)
