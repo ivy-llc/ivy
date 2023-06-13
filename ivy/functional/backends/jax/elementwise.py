@@ -257,19 +257,26 @@ def isinf(
     *,
     detect_positive: bool = True,
     detect_negative: bool = True,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if detect_positive and detect_negative:
-        return jnp.isinf(x)
+        return ivy.where(where, jnp.isinf(x), x)
     elif detect_positive:
-        return jnp.isposinf(x)
+        return ivy.where(where, jnp.isposinf(x), x)
     elif detect_negative:
-        return jnp.isneginf(x)
-    return jnp.full_like(x, False, dtype=jnp.bool_)
+        return ivy.where(where, jnp.isneginf(x), x)
+    return ivy.where(where, jnp.full_like(x, False, dtype=jnp.bool_), x)
 
 
-def isnan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.isnan(x)
+def isnan(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.isnan(x), x)
 
 
 def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -282,10 +289,11 @@ def less(
     x2: Union[float, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.less(x1, x2)
+    return ivy.where(where, jnp.less(x1, x2), (x1, x2))
 
 
 def less_equal(
@@ -293,32 +301,62 @@ def less_equal(
     x2: Union[float, JaxArray],
     /,
     *,
+    where: Union[bool, JaxArray] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.less_equal(x1, x2)
+    return ivy.where(where, jnp.less_equal(x1, x2), (x1, x2))
 
 
-def log(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.log(x)
+def log(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.log(x), x)
 
 
-def log10(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.log10(x)
+def log10(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.log10(x), x)
 
 
-def log1p(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.log1p(x)
+def log1p(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.log1p(x), x)
 
 
-def log2(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.log2(x)
+def log2(
+    x: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return ivy.where(where, jnp.log2(x), x)
 
 
 def logaddexp(
-    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    where: Union[bool, JaxArray] = True,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.logaddexp(x1, x2)
+    return ivy.where(where, jnp.logaddexp(x1, x2), (x1, x2))
 
 
 def logaddexp2(
@@ -446,15 +484,8 @@ def round(
     return ret
 
 
-def _abs_variant_sign(x):
-    return jnp.where(x != 0, x / jnp.abs(x), 0)
-
-
-def sign(
-    x: JaxArray, /, *, np_variant: Optional[bool] = True, out: Optional[JaxArray] = None
-) -> JaxArray:
-    if "complex" in str(x.dtype):
-        return jnp.sign(x) if np_variant else _abs_variant_sign(x)
+@with_unsupported_dtypes({"1.1.9 and below": ("complex",)}, backend_version)
+def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.where(x == -0.0, 0.0, jnp.sign(x)).astype(x.dtype)
 
 

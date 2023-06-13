@@ -48,13 +48,10 @@ def abs(
     - If ``x_i`` is ``-0``, the result is ``+0``.
     - If ``x_i`` is ``-infinity``, the result is ``+infinity``.
 
-    For complex floating-point operands,
-    let ``a = real(x_i)`` and ``b = imag(x_i)``. and
+    For complex floating-point operands, let ``a = real(x_i)`` and ``b = imag(x_i)``. and
 
-    - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value
-    (including ``NaN``), the result is ``+infinity``.
-    - If ``a`` is any value (including ``NaN``) and ``b`` is ``+infinity``,
-    the result is ``+infinity``.
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value (including ``NaN``), the result is ``+infinity``.
+    - If ``a`` is any value (including ``NaN``) and ``b`` is ``+infinity``, the result is ``+infinity``.
     - If ``a`` is either ``+0`` or ``-0``, the result is ``abs(b)``.
     - If ``b`` is ``+0`` or ``-0``, the result is ``abs(a)``.
     - If ``a`` is ``NaN`` and ``b`` is a finite number, the result is ``NaN``.
@@ -82,8 +79,7 @@ def abs(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.abs.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.abs.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -112,7 +108,7 @@ def abs(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]), b=ivy.array([4.5, -5.3, -0, -2.3])) # noqa
+    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),b=ivy.array([4.5, -5.3, -0, -2.3]))
     >>> y = ivy.abs(x)
     >>> print(y)
     {
@@ -168,8 +164,7 @@ def acos(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.acos.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.acos.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -250,8 +245,7 @@ def acosh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.acosh.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.acosh.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -365,8 +359,7 @@ def add(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.add.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -453,8 +446,7 @@ def asin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.asin.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.asin.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -539,8 +531,7 @@ def asinh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.asinh.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.asinh.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -629,8 +620,7 @@ def atan(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.atan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -758,8 +748,7 @@ def atan2(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.atan2.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan2.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -874,8 +863,7 @@ def atanh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.atanh.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atanh.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -948,8 +936,7 @@ def bitwise_and(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.bitwise_and.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_and.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1035,8 +1022,7 @@ def bitwise_invert(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.bitwise_invert.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_invert.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1116,8 +1102,7 @@ def bitwise_left_shift(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.bitwise_left_shift.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_left_shift.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1256,8 +1241,7 @@ def bitwise_right_shift(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.bitwise_right_shift.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1370,8 +1354,7 @@ def bitwise_xor(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.bitwise_xor.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assume an array input for simplicity,
@@ -1478,8 +1461,7 @@ def ceil(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.ceil.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1567,8 +1549,7 @@ def cos(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.cos.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cos.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1649,8 +1630,7 @@ def cosh(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.cosh.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1727,8 +1707,7 @@ def divide(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.divide.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.divide.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1814,8 +1793,7 @@ def equal(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.equal.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.equal.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1911,8 +1889,7 @@ def exp(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.exp.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.exp.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2173,8 +2150,7 @@ def expm1(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.expm1.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.expm1.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2252,8 +2228,7 @@ def floor(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.floor.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2334,8 +2309,7 @@ def floor_divide(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.floor_divide.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor_divide.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2465,8 +2439,7 @@ def greater(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.greater.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.greater.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2563,8 +2536,7 @@ def greater_equal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.greater_equal.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.greater_equal.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2606,7 +2578,7 @@ def greater_equal(
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([[5.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]), b=ivy.array([[5.], [6.], [7.]])) # noqa
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
     {
@@ -2638,8 +2610,9 @@ def less_equal(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """
     Compute the truth value of x1_i <= x2_i for each element x1_i of the input array x1
     with the respective element x2_i of the input array x2.
@@ -2651,6 +2624,8 @@ def less_equal(
     x2
         second input array. Must be compatible with x1 (with Broadcasting). May have any
         data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2664,8 +2639,7 @@ def less_equal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.less_equal.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.less_equal.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2708,7 +2682,7 @@ def less_equal(
         b: ivy.array([True, True, True])
     }
     """
-    return ivy.current_backend(x1, x2).less_equal(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).less_equal(x1, x2, where=where, out=out)
 
 
 @handle_exceptions
@@ -2742,8 +2716,7 @@ def multiply(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.multiply.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.multiply.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2842,8 +2815,7 @@ def isfinite(
     This method conforms to the
     `Array API Standard<https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the `docstring
-    <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.isfinite.html>`
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isfinite.html>`
     _ in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2899,8 +2871,9 @@ def isinf(
     *,
     detect_positive: bool = True,
     detect_negative: bool = True,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """
     Test each element x_i of the input array x to determine if equal to positive or
     negative infinity.
@@ -2913,6 +2886,8 @@ def isinf(
         if ``True``, positive infinity is detected.
     detect_negative
         if ``True``, negative infinity is detected.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2927,8 +2902,7 @@ def isinf(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.isinf.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isinf.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2990,7 +2964,11 @@ def isinf(
     }
     """
     return ivy.current_backend(x).isinf(
-        x, detect_positive=detect_positive, detect_negative=detect_negative, out=out
+        x,
+        detect_positive=detect_positive,
+        detect_negative=detect_negative,
+        out=out,
+        where=where,
     )
 
 
@@ -3005,8 +2983,9 @@ def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Test each element ``x_i`` of the input array ``x`` to determine whether the
     element is ``NaN``.
 
@@ -3014,6 +2993,8 @@ def isnan(
     ----------
     x
         input array. Should have a numeric data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3028,8 +3009,7 @@ def isnan(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.isnan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isnan.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3086,7 +3066,7 @@ def isnan(
         b: ivy.array([True, False, False])
     }
     """
-    return ivy.current_backend(x).isnan(x, out=out)
+    return ivy.current_backend(x).isnan(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -3099,8 +3079,9 @@ def less(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Compute the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the
     input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
 
@@ -3111,6 +3092,8 @@ def less(
     x2
         second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`).
         Should have a numeric data type.
+      where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3172,7 +3155,7 @@ def less(
     }
 
     """
-    return ivy.current_backend(x1).less(x1, x2, out=out)
+    return ivy.current_backend(x1).less(x1, x2, out=out, where=where)
 
 
 @handle_exceptions
@@ -3186,8 +3169,9 @@ def log(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Calculate an implementation-dependent approximation to the natural (base ``e``)
     logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``,
     for each element ``x_i`` of the input array ``x``.
@@ -3246,7 +3230,7 @@ def log(
         c: ivy.array([2.07, 0.0953, 0.])
     }
     """
-    return ivy.current_backend(x).log(x, out=out)
+    return ivy.current_backend(x).log(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -3260,8 +3244,9 @@ def log10(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Calculate an implementation-dependent approximation to the base ``10``
     logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``,
     for each element ``x_i`` of the input array ``x``.
@@ -3294,8 +3279,7 @@ def log10(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.log10.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log10.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3331,7 +3315,7 @@ def log10(
         c: ivy.array([0.898, 0.0414, 0.])
     }
     """
-    return ivy.current_backend(x).log10(x, out=out)
+    return ivy.current_backend(x).log10(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -3345,17 +3329,16 @@ def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Calculate an implementation-dependent approximation to log(1+x), where log
     refers to the natural (base e) logarithm.
     .. note::
-       The purpose of this function is to calculate ``log(1+x)`` more accurately
-       when `x` is close to zero. Accordingly, conforming implementations should avoid
-       implementing this function as simply ``log(1+x)``.
-       See FDLIBM, or some other IEEE 754-2019 compliant mathematical library,
-       for a potential reference implementation.
+       The purpose of this function is to calculate ``log(1+x)`` more accurately when `x` is close to zero.
+       Accordingly, conforming implementations should avoid implementing this function as simply ``log(1+x)``.
+       See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
 
     **Special cases**
 
@@ -3386,8 +3369,7 @@ def log1p(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.log1p.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log1p.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3425,7 +3407,7 @@ def log1p(
     }
 
     """
-    return ivy.current_backend(x).log1p(x, out=out)
+    return ivy.current_backend(x).log1p(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -3439,6 +3421,7 @@ def log2(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculate an implementation-dependent approximation to the base ``2`` logarithm,
@@ -3459,6 +3442,8 @@ def log2(
     ----------
     x
         input array. Should have a floating-point data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3474,8 +3459,7 @@ def log2(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.log2.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log2.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3483,7 +3467,7 @@ def log2(
     instances in place of any of the arguments.
 
     """
-    return ivy.current_backend(x).log2(x, out=out)
+    return ivy.current_backend(x).log2(x, out=out, where=where)
 
 
 @handle_exceptions
@@ -3496,8 +3480,9 @@ def logaddexp(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Calculate the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))``
     for each element ``x1_i`` of the input array ``x1`` with the respective element
     ``x2_i`` of the input array ``x2``.
@@ -3519,6 +3504,8 @@ def logaddexp(
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have a floating-point data type.
+    where
+        optional output array, a boolean mask
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3532,8 +3519,7 @@ def logaddexp(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.logaddexp.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logaddexp.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3584,7 +3570,7 @@ def logaddexp(
     }
 
     """
-    return ivy.current_backend(x1, x2).logaddexp(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).logaddexp(x1, x2, out=out, where=where)
 
 
 @handle_nestable
@@ -3663,8 +3649,7 @@ def logical_and(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.logical_and.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_and.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3773,8 +3758,7 @@ def logical_not(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.logical_not.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_not.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3863,8 +3847,7 @@ def logical_or(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.logical_or.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3940,8 +3923,7 @@ def logical_xor(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.logical_xor.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_xor.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4096,8 +4078,7 @@ def negative(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.negative.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.negative.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4176,8 +4157,7 @@ def not_equal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.not_equal.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.not_equal.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4329,8 +4309,7 @@ def positive(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.positive.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.positive.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4466,8 +4445,7 @@ def pow(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.pow.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.pow.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4663,8 +4641,7 @@ def remainder(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.remainder.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.remainder.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4755,8 +4732,7 @@ def round(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.round.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4813,7 +4789,6 @@ def sign(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    np_variant: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return an indication of the sign of a number for each element ``x_i`` of the
@@ -4824,18 +4799,11 @@ def sign(
     - If ``x_i`` is less than ``0``, the result is ``-1``.
     - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
     - If ``x_i`` is greater than ``0``, the result is ``+1``.
-    - For complex numbers ``sign(x.real) + 0j if x.real != 0 else sign(x.imag) + 0j``
 
     Parameters
     ----------
     x
         input array. Should have a numeric data type.
-    np_variant
-        Handles complex numbers like numpy does If ``True``,
-        ``sign(x.real) + 0j if x.real != 0 else sign(x.imag) + 0j``.
-        otherwise, For complex numbers, ``y = sign(x) = x / |x| if x != 0,
-        otherwise y = 0.``
-
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -4849,8 +4817,7 @@ def sign(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.sign.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sign.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4886,7 +4853,7 @@ def sign(
         c: ivy.array([-1., -1., -1., 1.])
     }
     """
-    return ivy.current_backend(x).sign(x, np_variant=np_variant, out=out)
+    return ivy.current_backend(x).sign(x, out=out)
 
 
 @handle_exceptions
@@ -4933,8 +4900,7 @@ def sin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.sin.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sin.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5021,8 +4987,7 @@ def sinh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.sinh.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sinh.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5101,8 +5066,7 @@ def sqrt(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.sqrt.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sqrt.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5129,7 +5093,7 @@ def sqrt(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]])) # noqa
+    >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]]))
     >>> y = ivy.sqrt(x)
     >>> print(y)
     {
@@ -5171,8 +5135,7 @@ def square(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.square.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.square.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5249,8 +5212,7 @@ def subtract(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.subtract.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.subtract.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5319,8 +5281,7 @@ def tan(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5376,9 +5337,7 @@ def tanh(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculate an implementation-dependent approximation to the hyperbolic tangent,
-    having domain ``[-infinity, +infinity]`` and codomain ``[-1, +1]``, for each
-    element ``x_i`` of the input array ``x``.
+    Calculate an implementation-dependent approximation to the hyperbolic tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``.
 
     **Special cases**
 
@@ -5393,8 +5352,7 @@ def tanh(
     Parameters
     ----------
     x
-        input array whose elements each represent a hyperbolic angle. Should have a
-        real-valued floating-point data
+        input array whose elements each represent a hyperbolic angle. Should have a real-valued floating-point data
         type.
     out
         optional output, for writing the result to. It must have a shape that the inputs
@@ -5403,15 +5361,13 @@ def tanh(
     Returns
     -------
     ret
-        an array containing the hyperbolic tangent of each element in ``x``.
-        The returned array must have a real-valued floating-point data type
-        determined by :ref:`type-promotion`.
+        an array containing the hyperbolic tangent of each element in ``x``. The returned array must have a real-valued
+        floating-point data type determined by :ref:`type-promotion`.
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.tanh.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tanh.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5556,8 +5512,7 @@ def trunc(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.trunc.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.trunc.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

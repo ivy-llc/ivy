@@ -971,19 +971,30 @@ def test_isfinite(
     )
 
 
+@st.composite
+def _ishelp(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"), ret_shape=True
+        )
+    )
+    dtype2, where = draw(
+        helpers.dtype_and_values(available_dtypes=["bool"], shape=shape)
+    )
+    return ([dtype[0], dtype2[0]], x, where)
+
+
 # isinf
 @handle_test(
     fn_tree="functional.ivy.isinf",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+    dtype_and_x_and_where=_ishelp(),
     detect_positive=st.booleans(),
     detect_negative=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_isinf(
     *,
-    dtype_and_x,
+    dtype_and_x_and_where,
     detect_positive,
     detect_negative,
     test_flags,
@@ -992,7 +1003,7 @@ def test_isinf(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, where = dtype_and_x_and_where
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -1001,6 +1012,7 @@ def test_isinf(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        where=where[0],
         detect_positive=detect_positive,
         detect_negative=detect_negative,
     )
@@ -1009,21 +1021,19 @@ def test_isinf(
 # isnan
 @handle_test(
     fn_tree="functional.ivy.isnan",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+    dtype_and_x_and_where=_ishelp(),
     test_gradients=st.just(False),
 )
 def test_isnan(
     *,
-    dtype_and_x,
+    dtype_and_x_and_where,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, where = dtype_and_x_and_where
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -1032,29 +1042,26 @@ def test_isnan(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        where=where[0],
     )
 
 
 # less
 @handle_test(
     fn_tree="functional.ivy.less",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        min_num_dims=1,
-    ),
+    dtype_and_x_and_where=_ishelp(),
     test_gradients=st.just(False),
 )
 def test_less(
     *,
-    dtype_and_x,
+    dtype_and_x_and_where,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, where = dtype_and_x_and_where
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in input_dtype))
     # make sure they're not too close together
@@ -1068,6 +1075,7 @@ def test_less(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        where=where[0],
     )
 
 

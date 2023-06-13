@@ -1127,6 +1127,7 @@ class _ArrayWithElementwise(abc.ABC):
         *,
         detect_positive: bool = True,
         detect_negative: bool = True,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -1142,6 +1143,8 @@ class _ArrayWithElementwise(abc.ABC):
             if ``True``, positive infinity is detected.
         detect_negative
             if ``True``, negative infinity is detected.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1183,10 +1186,16 @@ class _ArrayWithElementwise(abc.ABC):
             self._data,
             detect_positive=detect_positive,
             detect_negative=detect_negative,
+            where=where,
             out=out,
         )
 
-    def isnan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def isnan(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.isnan. This method simply wraps the
         function, and so the docstring for ivy.isnan also applies to this method with
@@ -1196,6 +1205,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a real-valued data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1239,15 +1250,16 @@ class _ArrayWithElementwise(abc.ABC):
             [False, False, False],
             [False, False, False]])
         """
-        return ivy.isnan(self._data, out=out)
+        return ivy.isnan(self._data, out=out, where=where)
 
     def less(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+    ) -> ivy.Array:  # noqa
         """
         ivy.Array instance method variant of ivy.less. This method simply wraps the
         function, and so the docstring for ivy.less also applies to this method with
@@ -1261,6 +1273,8 @@ class _ArrayWithElementwise(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1279,13 +1293,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([ True, False, False])
         """
-        return ivy.less(self._data, x2, out=out)
+        return ivy.less(self._data, x2, where=where, out=out)
 
     def less_equal(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -1301,6 +1316,8 @@ class _ArrayWithElementwise(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1340,9 +1357,14 @@ class _ArrayWithElementwise(abc.ABC):
             b: ivy.array([True, False, True])
         }
         """
-        return ivy.less_equal(self._data, x2, out=out)
+        return ivy.less_equal(self._data, x2, out=out, where=where)
 
-    def log(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def log(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.log. This method simply wraps the
         function, and so the docstring for ivy.log also applies to this method with
@@ -1355,6 +1377,8 @@ class _ArrayWithElementwise(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+        where
+            optional boolean mask, apply the function only to the values that are True
 
         Returns
         -------
@@ -1384,9 +1408,14 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[nan, 0., 1.61, inf],
                    [-inf, nan, nan, nan]])
         """
-        return ivy.log(self._data, out=out)
+        return ivy.log(self._data, out=out, where=where)
 
-    def log1p(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def log1p(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.log1p. This method simply wraps the
         function, and so the docstring for ivy.log1p also applies to this method with
@@ -1396,6 +1425,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a real-valued floating-point data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1419,9 +1450,14 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(x)
         ivy.array([0.0953, 0.001 ])
         """
-        return ivy.log1p(self._data, out=out)
+        return ivy.log1p(self._data, where=where, out=out)
 
-    def log2(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def log2(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.log2. This method simply wraps the
         function, and so the docstring for ivy.log2 also applies to this method with
@@ -1431,6 +1467,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a real-valued floating-point data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1442,9 +1480,14 @@ class _ArrayWithElementwise(abc.ABC):
             in ``self``. The returned array must have a real-valued floating-point
             data type determined by :ref:`type-promotion`.
         """
-        return ivy.log2(self._data, out=out)
+        return ivy.log2(self._data, where=where, out=out)
 
-    def log10(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def log10(
+        self: ivy.Array,
+        *,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.log10. This method simply wraps the
         function, and so the docstring for ivy.log10 also applies to this method with
@@ -1454,6 +1497,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a real-valued floating-point data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1486,13 +1531,14 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[nan, 0., 0.699, inf],
                    [-inf, nan, nan, nan]])
         """
-        return ivy.log10(self._data, out=out)
+        return ivy.log10(self._data, where=where, out=out)
 
     def logaddexp(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -1508,6 +1554,8 @@ class _ArrayWithElementwise(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        where
+            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1527,7 +1575,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(z)
         ivy.array([ 3.31,  5.05, 15.  ])
         """
-        return ivy.logaddexp(self._data, x2, out=out)
+        return ivy.logaddexp(self._data, x2, out=out, where=where)
 
     def logaddexp2(
         self: Union[ivy.Array, float, list, tuple],
@@ -1670,14 +1718,13 @@ class _ArrayWithElementwise(abc.ABC):
             must have a data type of ``bool``.
 
         This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-        the `docstring <https://data-apis.org/array-api/latest/
-        API_specification/generated/array_api.logical_or.html>`_
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
         in the standard.
 
-        Both the description and the type hints above assumes an array input for
-        simplicity, but this function is *nestable*, and therefore also
-        accepts :class:`ivy.Container` instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+        instances in place of any of the arguments.
 
         Examples
         --------
@@ -2242,12 +2289,7 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.round(self._data, decimals=decimals, out=out)
 
-    def sign(
-        self: ivy.Array,
-        *,
-        np_variant: Optional[bool] = True,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+    def sign(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sign. This method simply wraps the
         function, and so the docstring for ivy.sign also applies to this method with
@@ -2285,7 +2327,7 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[-1., -1.,  0.,  1.,  1.],
         [ 1., -1.,  1., -1.,  1.]])
         """
-        return ivy.sign(self._data, np_variant=np_variant, out=out)
+        return ivy.sign(self._data, out=out)
 
     def sin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

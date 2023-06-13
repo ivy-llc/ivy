@@ -85,18 +85,16 @@ def isinf(
     *,
     detect_positive: bool = True,
     detect_negative: bool = True,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if detect_negative and detect_positive:
-        return paddle.isinf(x)
-
+        return ivy.where(where, paddle.isinf(x), x)
     if detect_negative:
-        return paddle_backend.equal(x, float("-inf"))
-
+        return ivy.where(where, paddle_backend.equal(x, float("-inf")), x)
     if detect_positive:
-        return paddle_backend.equal(x, float("inf"))
-
-    return paddle.zeros(shape=x.shape, dtype=bool)
+        return ivy.where(where, paddle_backend.equal(x, float("inf")), x)
+    return ivy.where(where, paddle.zeros(shape=x.shape, dtype=bool), x)
 
 
 def equal(
@@ -114,7 +112,7 @@ def equal(
     # ret result is sufficient for all cases except where the value is +/-INF of NaN
     return paddle_backend.where(
         paddle_backend.isnan(diff),
-        ~paddle_backend.logical_or(paddle_backend.isnan(x1), paddle_backend.isnan(x2)),
+        paddle_backend.logical_or(paddle_backend.isnan(x1), paddle_backend.isnan(x2)),
         ret,
     )
 
@@ -124,6 +122,7 @@ def less_equal(
     x2: Union[float, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
@@ -132,8 +131,14 @@ def less_equal(
             if paddle.is_complex(x1):
                 real = paddle.less_equal(x1.real(), x2.real())
                 imag = paddle.less_equal(x1.imag(), x2.imag())
-                return paddle_backend.logical_and(real, imag)
-        return paddle.less_equal(x1.astype("float32"), x2.astype("float32"))
+                return ivy.where(
+                    where, paddle_backend.logical_and(real, imag), (x1, x2)
+                )
+        return ivy.where(
+            where,
+            paddle.less_equal(x1.astype("float32"), x2.astype("float32")),
+            (x1, x2),
+        )
 
     return paddle.less_equal(x1, x2)
 
@@ -221,17 +226,7 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.asinh(x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
-    backend_version,
-)
-def sign(
-    x: paddle.Tensor,
-    /,
-    *,
-    np_variant: Optional[bool] = True,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
+def sign(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -285,7 +280,13 @@ def cosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.cosh(x)
 
 
-def log10(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def log10(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -299,14 +300,24 @@ def log10(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     ]:
         if paddle.is_complex(x):
             base = paddle.to_tensor(10.0).squeeze()
-            return paddle_backend.divide(
-                paddle_backend.log(x), paddle_backend.log(base)
-            ).astype(x.dtype)
-        return paddle.log10(x.astype("float32")).astype(x.dtype)
-    return paddle.log10(x)
+            return ivy.where(
+                where,
+                paddle_backend.divide(
+                    paddle_backend.log(x), paddle_backend.log(base)
+                ).astype(x.dtype),
+                x,
+            )
+        return ivy.where(where, paddle.log10(x.astype("float32")).astype(x.dtype), x)
+    return ivy.where(where, paddle.log10(x), x)
 
 
-def log2(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def log2(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -320,14 +331,24 @@ def log2(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     ]:
         if paddle.is_complex(x):
             base = paddle.to_tensor(2.0).squeeze()
-            return paddle_backend.divide(
-                paddle_backend.log(x), paddle_backend.log(base)
-            ).astype(x.dtype)
+            return ivy.where(
+                where,
+                paddle_backend.divide(
+                    paddle_backend.log(x), paddle_backend.log(base)
+                ).astype(x.dtype),
+                x,
+            )
         return paddle.log2(x.astype("float32")).astype(x.dtype)
-    return paddle.log2(x)
+    return ivy.where(where, paddle.log2(x), x)
 
 
-def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def log1p(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -340,12 +361,22 @@ def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.complex(paddle.log1p(paddle.abs(x)), paddle.angle(x + 1))
-        return paddle.log1p(x.astype("float32")).astype(x.dtype)
-    return paddle.log1p(x)
+            return ivy.where(
+                where,
+                paddle.complex(paddle.log1p(paddle.abs(x)), paddle.angle(x + 1)),
+                x,
+            )
+        return ivy.where(where, paddle.log1p(x.astype("float32")).astype(x.dtype), x)
+    return ivy.where(where, paddle.log1p(x), x)
 
 
-def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def isnan(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -355,9 +386,13 @@ def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.logical_or(paddle.isnan(x.real()), paddle.isnan(x.imag()))
-        return paddle.isnan(x.astype("float32"))
-    return paddle.isnan(x)
+            return ivy.where(
+                where,
+                paddle.logical_or(paddle.isnan(x.real()), paddle.isnan(x.imag())),
+                x,
+            )
+        return ivy.where(where, paddle.isnan(x.astype("float32")), x)
+    return ivy.where(where, paddle.isnan(x), x)
 
 
 def less(
@@ -365,17 +400,21 @@ def less(
     x2: Union[float, paddle.Tensor],
     /,
     *,
+    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if x1.dtype in [paddle.int8, paddle.uint8, paddle.complex64, paddle.complex128]:
         if paddle.is_complex(x1):
-            real = paddle.less_than(x1.real(), x2.real())
-            imag = paddle.less_than(x1.imag(), x2.imag())
+            real = ivy.where(where, paddle.less_than(x1.real(), x2.real()), (x1, x2))
+            imag = ivy.where(where, paddle.less_than(x1.imag(), x2.imag()), (x1, x2))
             return logical_and(real, imag)
-        return paddle.less_than(x1.astype("float32"), x2.astype("float32"))
-
-    return paddle.less_than(x1, x2)
+        return ivy.where(
+            where,
+            paddle.less_than(x1.astype("float32"), x2.astype("float32")),
+            (x1, x2),
+        )
+    return ivy.where(where, paddle.less_than(x1, x2), (x1, x2))
 
 
 def multiply(
@@ -841,12 +880,21 @@ def abs(
 
 
 def logaddexp(
-    x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle_backend.log(
-        paddle_backend.add(paddle_backend.exp(x1), paddle_backend.exp(x2))
-    ).astype(ret_dtype)
+    return ivy.where(
+        where,
+        paddle_backend.log(
+            paddle_backend.add(paddle_backend.exp(x1), paddle_backend.exp(x2))
+        ).astype(ret_dtype),
+        (x1, x2),
+    )
 
 
 @with_unsupported_device_and_dtypes(
@@ -934,7 +982,13 @@ def atan2(
     return paddle.atan2(x1, x2).astype(ret_dtype)
 
 
-def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def log(
+    x: paddle.Tensor,
+    /,
+    *,
+    where: Union[bool, paddle.Tensor] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -947,9 +1001,11 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.complex(paddle.log(paddle.abs(x)), paddle.angle(x))
-        return paddle.log(x.astype("float32")).astype(x.dtype)
-    return paddle.log(x)
+            return ivy.where(
+                where, paddle.complex(paddle.log(paddle.abs(x)), paddle.angle(x)), x
+            )
+        return ivy.where(where, paddle.log(x.astype("float32")).astype(x.dtype), x)
+    return ivy.where(where, paddle.log(x), x)
 
 
 def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:

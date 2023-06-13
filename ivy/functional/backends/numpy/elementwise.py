@@ -389,20 +389,30 @@ def isinf(
     *,
     detect_positive: bool = True,
     detect_negative: bool = True,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if detect_negative and detect_positive:
-        return np.isinf(x)
+        return ivy.where(where, np.isinf(x), x)
     elif detect_negative:
-        return np.isneginf(x)
+        return ivy.where(where, np.isneginf(x), x)
     elif detect_positive:
-        return np.isposinf(x)
-    return np.full_like(x, False, dtype=bool)
+        return ivy.where(where, np.isposinf(x), x)
+    return ivy.where(where, np.full_like(x, False, dtype=np.bool), x)
+
+
+isinf.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def isnan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.isnan(x, out=out)
+def isnan(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.isnan(x, out=out), x)
 
 
 isnan.support_native_out = True
@@ -433,10 +443,11 @@ def less(
     x2: Union[float, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.less(x1, x2, out=out)
+    return ivy.where(where, np.less(x1, x2, out=out), (x1, x2))
 
 
 less.support_native_out = True
@@ -448,42 +459,67 @@ def less_equal(
     x2: Union[float, np.ndarray],
     /,
     *,
+    where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.less_equal(x1, x2, out=out)
+    return ivy.where(where, np.less_equal(x1, x2, out=out), (x1, x2))
 
 
 less_equal.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def log(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.log(x, out=out)
+def log(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.log(x, out=out), x)
 
 
 log.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def log10(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.log10(x, out=out)
+def log10(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.log10(x, out=out), x)
 
 
 log10.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def log1p(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.log1p(x, out=out)
+def log1p(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.log1p(x, out=out), x)
 
 
 log1p.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def log2(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.log2(x, out=out)
+def log2(
+    x: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return ivy.where(where, np.log2(x, out=out), x)
 
 
 log2.support_native_out = True
@@ -492,10 +528,15 @@ log2.support_native_out = True
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.24.3 and below": ("complex",)}, backend_version)
 def logaddexp(
-    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    where: Union[bool, np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.logaddexp(x1, x2, out=out)
+    return ivy.where(where, np.logaddexp(x1, x2, out=out), (x1, x2))
 
 
 logaddexp.support_native_out = True
@@ -660,20 +701,8 @@ def round(
 round.support_native_out = True
 
 
-def _abs_variant_sign(x):
-    return np.divide(x, np.abs(x), where=x != 0)
-
-
 @_scalar_output_to_0d_array
-def sign(
-    x: np.ndarray,
-    /,
-    *,
-    np_variant: Optional[bool] = True,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if "complex" in str(x.dtype):
-        return np.sign(x, out=out) if np_variant else _abs_variant_sign(x)
+def sign(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sign(x, out=out)
 
 

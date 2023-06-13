@@ -103,16 +103,18 @@ def isinf(
     *,
     detect_positive: bool = True,
     detect_negative: bool = True,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
+    where = _cast_for_unary_op(where)
     if detect_negative and detect_positive:
-        return torch.isinf(x)
+        return torch.where(where, torch.isinf(x), x)
     elif detect_negative:
-        return torch.isneginf(x)
+        return torch.where(where, torch.isneginf(x), x)
     elif detect_positive:
-        return torch.isposinf(x)
-    return torch.full_like(x, False, dtype=torch.bool)
+        return torch.where(where, torch.isposinf(x), x)
+    return torch.where(where, torch.full_like(x, False, dtype=torch.bool), x)
 
 
 @handle_numpy_arrays_in_specific_backend
@@ -137,10 +139,11 @@ def less_equal(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.less_equal(x1, x2, out=out)
+    return ivy.where(where, torch.less_equal(x1, x2, out=out), (x1, x2))
 
 
 less_equal.support_native_out = True
@@ -226,20 +229,12 @@ asinh.support_native_out = True
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
-def sign(
-    x: torch.Tensor,
-    /,
-    *,
-    np_variant: Optional[bool] = True,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+def sign(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if "complex" in str(x.dtype):
-        if np_variant:
-            return torch.where(
-                x.real != 0, torch.sign(x.real) + 0.0j, torch.sign(x.imag) + 0.0j
-            )
-        return torch.sgn(x, out=out)
+        return torch.where(
+            x.real != 0, torch.sign(x.real) + 0.0j, torch.sign(x.imag) + 0.0j
+        )
     return torch.sign(x, out=out)
 
 
@@ -266,37 +261,58 @@ def cosh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 cosh.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
-def log10(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def log10(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.log10(x, out=out)
+    return ivy.where(where, torch.log10(x, out=out), x)
 
 
 log10.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
-def log2(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def log2(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.log2(x, out=out)
+    return ivy.where(where, torch.log2(x, out=out), x)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
-def log1p(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def log1p(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.log1p(x, out=out)
+    return ivy.where(where, torch.log1p(x, out=out), x)
 
 
 log1p.support_native_out = True
 
 
 @handle_numpy_arrays_in_specific_backend
-def isnan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def isnan(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.isnan(x)
+    return ivy.where(where, torch.isnan(x), x)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
@@ -306,10 +322,11 @@ def less(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.lt(x1, x2, out=out)
+    return ivy.where(where, torch.lt(x1, x2, out=out), (x1, x2))
 
 
 less.support_native_out = True
@@ -676,10 +693,15 @@ abs.support_native_out = True
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def logaddexp(
-    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.logaddexp(x1, x2, out=out)
+    return ivy.where(where, torch.logaddexp(x1, x2, out=out), (x1, x2))
 
 
 logaddexp.support_native_out = True
@@ -738,11 +760,16 @@ def atan2(
 atan2.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
-def log(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def log(
+    x: torch.Tensor,
+    /,
+    *,
+    where: Union[bool, torch.Tensor] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.log(x, out=out)
+    return ivy.where(where, torch.log(x, out=out), x)
 
 
 log.support_native_out = True

@@ -364,18 +364,19 @@ def isinf(
     *,
     detect_positive: bool = True,
     detect_negative: bool = True,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.zeros_like(x, tf.bool)
     else:
         if detect_negative and detect_positive:
-            return tf.math.is_inf(x)
+            return ivy.where(where, tf.math.is_inf(x), x)
         elif detect_negative:
-            return tf.experimental.numpy.isneginf(x)
+            return ivy.where(where, tf.experimental.numpy.isneginf(x), x)
         elif detect_positive:
-            return tf.experimental.numpy.isposinf(x)
-        return tf.zeros_like(x, tf.bool)
+            return ivy.where(where, tf.experimental.numpy.isposinf(x), x)
+        return ivy.where(where, tf.zeros_like(x, tf.bool), x)
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
@@ -383,12 +384,14 @@ def isnan(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
-        return tf.zeros_like(x, tf.bool)
+        return ivy.where(where, tf.zeros_like(x, tf.bool), x)
+
     else:
-        return tf.math.is_nan(x)
+        return ivy.where(where, tf.math.is_nan(x), x)
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
@@ -409,10 +412,11 @@ def less(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.less(x1, x2)
+    return ivy.where(where, tf.math.less(x1, x2), (x1, x2))
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
@@ -421,46 +425,53 @@ def less_equal(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.less_equal(x1, x2)
+    return ivy.where(where, tf.math.less_equal(x1, x2), (x1, x2))
 
 
 def log(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.log(x)
+    return ivy.where(where, tf.math.log(x), x)
 
 
 def log10(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.log(x) / tf.math.log(tf.constant(10.0, x.dtype))
+    return ivy.where(where, tf.math.log(x), x) / ivy.where(
+        where, tf.math.log(tf.constant(10.0, x.dtype)), x
+    )
 
 
 def log1p(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.log1p(x)
+    return ivy.where(where, tf.math.log1p(x), x)
 
 
 def log2(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.log(x) / tf.math.log(tf.constant(2.0, x.dtype))
+    return ivy.where(where, tf.math.log(x) / tf.math.log(tf.constant(2.0, x.dtype)), x)
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
@@ -469,6 +480,7 @@ def logaddexp(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # ToDo: implement using tf.experimental.numpy.logaddexp if this becomes stable and
@@ -477,7 +489,9 @@ def logaddexp(
     dtype = x1.dtype
     x1 = tf.cast(x1, tf.float64)
     x2 = tf.cast(x2, tf.float64)
-    return ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype)
+    return ivy.where(
+        where, ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype), (x1, x2)
+    )
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, backend_version)
@@ -670,15 +684,12 @@ def sign(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    np_variant: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
-    if x.dtype in [tf.complex64, tf.complex128] and np_variant:
-        real = tf.math.real(x)
-        imag = tf.math.imag(x)
-        return tf.cast(tf.where(real != 0, tf.sign(real), tf.sign(imag)), x.dtype)
+    if ivy.is_complex_dtype(x):
+        return tf.cast(tf.math.sign(tf.math.real(x)), x.dtype)
     return tf.math.sign(x)
 
 
