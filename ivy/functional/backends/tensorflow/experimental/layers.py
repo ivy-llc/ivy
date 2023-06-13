@@ -80,7 +80,6 @@ def _determine_depth_max_pooling_2(
                     "Depthwise max pooling requires the depth window to evenly divide"
                     " the input depth"
                 )
-            x = tf.transpose(x, (0, dims + 1, *range(1, dims + 1)))
             kernel = [kernel[channel_kernel_idx], *[1] * (dims - 1)]
             strides = [strides[channel_kernel_idx], *[1] * (dims - 1)]
         else:
@@ -114,7 +113,7 @@ def max_pool1d(
     kernel = _from_int_to_tuple(kernel, 1)
 
     # determine depth pooling
-    x, kernel, strides, depth_pooling = _determine_depth_max_pooling_2(
+    kernel, strides, depth_pooling = _determine_depth_max_pooling_2(
         x, kernel, strides, 1, data_format=x_format, filter_format=kernel_format
     )
 
@@ -125,9 +124,6 @@ def max_pool1d(
             padding = [(padding[0],) * 2]
 
         if isinstance(padding, (tuple, list)):
-            # TODO: 'check_kernel_padding_size' has potentially a bug
-            # because of the length of the kernel that could be different
-            # than the lenght of the strides. Check and clean this part up later.
             if len(padding) != len(kernel):
                 raise ValueError("Mismatch between the 'padding' and the 'kernel'.")
             ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
@@ -144,6 +140,8 @@ def max_pool1d(
             )
         padding = [(0, 0)] + list(padding) + [(0, 0)]
         x = tf.pad(x, padding, constant_values=-math.inf)
+    else:
+        x = tf.transpose(x, (0, 2, 1))
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
     if depth_pooling:
@@ -223,17 +221,74 @@ def max_pool2d(
 )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    strides: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    dilation = _from_int_to_tuple(dilation, 3)
+    strides = _from_int_to_tuple(strides, 3)
+    kernel = _from_int_to_tuple(kernel, 3)
+
+    x_format, kernel_format = ("channel_last",) * 2
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
-    res = tf.nn.max_pool3d(x, kernel, strides, padding)
+        kernel_format = "channel_first"
+
+    # determine depth pooling
+    kernel, strides, depth_pooling = _determine_depth_max_pooling_2(
+        x, kernel, strides, 3, data_format=x_format, filter_format=kernel_format
+    )
+
+    if not depth_pooling:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * 3
+        elif isinstance(padding, tuple) and len(padding) == 1:
+            padding = [(padding[0],) * 2] * 3
+        elif isinstance(padding, tuple) and len(padding) == 3:
+            padding = [(padding[0],) * 2, (padding[1],) * 2, (padding[2],) * 2]
+
+        if isinstance(padding, (tuple, list)):
+            if len(padding) != len(kernel):
+                raise ValueError("Mismatch between the 'padding' and the 'kernel'.")
+            ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
+        new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(3)]
+        if isinstance(padding, str):
+            pad_d = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
+            pad_h = _handle_padding(x.shape[2], strides[1], new_kernel[1], padding)
+            pad_w = _handle_padding(x.shape[3], strides[2], new_kernel[2], padding)
+            padding = [
+                (pad_h // 2, pad_h - pad_h // 2),
+                (pad_w // 2, pad_w - pad_w // 2),
+                (pad_d // 2, pad_d - pad_d // 2),
+            ]
+
+        x_shape = x.shape[1:-1]
+
+        if ceil_mode:
+            for i in range(3):
+                padding[i] = _padding_ceil_mode(
+                    x_shape[i], new_kernel[i], padding[i], strides[i]
+                )
+        padding = [(0, 0)] + list(padding) + [(0, 0)]
+        x = tf.pad(x, padding, constant_values=-math.inf)
+    else:
+        x = tf.transpose(x, (0, 4, 1, 2, 3))
+    res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
+
+    if depth_pooling:
+        res = tf.transpose(res, (0, 2, 3, 4, 1))
+    # converting minimum value to -inf because tensorflow clips -inf to minimum value
+    res = tf.where(res <= ivy.finfo(res.dtype).min, -math.inf, res)
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res

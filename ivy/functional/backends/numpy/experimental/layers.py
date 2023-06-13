@@ -127,8 +127,14 @@ def max_pool1d(
         x.strides[2],
     )
 
+    # B x OW x KW x I
     sub_matrices = np.lib.stride_tricks.as_strided(
         x, new_shape, new_strides, writeable=False
+    )
+
+    # B x OW x KW x I
+    sub_matrices = np.where(
+        filters.reshape([1] * 2 + list(kernel) + [1]), sub_matrices, -math.inf
     )
 
     res = sub_matrices.max(axis=(2))
@@ -250,12 +256,18 @@ def max_pool2d(
 
 def max_pool3d(
     x: np.ndarray,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    strides: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(kernel, int):
@@ -268,25 +280,62 @@ def max_pool3d(
     elif len(strides) == 1:
         strides = [strides[0]] * 3
 
+    if isinstance(dilation, int):
+        dilation = [dilation] * 3
+    elif len(dilation) == 1:
+        dilation = [dilation[0]] * 3
+
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * 3
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * 3
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2, (padding[2],) * 2]
+
+    if isinstance(padding, (tuple, list)):
+        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
+
     if data_format == "NCDHW":
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
-    x_shape = list(x.shape[1:4])
-    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
-
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            (pad_d // 2, pad_d - pad_d // 2),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
-            (0, 0),
-        ],
-        "edge",
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 3
     )
+    x_shape = list(x.shape[1:4])
+    filters = np.ones((list(kernel)), dtype=x.dtype)
+
+    if not depth_pooling:
+        for j in range(3):
+            if dilation[j] > 1:
+                filters = _add_dilations(filters, dilation[j], axis=j, values=0)
+        kernel = list(filters.shape)
+        pad_list = padding
+        if isinstance(padding, str):
+            pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+            pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+            pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
+            pad_list = [
+                (pad_d // 2, pad_d - pad_d // 2),
+                (pad_h // 2, pad_h - pad_h // 2),
+                (pad_w // 2, pad_w - pad_w // 2),
+            ]
+        pad_list = list(pad_list)
+        if ceil_mode:
+            for i in range(3):
+                pad_list[i] = _padding_ceil_mode(
+                    x_shape[i], kernel[i], pad_list[i], strides[i]
+                )
+
+        x = np.pad(
+            x,
+            [
+                (0, 0),
+                *pad_list,
+                (0, 0),
+            ],
+            "constant",
+            constant_values=-math.inf,
+        )
 
     x_shape = x.shape
     new_d = (x_shape[1] - kernel[0]) // strides[0] + 1
@@ -303,13 +352,21 @@ def max_pool3d(
         x.strides[3],
         x.strides[4],
     )
-    # B x OH x OW x KH x KW x I
+    # B x OD x OH x OW x KD x KH x KW x I
     sub_matrices = np.lib.stride_tricks.as_strided(
         x, new_shape, new_strides, writeable=False
     )
 
-    # B x OH x OW x O
+    # B x OD x OH x OW x KD x KH x KW x I
+    sub_matrices = np.where(
+        filters.reshape([1] * 4 + list(kernel) + [1]), sub_matrices, -math.inf
+    )
+
+    # B x OD x OH x OW x O
     res = sub_matrices.max(axis=(4, 5, 6))
+
+    if depth_pooling:
+        res = np.transpose(res, (0, 2, 3, 4, 1))
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res

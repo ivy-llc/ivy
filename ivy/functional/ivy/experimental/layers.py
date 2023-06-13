@@ -186,12 +186,18 @@ def max_pool2d(
 @handle_device_shifting
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    strides: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -247,7 +253,14 @@ def max_pool3d(
         [[[46., 47.]]]]])
     """
     return ivy.current_backend(x).max_pool3d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
     )
 
 

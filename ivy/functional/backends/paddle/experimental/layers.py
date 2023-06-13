@@ -14,12 +14,14 @@ from .. import backend_version
 
 def max_pool1d(
     x: paddle.Tensor,
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: Union[str, int, Tuple[int]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = x.dtype
@@ -131,12 +133,18 @@ def max_pool2d(
 
 def max_pool3d(
     x: paddle.Tensor,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    strides: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(strides, int):

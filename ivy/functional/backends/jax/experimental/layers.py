@@ -255,19 +255,27 @@ def max_pool2d(
 
 def max_pool3d(
     x: JaxArray,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    strides: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
     if isinstance(kernel, int):
         kernel = (kernel,) * 3
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding, 3)
+    res = general_pool(
+        x, -jnp.inf, jlax.max, kernel, strides, padding, 3, dilation, ceil_mode
+    )
 
     if data_format == "NCDHW":
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
