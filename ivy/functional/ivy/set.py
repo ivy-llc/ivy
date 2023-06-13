@@ -102,7 +102,8 @@ def unique_all(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_all.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.unique_all.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -128,11 +129,11 @@ def unique_all(
     >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
     >>> z = ivy.unique_all(x)
     >>> print(z)
-    Results(values=ivy.array([-1.2119    , -0.62519997, -0.3238    , -0.0545    ,  0.0775    ,
-        0.2577    ,  0.40329999,  0.59439999,  0.74430001,  0.81010002,
-        0.84600002,  0.92979997,         nan,         nan,         nan,
-               nan]),
-        indices=ivy.array([ 4,  6, 12, 11, 14,  9,  7, 13,  8,  1,  3,  2,  0,  5, 10, 15]),
+    Results(values=ivy.array([-1.2119    , -0.62519997, -0.3238    , -0.0545    ,
+        0.0775    ,    0.2577    ,  0.40329999,  0.59439999,  0.74430001,  0.81010002,
+        0.84600002,  0.92979997,         nan,         nan,         nan,         nan]),
+        indices=ivy.array([ 4,  6, 12, 11, 14,  9,  7, 13,  8,  1,  3,  2,  0,  5,
+                            10, 15]),
         inverse_indices=ivy.array([[12,  9, 11, 10],
                                    [ 0, 12,  1,  6],
                                    [ 8,  5, 12,  3],
@@ -207,7 +208,8 @@ def unique_inverse(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_inverse.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.unique_inverse.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -306,7 +308,8 @@ def unique_values(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_values.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.unique_values.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -322,7 +325,8 @@ def unique_values(
     >>> b = ivy.array([1, 2, 3, 4, 5])
     >>> ivy.unique_values(b)
     array([1, 2, 3, 4, 5])
-    >>> c = ivy.array([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 5.0, -0.0, 0.0, float('nan'), float('nan')])
+    >>> c = ivy.array([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 5.0, -0.0, 0.0, float('nan'),
+    ...                float('nan')])
     >>> ivy.unique_values(c)
     array([0., 1., 2., 3., 4., 5., nan, -0.])
 
@@ -390,7 +394,8 @@ def unique_counts(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_counts.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.unique_counts.htmll>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -414,7 +419,8 @@ def unique_counts(
     >>> x = ivy.array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
     >>> y = ivy.unique_counts(x)
     >>> print(y)
-    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998, 2.29999995]),
+    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998,
+                              2.29999995]),
             counts=ivy.array([3, 1, 1, 1, 1]))
 
     With :class:`ivy.Container` input:

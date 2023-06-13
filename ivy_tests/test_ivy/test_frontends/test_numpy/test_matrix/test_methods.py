@@ -105,31 +105,35 @@ def test_numpy_matrix_property_T(matrices):
 def test_numpy_matrix_property_data(matrices):
     data, data_gt = matrices
     # sanity test
-    ivy.utils.assertions.check_equal(type(data.data), type(data_gt.data))
+    ivy.utils.assertions.check_equal(
+        type(data.data), type(data_gt.data), as_array=False
+    )
 
 
 @given(matrices=_property_helper())
 def test_numpy_matrix_property_dtype(matrices):
     data, data_gt = matrices
-    ivy.utils.assertions.check_equal(str(data.dtype), str(data_gt.dtype))
+    ivy.utils.assertions.check_equal(
+        str(data.dtype), str(data_gt.dtype), as_array=False
+    )
 
 
 @given(matrices=_property_helper())
 def test_numpy_matrix_property_ndim(matrices):
     data, data_gt = matrices
-    ivy.utils.assertions.check_equal(data.ndim, data_gt.ndim)
+    ivy.utils.assertions.check_equal(data.ndim, data_gt.ndim, as_array=False)
 
 
 @given(matrices=_property_helper())
 def test_numpy_matrix_property_shape(matrices):
     data, data_gt = matrices
-    ivy.utils.assertions.check_equal(data.shape, data_gt.shape)
+    ivy.utils.assertions.check_equal(data.shape, data_gt.shape, as_array=False)
 
 
 @given(matrices=_property_helper())
 def test_numpy_matrix_property_size(matrices):
     data, data_gt = matrices
-    ivy.utils.assertions.check_equal(data.size, data_gt.size)
+    ivy.utils.assertions.check_equal(data.size, data_gt.size, as_array=False)
 
 
 # argmax

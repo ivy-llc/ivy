@@ -42,15 +42,16 @@ def diff(a, n=1, axis=-1, prepend=None, append=None):
 @to_ivy_arrays_and_back
 def ediff1d(ary, to_end=None, to_begin=None):
     diffs = ivy.diff(ary)
+    diffs_dtype = diffs.dtype
     if to_begin is not None:
         if not isinstance(to_begin, (list, tuple)):
             to_begin = [to_begin]
-        to_begin = ivy.array(to_begin)
+        to_begin = ivy.array(to_begin, dtype=diffs_dtype)
         diffs = ivy.concat((to_begin, diffs))
     if to_end is not None:
         if not isinstance(to_end, (list, tuple)):
             to_end = [to_end]
-        to_end = ivy.array(to_end)
+        to_end = ivy.array(to_end, dtype=diffs_dtype)
         diffs = ivy.concat((diffs, to_end))
     return diffs
 
@@ -621,6 +622,28 @@ def polyint(p, m=1, k=None):
     )
     coeff = ivy.maximum(1, grid).prod(axis=0)[::-1]
     return ivy.divide(ivy.concat((p, k_arr)), coeff).astype(p.dtype)
+
+
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("float16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def polydiv(u, v, *, trim_leading_zeros=False):
+    u, v_arr = ivy.promote_types_of_inputs(u, v)
+    n = v_arr.shape[0] - 1
+    m = u.shape[0] - 1
+    scale = 1.0 / v_arr[0]
+    q = ivy.zeros((max(m - n + 1, 1),), dtype=u.dtype)
+    r = ivy.copy_array(u)
+    for k in range(0, m - n + 1):
+        d = scale * r[k]
+        q[k] = d
+        r[k : k + n + 1] = r[k : k + n + 1] - (d * v_arr)
+    # if trim_leading_zeros:
+    #    r = trim_zeros_tol(r, trim='f')
+    # TODO: need to control tolerance of this function to handle the argument
+    return q, r
 
 
 @to_ivy_arrays_and_back
