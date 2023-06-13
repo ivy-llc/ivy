@@ -82,6 +82,6 @@ def dot(a, b, out=None):
     elif b.ndim == 1:
         return ivy.sum(ivy.multiply(a, b), axis=a.ndim - 1, out=out)
     elif b.ndim >= 2:
-        return ivy.tensordot(a, b, axes=([a.ndim - 1], [b.ndim - 2]))
+        return ivy.tensordot(a, b, axes=([a.ndim - 1], [b.ndim - 2]), out=out)
     else:
         raise ivy.utils.exceptions.IvyException("Input shapes are incompatible")
