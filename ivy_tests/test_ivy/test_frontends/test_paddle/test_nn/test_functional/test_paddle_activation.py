@@ -70,6 +70,33 @@ def test_paddle_hardshrink(
     )
 
 
+# hardswish
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.hardswish",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
+    ),
+)
+def test_paddle_hardswish(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # hardtanh
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.hardtanh",
@@ -283,4 +310,74 @@ def test_paddle_log_softmax(
         x=x[0],
         axis=axis,
         dtype=ivy.as_ivy_dtype(dtypes[0]),
+    )
+
+
+@st.composite
+def _generate_prelu_arrays(draw):
+    arr_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    input = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(arr_size), min_value=0, max_value=10
+        )
+    )
+    weight = draw(
+        helpers.array_values(dtype=dtype[0], shape=(1,), min_value=0, max_value=1.0)
+    )
+    input_weight = input, weight
+    return dtype, input_weight
+
+
+# prelu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.prelu",
+    dtype_input_and_weight=_generate_prelu_arrays(),
+)
+def test_paddle_prelu(
+    *,
+    dtype_input_and_weight,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_input_and_weight
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        weight=x[1],
+    )
+
+
+# celu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.celu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    alpha=helpers.ints(min_value=1, max_value=10),
+)
+def test_paddle_celu(
+    *,
+    dtype_and_x,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        alpha=alpha,
     )

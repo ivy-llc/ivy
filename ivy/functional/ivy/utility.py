@@ -75,7 +75,8 @@ def all(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.utility_functions.all.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.all.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicit
@@ -103,7 +104,8 @@ def all(
     ivy.array(False)
 
     >>> x = ivy.array(False)
-    >>> y = ivy.all(ivy.array([[[0],[1]],[[1],[1]]]),axis=(0,1,2), out=x, keepdims=False)
+    >>> y = ivy.all(ivy.array([[[0], [1]], [[1], [1]]]), axis=(0,1,2), out=x,
+    ...             keepdims=False)
     >>> print(y)
     ivy.array(False)
 
@@ -186,7 +188,8 @@ def any(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.utility_functions.any.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.any.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicit

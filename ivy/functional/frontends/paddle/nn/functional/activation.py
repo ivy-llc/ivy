@@ -38,6 +38,14 @@ def hardshrink(x, threshold=0.5, name=None):
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def hardswish(x, name=None):
+    relu6_val = ivy.relu6(ivy.add(x, 3))
+    ret = ivy.multiply(x, ivy.divide(relu6_val, 6))
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def hardtanh(
     x,
     /,
@@ -102,4 +110,24 @@ def log_softmax(x, axis=-1, dtype=None, name=None):
     x = ivy.astype(x, dtype) if dtype else x
     ret = ivy.log_softmax(x, axis=axis)
     ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def prelu(x, weight, data_format="NCHW", name=None):
+    return ivy.add(ivy.maximum(0, x), ivy.multiply(weight, ivy.minimum(0, x)))
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def celu(
+    x,
+    /,
+    *,
+    alpha=1.0,
+    name=None,
+):
+    prod = alpha * (ivy.exp(x / alpha) - 1)
+    ret = ivy.maximum(0, x) + ivy.minimum(0, prod)
     return ret

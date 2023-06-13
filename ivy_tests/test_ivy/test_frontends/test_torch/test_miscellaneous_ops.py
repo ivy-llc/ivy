@@ -543,7 +543,7 @@ def test_torch_trace(
     row=st.integers(min_value=1, max_value=10),
     col=st.integers(min_value=1, max_value=10),
     offset=st.integers(min_value=-8, max_value=8),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_torch_tril_indices(
     *,
@@ -669,7 +669,7 @@ def test_torch_flatten(
     fn_tree="torch.renorm",
     dtype_and_values=helpers.dtype_and_values(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         max_value=1e4,
         min_value=-1e4,
     ),
@@ -855,8 +855,10 @@ def test_torch_rot90(
         shape=st.tuples(
             st.integers(min_value=1, max_value=5),
         ),
+        min_num_dims=0,
+        max_num_dims=5,
     ),
-    N=st.integers(min_value=0, max_value=5),
+    N=st.integers(min_value=1, max_value=10) | st.none(),
     increasing=st.booleans(),
 )
 def test_torch_vander(

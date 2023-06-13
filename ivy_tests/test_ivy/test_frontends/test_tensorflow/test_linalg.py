@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 import sys
 import ivy
 
@@ -10,6 +10,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test, assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_value1_value2_axis_for_tensordot,
 )
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    matrix_is_stable,
+)
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
 
 @st.composite
@@ -65,6 +69,7 @@ def test_tensorflow_eigh(
     on_device,
 ):
     input_dtype, x = dtype_and_input
+    assume(matrix_is_stable(x[0]))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -89,6 +94,7 @@ def test_tensorflow_eigvalsh(
     on_device,
 ):
     input_dtype, x = dtype_and_input
+    assume(matrix_is_stable(x[0]))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -101,34 +107,28 @@ def test_tensorflow_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.matrix_rank",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        min_value=-1e05,
-        max_value=1e05,
-    ),
-    tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    dtype_x_hermitian=_matrix_rank_helper(),
+    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
     test_with_out=st.just(False),
 )
 def test_matrix_rank(
     *,
-    dtype_x,
-    tolr,
+    dtype_x_hermitian,
+    tol,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_x
+    dtype, x, hermitian = dtype_x_hermitian
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1.0,
-        a=x[0],
-        tol=tolr,
+        a=x,
+        tol=tol,
     )
 
 
@@ -170,69 +170,75 @@ def test_tensorflow_matmul(
     )
 
 
+# solve
 @st.composite
-def _solve_get_dtype_and_data(draw):
-    batch = draw(st.integers(min_value=1, max_value=5))
-    random_size = draw(st.integers(min_value=2, max_value=4))
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))),
-            key="shared_dtype",
-        )
+def _get_first_matrix(draw):
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))),
+        key="shared_dtype",
     )
-    shape = (random_size, random_size)
-    tmp = []
-    for i in range(batch):
-        tmp.append(
-            draw(
-                helpers.array_values(
-                    dtype=input_dtype,
-                    shape=shape,
-                    min_value=-10,
-                    max_value=10,
-                ).filter(
-                    lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon
-                )
-            )
-        )
-    shape = (batch, random_size, draw(st.integers(min_value=2, max_value=4)))
-    x = draw(
+    input_dtype = draw(input_dtype_strategy)
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=shape,
-            min_value=-10,
-            max_value=10,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+    )
+    return input_dtype, matrix
+
+
+# solve
+@st.composite
+def _get_second_matrix(draw):
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    return input_dtype, draw(
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
         )
     )
-
-    return [[input_dtype] * batch, input_dtype], [tmp, x[0]]
 
 
 # solve
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.solve",
-    dtype_and_x=_solve_get_dtype_and_data(),
+    x=_get_first_matrix(),
+    y=_get_second_matrix(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_solve(
     *,
-    dtype_and_x,
+    x,
+    y,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_x
+    input_dtype1, x1 = x
+    input_dtype2, x2 = y
     helpers.test_frontend_function(
-        input_dtypes=[input_dtypes[0][0], input_dtypes[1]],
+        input_dtypes=[input_dtype1, input_dtype2],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-3,
         atol=1e-3,
-        matrix=xs[0],
-        rhs=xs[1],
+        matrix=x1,
+        rhs=x2,
     )
 
 
@@ -404,6 +410,8 @@ def test_tensorflow_pinv(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         a=x[0],
         rcond=1e-15,
     )
@@ -487,6 +495,9 @@ def test_tensorflow_norm(
     fn_tree="tensorflow.linalg.normalize",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=1,

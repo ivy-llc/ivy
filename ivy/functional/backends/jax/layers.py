@@ -313,6 +313,9 @@ def conv_general_dilated(
                 (new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)
             ]
     df = _get_x_data_format(dims, data_format)
+    promoted_type = jnp.promote_types(x.dtype, filters.dtype)
+    x = x.astype(promoted_type)
+    filters = filters.astype(promoted_type)
     res = jlax.conv_general_dilated(
         x,
         filters,

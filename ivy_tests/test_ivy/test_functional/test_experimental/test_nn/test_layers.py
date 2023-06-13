@@ -535,7 +535,7 @@ def test_fft(
     training=st.booleans(),
     data_format=st.sampled_from(["NWC", "NCW"]),
     test_gradients=st.just(False),
-    test_with_out=st.just(False),
+    test_with_out=st.just(True),
 )
 def test_dropout1d(
     *,
@@ -572,6 +572,59 @@ def test_dropout1d(
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.dropout2d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        allow_inf=False,
+        min_num_dims=3,
+        max_num_dims=4,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    prob=helpers.floats(min_value=0, max_value=0.9),
+    training=st.booleans(),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
+    test_gradients=st.just(False),
+    test_with_out=st.just(True),
+)
+def test_dropout2d(
+    *,
+    dtype_and_x,
+    prob,
+    training,
+    data_format,
+    test_flags,
+    backend_fw,
+    on_device,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_and_x
+    ret, gt_ret = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        test_values=False,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        prob=prob,
+        training=training,
+        data_format=data_format,
+        return_flat_np_arrays=True,
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    for u, v, w in zip(ret, gt_ret, x):
+        # cardinality test
+        assert u.shape == v.shape == w.shape
+
+
+# dropout3d
+@handle_test(
     fn_tree="functional.ivy.experimental.dropout3d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -587,7 +640,7 @@ def test_dropout1d(
     training=st.booleans(),
     data_format=st.sampled_from(["NCDHW", "NDHWC"]),
     test_gradients=st.just(False),
-    test_with_out=st.just(False),
+    test_with_out=st.just(True),
 )
 def test_dropout3d(
     *,

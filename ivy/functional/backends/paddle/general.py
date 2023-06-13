@@ -344,6 +344,8 @@ def inplace_update(
             paddle.assign(val_native, x_native)
         else:
             x_native = val_native
+        if ivy.is_native_array(x):
+            return x_native
         if ivy.is_ivy_array(x):
             x.data = x_native
         else:
@@ -375,8 +377,8 @@ def scatter_flat(
     if indices.dtype not in [paddle.int32, paddle.int64]:
         indices = indices.cast("int64")
     if ivy.exists(size) and ivy.exists(out):
-        ivy.utils.assertions.check_equal(out.ndim, 1)
-        ivy.utils.assertions.check_equal(out.shape[0], size)
+        ivy.utils.assertions.check_equal(out.ndim, 1, as_array=False)
+        ivy.utils.assertions.check_equal(out.shape[0], size, as_array=False)
     return paddle_backend.scatter_nd(
         indices.unsqueeze(-1), updates, shape=[size], reduction=reduction, out=out
     )
@@ -582,7 +584,7 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = paddle.to_tensor(indices)
         if len(indices.shape) < 2:
-            indices = paddle_backend.expand_dims(indices, axis=0)
+            indices = paddle_backend.expand_dims(indices, axis=-1)
         if paddle_backend.any(indices < 0):
             shape = list(shape) if ivy.exists(shape) else list(out.shape)
             indices = _parse_index(indices, shape)
@@ -615,7 +617,7 @@ def scatter_nd(
                 )
                 for index in indices
             ]
-            indices = paddle_backend.concat(indices, axis=0)
+            indices = paddle_backend.concat(indices, axis=-1)
     # broadcast updates to correct shape
     shape = list(shape) if shape is not None else None
     expected_shape = (
@@ -630,12 +632,15 @@ def scatter_nd(
         if sum(indices.shape) < sum(indices_shape):
             indices = paddle_backend.broadcast_to(indices, indices_shape)
         else:
-            updates = paddle_backend.broadcast_to(updates, expected_shape)
+            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
+                updates = paddle_backend.reshape(updates, expected_shape)
     # implementation
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(
+            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
+        )
     shape = list(shape) if ivy.exists(shape) else out.shape
     if not target_given:
         target = paddle.zeros(shape=shape).astype(updates.dtype)
@@ -709,6 +714,7 @@ def vmap(
                 message="""in_axes should have a length equivalent to the number
                 of positional arguments to the function being vectorized or it
                 should be an integer""",
+                as_array=False,
             )
 
         # checking axis_size consistency
@@ -732,6 +738,7 @@ def vmap(
             ivy.utils.assertions.check_any(
                 [ivy.exists(ax) for ax in in_axes],
                 message="At least one of the axes should be specified (not None)",
+                as_array=False,
             )
         else:
             ivy.utils.assertions.check_exists(
