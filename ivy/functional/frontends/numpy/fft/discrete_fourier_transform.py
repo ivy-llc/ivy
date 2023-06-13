@@ -133,10 +133,6 @@ def rfft2(a, s=None, axes=(-2, -1), norm=None):
     a = ivy.array(a, dtype=ivy.float64)
     if norm is None:
         norm = "backward"
-    elif norm not in ["backward", "ortho", "forward"]:
-        raise ValueError(
-            "Invalid norm. Supported norms are 'backward', 'ortho', and 'forward'."
-        )
     if s is not None:
         s = tuple(s)
     return ivy.dft(a, axes=axes, inverse=False, onesided=True, dft_length=s, norm=norm)
