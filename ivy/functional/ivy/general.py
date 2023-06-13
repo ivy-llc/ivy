@@ -187,7 +187,6 @@ def get_referrers_recursive(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
@@ -224,7 +223,6 @@ def is_native_array(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:

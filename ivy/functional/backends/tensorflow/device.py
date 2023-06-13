@@ -102,7 +102,7 @@ def tpu_is_available() -> bool:
 def handle_soft_device_variable(*args, **kwargs):
     if not ivy.get_soft_device_mode():
         default_device = ivy.default_device()
-        indices = ivy.nested_argwhere(args, lambda x: ivy.dev(x) != default_device, stop_after_n_found=1)
+        indices = ivy.nested_argwhere(args, lambda x: ivy.dev(x) != default_device if isinstance(x, tf.Tensor) else False, stop_after_n_found=1)
         if len(indices) > 0:
             raise ivy.utils.exceptions.IvyBackendException(
                 "Expected all input arrays to be on the same device "

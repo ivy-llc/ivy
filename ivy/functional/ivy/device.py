@@ -351,7 +351,6 @@ def get_soft_device_mode() -> bool:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
 def dev(
@@ -901,7 +900,6 @@ def unset_default_device() -> None:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
