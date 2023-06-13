@@ -415,7 +415,7 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with native arrays passed in the arguments.
         """
-        if not ivy.get_array_mode():
+        if not ivy.array_mode:
             return fn(*args, **kwargs)
         # check if kwargs contains an out argument, and if so, remove it
         has_out = False
@@ -476,9 +476,7 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
     def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
@@ -491,9 +489,7 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
@@ -536,7 +532,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         # convert all arrays in the return to `ivy.Array` instances
         return (
             ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
-            if ivy.get_array_mode()
+            if ivy.array_mode
             else ret
         )
 
@@ -948,7 +944,7 @@ def handle_nestable(fn: Callable) -> Callable:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs
             )
-        if ivy.get_nestable_mode() and (
+        if ivy.nestable_mode and (
             ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
             or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
         ):
@@ -1271,7 +1267,7 @@ def handle_nans(fn: Callable) -> Callable:
             The return of the function, with handling of inputs based
             on the selected `nan_policy`.
         """
-        nan_policy = ivy.get_nan_policy()
+        nan_policy = ivy.nan_policy
         # skip the check if the current nan policy is `nothing``
         if nan_policy == "nothing":
             return fn(*args, **kwargs)
@@ -1606,7 +1602,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
 class override(contextlib.ContextDecorator):
     def __call__(self, func=None):
         if func:
-            setattr(func, "override")
+            setattr(func, "override", "override")
             return func
 
     def __enter__(self):

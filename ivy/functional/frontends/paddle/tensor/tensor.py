@@ -102,6 +102,7 @@ class Tensor:
     def ceil(self):
         return paddle_frontend.ceil(self)
 
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, "paddle")
     def asinh(self, name=None):
         return ivy.asinh(self._ivy_array)
 
@@ -137,3 +138,14 @@ class Tensor:
     def subtract(self, other, name=None):
         other_ivy = _to_ivy_array(other)
         return ivy.subtract(self._ivy_array, other_ivy)
+    def log10(self, name=None):
+        return ivy.log10(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def argsort(self, axis=-1, descending=False, name=None):
+        return ivy.argsort(self._ivy_array, axis=axis, descending=descending)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def floor(self, name=None):
+        return ivy.floor(self._ivy_array)
+
