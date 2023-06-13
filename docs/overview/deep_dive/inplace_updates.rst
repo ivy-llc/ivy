@@ -21,7 +21,7 @@ Inplace Updates
 .. _`ivy.inplace_update`: https://github.com/unifyai/ivy/blob/3a21a6bef52b93989f2fa2fa90e3b0f08cc2eb1b/ivy/functional/ivy/general.py#L1137
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`inplace updates channel`: https://discord.com/channels/799879767196958751/982738152236130335
+.. _`inplace updates channel`: https://discord.com/channels/799879767196958751/1028681763947552778
 .. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
 .. _`in the decorator`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L832
 .. _`checks the module`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L780

@@ -425,7 +425,7 @@ class ndarray:
         return len(self.ivy_array)
 
     def __eq__(self, value, /):
-        return ivy.array(np_frontend.equal(self, value), dtype=ivy.bool)
+        return np_frontend.equal(self, value)
 
     def __ge__(self, value, /):
         return np_frontend.greater_equal(self, value)
@@ -513,7 +513,7 @@ class ndarray:
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ndarray not supported")
-        for i in range(self.ndim):
+        for i in range(self.shape[0]):
             yield self[i]
 
     def __mod__(self, value, /):

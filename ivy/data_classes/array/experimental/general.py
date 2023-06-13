@@ -10,7 +10,7 @@ class _ArrayWithGeneralExperimental(abc.ABC):
     def reduce(
         self: ivy.Array,
         init_value: Union[int, float],
-        func: Callable,
+        computation: Callable,
         /,
         *,
         axes: Union[int, Sequence[int]] = 0,
@@ -27,7 +27,7 @@ class _ArrayWithGeneralExperimental(abc.ABC):
             The array to act on.
         init_value
             The value with which to start the reduction.
-        func
+        computation
             The reduction function.
         axes
             The dimensions along which the reduction is performed.
@@ -46,4 +46,4 @@ class _ArrayWithGeneralExperimental(abc.ABC):
         >>> x.reduce(0, ivy.add, 0)
         ivy.array([6, 15])
         """
-        return ivy.reduce(self, init_value, func, axes=axes, keepdims=keepdims)
+        return ivy.reduce(self, init_value, computation, axes=axes, keepdims=keepdims)

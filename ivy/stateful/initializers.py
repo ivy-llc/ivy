@@ -184,6 +184,7 @@ class Uniform(Initializer):
                     "input_channels and output_channels must both be"
                     " specified for fan_sum denominator mode."
                 ),
+                as_array=False,
             )
             fan = fan_in + fan_out
         elif self._fan_mode == "fan_avg":
@@ -196,6 +197,7 @@ class Uniform(Initializer):
                     "input_channels and output_channels must both be"
                     " specified for fan_avg denominator mode."
                 ),
+                as_array=False,
             )
             fan = (fan_in + fan_out) / 2
         else:
@@ -336,6 +338,7 @@ class KaimingNormal(Initializer):
                     "input_channels and output_channels must both be"
                     " specified for fan_sum denominator mode."
                 ),
+                as_array=False,
             )
             fan = fan_in + fan_out
         elif self._fan_mode == "fan_avg":
@@ -348,6 +351,7 @@ class KaimingNormal(Initializer):
                     "input_channels and output_channels must both be"
                     " specified for fan_avg denominator mode."
                 ),
+                as_array=False,
             )
             fan = (fan_in + fan_out) / 2
         else:
