@@ -1275,12 +1275,10 @@ def test_torch_multi_dot(
         and np.linalg.det(x[1][0][:, :-1]) != 0
         and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
     ),
-    dtype_and_data2=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("bool")),
 )
 def test_torch_solve_ex(
     *,
     dtype_and_data,
-    dtype_and_data2,
     on_device,
     fn_tree,
     frontend,
@@ -1289,11 +1287,10 @@ def test_torch_solve_ex(
     input_dtype, data = dtype_and_data
     input = data[0][:, :-1]
     other = data[0][:, -1].reshape(-1, 1)
-    check_dtype, check = dtype_and_data2
-    check = check[0]
+    check = st.booleans()
     test_flags.num_positional_args = 3
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype[0], input_dtype[0], check_dtype[0]],
+        input_dtypes=[input_dtype[0], input_dtype[0]],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
