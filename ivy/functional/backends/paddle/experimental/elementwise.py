@@ -33,6 +33,10 @@ def fmax(
     return paddle.fmax(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}},
+    backend_version
+)
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
 
