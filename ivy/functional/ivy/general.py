@@ -422,6 +422,9 @@ def set_array_mode(mode: bool) -> None:
     Set the mode of whether to convert inputs to ivy.NativeArray, then convert outputs
     back to ivy.Array.
 
+    It Stops the conversion of ivy.NativeArray to ivy.Array in the
+    case when it is set to False.
+
     Parameter
     ---------
     mode
