@@ -150,11 +150,12 @@ class Tensor:
     def floor(self, name=None):
         return ivy.floor(self._ivy_array)
 
-    @with_supported_dtypes({"2.4.2 and below": ("float16", "float32", "float64")}, "paddle")
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("float16", "float32", "float64")}, "paddle"
+    )
     def tanh(self, name=None):
         return ivy.tanh(self._ivy_array)
 
     @with_supported_dtypes({"2.4.3 and above": ("float32", "float64")}, "paddle")
     def add_(self, name=None):
         return ivy.add_(self._ivy_array)
-
