@@ -47,6 +47,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination
             Destination positions for each of the original axes.
             These must also be unique.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -101,6 +108,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination
             Destination positions for each of the original axes.
             These must also be unique.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -234,6 +248,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         m
             the container with arrays to be flipped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -285,6 +306,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             the container with arrays to be flipped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -816,6 +844,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         m
             the container with arrays to be flipped. Arrays must be at least 2-D.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -877,6 +912,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             the container with arrays to be flipped. Arrays must be at least 2-D.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -1014,6 +1056,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         x
             input container to flatten at leaves.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -1087,6 +1136,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             input container to flatten at leaves.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -1265,6 +1321,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         ary
             the container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
@@ -1342,6 +1405,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             the container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
@@ -1410,6 +1480,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a sequence of ints or 1-D array,
             then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1485,6 +1562,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a sequence of ints or 1-D array,
             then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -1538,6 +1622,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1597,6 +1688,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             the container with array inputs.
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1746,6 +1844,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1805,6 +1910,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             container with array inputs.
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1868,6 +1980,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1931,6 +2050,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             container with array inputs.
         arys
             one or more container with array inputs.
+            
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
