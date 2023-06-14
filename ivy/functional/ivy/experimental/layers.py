@@ -507,7 +507,7 @@ def pool(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Performs an N-D pooling operation.
+    Perform an N-D pooling operation.
 
     Parameters
     ----------
