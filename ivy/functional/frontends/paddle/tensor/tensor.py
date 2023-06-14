@@ -158,4 +158,4 @@ class Tensor:
 
     @with_supported_dtypes({"2.4.3 and above": ("float32", "float64")}, "paddle")
     def add_(self, name=None):
-        return ivy.add_(self._ivy_array)
+        return ivy.add(self._ivy_array)
