@@ -29,6 +29,7 @@ def test_paddle_uniform(
     fn_tree,
 ):
     helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
