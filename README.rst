@@ -116,7 +116,7 @@ Unified AI
         </a>
         <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         
-        <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://numpy.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
         </a>
