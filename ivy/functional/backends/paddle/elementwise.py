@@ -221,7 +221,17 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.asinh(x)
 
 
-def sign(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
+def sign(
+    x: paddle.Tensor,
+    /,
+    *,
+    np_variant: Optional[bool] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,

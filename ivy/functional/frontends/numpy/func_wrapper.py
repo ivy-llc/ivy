@@ -119,6 +119,7 @@ def _assert_no_scalar(args, dtype, none=False):
                 type(args[0]),
                 check_dtype,
                 message="type of input is incompatible with dtype {}".format(dtype),
+                as_array=False,
             )
             if ivy.as_ivy_dtype(dtype) not in ["float64", "int8", "int64", "uint8"]:
                 if type(args[0]) == int:
@@ -128,7 +129,9 @@ def _assert_no_scalar(args, dtype, none=False):
                         inverse=True,
                     )
                 elif type(args[0]) == float:
-                    ivy.utils.assertions.check_equal(dtype, "float32", inverse=True)
+                    ivy.utils.assertions.check_equal(
+                        dtype, "float32", inverse=True, as_array=False
+                    )
 
 
 def handle_numpy_dtype(fn: Callable) -> Callable:
@@ -248,6 +251,7 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
                 ivy.as_ivy_dtype(dtype),
                 "bool",
                 message="output is compatible with bool only",
+                as_array=False,
             )
 
         return fn(*args, **kwargs)
@@ -373,6 +377,9 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
+            if ivy.current_backend_str() == "jax":
+                import jax
+                jax.config.update("jax_enable_x64", True)
             (
                 ivy.set_default_int_dtype("int64")
                 if platform.system() != "Windows"
@@ -398,7 +405,7 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
                 if set_default_dtype:
                     ivy.unset_default_int_dtype()
                     ivy.unset_default_float_dtype()
-        if not ivy.get_array_mode():
+        if not ivy.array_mode:
             return ret
         # convert all returned arrays to `ndarray` instances
         if order == "F":
