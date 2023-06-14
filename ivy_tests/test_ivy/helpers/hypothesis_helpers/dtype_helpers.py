@@ -1,5 +1,5 @@
 # global
-
+from itertools import combinations
 
 import numpy as np
 from hypothesis import strategies as st
@@ -24,11 +24,16 @@ _dtype_kind_keys = {
     "integer",
     "signed_integer",
     "complex",
-    "real_and_complex",
-    "float_and_integer",
-    "float_and_complex",
     "bool",
 }
+
+
+def get_dtype_combinations(keys):
+    return set(["_and_".join(combination)
+           for r in range(1, len(keys)+1)
+           for combination in combinations(keys, r)])
+
+_dtype_kind_keys = _dtype_kind_keys.union(get_dtype_combinations(_dtype_kind_keys))
 
 
 def _get_fn_dtypes(framework, kind="valid"):
