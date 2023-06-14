@@ -142,6 +142,16 @@ def handle_soft_device_variable(*args, **kwargs):
             [args, kwargs],
             lambda x: (x.to_device(default_device) if isinstance(x, ivy.Array) else x),
         )
+    else:
+        inputs = list(args)
+        inputs.extend(kwargs.values())
+        devices = set(ivy.dev(x) for x in inputs if isinstance(x, ivy.Array))
+        if len(devices) > 1:
+            raise ivy.utils.exceptions.IvyException(
+                "Expected all input arrays to be on the same device ",
+                "but found atleast two devices - {}".format(devices),
+                "Set `ivy.set_soft_device_mode(True)` to handle this problem.",
+            )
     return args, kwargs
 
 
