@@ -1,12 +1,26 @@
-# uses the base image which has cuda and cudnn installed(multiple versions) and then installs the
-# latest frameworks and the requirements
-FROM unifyai/multicuda:base
+# Builds the image from nvidia's hosted NGC container for amd64/arm64, which has
+#   cuda, cudnn, and tensorrt.
+FROM nvcr.io/nvidia/tensorrt:23.05-py3
 WORKDIR /ivy
-ARG fw
 
+ARG fw
 ARG pycon=3.10
 
+
+# Copied the multicuda base operations into this containers construction
 ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list && \
+    apt-get update && \
+    apt-get upgrade -o Dir::Etc::SourceList=/etc/apt/security.sources.list -y &&\
+    apt-get -y update && \
+    apt-get install -y gnupg  \
+    curl  \
+    wget  \
+    software-properties-common  \
+    gcc  \
+    nano
+
 
 # Install miniconda
 ENV CONDA_DIR /opt/miniconda/
@@ -77,7 +91,8 @@ ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/jax:/opt/fw/torch:/opt/fw/te
 
 
 
-
+# setup the default array api with the environment variable specified in `_array_module.py`
+ENV ARRAY_API_TESTS_MODULE "numpy"
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
