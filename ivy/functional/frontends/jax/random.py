@@ -80,7 +80,7 @@ def cauchy(key, shape=(), dtype="float64"):
 )
 def poisson(key, lam, shape=None, dtype=None):
     seed = _get_seed(key)
-    return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed)
+    return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed, fill_value=-1)
 
 
 @handle_jax_dtype

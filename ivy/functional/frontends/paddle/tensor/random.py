@@ -20,5 +20,10 @@ def uniform(shape, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
+
 def poisson(x, name=None):
     return ivy.poisson(x, shape=None, device=None, dtype=None, seed=None, out=None)
+
+def randn(shape, dtype=None, seed=0, name=None):
+    return ivy.random_normal(shape=shape, dtype=dtype, seed=seed)
+
