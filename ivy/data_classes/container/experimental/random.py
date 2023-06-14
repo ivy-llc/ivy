@@ -144,7 +144,7 @@ class _ContainerWithRandomExperimental(ContainerBase):
 
     @staticmethod
     def static_beta(
-        alpha: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
+        alpha: ivy.Container,
         beta: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -216,10 +216,9 @@ class _ContainerWithRandomExperimental(ContainerBase):
 
     def beta(
         self: ivy.Container,
+        beta: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        alpha: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
-        beta: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -273,7 +272,6 @@ class _ContainerWithRandomExperimental(ContainerBase):
         """
         return self.static_beta(
             self,
-            alpha,
             beta,
             shape=shape,
             key_chains=key_chains,
@@ -298,6 +296,7 @@ class _ContainerWithRandomExperimental(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         seed: Optional[int] = None,
+        fill_value: Optional[Union[float, int]] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -320,7 +319,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
         seed
-            A python integer. Used to create a random seed distribution
+            A python integer. Used to create a random seed distribution.
+        fill_value
+            if lam is negative, fill the output array with this value
+            on that specific dimension.
         out
             optional output container, for writing the result to.
 
@@ -351,6 +353,8 @@ class _ContainerWithRandomExperimental(ContainerBase):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
+            fill_value=fill_value,
             out=out,
         )
 
@@ -362,6 +366,7 @@ class _ContainerWithRandomExperimental(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         seed: Optional[int] = None,
+        fill_value: Optional[Union[float, int]] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -384,7 +389,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
         seed
-            A python integer. Used to create a random seed distribution
+            A python integer. Used to create a random seed distribution.
+        fill_value
+            if lam is negative, fill the output array with this value
+            on that specific dimension.
         out
             optional output container, for writing the result to.
 
@@ -411,6 +419,7 @@ class _ContainerWithRandomExperimental(ContainerBase):
             device=device,
             dtype=dtype,
             seed=seed,
+            fill_value=fill_value,
             out=out,
         )
 
@@ -539,6 +548,135 @@ class _ContainerWithRandomExperimental(ContainerBase):
         return self.static_bernoulli(
             self,
             logits=logits,
+            shape=shape,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )
+
+    @staticmethod
+    def static_gamma(
+        alpha: ivy.Container,
+        beta: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        device: Optional[str] = None,
+        dtype: Optional[str] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container static method variant of ivy.gamma. This method simply wraps the
+        function, and so the docstring for ivy.gamma also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        alpha
+            First parameter of the distribution.
+        beta
+            Second parameter of the distribution.
+        shape
+            If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.
+            (Default value = 'None', where 'ivy.shape(logits)' samples are drawn)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None).
+
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output array data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
+
+        out
+            Optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the parameterized gamma distribution with the shape of
+            the input Container.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "gamma",
+            alpha,
+            beta,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            shape=shape,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )
+
+    def gamma(
+        self: ivy.Container,
+        beta: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        device: Optional[str] = None,
+        dtype: Optional[str] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container method variant of ivy.gamma. This method simply wraps the
+        function, and so the docstring for ivy.gamma also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            First parameter of the distribution.
+        beta
+            Second parameter of the distribution.
+        shape
+            If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.
+            (Default value = 'None', where 'ivy.shape(logits)' samples are drawn)
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None).
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output array data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
+         out
+            Optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the parameterized gamma distribution with the shape of
+            the input Container.
+        """
+        return self.static_gamma(
+            self,
+            beta,
             shape=shape,
             device=device,
             dtype=dtype,

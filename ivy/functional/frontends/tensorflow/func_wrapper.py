@@ -7,11 +7,14 @@ import functools
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as frontend
+import ivy.functional.frontends.numpy as np_frontend
 
 
 def to_ivy_dtype(dtype):
     if not dtype or isinstance(dtype, str):
         return dtype
+    if isinstance(dtype, np_frontend.dtype):
+        return dtype.ivy_dtype
     return frontend.as_dtype(dtype).ivy_dtype
 
 
@@ -35,8 +38,10 @@ def handle_tf_dtype(fn: Callable) -> Callable:
         elif len(args) == (dtype_pos + 1):
             dtype = args[dtype_pos]
             args = args[:-1]
-        dtype = to_ivy_dtype(dtype)
-        return fn(*args, dtype=dtype, **kwargs)
+        if dtype is not None:
+            dtype = to_ivy_dtype(dtype)
+            return fn(*args, dtype=dtype, **kwargs)
+        return fn(*args, **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
     _handle_tf_dtype.handle_tf_dtype = True

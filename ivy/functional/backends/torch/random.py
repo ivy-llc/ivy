@@ -28,7 +28,7 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     rand_range = high - low
     if seed:
         torch.manual_seed(seed)
@@ -50,7 +50,7 @@ def random_normal(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     dtype = ivy.as_native_dtype(dtype)
     if seed:
         torch.manual_seed(seed)
@@ -62,7 +62,7 @@ def random_normal(
 random_normal.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -108,7 +108,7 @@ def randint(
         dtype = ivy.default_int_dtype()
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     rand_range = high - low
     if seed:
         torch.manual_seed(seed)
@@ -123,6 +123,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 def shuffle(
     x: torch.Tensor,
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,

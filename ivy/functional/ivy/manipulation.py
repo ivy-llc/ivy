@@ -35,11 +35,11 @@ def _calculate_out_shape(axis, array_shape):
 # -------------------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -75,7 +75,8 @@ def concat(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.concat.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -92,19 +93,19 @@ def concat(
     return current_backend(xs[0]).concat(xs, axis=axis, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
-    axis: Union[int, Sequence[int]],
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -135,8 +136,9 @@ def expand_dims(
 
 
     This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring # noqa
-    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html>`_ # noqa
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an
+    extension of the `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.expand_dims.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -221,13 +223,13 @@ def expand_dims(
     return current_backend(x).expand_dims(x, copy=copy, axis=axis, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -261,7 +263,8 @@ def flip(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.flip.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.flip.html>`_
     in the standard.
 
 
@@ -308,13 +311,13 @@ def flip(
     return current_backend(x).flip(x, copy=copy, axis=axis, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -346,7 +349,8 @@ def permute_dims(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.permute_dims.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.permute_dims.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -400,13 +404,13 @@ def permute_dims(
     return current_backend(x).permute_dims(x, axes, copy=copy, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -458,7 +462,8 @@ def reshape(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.reshape.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -520,12 +525,12 @@ def reshape(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -569,7 +574,8 @@ def roll(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.roll.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -630,13 +636,13 @@ def roll(
     return current_backend(x).roll(x, shift, axis=axis, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -667,7 +673,8 @@ def squeeze(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.squeeze.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -716,11 +723,11 @@ def squeeze(
     return current_backend(x).squeeze(x, axis, copy=copy, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def stack(
     arrays: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -767,7 +774,8 @@ def stack(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.stack.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -803,11 +811,11 @@ def stack(
 # ------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
@@ -928,12 +936,12 @@ def clip(
     return current_backend(x).clip(x, x_min, x_max, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1015,12 +1023,12 @@ def constant_pad(
     return current_backend(x).constant_pad(x, pad_width=pad_width, value=value, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1086,18 +1094,20 @@ def repeat(
     return current_backend(x).repeat(x, repeats, axis=axis, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@to_native_arrays_and_back
+@handle_array_function
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    num_or_size_splits: Optional[
+        Union[int, Sequence[int], ivy.Array, ivy.NativeArray]
+    ] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[ivy.Array]:
@@ -1110,8 +1120,8 @@ def split(
         array to be divided into sub-arrays.
     num_or_size_splits
         Number of equal arrays to divide the array into along the given axis if an
-        integer. The size of each split element if a sequence of integers. Default is to
-        divide into as many 1-dimensional arrays as the axis dimension.
+        integer. The size of each split element if a sequence of integers or 1-D array.
+        Default is to divide into as many 1-dimensional arrays as the axis dimension.
     axis
         The axis along which to split, default is ``0``.
     with_remainder
@@ -1164,13 +1174,13 @@ def split(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -1269,11 +1279,11 @@ def swapaxes(
     return current_backend(x).swapaxes(x, axis0, axis1, copy=copy, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1348,12 +1358,12 @@ def tile(
     return current_backend(x).tile(x, repeats, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_view
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@to_native_arrays_and_back
+@handle_array_function
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1437,12 +1447,12 @@ def unstack(
     return current_backend(x).unstack(x, copy=copy, axis=axis, keepdims=keepdims)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1471,7 +1481,8 @@ def zero_pad(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.concat.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

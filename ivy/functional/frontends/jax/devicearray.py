@@ -7,9 +7,7 @@ import ivy.functional.frontends.jax as jax_frontend
 
 class DeviceArray:
     def __init__(self, array, weak_type=False):
-        self._ivy_array = (
-            ivy.array(array) if not isinstance(array, ivy.Array) else array
-        )
+        self._ivy_array = array if isinstance(array, ivy.Array) else ivy.array(array)
         self.weak_type = weak_type
 
     def __repr__(self):
@@ -46,6 +44,11 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
+    def all(self, *, axis=None, out=None, keepdims=False):
+        return jax_frontend.numpy.all(
+            self._ivy_array, axis=axis, keepdims=keepdims, out=out
+        )
+
     def argmax(
         self,
         /,
@@ -72,6 +75,27 @@ class DeviceArray:
             out=out,
             keepdims=keepdims,
             where=where,
+        )
+
+    def cumprod(self, axis=None, dtype=None, out=None):
+        return jax_frontend.numpy.cumprod(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
+
+    def nonzero(self, *, size=None, fill_value=None):
+        return jax_frontend.numpy.nonzero(
+            self,
+            size=size,
+            fill_value=fill_value,
+        )
+
+    def ravel(self, order="C"):
+        return jax_frontend.numpy.ravel(
+            self,
+            order=order,
         )
 
     def __add__(self, other):
@@ -195,5 +219,5 @@ class DeviceArray:
         ndim = len(self.shape)
         if ndim == 0:
             raise TypeError("iteration over a 0-d devicearray not supported")
-        for i in range(ndim):
+        for i in range(self.shape[0]):
             yield self[i]

@@ -1,5 +1,8 @@
 import ivy
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_tf_dtype,
+)
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
@@ -8,6 +11,11 @@ from ivy.func_wrapper import with_unsupported_dtypes
 )
 @to_ivy_arrays_and_back
 def uniform(shape, minval=0, maxval=None, dtype=ivy.float32, seed=None, name=None):
+    if maxval is None:
+        if dtype != "int64":
+            maxval = 1.0
+        else:
+            raise ValueError("maxval must be specified for int64 dtype")
     return ivy.random_uniform(
         shape=shape, low=minval, high=maxval, dtype=dtype, seed=seed
     )
@@ -43,8 +51,13 @@ def stateless_uniform(
     {"2.9.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
+@handle_tf_dtype
 def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
-    return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed)
+    shape = ivy.array(shape, dtype=ivy.int32)
+    lam = ivy.array(lam, dtype=ivy.float32)
+    if lam.ndim > 0:
+        shape = ivy.concat([shape, ivy.array(lam.shape)])
+    return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed, fill_value=0)
 
 
 @with_unsupported_dtypes(

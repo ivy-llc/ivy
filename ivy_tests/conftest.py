@@ -1,7 +1,7 @@
 # global
 import os
 import redis
-from hypothesis import settings, HealthCheck
+from hypothesis import settings, HealthCheck, Phase
 from hypothesis.database import (
     MultiplexedDatabase,
     ReadOnlyDatabase,
@@ -66,6 +66,16 @@ def pytest_addoption(parser):
         type=str,
         help="ivy traceback",
     )
+    parser.addoption(
+        "-D",
+        "--deterministic",
+        action="store_true",
+        default=False,
+        help=(
+            "Use hash of the test function as a seed, "
+            "disables Redis database if exists."
+        ),
+    )
 
 
 def pytest_configure(config):
@@ -113,4 +123,15 @@ def pytest_configure(config):
         suppress_health_check=(HealthCheck(3), HealthCheck(2), HealthCheck(1)),
         print_blob=True,
     )
+
+    settings.register_profile(
+        "diff",
+        database=None,
+        derandomize=True,
+        max_examples=100,
+        deadline=5000,
+        phases=[Phase.generate],
+        suppress_health_check=(HealthCheck(3), HealthCheck(2), HealthCheck(1)),
+    )
+
     settings.load_profile("ivy_profile")

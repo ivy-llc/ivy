@@ -637,6 +637,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         axis: int = -1,
         largest: bool = True,
+        sorted: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -658,6 +659,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             The axis along which we must return the top elements default value is 1.
         largest
             If largest is set to False we return k smallest elements of the array.
+        sorted
+            If sorted is set to True we return the elements in sorted order.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -702,6 +705,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             k,
             axis=axis,
             largest=largest,
+            sorted=sorted,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -716,6 +720,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         axis: int = -1,
         largest: bool = True,
+        sorted: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -737,6 +742,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             The axis along which we must return the top elements default value is 1.
         largest
             If largest is set to False we return k smallest elements of the array.
+        sorted
+            If sorted is set to True we return the elements in sorted order.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -780,6 +787,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             k,
             axis=axis,
             largest=largest,
+            sorted=sorted,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1133,6 +1141,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         mode: Union[
             Literal[
                 "constant",
+                "dilated",
                 "edge",
                 "linear_ramp",
                 "maximum",
@@ -1188,6 +1197,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         mode: Union[
             Literal[
                 "constant",
+                "dilated",
                 "edge",
                 "linear_ramp",
                 "maximum",
@@ -1237,7 +1247,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_vsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -1258,8 +1268,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1318,7 +1328,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def vsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -1335,7 +1345,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
 
         Returns
         -------
@@ -1376,7 +1387,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_dsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -1397,8 +1408,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1455,7 +1466,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def dsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -1472,8 +1483,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
 
         Returns
         -------
@@ -1512,7 +1523,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_1d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1569,7 +1580,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def atleast_1d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1720,7 +1731,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_2d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1777,7 +1788,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def atleast_2d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1842,7 +1853,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_3d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1902,8 +1913,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def atleast_3d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = None,
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
+        copy: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2119,7 +2130,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_hsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -2140,8 +2151,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2199,7 +2210,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def hsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         copy: Optional[bool] = None,
         /,
     ) -> List[ivy.Container]:
@@ -2215,8 +2226,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
 
         Returns
         -------
@@ -2702,3 +2713,57 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             The result of the scan.
         """
         return ivy.associative_scan(self, fn, reverse=reverse, axis=axis)
+
+    @staticmethod
+    def _static_unique_consecutive(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.unique_consecutive.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unique_consecutive also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unique_consecutive",
+            x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def unique_consecutive(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.unique_consecutive.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unique_consecutive also applies to this method with minimal
+        changes.
+        """
+        return self._static_unique_consecutive(
+            self,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

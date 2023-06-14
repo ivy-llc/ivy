@@ -5,8 +5,6 @@ import os
 import paddle
 from typing import Optional, Union
 import time
-
-# local
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 from paddle.fluid.libpaddle import Place

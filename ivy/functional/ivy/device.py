@@ -226,8 +226,8 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     return len(ivy.get_all_ivy_arrays_on_dev(device))
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def print_all_ivy_arrays_on_dev(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -270,9 +270,9 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
-@to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -491,7 +491,7 @@ def used_mem_on_dev(
         The device string to convert to native device handle.
     process_specific
         Whether to check the memory used by this python process alone. Default is
-        False. Currently, it is only supported for cpu.
+        False.
 
     Returns
     -------
@@ -852,11 +852,11 @@ def unset_default_device() -> None:
 # Device Allocation #
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -982,7 +982,7 @@ def set_split_factor(
     >>> print(ivy.split_factors)
     {'cpu': 0.2, 'gpu': 0.3}
     """
-    ivy.utils.assertions.check_less(0, factor, allow_equal=True)
+    ivy.utils.assertions.check_less(0, factor, allow_equal=True, as_array=False)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor
@@ -1176,8 +1176,8 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
     return tuple(supported)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     Return the supported devices of the current backend's function.
@@ -1217,8 +1217,8 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     return tuple(supported_devices)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     Return the unsupported devices of the current backend's function.

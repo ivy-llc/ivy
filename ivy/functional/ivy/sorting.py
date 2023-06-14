@@ -17,12 +17,12 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -64,7 +64,8 @@ def argsort(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.argsort.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argsort.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -120,7 +121,8 @@ def argsort(
         b: ivy.array([[1, 0], [1, 0]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[1.5, 3.2],[2.3, 4]]), b=ivy.array([[[1,3],[3,2],[2,0]]]))
+    >>> x = ivy.Container(a=ivy.array([[1.5, 3.2],[2.3, 4]]),
+    ...                   b=ivy.array([[[1,3],[3,2],[2,0]]]))
     >>> y = x.argsort(axis=-1, descending=True, stable=False)
     >>> print(y)
     {
@@ -133,12 +135,12 @@ def argsort(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -180,7 +182,8 @@ def sort(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.sort.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.sort.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -237,16 +240,53 @@ def sort(
     )
 
 
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def msort(
+    a: Union[ivy.Array, ivy.NativeArray, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return a copy of an array sorted along the first axis.
+
+    Parameters
+    ----------
+    a
+        array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        sorted array of the same type and shape as a
+
+    Examples
+    --------
+    >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
+    >>> ivy.msort(a)
+    ivy.array(
+        [[6, 2, 6],
+         [8, 9, 6]]
+        )
+    """
+    return ivy.current_backend(a).msort(a, out=out)
+
+
 # Extra #
 # ------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
