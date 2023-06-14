@@ -379,10 +379,17 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         ):
             (
                 ivy.set_default_int_dtype("int64")
-                if platform.system() != "Windows"
+                if (
+                    platform.system() != "Windows"
+                    and ivy.current_backend_str() != "jax"
+                )
                 else ivy.set_default_int_dtype("int32")
             )
-            ivy.set_default_float_dtype("float64")
+            (
+                ivy.set_default_float_dtype("float64")
+                if ivy.current_backend_str() != "jax"
+                else ivy.set_default_float_dtype("float32")
+            )
             set_default_dtype = True
         if contains_order:
             if len(args) >= (order_pos + 1):
