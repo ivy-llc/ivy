@@ -15,6 +15,11 @@ def histogram(
     density=None,
     weights=None,
 ):
+    [x.dtype for x in [a, weights]]
+    if weights is None:
+        weights = ivy.ones_like(a)
+    if range is None:
+        range = (a.min(), a.max())
     return ivy.histogram(
         a,
         bins=bins,
