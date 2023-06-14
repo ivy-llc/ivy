@@ -208,7 +208,7 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        if ensure_in_backend:
+        if ensure_in_backend or ivy.is_native_array(x):
             raise ivy.utils.exceptions.IvyException(
                 "JAX does not natively support inplace updates"
             )
@@ -242,10 +242,6 @@ def inplace_update(
                     view = ref()
                     if ivy.exists(view):
                         _update_view(view, x)
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "JAX does not natively support inplace updates"
-            )
         return x
     else:
         return val
@@ -418,7 +414,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.12 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,
@@ -434,6 +430,6 @@ def itemsize(x: JaxArray) -> int:
     return x.itemsize
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.12 and below": ("bfloat16",)}, backend_version)
 def strides(x: JaxArray) -> Tuple[int]:
     return to_numpy(x).strides
