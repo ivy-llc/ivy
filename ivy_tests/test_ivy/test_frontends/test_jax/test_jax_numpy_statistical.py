@@ -69,16 +69,16 @@ def _histogram_helper(draw):
             range = (
                 draw(
                     helpers.floats(
-                        min_value=min(min(a), -20),
-                        max_value=min(a),
+                        min_value=min(np.min(a), -20),
+                        max_value=np.min(a),
                         exclude_min=False,
                         exclude_max=False,
                     )
                 ),
                 draw(
                     helpers.floats(
-                        min_value=max(a),
-                        max_value=max(max(a), 20),
+                        min_value=np.max(a),
+                        max_value=max(np.max(a), 20),
                         exclude_min=False,
                         exclude_max=False,
                     )

@@ -66,7 +66,7 @@ def histogram(
         ret = tf.cast(ret, dtype)
         bins = tf.cast(bins, dtype)
     # TODO: weird error when returning bins: return ret, bins
-    return ret
+    return ret, bins
 
 
 @with_supported_dtypes(

@@ -115,7 +115,7 @@ def histogram(
         ret = ret.astype(dtype)
         bins_out = jnp.array(bins_out).astype(dtype)
     # TODO: weird error when returning bins: return ret, bins_out
-    return ret
+    return ret, bins_out
 
 
 @with_unsupported_dtypes(
