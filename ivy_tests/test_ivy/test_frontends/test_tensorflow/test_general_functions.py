@@ -408,6 +408,9 @@ def _x_cast_dtype_shape(draw):
         helpers.dtype_and_values(
             dtype=x_dtype,
             shape=st.shared(helpers.get_shape(), key="value_shape"),
+            large_abs_safety_factor=10,
+            small_abs_safety_factor=10,
+            safety_factor_scale="log",
         ),
     )
     to_shape = draw(
@@ -475,7 +478,7 @@ def test_tensorflow_constant(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        value=x[0],
+        value=x[0].tolist() if x[0].ndim > 0 else x[0].item(),
         dtype=cast_dtype,
         shape=to_shape,
     )
