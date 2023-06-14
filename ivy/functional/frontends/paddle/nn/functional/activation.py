@@ -131,3 +131,14 @@ def celu(
     prod = alpha * (ivy.exp(x / alpha) - 1)
     ret = ivy.maximum(0, x) + ivy.minimum(0, prod)
     return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def tanhshrink(
+    x,
+    /,
+    *,
+    name=None,
+):
+    return ivy.subtract(x, ivy.tanh(x))
