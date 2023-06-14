@@ -1288,7 +1288,6 @@ def test_torch_solve_ex(
     input = data[0][:, :-1]
     other = data[0][:, -1].reshape(-1, 1)
     check = st.booleans()
-    test_flags.num_positional_args = 3
     helpers.test_frontend_function(
         input_dtypes=[input_dtype[0], input_dtype[0]],
         frontend=frontend,
