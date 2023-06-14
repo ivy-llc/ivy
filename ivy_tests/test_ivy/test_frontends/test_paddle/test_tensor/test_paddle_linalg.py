@@ -541,3 +541,35 @@ def test_paddle_bmm(
         x=x[0],
         y=x[1],
     )
+
+
+# matrix_power
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.matrix_power",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+    ),
+    n=helpers.ints(min_value=1, max_value=8),
+    test_with_out=st.just(False),
+)
+def test_paddle_matrix_power(
+    dtype_and_x,
+    n,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        n=n,
+    )
