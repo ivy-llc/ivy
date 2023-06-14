@@ -214,6 +214,7 @@ def _compute_quantile(
 
     return outputs.astype(ret_dtype)
 
+
 @with_unsupported_device_and_dtypes(
     {
         "2.4.2 and below": {

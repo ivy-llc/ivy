@@ -83,9 +83,9 @@ def test_max_pool2d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        on_device=on_device,
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -106,6 +106,7 @@ def test_max_pool3d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -113,6 +114,7 @@ def test_max_pool3d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
