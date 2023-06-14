@@ -127,6 +127,7 @@ def rfftfreq(n, d=1.0):
     return results * val
 
 
+@to_ivy_arrays_and_back
 def fft2(a, s=None, axes=(-2, -1), norm=None):
     a = ivy.array(a, dtype=ivy.complex128)
     if norm is None:

@@ -195,7 +195,7 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
     fn_tree="numpy.fft.fft2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
-        shape=(2, 2),
+        shape=st.sampled_from([(2, 2), (3, 3), (4, 4), (5, 5)]),
         array_api_dtypes=True
     ),
     s=st.tuples(
