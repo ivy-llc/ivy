@@ -394,3 +394,8 @@ def diag(input, diagonal=0, *, out=None):
 @to_ivy_arrays_and_back
 def clone(input):
     return ivy.copy_array(input)
+
+
+@to_ivy_arrays_and_back
+def cov(input, /, *, correction=1, fweights=None, aweights=None):
+    return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
