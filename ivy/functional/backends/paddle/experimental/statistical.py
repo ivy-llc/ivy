@@ -1,11 +1,11 @@
 # global
 from typing import Optional, Union, Tuple, Sequence
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 
 # local
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
 
@@ -214,7 +214,6 @@ def _compute_quantile(
 
     return outputs.astype(ret_dtype)
 
-
 @with_unsupported_device_and_dtypes(
     {
         "2.4.2 and below": {
@@ -310,8 +309,6 @@ def nanmedian(
                 "int16",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
                 "bool",
             )
         }

@@ -173,12 +173,14 @@ def test_tensorflow_stateless_uniform(
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     lam=st.one_of(
-        st.floats(allow_infinity=False, allow_nan=False, width=32),
-        st.lists(
-            st.floats(allow_nan=False, allow_infinity=False, width=32),
+        helpers.floats(allow_inf=False, allow_nan=False, min_value=-2, max_value=5),
+        helpers.lists(
+            x=helpers.floats(
+                allow_nan=False, allow_inf=False, min_value=-2, max_value=5
+            ),
             min_size=1,
             max_size=10,
         ),
@@ -203,8 +205,8 @@ def test_tensorflow_poisson(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        lam=lam,
         shape=shape,
+        lam=lam,
         dtype=dtype[0],
         seed=seed,
         test_values=False,
@@ -257,8 +259,6 @@ def test_tensorflow_stateless_normal(
 
 
 # stateless_poisson
-
-
 @st.composite
 def _shape_lam_dtype(draw):
     dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))

@@ -1,7 +1,7 @@
 # global
 import numpy as np
-import jax.lax as jlax
-import jax.numpy as jnp
+import ivy.functional.frontends.jax.lax as jlax
+import ivy.functional.frontends.jax.numpy as jnp
 from hypothesis import assume, strategies as st
 import random
 from jax.lax import ConvDimensionNumbers
@@ -10,6 +10,9 @@ from jax.lax import ConvDimensionNumbers
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    _reduce_window_helper,
+)
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
@@ -1742,22 +1745,19 @@ def test_jax_lax_dot(
 
 @st.composite
 def _general_dot_helper(draw):
-    input_dtype = draw(helpers.get_dtypes("numeric", full=False))
-    lshape = draw(
-        st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=52)
+    input_dtype, lhs, lshape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_value=-1e04,
+            max_value=1e04,
+            min_num_dims=2,
+            ret_shape=True,
+        )
     )
     ndims = len(lshape)
     perm_id = random.sample(list(range(ndims)), ndims)
     rshape = [lshape[i] for i in perm_id]
-    ldtype, lhs = draw(
-        helpers.dtype_and_values(
-            dtype=input_dtype,
-            min_value=-1e04,
-            max_value=1e04,
-            shape=lshape,
-        )
-    )
-    rdtype, rhs = draw(
+    input_dtype, rhs = draw(
         helpers.dtype_and_values(
             dtype=input_dtype,
             min_value=-1e04,
@@ -1772,18 +1772,36 @@ def _general_dot_helper(draw):
     lhs_contracting = [i for i in ind_list if i not in lhs_batch]
     rhs_contracting = [perm_id.index(i) for i in lhs_contracting]
     is_pref = draw(st.booleans())
+    pref_dtype = None
     if is_pref:
-        dtype, pref = draw(
-            helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("numeric")), input_dtype[0]
-            )
+        uint_cast_st = helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("unsigned")),
+            input_dtype[0],
         )
-        assume(can_cast(dtype, pref))
-        pref_dtype = pref
-    else:
-        pref_dtype = None
+        int_cast_st = helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("signed_integer")),
+            input_dtype[0],
+        )
+        float_cast_st = helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("float")),
+            input_dtype[0],
+        )
+        complex_cast_st = helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("complex")),
+            input_dtype[0],
+        )
+        if "uint" in input_dtype[0]:
+            pref_dtype = draw(st.one_of(uint_cast_st, float_cast_st))[-1]
+        elif "int" in input_dtype[0]:
+            pref_dtype = draw(st.one_of(int_cast_st, float_cast_st))[-1]
+        elif "float" in input_dtype[0]:
+            pref_dtype = draw(float_cast_st)[-1]
+        elif "complex" in input_dtype[0]:
+            pref_dtype = draw(complex_cast_st)[-1]
+        else:
+            raise ivy.exceptions.IvyException("unsupported dtype")
     return (
-        ldtype + rdtype,
+        input_dtype * 2,
         (lhs[0], rhs[0]),
         ((lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch)),
         pref_dtype,
@@ -2106,7 +2124,10 @@ def test_jax_lax_rem(
 @handle_frontend_test(
     fn_tree="jax.lax.square",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        small_abs_safety_factor=2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -2501,94 +2522,16 @@ def test_jax_lax_top_k(
     )
 
 
-@st.composite
-def _reduce_window_helper(draw):
-    # ToDo: remove the dtype filtering as soon as the issues in mixed functions'
-    #  supported dtypes have been resolved
-    dtype = draw(
-        helpers.get_dtypes("valid", full=False).filter(
-            lambda x: x[0]
-            not in ["bfloat16", "uint8", "uint32", "uint64", "int8", "int16"]
-        )
-    )
-
+def _get_reduce_func(dtype):
     if dtype[0] == "bool":
-        py_func = draw(st.sampled_from([jnp.logical_and, jnp.logical_or]))
+        return st.sampled_from([jnp.logical_and, jnp.logical_or])
     else:
-        py_func = draw(
-            st.sampled_from([jlax.add, jlax.max, jlax.min, jlax.mul, jnp.multiply])
-        )
-
-    if dtype[0] == "float64":
-        init_value = draw(
-            st.sampled_from(
-                [
-                    [-float("inf")],
-                    [float("inf")],
-                    draw(
-                        helpers.dtype_and_values(
-                            dtype=dtype,
-                            shape=(),
-                        )
-                    )[1],
-                ]
-            )
-        )
-    else:
-        init_value = draw(
-            helpers.dtype_and_values(
-                dtype=dtype,
-                shape=(),
-            )
-        )[1]
-
-    ndim = draw(st.integers(min_value=1, max_value=4))
-
-    _, others = draw(
-        helpers.dtype_and_values(
-            num_arrays=4,
-            dtype=["int64"] * 4,
-            shape=(ndim,),
-            min_value=1,
-            max_value=3,
-            small_abs_safety_factor=1,
-            large_abs_safety_factor=1,
-        )
-    )
-    others = [other.tolist() for other in others]
-
-    window, dilation = others[0], others[2]
-    op_shape = []
-    for i in range(ndim):
-        min_x = window[i] + (window[i] - 1) * (dilation[i] - 1)
-        op_shape.append(draw(st.integers(min_x, min_x + 1)))
-    dtype, operand = draw(
-        helpers.dtype_and_values(
-            dtype=dtype,
-            shape=op_shape,
-        )
-    )
-
-    padding = draw(
-        st.one_of(
-            st.lists(
-                st.tuples(
-                    st.integers(min_value=0, max_value=3),
-                    st.integers(min_value=0, max_value=3),
-                ),
-                min_size=ndim,
-                max_size=ndim,
-            ),
-            st.sampled_from(["SAME", "VALID"]),
-        )
-    )
-
-    return dtype * 2, operand, init_value, py_func, others, padding
+        return st.sampled_from([jlax.add, jlax.max, jlax.min, jlax.mul, jnp.multiply])
 
 
 @handle_frontend_test(
     fn_tree="jax.lax.reduce_window",
-    all_args=_reduce_window_helper(),
+    all_args=_reduce_window_helper(_get_reduce_func),
     test_with_out=st.just(False),
 )
 def test_jax_lax_reduce_window(

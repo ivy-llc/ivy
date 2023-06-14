@@ -75,7 +75,8 @@ def concat(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.concat.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -104,7 +105,7 @@ def expand_dims(
     /,
     *,
     copy: Optional[bool] = None,
-    axis: Union[int, Sequence[int]],
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -135,8 +136,9 @@ def expand_dims(
 
 
     This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring # noqa
-    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html>`_ # noqa
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an
+    extension of the `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.expand_dims.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -261,7 +263,8 @@ def flip(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.flip.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.flip.html>`_
     in the standard.
 
 
@@ -346,7 +349,8 @@ def permute_dims(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.permute_dims.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.permute_dims.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -458,7 +462,8 @@ def reshape(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.reshape.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -569,7 +574,8 @@ def roll(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.roll.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -667,7 +673,8 @@ def squeeze(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.squeeze.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -767,7 +774,8 @@ def stack(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.stack.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1097,7 +1105,9 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    num_or_size_splits: Optional[
+        Union[int, Sequence[int], ivy.Array, ivy.NativeArray]
+    ] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[ivy.Array]:
@@ -1110,8 +1120,8 @@ def split(
         array to be divided into sub-arrays.
     num_or_size_splits
         Number of equal arrays to divide the array into along the given axis if an
-        integer. The size of each split element if a sequence of integers. Default is to
-        divide into as many 1-dimensional arrays as the axis dimension.
+        integer. The size of each split element if a sequence of integers or 1-D array.
+        Default is to divide into as many 1-dimensional arrays as the axis dimension.
     axis
         The axis along which to split, default is ``0``.
     with_remainder
@@ -1471,7 +1481,8 @@ def zero_pad(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.concat.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

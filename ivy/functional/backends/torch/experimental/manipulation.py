@@ -153,51 +153,55 @@ def flatten(
     x: torch.Tensor,
     /,
     *,
-    copy: bool = None,
-    start_dim: int = 0,
-    end_dim: int = -1,
-    order: str = "C",
+    copy: Optional[bool] = None,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         x = torch.clone(x)
-    if order == "F":
-        return ivy.functional.experimental.flatten(
-            x, start_dim=start_dim, end_dim=end_dim, order=order
-        )
     return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
+
+
+flatten.partial_mixed_handler = (
+    lambda *args, copy=None, start_dim=0, end_dim=1, order="C", **kwargs: order == "C"
+)
 
 
 def vsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], torch.Tensor],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[torch.Tensor]:
+    if len(ary.shape) < 2:
+        raise ivy.utils.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
     if copy:
         ary = torch.clone(ary)
-    return torch.vsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], torch.Tensor],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[torch.Tensor]:
-    if len(ary.shape) < 3:
+    if len(ary.shape) < 2:
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
     if copy:
         ary = torch.clone(ary)
-    return list(torch.dsplit(ary, indices_or_sections))
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
-def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = False) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_1d(*arys)
@@ -217,7 +221,7 @@ def dstack(
     return torch.dstack(arrays, out=out)
 
 
-def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = False) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_2d(*arys)
@@ -227,7 +231,7 @@ def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.T
 
 
 def atleast_3d(
-    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = None
+    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = False
 ) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
@@ -264,11 +268,11 @@ def take_along_axis(
         max_index = arr.shape[axis] - 1
         indices = torch.clamp(indices, 0, max_index)
     elif mode == "fill" or mode == "drop":
-        if "float" in str(arr.dtype):
+        if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = float("nan")
         elif "uint" in str(arr.dtype):
             fill_value = torch.iinfo(arr.dtype).max
-        else:
+        elif "int" in str(arr.dtype):
             fill_value = -torch.iinfo(arr.dtype).max - 1
         indices = torch.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
         arr_shape = list(arr_shape)
@@ -288,7 +292,9 @@ def hsplit(
 ) -> List[torch.Tensor]:
     if copy:
         ary = torch.clone(ary)
-    return list(torch.hsplit(ary, indices_or_sections))
+    if len(ary.shape) == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 take_along_axis.support_native_out = True
