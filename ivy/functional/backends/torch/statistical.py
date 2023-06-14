@@ -119,9 +119,9 @@ def prod(
     return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("int8", "int16", "int32", "int64", "float16")},
-    backend_version,
+@with_unsupported_dtypes(	
+    {"2.0.1 and below": ("int8", "int16", "int32", "int64", "float16")},	
+    backend_version,	
 )
 def std(
     x: torch.Tensor,
@@ -220,7 +220,6 @@ def var(
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,
 )
@@ -299,7 +298,7 @@ cummin.support_native_out = True
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),	
         "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,

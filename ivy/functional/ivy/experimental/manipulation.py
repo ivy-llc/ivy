@@ -1264,7 +1264,7 @@ def dsplit(
 @to_native_arrays_and_back
 def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least one dimension. Scalar inputs are converted to
@@ -1341,7 +1341,7 @@ def dstack(
 @to_native_arrays_and_back
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least two dimension. Scalar inputs are converted to
@@ -1375,10 +1375,12 @@ def atleast_2d(
 
 
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
 @to_native_arrays_and_back
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least three dimension. Scalar inputs are converted
