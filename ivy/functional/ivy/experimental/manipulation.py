@@ -25,7 +25,6 @@ from ivy.func_wrapper import (
     handle_view,
     inputs_to_ivy_arrays,
     handle_array_function,
-    to_ivy_arrays_and_back,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -1265,7 +1264,7 @@ def dsplit(
 @to_native_arrays_and_back
 def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least one dimension. Scalar inputs are converted to
@@ -1342,7 +1341,7 @@ def dstack(
 @to_native_arrays_and_back
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least two dimension. Scalar inputs are converted to
@@ -1376,10 +1375,12 @@ def atleast_2d(
 
 
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
 @to_native_arrays_and_back
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least three dimension. Scalar inputs are converted
@@ -1682,7 +1683,7 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
-@to_ivy_arrays_and_back
+@inputs_to_ivy_arrays
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],

@@ -127,6 +127,10 @@ class Tensor:
         return ivy.argmax(self._ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
 
     @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def sqrt(self, name=None):
+        return ivy.sqrt(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
     def cos(self, name=None):
         return ivy.cos(self._ivy_array)
 
@@ -145,3 +149,9 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def floor(self, name=None):
         return ivy.floor(self._ivy_array)
+
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("float16", "float32", "float64")}, "paddle"
+    )
+    def tanh(self, name=None):
+        return ivy.tanh(self._ivy_array)
