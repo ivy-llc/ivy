@@ -415,6 +415,7 @@ class RandomNormal(Initializer):
                 mean=self._mean,
                 std=self._stddev,
                 shape=self._shape,
+                seed=self._seed,
                 device=device,
                 dtype=dtype,
             )
