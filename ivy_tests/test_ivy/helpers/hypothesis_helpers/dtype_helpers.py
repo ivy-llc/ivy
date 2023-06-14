@@ -15,7 +15,6 @@ from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
 
-
 _dtype_kind_keys = {
     "valid",
     "numeric",
@@ -30,8 +29,9 @@ _dtype_kind_keys = {
 
 def get_dtype_combinations(keys):
     return set(["_and_".join(combination)
-           for r in range(1, len(keys)+1)
-           for combination in combinations(keys, r)])
+                for r in range(1, len(keys) + 1)
+                for combination in combinations(keys, r)])
+
 
 _dtype_kind_keys = _dtype_kind_keys.union(get_dtype_combinations(_dtype_kind_keys))
 
@@ -42,7 +42,7 @@ def _get_fn_dtypes(framework, kind="valid"):
     ][kind]
 
 
-def _get_type_dict(framework, kind):
+def _get_type_dict(framework, *kinds):
     def _get_framework_dtype(kind):
         if kind == "valid":
             return framework.valid_dtypes
@@ -67,9 +67,8 @@ def _get_type_dict(framework, kind):
         else:
             raise RuntimeError("{} is an unknown kind!".format(kind))
 
-
     return tuple({dtype for kind in kinds
-                    for dtype in _get_framework_dtype(kind)})
+                  for dtype in _get_framework_dtype(kind)})
 
 
 def make_json_pickable(s):
