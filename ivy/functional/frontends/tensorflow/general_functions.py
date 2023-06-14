@@ -52,9 +52,10 @@ def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     ], global_norm
 
 
+@with_supported_dtypes({"2.12.0 and below": ("float", "complex")}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
-    t = ivy.array(t)
+    t, clip_norm = check_tensorflow_casting(t, clip_norm)
     l2sum = ivy.sum(t * t, axis=axes, keepdims=True)
     pred = l2sum > 0
 
@@ -291,7 +292,8 @@ def boolean_mask(tensor, mask, axis=None, name=None):
             as_array=False,
         )
         tensor_shape = ivy.shape(tensor)
-        for i in range(axis - 1, -1, -1):
+        range_array = ivy.arange(axis - 1, -1, -1)
+        for i in ivy.to_list(range_array):
             mask = ivy.expand_dims(mask, axis=0)
             mask = ivy.repeat(mask, tensor_shape[i], axis=0)
         return ivy.get_item(tensor, mask)
