@@ -52,10 +52,9 @@ def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     ], global_norm
 
 
-@with_supported_dtypes({"2.12.0 and below": ("float", "complex")}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
-    t, clip_norm = check_tensorflow_casting(t, clip_norm)
+    t = ivy.array(t)
     l2sum = ivy.sum(t * t, axis=axes, keepdims=True)
     pred = l2sum > 0
 
@@ -292,8 +291,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
             as_array=False,
         )
         tensor_shape = ivy.shape(tensor)
-        range_array = ivy.arange(axis - 1, -1, -1)
-        for i in ivy.to_list(range_array):
+        for i in range(axis - 1, -1, -1):
             mask = ivy.expand_dims(mask, axis=0)
             mask = ivy.repeat(mask, tensor_shape[i], axis=0)
         return ivy.get_item(tensor, mask)
@@ -383,19 +381,19 @@ def strided_slice(
                 strides = strides + [1] * num_missing
             else:
                 begin = (
-                    begin[:ellipsis_index]
-                    + [None] * (num_missing + 1)
-                    + begin[ellipsis_index + 1 :]
+                        begin[:ellipsis_index]
+                        + [None] * num_missing
+                        + begin[ellipsis_index + 1:]
                 )
                 end = (
-                    end[:ellipsis_index]
-                    + [None] * (num_missing + 1)
-                    + end[ellipsis_index + 1 :]
+                        end[:ellipsis_index]
+                        + [None] * num_missing
+                        + end[ellipsis_index + 1:]
                 )
                 strides = (
-                    strides[:ellipsis_index]
-                    + [1] * (num_missing + 1)
-                    + strides[ellipsis_index + 1 :]
+                        strides[:ellipsis_index]
+                        + [1] * num_missing
+                        + strides[ellipsis_index + 1:]
                 )
     full_slice = ()
     for i, _ in enumerate(begin):
@@ -405,24 +403,20 @@ def strided_slice(
             b = begin[i] if not begin_mask[i] else None
             e = end[i] if not end_mask[i] else None
             s = strides[i]
-            if b is None and e is None:
-                s = 1 if ellipsis_mask[i] else s
-            elif shrink_axis_mask[i]:
-                if b is not None:
-                    e = b + 1 if s > 0 else b - 1
-                else:
-                    e = 1 if s > 0 else input_shape[i] - 2
-            full_slice += (py_slice(b, e, s),)
-    if all(i is None for i in full_slice):
-        full_slice += (...,)
-    ret = input_[full_slice]
-    shrink_indices = [
-        i
-        for i, v in enumerate(shrink_axis_mask)
-        if v and i < len(ret.shape) and ret.shape[i] == 1
-    ]
-    ret = ivy.squeeze(ret, axis=shrink_indices)
-    return ret
+            if b is None and e is None and s == 1:
+                full_slice += (py_slice(None),)
+            else:
+                input_dim = input_shape[i]
+                if b is None:
+                    b = 0 if s > 0 else input_dim - 1
+                elif b < 0:
+                    b += input_dim
+                if e is None:
+                    e = input_dim if s > 0 else -1
+                elif e < 0:
+                    e += input_dim
+                full_slice += (py_slice(b, e, s),)
+    return input_[full_slice]
 
 
 @to_ivy_arrays_and_back
