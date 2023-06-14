@@ -5665,6 +5665,43 @@ def maximum(
 
 @handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def erfinv(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute the inverse of the Gauss error function for ``x`` element-wise.
+
+    Parameters
+    ----------
+    x
+        Value to compute the inverse error function for.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The inverse of the Gauss error function for x.
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 0.3, 0.7, 0.842])
+    >>> ivy.erfinv(x)
+    ivy.array([0., 0.272, 0.732, 1.])
+
+    """
+    return ivy.current_backend(x).erfinv(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
