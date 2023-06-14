@@ -323,24 +323,25 @@ class _ArrayWithLinearAlgebra(abc.ABC):
             input array having shape (..., M, M) and whose innermost two dimensions form
             square matrices. Must have floating-point data type.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array containing the computed eigenvalues. The returned array must have shape
-            (..., M) and have the same data type as x.
+            an array containing the computed eigenvalues. The returned array must have
+            shape (..., M) and have the same data type as x.
 
 
         This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-        `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html>`_ # noqa
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/
+        extensions/generated/array_api.linalg.eigvalsh.html>`_
         in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for
+        simplicity, but this function is *nestable*, and therefore also
+        accepts :class:`ivy.Container` instances in place of any of the arguments.
 
         Examples
         --------
