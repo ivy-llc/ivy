@@ -324,12 +324,19 @@ MatrixDeterminant = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.linalg.
 
 
 Max = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.math.reduce_max,
-        kwargs_to_update={
-            "input": "input_tensor",
-            "keep_dims": "keepdims",
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex",),
         },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.reduce_max,
+            kwargs_to_update={
+                "input": "input_tensor",
+                "keep_dims": "keepdims",
+            },
+        )
     )
 )
 
