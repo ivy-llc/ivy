@@ -2002,6 +2002,7 @@ def test_meshgrid(
     return helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,
+        arrays=arrays,
         on_device=on_device,
         fn_tree=fn_tree,
         sparse=sparse,
