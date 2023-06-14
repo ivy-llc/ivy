@@ -169,6 +169,13 @@ def general_pool(
     else:
         pad_list = [(0, 0)] * (dim + 2)
 
+    if not ivy.is_array(inputs):
+        inputs = jnp.array(inputs)
+    if not ivy.is_array(init):
+        init = jnp.array(init)
+    promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
+    inputs = inputs.astype(promoted_type)
+    init = init.astype(promoted_type)
     y = jlax.reduce_window(
         inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
     )
