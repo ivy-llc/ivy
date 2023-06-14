@@ -167,7 +167,7 @@ def main():
 if __name__ == "__main__":
     main()
     snapshot = tracemalloc.take_snapshot()
-    top_stats = snapshot.statistics('lineno')
+    top_stats = snapshot.statistics("lineno")
 
     for stat in top_stats[:10]:
         print(stat)
