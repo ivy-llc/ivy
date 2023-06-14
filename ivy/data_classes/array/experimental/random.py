@@ -170,6 +170,7 @@ class _ArrayWithRandomExperimental(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         seed: Optional[int] = None,
+        fill_value: Optional[Union[float, int]] = 0,
         out: Optional[ivy.Array] = None,
     ):
         """
@@ -189,6 +190,9 @@ class _ArrayWithRandomExperimental(abc.ABC):
             type will be the default floating-point data type. Default ``None``
         seed
             A python integer. Used to create a random seed distribution
+        fill_value
+            if lam is negative, fill the output array with this value
+            on that specific dimension.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -215,6 +219,7 @@ class _ArrayWithRandomExperimental(abc.ABC):
             device=device,
             dtype=dtype,
             seed=seed,
+            fill_value=fill_value,
             out=out,
         )
 
