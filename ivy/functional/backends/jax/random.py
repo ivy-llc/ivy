@@ -179,6 +179,8 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if x.shape == ():
+        return x
     if seed:
         rng_input = jax.random.PRNGKey(seed)
     else:

@@ -277,13 +277,17 @@ def dot(lhs, rhs, precision=None, preferred_element_type=None):
     return ret
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("bool",)}, "jax")
 @to_ivy_arrays_and_back
 def dot_general(
     lhs, rhs, dimension_numbers, precision=None, preferred_element_type=None
 ):
     (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch) = dimension_numbers
     ivy.utils.assertions.check_less(
-        len(lhs.shape), 52, "number of dimensions greater than 52 is not supported"
+        len(lhs.shape),
+        52,
+        "number of dimensions greater than 52 is not supported",
+        as_array=False,
     )
     new_id = itertools.count()
     lhs_axis_ids = [next(new_id) for _ in lhs.shape]

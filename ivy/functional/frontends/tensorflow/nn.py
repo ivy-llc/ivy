@@ -288,6 +288,7 @@ def local_response_normalization(
         ivy.get_num_dims(input),
         4,
         message="4D input, but got input with sizes " + str(input_shape),
+        as_array=False,
     )
     sqr_sum = ivy.empty(input_shape[:-1] + (0,), dtype=ivy.dtype(input))
     for d in range(depth):
