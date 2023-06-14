@@ -47,6 +47,8 @@ def roll(input, shifts, dims=None):
 def meshgrid(*tensors, indexing=None):
     if indexing is None:
         indexing = "ij"
+    if len(tensors) == 1 and isinstance(tensors[0], (list, tuple)):
+        tensors = tensors[0]
     return tuple(ivy.meshgrid(*tensors, indexing=indexing))
 
 
