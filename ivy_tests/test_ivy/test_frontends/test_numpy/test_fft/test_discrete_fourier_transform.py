@@ -193,6 +193,7 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
 
 @handle_frontend_test(
     fn_tree="numpy.fft.rfft2",
+    number_positional_args=None,
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=None,
         shape=None,
