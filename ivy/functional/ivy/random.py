@@ -40,7 +40,9 @@ def _check_bounds_and_get_shape(low, high, shape):
         valid_types += (ivy.NativeArray,)
     if isinstance(low, valid_types):
         if isinstance(high, valid_types):
-            ivy.utils.assertions.check_equal(ivy.shape(low), ivy.shape(high))
+            ivy.utils.assertions.check_equal(
+                ivy.shape(low), ivy.shape(high), as_array=False
+            )
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)

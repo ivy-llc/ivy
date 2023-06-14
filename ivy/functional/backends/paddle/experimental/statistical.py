@@ -214,7 +214,6 @@ def _compute_quantile(
 
     return outputs.astype(ret_dtype)
 
-
 @with_unsupported_device_and_dtypes(
     {
         "2.4.2 and below": {
@@ -310,8 +309,6 @@ def nanmedian(
                 "int16",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
                 "bool",
             )
         }
