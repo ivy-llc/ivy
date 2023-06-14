@@ -84,6 +84,7 @@ def poisson(
     device: Place,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
+    fill_value: Optional[Union[float, int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ):
     raise IvyNotImplementedException()
