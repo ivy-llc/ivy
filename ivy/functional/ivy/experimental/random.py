@@ -142,7 +142,7 @@ def gamma(
     beta: Union[float, ivy.NativeArray, ivy.Array],
     /,
     *,
-    shape: Union[float, ivy.NativeArray, ivy.Array],
+    shape: Optional[Union[float, ivy.NativeArray, ivy.Array]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     seed: Optional[int] = None,
@@ -195,6 +195,7 @@ def poisson(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     seed: Optional[int] = None,
+    fill_value: Optional[Union[int, float]] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -215,7 +216,10 @@ def poisson(
         output array data type. If ``dtype`` is ``None``, the output array data
         type will be the default floating-point data type. Default ``None``
     seed
-        A python integer. Used to create a random seed distribution
+        A python integer. Used to create a random seed distribution.
+    fill_value
+        if lam is negative, fill the output array with this value
+        on that specific dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -243,6 +247,7 @@ def poisson(
         device=device,
         dtype=dtype,
         seed=seed,
+        fill_value=fill_value,
         out=out,
     )
 

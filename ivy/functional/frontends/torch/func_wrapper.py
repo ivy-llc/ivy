@@ -76,7 +76,11 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and all(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
-            ivy.set_default_int_dtype("int64")
+            (
+                ivy.set_default_int_dtype("int64") 
+                if ivy.current_backend_str() != "jax"
+                else ivy.set_default_int_dtype("int32")
+            )
             ivy.set_default_float_dtype(torch_frontend.get_default_dtype())
             set_default_dtype = True
         try:

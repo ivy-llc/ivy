@@ -405,7 +405,7 @@ def conv_general_dilated(
         if x_dilations[i] > 1:
             h = x.shape[2 + i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
-            h = torch.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
+            h = torch.eye(new_height, dtype=x.dtype, device=ivy.as_native_dev(ivy.default_device()))[:: x_dilations[i]]
             x = torch.swapaxes(x, 2 + i, -1)
             x = torch.matmul(x, h)
             x = torch.swapaxes(x, -1, 2 + i)
