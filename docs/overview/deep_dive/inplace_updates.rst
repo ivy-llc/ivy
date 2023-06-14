@@ -45,7 +45,7 @@ While :class:`ivy.Array` instances will always be inplace updated consistently, 
 
 .. code-block:: python
 
-        def inplace_update(
+    def inplace_update(
         x: Union[ivy.Array, JaxArray],
         val: Union[ivy.Array, JaxArray],
         /,
@@ -105,7 +105,7 @@ JAX functions also never returns views so additional logic is added to functiona
 
 .. code-block:: python
 
-        def inplace_update(
+    def inplace_update(
         x: Union[ivy.Array, np.ndarray],
         val: Union[ivy.Array, np.ndarray],
         /,
@@ -146,7 +146,7 @@ Following this, an inplace update is then also performed on the :class:`ivy.Arra
 
 .. code-block:: python
 
-        def inplace_update(
+    def inplace_update(
         x: Union[ivy.Array, tf.Tensor],
         val: Union[ivy.Array, tf.Tensor],
         /,
@@ -212,7 +212,7 @@ TensorFlow functions also never returns views so additional logic is added to fu
 
 .. code-block:: python
 
-        def inplace_update(
+    def inplace_update(
         x: Union[ivy.Array, torch.Tensor],
         val: Union[ivy.Array, torch.Tensor],
         /,
@@ -299,22 +299,20 @@ The implementations of :func:`ivy.tan` for each backend are as follows.
 .. code-block:: python
 
     def tan(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.tan(x)
+        return tf.tan(x)
 
 **PyTorch** (includes :code:`support_native_out` attribute):
 
 .. code-block:: python
-
     
     def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
         x = _cast_for_unary_op(x)
         return torch.tan(x, out=out)
-
 
     tan.support_native_out = True
 
@@ -332,7 +330,7 @@ Take a function which has multiple possible "paths" through the code:
 
 .. code-block:: python
 
-        def cholesky(
+    def cholesky(
         x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
         if not upper:
@@ -359,8 +357,7 @@ This is why we need to call :func:`ivy.inplace_update` explicitly here, to ensur
 Another case where we need to use :func:`ivy.inplace_update`_ with a function that has :attr:`support_native_out` is for the example of the :code:`torch` backend implementation of the :func:`ivy.remainder` function
 
 .. code-block:: python
-
-    
+ 
     def remainder(
         x1: Union[float, torch.Tensor],
         x2: Union[float, torch.Tensor],
@@ -411,19 +408,19 @@ We'll use :func:`ivy.cross_entropy` as an example:
 .. code-block:: python
 
     def cross_entropy(
-    true: Union[ivy.Array, ivy.NativeArray],
-    pred: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    epsilon: float = 1e-7,
-    reduction: str = "sum",
-    out: Optional[ivy.Array] = None,
+        true: Union[ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = -1,
+        epsilon: float = 1e-7,
+        reduction: str = "sum",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
         log_pred = ivy.log(pred)
-        return _reduce_loss(reduction, log_pred * true, axis, out)
+        return _reduce_loss(reduction, log_pred * true, axis, out=out)
 
 By handling the :code:`out` argument in the function, we are able to get the benefits outlined above.
 Firstly, the return of :func:`ivy.sum` is the same shape and type as the return of the entire function, and so we can also write this output to the :code:`out` argument inplace.
