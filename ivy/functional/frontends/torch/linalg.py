@@ -7,6 +7,18 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
+def norm(A, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
+    keepdims = keepdim or False
+    tensor = A
+    axis = dim
+    # Check if it's a matrix norm
+    if (type(axis) in [tuple, list]) and (len(axis) == 2):
+        return ivy.matrix_norm(tensor, ord=ord, axis=axis, keepdims=keepdims)
+    # Else resort to a vector norm
+    return ivy.vector_norm(tensor, ord=ord, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
 def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.vector_norm(
         input, axis=dim, keepdims=keepdim, ord=ord, out=out, dtype=dtype
