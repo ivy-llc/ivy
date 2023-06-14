@@ -1262,7 +1262,7 @@ def test_torch_multi_dot(
 @handle_frontend_test(
     fn_tree="torch.linalg.solve_ex",
     dtype_and_data=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
