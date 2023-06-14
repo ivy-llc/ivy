@@ -1072,9 +1072,11 @@ def casting_modes_ops(fn):
             # doesn't have unsupported dtypes specified
             # so check if it's one of the device_and_dtype one
             intersect = set(
+ dtype_casting_mode
                 ivy.function_unsupported_devices_and_dtypes(fn)[
                     ivy.default_device().split(":")[0]
                 ]
+
             ).difference(set(ivy.invalid_dtypes))
             if not intersect:
                 # no unsupported dtype specified
