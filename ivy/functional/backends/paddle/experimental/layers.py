@@ -3,12 +3,6 @@ from typing import Optional, Union, Tuple, Literal, Sequence
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.layers import _handle_padding
-from ivy.utils.assertions import check_kernel_padding_size
-from ivy.func_wrapper import (
-    with_supported_dtypes,
-    with_unsupported_device_and_dtypes,
-)
-from .. import backend_version
 
 # local
 
@@ -50,15 +44,6 @@ def max_pool1d(
     return res.astype(dtype)
 
 
-@with_supported_dtypes(
-    {
-        "2.4.2 and below": (
-            "float32",
-            "float64",
-        )
-    },
-    backend_version,
-)
 def max_pool2d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -71,60 +56,7 @@ def max_pool2d(
     ceil_mode: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = x.dtype
-
-    x = x.astype("float32")
-    if isinstance(strides, int):
-        strides = (strides, strides)
-    elif len(strides) == 1:
-        strides = (strides[0], strides[0])
-
-    if isinstance(kernel, int):
-        kernel = (kernel, kernel)
-    elif len(kernel) == 1:
-        kernel = (kernel[0], kernel[0])
-
-    if isinstance(dilation, int):
-        dilation = (dilation, dilation)
-    elif len(dilation) == 1:
-        dilation = (dilation[0], dilation[0])
-
-    if isinstance(padding, int):
-        padding = [(padding,) * 2] * 2
-    elif isinstance(padding, tuple) and len(padding) == 1:
-        padding = [(padding[0],) * 2] * 2
-    elif isinstance(padding, tuple) and len(padding) == 2:
-        padding = [(padding[0],) * 2, (padding[1],) * 2]
-
-    if isinstance(padding, (tuple, list)):
-        check_kernel_padding_size(kernel, padding)
-
-    if data_format == "NHWC":
-        x = paddle.transpose(x, perm=[0, 3, 1, 2])
-    x_shape = list(x.shape[2:])
-
-    new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
-
-    if isinstance(padding, str):
-        pad_h = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
-        pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
-        pad_list = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
-    else:
-        padding = (padding[1], padding[0])
-        pad_list = [item for sublist in padding for item in sublist]
-
-
-    x = paddle.nn.functional.pad(
-        x,
-        pad_list,
-        value=float("-inf"),
-    )
-    
-    res = paddle.nn.functional.max_pool2d(x, kernel_size=new_kernel, stride=strides, padding=0, ceil_mode=ceil_mode)
-
-    if data_format == "NHWC":
-        return paddle.transpose(res, perm=[0, 2, 3, 1]).astype(dtype)
-    return res.astype(dtype)
+    raise IvyNotImplementedException()
 
 
 def max_pool3d(
