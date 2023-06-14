@@ -308,8 +308,8 @@ covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforce
     <div align="center">
     <a href="https://github.com/unifyai/mech">
         <picture>
-            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png">
-            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
+            <source class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png">
+            <img class="only-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
         </picture>
     </a>
     <a href="https://github.com/unifyai/vision">
