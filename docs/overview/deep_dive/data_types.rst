@@ -391,7 +391,7 @@ An example of the latter is :func:`ivy.abs` with a tensorflow backend:
 
 
 
-The :code: `[un]supported_dtypes_and_devices` decorator can be used for more specific cases where a certain
+The :code: `[un]supported_dtypes_and_devices` decorators can be used for more specific cases where a certain
 set of dtypes is not supported by a certain device.
 
 .. code-block:: python
@@ -513,7 +513,7 @@ Data Type Casting Modes
 
 As discussed earlier, many backend functions have a set of unsupported dtypes which are otherwise supported by the
 backend itself. This raises a question that whether we should support these dtypes by casting them to some other but close dtype. We avoid manually casting unsupported dtypes
-at all costs as this could be seen as undesirable behavior to some of users. This is where we have various dtype casting modes so as to give the users an option to automatically cast unsupported dtype operations to a supported and a nearly same dtype.
+for most of the part as this could be seen as undesirable behavior to some of users. This is where we have various dtype casting modes so as to give the users an option to automatically cast unsupported dtype operations to a supported and a nearly same dtype.
 
 There are currently four modes that accomplish this.
 
@@ -554,25 +554,12 @@ is being used for execution at the time of writing this. We will see how cating 
 
     import ivy
     ivy.set_backend('torch')
-    try:
-    ret = ivy.expm1(ivy.array([1], dtype='float16'))
-    except :
-        print("Raises exception")
-        ivy.upcast_data_types()
-        print("But this doesn't")
-        ret = ivy.expm1(ivy.array([1], dtype='float16'))
-        print("And the return dtype is : ",ret.dtype)
-
-.. code-block:: python
-    this returns :
-                  Raises exception
-                  But this doesn't
-                  And the return dtype is :  float32
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # raises exception
+    ivy.upcast_data_types()
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # doesn't raise exception
 
 
 
-
-Notice, it upcasts to the next higher supported dtype available :code: `float32` in the same dtype group i.e :code: `float`
 
 Example of Downcasting mode :
 
@@ -581,21 +568,10 @@ Example of Downcasting mode :
     import ivy
     ivy.set_backend('torch')
     try:
-    ret = ivy.expm1(ivy.array([1], dtype='float16'))
-    except :
-        print("Raises exception")
-        ivy.upcast_data_types()
-        print("But this doesn't")
-        ret = ivy.expm1(ivy.array([1], dtype='float16'))
-        print("And the return dtype is : ",ret.dtype)
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # raises exception
+    ivy.upcast_data_types()
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # doesn't raise exception
 
-.. code-block:: python
-    this returns :
-                  Raises exception
-                  But this doesn't
-                  And the return dtype is :  bfloat16
-
-Notice, it downcasts to the next lower supported dtype available :code: `float16` in the same dtype group i.e :code: `float`
 
 Example of Mixed casting mode :
 
@@ -603,24 +579,11 @@ Example of Mixed casting mode :
 
     import ivy
     ivy.set_backend('torch')
-    try:
-    ret = ivy.expm1(ivy.array([1], dtype='float16'))
-    except :
-        print("Raises exception")
-        ivy.cast_data_types()
-        print("But this doesn't")
-        ret = ivy.expm1(ivy.array([1], dtype='float16'))
-        print("And the return dtype is : ",ret.dtype)
-
-.. code-block:: python
-    this returns :
-                  Raises exception
-                  But this doesn't
-                  And the return dtype is :  float32
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # raises exception
+    ivy.cast_data_types()
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # doesn't raise exception
 
 
-
-Since mixed casting goes for upcasting first , it upcasts to :code: `float32`
 
 Example of Cross casting mode :
 
@@ -644,20 +607,11 @@ enable :code:`float` dtypes to be passed here too.
 
     import ivy
     ivy.set_backend('torch')
-    try:
-        ret = ivy.lcm(ivy.array([1], dtype='float16'),ivy.array([1], dtype='float16'))
-    except :
-        print("Raises exception")
-        ivy.crosscast_data_types()
-        print("But this doesn't")
-        ret = ivy.lcm(ivy.array([1], dtype='float16'),ivy.array([1], dtype='float16'))
-        print("And the return dtype is : ",ret.dtype)
+    ret = ivy.lcm(ivy.array([1], dtype='float16'),ivy.array([1], dtype='float16')) # raises exception
+    ivy.crosscast_data_types()
+    ret = ivy.lcm(ivy.array([1], dtype='float16'),ivy.array([1], dtype='float16')) # doesn't raise exception
 
-.. code-block:: python
-    this returns :
-                  Raises exception
-                  But this doesn't
-                  And the return dtype is :  int32
+
 
 Since all  :code: `float` dtypes are not supported by the :code:`lcm` function in :code: `torch` , it is
 casted to the default integer dtype , i.e :code:`int32`.
