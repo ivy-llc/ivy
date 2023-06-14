@@ -2403,6 +2403,17 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         shapes
             the container with shapes to broadcast.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2490,14 +2501,37 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         Parameters
         ----------
         x
+            input container.
         shape
-        device
-        out
+            A 1-D Array indicates the shape you want to expand to,
+            following the broadcast rule.
+        copy
+            boolean indicating whether to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
+            device
         key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
         prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
         map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
+        Returns
+        -------
+        ret
+            An output Container with the results.
         """
         return ContainerBase.cont_multi_map_in_function(
             "expand",
@@ -2523,9 +2557,28 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Parameters
         ----------
+        self
+            input container.
         shape
-        device
+            A 1-D Array indicates the shape you want to expand to,
+            following the broadcast rule.
+        copy
+            boolean indicating whether to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
+            device
         out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An output Container with the results.
+
 
         """
         return self.static_expand(self, shape, copy=copy, out=out)
