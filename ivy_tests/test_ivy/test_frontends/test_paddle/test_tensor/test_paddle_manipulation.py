@@ -175,7 +175,7 @@ def test_paddle_tile(
     on_device,
     fn_tree,
     frontend,
-    test_flags
+    test_flags,
 ):
     input_dtype, x, repeats = dtype_x_repeats
     helpers.test_frontend_function(
