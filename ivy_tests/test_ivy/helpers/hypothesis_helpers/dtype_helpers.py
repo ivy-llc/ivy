@@ -38,40 +38,33 @@ def _get_fn_dtypes(framework, kind="valid"):
 
 
 def _get_type_dict(framework, kind):
-    if kind == "valid":
-        return framework.valid_dtypes
-    elif kind == "numeric":
-        return framework.valid_numeric_dtypes
-    elif kind == "integer":
-        return framework.valid_int_dtypes
-    elif kind == "float":
-        return framework.valid_float_dtypes
-    elif kind == "unsigned":
-        return framework.valid_uint_dtypes
-    elif kind == "signed_integer":
-        return tuple(
-            set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
-        )
-    elif kind == "complex":
-        return framework.valid_complex_dtypes
-    elif kind == "real_and_complex":
-        return tuple(
-            set(framework.valid_numeric_dtypes).union(framework.valid_complex_dtypes)
-        )
-    elif kind == "float_and_complex":
-        return tuple(
-            set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
-        )
-    elif kind == "float_and_integer":
-        return tuple(
-            set(framework.valid_float_dtypes).union(framework.valid_int_dtypes)
-        )
-    elif kind == "bool":
-        return tuple(
-            set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
-        )
-    else:
-        raise RuntimeError("{} is an unknown kind!".format(kind))
+    def _get_framework_dtype(kind):
+        if kind == "valid":
+            return framework.valid_dtypes
+        elif kind == "numeric":
+            return framework.valid_numeric_dtypes
+        elif kind == "integer":
+            return framework.valid_int_dtypes
+        elif kind == "float":
+            return framework.valid_float_dtypes
+        elif kind == "unsigned":
+            return framework.valid_uint_dtypes
+        elif kind == "signed_integer":
+            return tuple(
+                set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
+            )
+        elif kind == "complex":
+            return framework.valid_complex_dtypes
+        elif kind == "bool":
+            return tuple(
+                set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
+            )
+        else:
+            raise RuntimeError("{} is an unknown kind!".format(kind))
+
+
+    return tuple({dtype for kind in kinds
+                    for dtype in _get_framework_dtype(kind)})
 
 
 def make_json_pickable(s):
@@ -96,7 +89,7 @@ def get_dtypes(
         data-set (ex. list).
     kind
         Supported types are integer, float, valid, numeric, signed_integer, complex,
-        real_and_complex, float_and_complex, bool, and unsigned
+        bool, unsigned, and any combination of them (ex. "float_and_integer")
     index
         list indexing incase a test needs to be skipped for a particular dtype(s)
     full
@@ -167,18 +160,22 @@ def get_dtypes(
     >>> get_dtypes("valid", prune_function=False)
     ['float16']
     """
+    kinds = kind.split("_and_") if "_and_" in kind else [kind]
+
     if prune_function:
-        retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND(), kind))
+            valid_dtypes = set()
+            for kind in kinds:
+                valid_dtypes = valid_dtypes.union(
+                    set(_get_fn_dtypes(test_globals.CURRENT_BACKEND(), kind))
+                )
         else:
             raise RuntimeError(
                 "No function is set to prune, calling "
                 "prune_function=True without a function is redundant."
             )
     else:
-        retrieval_fn = _get_type_dict
-        valid_dtypes = set(retrieval_fn(ivy, kind))
+        valid_dtypes = set(_get_type_dict(ivy, *kinds))
 
     # The function may be called from a frontend test or an Ivy API test
     # In the case of an Ivy API test, the function should make sure it returns a valid
@@ -213,8 +210,11 @@ def get_dtypes(
                     )
                 else:
                     process.stdin.write("1" + "\n")
-                process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
-                process.stdin.write(f"{str(kind)}" + "\n")
+
+                if prune_function:
+                    process.stdin.write(f"{str(_get_fn_dtypes.__name__)}" + "\n")
+
+                process.stdin.write(f"{str(*kinds)}" + "\n")
                 process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
                 process.stdin.write(
                     f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
@@ -240,7 +240,11 @@ def get_dtypes(
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
         else:
-            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
+            if prune_function:
+                retrieval_fn = _get_fn_dtypes
+            else:
+                retrieval_fn = _get_type_dict
+            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), *kinds)
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatible with ground truth backend
@@ -256,7 +260,7 @@ def get_dtypes(
                 else:
                     process.stdin.write("1" + "\n")
                 process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
-                process.stdin.write(f"{str(kind)}" + "\n")
+                process.stdin.write(f"{str(*kinds)}" + "\n")
                 process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
                 process.stdin.write(
                     f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
@@ -278,7 +282,7 @@ def get_dtypes(
             valid_dtypes = valid_dtypes.intersection(backend_ret)
         else:
             valid_dtypes = valid_dtypes.intersection(
-                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
+                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), *kinds)
             )
 
     valid_dtypes = list(valid_dtypes)
