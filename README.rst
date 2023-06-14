@@ -21,11 +21,11 @@
    ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this README won't work as expected as of now!
 
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_new_dark.png?raw=true#gh-dark-mode-only
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only
    :width: 100%
    :class: only-dark
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_new.png?raw=true#gh-light-mode-only
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true#gh-light-mode-only
    :width: 100%
    :class: only-light
 
@@ -92,8 +92,8 @@ Status
 
 ------------------------------------------------------
 
-All of AI, at your fingertips
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Unified AI
+^^^^^^^^^^
 
 .. raw:: html
         
