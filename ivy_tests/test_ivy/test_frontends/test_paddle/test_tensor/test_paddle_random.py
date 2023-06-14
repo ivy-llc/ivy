@@ -29,7 +29,6 @@ def test_paddle_uniform(
     fn_tree,
 ):
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -47,11 +46,9 @@ def test_paddle_uniform(
 
 def test_paddle_poisson(x, frontend, test_flags, fn_tree):
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
         test_values=False,
         x=x[0]
     )
