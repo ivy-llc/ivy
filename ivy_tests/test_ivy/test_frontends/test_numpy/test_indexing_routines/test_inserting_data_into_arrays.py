@@ -1,4 +1,3 @@
-# Testing Function
 # global
 from hypothesis import strategies as st
 
