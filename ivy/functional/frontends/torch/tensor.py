@@ -771,9 +771,7 @@ class Tensor:
     def type_as(self, other):
         if self.dtype != other.dtype:
             self.ivy_array = ivy.astype(self.ivy_array, other.dtype)
-            return self
-        else:
-            return self
+        return self
 
     def byte(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.uint8, copy=False)
