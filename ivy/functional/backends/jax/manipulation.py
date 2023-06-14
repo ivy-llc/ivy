@@ -45,7 +45,7 @@ def expand_dims(
     x: JaxArray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -60,7 +60,7 @@ def flip(
     x: JaxArray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -72,7 +72,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.transpose(x, axes)
@@ -83,7 +83,7 @@ def reshape(
     /,
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     order: str = "C",
     allowzero: bool = True,
     out: Optional[JaxArray] = None,
@@ -118,7 +118,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.shape == ():
@@ -153,7 +153,7 @@ def split(
     x: JaxArray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[Union[int, Sequence[int], JaxArray]] = None,
     axis: int = 0,
     with_remainder: bool = False,
@@ -259,7 +259,7 @@ def unstack(
     x: JaxArray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[JaxArray]:
@@ -285,7 +285,7 @@ def swapaxes(
     axis1: int,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.swapaxes(x, axis0, axis1)

@@ -48,7 +48,7 @@ def expand_dims(
     x: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -62,7 +62,7 @@ def flip(
     x: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -88,7 +88,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if copy:
@@ -102,7 +102,7 @@ def reshape(
     /,
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     order: str = "C",
     allowzero: bool = True,
     out: Optional[np.ndarray] = None,
@@ -135,7 +135,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
@@ -173,7 +173,7 @@ def split(
     x: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[Union[int, Sequence[int], np.ndarray]] = None,
     axis: int = 0,
     with_remainder: bool = False,
@@ -250,7 +250,7 @@ def swapaxes(
     axis1: int,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if copy:
@@ -263,7 +263,7 @@ def unstack(
     x: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[np.ndarray]:

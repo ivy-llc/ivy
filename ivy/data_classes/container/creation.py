@@ -49,7 +49,7 @@ class _ContainerWithCreation(ContainerBase):
             ivy.Container,
         ],
         /,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -119,7 +119,7 @@ class _ContainerWithCreation(ContainerBase):
     def asarray(
         self: ivy.Container,
         /,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

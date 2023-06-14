@@ -26,7 +26,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         destination: Union[int, Sequence[int]],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -114,7 +114,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -322,7 +322,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -395,7 +395,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def flatten(
         self: ivy.Array,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         start_dim: int = 0,
         end_dim: int = -1,
         order: str = "C",
@@ -562,7 +562,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         indices_or_sections: Union[int, Sequence[int], ivy.Array],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.vsplit. This method simply wraps the
@@ -610,7 +610,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         indices_or_sections: Union[int, Sequence[int], ivy.Array],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.dsplit. This method simply wraps the
@@ -657,7 +657,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def atleast_1d(
         self: ivy.Array,
         *arys: Union[ivy.Array, bool, Number],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_1d. This method simply wraps
@@ -729,7 +729,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def atleast_2d(
         self: ivy.Array,
         *arys: ivy.Array,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_2d. This method simply wraps
@@ -769,7 +769,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def atleast_3d(
         self: ivy.Array,
         *arys: Union[ivy.Array, bool, Number],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_3d. This method simply wraps
@@ -859,7 +859,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.hsplit. This method simply wraps the
@@ -914,7 +914,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         shape: Union[ivy.Shape, ivy.NativeShape],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

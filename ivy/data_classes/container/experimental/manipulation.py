@@ -26,7 +26,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination: Union[int, Sequence[int]],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -91,7 +91,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination: Union[int, Sequence[int]],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -232,7 +232,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         m: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -294,7 +294,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -828,7 +828,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         m: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -900,7 +900,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1041,7 +1041,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         start_dim: int = 0,
         end_dim: int = -1,
         order: str = "C",
@@ -1121,7 +1121,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def flatten(
         self: ivy.Container,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         start_dim: int = 0,
         end_dim: int = -1,
         order: str = "C",
@@ -1306,7 +1306,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1394,7 +1394,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Container]:
         """
         ivy.Container instance method variant of ivy.vsplit. This method simply wraps
@@ -1460,7 +1460,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1546,7 +1546,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Container]:
         """
         ivy.Container instance method variant of ivy.dsplit. This method simply wraps
@@ -1607,7 +1607,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_1d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1671,7 +1671,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def atleast_1d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1829,7 +1829,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_2d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1893,7 +1893,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def atleast_2d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1965,7 +1965,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_3d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2033,7 +2033,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def atleast_3d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2253,7 +2253,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2331,7 +2331,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def hsplit(
         self: ivy.Container,
         indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         /,
     ) -> List[ivy.Container]:
         """
@@ -2478,7 +2478,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         shape: Union[ivy.Shape, ivy.NativeShape],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2516,7 +2516,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         shape: Union[ivy.Shape, ivy.NativeShape],
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

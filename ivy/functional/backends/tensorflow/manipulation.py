@@ -58,7 +58,7 @@ def expand_dims(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -74,7 +74,7 @@ def flip(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -100,7 +100,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.transpose(x, perm=axes)
@@ -111,7 +111,7 @@ def reshape(
     /,
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     order: str = "C",
     allowzero: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -158,7 +158,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
@@ -215,7 +215,7 @@ def split(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[
         Union[int, Sequence[int], Union[tf.Tensor, tf.Variable]]
     ] = None,
@@ -318,7 +318,7 @@ def swapaxes(
     axis1,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     x_shape = x.shape
@@ -364,7 +364,7 @@ def unstack(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[tf.Tensor]:

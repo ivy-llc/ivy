@@ -65,7 +65,7 @@ class _ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         axis: Union[int, Sequence[int]] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -113,7 +113,7 @@ class _ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         axis: Optional[Union[int, Sequence[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -169,7 +169,7 @@ class _ArrayWithManipulation(abc.ABC):
         /,
         axes: Tuple[int, ...],
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -227,7 +227,7 @@ class _ArrayWithManipulation(abc.ABC):
         /,
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         order: str = "C",
         allowzero: bool = True,
         out: Optional[ivy.Array] = None,
@@ -355,7 +355,7 @@ class _ArrayWithManipulation(abc.ABC):
         /,
         axis: Union[int, Sequence[int]],
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -579,7 +579,7 @@ class _ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         num_or_size_splits: Optional[
             Union[int, Sequence[int], ivy.Array, ivy.NativeArray]
         ] = None,
@@ -639,7 +639,7 @@ class _ArrayWithManipulation(abc.ABC):
         axis1: int,
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -741,7 +741,7 @@ class _ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
         axis: int = 0,
         keepdims: bool = False,
     ) -> ivy.Array:

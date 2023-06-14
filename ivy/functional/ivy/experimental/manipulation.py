@@ -41,7 +41,7 @@ def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
     order: Optional[str] = "C",
@@ -191,7 +191,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -288,7 +288,7 @@ def flipud(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -418,7 +418,7 @@ def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Optional[ivy.Array] = None,
@@ -587,7 +587,7 @@ def fliplr(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -1211,7 +1211,7 @@ def vsplit(
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Split an array vertically into multiple sub-arrays.
@@ -1262,7 +1262,7 @@ def dsplit(
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Split an array into multiple sub-arrays along the 3rd axis.
@@ -1313,7 +1313,7 @@ def dsplit(
 @to_native_arrays_and_back
 def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least one dimension. Scalar inputs are converted to
@@ -1397,7 +1397,7 @@ def dstack(
 @to_native_arrays_and_back
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least two dimension. Scalar inputs are converted to
@@ -1443,7 +1443,7 @@ def atleast_2d(
 @to_native_arrays_and_back
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least three dimension. Scalar inputs are converted
@@ -1553,7 +1553,7 @@ def hsplit(
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Split an array into multiple sub-arrays horizontally.
@@ -1640,7 +1640,7 @@ def expand(
     shape: Union[ivy.Shape, ivy.NativeShape],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """

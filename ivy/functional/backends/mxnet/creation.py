@@ -49,7 +49,7 @@ def asarray(
     ],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     dtype: Optional[None] = None,
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,

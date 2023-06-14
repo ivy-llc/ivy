@@ -77,7 +77,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(source, tuple):
@@ -119,7 +119,7 @@ def flipud(
     m: paddle.Tensor,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if copy:
@@ -163,7 +163,7 @@ def rot90(
     m: paddle.Tensor,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     k: Optional[int] = 1,
     axes: Optional[Tuple[int, int]] = (0, 1),
     out: Optional[paddle.Tensor] = None,
@@ -206,7 +206,7 @@ def fliplr(
     m: paddle.Tensor,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if copy:
@@ -259,7 +259,7 @@ def flatten(
     x: paddle.Tensor,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
     order: Optional[str] = "C",
@@ -301,7 +301,7 @@ def vsplit(
     indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
     if ary.ndim < 2:
         raise ivy.exceptions.IvyError(
@@ -315,7 +315,7 @@ def dsplit(
     indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
     if ary.ndim < 3:
         raise ivy.exceptions.IvyError(
@@ -325,7 +325,7 @@ def dsplit(
 
 
 def atleast_1d(
-    *arys: paddle.Tensor, copy: Optional[bool] = False
+    *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -357,7 +357,7 @@ def dstack(
 
 
 def atleast_2d(
-    *arys: paddle.Tensor, copy: Optional[bool] = False
+    *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -377,7 +377,7 @@ def atleast_2d(
     backend_version,
 )
 def atleast_3d(
-    *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = False
+    *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -475,7 +475,7 @@ def hsplit(
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
     if ary.ndim == 1:
         return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
@@ -509,7 +509,7 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     shape = list(shape)

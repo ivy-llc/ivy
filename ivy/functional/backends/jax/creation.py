@@ -66,7 +66,7 @@ def asarray(
     ],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,

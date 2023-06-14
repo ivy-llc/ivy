@@ -2715,7 +2715,7 @@ def get_item(
     /,
     query: Union[ivy.Array, ivy.NativeArray, Tuple],
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> ivy.Array:
     """
     Gather slices from x according to query array, identical to x[query].

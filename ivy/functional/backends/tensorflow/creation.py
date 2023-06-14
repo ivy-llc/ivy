@@ -89,7 +89,7 @@ def asarray(
     ],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     dtype: Optional[tf.DType] = None,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

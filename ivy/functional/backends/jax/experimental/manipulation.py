@@ -26,7 +26,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.moveaxis(a, source, destination)
@@ -46,7 +46,7 @@ def flipud(
     m: JaxArray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.flipud(m)
@@ -74,7 +74,7 @@ def rot90(
     m: JaxArray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Optional[JaxArray] = None,
@@ -112,7 +112,7 @@ def fliplr(
     m: JaxArray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.fliplr(m)
@@ -237,7 +237,7 @@ def vsplit(
     indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[JaxArray]:
     if ary.ndim < 2:
         raise ivy.exceptions.IvyError(
@@ -251,7 +251,7 @@ def dsplit(
     indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[JaxArray]:
     if ary.ndim < 3:
         raise ivy.utils.exceptions.IvyError(
@@ -261,7 +261,7 @@ def dsplit(
 
 
 def atleast_1d(
-    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = False
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
 ) -> List[JaxArray]:
     return jnp.atleast_1d(*arys)
 
@@ -275,12 +275,12 @@ def dstack(
     return jnp.dstack(arrays)
 
 
-def atleast_2d(*arys: JaxArray, copy: Optional[bool] = False) -> List[JaxArray]:
+def atleast_2d(*arys: JaxArray, copy: Optional[bool] = None) -> List[JaxArray]:
     return jnp.atleast_2d(*arys)
 
 
 def atleast_3d(
-    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = False
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
 ) -> List[JaxArray]:
     return jnp.atleast_3d(*arys)
 
@@ -307,7 +307,7 @@ def hsplit(
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[JaxArray]:
     if ary.ndim == 1:
         return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
@@ -323,7 +323,7 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     shape = list(shape)

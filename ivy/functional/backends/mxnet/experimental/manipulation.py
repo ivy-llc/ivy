@@ -11,7 +11,7 @@ def moveaxis(
     destination: Union[(int, Sequence[int])],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
@@ -31,7 +31,7 @@ def flipud(
     m: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
@@ -59,7 +59,7 @@ def rot90(
     m: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     k: int = 1,
     axes: Tuple[(int, int)] = (0, 1),
     out: Union[(None, mx.ndarray.NDArray)] = None,
@@ -84,7 +84,7 @@ def fliplr(
     m: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
@@ -104,7 +104,7 @@ def vsplit(
     indices_or_sections: Union[(int, Tuple[(int, ...)])],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
     raise IvyNotImplementedException()
 
@@ -114,13 +114,13 @@ def dsplit(
     indices_or_sections: Union[(int, Tuple[(int, ...)])],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
     raise IvyNotImplementedException()
 
 
 def atleast_1d(
-    *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = False
+    *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = None
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
     raise IvyNotImplementedException()
 
@@ -135,13 +135,13 @@ def dstack(
 
 
 def atleast_2d(
-    *arys: Union[(None, mx.ndarray.NDArray)], copy: Optional[bool] = False
+    *arys: Union[(None, mx.ndarray.NDArray)], copy: Optional[bool] = None
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
     raise IvyNotImplementedException()
 
 
 def atleast_3d(
-    *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = False
+    *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = None
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
     raise IvyNotImplementedException()
 
@@ -163,7 +163,7 @@ def hsplit(
     indices_or_sections: Union[(int, Tuple[(int, ...)])],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
     raise IvyNotImplementedException()
 
@@ -177,7 +177,7 @@ def expand(
     shape: Union[(List[int], List[Tuple])],
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
