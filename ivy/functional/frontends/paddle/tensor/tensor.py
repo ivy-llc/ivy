@@ -155,3 +155,7 @@ class Tensor:
     )
     def tanh(self, name=None):
         return ivy.tanh(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def all(self, name=None):
+        return ivy.all(self._ivy_array)
