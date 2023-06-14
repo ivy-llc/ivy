@@ -61,8 +61,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install TensorRT if not building for PowerPC
 RUN apt-get update && \
-        apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub && \
-        echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /"  > /etc/apt/sources.list.d/tensorRT.list && \
+        apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64/7fa2af80.pub && \
+        echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /"  > /etc/apt/sources.list.d/tensorRT.list && \
         apt-get update && \
         apt-get install -y --no-install-recommends libnvinfer${LIBNVINFER_MAJOR_VERSION}=${LIBNVINFER}+cuda11.0 \
         libnvinfer-plugin${LIBNVINFER_MAJOR_VERSION}=${LIBNVINFER}+cuda11.0 \
@@ -127,3 +127,6 @@ RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
     rm -rf requirements.txt && \
     rm -rf optional_gpu.txt && \
     rm -rf test_dependencies.py
+
+# setup the default array api with the environment variable specified in `_array_module.py`
+ENV ARRAY_API_TESTS_MODULE "numpy"

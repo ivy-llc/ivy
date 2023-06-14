@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye
 WORKDIR /ivy
 
 
@@ -49,8 +49,6 @@ RUN python3 multiversion_framework_directory.py  $fw
 
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
 
-
-
-
-
+# setup the default array api with the environment variable specified in `_array_module.py`
+ENV ARRAY_API_TESTS_MODULE "numpy"
 

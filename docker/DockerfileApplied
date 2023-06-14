@@ -6,3 +6,6 @@ FROM unifyai/ivy:latest as base
 
 COPY requirements/optional_applied.txt .
 RUN pip3 install --no-cache-dir -r optional_applied.txt
+
+# setup the default array api with the environment variable specified in `_array_module.py`
+ENV ARRAY_API_TESTS_MODULE "numpy"

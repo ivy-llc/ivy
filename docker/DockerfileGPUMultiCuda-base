@@ -1,5 +1,5 @@
 # is used to create a base image where we then manually install cuda and cudnn
-FROM debian:buster
+FROM debian:bullseye
 WORKDIR /ivy
 
 
@@ -19,5 +19,6 @@ RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list && 
     gcc  \
     nano
 
-
+# setup the default array api with the environment variable specified in `_array_module.py`
+ENV ARRAY_API_TESTS_MODULE "numpy"
 
