@@ -1329,7 +1329,7 @@ def copy_nest(
     elif check_fn(nest, dict):
         class_instance = type(nest)
         return class_instance(
-            {
+            **{
                 k: copy_nest(
                     v,
                     include_derived=include_derived,
