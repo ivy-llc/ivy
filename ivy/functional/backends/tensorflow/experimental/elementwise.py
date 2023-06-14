@@ -163,6 +163,7 @@ def fix(
     return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("bflaot16", "float16")}, backend_version)
 def nextafter(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
