@@ -8969,3 +8969,43 @@ def test_torch_special_eq_(
         frontend=frontend,
         on_device=on_device,
     )
+
+# is_meta
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="is_meta",
+)
+def test_torch_instance_is_meta(
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    # Test for a meta tensor
+    meta_tensor = frontend.tensor()
+    helpers.test_frontend_method(
+        init_input_dtypes=None,
+        init_all_as_kwargs_np={},
+        method_input_dtypes=None,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        expected_output=True,
+    )
+
+    # Test for a tensor with data
+    data_tensor = frontend.tensor([1, 2, 3])
+    helpers.test_frontend_method(
+        init_input_dtypes=None,
+        init_all_as_kwargs_np={},
+        method_input_dtypes=None,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        expected_output=False,
+    )
