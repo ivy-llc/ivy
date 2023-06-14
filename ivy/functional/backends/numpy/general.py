@@ -203,6 +203,8 @@ def inplace_update(
             np.copyto(x_native, val_native)
         else:
             x_native = val_native
+        if ivy.is_native_array(x):
+            return x_native
         if ivy.is_ivy_array(x):
             x.data = x_native
         else:
