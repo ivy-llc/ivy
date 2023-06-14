@@ -1692,7 +1692,6 @@ class MaxPool3D(Module):
         Returns
         -------
         The output of the layer.
-        
         """
         return ivy.max_pool3d(
             x,
@@ -1820,4 +1819,44 @@ class AvgPool1D(Module):
             self._stride,
             self._padding,
             data_format=self._data_format,
+        )
+
+
+class AdaptiveAvgPool2d(Module):
+    def __init__(
+        self,
+        output_size,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying a 2D adaptive average pooling over mini-batch of inputs.
+
+        Parameters
+        ----------
+        output_size
+            the target output size of the image.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._output_size = output_size
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        # TODO: test again once adaptive_avg_pool2d is implemnted for the missing backends. # noqa: E501
+        return ivy.adaptive_avg_pool2d(
+            x,
+            self._output_size,
         )
