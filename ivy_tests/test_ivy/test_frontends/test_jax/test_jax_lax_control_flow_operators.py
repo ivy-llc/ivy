@@ -18,7 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     pred_cond=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_cond(
+def test_jax_lax_cond(
     *,
     dtype_and_x,
     pred_cond,
