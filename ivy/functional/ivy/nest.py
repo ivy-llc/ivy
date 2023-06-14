@@ -1309,6 +1309,8 @@ def copy_nest(
         ]
         if to_mutable:
             return ret_list
+        if hasattr(nest, "_fields"):
+            return class_instance(**dict(zip(nest._fields, ret_list)))
         return class_instance(tuple(ret_list))
     elif check_fn(nest, list) or isinstance(nest, extra_nest_types):
         if isinstance(nest, (ivy.Array, ivy.NativeArray)):
