@@ -201,7 +201,7 @@ def dsplit(
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
-def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = False) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_1d(*arys)
@@ -221,7 +221,7 @@ def dstack(
     return torch.dstack(arrays, out=out)
 
 
-def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = False) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_2d(*arys)
@@ -231,7 +231,7 @@ def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.T
 
 
 def atleast_3d(
-    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = None
+    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = False
 ) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
