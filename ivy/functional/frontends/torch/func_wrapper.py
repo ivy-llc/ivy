@@ -77,7 +77,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
             (
-                ivy.set_default_int_dtype("int64") 
+                ivy.set_default_int_dtype("int64")
                 if ivy.current_backend_str() != "jax"
                 else ivy.set_default_int_dtype("int32")
             )
