@@ -42,10 +42,21 @@ def test_paddle_uniform(
     )
 
 @handle_frontend_test(
-    fn_tree="paddle.poisson",
-    x=st.lists(st.floats(allow_nan=False, allow_infinity=False, min_value=0, max_value=1),min_size=2,max_size=9))
+fn_tree="paddle.poisson",
+    input_dtypes=helpers.get_dtypes("float"),
+    x=st.lists(
+        st.floats(allow_nan=False, allow_infinity=False, min_value=0, max_value=1),
+        min_size=2,
+        max_size=9,
+    ),
+)
 
 def test_paddle_poisson(x, frontend, test_flags, fn_tree):
+    x=st.lists(
+        st.floats(allow_nan=False, allow_infinity=False, min_value=0, max_value=1),
+        min_size=2,
+        max_size=9,
+    )
     helpers.test_frontend_function(
         frontend=frontend,
         test_flags=test_flags,
