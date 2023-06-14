@@ -175,11 +175,18 @@ def downcaster(dtype, intersect):
 
 def cross_caster(intersect):
     # check if this is an integer unsupported case
+    # intersect is unordered, sorting it makes a list
+    # and remaking it a set messes the order
+    # so we stick with making both of these
+    # sorted lists
     dtype = ""
-    if intersect == ivy.valid_int_dtypes:
+    valid_float = sorted(ivy.valid_float_dtypes)
+    valid_int = sorted(ivy.valid_int_dtypes)
+    intersect = sorted(intersect)
+    if intersect == valid_int:
         # make dtype equal to default float
         dtype = ivy.default_float_dtype()
-    elif intersect == ivy.valid_float_dtypes:
+    elif intersect == valid_float:
         # make dtype equal to default int
         dtype = ivy.default_int_dtype()
 
@@ -455,6 +462,11 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
+        if not ivy.array_mode:
+            warnings.warn("In the case of Compositional function, operators might cause inconsistent "
+                          "behavior when array_mode is set to False")
+            return fn(*args, **kwargs)
+
         has_out = False
         if "out" in kwargs:
             out = kwargs["out"]
@@ -1187,6 +1199,8 @@ def _dtype_device_wrapper_creator(attrib, t):
                 # we do nothing
                 return func
             if not exclusive:
+                # exclusive attribute comes into existence
+                # only when exlusive is passed as true
                 setattr(func, "exclusive", True)
             # set the attribute on the function and return the function as is
 
@@ -1198,14 +1212,24 @@ def _dtype_device_wrapper_creator(attrib, t):
                     if not (
                         attrib == attribs or (attrib, attribs) in attribute_conflict
                     ):
+                        # cases when we encounter two different decorators
+                        # applied to the function, but they are not same
+                        # and aren't in conflicting dict either
                         setattr(func, attrib, val)
                         setattr(func, "dictionary_info", version_dict)
                     elif hasattr(func, "exclusive"):
                         if attrib == attribs:
+                            # we see a higher decorator with exclusivity applied
+                            # we use this decorator's dict information
+                            # and previous decorator's dict information
+                            # to update this
                             old_version_dict = getattr(func, "dictionary_info")
                             old_version_dict.update(version_dict)
                             val = _versioned_attribute_factory(
-                                lambda: _dtype_from_version(version_dict, version), t
+                                lambda: _dtype_from_version(
+                                    version_dict, old_version_dict
+                                ),
+                                t,
                             )
                             setattr(func, attrib, val)
                         else:
@@ -1322,6 +1346,9 @@ attribute_conflict = {
     ("unsupported_device_and_dtype", "supported_device_and_dtype"),
     ("supported_device_and_dtype", "unsupported_device_and_dtype"),
 }
+
+# TODO see if the globals_getter_func can be hacked to return
+# the globals in the module where it is working
 
 
 def globals_getter_func(x=None):

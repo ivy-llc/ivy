@@ -344,6 +344,8 @@ def inplace_update(
             paddle.assign(val_native, x_native)
         else:
             x_native = val_native
+        if ivy.is_native_array(x):
+            return x_native
         if ivy.is_ivy_array(x):
             x.data = x_native
         else:
