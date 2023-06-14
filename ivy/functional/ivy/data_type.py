@@ -497,7 +497,8 @@ def can_cast(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.can_cast.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -590,7 +591,8 @@ def finfo(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.finfo.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.finfo.html>`_
     in the standard.
 
     Examples
@@ -666,7 +668,8 @@ def iinfo(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.iinfo.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.iinfo.html>`_
     in the standard.
 
     Examples
@@ -733,7 +736,8 @@ def result_type(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.result_type.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.result_type.html>`_
     in the standard.
 
     Examples
@@ -1953,7 +1957,7 @@ def is_uint_dtype(
 def is_complex_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
-) -> complex:
+) -> bool:
     """
     Determine whether the input data type is a complex dtype.
 
@@ -2021,15 +2025,25 @@ def promote_types(
     query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
     query.sort(key=lambda x: str(x))
     query = tuple(query)
-    try:
+
+    def _promote(query):
         if array_api_promotion:
-            ret = ivy.array_api_promotion_table[query]
-        else:
-            ret = ivy.promotion_table[query]
+            return ivy.array_api_promotion_table[query]
+        return ivy.promotion_table[query]
+
+    try:
+        ret = _promote(query)
     except KeyError:
-        raise ivy.utils.exceptions.IvyDtypePromotionError(
-            "these dtypes are not type promotable"
-        )
+        # try again with the dtypes swapped
+        query = (query[1], query[0])
+        try:
+            ret = _promote(query)
+        except KeyError:
+            raise ivy.utils.exceptions.IvyDtypePromotionError(
+                "these dtypes ({} and {}) are not type promotable, ".format(
+                    type1, type2
+                )
+            )
     return ret
 
 

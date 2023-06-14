@@ -1284,6 +1284,9 @@ def test_jax_numpy_lcm(
         min_value=-100,
         max_value=100,
         allow_nan=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1558,6 +1561,9 @@ def test_jax_numpy_log10(
         min_value=-100,
         max_value=100,
         allow_nan=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
