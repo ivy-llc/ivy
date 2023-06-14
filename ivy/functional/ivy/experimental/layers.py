@@ -2189,6 +2189,8 @@ def reduce_window(
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
     op, dims, strides = operand, window_dimensions, window_strides
+    if isinstance(strides, int):
+        strides = tuple([strides] * len(dims))
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
