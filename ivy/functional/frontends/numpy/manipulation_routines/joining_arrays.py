@@ -35,12 +35,7 @@ def stack(arrays, axis=0, out=None):
 
 @to_ivy_arrays_and_back
 def vstack(tup):
-    if len(ivy.shape(tup[0])) == 1:
-        xs = []
-        for t in tup:
-            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
-        return ivy.concat(xs, axis=0)
-    return ivy.concat(tup, axis=0)
+    return ivy.vstack(tup)
 
 
 row_stack = vstack
@@ -48,11 +43,4 @@ row_stack = vstack
 
 @to_ivy_arrays_and_back
 def hstack(tup):
-    if len(ivy.shape(tup[0])) == 1:
-        xs = []
-        for t in tup:
-            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
-        ret = ivy.concat(xs, axis=-1)
-    else:
-        ret = ivy.concat(tup, axis=1)
-    return ret
+    return ivy.hstack(tup)
