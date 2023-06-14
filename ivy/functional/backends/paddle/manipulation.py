@@ -41,7 +41,7 @@ def expand_dims(
     x: paddle.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -69,7 +69,7 @@ def flip(
     x: paddle.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -85,7 +85,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
@@ -106,7 +106,7 @@ def reshape(
     /,
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     order: Optional[str] = "C",
     allowzero: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
@@ -173,7 +173,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(axis, list):
@@ -239,7 +239,7 @@ def split(
     x: paddle.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     num_or_size_splits: Optional[Union[int, List[int], paddle.Tensor]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
@@ -403,7 +403,7 @@ def swapaxes(
     axis1: int,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     axes = [x for x in range(x.ndim)]
@@ -426,7 +426,7 @@ def unstack(
     x: paddle.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[paddle.Tensor]:

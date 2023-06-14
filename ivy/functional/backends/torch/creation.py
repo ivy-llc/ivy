@@ -112,7 +112,7 @@ def asarray(
     ],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,

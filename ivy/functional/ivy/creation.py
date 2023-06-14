@@ -319,7 +319,7 @@ def asarray(
     ],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,

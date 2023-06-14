@@ -20,7 +20,7 @@ def expand_dims(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: Union[(int, Sequence[int])] = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
@@ -31,7 +31,7 @@ def flip(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: Optional[Union[(int, Sequence[int])]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
@@ -43,7 +43,7 @@ def permute_dims(
     /,
     axes: Tuple[(int, ...)],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
@@ -54,7 +54,7 @@ def reshape(
     /,
     shape: Union[(ivy.NativeShape, Sequence[int])],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     order: str = "C",
     allowzero: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
@@ -78,7 +78,7 @@ def squeeze(
     /,
     axis: Union[(int, Sequence[int])],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     if copy:
@@ -101,7 +101,7 @@ def split(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     num_or_size_splits: Optional[Union[(int, Sequence[int])]] = None,
     axis: int = 0,
     with_remainder: bool = False,
@@ -148,7 +148,7 @@ def swapaxes(
     axis1,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
     raise IvyNotImplementedException()
@@ -169,7 +169,7 @@ def unstack(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[None]:

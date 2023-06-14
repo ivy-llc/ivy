@@ -16,7 +16,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
@@ -48,7 +48,7 @@ def flipud(
     m: torch.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     if copy:
@@ -85,7 +85,7 @@ def rot90(
     m: torch.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Optional[torch.Tensor] = None,
@@ -125,7 +125,7 @@ def fliplr(
     m: torch.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     if copy:
@@ -153,7 +153,7 @@ def flatten(
     x: torch.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
     order: Optional[str] = "C",
@@ -174,7 +174,7 @@ def vsplit(
     indices_or_sections: Union[int, Sequence[int], torch.Tensor],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[torch.Tensor]:
     if len(ary.shape) < 2:
         raise ivy.utils.exceptions.IvyError(
@@ -190,7 +190,7 @@ def dsplit(
     indices_or_sections: Union[int, Sequence[int], torch.Tensor],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[torch.Tensor]:
     if len(ary.shape) < 2:
         raise ivy.utils.exceptions.IvyError(
@@ -288,7 +288,7 @@ def hsplit(
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[torch.Tensor]:
     if copy:
         ary = torch.clone(ary)
@@ -312,7 +312,7 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:

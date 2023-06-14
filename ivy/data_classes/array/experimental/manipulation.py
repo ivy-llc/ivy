@@ -26,7 +26,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         destination: Union[int, Sequence[int]],
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -107,7 +107,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -308,7 +308,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -374,7 +374,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def flatten(
         self: ivy.Array,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         start_dim: int = 0,
         end_dim: int = -1,
         order: str = "C",
@@ -534,7 +534,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         indices_or_sections: Union[int, Sequence[int], ivy.Array],
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.vsplit. This method simply wraps the
@@ -575,7 +575,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         indices_or_sections: Union[int, Sequence[int], ivy.Array],
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.dsplit. This method simply wraps the
@@ -796,7 +796,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.hsplit. This method simply wraps the
@@ -844,7 +844,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         shape: Union[ivy.Shape, ivy.NativeShape],
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

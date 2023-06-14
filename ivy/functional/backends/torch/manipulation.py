@@ -50,7 +50,7 @@ def expand_dims(
     x: torch.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -66,7 +66,7 @@ def flip(
     x: torch.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -93,7 +93,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
@@ -107,7 +107,7 @@ def reshape(
     /,
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     order: str = "C",
     allowzero: bool = True,
     out: Optional[torch.Tensor] = None,
@@ -151,7 +151,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
@@ -220,7 +220,7 @@ def split(
     x: torch.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     num_or_size_splits: Optional[Union[int, List[int], torch.Tensor]] = None,
     axis: int = 0,
     with_remainder: bool = False,
@@ -327,7 +327,7 @@ def swapaxes(
     axis1: int,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
@@ -363,7 +363,7 @@ def unstack(
     x: torch.Tensor,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[torch.Tensor]:

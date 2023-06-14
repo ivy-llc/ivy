@@ -100,7 +100,7 @@ def asarray(
     ],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, paddle.dtype]] = None,
     device: Place,
     out: Optional[paddle.Tensor] = None,

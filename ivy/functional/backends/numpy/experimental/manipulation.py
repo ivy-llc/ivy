@@ -25,7 +25,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if copy:
@@ -57,7 +57,7 @@ def flipud(
     m: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if copy:
@@ -90,7 +90,7 @@ def rot90(
     m: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Optional[np.ndarray] = None,
@@ -128,7 +128,7 @@ def fliplr(
     m: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if copy:
@@ -287,7 +287,7 @@ def vsplit(
     indices_or_sections: Union[int, Sequence[int], np.ndarray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[np.ndarray]:
     if ary.ndim < 2:
         raise ivy.exceptions.IvyError(
@@ -303,7 +303,7 @@ def dsplit(
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[np.ndarray]:
     if ary.ndim < 3:
         raise ivy.utils.exceptions.IvyError(
@@ -395,7 +395,7 @@ def hsplit(
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[np.ndarray]:
     if copy:
         ary = ary.copy()
@@ -419,7 +419,7 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if copy:

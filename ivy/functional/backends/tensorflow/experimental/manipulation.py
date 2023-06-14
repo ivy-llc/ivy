@@ -16,7 +16,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.moveaxis(a, source, destination)
@@ -37,7 +37,7 @@ def flipud(
     m: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.flipud(m)
@@ -65,7 +65,7 @@ def rot90(
     m: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Union[tf.Tensor, tf.Variable] = None,
@@ -109,7 +109,7 @@ def fliplr(
     m: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.fliplr(m)
@@ -130,7 +130,7 @@ def vsplit(
     indices_or_sections: Union[int, Sequence[int], tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(ary.shape) < 2:
         raise ivy.utils.exceptions.IvyError(
@@ -144,7 +144,7 @@ def dsplit(
     indices_or_sections: Union[int, Sequence[int], tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(ary.shape) < 3:
         raise ivy.utils.exceptions.IvyError(
@@ -233,7 +233,7 @@ def hsplit(
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(ary.shape) == 1:
         return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
@@ -258,7 +258,7 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     shape = list(shape)

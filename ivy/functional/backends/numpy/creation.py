@@ -53,7 +53,7 @@ def asarray(
     ],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     dtype: Optional[np.dtype] = None,
     device: str,
     out: Optional[np.ndarray] = None,

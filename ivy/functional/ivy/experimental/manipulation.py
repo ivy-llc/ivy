@@ -41,7 +41,7 @@ def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
     order: Optional[str] = "C",
@@ -184,7 +184,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -274,7 +274,7 @@ def flipud(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -397,7 +397,7 @@ def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Optional[ivy.Array] = None,
@@ -559,7 +559,7 @@ def fliplr(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -1176,7 +1176,7 @@ def vsplit(
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Split an array vertically into multiple sub-arrays.
@@ -1220,7 +1220,7 @@ def dsplit(
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Split an array into multiple sub-arrays along the 3rd axis.
@@ -1483,7 +1483,7 @@ def hsplit(
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[ivy.Array]:
     """
     Split an array into multiple sub-arrays horizontally.
@@ -1563,7 +1563,7 @@ def expand(
     shape: Union[ivy.Shape, ivy.NativeShape],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """

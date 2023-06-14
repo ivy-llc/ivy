@@ -104,7 +104,7 @@ def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -234,7 +234,7 @@ def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -323,7 +323,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -416,7 +416,7 @@ def reshape(
     /,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     order: str = "C",
     allowzero: bool = True,
     out: Optional[ivy.Array] = None,
@@ -648,7 +648,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1104,7 +1104,7 @@ def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     num_or_size_splits: Optional[
         Union[int, Sequence[int], ivy.Array, ivy.NativeArray]
     ] = None,
@@ -1187,7 +1187,7 @@ def swapaxes(
     axis1: int,
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1368,7 +1368,7 @@ def unstack(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[ivy.Array]:
