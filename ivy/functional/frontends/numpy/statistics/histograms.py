@@ -20,6 +20,8 @@ def histogram(
         weights = ivy.ones_like(a)
     if range is None:
         range = (a.min(), a.max())
+    if density is None:
+        density = False
     return ivy.histogram(
         a,
         bins=bins,
