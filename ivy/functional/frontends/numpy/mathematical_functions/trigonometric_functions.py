@@ -352,20 +352,3 @@ def _hypot(
         ret = ivy.where(where, ret, ivy.zeros_like(ret), out=out)
     
     return ret # Return result
-
-
-# This is the unwrap function
-# It returns the unwrap input using the ivy unwrap function.
-# @handle_numpy_out
-# @handle_numpy_dtype
-# @to_ivy_arrays_and_back
-# @handle_numpy_casting
-# def _unwrap(
-#     p,
-#     discont=ivy.pi,
-#     axis=-1,
-# ):
-#     # Perform the unwrap operation on the input array x
-#     ret = ivy.unwrap(p, discont=discont, axis=axis)
-    
-#     return ret # Return result
