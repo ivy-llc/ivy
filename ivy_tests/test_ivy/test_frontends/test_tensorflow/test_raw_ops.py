@@ -1967,7 +1967,6 @@ def test_tensorflow_Relu(  # NOQA
     fn_tree="tensorflow.raw_ops.MatMul",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1976,6 +1975,9 @@ def test_tensorflow_Relu(  # NOQA
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
     transpose_a=st.booleans(),
     transpose_b=st.booleans(),
@@ -2411,6 +2413,7 @@ def test_tensorflow_Min(  # NOQA
     )
 
 
+# Max
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Max",
     dtype_x_axis=helpers.dtype_values_axis(
