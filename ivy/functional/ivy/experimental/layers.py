@@ -2146,7 +2146,7 @@ def reduce_window(
     *,
     window_strides: Union[int, Sequence[int]] = 1,
     padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
-    base_dilation: Union[int, Sequence[int]] = None,
+    base_dilation: Union[int, Sequence[int]] = 1,
     window_dilation: Union[int, Sequence[int]] = 1,
 ) -> ivy.Array:
     """
@@ -2189,8 +2189,19 @@ def reduce_window(
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
     op, dims, strides = operand, window_dimensions, window_strides
+
+    # handle int arguments
+    if isinstance(dims, int):
+        dims = tuple([dims] * len(op.shape))
     if isinstance(strides, int):
-        strides = tuple([strides] * len(dims))
+        strides = tuple([strides] * len(op.shape))
+    if isinstance(padding, int):
+        padding = tuple([padding] * len(op.shape))
+    if isinstance(base_dilation, int):
+        base_dilation = tuple([base_dilation] * len(op.shape))
+    if isinstance(window_dilation, int):
+        window_dilation = tuple([window_dilation] * len(op.shape))
+
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
