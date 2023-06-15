@@ -746,8 +746,11 @@ class Tensor:
     def inverse(self):
         return torch_frontend.inverse(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
     def neg(self):
         return torch_frontend.negative(self)
+
+    __neg__ = neg
 
     def int(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int32, copy=False)
