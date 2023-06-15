@@ -680,7 +680,7 @@ def test_jax_numpy_mod(
 @handle_frontend_test(
     fn_tree="jax.numpy.modf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=1,
         min_value=0,
         exclude_min=True,
@@ -695,7 +695,6 @@ def test_jax_numpy_modf(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    assume(not np.iscomplex(x))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
