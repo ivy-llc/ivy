@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
 )
 from ivy.utils.exceptions import handle_exceptions
 
+
 # Helpers #
 # ------- #
 
@@ -382,3 +383,37 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+
+# log_poisson_loss
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
+    log_input = ivy.array(log_input)
+    targets = ivy.array(targets)
+    try:
+        targets.get_shape().assert_is_compatible_with(log_input.get_shape())
+    except ValueError:
+        raise ValueError(
+            "`log_input` and `targets` must have the same shape, received "
+            f"({log_input.get_shape()} vs {targets.get_shape()})."
+        )
+
+    result = ivy.exp(log_input) - log_input * targets
+    if compute_full_loss:
+        point_five = 0.5
+        two_pi = ivy.pi * 2
+
+        stirling_approx = (
+            (targets * ivy.log(targets))
+            - targets
+            + (point_five * ivy.log(two_pi * targets))
+        )
+        zeros = ivy.zeros_like(targets)
+        ones = ivy.ones_like(targets)
+        cond = ivy.logical_and(targets >= zeros, targets <= ones)
+        result += ivy.where(cond, zeros, stirling_approx)
+    return result
