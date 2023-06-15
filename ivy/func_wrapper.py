@@ -859,8 +859,11 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
+        nonlocal handle_out_in_backend
         if out is None or is_compos_fn:
             return fn(*args, out=out, **kwargs)
+        if ivy.gradients._is_variable(out):
+            handle_out_in_backend = False
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
@@ -1072,9 +1075,9 @@ def casting_modes_ops(fn):
             # doesn't have unsupported dtypes specified
             # so check if it's one of the device_and_dtype one
             intersect = set(
-                ivy.function_unsupported_devices_and_dtypes(fn)[
-                    ivy.default_device().split(":")[0]
-                ]
+                ivy.function_unsupported_devices_and_dtypes(fn).get(
+                    ivy.default_device().split(":")[0], {None}
+                )
             ).difference(set(ivy.invalid_dtypes))
             if not intersect:
                 # no unsupported dtype specified
