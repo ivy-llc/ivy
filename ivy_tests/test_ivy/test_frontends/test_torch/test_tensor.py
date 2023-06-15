@@ -9003,26 +9003,32 @@ def test_torch_instance_is_meta(
     meta_tensor = frontend.tensor()
     helpers.test_frontend_method(
         init_input_dtypes=None,
-        init_all_as_kwargs_np={},
+        init_all_as_kwargs_np={'meta_tensor': meta_tensor},
         method_input_dtypes=None,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        expected_output=True,
+        test_values=False,
     )
+    meta_result = frontend_method_data.get_result()
+    meta_expected_output = meta_result == True
+    assert meta_result == meta_expected_output, f"Unexpected output for meta tensor: {meta_result}"
 
     # Test for a tensor with data
     data_tensor = frontend.tensor([1, 2, 3])
     helpers.test_frontend_method(
         init_input_dtypes=None,
-        init_all_as_kwargs_np={},
+        init_all_as_kwargs_np={'data_tensor': data_tensor},
         method_input_dtypes=None,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        expected_output=False,
+        test_values=False,
     )
+    data_result = frontend_method_data.get_result()
+    data_expected_output = data_result == False
+    assert data_result == data_expected_output, f"Unexpected output for tensor with data: {data_result}"
