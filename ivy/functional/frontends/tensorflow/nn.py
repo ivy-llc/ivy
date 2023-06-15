@@ -459,3 +459,9 @@ def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
 @to_ivy_arrays_and_back
 def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+# log_poisson_loss
+@to_ivy_arrays_and_back
+def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
+    return ivy.log_poisson_loss(targets, log_input, compute_full_loss, name)
