@@ -704,7 +704,7 @@ def test_frontend_function(
             )
             ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
             assert first_array is ret_
-            args, kwargs = copy_args, copy_kwargs
+
     # create NumPy args
 
     def arrays_to_numpy(x):
