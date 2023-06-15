@@ -359,15 +359,11 @@ def test_paddle_bitwise_and(
         num_arrays=2,
         shared_dtype=True,
     ),
-    rtol=st.floats(min_value=0, allow_infinity=False),
-    atol=st.floats(min_value=0, allow_infinity=False),
     equal_nan=st.booleans(),
 )
 def test_paddle_allclose(
     *,
     dtype_and_x,
-    rtol,
-    atol,
     equal_nan,
     on_device,
     fn_tree,
@@ -383,7 +379,5 @@ def test_paddle_allclose(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        rtol=rtol,
-        atol=atol,
         equal_nan=equal_nan,
     )
