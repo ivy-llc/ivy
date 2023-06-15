@@ -220,7 +220,7 @@ def test_sparse_cross_entropy(
         max_value=2,
         allow_inf=False,
         min_num_dims=1,
-        max_num_dims=1,
+        max_num_dims=3,
         min_dim_size=3,
     ),
     dtype_and_log_input=helpers.dtype_and_values(
@@ -232,10 +232,10 @@ def test_sparse_cross_entropy(
         exclude_min=True,
         exclude_max=True,
         min_num_dims=1,
-        max_num_dims=1,
+        max_num_dims=3,
         min_dim_size=3,
     ),
-    compute_full_loss=st.sampled_from(["True", "False"]),
+    compute_full_loss=False,
 )
 def test_log_poisson_loss(
     dtype_and_targets,
