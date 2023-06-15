@@ -209,3 +209,46 @@ def test_sparse_cross_entropy(
         epsilon=epsilon,
         reduction=reduction,
     )
+
+
+#mse_loss
+@handle_test(
+    fn_tree="functional.ivy.mse_loss",
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False
+    ),
+    axis=helpers.ints(min_value=-1, max_value=0),
+)
+def mse_loss(
+    dtype_and_true,
+    dtype_and_pred,
+    axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    pred_dtype, pred = dtype_and_pred
+    true_dtype, true = dtype_and_true
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=true_dtype + pred_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        true=true[0],
+        pred=pred[0],
+        axis=axis,
+    )

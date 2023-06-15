@@ -382,10 +382,20 @@ def sparse_cross_entropy(
     true = ivy.one_hot(true, pred.shape[axis])
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
-
-
         )
-def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, ivy.NativeArray],axis : int=-1,out : Optional[ivy.Array]=None)-> ivy.Array:
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def mse_loss(true : Union[ivy.Array, ivy.NativeArray],
+             pred : Union[ivy.Array, ivy.NativeArray],
+            /,
+            *,
+             axis : int=-1,
+             out : Optional[ivy.Array] = None
+)-> ivy.Array:
     """
     Compute the mean square error
 
@@ -397,7 +407,7 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, iv
     pred
         input array containing predicted labels
     axis
-        the axis along which mse is computed. By default, it is the last axis (-1)
+        the axis along which mse is computed. Default: ``-1``
     out
         to write the result
 
@@ -406,23 +416,29 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, iv
     ret
         the mean square loss between two arrays
 
-    Example
+    Examples
     -------------------
-    >>x = [1,1,1]
-    >>y = [0,0,0]
-    >>z = ivy.mse_loss(x,y)
-    >>print(z)
-    ivy.array([1])
+    >>>x = ivy.array([1,2,3])
+    >>>y = ivy.array([1,1,1])
+    >>>z = ivy.mse_loss(x,y)
+    >>>print(z)
+    ivy.array([1.67])
+
+    >>>x = ivy.native_array([1,2,3])
+    >>>y = iny.array([1,1,1])
+    >>>z = ivy.mse_loss(x,y)
+    ivy.array([1.67])
+
+    >>>x = ivy.array([1,2,3])
+    >>>y = ivy.native_array([1,3,2])
+    >>>z = ivy.mse_loss(x,y,axis=-1)
+    ivy.array([0.34])
     """
-     
-    true = ivy.negative(true)
+
+    true = ivy.negative(true,axis=axis)
     diff = ivy.add(pred,true,axis=axis)
     s_diff = ivy.multiply(diff,diff,axis =axis)
     s_diff = ivy.sum(s_diff,axis = axis)
-    mse_diff = s_diff/true.shape[-1]
+    mse_diff = s_diff/true.shape[0]
+    out = mse_diff
     return mse_diff
-
-
-
-
-
