@@ -425,7 +425,7 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],
     ivy.array([1.67])
 
     >>>x = ivy.native_array([1,2,3])
-    >>>y = iny.array([1,1,1])
+    >>>y = ivy.array([1,1,1])
     >>>z = ivy.mse_loss(x,y)
     ivy.array([1.67])
 
