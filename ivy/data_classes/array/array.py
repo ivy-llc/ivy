@@ -364,7 +364,8 @@ class Array(
                 self._post_repr = ", dev={})".format(self._dev_str)
             else:
                 self._post_repr = ")"
-        dec_vals = ivy.array_decimal_values()
+        sig_fig = ivy.array_significant_figures
+        dec_vals = ivy.array_decimal_values
         if self.backend == "" or ivy.is_local():
             # If the array was constructed using implicit backend
             backend = ivy.current_backend()
@@ -373,6 +374,8 @@ class Array(
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
         arr_np = backend.to_numpy(self._data)
+        if sig_fig != 10:
+            arr_np = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
             repr = arr_np.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             return (
