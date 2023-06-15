@@ -249,11 +249,17 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
 
 def _partition_dtypes_into_kinds(framework, dtypes):
+    kinds = set()
+    for kind_key in _dtype_kind_keys:
+        if "_and_" in kind_key:
+            kinds = kinds.union(set(kind_key.split("_and_")))
+        else:
+            kinds.union(kind_key)
+
     partitioned_dtypes = {}
-    for kind in _dtype_kind_keys:
-        partitioned_dtypes[kind] = set(_get_type_dict(framework, kind)).intersection(
-            dtypes
-        )
+    for kind in kinds:
+        partitioned_dtypes[kind] = set(_get_type_dict(framework, kind)).intersection(dtypes)
+
     return partitioned_dtypes
 
 
