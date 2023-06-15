@@ -177,3 +177,8 @@ def bitwise_or(x, y, name=None, out=None):
 @handle_out_argument
 def bitwise_and(x, y, /, *, name=None, out=None):
     return ivy.bitwise_and(x, y, out=out)
+
+
+@to_ivy_arrays_and_back
+def is_tensor(x):
+    return ivy.is_array(x)

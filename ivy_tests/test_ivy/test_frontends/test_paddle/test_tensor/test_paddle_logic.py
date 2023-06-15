@@ -350,3 +350,26 @@ def test_paddle_bitwise_and(
         x=x[0],
         y=x[1],
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.is_tensor",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_paddle_is_tensor(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
