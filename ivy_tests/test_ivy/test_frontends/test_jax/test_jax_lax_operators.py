@@ -1745,22 +1745,19 @@ def test_jax_lax_dot(
 
 @st.composite
 def _general_dot_helper(draw):
-    input_dtype = draw(helpers.get_dtypes("numeric", full=False))
-    lshape = draw(
-        st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=52)
+    input_dtype, lhs, lshape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_value=-1e04,
+            max_value=1e04,
+            min_num_dims=2,
+            ret_shape=True,
+        )
     )
     ndims = len(lshape)
     perm_id = random.sample(list(range(ndims)), ndims)
     rshape = [lshape[i] for i in perm_id]
-    ldtype, lhs = draw(
-        helpers.dtype_and_values(
-            dtype=input_dtype,
-            min_value=-1e04,
-            max_value=1e04,
-            shape=lshape,
-        )
-    )
-    rdtype, rhs = draw(
+    input_dtype, rhs = draw(
         helpers.dtype_and_values(
             dtype=input_dtype,
             min_value=-1e04,
@@ -1775,18 +1772,36 @@ def _general_dot_helper(draw):
     lhs_contracting = [i for i in ind_list if i not in lhs_batch]
     rhs_contracting = [perm_id.index(i) for i in lhs_contracting]
     is_pref = draw(st.booleans())
+    pref_dtype = None
     if is_pref:
-        dtype, pref = draw(
-            helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("numeric")), input_dtype[0]
-            )
+        uint_cast_st = helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("unsigned")),
+            input_dtype[0],
         )
-        assume(can_cast(dtype, pref))
-        pref_dtype = pref
-    else:
-        pref_dtype = None
+        int_cast_st = helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("signed_integer")),
+            input_dtype[0],
+        )
+        float_cast_st = helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("float")),
+            input_dtype[0],
+        )
+        complex_cast_st = helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("complex")),
+            input_dtype[0],
+        )
+        if "uint" in input_dtype[0]:
+            pref_dtype = draw(st.one_of(uint_cast_st, float_cast_st))[-1]
+        elif "int" in input_dtype[0]:
+            pref_dtype = draw(st.one_of(int_cast_st, float_cast_st))[-1]
+        elif "float" in input_dtype[0]:
+            pref_dtype = draw(float_cast_st)[-1]
+        elif "complex" in input_dtype[0]:
+            pref_dtype = draw(complex_cast_st)[-1]
+        else:
+            raise ivy.exceptions.IvyException("unsupported dtype")
     return (
-        ldtype + rdtype,
+        input_dtype * 2,
         (lhs[0], rhs[0]),
         ((lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch)),
         pref_dtype,
