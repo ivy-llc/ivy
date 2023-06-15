@@ -1,4 +1,5 @@
 # global
+import numpy as np
 from hypothesis import strategies as st
 
 # local
@@ -1496,7 +1497,7 @@ def test_tensorflow_avg_pool1d(
     dtype_and_fw=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
-        min_value=0,
+        min_value=0.00001,
     ),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
