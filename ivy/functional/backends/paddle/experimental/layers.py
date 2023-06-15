@@ -6,7 +6,6 @@ from ivy.functional.ivy.layers import _handle_padding
 from ivy.utils.assertions import check_kernel_padding_size
 from ivy.func_wrapper import (
     with_supported_dtypes,
-    with_unsupported_device_and_dtypes,
 )
 from .. import backend_version
 
@@ -113,14 +112,15 @@ def max_pool2d(
         padding = (padding[1], padding[0])
         pad_list = [item for sublist in padding for item in sublist]
 
-
     x = paddle.nn.functional.pad(
         x,
         pad_list,
         value=float("-inf"),
     )
-    
-    res = paddle.nn.functional.max_pool2d(x, kernel_size=new_kernel, stride=strides, padding=0, ceil_mode=ceil_mode)
+
+    res = paddle.nn.functional.max_pool2d(
+        x, kernel_size=new_kernel, stride=strides, padding=0, ceil_mode=ceil_mode
+    )
 
     if data_format == "NHWC":
         return paddle.transpose(res, perm=[0, 2, 3, 1]).astype(dtype)
@@ -165,8 +165,12 @@ def max_pool3d(
         data_format="NDHWC",
     )
     if padding != "VALID" and padding != "SAME":
-        raise ValueError(f'Invalid padding arg {padding}\nMust be one of: "VALID" or "SAME"')
-    res = paddle.nn.functional.max_pool3d(x, kernel_size=kernel, stride=strides, padding=0)
+        raise ValueError(
+            f'Invalid padding arg {padding}\nMust be one of: "VALID" or "SAME"'
+        )
+    res = paddle.nn.functional.max_pool3d(
+        x, kernel_size=kernel, stride=strides, padding=0
+    )
     if data_format == "NDHWC":
         res = paddle.transpose(res, perm=[0, 4, 1, 2, 3])
     return res
