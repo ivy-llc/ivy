@@ -1,6 +1,8 @@
 # global
 from typing import Union, Optional, Tuple, List, Sequence
 
+import jax.lax
+
 # local
 import ivy
 from ivy.utils.backend import current_backend
@@ -500,6 +502,62 @@ def multi_dot(
                [ 80, 148]])
     """
     return current_backend(x).multi_dot(x, out=out)
+
+
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_exceptions
+def dot(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+    precision: Optional[jax.lax.Precision] = None
+) -> ivy.Array:
+    """
+    Compute the dot product of two vectors in a single function call, while
+    selecting the fastest evaluation order.
+
+    Parameters
+    ----------
+    a
+        first vector to be multiplied.
+    b
+        second vector to be multiplied.
+    out
+        optional output array, for writing the result to. It must have a valid
+        shape, i.e. the resulting shape after applying regular matrix multiplication
+        to the inputs.
+    precision
+        optional parameter to set precision type for jax backend.
+
+    Returns
+    -------
+    ret
+        dot product of the 1D arrays.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> A = ivy.arange(100)
+    >>> B = ivy.arange(100)
+    >>> ivy.dot(A, B)
+
+    >>> A = ivy.arange(100)
+    >>> B = ivy.arange(100)
+    >>> C = ivy.zeros(100)
+    >>> ivy.dot(A, B, out=C)
+    >>> print(C)
+
+    >>> A = ivy.arange(100)
+    >>> B = ivy.arange(100)
+    >>> ivy.dot(A, B, precision=jax.lax.Precision('high'))
+
+    """
+    return current_backend(a, b).dot(a, b, out=out, precision=precision)
 
 
 @handle_exceptions

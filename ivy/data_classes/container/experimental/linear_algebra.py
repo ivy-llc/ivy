@@ -1,6 +1,8 @@
 # global
 from typing import Union, Optional, List, Dict, Tuple, Sequence
 
+import jax
+
 # local
 from ivy.data_classes.container.base import ContainerBase
 import ivy
@@ -778,6 +780,100 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+        )
+
+
+    @staticmethod
+    def static_dot(
+        self: ivy.Container,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        y: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+        precision: Optional[jax.lax.Precision] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.dot. This method simply wraps
+        the function, and so the docstring for ivy.dot also applies to this method
+        with minimal changes.
+
+         Parameters
+        ----------
+        a
+            first vector to be multiplied.
+        b
+            second vector to be multiplied.
+        out
+            optional output array, for writing the result to. It must have a valid
+            shape, i.e. the resulting shape after applying regular matrix multiplication
+            to the inputs.
+        precision
+            optional parameter to set precision type for jax backend.
+
+        Returns
+        -------
+        ret
+            dot product of the 1D arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> a = ivy.Container(x=ivy.arange(6),
+        ...                   y=ivy.arange(6))
+        >>> ivy.Container.static_dot((a))
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "dot",
+            x,
+            y,
+            out=out,
+            precision=precision,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def dot(
+        self: ivy.Container,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        y: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = True,
+        out: Optional[ivy.Container] = None,
+        precision: Optional[jax.lax.Precision] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.dot. This method simply wraps
+        the function, and so the docstring for ivy.dot also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.arange(6),
+        ...                   y=ivy.arange(6))
+        >>> a.dot(a)
+        """
+        return self.static_dot(
+            self,
+            x,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            precision=precision
         )
 
     @staticmethod

@@ -1,4 +1,6 @@
 from typing import Union, Optional, Tuple, List, Sequence
+
+import numpy as np
 import tensorflow as tf
 from functools import reduce as _reduce
 
@@ -148,6 +150,18 @@ def multi_dot(
         raise ValueError("Expecting at least two tensors.")
     dot_out = _reduce(tf.matmul, x)
     return dot_out
+
+
+def dot(
+    a: tf.Tensor,
+    b: tf.Tensor,
+    out: Optional[tf.Tensor] = None
+) -> tf.Tensor:
+    x = a.numpy()
+    y = b.numpy()
+
+    assert x.ndim == 1 or y.ndim == 1, "One of the inputs is not a vector"
+    return tf.convert_to_tensor(tf.experimental.numpy.dot(x, y, out))
 
 
 def cond(

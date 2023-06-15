@@ -3,7 +3,7 @@ from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
 import jax.scipy.linalg as jla
 from ivy.functional.backends.jax import JaxArray
-
+from jax.lax import Precision
 import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
@@ -138,6 +138,16 @@ def multi_dot(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.linalg.multi_dot(x)
+
+
+def dot(
+    a: JaxArray,
+    b: JaxArray,
+    out: Optional[JaxArray] = None,
+    precision: Optional[Precision] = None
+) -> JaxArray:
+    assert a.ndim == 1 or b.ndim == 1, "One of the inputs is not a vector"
+    return jnp.dot(a, b, out=out, precision=precision)
 
 
 def cond(

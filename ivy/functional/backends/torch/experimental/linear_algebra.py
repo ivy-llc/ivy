@@ -166,6 +166,15 @@ def multi_dot(
 multi_dot.support_native_out = True
 
 
+def dot(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    assert a.dim() == 1 or b.dim() == 1, "One of the inputs is not a vector"
+    return torch.dot(a, b, out=out)
+
+
 @with_unsupported_dtypes({"2.0.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
     x: torch.Tensor,

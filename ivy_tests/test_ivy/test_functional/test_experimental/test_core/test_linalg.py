@@ -546,6 +546,68 @@ def test_multi_dot(
 
 
 @st.composite
+def _generate_dot_dtype_and_arrays(draw):
+    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
+
+    vector_shape = (1,)
+
+    vector_1 = draw(
+        helpers.dtype_and_values(
+            shape=vector_shape,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    vector_2 = draw(
+        helpers.dtype_and_values(
+            shape=vector_shape,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    vector_3 = draw(
+        helpers.dtype_and_values(
+            shape=vector_shape,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return input_dtype, [vector_1, vector_2, vector_3]
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.dot",
+    dtype_x=_generate_multi_dot_dtype_and_arrays(),
+    test_gradients=st.just(False),
+)
+def test_dot(
+    dtype_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    ivy.set_exception_trace_mode("ivy")
+    dtype, x, y = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_values=True,
+        x=x,
+        y=y,
+        rtol_=1e-1,
+        atol_=6e-1,
+    )
+
+
+@st.composite
 def _cond_data_gen_helper(draw):
     dtype_x = helpers.dtype_and_values(
         available_dtypes=(ivy.float32, ivy.float64),
