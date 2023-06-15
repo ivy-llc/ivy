@@ -1051,12 +1051,9 @@ def _wrap_function(
         # be run from the primary implementation.
         if partial_mixed:
             array_spec = to_wrap.compos.__dict__["array_spec"]
-            if hasattr(to_wrap.compos, "handle_exceptions") and hasattr(
-                to_wrap.compos, "handle_nestable"
-            ):
-                to_wrap.compos = to_wrap.compos.__wrapped__.__wrapped__
-            else:
-                to_wrap.compos = to_wrap.compos.__wrapped__
+            for attr in FN_DECORATORS[-1:14:-1]:
+                if hasattr(to_wrap.compos, attr):
+                    to_wrap.compos = to_wrap.compos.__wrapped__
             to_wrap.compos.__dict__["array_spec"] = array_spec
 
     return to_wrap
