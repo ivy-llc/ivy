@@ -541,3 +541,38 @@ def test_paddle_bmm(
         x=x[0],
         y=x[1],
     )
+
+
+# dot
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.dot",
+    dtype_x_y=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=3,
+        min_value=-1e5,
+        max_value=1e5,
+        abs_smallest_val=0.01,
+        safety_factor_scale="log",
+    ),
+)
+def test_paddle_dot(
+    *,
+    dtype_x_y,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, y = dtype_x_y
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        y=y,
+    )
