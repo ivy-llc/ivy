@@ -680,10 +680,7 @@ def test_jax_numpy_mod(
 @handle_frontend_test(
     fn_tree="jax.numpy.modf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
-        num_arrays=1,
-        min_value=0,
-        exclude_min=True,
+        available_dtypes=helpers.get_dtypes("float_and_integer")
     ),
     test_with_out=st.just(False),
 )
