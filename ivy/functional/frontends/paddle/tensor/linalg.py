@@ -130,3 +130,13 @@ def bmm(x, y, transpose_x=False, transpose_y=False, name=None):
         raise RuntimeError("input must be 3D matrices")
     x, y = promote_types_of_paddle_inputs(x, y)
     return ivy.matmul(x, y, transpose_a=transpose_x, transpose_b=transpose_y)
+
+
+# dot
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def dot(x, y, name=None):
+    x, y = promote_types_of_paddle_inputs(x, y)
+    return ivy.vecdot(x, y)
