@@ -254,6 +254,27 @@ def einsum(equation, *inputs, **kwargs):
 def adjoint(matrix, name=None):
     return ivy.adjoint(matrix)
 
+@to_ivy_arrays_and_back
+def matrix_diag(diagonal, k=0, padding_value=0):
+    diagonal = ivy.array(diagonal)
+    shape = list(diagonal.shape)
+    shape[-1] += abs(k)
+
+    output = ivy.full(shape + [shape[-1]], padding_value)
+    if k > 0:
+        for i in range(shape[-1]):
+            try:
+                output[..., i, i + k] = diagonal[..., i]
+            except IndexError:
+                break
+    else:
+        for i in range(shape[-1]):
+            try:
+                output[..., i + abs(k), i] = diagonal[..., i]
+            except IndexError:
+                break
+
+    return output
 
 @to_ivy_arrays_and_back
 def diag(
@@ -267,25 +288,11 @@ def diag(
     align="RIGHT_LEFT",
     name="diag",
 ):
-    # TODO: Implement ivy.matrix_diag in ivy API
     diagonal = ivy.array(diagonal)
     shape = list(diagonal.shape)
     shape[-1] += abs(k)
 
-    output = ivy.full(shape + [shape[-1]], padding_value)
-    if k > 0:
-        for i in range(shape[-1]):
-            try:
-                output[..., i, i + k] = diagonal[..., i]
-            except IndexError:
-                break
-
-    else:
-        for i in range(shape[-1]):
-            try:
-                output[..., i + abs(k), i] = diagonal[..., i]
-            except IndexError:
-                break
+    output = matrix_diag(diagonal, k=k, padding_value=padding_value)
 
     size = 1
     for dim in output.shape:
