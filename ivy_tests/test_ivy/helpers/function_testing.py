@@ -689,6 +689,7 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             copy_kwargs["inplace"] = True
+            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *copy_args, array_fn=array_fn, **copy_kwargs
             )
@@ -697,6 +698,7 @@ def test_frontend_function(
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
+            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
