@@ -127,7 +127,7 @@ def rfftfreq(n, d=1.0):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"1.24.3 and above": ("float16",)}, "numpy")
+@with_supported_dtypes({"1.24.3 and above": ("float16", "float32", "float64", "complex64", "complex128", )}, "numpy")
 def rfft2(a, s=None, axes=(-2, -1), norm=None):
     a = ivy.array(a)
     if norm is None:
