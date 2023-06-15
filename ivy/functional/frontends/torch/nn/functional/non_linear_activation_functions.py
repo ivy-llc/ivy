@@ -138,6 +138,7 @@ def softmin(input, dim=None, dtype=None):
     return ivy.softmax(-input, axis=dim)
 
 
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def threshold(input, threshold, value, inplace=False):
     return _compute_threshold(input, threshold, value, inplace)
@@ -148,6 +149,7 @@ def threshold_(input, threshold, value):
     return _compute_threshold(input, threshold, value, inplace=True)
 
 
+@to_ivy_arrays_and_back
 def relu6(input, inplace=False):
     ret = ivy.relu6(input)
     if inplace:
@@ -156,6 +158,7 @@ def relu6(input, inplace=False):
     return ret
 
 
+@to_ivy_arrays_and_back
 def elu(input, alpha=1.0, inplace=False):
     return _compute_elu(input, alpha, inplace=inplace)
 
@@ -164,6 +167,7 @@ def elu_(input, alpha=1.0):
     return _compute_elu(input, alpha, inplace=True)
 
 
+@to_ivy_arrays_and_back
 def celu(input, alpha=1.0, inplace=False):
     prod = ivy.multiply(
         alpha,
@@ -182,6 +186,7 @@ def celu(input, alpha=1.0, inplace=False):
     return ret
 
 
+@to_ivy_arrays_and_back
 def mish(input, inplace=False):
     ret = ivy.multiply(
         input,
@@ -222,6 +227,7 @@ def prelu(input, weight):
     return ivy.add(ivy.maximum(0, input), ivy.multiply(weight, ivy.minimum(0, input)))
 
 
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
     return _rrelu(input, lower, upper, training, inplace)
@@ -308,6 +314,7 @@ def hardsigmoid(input, inplace=False):
     return ret
 
 
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def hardtanh(input, min_val=-1.0, max_val=1.0, inplace=False):
     less = ivy.where(ivy.less(input, min_val), min_val, input)
