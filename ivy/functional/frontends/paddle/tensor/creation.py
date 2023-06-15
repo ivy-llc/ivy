@@ -70,6 +70,4 @@ def empty(shape, dtype=None):
 
 @to_ivy_arrays_and_back
 def empty_like(x, dtype=None, name=None):
-    if dtype:
-        return ivy.empty(shape=x.shape, dtype=dtype)
-    return ivy.empty(shape=x.shape, dtype=x.dtype)
+    return ivy.empty_like(x, dtype=dtype)
