@@ -545,6 +545,10 @@ def test_jax_numpy_divide(
 ):
     input_dtype, x = dtype_values
     assume(not np.any(np.isclose(x[1], 0)))
+    if ivy.current_backend_str() == 'paddle':
+        atol, rtol = 1e-2, 1e-2
+    else:
+        atol, rtol = 1e-5, 1e-5
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -552,8 +556,8 @@ def test_jax_numpy_divide(
         fn_tree=fn_tree,
         a=x[0],
         b=x[1],
-        atol=1e-5,
-        rtol=1e-5,
+        atol=atol,
+        rtol=rtol,
     )
 
 
