@@ -8,7 +8,7 @@ import sys
 
 
 import ivy.utils.backend.handler
-import ivy.utils.valid_devices
+import ivy.utils.device_util
 from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
@@ -87,7 +87,7 @@ class Device(str):
                     dev_str[4:].isnumeric(),
                     message="{} must be numeric".format(dev_str[4:]),
                 )
-            valid, msg = valid_devices.is_valid_device(dev_str[0:3])
+            valid, msg = device_util.is_valid_device(dev_str[0:3])
             if not valid:
                 raise ivy.utils.exceptions.IvyException(msg)
         return str.__new__(cls, dev_str)
