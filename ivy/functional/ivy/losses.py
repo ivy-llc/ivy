@@ -412,11 +412,12 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, iv
     ivy.array([1])
 
     """
+
     true = ivy.negative(true)
     diff = ivy.add(pred,true)
     s_diff = ivy.multiply(diff,diff)
     s_diff = ivy.sum(s_diff)
-    mse_diff = s_diff/true.shape[1]
+    mse_diff = s_diff/true.shape[0]
     return mse_diff
 
 
