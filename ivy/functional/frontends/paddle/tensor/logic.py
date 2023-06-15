@@ -177,3 +177,18 @@ def bitwise_or(x, y, name=None, out=None):
 @handle_out_argument
 def bitwise_and(x, y, /, *, name=None, out=None):
     return ivy.bitwise_and(x, y, out=out)
+
+
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def allclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
+    ret = ivy.allclose(x, y, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return paddle.to_tensor([ret])
