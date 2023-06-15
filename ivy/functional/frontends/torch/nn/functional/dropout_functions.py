@@ -16,22 +16,16 @@ def dropout(input, p=0.5, training=True, inplace=False):
 
 
 @to_ivy_arrays_and_back
-def dropout2d(tensor, p=0.5, training=True, inplace=False):
-    if tensor.ndim != 4:
-        raise ValueError("Input must have exactly 4 dimensions.")
+def dropout2d(tensor, prob=0.5, training=True, inplace=False):
+    if tensor.ndim < 2:
+        raise ValueError("Feature dropout requires at least 2 dimensions in the input")
 
     if not training:
         return tensor
 
-    shape = tensor.shape
-    mask = ivy.bernoulli(probs=p, shape=(shape[2], shape[3]))
-    mask = ivy.tile(mask, shape[1])
-    mask = ivy.reshape(mask, (shape[1], shape[2], shape[3]))
-    mask = ivy.tile(mask, shape[0])
-    mask = ivy.reshape(mask, shape)
+    ret = tensor.dropout2d(prob)
 
     if inplace:
-        tensor *= mask
+        ivy.inplace_update(tensor, ret)
         return tensor
-    else:
-        return tensor * mask
+    return ret

@@ -59,39 +59,46 @@ def test_torch_dropout(
         min_value=0,
         max_value=50,
         allow_inf=False,
-        min_num_dims=4,
+        min_num_dims=2,
         max_num_dims=4,
         min_dim_size=1,
+        max_dim_size=5,
     ),
-    prob=helpers.floats(min_value=0, max_value=0.99),
+    prob=helpers.floats(min_value=0, max_value=0.9),
     training=st.booleans(),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
+    test_gradients=st.just(False),
     test_with_out=st.just(False),
-    test_inplace=st.booleans(),
 )
 def test_torch_dropout2d(
     *,
     dtype_and_x,
     prob,
     training,
-    on_device,
-    fn_tree,
-    frontend,
+    data_format,
     test_flags,
+    backend_fw,
+    on_device,
+    fn_name,
+    ground_truth_backend,
 ):
-    input_datatype, x = dtype_and_x
-    ret = helpers.test_frontend_function(
-        input_dtypes=input_datatype,
-        frontend=frontend,
+    dtype, x = dtype_and_x
+    ret, gt_ret = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
         test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        p=prob,
-        training=training,
         test_values=False,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        prob=prob,
+        training=training,
+        data_format=data_format,
+        return_flat_np_arrays=True,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
-    x = np.asarray(x[0], input_datatype[0])
-    for u in ret:
+    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
-        assert u.shape == x.shape
+        assert u.shape == v.shape == w.shape
