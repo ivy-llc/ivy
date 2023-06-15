@@ -793,7 +793,7 @@ def test_paddle_cholesky(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])  
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
