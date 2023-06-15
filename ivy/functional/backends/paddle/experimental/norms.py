@@ -19,8 +19,7 @@ from . import backend_version
                 "int64",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
+                "complex",
                 "bool",
             )
         }

@@ -173,12 +173,13 @@ def test_gamma(
     fn_tree="functional.ivy.experimental.poisson",
     dtype_and_lam=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=False),
-        min_value=0,
+        min_value=-2,
         max_value=5,
         min_num_dims=0,
     ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
+    fill_value=helpers.floats(min_value=0, max_value=1),
     test_gradients=st.just(False),
 )
 def test_poisson(
@@ -186,6 +187,7 @@ def test_poisson(
     dtype_and_lam,
     dtype,
     seed,
+    fill_value,
     test_flags,
     backend_fw,
     fn_name,
@@ -207,6 +209,7 @@ def test_poisson(
             shape=None,
             dtype=dtype[0],
             seed=seed,
+            fill_value=fill_value,
         )
 
     ret, ret_gt = call()

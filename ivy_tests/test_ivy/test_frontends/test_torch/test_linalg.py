@@ -13,6 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
     dtype_value1_value2_axis,
 )
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
 
 # helpers
@@ -609,28 +610,15 @@ def test_torch_vecdot(
     )
 
 
-@st.composite
-def _matrix_rank_helper(draw):
-    dtype_x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            min_num_dims=2,
-            min_value=-1e05,
-            max_value=1e05,
-        )
-    )
-    return dtype_x
-
-
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_rank",
-    dtype_and_x=_matrix_rank_helper(),
-    atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
-    rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
+    dtype_x_hermitian=_matrix_rank_helper(),
+    atol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
-    dtype_and_x,
+    dtype_x_hermitian,
     rtol,
     atol,
     on_device,
@@ -638,16 +626,17 @@ def test_matrix_rank(
     frontend,
     test_flags,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, hermitian = dtype_x_hermitian
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        input=x,
         rtol=rtol,
         atol=atol,
+        hermitian=hermitian,
     )
 
 
@@ -1256,4 +1245,47 @@ def test_torch_multi_dot(
         fn_tree=fn_tree,
         test_values=True,
         tensors=x,
+    )
+
+
+# solve_ex
+@handle_frontend_test(
+    fn_tree="torch.linalg.solve_ex",
+    dtype_and_data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+        safety_factor_scale="log",
+        small_abs_safety_factor=6,
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0][:, :-1]) != 0
+        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
+    ),
+    check=st.booleans(),
+)
+def test_torch_solve_ex(
+    *,
+    dtype_and_data,
+    check,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, data = dtype_and_data
+    input = data[0][:, :-1]
+    other = data[0][:, -1].reshape(-1, 1)
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[0]],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=input,
+        B=other,
+        check_errors=check,
     )

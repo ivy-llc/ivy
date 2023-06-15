@@ -97,27 +97,28 @@ def test_numpy_norm(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="numpy.linalg.matrix_rank",
-    dtype_and_x=_matrix_rank_helper(),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    dtype_x_hermitian=_matrix_rank_helper(),
+    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
     test_with_out=st.just(False),
 )
 def test_numpy_matrix_rank(
-    dtype_and_x,
-    rtol,
+    dtype_x_hermitian,
+    tol,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, hermitian = dtype_x_hermitian
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        A=x[0],
-        tol=rtol,
+        A=x,
+        tol=tol,
+        hermitian=hermitian,
     )
 
 
