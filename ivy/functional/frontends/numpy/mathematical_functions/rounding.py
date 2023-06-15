@@ -114,8 +114,8 @@ def _rint(
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def _around(
-    a, 
-    decimals=0, 
+    a,
+    decimals=0,
     out=None,
 ):
     if ivy.shape(a) == ():
