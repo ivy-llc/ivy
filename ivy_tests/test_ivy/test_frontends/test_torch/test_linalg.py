@@ -1258,6 +1258,7 @@ def test_torch_multi_dot(
         tensors=x,
     )
 
+
 # solve_ex
 @handle_frontend_test(
     fn_tree="torch.linalg.solve_ex",
@@ -1275,10 +1276,12 @@ def test_torch_multi_dot(
         and np.linalg.det(x[1][0][:, :-1]) != 0
         and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
     ),
+    check=st.booleans(),
 )
 def test_torch_solve_ex(
     *,
     dtype_and_data,
+    check,
     on_device,
     fn_tree,
     frontend,
@@ -1287,7 +1290,6 @@ def test_torch_solve_ex(
     input_dtype, data = dtype_and_data
     input = data[0][:, :-1]
     other = data[0][:, -1].reshape(-1, 1)
-    check = st.booleans()
     helpers.test_frontend_function(
         input_dtypes=[input_dtype[0], input_dtype[0]],
         frontend=frontend,
