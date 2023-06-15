@@ -346,6 +346,8 @@ def clip(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if hasattr(x_min, "dtype"):
+        x_min = torch.asarray(x_min, device=x.device)
+        x_max = torch.asarray(x_max, device=x.device)
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
         x_min = x_min.to(promoted_type)

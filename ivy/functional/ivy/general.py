@@ -83,6 +83,9 @@ class PreciseMode:
         return self
 
 
+ivy.precise_mode = True
+
+
 @handle_exceptions
 def set_precise_mode(mode: bool) -> None:
     """
@@ -97,16 +100,17 @@ def set_precise_mode(mode: bool) -> None:
     Examples
     --------
     >>> ivy.set_precise_mode(False)
-    >>> ivy.get_precise_mode()
+    >>> ivy.precise_mode
     False
 
     >>> ivy.set_precise_mode(True)
-    >>> ivy.get_precise_mode()
+    >>> ivy.precise_mode
     True
     """
     global precise_mode_stack
     ivy.utils.assertions.check_isinstance(mode, bool)
     precise_mode_stack.append(mode)
+    ivy.__setattr__("precise_mode", mode, True)
     _update_promotion_table(precise=mode)
 
 
@@ -119,40 +123,19 @@ def unset_precise_mode() -> None:
     Examples
     --------
     >>> ivy.set_precise_mode(False)
-    >>> ivy.get_precise_mode()
+    >>> ivy.precise_mode
     False
 
     >>> ivy.unset_precise_mode()
-    >>> ivy.array_mode
+    >>> ivy.precise_mode
     True
     """
     global precise_mode_stack
     if precise_mode_stack:
         precise_mode_stack.pop(-1)
-        # TODO: change when it's not the default mode anymore
-        _update_promotion_table(
-            precise=precise_mode_stack[-1] if len(precise_mode_stack) != 0 else True
-        )
-
-
-@handle_exceptions
-def get_precise_mode() -> bool:
-    """
-    Get the current state of precise_mode.
-
-    Examples
-    --------
-    >>> ivy.get_precise_mode()
-    True
-
-    >>> ivy.set_precise_mode(False)
-    >>> ivy.get_precise_mode()
-    False
-    """
-    global precise_mode_stack
-    if not precise_mode_stack:
-        return True  # TODO: change when it's not the default mode anymore
-    return precise_mode_stack[-1]
+        mode = precise_mode_stack[-1] if precise_mode_stack else True
+        ivy.__setattr__("precise_mode", mode, True)
+        _update_promotion_table(precise=mode)
 
 
 def _update_promotion_table(precise):
@@ -438,6 +421,9 @@ def set_array_mode(mode: bool) -> None:
     """
     Set the mode of whether to convert inputs to ivy.NativeArray, then convert outputs
     back to ivy.Array.
+
+    It Stops the conversion of ivy.NativeArray to ivy.Array in the
+    case when it is set to False.
 
     Parameter
     ---------
@@ -2740,6 +2726,13 @@ def get_item(
         array, the array from which to gather values.
     query
         array, index array, integer indices or boolean mask.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------

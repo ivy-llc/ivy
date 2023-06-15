@@ -6,6 +6,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
@@ -184,7 +185,8 @@ def isscalar(x, /):
 
 @to_ivy_arrays_and_back
 def left_shift(x1, x2):
-    return ivy.isscalar(x1, x2)
+    # TODO: implement
+    raise IvyNotImplementedException()
 
 
 @to_ivy_arrays_and_back
