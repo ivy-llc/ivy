@@ -546,7 +546,7 @@ def test_paddle_bmm(
 # dot
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.dot",
-    dtype_x_y_axis=dtype_value1_value2_axis(
+    dtype_x_y_values=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
@@ -560,13 +560,13 @@ def test_paddle_bmm(
 )
 def test_paddle_dot(
     *,
-    dtype_x_y_axis,
+    dtype_x_y_values,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x, y = dtype_x_y_axis
+    dtype, x, y = dtype_x_y_values
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
