@@ -138,7 +138,9 @@ class Tensor:
     def exp(self, name=None):
         return ivy.exp(self._ivy_array)
 
-    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
     def subtract(self, other, name=None):
         other_ivy = _to_ivy_array(other)
         return ivy.subtract(self._ivy_array, other_ivy)
