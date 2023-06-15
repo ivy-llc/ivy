@@ -32,6 +32,7 @@ def dirichlet(
     )
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def beta(
     alpha: Union[float, torch.Tensor],
     beta: Union[float, torch.Tensor],
@@ -43,12 +44,16 @@ def beta(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     if seed is not None:
         torch.manual_seed(seed)
-    return torch.distributions.beta.Beta(alpha, beta).sample(shape).to(device, dtype)
+    ret = torch.distributions.beta.Beta(alpha, beta).sample(shape)
+    if device is not None:
+        return ret.to(device)
+    return ret
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, torch.Tensor],
     beta: Union[float, torch.Tensor],
@@ -60,10 +65,23 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     if seed is not None:
         torch.manual_seed(seed)
-    return torch.distributions.gamma.Gamma(alpha, beta).sample(shape).to(device)
+    ret = torch.distributions.gamma.Gamma(alpha, beta).sample(shape)
+    if device is not None:
+        return ret.to(device)
+    return ret
+
+
+def _poisson_with_neg_lam(lam, fill_value, device, dtype):
+    if torch.any(lam < 0):
+        pos_lam = torch.where(lam < 0, 0, lam)
+        ret = torch.poisson(pos_lam).type(dtype).to(device)
+        ret = torch.where(lam < 0, fill_value, ret)
+    else:
+        ret = torch.poisson(lam).type(dtype).to(device)
+    return ret
 
 
 def poisson(
@@ -73,16 +91,19 @@ def poisson(
     device: torch.device,
     dtype: torch.dtype,
     seed: Optional[int] = None,
+    fill_value: Optional[Union[float, int]] = 0,
     out: Optional[torch.Tensor] = None,
 ):
     lam = torch.tensor(lam, device=device, dtype=torch.float32)
     if seed:
         torch.manual_seed(seed)
     if shape is None:
-        return torch.poisson(lam).type(dtype).to(device)
-    _check_shapes_broadcastable(shape, lam.shape)
-    lam = torch.broadcast_to(lam, tuple(shape))
-    return torch.poisson(lam).type(dtype).to(device)
+        return _poisson_with_neg_lam(lam, fill_value, device, dtype)
+    shape = torch.tensor(shape, device=device, dtype=torch.int32)
+    list_shape = shape.tolist()
+    _check_shapes_broadcastable(lam.shape, list_shape)
+    lam = torch.broadcast_to(lam, list_shape)
+    return _poisson_with_neg_lam(lam, fill_value, device, dtype)
 
 
 def bernoulli(

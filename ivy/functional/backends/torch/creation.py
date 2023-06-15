@@ -46,8 +46,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
-# noinspection PyUnboundLocalVariable,PyShadowingNames
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def arange(
     start: float,
     /,

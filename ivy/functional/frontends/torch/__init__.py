@@ -1,24 +1,13 @@
-import ivy
-from ivy.utils.exceptions import handle_exceptions
-
 # global
+import sys
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
-# Constructing dtypes are required as ivy.<dtype>
-# will change dynamically on the backend and may not be available
-int8 = ivy.IntDtype("int8")
-int16 = ivy.IntDtype("int16")
-int32 = ivy.IntDtype("int32")
-int64 = ivy.IntDtype("int64")
-uint8 = ivy.UintDtype("uint8")
-bfloat16 = ivy.FloatDtype("bfloat16")
-float16 = ivy.FloatDtype("float16")
-float32 = ivy.FloatDtype("float32")
-float64 = ivy.FloatDtype("float64")
-complex64 = ivy.ComplexDtype("complex64")
-complex128 = ivy.ComplexDtype("complex128")
-bool = ivy.Dtype("bool")
+# local
+import ivy
+from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -261,6 +250,7 @@ def promote_types_of_torch_inputs(
 
 
 from . import nn
+from .nn.functional import softmax, relu
 from . import tensor
 from .tensor import *
 from . import blas_and_lapack_ops
@@ -293,4 +283,10 @@ from . import linalg
 from . import func
 from .func import *
 
+
 _frontend_array = tensor
+
+# setting to specific version #
+# --------------------------- #
+
+set_frontend_to_specific_version(sys.modules[__name__])

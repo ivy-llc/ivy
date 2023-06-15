@@ -259,7 +259,6 @@ def test_torch_empty(
     fn_tree="torch.arange",
     start_stop_step=_start_stop_step(),
     dtype=helpers.get_dtypes("float", full=False),
-    number_positional_args=st.just(3),
 )
 def test_torch_arange(
     *,
@@ -280,6 +279,7 @@ def test_torch_arange(
         start=start,
         end=stop,
         step=step,
+        out=None,
         dtype=dtype[0],
         device=on_device,
     )

@@ -24,7 +24,7 @@ jobs:
           cat combined_test_results.txt
 
   run_tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -68,7 +68,7 @@ jobs:
           cd Mapping
           git add .
           git commit -m "Update Mapping"
-          git push origin master${{ matrix.branch }}
+#          git push origin master${{ matrix.branch }}
         continue-on-error: true
 
       - name: Run Tests

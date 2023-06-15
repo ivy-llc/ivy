@@ -84,6 +84,7 @@ def _reduction_dims(a, axis):
         len(canon_axis),
         len(set(canon_axis)),
         message=f"duplicate value in 'axis': {axis}",
+        as_array=False,
     )
 
     # TODO: deal with named axis
@@ -133,7 +134,7 @@ def gelu(x, approximate=True):
 def glu(x, axis=-1):
     size = x.shape[axis]
     ivy.utils.assertions.check_equal(
-        size % 2, 0, message="axis size must be divisible by 2"
+        size % 2, 0, message="axis size must be divisible by 2", as_array=False
     )
     x1, x2 = ivy.split(x, num_or_size_splits=2, axis=axis)
     return ivy.multiply(x1, ivy.sigmoid(x2))
@@ -181,9 +182,8 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         a = ivy.astype(a, dtype)
         b = ivy.asarray(b, dtype=dtype)
         a = ivy.where(b != 0, a, -ivy.inf)
-
+        a = ivy.astype(a, dtype)
     out_dtype = _batch_promotion(a, b, default_dtype="float32")
-
     pos_dims, dims = _reduction_dims(a, axis)
 
     amax = ivy.max(a, axis=pos_dims, keepdims=keepdims)
@@ -212,7 +212,6 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         sumexp = ivy.sum(expsub, axis=dims, keepdims=keepdims)
         sign = ivy.stop_gradient(ivy.sign(sumexp))
         out = ivy.add(ivy.log(ivy.abs(sumexp)), amax)
-
     if return_sign:
         return out, sign
 
