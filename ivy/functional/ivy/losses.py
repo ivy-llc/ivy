@@ -385,7 +385,7 @@ def sparse_cross_entropy(
 
 
         )
-def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, ivy.NativeArray],out : Optional[ivy.Array]=None)-> ivy.Array:
+def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, ivy.NativeArray],axis : int=-1,out : Optional[ivy.Array]=None)-> ivy.Array:
     """
     Compute the mean square error
 
@@ -396,6 +396,10 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, iv
         input array containing true labels
     pred
         input array containing predicted labels
+    axis
+        the axis along which mse is computed. By default, it is the last axis (-1)
+    out
+        to write the result
 
     Returns
     -------
@@ -410,15 +414,12 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, iv
     >>print(z)
     ivy.array([1])
     """
-    true = ivy.to_list(true)[0]
-    pred = ivy.to_list(pred)[0]
-    true = ivy.Array(true)
-    pred = ivy.Array(pred)
+     
     true = ivy.negative(true)
-    diff = ivy.add(pred,true)
-    s_diff = ivy.multiply(diff,diff)
-    s_diff = ivy.sum(s_diff)
-    mse_diff = s_diff/true.shape[0]
+    diff = ivy.add(pred,true,axis=axis)
+    s_diff = ivy.multiply(diff,diff,axis =axis)
+    s_diff = ivy.sum(s_diff,axis = axis)
+    mse_diff = s_diff/true.shape[-1]
     return mse_diff
 
 
