@@ -439,6 +439,6 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],
     diff = ivy.add(pred,true,axis=axis)
     s_diff = ivy.multiply(diff,diff,axis =axis)
     s_diff = ivy.sum(s_diff,axis = axis)
-    mse_diff = s_diff/true.shape[0]
+    mse_diff = s_diff/true.shape[axis]
     out = mse_diff
     return mse_diff
