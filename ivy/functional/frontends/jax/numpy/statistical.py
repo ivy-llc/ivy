@@ -23,6 +23,30 @@ def einsum(
     return ivy.einsum(subscripts, *operands, out=out)
 
 
+@to_ivy_arrays_and_back
+def histogram_bin_edges(a, bins=10, range=None, weights=None):
+    del weights
+    if isinstance(bins, str):
+        raise NotImplementedError("string values for `bins` not implemented.")
+    arr = ivy.reshape(a, (-1,))
+    if ivy.get_num_dims(bins) == 1:
+        return ivy.asarray(bins)
+
+    if range is None:
+        range = [arr.min(), arr.max()]
+    range = ivy.asarray(range, dtype=ivy.dtype(ivy.asarray(range)))
+    if ivy.shape(range) != (2,):
+        raise ValueError(
+            f"`range` must be either None or a sequence of scalars, got {range}"
+        )
+    range = (
+        ivy.where(ivy.subtract(range[1], range[0]) == 0, range[0] - 0.5, range[0]),
+        ivy.where(ivy.subtract(range[1], range[0]) == 0, range[1] + 0.5, range[1]),
+    )
+    assert range is not None
+    return ivy.linspace(range[0], range[1], bins + 1, dtype=ivy.dtype(a))
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
