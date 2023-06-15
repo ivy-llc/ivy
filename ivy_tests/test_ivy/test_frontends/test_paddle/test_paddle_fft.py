@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     fn_tree="paddle.fft.fft",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=(2,),
+        shape=(7,),
         min_axis=-1,
         force_int_axis=True,
     ),
