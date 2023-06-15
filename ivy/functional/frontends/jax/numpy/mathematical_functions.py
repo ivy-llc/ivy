@@ -711,4 +711,4 @@ def product(
 
 @to_ivy_arrays_and_back
 def round(x, decimals=0, /):
-    return ivy.round(x, decimals)
+    return ivy.round(x, decimals=decimals)
