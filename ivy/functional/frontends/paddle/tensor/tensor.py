@@ -156,6 +156,6 @@ class Tensor:
     def tanh(self, name=None):
         return ivy.tanh(self._ivy_array)
 
-    @with_supported_dtypes({"2.4.3 and above": ("float32", "float64")}, "paddle")
+    @with_supported_dtypes({"2.4.3 and below": ("float32", "float64")}, "paddle")
     def add_(self, name=None):
         return ivy.add(self._ivy_array)
