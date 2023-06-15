@@ -412,7 +412,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.11 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.12 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
