@@ -385,7 +385,7 @@ def sparse_cross_entropy(
 
 
         )
-def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, ivy.NativeArray]):
+def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, ivy.NativeArray],out : Optional[ivy.Array]=None)-> ivy.Array:
     """
     Compute the mean square error
 
@@ -402,16 +402,13 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, iv
     ret
         the mean square loss between two arrays
 
-
-    Functional Example
-
+    Example
     -------------------
     >>x = [1,1,1]
     >>y = [0,0,0]
     >>z = ivy.mse_loss(x,y)
     >>print(z)
     ivy.array([1])
-
     """
     true = ivy.to_list(true)[0]
     pred = ivy.to_list(pred)[0]
