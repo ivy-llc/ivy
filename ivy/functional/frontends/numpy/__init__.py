@@ -580,6 +580,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
     _trunc,
     _floor,
     _rint,
+    _around,
 )
 
 from ivy.functional.frontends.numpy.logic.comparison import (
@@ -676,6 +677,7 @@ tanh = ufunc("_tanh")
 ceil = ufunc("_ceil")
 trunc = ufunc("_trunc")
 equal = ufunc("_equal")
+around = ufunc("_around")
 greater = ufunc("_greater")
 greater_equal = ufunc("_greater_equal")
 less = ufunc("_less")
