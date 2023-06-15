@@ -422,6 +422,9 @@ def set_array_mode(mode: bool) -> None:
     Set the mode of whether to convert inputs to ivy.NativeArray, then convert outputs
     back to ivy.Array.
 
+    It Stops the conversion of ivy.NativeArray to ivy.Array in the
+    case when it is set to False.
+
     Parameter
     ---------
     mode
@@ -2723,6 +2726,13 @@ def get_item(
         array, the array from which to gather values.
     query
         array, index array, integer indices or boolean mask.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------

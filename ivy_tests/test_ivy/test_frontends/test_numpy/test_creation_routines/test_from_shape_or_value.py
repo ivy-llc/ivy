@@ -293,7 +293,15 @@ def _input_fill_and_dtype(draw):
     elif ivy.is_int_dtype(dtype[0]):
         fill_values = draw(st.integers(min_value=-5, max_value=5))
     else:
-        fill_values = draw(st.floats(min_value=-5, max_value=5))
+        fill_values = draw(
+            helpers.floats(
+                min_value=-5,
+                max_value=5,
+                large_abs_safety_factor=10,
+                small_abs_safety_factor=10,
+                safety_factor_scale="log",
+            )
+        )
     dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
     return dtype, dtype_and_input[1], fill_values, dtype_to_cast[0]
 
