@@ -390,7 +390,6 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, iv
     Compute the mean square error
 
     Parameters
-
     ----------
 
     true
@@ -398,7 +397,9 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, iv
     pred
         input array containing predicted labels
 
-    Return
+    Returns
+    -------
+    ret
         the mean square loss between two arrays
 
 
@@ -412,7 +413,8 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],pred : Union[ivy.Array, iv
     ivy.array([1])
 
     """
-
+    true = ivy.to_list(true)[0]
+    pred = ivy.to_list(pred)[0]
     true = ivy.negative(true)
     diff = ivy.add(pred,true)
     s_diff = ivy.multiply(diff,diff)
