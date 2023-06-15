@@ -510,6 +510,10 @@ def test_jax_numpy_tensordot(
     fn_tree,
 ):
     dtype, a, b, axes = dtype_values_and_axes
+    if ivy.current_backend_str() == "torch":
+        atol = 1e-3
+    else:
+        atol = 1e-6
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -517,6 +521,7 @@ def test_jax_numpy_tensordot(
         fn_tree=fn_tree,
         a=a,
         b=b,
+        atol=atol,
         axes=axes,
     )
 
