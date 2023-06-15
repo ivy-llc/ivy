@@ -425,7 +425,7 @@ class ndarray:
         return len(self.ivy_array)
 
     def __eq__(self, value, /):
-        return ivy.array(np_frontend.equal(self, value), dtype=ivy.bool)
+        return np_frontend.equal(self, value)
 
     def __ge__(self, value, /):
         return np_frontend.greater_equal(self, value)

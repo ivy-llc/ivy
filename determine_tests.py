@@ -5,6 +5,9 @@ import bz2
 import _pickle as cPickle
 import sys
 from run_tests_CLI.get_all_tests import get_all_tests
+import tracemalloc
+
+tracemalloc.start()
 
 MAX_TESTS = 10
 
@@ -95,15 +98,15 @@ def main():
             for test in removed_tests:
                 f.write(test + "\n")
         added_tests = list(added_tests)
-        # if len(added_tests) > 1:
-        #     added_tests = added_tests[:1]
-        # # Add these new_tests in the Mapping
-        # old_num_tests = len(old_tests)
-        # tests["index_mapping"] += added_tests
-        # new_tests = tests["index_mapping"]
-        # num_tests = len(new_tests)
-        # for i in range(old_num_tests, num_tests):
-        #     tests["tests_mapping"][new_tests[i]] = i
+        if len(added_tests) > 1:
+            added_tests = added_tests[:1]
+        # Add these new_tests in the Mapping
+        old_num_tests = len(old_tests)
+        tests["index_mapping"] += added_tests
+        new_tests = tests["index_mapping"]
+        num_tests = len(new_tests)
+        for i in range(old_num_tests, num_tests):
+            tests["tests_mapping"][new_tests[i]] = i
         # directories = (
         #     [x[0] for x in os.walk("ivy")]
         #     + [x[0] for x in os.walk("ivy_tests/test_ivy")]
@@ -163,3 +166,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics("lineno")
+
+    for stat in top_stats[:10]:
+        print(stat)

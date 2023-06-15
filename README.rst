@@ -16,6 +16,10 @@
 .. _`Discord`: https://discord.gg/sXyFF8tDtm
 .. _`Twitter`: https://twitter.com/letsunifyai
 
+..
+
+   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this README won't work as expected as of now!
+
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only
    :width: 100%
@@ -25,14 +29,40 @@
    :width: 100%
    :class: only-light
 
-..
-
-   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this README won't work as expected as of now!
+------------------------------------------------------
 
 .. raw:: html
 
-    <br/>
-    <div align="center">
+    <div style="display: block;" align="center">
+    <a href="https://unify.ai/">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.png">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://unify.ai/docs/ivy">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.png">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://unify.ai/demos">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.png">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://unify.ai/docs/ivy/overview/design.html">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.png">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://unify.ai/docs/ivy/overview/faq.html">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.png">
+    </a>
+    </div>
+
+------------------------------------------------------
+
+Status
+^^^^^^
+
+.. raw:: html
+
+    <div>
     <a href="https://github.com/unifyai/ivy/issues">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/unifyai/ivy">
     </a>
@@ -60,31 +90,33 @@
     </div>
     <br clear="all" />
 
-.. raw:: html
+------------------------------------------------------
 
-    <div style="display: block;" align="center">
-    <b><a href="https://unify.ai/">Website</a></b> | <b><a href="https://unify.ai/docs/ivy/">Docs</a></b> | <b><a href="https://unify.ai/demos/">Examples</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/design.html">Design</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/faq.html">FAQ</a></b><br><br>
-    
-    <b>All of AI, at your fingertips</b>
-    
-    </div>
-    
-    <br>
-    
+Unified AI
+^^^^^^^^^^
+
+.. raw:: html
+        
     <div style="display: block;" align="center">
         <div>
         <a href="https://jax.readthedocs.io">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
         </a>
-        <img width="1%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://www.tensorflow.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
         </a>
-        <img width="1%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://pytorch.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
         </a>
-        <img width="1%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://numpy.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
         </a>
@@ -108,18 +140,7 @@ and take a look at the `open tasks`_ if you'd like to dive straight in 🧑‍�
 
 **Let's** `unify.ai <https://unify.ai>`_ **together 🦾**
 
-
-Contents
---------
-
-* `Ivy as a transpiler`_
-* `Ivy as a framework`_
-* `Setting up Ivy`_
-* `Documentation`_
-* `Examples`_
-* `Contributing`_
-* `Community`_
-* `Citation`_
+------------------------------------------------------
 
 Ivy as a transpiler
 -------------------
@@ -286,25 +307,46 @@ covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforce
     <br/>
     <div align="center">
     <a href="https://github.com/unifyai/mech">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/vision">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/robot">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/gym">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/memory">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/builder">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/models">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models.png">
+        </picture>
     </a>
     </div>
     <br clear="all" />
@@ -1590,7 +1632,7 @@ Join our amazing community as a code contributor, and help accelerate our journe
 .. raw:: html
 
    <a href="https://github.com/unifyai/ivy/graphs/contributors">
-     <img src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
+     <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
    </a>
 
 |
