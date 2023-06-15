@@ -595,8 +595,8 @@ def test_frontend_function(
 
     # Make copy for arguments for functions that might use
     # inplace update by default
-    copy_kwargs = copy.deepcopy(kwargs)
-    copy_args = copy.deepcopy(args)
+    copy_kwargs = copy.deepcopy(kwargs_for_test)
+    copy_args = copy.deepcopy(args_for_test)
     # strip the decorator to get an Ivy array
     # ToDo, fix testing for jax frontend for x32
     if frontend == "jax":
