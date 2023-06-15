@@ -573,6 +573,6 @@ def test_paddle_dot(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x,
-        y=y,
+        x=x[0],
+        y=y[0],
     )
