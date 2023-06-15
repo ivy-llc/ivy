@@ -10,10 +10,10 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def unravel_index(
     indices: Union[ivy.Array, ivy.NativeArray],
     shape: Tuple[int],

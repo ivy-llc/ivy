@@ -19,12 +19,12 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -131,12 +131,12 @@ def all(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

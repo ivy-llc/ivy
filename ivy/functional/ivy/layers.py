@@ -25,12 +25,12 @@ from ivy.utils.exceptions import handle_exceptions
 
 # Linear #
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -173,11 +173,11 @@ def linear(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -348,9 +348,9 @@ def dropout(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @handle_array_function
+@handle_device_shifting_for_arrays
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -554,10 +554,10 @@ def scaled_dot_product_attention(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale: float,
@@ -788,12 +788,12 @@ def multi_head_attention(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -884,13 +884,13 @@ def conv1d(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1020,11 +1020,11 @@ def conv1d_transpose(
 
 
 @handle_nestable
-@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1148,13 +1148,13 @@ def conv2d(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1269,12 +1269,12 @@ def conv2d_transpose(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1408,12 +1408,12 @@ def depthwise_conv2d(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1525,13 +1525,13 @@ def conv3d(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1636,12 +1636,12 @@ def conv3d_transpose(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1719,13 +1719,13 @@ def conv_general_dilated(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1795,11 +1795,11 @@ def conv_general_transpose(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @handle_out_argument
 @handle_array_function
 @inputs_to_native_shapes
+@handle_device_shifting_for_arrays
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1903,11 +1903,11 @@ def conv(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],

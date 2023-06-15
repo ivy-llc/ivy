@@ -17,11 +17,11 @@ from ivy.func_wrapper import (
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def logit(
     x: Union[float, int, ivy.Array],
     /,
@@ -66,11 +66,11 @@ def logit(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_ivy_arrays
+@handle_device_shifting_for_arrays
 def prelu(
     x: Union[ivy.NativeArray, ivy.Array],
     slope: Union[float, ivy.NativeArray, ivy.Array],
@@ -125,11 +125,11 @@ def prelu(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -185,12 +185,12 @@ def thresholded_relu(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -243,11 +243,11 @@ def relu6(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array],
 ) -> ivy.Array:
@@ -293,12 +293,12 @@ def logsigmoid(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -352,12 +352,12 @@ def selu(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def silu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

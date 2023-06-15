@@ -86,13 +86,13 @@ def _check_shapes_broadcastable(out, inp):
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting_for_arrays
 @infer_device
 def random_uniform(
     *,
@@ -202,13 +202,13 @@ def random_uniform(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting_for_arrays
 @infer_device
 def random_normal(
     *,
@@ -315,11 +315,11 @@ def random_normal(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 @infer_device
 def multinomial(
     population_size: int,
@@ -425,12 +425,12 @@ def multinomial(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 @infer_device
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
@@ -524,11 +524,11 @@ def seed(*, seed_value: int = 0) -> None:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = 0,

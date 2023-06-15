@@ -33,13 +33,13 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -176,12 +176,12 @@ def flatten(
     return ivy.reshape(x, tuple(lst), order=order, out=out)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def moveaxis(
     a: Union[ivy.Array, ivy.NativeArray],
     source: Union[int, Sequence[int]],
@@ -223,11 +223,11 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def heaviside(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -270,12 +270,12 @@ def heaviside(
     return ivy.current_backend().heaviside(x1, x2, out=out)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def flipud(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -311,10 +311,10 @@ def flipud(
     return ivy.current_backend().flipud(m, copy=copy, out=out)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def vstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -355,10 +355,10 @@ def vstack(
     return ivy.current_backend().vstack(arrays, out=out)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def hstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -396,12 +396,12 @@ def hstack(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -478,11 +478,11 @@ def rot90(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def top_k(
     x: Union[ivy.Array, ivy.NativeArray],
     k: int,
@@ -560,12 +560,12 @@ def top_k(
     )
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def fliplr(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -602,11 +602,11 @@ def fliplr(
     return ivy.current_backend().fliplr(m, copy=copy, out=out)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def i0(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -918,11 +918,11 @@ def _check_arguments(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
@@ -1179,12 +1179,12 @@ pad.mixed_function = True
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
@@ -1225,11 +1225,11 @@ def vsplit(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
@@ -1273,11 +1273,11 @@ def dsplit(
     return ivy.current_backend(ary).dsplit(ary, indices_or_sections, copy=copy)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
@@ -1311,10 +1311,10 @@ def atleast_1d(
     return ivy.current_backend().atleast_1d(*arys, copy=copy)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def dstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -1352,11 +1352,11 @@ def dstack(
     return ivy.current_backend().dstack(arrays)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
     copy: Optional[bool] = None,
@@ -1392,9 +1392,9 @@ def atleast_2d(
     return ivy.current_backend().atleast_2d(*arys, copy=copy)
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
@@ -1440,11 +1440,11 @@ def atleast_3d(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def take_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1491,12 +1491,12 @@ def take_along_axis(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
@@ -1571,13 +1571,13 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def expand(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape],
@@ -1617,11 +1617,11 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
 @to_ivy_arrays_and_back
+@handle_device_shifting_for_arrays
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
@@ -1681,11 +1681,11 @@ def as_strided(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def concat_from_sequence(
     input_sequence: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray]],
@@ -1793,9 +1793,9 @@ def _interleave(a, b, axis):
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
+@handle_device_shifting_for_arrays
 def associative_scan(
     x: Union[ivy.Array, ivy.NativeArray],
     fn: Callable,
@@ -1874,11 +1874,11 @@ def associative_scan(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def unique_consecutive(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

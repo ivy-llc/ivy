@@ -35,8 +35,8 @@ def _get_promoted_type_of_operands(operands):
 # -------------------#
 
 
-@handle_array_function
 @handle_device_shifting_for_arrays
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -137,8 +137,8 @@ def min(
     return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_array_function
 @handle_device_shifting_for_arrays
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion

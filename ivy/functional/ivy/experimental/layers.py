@@ -19,10 +19,10 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -83,10 +83,10 @@ def max_pool1d(
     )
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -165,10 +165,10 @@ def max_pool2d(
     )
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -236,10 +236,10 @@ def max_pool3d(
     )
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -318,10 +318,10 @@ def avg_pool1d(
     )
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def avg_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -403,10 +403,10 @@ def avg_pool2d(
     )
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def avg_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -492,11 +492,11 @@ def avg_pool3d(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @integer_arrays_to_float
+@handle_device_shifting_for_arrays
 def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -592,10 +592,10 @@ def dct(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -660,10 +660,10 @@ def fft(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -734,10 +734,10 @@ def dropout1d(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -784,11 +784,11 @@ def dropout3d(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -852,9 +852,9 @@ def ifft(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
+@handle_device_shifting_for_arrays
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -910,10 +910,10 @@ def embedding(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1329,11 +1329,11 @@ def _upsample_bicubic2d_default(
     return result
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],
@@ -1703,8 +1703,8 @@ def _mask(vals, length, range_max, dim):
         return vals, length
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
+@handle_device_shifting_for_arrays
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -1771,8 +1771,8 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
+@handle_device_shifting_for_arrays
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],

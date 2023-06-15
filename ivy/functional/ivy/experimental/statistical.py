@@ -16,10 +16,10 @@ from ivy.utils.exceptions import handle_exceptions
 #       Permit multiple axis.
 #       Modify documentation to match the above modifications.
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -147,10 +147,10 @@ def histogram(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def median(
     input: ivy.Array,
     /,
@@ -192,11 +192,11 @@ def median(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting_for_arrays
 def nanmean(
     a: ivy.Array,
     /,
@@ -247,10 +247,10 @@ def nanmean(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -331,10 +331,10 @@ def quantile(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def corrcoef(
     x: ivy.Array,
     /,
@@ -347,10 +347,10 @@ def corrcoef(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def nanmedian(
     input: ivy.Array,
     /,
@@ -419,10 +419,10 @@ def nanmedian(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def bincount(
     x: ivy.Array,
     /,
@@ -460,10 +460,10 @@ def bincount(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def igamma(
     a: Union[ivy.Array, ivy.NativeArray],
     /,

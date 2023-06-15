@@ -16,10 +16,10 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def l1_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -56,10 +56,10 @@ def l1_normalize(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -96,12 +96,12 @@ def l2_normalize(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -202,12 +202,12 @@ def batch_norm(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def instance_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -318,10 +318,10 @@ def instance_norm(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

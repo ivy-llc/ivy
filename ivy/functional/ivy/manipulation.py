@@ -37,11 +37,11 @@ def _calculate_out_shape(axis, array_shape):
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -95,13 +95,13 @@ def concat(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -225,13 +225,13 @@ def expand_dims(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -313,13 +313,13 @@ def flip(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -406,13 +406,13 @@ def permute_dims(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -527,12 +527,12 @@ def reshape(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -638,13 +638,13 @@ def roll(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -725,11 +725,11 @@ def squeeze(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def stack(
     arrays: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -813,11 +813,11 @@ def stack(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
@@ -939,12 +939,12 @@ def clip(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1027,12 +1027,12 @@ def constant_pad(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1099,12 +1099,12 @@ def repeat(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1180,13 +1180,13 @@ def split(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -1286,11 +1286,11 @@ def swapaxes(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1366,12 +1366,12 @@ def tile(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1456,12 +1456,12 @@ def unstack(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

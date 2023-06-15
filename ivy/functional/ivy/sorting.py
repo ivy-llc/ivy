@@ -19,12 +19,12 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -136,12 +136,12 @@ def argsort(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -241,10 +241,10 @@ def sort(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def msort(
     a: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -283,12 +283,12 @@ def msort(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],

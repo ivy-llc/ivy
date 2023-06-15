@@ -588,11 +588,11 @@ def get_show_func_wrapper_trace_mode() -> bool:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -728,11 +728,11 @@ def all_equal(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
@@ -800,11 +800,11 @@ def isscalar(x: Any, /) -> bool:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """
     Convert an array with a single element into a scalar.
@@ -857,11 +857,11 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """
     Create a (possibly nested) list from input array.
@@ -930,10 +930,10 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -1020,10 +1020,10 @@ def clip_vector_norm(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_function
 @inputs_to_ivy_arrays
+@handle_device_shifting_for_arrays
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -1103,11 +1103,11 @@ def clip_matrix_norm(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, ivy.Array, ivy.NativeArray],
@@ -1210,11 +1210,11 @@ def fourier_encode(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def value_is_nan(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1273,11 +1273,11 @@ def value_is_nan(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def has_nans(
     x: Union[ivy.Array, ivy.NativeArray], /, *, include_infs: bool = True
 ) -> bool:
@@ -1796,11 +1796,11 @@ def current_backend_str() -> Union[str, None]:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1922,11 +1922,11 @@ def einops_rearrange(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1996,11 +1996,11 @@ einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -2154,11 +2154,11 @@ def set_min_base(val: float) -> None:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def stable_divide(
     numerator: Union[Number, ivy.Array, ivy.NativeArray],
     denominator: Union[Number, ivy.Array, ivy.NativeArray],
@@ -2256,10 +2256,10 @@ def stable_divide(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def stable_pow(
     base: Union[Number, ivy.Array, ivy.NativeArray],
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
@@ -2531,10 +2531,10 @@ def inplace_variables_supported() -> bool:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
     Return if in-place operations are supported for x's data type.
@@ -2599,10 +2599,10 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
     Assert that inplace operations are supported for x.
@@ -2660,11 +2660,11 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     return True
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_view_indexing
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2704,10 +2704,10 @@ def get_item(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2806,10 +2806,10 @@ inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2877,10 +2877,10 @@ def inplace_decrement(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting_for_arrays
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2935,12 +2935,12 @@ def inplace_increment(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3025,11 +3025,11 @@ def scatter_flat(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
 @handle_array_function
 @inputs_to_native_shapes
+@handle_device_shifting_for_arrays
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3108,12 +3108,12 @@ def scatter_nd(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3217,12 +3217,12 @@ def gather(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3317,12 +3317,12 @@ def multiprocessing(context: Optional[str] = None):
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @outputs_to_ivy_shapes
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def shape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3425,11 +3425,11 @@ def shape_array_mode() -> bool:
     return shape_array_mode_stack[-1]
 
 
-@handle_device_shifting_for_arrays
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting_for_arrays
 def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:
@@ -3791,9 +3791,9 @@ def vmap(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def isin(
     elements: Union[ivy.Array, ivy.NativeArray],
     test_elements: Union[ivy.Array, ivy.NativeArray],
@@ -3842,9 +3842,9 @@ def isin(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @inputs_to_native_arrays
+@handle_device_shifting_for_arrays
 def itemsize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3876,9 +3876,9 @@ def itemsize(
 
 
 @handle_exceptions
-@handle_device_shifting_for_arrays
 @handle_nestable
 @to_native_arrays_and_back
+@handle_device_shifting_for_arrays
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
