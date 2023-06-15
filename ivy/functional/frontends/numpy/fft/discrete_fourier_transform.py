@@ -132,7 +132,6 @@ def rfft2(a, s=None, axes=(-2, -1), norm=None):
     a = ivy.array(a)
     if norm is None:
         norm = "backward"
-
     if s is None:
         s = a.shape
     else:
