@@ -28,8 +28,7 @@ from .elementwise import _elementwise_helper
                 "int64",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
+                "complex",
                 "bool",
             )
         }
@@ -88,7 +87,7 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -180,7 +179,7 @@ def inner(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def inv(
@@ -331,7 +330,7 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def matrix_rank(
@@ -340,6 +339,7 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.ndim < 2:
@@ -475,7 +475,7 @@ def solve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.4.2 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def svd(

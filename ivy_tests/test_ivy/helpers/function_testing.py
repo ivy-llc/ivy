@@ -1643,6 +1643,8 @@ def wrap_frontend_function_args(argument):
         and x.__module__.startswith("ivy.functional.frontends"),
     ):
         return output_to_native_arrays(frontend_outputs_to_ivy_arrays(argument))
+    if ivy.nested_any(argument, lambda x: isinstance(x, ivy.Shape)):
+        return argument.shape
     return argument
 
 

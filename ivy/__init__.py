@@ -5,6 +5,7 @@ import warnings
 import builtins
 import numpy as np
 import sys
+import inspect
 
 
 import ivy.utils.backend.handler
@@ -261,6 +262,9 @@ class Shape:
     def __div__(self, other):
         return self._shape // other
 
+    def __floordiv__(self, other):
+        return self._shape // other
+
     def __mod__(self, other):
         return self._shape % other
 
@@ -326,7 +330,10 @@ class Shape:
         return super().__getattribute__(item)
 
     def __getitem__(self, key):
-        return self._shape[key] if self._shape is not None else None
+        try:
+            return self._shape[key]
+        except (TypeError, IndexError):
+            return None
 
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
@@ -446,11 +453,6 @@ warning_level_stack = list()
 nan_policy_stack = list()
 dynamic_backend_stack = list()
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
-
-
-# global constants
-_MIN_DENOMINATOR = 1e-12
-_MIN_BASE = 1e-5
 
 
 # local
@@ -612,7 +614,7 @@ from .data_classes.container import (
     Container,
     add_ivy_container_instance_methods,
 )
-from ivy.data_classes.nested_array import NestedArray
+from .data_classes.nested_array import NestedArray
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -790,6 +792,12 @@ globals_vars = GlobalsDict(
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
+        "show_func_wrapper_trace_mode_stack": (
+            general.show_func_wrapper_trace_mode_stack
+        ),
+        "min_denominator_stack": general.min_denominator_stack,
+        "min_base_stack": general.min_base_stack,
+        "tmp_dir_stack": general.tmp_dir_stack,
         "precise_mode_stack": general.precise_mode_stack,
         "nestable_mode_stack": general.nestable_mode_stack,
         "exception_trace_mode_stack": general.exception_trace_mode_stack,
@@ -831,7 +839,7 @@ supports_gradients = None
 
 def _assert_array_significant_figures_formatting(sig_figs):
     ivy.utils.assertions.check_isinstance(sig_figs, int)
-    ivy.utils.assertions.check_greater(sig_figs, 0)
+    ivy.utils.assertions.check_greater(sig_figs, 0, as_array=False)
 
 
 # ToDo: SF formating for complex number
@@ -853,28 +861,7 @@ vec_sig_fig = np.vectorize(_sf)
 vec_sig_fig.__name__ = "vec_sig_fig"
 
 
-def array_significant_figures(sig_figs=None):
-    """
-    Summary.
-
-    Parameters
-    ----------
-    sig_figs
-        optional int, number of significant figures to be shown when printing
-
-    Returns
-    -------
-    ret
-    """
-    if ivy.exists(sig_figs):
-        _assert_array_significant_figures_formatting(sig_figs)
-        return sig_figs
-    global array_significant_figures_stack
-    if not array_significant_figures_stack:
-        ret = 10
-    else:
-        ret = array_significant_figures_stack[-1]
-    return ret
+ivy.array_significant_figures = 10
 
 
 def set_array_significant_figures(sig_figs):
@@ -889,6 +876,7 @@ def set_array_significant_figures(sig_figs):
     _assert_array_significant_figures_formatting(sig_figs)
     global array_significant_figures_stack
     array_significant_figures_stack.append(sig_figs)
+    ivy.__setattr__("array_significant_figures", sig_figs, True)
 
 
 def unset_array_significant_figures():
@@ -896,6 +884,12 @@ def unset_array_significant_figures():
     global array_significant_figures_stack
     if array_significant_figures_stack:
         array_significant_figures_stack.pop(-1)
+        sig_figs = (
+            array_significant_figures_stack[-1]
+            if array_significant_figures_stack
+            else 10
+        )
+        ivy.__setattr__("array_significant_figures", sig_figs, True)
 
 
 # Decimal Values #
@@ -903,31 +897,10 @@ def unset_array_significant_figures():
 
 def _assert_array_decimal_values_formatting(dec_vals):
     ivy.utils.assertions.check_isinstance(dec_vals, int)
-    ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True)
+    ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True, as_array=False)
 
 
-def array_decimal_values(dec_vals=None):
-    """
-    Summary.
-
-    Parameters
-    ----------
-    dec_vals
-        optional int, number of decimal values to be shown when printing
-
-    Returns
-    -------
-    ret
-    """
-    if ivy.exists(dec_vals):
-        _assert_array_decimal_values_formatting(dec_vals)
-        return dec_vals
-    global array_decimal_values_stack
-    if not array_decimal_values_stack:
-        ret = 8
-    else:
-        ret = array_decimal_values_stack[-1]
-    return ret
+ivy.array_decimal_values = 8
 
 
 def set_array_decimal_values(dec_vals):
@@ -942,6 +915,7 @@ def set_array_decimal_values(dec_vals):
     _assert_array_decimal_values_formatting(dec_vals)
     global array_decimal_values_stack
     array_decimal_values_stack.append(dec_vals)
+    ivy.__setattr__("array_decimal_values", dec_vals, True)
 
 
 def unset_array_decimal_values():
@@ -949,23 +923,11 @@ def unset_array_decimal_values():
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
+        dec_vals = array_decimal_values_stack[-1] if array_decimal_values_stack else 8
+        ivy.__setattr__("array_decimal_values", dec_vals, True)
 
 
-def warning_level():
-    """
-    Summary.
-
-    Returns
-    -------
-    ret
-        current warning level, default is "ivy_only"
-    """
-    global warning_level_stack
-    if not warning_level_stack:
-        ret = "ivy_only"
-    else:
-        ret = warning_level_stack[-1]
-    return ret
+ivy.warning_level = "ivy_only"
 
 
 def set_warning_level(warn_level):
@@ -979,6 +941,7 @@ def set_warning_level(warn_level):
     """
     global warning_level_stack
     warning_level_stack.append(warn_level)
+    ivy.__setattr__("warning_level", warn_level, True)
 
 
 def unset_warning_level():
@@ -986,32 +949,18 @@ def unset_warning_level():
     global warning_level_stack
     if warning_level_stack:
         warning_level_stack.pop(-1)
+        warn_level = warning_level_stack[-1] if warning_level_stack else "ivy_only"
+        ivy.__setattr__("warning_level", warn_level, True)
 
 
 def warn(warning_message, stacklevel=0):
-    warn_level = warning_level()
+    warn_level = ivy.warning_level
     warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
     warnings.warn(warning_message, stacklevel=stacklevel)
 
 
 # nan policy #
-
-
-def get_nan_policy():
-    """
-    Summary.
-
-    Returns
-    -------
-    ret
-        current nan policy, default is "nothing"
-    """
-    global nan_policy_stack
-    if not nan_policy_stack:
-        ret = "nothing"
-    else:
-        ret = nan_policy_stack[-1]
-    return ret
+ivy.nan_policy = "nothing"
 
 
 def set_nan_policy(warn_level):
@@ -1024,12 +973,13 @@ def set_nan_policy(warn_level):
         string for the nan policy to be set, one of
         "nothing", "warns", "raise_exception"
     """
-    global nan_policy_stack
     if warn_level not in ["nothing", "warns", "raise_exception"]:
         raise ivy.utils.exceptions.IvyException(
             "nan_policy must be one of 'nothing', 'warns', 'raise_exception'"
         )
+    global nan_policy_stack
     nan_policy_stack.append(warn_level)
+    ivy.__setattr__("nan_policy", warn_level, True)
 
 
 def unset_nan_policy():
@@ -1037,18 +987,14 @@ def unset_nan_policy():
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)
+        warn_level = nan_policy_stack[-1] if nan_policy_stack else "nothing"
+        ivy.__setattr__("nan_policy", warn_level, True)
 
 
 # Dynamic Backend
 
 
-def get_dynamic_backend():
-    """Return the current dynamic backend setting, with the default being True."""
-    global dynamic_backend_stack
-    if not dynamic_backend_stack:
-        return True
-    else:
-        return dynamic_backend_stack[-1]
+ivy.dynamic_backend = True
 
 
 def set_dynamic_backend(flag):
@@ -1057,6 +1003,7 @@ def set_dynamic_backend(flag):
     if flag not in [True, False]:
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
     dynamic_backend_stack.append(flag)
+    ivy.__setattr__("dynamic_backend", flag, True)
 
 
 def unset_dynamic_backend():
@@ -1068,6 +1015,8 @@ def unset_dynamic_backend():
     global dynamic_backend_stack
     if dynamic_backend_stack:
         dynamic_backend_stack.pop()
+        flag = dynamic_backend_stack[-1] if dynamic_backend_stack else True
+        ivy.__setattr__("dynamic_backend", flag, True)
 
 
 # Context Managers
@@ -1079,7 +1028,7 @@ class DynamicBackendContext:
         self.original = None
 
     def __enter__(self):
-        self.original = get_dynamic_backend()
+        self.original = ivy.dynamic_backend
         set_dynamic_backend(self.value)
 
     def __exit__(self, type, value, traceback):
@@ -1151,131 +1100,133 @@ def cast_data_types(val=True):
 
 # data type promotion
 array_api_promotion_table = {
+    (bool, bool): bool,
     (int8, int8): int8,
-    (int16, int8): int16,
-    (int32, int8): int32,
-    (int64, int8): int64,
+    (int8, int16): int16,
+    (int8, int32): int32,
+    (int8, int64): int64,
     (int16, int16): int16,
     (int16, int32): int32,
     (int16, int64): int64,
     (int32, int32): int32,
     (int32, int64): int64,
     (int64, int64): int64,
+    (uint8, int8): int16,
+    (uint8, int16): int16,
+    (uint8, int32): int32,
+    (uint8, int64): int64,
     (uint8, uint8): uint8,
-    (uint16, uint8): uint16,
-    (uint32, uint8): uint32,
-    (uint64, uint8): uint64,
+    (uint8, uint16): uint16,
+    (uint8, uint32): uint32,
+    (uint8, uint64): uint64,
+    (uint16, int8): int32,
+    (uint16, int16): int32,
+    (uint16, int32): int32,
+    (uint16, int64): int64,
     (uint16, uint16): uint16,
     (uint16, uint32): uint32,
     (uint16, uint64): uint64,
+    (uint32, int8): int64,
+    (uint32, int16): int64,
+    (uint32, int32): int64,
+    (uint32, int64): int64,
     (uint32, uint32): uint32,
     (uint32, uint64): uint64,
     (uint64, uint64): uint64,
-    (int8, uint8): int16,
-    (int8, uint16): int32,
-    (int8, uint32): int64,
-    (int16, uint8): int16,
-    (int16, uint16): int32,
-    (int16, uint32): int64,
-    (int32, uint8): int32,
-    (int32, uint16): int32,
-    (int32, uint32): int64,
-    (int64, uint8): int64,
-    (int64, uint16): int64,
-    (int64, uint32): int64,
     (float16, float16): float16,
     (float16, float32): float32,
     (float16, float64): float64,
     (float32, float32): float32,
     (float32, float64): float64,
     (float64, float64): float64,
-    (bool, bool): bool,
 }
 
 # the extra promotion table follows numpy safe casting convention
 # the following link discusses the different approaches to dtype promotions
 # https://jax.readthedocs.io/en/latest/jep/9407-type-promotion.html
 common_extra_promotion_table = {
-    (bool, uint16): uint16,
-    (bool, int32): int32,
-    (bool, float16): float16,
-    (bool, uint64): uint64,
-    (bool, float64): float64,
     (bool, int8): int8,
-    (bool, int64): int64,
     (bool, int16): int16,
-    (bfloat16, bool): bfloat16,
-    (bool, uint32): uint32,
+    (bool, int32): int32,
+    (bool, int64): int64,
     (bool, uint8): uint8,
+    (bool, uint16): uint16,
+    (bool, uint32): uint32,
+    (bool, uint64): uint64,
+    (bool, float16): float16,
     (bool, float32): float32,
+    (bool, float64): float64,
+    (bool, bfloat16): bfloat16,
     (bool, complex64): complex64,
     (bool, complex128): complex128,
-    (int8, uint64): float64,
-    (int16, uint64): float64,
-    (int32, uint64): float64,
-    (int64, uint64): float64,
-    (float16, int8): float16,
-    (float32, int8): float32,
-    (float64, int8): float64,
-    (float32, int16): float32,
-    (float64, int16): float64,
-    (float64, int32): float64,
-    (float64, int64): float64,
-    (float16, uint8): float16,
-    (float32, uint8): float32,
-    (float64, uint8): float64,
-    (float32, uint16): float32,
-    (float64, uint16): float64,
-    (float64, uint32): float64,
-    (float64, uint64): float64,
-    (bfloat16, bfloat16): bfloat16,
-    (bfloat16, uint8): bfloat16,
-    (bfloat16, int8): bfloat16,
+    (int8, float16): float16,
+    (int8, float32): float32,
+    (int8, float64): float64,
+    (int8, bfloat16): bfloat16,
+    (int8, complex64): complex64,
+    (int8, complex128): complex128,
+    (int16, float32): float32,
+    (int16, float64): float64,
+    (int16, complex64): complex64,
+    (int16, complex128): complex128,
+    (int32, float64): float64,
+    (int32, complex128): complex128,
+    (int64, float64): float64,
+    (int64, complex128): complex128,
+    (uint8, float16): float16,
+    (uint8, float32): float32,
+    (uint8, float64): float64,
+    (uint8, bfloat16): bfloat16,
+    (uint8, complex64): complex64,
+    (uint8, complex128): complex128,
+    (uint16, float32): float32,
+    (uint16, float64): float64,
+    (uint16, complex64): complex64,
+    (uint16, complex128): complex128,
+    (uint32, float64): float64,
+    (uint32, complex128): complex128,
+    (uint64, int8): float64,
+    (uint64, int16): float64,
+    (uint64, int32): float64,
+    (uint64, int64): float64,
+    (uint64, float64): float64,
+    (uint64, complex128): complex128,
+    (float16, bfloat16): float32,
+    (float16, complex64): complex64,
+    (float16, complex128): complex128,
+    (float32, complex64): complex64,
+    (float32, complex128): complex128,
+    (float64, complex64): complex128,
+    (float64, complex128): complex128,
     (bfloat16, float16): float32,
     (bfloat16, float32): float32,
     (bfloat16, float64): float64,
-    (complex64, int8): complex64,
-    (complex64, int16): complex64,
-    (complex64, uint8): complex64,
-    (complex64, uint16): complex64,
-    (complex64, float16): complex64,
-    (complex64, float32): complex64,
-    (complex64, float64): complex128,
+    (bfloat16, bfloat16): bfloat16,
     (bfloat16, complex64): complex64,
-    (complex64, complex64): complex64,
-    (complex128, complex64): complex128,
-    (complex128, int8): complex128,
-    (complex128, int16): complex128,
-    (complex128, int32): complex128,
-    (complex128, int64): complex128,
-    (complex128, uint8): complex128,
-    (complex128, uint16): complex128,
-    (complex128, uint32): complex128,
-    (complex128, uint64): complex128,
-    (complex128, float16): complex128,
-    (complex128, float32): complex128,
-    (complex128, float64): complex128,
     (bfloat16, complex128): complex128,
+    (complex64, float64): complex128,
+    (complex64, complex64): complex64,
+    (complex64, complex128): complex128,
     (complex128, complex128): complex128,
 }
 # Avoiding All Precision Loss (Numpy Approach)
 precise_extra_promotion_table = {
     (float16, int16): float32,
     (float16, int32): float64,
-    (float32, int32): float64,
     (float16, int64): float64,
-    (float32, int64): float64,
     (float16, uint16): float32,
     (float16, uint32): float64,
-    (float32, uint32): float64,
     (float16, uint64): float64,
+    (float32, int32): float64,
+    (float32, int64): float64,
+    (float32, uint32): float64,
     (float32, uint64): float64,
-    (bfloat16, uint16): float32,
-    (bfloat16, uint32): float64,
-    (bfloat16, uint64): float64,
     (bfloat16, int16): float32,
     (bfloat16, int32): float64,
     (bfloat16, int64): float64,
+    (bfloat16, uint16): float32,
+    (bfloat16, uint32): float64,
+    (bfloat16, uint64): float64,
     (complex64, int32): complex128,
     (complex64, int64): complex128,
     (complex64, uint32): complex128,
@@ -1285,20 +1236,20 @@ precise_extra_promotion_table = {
 extra_promotion_table = {
     (float16, int16): float16,
     (float16, int32): float16,
-    (float32, int32): float32,
     (float16, int64): float16,
-    (float32, int64): float32,
     (float16, uint16): float16,
     (float16, uint32): float16,
-    (float32, uint32): float32,
     (float16, uint64): float16,
+    (float32, int32): float32,
+    (float32, int64): float32,
+    (float32, uint32): float32,
     (float32, uint64): float32,
-    (bfloat16, uint16): bfloat16,
-    (bfloat16, uint32): bfloat16,
-    (bfloat16, uint64): bfloat16,
     (bfloat16, int16): bfloat16,
     (bfloat16, int32): bfloat16,
     (bfloat16, int64): bfloat16,
+    (bfloat16, uint16): bfloat16,
+    (bfloat16, uint32): bfloat16,
+    (bfloat16, uint64): bfloat16,
     (complex64, int32): complex64,
     (complex64, int64): complex64,
     (complex64, uint32): complex64,
@@ -1311,3 +1262,55 @@ promotion_table = {
     **common_extra_promotion_table,
     **precise_extra_promotion_table,
 }
+
+
+# global parameter properties
+GLOBAL_PROPS = [
+    "array_significant_figures",
+    "array_decimal_values",
+    "warning_level",
+    "nan_policy",
+    "array_mode",
+    "nestable_mode",
+    "exception_trace_mode",
+    "show_func_wrapper_trace_mode",
+    "min_denominator",
+    "min_base",
+    "queue_timeout",
+    "tmp_dir",
+    "shape_array_mode",
+    "dynamic_backend",
+    "precise_mode",
+]
+
+
+INTERNAL_FILENAMES = [
+    "ivy/compiler",
+    "ivy/functional",
+    "ivy/data_classes",
+    "ivy/stateful",
+    "ivy/utils",
+    "ivy_tests/test_ivy",
+    "ivy/func_wrapper.py",
+    "ivy/__init__.py",
+]
+
+
+def _is_from_internal(filename):
+    return ivy.any([fn in filename for fn in INTERNAL_FILENAMES])
+
+
+class IvyWithGlobalProps(sys.modules[__name__].__class__):
+    def __setattr__(self, name, value, internal=False):
+        previous_frame = inspect.currentframe().f_back
+        filename = inspect.getframeinfo(previous_frame)[0]
+        internal = internal and _is_from_internal(filename)
+        if not internal and name in GLOBAL_PROPS:
+            raise ivy.utils.exceptions.IvyException(
+                "Property: {} is read only! Please use the setter: set_{}() for setting"
+                " its value!".format(name, name)
+            )
+        self.__dict__[name] = value
+
+
+sys.modules[__name__].__class__ = IvyWithGlobalProps
