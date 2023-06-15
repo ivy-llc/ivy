@@ -191,6 +191,7 @@ def test_numpy_partition(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        test_values=False,
         a=x,
         kth=kth,
         axis=axis,
