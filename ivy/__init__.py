@@ -843,7 +843,7 @@ def _assert_array_significant_figures_formatting(sig_figs):
 
 
 # ToDo: SF formating for complex number
-def _sf(x, sig_fig=3):
+def sf(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
     if isinstance(x, complex):
@@ -853,10 +853,6 @@ def _sf(x, sig_fig=3):
         mags = 10 ** (sig_fig - 1 - np.floor(np.log10(x_positive)))
         return np.round(x * mags) / mags
     return x
-
-
-vec_sig_fig = np.vectorize(_sf)
-vec_sig_fig.__name__ = "vec_sig_fig"
 
 
 ivy.array_significant_figures = 10
