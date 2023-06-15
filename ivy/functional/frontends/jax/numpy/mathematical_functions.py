@@ -446,6 +446,7 @@ def nextafter(x1, x2, /):
 
 @to_ivy_arrays_and_back
 def remainder(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
 
 

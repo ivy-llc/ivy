@@ -40,3 +40,33 @@ def test_paddle_uniform(
         max=max,
         seed=seed,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.randn",
+    input_dtypes=helpers.get_dtypes("valid"),
+    shape=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    seed=st.integers(min_value=0, max_value=5),
+)
+def test_paddle_randn(
+    input_dtypes,
+    shape,
+    dtype,
+    seed,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        shape=shape,
+        dtype=dtype[0],
+        seed=seed,
+    )
