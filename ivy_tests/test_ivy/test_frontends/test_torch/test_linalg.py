@@ -1258,6 +1258,18 @@ def test_torch_multi_dot(
     dtype_and_input=helpers.dtype_and_values(
     available_dtypes=helpers.get_dtypes("float")),
 )
+import numpy as np
+#Size of parameter has been set as 3 and could be altered to alter results 
+def generate_hermitian_matrix():
+    size = 3  # Size is predetermined as 3x3
+    # Generate a random complex matrix
+    matrix = np.random.rand(size, size) + 1j * np.random.rand(size, size)
+    
+    # Make the matrix Hermitian
+    hermitian_matrix = matrix + matrix.conj().T
+    
+    return hermitian_matrix
+
 def test_torch_ldl_factor_ex(
     *,
     dtype_and_input,
@@ -1266,8 +1278,12 @@ def test_torch_ldl_factor_ex(
     on_device,
     test_flags,
 ):
-    input_dtype, x, N = dtype_and_input
+    input_dtype, x = dtype_and_input
     test_flags.num_positional_args = 1
+    
+    # Generate the hermitian argument
+    hermitian = generate_hermitian_matrix()
+    
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1275,5 +1291,6 @@ def test_torch_ldl_factor_ex(
         on_device=on_device,
         test_flags=test_flags,
         x=x[0],
-        N=N,
+        hermitian=hermitian,
     )
+
