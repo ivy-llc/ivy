@@ -166,3 +166,7 @@ class Tensor:
     )
     def isinf(self, name=None):
         return ivy.isinf(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def square(self, name=None):
+        return ivy.square(self._ivy_array)
