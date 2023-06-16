@@ -291,7 +291,7 @@ def test_copy_nest():
     from collections import namedtuple
 
     NAMEDTUPLE = namedtuple("OutNamedTuple", ["x", "y"])
-    nest = NAMEDTUPLE(x=ivy.array([1.]), y=ivy.array([2.]))
+    nest = NAMEDTUPLE(x=ivy.array([1.0]), y=ivy.array([2.0]))
     copied_nest = ivy.copy_nest(nest, include_derived=True)
     assert isinstance(copied_nest, NAMEDTUPLE)
 
