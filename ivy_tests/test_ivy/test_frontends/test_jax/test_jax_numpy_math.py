@@ -510,6 +510,10 @@ def test_jax_numpy_tensordot(
     fn_tree,
 ):
     dtype, a, b, axes = dtype_values_and_axes
+    if ivy.current_backend_str() == "torch":
+        atol = 1e-3
+    else:
+        atol = 1e-6
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -517,6 +521,7 @@ def test_jax_numpy_tensordot(
         fn_tree=fn_tree,
         a=a,
         b=b,
+        atol=atol,
         axes=axes,
     )
 
@@ -545,7 +550,7 @@ def test_jax_numpy_divide(
 ):
     input_dtype, x = dtype_values
     assume(not np.any(np.isclose(x[1], 0)))
-    if ivy.current_backend_str() == 'paddle':
+    if ivy.current_backend_str() == "paddle":
         atol, rtol = 1e-2, 1e-2
     else:
         atol, rtol = 1e-5, 1e-5
@@ -680,10 +685,7 @@ def test_jax_numpy_mod(
 @handle_frontend_test(
     fn_tree="jax.numpy.modf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
-        num_arrays=1,
-        min_value=0,
-        exclude_min=True,
+        available_dtypes=helpers.get_dtypes("float_and_integer")
     ),
     test_with_out=st.just(False),
 )

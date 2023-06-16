@@ -134,10 +134,12 @@ def diff(
     ret_dtype = x.dtype
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         x = x.cast("float32")
+
     def _tensor(val):
         if val is not None and not isinstance(val, paddle.Tensor):
             return paddle.to_tensor(val, dtype=ret_dtype)
         return val
+
     prepend = _tensor(prepend)
     append = _tensor(append)
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append).cast(

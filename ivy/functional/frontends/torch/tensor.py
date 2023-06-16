@@ -1283,6 +1283,17 @@ class Tensor:
     def eq_(self, other):
         return torch_frontend.eq(self, other)
 
+    def var(self, dim=None, *, correction=1, keepdim=False):
+        return torch_frontend.var(self, dim=dim, unbiased=correction, keepdim=keepdim)
+
+    def narrow(self, dim, start, length):
+        return torch_frontend.narrow(self, dim=dim, start=start, length=length)
+
+    def as_strided(self, size, stride, storage_offset=None):
+        return torch_frontend.as_strided(
+            self, size=size, stride=stride, storage_offset=storage_offset
+        )
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):

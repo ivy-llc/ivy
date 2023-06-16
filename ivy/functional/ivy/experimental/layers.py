@@ -15,7 +15,6 @@ from ivy.func_wrapper import (
     integer_arrays_to_float,
     inputs_to_ivy_arrays,
     handle_array_function,
-    outputs_to_ivy_arrays,
 )
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.utils.exceptions import handle_exceptions
