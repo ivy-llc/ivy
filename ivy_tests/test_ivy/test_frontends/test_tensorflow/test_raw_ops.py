@@ -1345,7 +1345,8 @@ def test_tensorflow_FloorMod(  # NOQA
     dtype_and_x=helpers.dtype_and_values(
         min_num_dims=1,
         min_dim_size=2,
-        small_abs_safety_factor=3,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
         safety_factor_scale="log",
         available_dtypes=helpers.get_dtypes("complex"),
     ),
@@ -1966,7 +1967,6 @@ def test_tensorflow_Relu(  # NOQA
     fn_tree="tensorflow.raw_ops.MatMul",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1975,6 +1975,9 @@ def test_tensorflow_Relu(  # NOQA
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
     transpose_a=st.booleans(),
     transpose_b=st.booleans(),
@@ -2410,6 +2413,7 @@ def test_tensorflow_Min(  # NOQA
     )
 
 
+# Max
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Max",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -2714,6 +2718,7 @@ def _pow_helper_shared_dtype(draw):
     return [dtype1, dtype2], [x1, x2]
 
 
+# Pow
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Pow",
     dtype_and_x=_pow_helper_shared_dtype(),

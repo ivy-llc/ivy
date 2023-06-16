@@ -377,6 +377,10 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
+            if ivy.current_backend_str() == "jax":
+                import jax
+
+                jax.config.update("jax_enable_x64", True)
             (
                 ivy.set_default_int_dtype("int64")
                 if platform.system() != "Windows"
@@ -402,7 +406,7 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
                 if set_default_dtype:
                     ivy.unset_default_int_dtype()
                     ivy.unset_default_float_dtype()
-        if not ivy.get_array_mode():
+        if not ivy.array_mode:
             return ret
         # convert all returned arrays to `ndarray` instances
         if order == "F":

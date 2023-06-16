@@ -1,5 +1,8 @@
 import ivy
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_tf_dtype,
+)
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
@@ -31,8 +34,8 @@ def normal(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None)
     {"2.9.0 and below": ("int8", "int16", "in32", "int64", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
-def shuffle(value, axis=0, seed=None, name=None):
-    return ivy.shuffle(value, axis, seed=seed)
+def shuffle(value, seed=None, name=None):
+    return ivy.shuffle(value, seed=seed)
 
 
 @to_ivy_arrays_and_back
@@ -48,8 +51,13 @@ def stateless_uniform(
     {"2.9.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
+@handle_tf_dtype
 def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
-    return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed)
+    shape = ivy.array(shape, dtype=ivy.int32)
+    lam = ivy.array(lam, dtype=ivy.float32)
+    if lam.ndim > 0:
+        shape = ivy.concat([shape, ivy.array(lam.shape)])
+    return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed, fill_value=0)
 
 
 @with_unsupported_dtypes(

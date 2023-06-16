@@ -766,6 +766,7 @@ def fft(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @to_native_arrays_and_back
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -827,8 +828,8 @@ def dropout1d(
     >>> y = ivy.dropout1d(x, 0.5)
     >>> print(y)
     {
-    a: ivy.array([[[200., 400., 0.]]]),
-    b: ivy.array([[[0., 0., 0.]]])
+        a: ivy.array([[[200., 400., 0.]]]),
+        b: ivy.array([[[0., 0., 0.]]])
     }
     """
     return ivy.current_backend(x).dropout1d(
@@ -839,6 +840,81 @@ def dropout1d(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def dropout2d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Randomly zero out entire channels with probability prob using samples from a
+    Bernoulli distribution and the remaining channels are scaled by (1/1-prob). In this
+    case, dropout2d performs a channel-wise dropout but assumes a channel is a 2D
+    feature map.
+
+    Parameters
+    ----------
+    x
+        a 3D or 4D input array. Should have a floating-point data type.
+    prob
+        probability of a channel to be zero-ed.
+    training
+        controls whether dropout2d is performed during training or ignored
+        during testing.
+    data_format
+        "NHWC" or "NCHW". Defaults to "NHWC".
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with some channels zero-ed and the rest of channels are
+         scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 1, 1]])
+    >>> y = ivy.dropout2d(x, 0.5)
+    >>> print(y)
+    ivy.array([[0., 2., 2.]])
+
+    >>> x = ivy.array([[1, 1, 1]])
+    >>> y = ivy.dropout2d(x, 1, training=False, data_format="NCW")
+    >>> print(y)
+    ivy.array([[1, 1, 1]])
+
+    With one :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([[100, 200, 300]]),
+                          b=ivy.array([[400, 500, 600]]))
+    >>> y = ivy.dropout2d(x, 0.5)
+    >>> print(y)
+    {
+        a: ivy.array([[200., 0., 600.]]),
+        b: ivy.array([[0., 0., 1200.]])
+    }
+    """
+    return ivy.current_backend(x).dropout2d(
+        x, prob, training=training, data_format=data_format, out=out
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
 @to_native_arrays_and_back
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1082,7 +1158,7 @@ def dft(
 
     if onesided:
         slices = [slice(0, a) for a in res.shape]
-        slices[axis] = slice(0, res.shape[axis] // 2 + 1)
+        slices[axis] = slice(0, ivy.shape(res, as_array=True)[axis] // 2 + 1)
         res = res[tuple(slices)]
     return res
 
@@ -2126,3 +2202,72 @@ def reduce_window(
     view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
     ret = ivy.reduce(view, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
+
+
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+# @outputs_to_ivy_arrays
+def fft2(
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute the 2-dimensional discrete Fourier Transform.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs FFT2.
+    s
+        sequence of ints, optional
+        Shape (length of each transformed axis) of the output (s[0] refers to axis 0,
+        s[1] to axis 1, etc.). This corresponds to n for fft(x, n). Along each axis,
+        if the given shape is smaller than that of the input, the input is cropped.
+        If it is larger, the input is padded with zeros. if s is not given, the shape
+        of the input along the axes specified by axes is used.
+    dim
+        Axes over which to compute the FFT2. If not given, the last two axes are used.
+        A repeated index in axes means the transform over that axis is performed
+        multiple times. A one-element sequence means that a one-dimensional FFT is
+        performed.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\frac{1}{n}$.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the FFT2 operation.
+
+    Examples
+    --------
+    >>> a = ivy.array([[0, 0, 0, 0, 0],
+                       [1, 1, 1, 1, 1],
+                       [2, 2, 2, 2, 2],
+                       [3, 3, 3, 3, 3],
+                       [4, 4, 4, 4, 4]])
+    >>> ivy.fft2(a)
+    array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        , # may vary
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5+17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5 +4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5 -4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5-17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+              0.  +0.j        ,   0.  +0.j        ]])
+    """
+    return ivy.current_backend(x).fft2(x, s=s, dim=dim, norm=norm, out=out)
