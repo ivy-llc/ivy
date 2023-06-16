@@ -1,4 +1,3 @@
-
 """Collection of Ivy loss functions."""
 
 # local
@@ -382,7 +381,7 @@ def sparse_cross_entropy(
     true = ivy.one_hot(true, pred.shape[axis])
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
-        )
+    )
 
 
 @handle_exceptions
