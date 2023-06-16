@@ -1272,7 +1272,7 @@ class Tensor:
     def eq_(self, other):
         return torch_frontend.eq(self, other)
 
-    def var(self, dim=None, correction=1, keepdim=False):
+    def var(self, dim=None, *, correction=1, keepdim=False):
         return torch_frontend.var(self, dim=dim, unbiased=correction, keepdim=keepdim)
 
 
