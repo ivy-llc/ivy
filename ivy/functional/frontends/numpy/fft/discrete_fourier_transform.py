@@ -127,15 +127,14 @@ def rfftfreq(n, d=1.0):
     return results * val
 
 
-@with_supported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+@with_supported_dtypes({"1.24.3 and above": ("float16", "float32", "float64", "complex64", "complex128", )}, "numpy")
 @to_ivy_arrays_and_back
 def rfft2(a, s=None, axes=(-2, -1), norm=None):
-    a = ivy.array(a)
+    a = ivy.array(a, dtype=ivy.float64)
     if norm is None:
         norm = "backward"
-    elif norm not in ["backward", "ortho", "forward"]:
-        raise ValueError(
-            "Invalid norm. Supported norms are 'backward', 'ortho', and 'forward'."
-        )
-    s = tuple(s) if s is not None else None
+    if s is None:
+        s = a.shape
+    else:
+        s = tuple(s)
     return ivy.dft(a, axes=axes, inverse=False, onesided=True, dft_length=s, norm=norm)
