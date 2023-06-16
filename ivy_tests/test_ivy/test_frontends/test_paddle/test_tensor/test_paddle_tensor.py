@@ -56,6 +56,7 @@ def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
     )
     return input_dtype + val_dtype, x, index, val[0]
 
+
 @st.composite
 def _get_dtype_and_square_matrix(draw):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
@@ -66,8 +67,8 @@ def _get_dtype_and_square_matrix(draw):
         )
     )
     return dtype, mat
-  
-  
+
+
 # Tests #
 # ----- #
 
@@ -807,9 +808,9 @@ def test_paddle_square(
         frontend=frontend,
         on_device=on_device,
     )
-    
 
-#cholesky
+
+# cholesky
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -827,7 +828,7 @@ def test_paddle_cholesky(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    x = np.matmul(x.T, x) + np.identity(x.shape[0])  
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
