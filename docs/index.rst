@@ -1,4 +1,4 @@
-.. include:: ../README.rst
+.. title:: Home
 
 .. toctree::
   :hidden:
