@@ -96,6 +96,35 @@ def test_numpy_fttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
 
 
 @handle_frontend_test(
+    fn_tree="numpy.fft.fftn",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        shape=(2, 2),
+        min_axis=-2,
+        force_int_axis=True,
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    s=st.integers(min_value=2, max_value=5),
+)
+def test_numpy_fftn(
+    dtype_input_axis, norm, s, frontend, test_flags, fn_tree, on_device
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x[0],
+        s=s,
+        axes=axis,
+        norm=norm,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.fft.rfft",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
@@ -188,33 +217,4 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
         test_values=True,
         n=n,
         d=d,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.fft.fftn",
-    dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
-        shape=(2, 2),
-        min_axis=-2,
-        force_int_axis=True,
-    ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
-    s=st.integers(min_value=2, max_value=5),
-)
-def test_numpy_fftn(
-    dtype_input_axis, norm, s, frontend, test_flags, fn_tree, on_device
-):
-    input_dtype, x, axis = dtype_input_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=True,
-        a=x[0],
-        s=s,
-        axes=axis,
-        norm=norm,
     )
