@@ -129,9 +129,17 @@ def mod(x1, x2, /):
 
 @to_ivy_arrays_and_back
 def modf(x, /, out=None):
-    y1 = ivy.floor(x)
-    y2 = x - y1
-    return y2, y1
+    y1 = ivy.where(x >= 0, ivy.floor(x), ivy.ceil(x))  # integral part
+    y2 = x - y1  # fractional part
+    dtype_str = str(x.dtype)
+    if "float" in dtype_str:
+        return y2, y1
+    # floats return as they were. u/ints (8, 16, 32) return as float32, 64 as float64.
+    dtype_size = x.itemsize * 8
+    if "int8" in dtype_str or "int16" in dtype_str:
+        dtype_size = 32
+    ret_type = "float{}".format(dtype_size)
+    return y2.astype(ret_type), y1.astype(ret_type)
 
 
 @to_ivy_arrays_and_back
@@ -446,6 +454,7 @@ def nextafter(x1, x2, /):
 
 @to_ivy_arrays_and_back
 def remainder(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
 
 
