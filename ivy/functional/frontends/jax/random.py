@@ -80,7 +80,7 @@ def cauchy(key, shape=(), dtype="float64"):
 )
 def poisson(key, lam, shape=None, dtype=None):
     seed = _get_seed(key)
-    return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed)
+    return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed, fill_value=-1)
 
 
 @handle_jax_dtype
@@ -261,3 +261,25 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
     x = 1 - uniform_x
     weibull = x ** (concentration - 1) * -ivy.log(x / scale)
     return weibull
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def pareto(key, b, shape=None, dtype="float64"):
+    seed = _get_seed(key)
+    if shape is None:
+        shape = b.shape
+    # Draw samples from exponential distribution
+    uniform = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    e = -ivy.log(1 - uniform)
+
+    return ivy.exp(e / b)
