@@ -32,6 +32,34 @@ def _get_dtype_and_matrix(draw):
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.linalg.solve_triangular",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float32",
+    "float64",
+    "half",
+    "complex64",
+    "complex128",)),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_solve_triangular(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+    
+
+@handle_frontend_test(
     fn_tree="tensorflow.linalg.det",
     dtype_and_input=_get_dtype_and_matrix(),
     test_with_out=st.just(False),
