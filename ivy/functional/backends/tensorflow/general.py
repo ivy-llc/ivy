@@ -313,11 +313,11 @@ def scatter_nd(
         updates,
         (ivy.as_native_dtype(dtype) if ivy.exists(out) else updates_dtype),
     )
-    contains_slices = (
-        any(isinstance(idx, slice) for idx in indices)
-        if isinstance(indices, (tuple, list))
-        else isinstance(indices, slice)
-    )
+
+    # convert indices to slices
+    if isinstance(indices, tuple) and all(isinstance(index, int) for index in indices):
+        indices = tuple([slice(index, index + 1) for index in indices])
+
     # hanle non-tensor indices
     if indices == ():
         return updates
@@ -370,7 +370,7 @@ def scatter_nd(
             ],
             axis=-1,
         )
-    elif contains_slices:
+    else:
         shape = (
             shape
             if ivy.exists(shape)
@@ -421,44 +421,7 @@ def scatter_nd(
                 ],
                 axis=-1,
             )
-    else:
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = tf.constant(indices)
-        if len(indices.shape) < 2:
-            indices = tf.expand_dims(indices, -1)
-        if tf.reduce_any(indices < 0):
-            shape = list(shape) if ivy.exists(shape) else list(out.shape)
-            indices = _parse_index(indices, shape)
-            indices = [
-                tf.stack(
-                    [
-                        tf.reshape(value, (-1,))
-                        for value in tf.meshgrid(
-                            *[
-                                (
-                                    tf.range(s)
-                                    if idx == slice(None, None, None)
-                                    else (
-                                        tf.range(
-                                            ivy.default(idx.start, 0),
-                                            ivy.ivy.default(idx.stop, s),
-                                            ivy.default(idx.step, 1),
-                                        )
-                                        if isinstance(idx, slice)
-                                        and idx != slice(None, None, None)
-                                        else tf.constant([idx % s])
-                                    )
-                                )
-                                for s, idx in zip(shape, index)
-                            ],
-                            indexing="xy",
-                        )
-                    ],
-                    axis=-1,
-                )
-                for index in indices
-            ]
-            indices = tf.concat(indices, axis=-1)
+
     # broadcast updates to correct shape
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
