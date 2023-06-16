@@ -146,7 +146,7 @@ class Tensor:
     def argsort(self, axis=-1, descending=False, name=None):
         return ivy.argsort(self._ivy_array, axis=axis, descending=descending)
 
-    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "float16")}, "paddle")
     def floor(self, name=None):
         return ivy.floor(self._ivy_array)
 
@@ -159,3 +159,7 @@ class Tensor:
     @with_supported_dtypes({"2.4.3 and above": ("float32", "float64")}, "paddle")
     def add_(self, name=None):
         return ivy.add(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.3 and above": ("float32", "float64")}, "paddle")
+    def add_n(self, name= None):
+        return ivy.add_n(self._ivy_array)
