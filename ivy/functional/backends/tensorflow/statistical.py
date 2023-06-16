@@ -133,6 +133,10 @@ def var(
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if correction == 0:
         return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
+    if correction == 1:
+        return tf.experimental.numpy.var(
+            x, axis=axis[0], out=out, keepdims=keepdims, dtype=x.dtype, ddof=1
+        )
     size = 1
     for a in axis:
         size *= x.shape[a]
@@ -155,7 +159,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -178,7 +182,7 @@ def cumprod(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("float16", "bfloat16", "complex128", "complex64")},
+    {"2.12.0 and below": ("bfloat16", "complex")},
     backend_version,
 )
 def cummin(

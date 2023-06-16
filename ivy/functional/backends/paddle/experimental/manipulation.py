@@ -372,20 +372,29 @@ def atleast_2d(
     return res
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def atleast_3d(
     *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
         ary = ivy.array(ary, copy=copy).data
-        if ary.ndim < 3:
-            with ivy.ArrayMode(False):
-                res.append(ivy.expand_dims(ary, axis=list(range(3 - ary.ndim))))
+        if ary.ndim == 0:
+            result = ary.reshape((1, 1, 1))
+        elif ary.ndim == 1:
+            result = ary[None, :, None]
+        elif ary.ndim == 2:
+            result = ary[:, :, None]
         else:
-            res.append(ary)
+            result = ary
+        res.append(result)
     if len(res) == 1:
         return res[0]
-    return res
+    else:
+        return res
 
 
 @with_unsupported_device_and_dtypes(
