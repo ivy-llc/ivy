@@ -1129,3 +1129,65 @@ def test_jax_weibull_min(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@st.composite
+def get_shape_and_arrays(draw):
+    b_shapes = draw(
+        helpers.array_and_broadcastable_shape(dtype=helpers.get_dtypes("float"))
+    )
+    b, shapes = b_shapes
+    shapes = draw(st.sampled_from([None, shapes]))
+    return b, shapes
+
+
+@handle_frontend_test(
+    fn_tree="jax.random.pareto",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    b_shapes=get_shape_and_arrays(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_pareto(
+    *,
+    dtype_key,
+    b_shapes,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+    b, shape = b_shapes
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            b=b,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+    ret_np, ret_from_np = ret
+    if shape is not None:
+        assert ret_np.shape == shape
+    else:
+        assert ret_np.shape == b.shape
