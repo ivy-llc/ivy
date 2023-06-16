@@ -160,6 +160,6 @@ class Tensor:
     def add_(self, name=None):
         return ivy.add(self._ivy_array)
 
-    @with_supported_dtypes({"2.4.3 and above": ("float32", "float64")}, "paddle")
+    @with_supported_dtypes({"2.4.3 and below": ("float32", "float64")}, "paddle")
     def add_n(self, name= None):
         return ivy.add_n(self._ivy_array)
