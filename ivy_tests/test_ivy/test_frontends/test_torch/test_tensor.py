@@ -6,6 +6,9 @@ import numpy as np
 from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import (
     _topk_helper,
 )
+from ivy_tests.test_ivy.test_frontends.test_torch.test_indexing_slicing_joining_mutating_ops import (  # noqa: E501
+    _dtype_input_dim_start_length,
+)
 from ivy_tests.test_ivy.test_frontends.test_torch.test_reduction_ops import (
     _get_axis_and_p,
 )
@@ -9053,6 +9056,38 @@ def test_torch_instance_var(
             "dim": axis,
             "correction": int(correction),
             "keepdim": keepdim,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="narrow",
+    dtype_input_dim_start_length=_dtype_input_dim_start_length(),
+)
+def test_torch_instance_narrow(
+    dtype_input_dim_start_length,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    (input_dtype, x, dim, start, length) = dtype_input_dim_start_length
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dim": dim,
+            "start": start,
+            "length": length,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
