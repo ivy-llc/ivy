@@ -1294,6 +1294,11 @@ class Tensor:
             self, size=size, stride=stride, storage_offset=storage_offset
         )
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def floor_(self, *, out=None):
+        self.ivy_array = self.floor().ivy_array
+        return self
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
