@@ -632,8 +632,7 @@ def scatter_nd(
         if sum(indices.shape) < sum(indices_shape):
             indices = paddle_backend.broadcast_to(indices, indices_shape)
         else:
-            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
-                updates = paddle_backend.reshape(updates, expected_shape)
+            updates = paddle_backend.broadcast_to(updates, expected_shape)
     # implementation
     target = out
     target_given = ivy.exists(target)

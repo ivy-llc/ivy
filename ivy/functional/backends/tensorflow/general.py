@@ -470,10 +470,18 @@ def scatter_nd(
     elif sum(updates.shape) >= sum(expected_shape):
         indices_shape = updates.shape[:1] + indices.shape[-1:]
         if sum(indices.shape) < sum(indices_shape):
-            indices = ivy.broadcast_to(indices, indices_shape)._data
+            indices = (
+                tf.broadcast_to(indices, shape)
+                if len(indices_shape) > tf.rank(indices)
+                else tf.broadcast_to(tf.reshape(indices, -1), indices_shape)
+            )
         else:
-            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
-                updates = ivy.reshape(updates, expected_shape)._data
+            updates = (
+                tf.broadcast_to(updates, expected_shape)
+                if len(expected_shape) > tf.rank(updates)
+                else tf.broadcast_to(tf.reshape(updates, -1), expected_shape)
+            )
+
     # implementation
     target = out
     target_given = ivy.exists(target)
