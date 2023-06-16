@@ -103,7 +103,7 @@ def handle_soft_device_variable(*args, **kwargs):
     if not ivy.get_soft_device_mode():
         inputs = list(args)
         inputs.extend(kwargs.values())
-        devices = set(ivy.dev(x) for x in inputs if isinstance(x, tf.Tensor))
+        devices = set(ivy.dev(x) for x in inputs if isinstance(x, (ivy.Array, tf.Tensor)))
         if len(devices) > 1:
             raise ivy.utils.exceptions.IvyBackendException(
                 "Expected all input arrays to be on the same device, ",
