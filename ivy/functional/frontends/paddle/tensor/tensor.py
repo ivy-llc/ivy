@@ -159,3 +159,10 @@ class Tensor:
     @with_supported_dtypes({"2.4.3 and below": ("float32", "float64")}, "paddle")
     def add_(self, name=None):
         return ivy.add(self._ivy_array)
+
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("float16", "float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def isinf(self, name=None):
+        return ivy.isinf(self._ivy_array)
