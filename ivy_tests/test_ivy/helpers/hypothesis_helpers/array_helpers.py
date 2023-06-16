@@ -1654,3 +1654,10 @@ def dtype_array_index(
                 step = draw(st.integers(max_value=-1, min_value=-s))
             index += (slice(start, end, step),)
     return dtype, array, index
+
+@st.composite
+def create_nested_input(draw, dimensions, leaf_values):
+    if len(dimensions) != 1:
+        return [draw(create_nested_input(dimensions[1:], leaf_values)) for _ in range(dimensions[0])]
+    value = draw(st.sampled_from(leaf_values))
+    return [value for _ in range(dimensions[0])]

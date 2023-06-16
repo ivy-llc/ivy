@@ -202,6 +202,16 @@ def _asarray_helper(draw):
             shared_dtype=True,
         )
     )
+    nested_structure = draw(st.booleans())
+    if nested_structure:
+        sh = draw(helpers.lists(x=st.integers(min_value=-20, max_value=20), min_size=1, max_size=5))
+        sh = ivy.Shape(sh)
+        np_array = np.arange(3).astype(x_dtype[0])
+        ivy_array = ivy.array(x[0], dtype=x_dtype[0])
+        python_vals = ivy.to_list(ivy_array)
+        dim = draw(helpers.lists(x=st.integers(min_value=1, max_value=5), min_size=1, max_size=5))
+        nested_values = draw(helpers.create_nested_input(dim, [sh, ivy_array, np_array, python_vals]))
+        x = [nested_values]
     dtype = draw(
         helpers.get_castable_dtype(
             draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
