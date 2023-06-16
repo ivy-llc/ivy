@@ -891,6 +891,7 @@ def fft2(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")   
-    return torch.tensor(torch.fft.fft2(x, s, dim, norm, out=out),
-                        dtype=torch.complex128)
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return torch.tensor(
+        torch.fft.fft2(x, s, dim, norm, out=out), dtype=torch.complex128
+    )

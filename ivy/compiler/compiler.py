@@ -169,6 +169,7 @@ def unify(
     **transpile_kwargs,
 ) -> Callable:
     from ._compiler import unify as _unify
+
     return _unify(
         *objs,
         source=source,

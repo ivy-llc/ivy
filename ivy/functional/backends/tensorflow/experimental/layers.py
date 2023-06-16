@@ -810,12 +810,12 @@ def _fft2_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
-def trans_x_to_s(x: Union[tf.Tensor, tf.Variable],
-                 s: Sequence[int] = None,
-                 dim: Sequence[int] = (-2, -1),) -> Union[tf.Tensor, tf.Variable]:
-    """
-    change the shape of the input array x to the desired output shape s.
-    """
+def trans_x_to_s(
+    x: Union[tf.Tensor, tf.Variable],
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+) -> Union[tf.Tensor, tf.Variable]:
+    """change the shape of the input array x to the desired output shape s."""
     if x.dtype != tf.complex128 or x.dtype != tf.complex64:
         x = tf.cast(x, tf.float32)
     x_shape = x.shape
@@ -825,7 +825,7 @@ def trans_x_to_s(x: Union[tf.Tensor, tf.Variable],
         paddings = tf.constant([[0, s[0] - x_shape[0]], [0, s[1] - x_shape[1]]])
         x_new = tf.pad(x, paddings=paddings)
     elif (s[0] <= x_shape[0] or s[1] <= x_shape[1]) and min(s) > min(x_shape):
-        x_new = x[:s[0], :s[1]]
+        x_new = x[: s[0], : s[1]]
         if s[0] != x_new.shape[0]:
             size = s[0] - x_new.shape[0]
             z = tf.zeros((size, s[1]))
@@ -835,17 +835,17 @@ def trans_x_to_s(x: Union[tf.Tensor, tf.Variable],
             z = tf.zeros((s[0], size))
             x_new = tf.concat([x_new, z], 1)
     elif (s[0] >= x_shape[0] and s[1] <= x_shape[1]) and min(s) <= min(x_shape):
-        x_new = x[:s[0], :s[1]]
+        x_new = x[: s[0], : s[1]]
         size = s[0] - x_new.shape[0]
         z = tf.zeros((size, s[1]))
         x_new = tf.concat([x_new, z], 0)
     elif (s[0] < x_shape[0] and s[1] > x_shape[1]) and min(s) == min(x_shape):
-        x_new = x[:s[0], :s[1]]
+        x_new = x[: s[0], : s[1]]
         size = s[1] - x_new.shape[1]
         z = tf.zeros((s[0], size))
         x_new = tf.concat([x_new, z], axis=1)
     else:
-        x_new = x[:s[0], :s[1]]
+        x_new = x[: s[0], : s[1]]
     return x_new
 
 
@@ -880,11 +880,11 @@ def fft2(
         x_complex = tf.cast(x_new, tf.complex128)
         tf_fft2 = tf.signal.fft2d(x_complex, name=operation_name)
     elif len(x.shape) > 2:
-        x_s = [trans_x_to_s(x[:, : , i], s, dim) for i in range(x.shape[2])]
+        x_s = [trans_x_to_s(x[:, :, i], s, dim) for i in range(x.shape[2])]
         x_new = tf.convert_to_tensor(x_s, dtype=x.dtype)
         x_complex = tf.cast(x_new, tf.complex128)
         tf_fft2 = tf.transpose(tf.signal.fft2d(x_complex, name=operation_name))
-    
+
     # Apply the same normalization as 'backward' in NumPy
     tf_fft2 = _fft2_norm(tf_fft2, s, dim, norm)
     return tf_fft2

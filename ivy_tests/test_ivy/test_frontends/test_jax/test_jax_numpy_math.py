@@ -550,7 +550,7 @@ def test_jax_numpy_divide(
 ):
     input_dtype, x = dtype_values
     assume(not np.any(np.isclose(x[1], 0)))
-    if ivy.current_backend_str() == 'paddle':
+    if ivy.current_backend_str() == "paddle":
         atol, rtol = 1e-2, 1e-2
     else:
         atol, rtol = 1e-5, 1e-5
