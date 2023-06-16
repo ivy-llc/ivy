@@ -68,7 +68,7 @@ jobs:
           cd Mapping
           git add .
           git commit -m "Update Mapping"
-          git push origin master${{ matrix.branch }}
+#          git push origin master${{ matrix.branch }}
         continue-on-error: true
 
       - name: Run Tests
