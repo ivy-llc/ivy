@@ -1286,8 +1286,8 @@ class Tensor:
     def var(self, dim=None, *, correction=1, keepdim=False):
         return torch_frontend.var(self, dim=dim, unbiased=correction, keepdim=keepdim)
 
-    def narrow(self, dimension, start, length):
-        torch_frontend.narrow(self, dim=dimension, start=start, length=length)
+    def narrow(self, dim, start, length):
+        return torch_frontend.narrow(self, dim=dim, start=start, length=length)
 
 
 class Size(tuple):
