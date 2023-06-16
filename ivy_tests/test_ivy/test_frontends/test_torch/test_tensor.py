@@ -9226,7 +9226,7 @@ def test_torch_instance_is_meta(
     meta_tensor = frontend.tensor()
     helpers.test_frontend_method(
         init_input_dtypes=None,
-        init_all_as_kwargs_np={'meta_tensor': meta_tensor},
+        init_all_as_kwargs_np={"meta_tensor": meta_tensor},
         method_input_dtypes=None,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
