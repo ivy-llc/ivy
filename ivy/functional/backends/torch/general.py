@@ -301,6 +301,8 @@ def inplace_update(
             x_native.data = val_native
         else:
             x_native[()] = val_native
+        if ivy.is_native_array(x):
+            return x_native
         if ivy.is_ivy_array(x):
             x.data = x_native
             _update_torch_views(x)

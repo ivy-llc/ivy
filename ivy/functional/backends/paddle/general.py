@@ -4,6 +4,8 @@ from numbers import Number
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
+import functools
+from operator import mul
 
 # local
 import ivy
@@ -37,9 +39,22 @@ def get_item(
 ) -> paddle.Tensor:
     # regular queries x[idx_1,idx_2,...,idx_i]
     if not isinstance(query, paddle.Tensor):
-        if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-            return x.cast("float32").__getitem__(query).cast(x.dtype)
-        return x.__getitem__(query)
+        x_dtype = x.dtype
+        if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+            x = x.cast("float32")
+        ret = x.__getitem__(query)
+        ret_numel = functools.reduce(mul, ret.shape) if len(ret.shape) > 0 else 0
+        if (
+            isinstance(query, Number)
+            or (
+                isinstance(query, tuple)
+                and all(isinstance(index, int) for index in query)
+            )
+        ) and ret_numel == 1:
+            ret = ret.squeeze(axis=-1)
+        if ret.dtype != x_dtype:
+            return ret.cast(x_dtype)
+        return ret
 
     # masked queries x[bool_1,bool_2,...,bool_i]
     if query.dtype == paddle.bool:
@@ -344,6 +359,8 @@ def inplace_update(
             paddle.assign(val_native, x_native)
         else:
             x_native = val_native
+        if ivy.is_native_array(x):
+            return x_native
         if ivy.is_ivy_array(x):
             x.data = x_native
         else:
@@ -467,11 +484,10 @@ def scatter_nd(
             else ivy.default_dtype(item=updates)
         ),
     )
-    contains_slices = (
-        any(isinstance(idx, slice) for idx in indices)
-        if isinstance(indices, (tuple, list))
-        else isinstance(indices, slice)
-    )
+
+    # convert indices to slices
+    if isinstance(indices, tuple) and all(isinstance(index, int) for index in indices):
+        indices = tuple([slice(index, index + 1) for index in indices])
 
     # hanle non-tensor indices
     if isinstance(indices, (Sequence, paddle.Tensor)) and len(indices) == 0:
@@ -527,7 +543,7 @@ def scatter_nd(
             ],
             axis=-1,
         )
-    elif contains_slices:
+    else:
         shape = (
             shape
             if ivy.exists(shape)
@@ -578,44 +594,7 @@ def scatter_nd(
                 ],
                 axis=-1,
             )
-    else:
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = paddle.to_tensor(indices)
-        if len(indices.shape) < 2:
-            indices = paddle_backend.expand_dims(indices, axis=-1)
-        if paddle_backend.any(indices < 0):
-            shape = list(shape) if ivy.exists(shape) else list(out.shape)
-            indices = _parse_index(indices, shape)
-            indices = [
-                paddle_backend.stack(
-                    [
-                        paddle.flatten(value)
-                        for value in paddle_backend.meshgrid(
-                            *[
-                                (
-                                    paddle.arange(s)
-                                    if idx == slice(None, None, None)
-                                    else (
-                                        paddle.arange(
-                                            ivy.default(idx.start, 0),
-                                            ivy.default(idx.stop, s),
-                                            ivy.default(idx.step, 1),
-                                        )
-                                        if isinstance(idx, slice)
-                                        and idx != slice(None, None, None)
-                                        else paddle.to_tensor([idx % s])
-                                    )
-                                )
-                                for s, idx in zip(shape, index)
-                            ],
-                            indexing="xy",
-                        )
-                    ],
-                    axis=-1,
-                )
-                for index in indices
-            ]
-            indices = paddle_backend.concat(indices, axis=-1)
+
     # broadcast updates to correct shape
     shape = list(shape) if shape is not None else None
     expected_shape = (
@@ -630,8 +609,7 @@ def scatter_nd(
         if sum(indices.shape) < sum(indices_shape):
             indices = paddle_backend.broadcast_to(indices, indices_shape)
         else:
-            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
-                updates = paddle_backend.reshape(updates, expected_shape)
+            updates = paddle_backend.broadcast_to(updates, expected_shape)
     # implementation
     target = out
     target_given = ivy.exists(target)

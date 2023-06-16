@@ -399,7 +399,11 @@ class Tensor:
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
-    def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
+    def new_zeros(self, *size, dtype=None, device=None, requires_grad=False):
+        if isinstance(size[0], tuple):
+            return torch_frontend.zeros(
+                size[0], dtype=dtype, device=device, requires_grad=requires_grad
+            )
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
@@ -605,6 +609,12 @@ class Tensor:
         pin_memory=False,
     ):
         dtype = ivy.dtype(self.ivy_array) if dtype is None else dtype
+        if ivy.is_float_dtype(dtype):
+            fill_value = float(fill_value)
+        elif ivy.is_int_dtype(dtype):
+            fill_value = int(fill_value)
+        elif ivy.is_bool_dtype(dtype):
+            fill_value = bool(fill_value)
         device = ivy.dev(self.ivy_array) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
         return torch_frontend.tensor(_data)
@@ -736,8 +746,11 @@ class Tensor:
     def inverse(self):
         return torch_frontend.inverse(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
     def neg(self):
         return torch_frontend.negative(self)
+
+    __neg__ = neg
 
     def int(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int32, copy=False)
@@ -761,9 +774,7 @@ class Tensor:
     def type_as(self, other):
         if self.dtype != other.dtype:
             self.ivy_array = ivy.astype(self.ivy_array, other.dtype)
-            return self
-        else:
-            pass
+        return self
 
     def byte(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.uint8, copy=False)
@@ -773,7 +784,7 @@ class Tensor:
     def ne(self, other):
         return torch_frontend.ne(self, other)
 
-    def squeeze(self, dim):
+    def squeeze(self, dim=None):
         return torch_frontend.squeeze(self, dim)
 
     def flip(self, dims):
@@ -943,7 +954,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __add__(self, other):
-        return self.add(other)
+        return torch_frontend.add(self, other)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __mod__(self, other):
@@ -1156,8 +1167,8 @@ class Tensor:
         ).ivy_array
         return self
 
-    def nonzero(self):
-        return torch_frontend.nonzero(self)
+    def nonzero(self, as_tuple=False):
+        return torch_frontend.nonzero(self, as_tuple=as_tuple)
 
     def mm(self, mat2):
         return torch_frontend.mm(self, mat2)
@@ -1271,6 +1282,26 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def eq_(self, other):
         return torch_frontend.eq(self, other)
+
+    def var(self, dim=None, *, correction=1, keepdim=False):
+        return torch_frontend.var(self, dim=dim, unbiased=correction, keepdim=keepdim)
+
+    def narrow(self, dim, start, length):
+        return torch_frontend.narrow(self, dim=dim, start=start, length=length)
+
+    def as_strided(self, size, stride, storage_offset=None):
+        return torch_frontend.as_strided(
+            self, size=size, stride=stride, storage_offset=storage_offset
+        )
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def log1p(self):
+        return torch_frontend.log1p(self)
+
+    def baddbmm(self, batch1, batch2, *, beta=1, alpha=1):
+        return torch_frontend.baddbmm(
+            self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
+        )
 
 
 class Size(tuple):
