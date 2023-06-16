@@ -734,3 +734,42 @@ def test_torch_frombuffer(
         count=count,
         offset=offset,
     )
+
+
+# complex
+@handle_frontend_test(
+    fn_tree="torch.complex",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.shared(
+            helpers.get_dtypes("numeric", full=False), key="dtype"
+        )
+    ),
+    fill_value=_fill_value(),
+    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
+)
+def test_torch_complex(
+    *,
+    real,
+    imag,
+    out,
+    dtype_and_x,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        real=real,
+        imag=imag,
+        out=out,
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        dtype=dtype[0],
+        device=on_device,
+    )

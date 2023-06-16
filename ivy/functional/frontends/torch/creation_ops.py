@@ -239,6 +239,19 @@ def full_like(
 
 
 @to_ivy_arrays_and_back
+def complex(
+    input,
+    real=None,
+    imag=None,
+    *,
+    out=None,
+    dtype=None,
+    device=None,
+):
+    return ivy.complex(input, real, imag, out, dtype=dtype, device=device)
+
+
+@to_ivy_arrays_and_back
 def as_tensor(
     data,
     *,
