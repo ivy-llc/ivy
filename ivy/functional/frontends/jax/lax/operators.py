@@ -628,5 +628,9 @@ def conj(x):
 
 
 @to_ivy_arrays_and_back
+def erf_inv(x):
+    return ivy.erf_inv(x)
+
+@to_ivy_arrays_and_back
 def is_finite(x):
     return ivy.isfinite(x)
