@@ -382,3 +382,48 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+
+def nce_loss(output, target, k):
+    """
+    Nceloss (Noise-Contrastive Estimation Loss)
+
+    Parameters
+    ----------
+        - **output**: Tensor of containing the output of the model.
+        - **target**: Tensor of containing the labels.
+        - **k** (int): The number of noise samples.
+
+    Returns
+    -------
+        - The computed NCE loss.
+
+    Examples
+    --------
+        >>> k = 10
+        >>> output = torch.randn(32, 2)
+        >>> target = torch.randint(0, 2, (32,))
+        >>> loss = ivy.nce_loss(output, target, k)
+    --------------------------------
+    """
+    if output.size() == 0:
+        raise ValueError(
+            "Expected non-empty vectorized output, but got empty vectorized output"
+        )
+
+    if target.size() == 0:
+        raise ValueError(
+            "Expected non-empty vectorized target, but got empty vectorized target"
+        )
+
+    if output.size() != target.size():
+        raise ValueError(
+            "Expected output and target to have the same size, but got different sizes"
+        )
+
+    log_prob_data = ivy.log_softmax(output, dim=1)
+    log_prob_noise = ivy.log_softmax(target, dim=1)
+
+    nce_loss = -log_prob_data - k * ivy.mean(log_prob_noise)
+
+    return nce_loss
