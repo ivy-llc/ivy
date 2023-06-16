@@ -9015,7 +9015,7 @@ def test_torch_instance_var(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "dim": axis,
-            "correction": correction,
+            "correction": int(correction),
             "keepdim": keepdim,
         },
         frontend=frontend,
