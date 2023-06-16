@@ -16,12 +16,12 @@ def dropout(input, p=0.5, training=True, inplace=False):
 
 
 @to_ivy_arrays_and_back
-def dropout2d(tensor, prob=0.5, training=True, data_format="NCHW", inplace=False):
-    if tensor.ndim < 2:
+def dropout2d(input, p=0.5, training=True, inplace=False):
+    if input.ndim < 2:
         raise ValueError("Feature dropout requires at least 2 dimensions in the input")
 
-    ret = tensor.dropout2d(prob, training=training, data_format=data_format)
+    ret = ivy.dropout2d(input, p, training=training, data_format="NCHW")
     if inplace:
-        ivy.inplace_update(tensor, ret)
-        return tensor
+        ivy.inplace_update(input, ret)
+        return input
     return ret
