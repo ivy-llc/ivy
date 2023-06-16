@@ -84,17 +84,29 @@ def poisson(
     device: Optional[jaxlib.xla_extension.Device] = None,
     dtype: Optional[jnp.dtype] = None,
     seed: Optional[int] = None,
+    fill_value: Optional[Union[float, int]] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     lam = jnp.array(lam)
-    _check_shapes_broadcastable(shape, lam.shape)
     if seed:
         rng_input = jax.random.PRNGKey(seed)
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
+    if shape is not None:
+        shape = jnp.array(shape)
+        list_shape = shape.tolist()
+        _check_shapes_broadcastable(lam.shape, list_shape)
+    else:
+        list_shape = None
+    if jnp.any(lam < 0):
+        pos_lam = jnp.where(lam < 0, 0, lam)
+        ret = jax.random.poisson(rng_input, pos_lam, shape=list_shape).astype(dtype)
+        ret = jnp.where(lam < 0, fill_value, ret)
+    else:
+        ret = jax.random.poisson(rng_input, lam, shape=list_shape).astype(dtype)
     return to_device(
-        jax.random.poisson(rng_input, lam, shape=shape),
+        ret,
         device,
     )
 

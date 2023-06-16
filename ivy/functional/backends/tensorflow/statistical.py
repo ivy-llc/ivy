@@ -155,7 +155,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -178,7 +178,7 @@ def cumprod(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("float16", "bfloat16", "complex128", "complex64")},
+    {"2.12.0 and below": ("bfloat16", "complex")},
     backend_version,
 )
 def cummin(

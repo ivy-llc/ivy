@@ -214,6 +214,7 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     def dim_reduction(array):

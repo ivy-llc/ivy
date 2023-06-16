@@ -155,7 +155,7 @@ def dsplit(
 
 def atleast_1d(
     *arys: Union[tf.Tensor, tf.Variable, bool, Number],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_1d(*arys)
 
@@ -171,14 +171,14 @@ def dstack(
 
 def atleast_2d(
     *arys: Union[tf.Tensor, tf.Variable],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_2d(*arys)
 
 
 def atleast_3d(
     *arys: Union[tf.Tensor, tf.Variable, bool, Number],
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = False,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_3d(*arys)
 

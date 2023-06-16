@@ -175,11 +175,18 @@ def downcaster(dtype, intersect):
 
 def cross_caster(intersect):
     # check if this is an integer unsupported case
+    # intersect is unordered, sorting it makes a list
+    # and remaking it a set messes the order
+    # so we stick with making both of these
+    # sorted lists
     dtype = ""
-    if intersect == ivy.valid_int_dtypes:
+    valid_float = sorted(ivy.valid_float_dtypes)
+    valid_int = sorted(ivy.valid_int_dtypes)
+    intersect = sorted(intersect)
+    if intersect == valid_int:
         # make dtype equal to default float
         dtype = ivy.default_float_dtype()
-    elif intersect == ivy.valid_float_dtypes:
+    elif intersect == valid_float:
         # make dtype equal to default int
         dtype = ivy.default_int_dtype()
 
@@ -415,7 +422,7 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with native arrays passed in the arguments.
         """
-        if not ivy.get_array_mode():
+        if not ivy.array_mode:
             return fn(*args, **kwargs)
         # check if kwargs contains an out argument, and if so, remove it
         has_out = False
@@ -455,6 +462,13 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
+        if not ivy.array_mode:
+            warnings.warn(
+                "In the case of Compositional function, operators might cause"
+                " inconsistent behavior when array_mode is set to False"
+            )
+            return fn(*args, **kwargs)
+
         has_out = False
         if "out" in kwargs:
             out = kwargs["out"]
@@ -476,9 +490,7 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
     def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
@@ -491,9 +503,7 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
@@ -536,7 +546,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         # convert all arrays in the return to `ivy.Array` instances
         return (
             ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
-            if ivy.get_array_mode()
+            if ivy.array_mode
             else ret
         )
 
@@ -948,7 +958,7 @@ def handle_nestable(fn: Callable) -> Callable:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs
             )
-        if ivy.get_nestable_mode() and (
+        if ivy.nestable_mode and (
             ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
             or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
         ):
@@ -1060,7 +1070,15 @@ def casting_modes_ops(fn):
         )
         if not intersect:
             # doesn't have unsupported dtypes specified
-            return fn(*args, **kwargs)
+            # so check if it's one of the device_and_dtype one
+            intersect = set(
+                ivy.function_unsupported_devices_and_dtypes(fn).get(
+                    ivy.default_device().split(":")[0], {None}
+                )
+            ).difference(set(ivy.invalid_dtypes))
+            if not intersect:
+                # no unsupported dtype specified
+                return fn(*args, **kwargs)
 
         if "dtype" in kwargs and kwargs["dtype"] is not None:
             dtype = caster(kwargs["dtype"], intersect)
@@ -1191,6 +1209,8 @@ def _dtype_device_wrapper_creator(attrib, t):
                 # we do nothing
                 return func
             if not exclusive:
+                # exclusive attribute comes into existence
+                # only when exlusive is passed as true
                 setattr(func, "exclusive", True)
             # set the attribute on the function and return the function as is
 
@@ -1202,14 +1222,24 @@ def _dtype_device_wrapper_creator(attrib, t):
                     if not (
                         attrib == attribs or (attrib, attribs) in attribute_conflict
                     ):
+                        # cases when we encounter two different decorators
+                        # applied to the function, but they are not same
+                        # and aren't in conflicting dict either
                         setattr(func, attrib, val)
                         setattr(func, "dictionary_info", version_dict)
                     elif hasattr(func, "exclusive"):
                         if attrib == attribs:
+                            # we see a higher decorator with exclusivity applied
+                            # we use this decorator's dict information
+                            # and previous decorator's dict information
+                            # to update this
                             old_version_dict = getattr(func, "dictionary_info")
                             old_version_dict.update(version_dict)
                             val = _versioned_attribute_factory(
-                                lambda: _dtype_from_version(version_dict, version), t
+                                lambda: _dtype_from_version(
+                                    version_dict, old_version_dict
+                                ),
+                                t,
                             )
                             setattr(func, attrib, val)
                         else:
@@ -1271,7 +1301,7 @@ def handle_nans(fn: Callable) -> Callable:
             The return of the function, with handling of inputs based
             on the selected `nan_policy`.
         """
-        nan_policy = ivy.get_nan_policy()
+        nan_policy = ivy.nan_policy
         # skip the check if the current nan policy is `nothing``
         if nan_policy == "nothing":
             return fn(*args, **kwargs)
@@ -1326,6 +1356,9 @@ attribute_conflict = {
     ("unsupported_device_and_dtype", "supported_device_and_dtype"),
     ("supported_device_and_dtype", "unsupported_device_and_dtype"),
 }
+
+# TODO see if the globals_getter_func can be hacked to return
+# the globals in the module where it is working
 
 
 def globals_getter_func(x=None):
@@ -1606,7 +1639,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
 class override(contextlib.ContextDecorator):
     def __call__(self, func=None):
         if func:
-            setattr(func, "override")
+            setattr(func, "override", "override")
             return func
 
     def __enter__(self):

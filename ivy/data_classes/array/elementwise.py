@@ -1670,13 +1670,14 @@ class _ArrayWithElementwise(abc.ABC):
             must have a data type of ``bool``.
 
         This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/
+        API_specification/generated/array_api.logical_or.html>`_
         in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for
+        simplicity, but this function is *nestable*, and therefore also
+        accepts :class:`ivy.Container` instances in place of any of the arguments.
 
         Examples
         --------
@@ -2241,7 +2242,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.round(self._data, decimals=decimals, out=out)
 
-    def sign(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def sign(
+        self: ivy.Array,
+        *,
+        np_variant: Optional[bool] = True,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sign. This method simply wraps the
         function, and so the docstring for ivy.sign also applies to this method with
@@ -2279,7 +2285,7 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[-1., -1.,  0.,  1.,  1.],
         [ 1., -1.,  1., -1.,  1.]])
         """
-        return ivy.sign(self._data, out=out)
+        return ivy.sign(self._data, np_variant=np_variant, out=out)
 
     def sin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

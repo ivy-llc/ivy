@@ -141,7 +141,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.11 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: JaxArray,
     /,
@@ -177,7 +177,7 @@ def cumprod(
         return jnp.flip(x, axis=axis)
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.11 and below": "bfloat16"}, backend_version)
 def cummin(
     x: JaxArray,
     /,

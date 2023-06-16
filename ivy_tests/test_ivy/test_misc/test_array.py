@@ -103,7 +103,7 @@ def test_array_property_dtype(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.dtype, ivy.dtype(data))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.dtype(data), as_array=False)
 
 
 @handle_test(
@@ -116,7 +116,7 @@ def test_array_property_device(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.device, ivy.dev(data))
+    ivy.utils.assertions.check_equal(x.device, ivy.dev(data), as_array=False)
 
 
 @handle_test(
@@ -132,7 +132,7 @@ def test_array_property_ndim(
     _, data, input_shape = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.ndim, len(input_shape))
+    ivy.utils.assertions.check_equal(x.ndim, len(input_shape), as_array=False)
 
 
 @handle_test(
@@ -148,7 +148,7 @@ def test_array_property_shape(
     _, data, input_shape = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(input_shape))
+    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(input_shape), as_array=False)
 
 
 @handle_test(
@@ -168,7 +168,7 @@ def test_array_property_size(
     size_gt = 1
     for dim in input_shape:
         size_gt *= dim
-    ivy.utils.assertions.check_equal(x.size, size_gt)
+    ivy.utils.assertions.check_equal(x.size, size_gt, as_array=False)
 
 
 @handle_test(
@@ -183,7 +183,9 @@ def test_array_property_itemsize(
     dtype, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.itemsize, ivy.to_numpy(x).itemsize)
+    ivy.utils.assertions.check_equal(
+        x.itemsize, ivy.to_numpy(x).itemsize, as_array=False
+    )
 
 
 @handle_test(
@@ -198,7 +200,7 @@ def test_array_property_strides(
     dtype, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.strides, ivy.to_numpy(x).strides)
+    ivy.utils.assertions.check_equal(x.strides, ivy.to_numpy(x).strides, as_array=False)
 
 
 @handle_test(

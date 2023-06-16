@@ -261,7 +261,7 @@ def dsplit(
 
 
 def atleast_1d(
-    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = False
 ) -> List[JaxArray]:
     return jnp.atleast_1d(*arys)
 
@@ -275,12 +275,12 @@ def dstack(
     return jnp.dstack(arrays)
 
 
-def atleast_2d(*arys: JaxArray, copy: Optional[bool] = None) -> List[JaxArray]:
+def atleast_2d(*arys: JaxArray, copy: Optional[bool] = False) -> List[JaxArray]:
     return jnp.atleast_2d(*arys)
 
 
 def atleast_3d(
-    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = False
 ) -> List[JaxArray]:
     return jnp.atleast_3d(*arys)
 

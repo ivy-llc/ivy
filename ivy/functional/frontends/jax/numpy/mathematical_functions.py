@@ -42,15 +42,16 @@ def diff(a, n=1, axis=-1, prepend=None, append=None):
 @to_ivy_arrays_and_back
 def ediff1d(ary, to_end=None, to_begin=None):
     diffs = ivy.diff(ary)
+    diffs_dtype = diffs.dtype
     if to_begin is not None:
         if not isinstance(to_begin, (list, tuple)):
             to_begin = [to_begin]
-        to_begin = ivy.array(to_begin)
+        to_begin = ivy.array(to_begin, dtype=diffs_dtype)
         diffs = ivy.concat((to_begin, diffs))
     if to_end is not None:
         if not isinstance(to_end, (list, tuple)):
             to_end = [to_end]
-        to_end = ivy.array(to_end)
+        to_end = ivy.array(to_end, dtype=diffs_dtype)
         diffs = ivy.concat((diffs, to_end))
     return diffs
 

@@ -116,7 +116,7 @@ def ceil(x, name=None):
     return ivy.ceil(x)
 
 
-@with_supported_dtypes({"2.4.2 and below": ("float16", "float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def sinh(x, name=None):
     return ivy.sinh(x)
@@ -126,3 +126,27 @@ def sinh(x, name=None):
 @to_ivy_arrays_and_back
 def pow(x, y, name=None):
     return ivy.pow(x, y)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def floor(x, name=None):
+    return ivy.floor(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def remainder(x, y, name=None):
+    return ivy.remainder(x, y)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def log2(x, name=None):
+    return ivy.log2(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def log1p(x, name=None):
+    return ivy.log1p(x)

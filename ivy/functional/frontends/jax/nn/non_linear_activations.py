@@ -84,6 +84,7 @@ def _reduction_dims(a, axis):
         len(canon_axis),
         len(set(canon_axis)),
         message=f"duplicate value in 'axis': {axis}",
+        as_array=False,
     )
 
     # TODO: deal with named axis
@@ -133,7 +134,7 @@ def gelu(x, approximate=True):
 def glu(x, axis=-1):
     size = x.shape[axis]
     ivy.utils.assertions.check_equal(
-        size % 2, 0, message="axis size must be divisible by 2"
+        size % 2, 0, message="axis size must be divisible by 2", as_array=False
     )
     x1, x2 = ivy.split(x, num_or_size_splits=2, axis=axis)
     return ivy.multiply(x1, ivy.sigmoid(x2))

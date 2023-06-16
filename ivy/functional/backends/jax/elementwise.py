@@ -446,8 +446,15 @@ def round(
     return ret
 
 
-@with_unsupported_dtypes({"1.1.9 and below": ("complex",)}, backend_version)
-def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def _abs_variant_sign(x):
+    return jnp.where(x != 0, x / jnp.abs(x), 0)
+
+
+def sign(
+    x: JaxArray, /, *, np_variant: Optional[bool] = True, out: Optional[JaxArray] = None
+) -> JaxArray:
+    if "complex" in str(x.dtype):
+        return jnp.sign(x) if np_variant else _abs_variant_sign(x)
     return jnp.where(x == -0.0, 0.0, jnp.sign(x)).astype(x.dtype)
 
 

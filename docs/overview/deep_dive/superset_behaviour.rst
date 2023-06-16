@@ -199,16 +199,20 @@ Consider the example of :func:`interpolate`.
 Most frameworks contain some kind of interpolation function, usually limited to 2D and/or 3D, but :func:`ivy.interpolate` should be much more general, including interpolations across a larger number of dimensions.
 On top of this, different framework-specific functions support different sets of modes for interpolation.
 For example, if we look at the framework-specific functions available that serve the purpose of interpolation
+
 1. :func:`torch.nn.functional.interpolate` supports larger number of dimensions in the input but doesn't support the :code:`gaussian` or :code:`mitchellcubic` modes which are supported by :func:`tf.image.resize`.
 2. :func:`tf.image.resize` supports the :code:`gaussian` or :code:`mitchellcubic` modes but doesn't support some other modes in :func:`torch.nn.functional.interpolate` and it also doesn't support larger than a 4-dimensional input.
 3. :func:`jax.image.resize` also has missing modes and doesn't support larger number of dimensions.
 4. :code:`numpy` doesn't have an equivalent function for interpolation (:func:`numpy.interp` is very different from the functionality required).
+
 So the ideal superset implementation for :func:`ivy.interpolate` would be supporting the union of all modes supported by different implementations and support a larger number of dimensions in the input.
 
 But there are a few considerations to be made,
+
 1. Implementing all the modes for all the backend-specific implementations would be tedious and repetitive as some modes may not be supported by more than one framework.
 2. We would need a completely compositional implementation for the :code:`numpy` backend which doesn't have an equivalent framework-specific function.
 3. But also having a single compositional implementation for all backends would be considerably inefficient as compared to the framework-specific functions with overlapping functionality.
+
 As a workaround, we can simply make use of the backend-specific implementations for a certain number of dimensions and modes for each backend, and then have a general compositional implementation which covers all the remaining cases.
 This will make sure that we don't introduce any inefficiencies and also avoid re-implementation for all the backends.
 
