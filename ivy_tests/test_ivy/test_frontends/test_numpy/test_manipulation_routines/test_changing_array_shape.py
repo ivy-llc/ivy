@@ -287,7 +287,9 @@ def test_numpy_asarray_chkfinite(
 # require
 @handle_frontend_test(
     fn_tree="numpy.require",
-    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float")
+    ),
     requirements=st.sampled_from(["C", "F", "A", "O", "W", "E"]),
     like=st.just(None),
     test_with_out=st.just(False),
@@ -302,16 +304,15 @@ def test_numpy_require(
     frontend,
     test_flags,
 ):
-    dtype, a = dtype_and_a,
+    dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        requirements=requirements,
-        like=like,
         on_device=on_device,
         a=a[0],
+        dtype=np.dtype(dtype[0]),
+        requirements=requirements,
+        like=like,
     )
-
-       

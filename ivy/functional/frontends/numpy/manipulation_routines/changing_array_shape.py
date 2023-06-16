@@ -58,5 +58,3 @@ def asarray_chkfinite(a, dtype=None, order=None):
 @to_ivy_arrays_and_back
 def require(a, dtype=None, requirements=None, *, like=None):
     return ivy.asarray(a, dtype=dtype)
-
-
