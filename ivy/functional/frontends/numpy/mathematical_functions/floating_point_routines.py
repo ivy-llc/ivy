@@ -10,8 +10,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
 )
 
-# This is the nextafter function.
-# It returns the next floating-point value after x1 towards x2, element-wise.
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -29,12 +27,11 @@ def _nextafter(
     dtype=None,
     subok=True,
 ):
-    return ivy.nextafter(x1, x2, out=out) # Return result
+    return ivy.nextafter(x1, x2, out=out)
 
 
 
-# This is the spacing function.
-# It returns the distance between x and the nearest adjacent number.
+
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -51,4 +48,6 @@ def _spacing(
     dtype=None,
     subok=True,
 ):
-    return ivy.spacing(x, out=out) # Return result
+    # Implement the frontend function using Ivy compositions
+    spacing = ivy.subtract(ivy.nextafter(ivy.abs(x), ivy.sign(x)), x)
+    return spacing
