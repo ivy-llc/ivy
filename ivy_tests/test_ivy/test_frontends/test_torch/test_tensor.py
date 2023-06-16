@@ -9233,11 +9233,8 @@ def test_torch_instance_is_meta(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        test_values=False,
+        test_values=False
     )
-    meta_result = frontend_method_data.get_result()
-    meta_expected_output = meta_result == True
-    assert meta_result == meta_expected_output, f"Unexpected output for meta tensor: {meta_result}"
 
     # Test for a tensor with data
     data_tensor = frontend.tensor([1, 2, 3])
@@ -9250,8 +9247,5 @@ def test_torch_instance_is_meta(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        test_values=False,
+        test_values=False
     )
-    data_result = frontend_method_data.get_result()
-    data_expected_output = data_result == False
-    assert data_result == data_expected_output, f"Unexpected output for tensor with data: {data_result}"
