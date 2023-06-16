@@ -125,3 +125,11 @@ def rfftfreq(n, d=1.0):
     N = n // 2 + 1
     results = ivy.arange(0, N, dtype=int)
     return results * val
+
+
+@to_ivy_arrays_and_back
+def fftn(a, s=None, axes=None, norm=None):
+    if norm is None:
+        norm = "backward"
+    a = ivy.array(a, dtype=ivy.complex128)
+    return ivy.fft(a, axes, norm=norm, n=s)
