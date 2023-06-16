@@ -1,5 +1,4 @@
 # global
-import numpy as np
 
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
@@ -43,9 +42,9 @@ def partition(a, kth, axis=-1, kind="introselect", order=None):
     for k in kth:
         index_to_remove = ivy.argwhere(a == sorted_arr[k])[0][0]
         a = ivy.concat((a[:index_to_remove], a[index_to_remove + 1 :]))
-        left = np.array([], dtype=a.dtype)
-        right = np.array([], dtype=a.dtype)
-        equal = np.array([], dtype=a.dtype)
+        left = ivy.array([], dtype=a.dtype)
+        right = ivy.array([], dtype=a.dtype)
+        equal = ivy.array([], dtype=a.dtype)
         for i in range(len(a)):
             if a[i] < sorted_arr[k]:
                 left = ivy.concat((left, ivy.array([a[i]], dtype=a.dtype)))
