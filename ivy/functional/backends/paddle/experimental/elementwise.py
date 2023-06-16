@@ -37,7 +37,8 @@ def fmax(
     {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
+    y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
+    return paddle.divide(paddle.sin(y), y)
 
 
 def float_power(
