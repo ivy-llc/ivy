@@ -228,7 +228,7 @@ def test_sparse_cross_entropy(
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
 )
-def mse_loss(
+def test_mse_loss(
     dtype_and_true,
     dtype_and_pred,
     axis,
