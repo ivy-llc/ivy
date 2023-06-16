@@ -14,6 +14,10 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 def matrix_rank(a, tol=None, validate_args=False, name=None):
     return ivy.astype(ivy.matrix_rank(a, atol=tol), ivy.int32)
 
+@to_ivy_arrays_and_back
+def solve_triangular(matrix, rhs, lower=True, adjoint=False, name=None):
+    return ivy.solve_triangular(matrix, rhs, lower=lower, adjoint=adjoint)
+
 
 @to_ivy_arrays_and_back
 def det(input, name=None):
