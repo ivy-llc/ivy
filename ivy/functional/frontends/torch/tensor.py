@@ -1294,6 +1294,10 @@ class Tensor:
             self, size=size, stride=stride, storage_offset=storage_offset
         )
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def log1p(self):
+        return torch_frontend.log1p(self)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
