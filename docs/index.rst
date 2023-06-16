@@ -1,5 +1,7 @@
 .. title:: Home
 
+.. include:: ../README.rst
+
 .. toctree::
   :hidden:
   :maxdepth: -1
