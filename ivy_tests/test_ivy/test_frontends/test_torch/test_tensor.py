@@ -6,6 +6,12 @@ import numpy as np
 from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import (
     _topk_helper,
 )
+from ivy_tests.test_ivy.test_frontends.test_torch.test_creation_ops import (
+    _as_strided_helper,
+)
+from ivy_tests.test_ivy.test_frontends.test_torch.test_indexing_slicing_joining_mutating_ops import (  # noqa: E501
+    _dtype_input_dim_start_length,
+)
 from ivy_tests.test_ivy.test_frontends.test_torch.test_reduction_ops import (
     _get_axis_and_p,
 )
@@ -9020,5 +9026,137 @@ def test_torch_special_eq_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="var",
+    dtype_and_x=_statistical_dtype_values(
+        function="var",
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_instance_var(
+    dtype_and_x,
+    keepdim,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, axis, correction = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "correction": int(correction),
+            "keepdim": keepdim,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="narrow",
+    dtype_input_dim_start_length=_dtype_input_dim_start_length(),
+)
+def test_torch_instance_narrow(
+    dtype_input_dim_start_length,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    (input_dtype, x, dim, start, length) = dtype_input_dim_start_length
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dim": dim,
+            "start": start,
+            "length": length,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="as_strided",
+    dtype_x_and_other=_as_strided_helper(),
+)
+def test_torch_instance_as_strided(
+    dtype_x_and_other,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, size, stride, offset = dtype_x_and_other
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "size": size,
+            "stride": stride,
+            "storage_offset": offset,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="log1p",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_torch_instance_log1p(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         on_device=on_device,
     )
