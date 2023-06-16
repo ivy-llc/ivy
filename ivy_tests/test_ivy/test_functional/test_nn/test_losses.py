@@ -227,7 +227,7 @@ def test_sparse_cross_entropy(
         available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=4,
         safety_factor_scale="log",
-        max_value=1,
+        max_value=0,
         allow_inf=False,
         exclude_min=True,
         exclude_max=True,
