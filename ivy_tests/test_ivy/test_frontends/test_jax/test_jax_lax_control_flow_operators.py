@@ -12,11 +12,13 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     pred_cond=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_cond(
+def test_jax_lax_cond(
     *,
     dtype_and_x,
     pred_cond,
