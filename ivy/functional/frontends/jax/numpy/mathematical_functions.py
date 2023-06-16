@@ -129,8 +129,8 @@ def mod(x1, x2, /):
 
 @to_ivy_arrays_and_back
 def modf(x, /, out=None):
-    y1 = ivy.where(x >= 0, ivy.floor(x), ivy.ceil(x)) # integral part
-    y2 = x - y1 # fractional part
+    y1 = ivy.where(x >= 0, ivy.floor(x), ivy.ceil(x))  # integral part
+    y2 = x - y1  # fractional part
     dtype_str = str(x.dtype)
     if "float" in dtype_str:
         return y2, y1
