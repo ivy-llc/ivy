@@ -155,3 +155,15 @@ class Tensor:
     )
     def tanh(self, name=None):
         return ivy.tanh(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.3 and below": ("float32", "float64")}, "paddle")
+    def add_(self, name=None):
+        return ivy.add(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def square(self, name=None):
+        return ivy.square(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def cholesky(self, upper=False, name=None):
+        return ivy.cholesky(self._ivy_array, upper=upper)

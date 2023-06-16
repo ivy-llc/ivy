@@ -859,8 +859,11 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
+        nonlocal handle_out_in_backend
         if out is None or is_compos_fn:
             return fn(*args, out=out, **kwargs)
+        if ivy.gradients._is_variable(out):
+            handle_out_in_backend = False
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
