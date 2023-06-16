@@ -101,14 +101,16 @@ def handle_soft_device_variable(*args, **kwargs):
             [args, kwargs],
             lambda x: (
                 paddle.to_tensor(x, place=as_native_dev(default_device))
-                if isinstance(x, paddle.Tensor)
+                if (isinstance(x, paddle.Tensor) and ivy.dev(x) != default_device)
                 else x
             ),
         )
     else:
         inputs = list(args)
         inputs.extend(kwargs.values())
-        devices = set(ivy.dev(x) for x in inputs if isinstance(x, (ivy.Array, paddle.Tensor)))
+        devices = set(
+            ivy.dev(x) for x in inputs if isinstance(x, (ivy.Array, paddle.Tensor))
+        )
         if len(devices) > 1:
             raise ivy.utils.exceptions.IvyBackendException(
                 "Expected all input arrays to be on the same device, ",

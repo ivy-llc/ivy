@@ -140,7 +140,11 @@ def handle_soft_device_variable(*args, **kwargs):
         default_device = ivy.default_device()
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (x.to_device(default_device) if isinstance(x, ivy.Array) else x),
+            lambda x: (
+                x.to_device(default_device)
+                if (isinstance(x, ivy.Array) and ivy.dev(x) != default_device)
+                else x
+            ),
         )
     else:
         inputs = list(args)
