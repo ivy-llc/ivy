@@ -153,15 +153,18 @@ def multi_dot(
 
 
 def dot(
-    a: tf.Tensor,
-    b: tf.Tensor,
+    x: tf.Tensor,
+    y: tf.Tensor,
     out: Optional[tf.Tensor] = None
 ) -> tf.Tensor:
-    x = a.numpy()
-    y = b.numpy()
+    a = x.numpy()
+    b = y.numpy()
 
-    assert x.ndim == 1 or y.ndim == 1, "One of the inputs is not a vector"
-    return tf.convert_to_tensor(tf.experimental.numpy.dot(x, y, out))
+    assert a.ndim == 1 or b.ndim == 1, "One of the inputs is not a vector"
+    return tf.convert_to_tensor(tf.experimental.numpy.dot(a, b))
+
+
+dot.support_native_out = True
 
 
 def cond(

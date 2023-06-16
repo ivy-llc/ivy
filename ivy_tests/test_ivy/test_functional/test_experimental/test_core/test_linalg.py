@@ -545,63 +545,38 @@ def test_multi_dot(
     )
 
 
-@st.composite
-def _generate_dot_dtype_and_arrays(draw):
-    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
-
-    vector_shape = (1,)
-
-    vector_1 = draw(
-        helpers.dtype_and_values(
-            shape=vector_shape,
-            dtype=input_dtype,
-            min_value=-10,
-            max_value=10,
-        )
-    )
-    vector_2 = draw(
-        helpers.dtype_and_values(
-            shape=vector_shape,
-            dtype=input_dtype,
-            min_value=-10,
-            max_value=10,
-        )
-    )
-    vector_3 = draw(
-        helpers.dtype_and_values(
-            shape=vector_shape,
-            dtype=input_dtype,
-            min_value=-10,
-            max_value=10,
-        )
-    )
-
-    return input_dtype, [vector_1, vector_2, vector_3]
-
-
 @handle_test(
     fn_tree="functional.ivy.experimental.dot",
-    dtype_x=_generate_multi_dot_dtype_and_arrays(),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=5,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
     test_gradients=st.just(False),
 )
 def test_dot(
     dtype_x,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
     ground_truth_backend,
 ):
-    ivy.set_exception_trace_mode("ivy")
-    dtype, x, y = dtype_x
+    dtype, x = dtype_x
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=True,
-        x=x,
-        y=y,
+        x=x[0],
+        y=x[1],
         rtol_=1e-1,
         atol_=6e-1,
     )

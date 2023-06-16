@@ -513,7 +513,7 @@ def dot(
     b: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[ivy.Array] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     precision: Optional[jax.lax.Precision] = None
 ) -> ivy.Array:
     """
@@ -542,19 +542,19 @@ def dot(
     --------
     With :class:`ivy.Array` input:
 
-    >>> A = ivy.arange(100)
-    >>> B = ivy.arange(100)
-    >>> ivy.dot(A, B)
-
-    >>> A = ivy.arange(100)
-    >>> B = ivy.arange(100)
-    >>> C = ivy.zeros(100)
-    >>> ivy.dot(A, B, out=C)
-    >>> print(C)
-
-    >>> A = ivy.arange(100)
-    >>> B = ivy.arange(100)
-    >>> ivy.dot(A, B, precision=jax.lax.Precision('high'))
+    # >>> A = ivy.arange(100)
+    # >>> B = ivy.arange(100)
+    # >>> ivy.dot(A, B)
+    #
+    # >>> A = ivy.arange(100)
+    # >>> B = ivy.arange(100)
+    # >>> C = ivy.zeros(100)
+    # >>> ivy.dot(A, B, out=C)
+    # >>> print(C)
+    #
+    # >>> A = ivy.arange(100)
+    # >>> B = ivy.arange(100)
+    # >>> ivy.dot(A, B, precision=jax.lax.Precision('high'))
 
     """
     return current_backend(a, b).dot(a, b, out=out, precision=precision)

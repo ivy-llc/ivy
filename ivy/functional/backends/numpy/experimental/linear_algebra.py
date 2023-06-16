@@ -163,12 +163,15 @@ multi_dot.support_native_out = True
 
 
 def dot(
-    a: np.ndarray,
-    b: np.ndarray,
+    x: np.ndarray,
+    y: np.ndarray,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    assert a.ndim == 1 and b.ndim == 1, "One of the inputs is not a vector"
-    return np.dot(a, b, out=out)
+    assert x.ndim == 1 and y.ndim == 1, "One of the inputs is not a vector"
+    return np.dot(x, y, out=out)
+
+
+dot.support_native_out = True
 
 
 def cond(

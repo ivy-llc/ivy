@@ -141,13 +141,16 @@ def multi_dot(
 
 
 def dot(
-    a: JaxArray,
-    b: JaxArray,
+    x: JaxArray,
+    y: JaxArray,
     out: Optional[JaxArray] = None,
     precision: Optional[Precision] = None
 ) -> JaxArray:
-    assert a.ndim == 1 or b.ndim == 1, "One of the inputs is not a vector"
-    return jnp.dot(a, b, out=out, precision=precision)
+    assert x.ndim == 1 or y.ndim == 1, "One of the inputs is not a vector"
+    return jnp.dot(x, y, out=out, precision=precision)
+
+
+dot.support_native_out = True
 
 
 def cond(
