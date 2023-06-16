@@ -2,42 +2,15 @@
 
 
 def available_frameworks():
-    available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch", "paddle"]
-    try:
-        import jax
+    frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle"]
+    for fw in frameworks:
+        try:
+            exec(f"import {fw}")
+            assert exec(fw), f"{fw} is imported to see if the user has it installed"
+        except ImportError:
+            frameworks.remove(fw)
 
-        assert jax, "jax is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("jax")
-
-    try:
-        import tensorflow as tf
-
-        assert tf, "tensorflow is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("tensorflow")
-
-    try:
-        import torch
-
-        assert torch, "torch is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("torch")
-
-    try:
-        import paddle
-
-        assert paddle, "Paddle is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("paddle")
-    return available_frameworks_lis
-
-    try:
-        import mxnet
-
-        assert mxnet, "mxnet is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("mxnet")
+    return frameworks
 
 
 def ground_truth():
