@@ -9243,7 +9243,7 @@ def test_torch_instance_is_meta(
     data_tensor = frontend.tensor([1, 2, 3])
     helpers.test_frontend_method(
         init_input_dtypes=None,
-        init_all_as_kwargs_np={'data_tensor': data_tensor},
+        init_all_as_kwargs_np={"data_tensor": data_tensor},
         method_input_dtypes=None,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
