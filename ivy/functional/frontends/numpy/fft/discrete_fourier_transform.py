@@ -127,6 +127,7 @@ def rfftfreq(n, d=1.0):
     return results * val
 
 
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def fftn(a, s=None, axes=None, norm=None):
     if norm is None:
