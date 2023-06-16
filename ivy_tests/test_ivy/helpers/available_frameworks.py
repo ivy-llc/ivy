@@ -14,18 +14,9 @@ def available_frameworks():
 
 
 def ground_truth():
-    available_framework_lis = available_frameworks()
-    g_truth = ""
-    if "tensorflow" in available_framework_lis:
-        g_truth = "tensorflow"
-    elif "torch" in available_framework_lis:
-        g_truth = "torch"
-    elif "jax" in available_framework_lis:
-        g_truth = "jax"
-    elif "paddle" in available_framework_lis:
-        g_truth = "paddle"
-    elif "mxnet" in available_framework_lis:
-        g_truth = "mxnet"
-    else:
-        g_truth = "numpy"
-    return g_truth
+    frameworks = available_frameworks()
+    gt_frameworks = ["tensorflow", "torch", "jax", "paddle", "mxnet"]
+    return next((gt_framework
+                 for gt_framework in gt_frameworks if
+                 gt_framework in frameworks),
+                "numpy")
