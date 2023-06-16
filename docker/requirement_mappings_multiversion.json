@@ -1,3 +1,5 @@
+// jaxlib mapping is the highest supported jaxlib version for a given jax version
+
 {
     "tensorflow": [
         {"tensorflow-addons": {"2.11.0": "0.20.0"}},
