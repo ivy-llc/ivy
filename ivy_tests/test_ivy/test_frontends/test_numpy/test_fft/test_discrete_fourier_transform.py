@@ -189,3 +189,113 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
         n=n,
         d=d,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.fft2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"), shape=(4, 4), array_api_dtypes=True
+    ),
+)
+def test_numpy_fft2(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=None,
+        axes=(-2, -1),
+        norm=None,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.ifft2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"), shape=(4, 4), array_api_dtypes=True
+    ),
+)
+def test_numpy_ifft2(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=None,
+        axes=(-2, -1),
+        norm=None,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.rfft2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), shape=(4, 4), array_api_dtypes=True
+    ),
+)
+def test_numpy_rfft2(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=None,
+        axes=(-2, -1),
+        norm=None,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.irfft2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), shape=(4, 4), array_api_dtypes=True
+    ),
+)
+def test_numpy_irfft2(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=None,
+        axes=(-2, -1),
+        norm=None,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.irfft",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
+    ),
+)
+def test_numpy_irfft(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        n=None,
+        axis=-1,
+        norm=None,
+    )
