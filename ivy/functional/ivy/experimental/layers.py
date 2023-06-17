@@ -2200,15 +2200,15 @@ def reduce_window(
     dims, strides, padding, base_dilation, window_dilation = ivy.map(
         _int_arg_to_tuple,
         unique={
-            "arg" : [
+            "arg": [
                 window_dimensions,
                 window_strides,
                 padding,
                 base_dilation,
-                window_dilation
+                window_dilation,
             ]
         },
-        constant={"dims" : len(op.shape)},
+        constant={"dims": len(op.shape)},
     )
 
     init_value = _cast_init(init_value, op.dtype)
