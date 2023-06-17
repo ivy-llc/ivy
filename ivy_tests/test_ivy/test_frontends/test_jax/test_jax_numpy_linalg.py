@@ -1,5 +1,7 @@
 # global
 import sys
+
+import ivy.functional.frontends.jax.numpy
 import numpy as np
 
 from hypothesis import strategies as st
@@ -7,6 +9,7 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers as array_helpers
 from ivy_tests.test_ivy.helpers import assert_all_close, handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
@@ -836,33 +839,9 @@ def test_jax_numpy_cond(
     )
 
 
-@st.composite
-def _get_dtype_inputs_for_multi_dot(draw):
-    num_arrays = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
-    )
-    matrix_dims = draw(
-        st.lists(
-            st.integers(min_value=2, max_value=4),
-            min_size=num_arrays + 1,
-            max_size=num_arrays + 1,
-        )
-    )
-    input_dtypes = draw(
-        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
-    )
-    xs = []
-    for i in range(num_arrays):
-        shape = matrix_dims[i : i + 2]
-        dtype = input_dtypes[i]
-        x = draw(helpers.array_values(shape=shape, dtype=dtype))
-        xs.append(x)
-    return xs, input_dtypes
-
-
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.multi_dot",
-    dtypes_and_xs=_get_dtype_inputs_for_multi_dot(),
+    dtypes_and_xs=array_helpers.matrices_for_dot_product(),
     test_with_out=st.just(False),
 )
 def test_jax_lax_multi_dot(

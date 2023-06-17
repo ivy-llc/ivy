@@ -1047,7 +1047,6 @@ def array_indices_put_along_axis(
 
     Parameters
     ----------
-
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
@@ -1075,10 +1074,11 @@ def array_indices_put_along_axis(
     valid_bounds
         If False, the strategy may produce out-of-bounds indices.
     values
-        Custom values array to use instead of randomly generated values. Defaults to None.
+        Custom values array to use instead of randomly generated values. Defaults to
+        None.
     values_dtypes : Union[None, List[str]]
-        A list of dtypes for the values parameter. The function will use the dtypes returned by
-        'get_dtypes("valid")'.
+        A list of dtypes for the values parameter. The function will use the dtypes
+        returned by 'get_dtypes("valid")'.
 
     Returns
     -------
@@ -1854,3 +1854,27 @@ def dtype_array_index(
                 step = draw(st.integers(max_value=-1, min_value=-s))
             index += (slice(start, end, step),)
     return dtype, array, index
+
+
+@st.composite
+def matrices_for_dot_product(draw):
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+    )
+    matrix_dims = draw(
+        st.lists(
+            st.integers(min_value=2, max_value=4),
+            min_size=num_arrays + 1,
+            max_size=num_arrays + 1,
+        )
+    )
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
+    )
+    xs = []
+    for i in range(num_arrays):
+        shape = matrix_dims[i : i + 2]
+        dtype = input_dtypes[i]
+        x = draw(helpers.array_values(shape=shape, dtype=dtype))
+        xs.append(x)
+    return xs, input_dtypes
