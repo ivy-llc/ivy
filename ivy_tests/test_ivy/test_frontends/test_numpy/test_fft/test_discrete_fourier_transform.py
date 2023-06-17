@@ -227,10 +227,7 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
         force_tuple_axis=True,
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
-    s=st.lists(st.integers(min_value=2, max_value=5), min_size=2, max_size=2).map(
-        tuple
-    ),
-    axes=st.tuples(st.integers(), st.integers()),
+    s=st.lists(st.integers(min_value=2, max_value=5), min_size=2, max_size=2)
 )
 def test_numpy_rfft2(
     dtype_input_axis, norm, s, axes, frontend, test_flags, fn_tree, on_device

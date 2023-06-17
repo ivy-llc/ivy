@@ -140,6 +140,7 @@ def rfft2(a, s=None, axes=(-2, -1), norm=None):
     return ivy.dft(a, axes=axes, inverse=False, onesided=True, dft_length=s, norm=norm)
 """
 
+
 @with_supported_dtypes(
     {
         "1.24.3 and above": (
@@ -154,12 +155,15 @@ def rfft2(a, s=None, axes=(-2, -1), norm=None):
 )
 @to_ivy_arrays_and_back
 def rfft2(a, s=None, axes=(-2, -1), norm=None):
+    a = ivy.shape(a, dtype = ivy.float64)
     if norm is None:
         norm = "backward"
     elif norm not in ["backward", "ortho", "forward"]:
         raise ValueError(
             "Invalid norm. Supported norms are 'backward', 'ortho', and 'forward'."
         )
-    if s is not None:
+    if s is None:
+        s = a.shape
+    else:
         s = tuple(s)
     return ft.dft(a, axes=axes, inverse=False, onesided=True, dft_length=s, norm=norm)
