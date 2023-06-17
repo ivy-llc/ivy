@@ -424,7 +424,7 @@ def bincount(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Counts the number of occurrences of each value in an integer array.
+    Count the number of occurrences of each value in an integer array.
 
     Parameters
     ----------
@@ -434,10 +434,12 @@ def bincount(
         An optional input array.
     minlength
         A minimum number of bins for the output array.
+
     Returns
     -------
     ret
         The bincount of the array elements.
+
     Examples
     --------
     >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
@@ -459,7 +461,7 @@ def igamma(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """

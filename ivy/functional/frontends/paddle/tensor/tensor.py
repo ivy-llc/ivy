@@ -127,9 +127,47 @@ class Tensor:
         return ivy.argmax(self._ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
 
     @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def sqrt(self, name=None):
+        return ivy.sqrt(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
     def cos(self, name=None):
         return ivy.cos(self._ivy_array)
 
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def exp(self, name=None):
         return ivy.exp(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def log10(self, name=None):
+        return ivy.log10(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def argsort(self, axis=-1, descending=False, name=None):
+        return ivy.argsort(self._ivy_array, axis=axis, descending=descending)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def floor(self, name=None):
+        return ivy.floor(self._ivy_array)
+
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("float16", "float32", "float64")}, "paddle"
+    )
+    def tanh(self, name=None):
+        return ivy.tanh(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.3 and below": ("float32", "float64")}, "paddle")
+    def add_(self, name=None):
+        return ivy.add(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def square(self, name=None):
+        return ivy.square(self._ivy_array)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def cholesky(self, upper=False, name=None):
+        return ivy.cholesky(self._ivy_array, upper=upper)
+    
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def all(self, axis=None, keepdim=False, dtype=None, name=None):
+        return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
