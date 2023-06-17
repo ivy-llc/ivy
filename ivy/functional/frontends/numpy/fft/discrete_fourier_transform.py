@@ -128,27 +128,47 @@ def rfftfreq(n, d=1.0):
 
 
 @to_ivy_arrays_and_back
-def fft2(a, s=None, axes=(-2, -1), norm=None):
+def fft2(
+    a,
+    s=None,
+    axes=(-2, -1),
+    norm=None
+):
     a = ivy.array(a, dtype=ivy.complex128)
     return ivy.fft2(a, s, axes, norm=norm)
 
 
 @to_ivy_arrays_and_back
-def ifft2(a, s=None, axes=(-2, -1), norm=None):
+def ifft2(
+    a,
+    s=None,
+    axes=(-2, -1),
+    norm=None
+):
     a = ivy.array(a, dtype=ivy.complex128)
     return ivy.ifft2(a, s, axes, norm=norm)
 
 
 @with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
-def rfft2(a, s=None, axes=(-2, -1), norm=None):
+def rfft2(
+    a,
+    s=None,
+    axes=(-2, -1),
+    norm=None
+):
     a = ivy.array(a, dtype=ivy.float64)
     return ivy.dft2(a, s=s, axes=axes, inverse=False, onesided=True, norm=norm)
 
 
 @with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
-def irfft2(a, s=None, axes=(-2, -1), norm=None):
+def irfft2(
+    a,
+    s=None,
+    axes=(-2, -1),
+    norm=None
+):
     if s is None:
         s = [a.shape[axis] for axis in axes]
     norm = _swap_direction(norm)
@@ -158,7 +178,12 @@ def irfft2(a, s=None, axes=(-2, -1), norm=None):
 
 @with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
-def irfft(a, n=None, axis=-1, norm=None):
+def irfft(
+    a,
+    n=None,
+    axis=-1,
+    norm=None
+):
     if n is None:
         n = a.shape[axis]
     norm = _swap_direction(norm)
