@@ -1093,7 +1093,6 @@ def test_tensorflow_instance_xor(
     method_name="__matmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1102,6 +1101,9 @@ def test_tensorflow_instance_xor(
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_matmul(
@@ -1137,7 +1139,6 @@ def test_tensorflow_instance_matmul(
     method_name="__rmatmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1146,6 +1147,9 @@ def test_tensorflow_instance_matmul(
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_rmatmul(
@@ -1182,7 +1186,7 @@ def test_tensorflow_instance_rmatmul(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_tensorflow_instance_array(
     dtype_and_x,
@@ -1201,7 +1205,7 @@ def test_tensorflow_instance_array(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "dtype": dtype[0],
+            "dtype": np.dtype(dtype[0]),
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,

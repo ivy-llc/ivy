@@ -55,7 +55,6 @@ def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
         )
         comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
     lt, lt_eq = comp_fn(x1, x2)
-    print(allow_equal, lt_eq)
     # greater_equal
     if allow_equal and lt:
         raise ivy.utils.exceptions.IvyException(
@@ -266,10 +265,6 @@ def check_gather_nd_input_valid(params, indices, batch_dims):
 def check_one_way_broadcastable(x1, x2):
     if len(x1) > len(x2):
         return False
-    return check_broadcastable(x1, x2)
-
-
-def check_broadcastable(x1, x2):
     for a, b in zip(x1[::-1], x2[::-1]):
         if a == 1 or a == b:
             pass
