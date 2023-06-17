@@ -1298,6 +1298,9 @@ class Tensor:
     def log1p(self):
         return torch_frontend.log1p(self)
 
+    def gather(self, dim, index):
+        return torch_frontend.gather(self, dim=dim, index=index)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
