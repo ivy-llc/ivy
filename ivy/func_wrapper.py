@@ -463,8 +463,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             The return of the function, with ivy arrays passed in the arguments.
         """
         if not ivy.array_mode:
-            warnings.warn("In the case of Compositional function, operators might cause inconsistent "
-                          "behavior when array_mode is set to False")
+            warnings.warn(
+                "In the case of Compositional function, operators might cause"
+                " inconsistent behavior when array_mode is set to False"
+            )
             return fn(*args, **kwargs)
 
         has_out = False
@@ -857,8 +859,11 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
+        nonlocal handle_out_in_backend
         if out is None or is_compos_fn:
             return fn(*args, out=out, **kwargs)
+        if ivy.gradients._is_variable(out):
+            handle_out_in_backend = False
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
@@ -1068,7 +1073,15 @@ def casting_modes_ops(fn):
         )
         if not intersect:
             # doesn't have unsupported dtypes specified
-            return fn(*args, **kwargs)
+            # so check if it's one of the device_and_dtype one
+            intersect = set(
+                ivy.function_unsupported_devices_and_dtypes(fn).get(
+                    ivy.default_device().split(":")[0], {None}
+                )
+            ).difference(set(ivy.invalid_dtypes))
+            if not intersect:
+                # no unsupported dtype specified
+                return fn(*args, **kwargs)
 
         if "dtype" in kwargs and kwargs["dtype"] is not None:
             dtype = caster(kwargs["dtype"], intersect)

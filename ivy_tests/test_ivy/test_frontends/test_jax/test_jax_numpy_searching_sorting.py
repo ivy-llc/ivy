@@ -260,7 +260,7 @@ def test_jax_numpy_extract(
     ),
     test_with_out=st.just(False),
 )
-def test_numpy_sort(
+def test_jax_numpy_sort(
     *,
     dtype_x_axis,
     frontend,
@@ -276,7 +276,7 @@ def test_numpy_sort(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        x=x[0],
         axis=axis,
     )
 
