@@ -125,3 +125,62 @@ def rfftfreq(n, d=1.0):
     N = n // 2 + 1
     results = ivy.arange(0, N, dtype=int)
     return results * val
+
+@to_ivy_arrays_and_back
+def fft2(a, s=None, axes=(-2, -1), norm=None):
+    """
+    Compute the 2-dimensional FFT.
+    """
+    # Ensure a is an ivy array with dtype complex128
+    a = ivy.array(a, dtype=ivy.complex128)
+    
+    return ivy.fft2(a, s, axes, norm=norm)
+
+
+@to_ivy_arrays_and_back
+def ifft2(a, s=None, axes=(-2, -1), norm=None):
+    """
+    Compute the 2-dimensional inverse FFT.
+    """
+    # Ensure a is an ivy array with dtype complex128
+    a = ivy.array(a, dtype=ivy.complex128)
+    
+    return ivy.ifft2(a, s, axes, norm=norm)
+
+
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def rfft2(a, s=None, axes=(-2, -1), norm=None):
+    """
+    Compute the 2-dimensional FFT of real input.
+    """
+    # Ensure a is an ivy array with dtype float64
+    a = ivy.array(a, dtype=ivy.float64)
+    
+    return ivy.dft2(a, s=s, axes=axes, inverse=False, onesided=True, norm=norm)
+
+
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def irfft2(a, s=None, axes=(-2, -1), norm=None):
+    """
+    Compute the 2-dimensional inverse FFT of real input.
+    """
+    if s is None:
+        s = [a.shape[axis] for axis in axes]
+    norm = _swap_direction(norm)
+    output = ivy.conj(rfft2(a, s, axes, norm=norm).ivy_array)
+    return output
+
+
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def irfft(a, n=None, axis=-1, norm=None):
+    """
+    Compute the inverse FFT of real input.
+    """
+    if n is None:
+        n = a.shape[axis]
+    norm = _swap_direction(norm)
+    output = ivy.conj(rfft(a, n, axis, norm=norm).ivy_array)
+    return output
