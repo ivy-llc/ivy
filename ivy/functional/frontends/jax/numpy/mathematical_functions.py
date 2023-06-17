@@ -704,3 +704,8 @@ def product(
 @to_ivy_arrays_and_back
 def round(x, decimals=0, /):
     return ivy.round(x, decimals)
+
+
+@to_ivy_arrays_and_back
+def conjugate(x, /):
+    return ivy.conj(x)
