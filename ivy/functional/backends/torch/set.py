@@ -11,7 +11,10 @@ import ivy
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": "complex",
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+        ),
     },
     backend_version,
 )
