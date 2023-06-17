@@ -16,4 +16,4 @@ def argmax(x, /, *, axis=None, keepdim=False, dtype="int64", name=None):
 
 @to_ivy_arrays_and_back
 def argmin(x, /, *, axis=None, keepdim=False, dtype="int64", name=None):
-    return ivy.argmax(x, axis=axis, keepdims=keepdim, dtype=dtype)
+    return ivy.argmin(x, axis=axis, keepdims=keepdim, dtype=dtype)
