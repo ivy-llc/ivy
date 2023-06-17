@@ -125,3 +125,43 @@ def rfftfreq(n, d=1.0):
     N = n // 2 + 1
     results = ivy.arange(0, N, dtype=int)
     return results * val
+
+
+@with_unsupported_dtypes({"1.24.3 and below": ("int",)}, "numpy")
+@to_ivy_arrays_and_back
+def ifftn(a, s=None, axes=None, norm=None):
+    if s is None:
+        s = a.shape
+    if axes is None:
+        axes = range(a.ndim)
+    if norm is None:
+        norm = None
+    elif norm != 'ortho':
+        raise ValueError("Invalid norm value. Should be None or 'ortho'.")
+
+    axes = tuple(axes)
+    shape = ivy.array(s)
+    ndim = len(shape)
+
+    # Roll the axes to align them correctly
+    for axis in axes:
+        a = ivy.roll(a, shape[axis] // 2, axis=axis)
+
+    output = a.copy()
+    for axis in axes:
+        output = ivy.ifft(output, n=shape[axis], axis=axis)
+    output = ifftshift(output, axes=axes)
+
+    # Calculate the product of shape elements without np.prod
+    product = 1
+    for size in shape:
+        product *= size
+
+    if norm == 'ortho':
+        output *= ivy.sqrt(product)
+
+    # Roll the axes back to the original positions
+    for axis in axes:
+        output = ivy.roll(output, -shape[axis] // 2, axis=axis)
+
+    return output
