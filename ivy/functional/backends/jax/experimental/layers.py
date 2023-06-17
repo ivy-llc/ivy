@@ -169,6 +169,13 @@ def general_pool(
     else:
         pad_list = [(0, 0)] * (dim + 2)
 
+    if not ivy.is_array(inputs):
+        inputs = jnp.array(inputs)
+    if not ivy.is_array(init):
+        init = jnp.array(init)
+    promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
+    inputs = inputs.astype(promoted_type)
+    init = init.astype(promoted_type)
     y = jlax.reduce_window(
         inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
     )
@@ -405,7 +412,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.11 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.12 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -724,3 +731,35 @@ def reduce_window(
         base_dilation,
         window_dilation,
     )
+
+
+def fft2(
+    x: JaxArray,
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if not all(isinstance(j, int) for j in dim):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {dim} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[dim[0]], x.shape[dim[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)

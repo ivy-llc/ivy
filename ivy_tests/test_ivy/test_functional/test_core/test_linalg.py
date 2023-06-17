@@ -1204,32 +1204,41 @@ def test_matrix_norm(
 
 @st.composite
 def _matrix_rank_helper(draw):
-    dtype_x = draw(
+    _batch_shape = draw(
+        helpers.get_shape(min_num_dims=1, max_num_dims=3, min_dim_size=1)
+    )
+    _batch_dim = draw(st.sampled_from([(), _batch_shape]))
+    _matrix_dim = draw(helpers.ints(min_value=2, max_value=20))
+    shape = _batch_dim + (_matrix_dim, _matrix_dim)
+    dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
-            shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+            shape=shape,
             min_value=-1e05,
             max_value=1e05,
             abs_smallest_val=1e-05,
             safety_factor_scale="log",
         )
     )
-    return dtype_x
+    if np.all(x[0].T == x[0]):
+        hermitian = draw(st.booleans())
+    else:
+        hermitian = False
+    return dtype, x[0], hermitian
 
 
 # matrix_rank
 @handle_test(
     fn_tree="functional.ivy.matrix_rank",
-    dtype_x=_matrix_rank_helper(),
-    atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
-    | st.just(None),
-    rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
-    | st.just(None),
+    dtype_x_hermitian=_matrix_rank_helper(),
+    atol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    ground_truth_backend="numpy",
 )
 def test_matrix_rank(
     *,
-    dtype_x,
+    dtype_x_hermitian,
     atol,
     rtol,
     test_flags,
@@ -1238,8 +1247,8 @@ def test_matrix_rank(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_x
-    x_temp = x[0]
+    dtype, x, hermitian = dtype_x_hermitian
+    x_temp = x
     for x_i in x_temp.reshape(-1, *x_temp.shape[-2:]):
         assume(round(np.linalg.det(x_i.astype("float64")), 1) != 0.0)
     helpers.test_function(
@@ -1249,9 +1258,10 @@ def test_matrix_rank(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
+        x=x,
         atol=atol,
-        rtol_=rtol,
+        rtol=rtol,
+        hermitian=hermitian,
     )
 
 
