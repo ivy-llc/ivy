@@ -10,8 +10,8 @@ from operator import mul
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
-from . import general_helpers as gh
-from . import dtype_helpers, number_helpers
+from ivy_tests.test_ivy.helpers.hypothesis_helpers import general_helpers as gh
+from ivy_tests.test_ivy.helpers.hypothesis_helpers import dtype_helpers, number_helpers
 
 
 @st.composite
@@ -863,6 +863,8 @@ def array_indices_axis(
             max_dim_size=10
             )
     )
+
+
 
     >>> array_indices_axis(
     ...    array_dtypes=get_dtypes("valid"),

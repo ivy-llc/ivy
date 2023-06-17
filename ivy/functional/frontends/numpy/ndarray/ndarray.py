@@ -33,7 +33,7 @@ class ndarray:
         return str(self.ivy_array.__repr__()).replace(
             "ivy.array", "ivy.frontends.numpy.ndarray"
         )
-    
+
     # Properties #
     # ---------- #
 
@@ -56,10 +56,10 @@ class ndarray:
     @property
     def ndim(self):
         return len(self.shape)
-    
+
     @property
-    def flat(self,item):
-        return self.flatten()[item]
+    def flat(self, item):
+        return self.flatten().flat
 
     # Setters #
     # --------#
@@ -527,4 +527,3 @@ class ndarray:
         xmax = self.max(axis=axis, out=out, keepdims=keepdims)
         xmin = self.min(axis=axis, out=out, keepdims=keepdims)
         return np_frontend.subtract(xmax, xmin)
-    

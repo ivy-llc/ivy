@@ -1311,3 +1311,7 @@ promotion_table = {
     **common_extra_promotion_table,
     **precise_extra_promotion_table,
 }
+
+
+def ivy_tests():
+    return None

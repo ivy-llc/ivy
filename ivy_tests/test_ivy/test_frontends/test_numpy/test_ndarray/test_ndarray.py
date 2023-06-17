@@ -117,19 +117,19 @@ def test_numpy_ndarray_property_T(
 
 
 @given(
-    array_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("valid"),
-        indices_dtypes=helpers.get_dtypes("integer"),
-    ),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        ret_shape=True,
+    )
 )
+def test_numpy_ndarray_property_flat(dtype_x):
+    dtype, x, shape = dtype_x
+    x_ivy = ivy.array(*x, dtype=dtype)
 
-def test_numpy_ndarray_property_flat(
-    array_indices_axis
-):
-    data, item = array_indices_axis
-    x = ivy.array(data[0])
-    ivy.utils.assertions.check_equal(x.flat[item],data[0].flat[item],asarray=False)
+    flat_ivy = x_ivy.flat
+    flat_generated = x_ivy.flatten().flat
 
+    ivy.utils.assertions.check_equal(flat_ivy, flat_generated, as_array=True)
 
 
 @handle_frontend_method(
