@@ -64,5 +64,5 @@ def test_paddle_argmin(
         fn_tree=fn_tree,
         x=x[0],
         axis=axis,
-        keepdim=keepdim, 
+        keepdim=keepdim,
     )
