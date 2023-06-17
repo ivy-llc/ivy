@@ -844,6 +844,7 @@ def test_paddle_cholesky(
         on_device=on_device,
     )
 
+
 # all
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -884,6 +885,7 @@ def test_paddle_all(
         method_flags=method_flags,
         on_device=on_device,
     )
+
 
 #sort
 @handle_frontend_method(
