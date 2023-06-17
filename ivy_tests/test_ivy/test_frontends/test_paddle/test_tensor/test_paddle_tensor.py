@@ -1,13 +1,13 @@
 # global
-import ivy
-from hypothesis import strategies as st, assume, given
 import numpy as np
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy.functional.frontends.paddle import Tensor
-
+from ivy_tests.test_ivy.helpers import handle_frontend_method
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 
@@ -877,6 +877,45 @@ def test_paddle_all(
         method_all_as_kwargs_np={
             "axis": axis,
             "keepdim": keep_dims,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# allclose
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="allclose",
+    dtype_x_y_atol_rtol_equal_nan=helpers.dtype_values_atol_rtol_equal_nan(
+        available_dtypes=st.one_of(helpers.get_dtypes("float")),
+        min_num_dims=1,
+    ),
+)
+def test_paddle_allclose(
+    dtype_x_y_atol_rtol_equal_nan,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x, y, atol, rtol, equal_nan = dtype_x_y_atol_rtol_equal_nan
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "x": x[0],
+            "y": y[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "atol": atol,
+            "rtol": rtol,
+            "equal_nan": equal_nan,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
