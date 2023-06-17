@@ -45,6 +45,8 @@ def roll(input, shifts, dims=None):
 
 @to_ivy_arrays_and_back
 def meshgrid(*tensors, indexing=None):
+    if indexing is None:
+        indexing = "ij"
     return tuple(ivy.meshgrid(*tensors, indexing=indexing))
 
 

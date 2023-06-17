@@ -133,6 +133,10 @@ def var(
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if correction == 0:
         return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
+    if correction == 1:
+        return tf.experimental.numpy.var(
+            x, axis=axis[0], out=out, keepdims=keepdims, dtype=x.dtype, ddof=1
+        )
     size = 1
     for a in axis:
         size *= x.shape[a]
