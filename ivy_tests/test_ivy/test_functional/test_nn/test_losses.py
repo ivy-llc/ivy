@@ -217,7 +217,7 @@ def test_sparse_cross_entropy(
     dtype_and_targets=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
-        max_value=1,
+        max_value=3,
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=3,
@@ -225,9 +225,10 @@ def test_sparse_cross_entropy(
     ),
     dtype_and_log_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=2,
+        small_abs_safety_factor=4,
         safety_factor_scale="log",
-        max_value=1,
+        min_value=0,
+        max_value=3,
         allow_inf=False,
         exclude_min=True,
         exclude_max=True,

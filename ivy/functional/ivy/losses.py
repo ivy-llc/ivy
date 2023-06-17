@@ -408,15 +408,15 @@ def log_poisson_loss(
     result = ivy.exp(log_input) - log_input * targets
     if compute_full_loss:
         point_five = 0.5
-        two_pi = ivy.pi * 2
+        two_pi = 2 * ivy.pi
 
         stirling_approx = (
             (targets * ivy.log(targets))
             - targets
             + (point_five * ivy.log(two_pi * targets))
         )
-        zeros = ivy.zeros_like(targets)
-        ones = ivy.ones_like(targets)
+        zeros = ivy.zeros_like(targets, dtype=targets.dtype)
+        ones = ivy.ones_like(targets, dtype=targets.dtype)
         cond = ivy.logical_and(targets >= zeros, targets <= ones)
         result += ivy.where(cond, zeros, stirling_approx)
     return result
