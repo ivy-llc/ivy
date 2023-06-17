@@ -130,14 +130,12 @@ def rfftfreq(n, d=1.0):
 @to_ivy_arrays_and_back
 def fft2(a, s=None, axes=(-2, -1), norm=None):
     a = ivy.array(a, dtype=ivy.complex128)
-    
     return ivy.fft2(a, s, axes, norm=norm)
 
 
 @to_ivy_arrays_and_back
 def ifft2(a, s=None, axes=(-2, -1), norm=None):
     a = ivy.array(a, dtype=ivy.complex128)
-    
     return ivy.ifft2(a, s, axes, norm=norm)
 
 
@@ -145,7 +143,6 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
 @to_ivy_arrays_and_back
 def rfft2(a, s=None, axes=(-2, -1), norm=None):
     a = ivy.array(a, dtype=ivy.float64)
-    
     return ivy.dft2(a, s=s, axes=axes, inverse=False, onesided=True, norm=norm)
 
 
