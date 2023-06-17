@@ -69,6 +69,12 @@ class Tensor:
             return self
         return torch_frontend.permute(self, list(range(self.ndim))[::-1])
 
+    @property
+    def data(self):
+        return torch_frontend.tensor(
+            ivy.stop_gradient(self.ivy_array, preserve_type=False)
+        )
+
     # Setters #
     # --------#
 
