@@ -14,6 +14,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 def argmax(x, /, *, axis=None, keepdim=False, dtype="int64", name=None):
     return ivy.argmax(x, axis=axis, keepdims=keepdim, dtype=dtype)
 
+
 @to_ivy_arrays_and_back
 def argmin(x, /, *, axis=None, keepdim=False, dtype="int64", name=None):
     return ivy.argmin(x, axis=axis, keepdims=keepdim, dtype=dtype)
