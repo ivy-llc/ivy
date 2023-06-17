@@ -594,6 +594,30 @@ def reptile_step(
         The cost, the gradients with respect to the outer loop variables, and additional
         information from the inner loop optimization.
 
+    Examples
+    --------
+    >>> import ivy
+    >>> import numpy as np
+    >>> from ivy.meta import reptile_step
+
+    >>> # Define a dummy cost function
+    >>> def cost_fn(sub_batch, variables):
+    ...     return ivy.reduce_mean(variables * sub_batch)
+
+    >>> # Define the input batch and variables
+    >>> batch = ivy.Container(ivy.array(np.random.random((10, 5))), cont_type='batch')
+    >>> variables = ivy.Container(ivy.array(np.random.random((5,))), cont_type='weights')
+
+    >>> # Perform a step of Reptile
+    >>> cost, gradients, _ = reptile_step(
+    ...     batch, cost_fn, variables, inner_grad_steps=5, inner_learning_rate=0.1
+    ... )
+
+    >>> print(cost.shape)
+    (5,)
+    >>> print(gradients.shape)
+    (5,)
+
     Notes
     -----
     The Reptile algorithm aims to approximate the optimal initialization of the
@@ -653,6 +677,7 @@ def reptile_step(
 
 
 reptile_step.computes_gradients = True
+
 
 
 
