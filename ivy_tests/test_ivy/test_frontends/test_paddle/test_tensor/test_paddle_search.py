@@ -65,4 +65,3 @@ def test_paddle_argmin(
         axis=axis,
         keepdim=keepdim, 
     )
-    
