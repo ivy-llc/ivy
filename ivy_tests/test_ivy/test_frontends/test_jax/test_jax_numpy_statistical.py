@@ -1046,3 +1046,38 @@ def test_jax_numpy_correlate(
         v=x[1],
         mode=mode,
     )
+
+
+# nanpercentile
+@handle_frontend_test(
+    fn_tree="jax.numpy.nanpercentile",
+    dtype_values_axis=_statistical_dtype_values(function="nanpercentile"),
+    keep_dims=st.booleans(),
+)
+def test_jax_numpy_nanpercentile(
+    dtype_values_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    input_dtypes, values, axis = dtype_values_axis
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    helpers.test_frontend_function(
+        a=values[0][0],
+        q=values[0][1],
+        axis=axis,
+        out=None,
+        overwrite_input=None,
+        method=None,
+        keepdims=keep_dims,
+        interpolation=None,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        input_dtypes=input_dtypes,
+        on_device=on_device,
+    )
