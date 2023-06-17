@@ -1744,6 +1744,82 @@ def test_jax_lax_dot(
 
 
 @st.composite
+def _get_dtype_inputs_for_batch_matmul(draw):
+    dim_size = draw(helpers.ints(min_value=1, max_value=4))
+    batch_size = draw(helpers.ints(min_value=1, max_value=3))
+    dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
+    if dim_size == 1:
+        lhs = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(
+                    dim_size,
+                    dim_size,
+                ),
+                min_value=2,
+                max_value=5,
+            )
+        )
+        rhs = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(
+                    dim_size,
+                    dim_size,
+                ),
+                min_value=2,
+                max_value=5,
+            )
+        )
+    else:
+        lhs = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(batch_size, dim_size, dim_size),
+                min_value=2,
+                max_value=5,
+            )
+        )
+        rhs = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(batch_size, dim_size, dim_size),
+                min_value=2,
+                max_value=5,
+            )
+        )
+    return dtype, lhs, rhs
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.batch_matmul",
+    dtypes_and_xs=_get_dtype_inputs_for_batch_matmul(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_batch_matmul(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, lhs, rhs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        lhs=lhs,
+        rhs=rhs,
+        precision=None,
+    )
+
+
+@st.composite
 def _general_dot_helper(draw):
     input_dtype, lhs, lshape = draw(
         helpers.dtype_and_values(

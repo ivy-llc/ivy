@@ -277,6 +277,24 @@ def dot(lhs, rhs, precision=None, preferred_element_type=None):
     return ret
 
 
+@to_ivy_arrays_and_back
+def batch_matmul(lhs, rhs, precision=None):
+    if lhs.ndim < 2 or rhs.ndim < 2:
+        raise ValueError(
+            "Arguments to batch_matmul must be at least 2D, got {}, {}".format(
+                lhs.ndim, rhs.ndim
+            )
+        )
+    if lhs.ndim != rhs.ndim:
+        raise ValueError(
+            "Arguments to batch_matmul must have same ndim, got {}, {}".format(
+                lhs.ndim, rhs.ndim
+            )
+        )
+    ret = ivy.matmul(lhs, rhs)
+    return ret
+
+
 @with_unsupported_dtypes({"0.4.5 and below": ("bool",)}, "jax")
 @to_ivy_arrays_and_back
 def dot_general(
