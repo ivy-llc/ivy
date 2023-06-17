@@ -167,13 +167,3 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             return x * paddle_backend.tanh(paddle_backend.log1p(paddle_backend.exp(x)))
         return F.mish(x.cast("float32")).cast(x.dtype)
     return F.mish(x)
-
-
-def elu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            return paddle.complex(F.elu(x.real()), F.elu(x.imag()))
-        if x.dtype == "bool":
-            raise TypeError(f"elu(): Unsupported dtype {x.dtype}")
-        return F.elu(x.cast("float32")).cast(x.dtype)
-    return F.elu(x)
