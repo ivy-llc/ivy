@@ -479,3 +479,79 @@ def correlate(a, v, mode="valid", precision=None):
         data_format="channel_first",
     )
     return ivy.flip(result[0, 0, out_order]) if need_flip else result[0, 0, out_order]
+
+
+def _quantile_is_valid(q):
+    # avoid expensive reductions, relevant for arrays with < O(1000) elements
+    if q.ndim == 1 and q.size < 10:
+        for i in range(q.size):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
+    else:
+        if not (ivy.all(0 <= q) and ivy.all(q <= 1)):
+            return False
+    return True
+
+
+def _remove_nans(arr):
+    # remove NaNs from a 1D array
+    return arr[ivy.array(ivy.logical_not(ivy.isnan(arr)))]
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, "jax")
+def nanpercentile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    a = ivy.array(a)
+    q = ivy.divide(q, 100.0)
+    q = ivy.array(q)
+
+    if not _quantile_is_valid(q):
+        ivy.logging.warning("percentiles must be in the range [0, 100]")
+        return []
+
+    # if a.size == 0:
+    #     return ivy.nanmean(a, axis, out=out, keepdims=keepdims)
+
+    if interpolation is None:
+        interpolation = method
+
+    if axis is None:
+        a = ivy.flatten(a)
+        nanless_a = _remove_nans(a)
+        return ivy.quantile(
+            nanless_a,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            out=out,
+        )
+    elif axis == 0:
+        a = ivy.swapaxes(a, 0, 1)
+
+    result_percentiles = []
+    for x in a:
+        nanless_x = _remove_nans(x)
+        result_percentiles.append(
+            ivy.quantile(
+                nanless_x,
+                q,
+                axis=0,
+                keepdims=keepdims,
+                interpolation=interpolation,
+                out=out,
+            )
+        )
+
+    return result_percentiles
