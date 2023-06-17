@@ -849,7 +849,7 @@ def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, complex):
         return complex(x)
     if "float" in type(x).__name__:
-        x_positive = np.where(np.isfinite(x) & (x != 0), np.abs(x), 10**(sig_fig-1))
+        x_positive = np.where(np.isfinite(x) & (x != 0), np.abs(x), 10 ** (sig_fig - 1))
         mags = 10 ** (sig_fig - 1 - np.floor(np.log10(x_positive)))
         return np.round(x * mags) / mags
     return x
