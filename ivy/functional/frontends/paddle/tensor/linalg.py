@@ -115,6 +115,13 @@ def pinv(x, rcond=1e-15, hermitian=False, name=None):
     return ivy.pinv(x, rtol=rcond)
 
 
+# solve
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def solve(x1, x2, name=None):
+    return ivy.solve(x1, x2)
+
+
 # cholesky
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
