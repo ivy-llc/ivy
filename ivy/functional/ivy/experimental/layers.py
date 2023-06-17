@@ -1158,7 +1158,7 @@ def dft(
 
     if onesided:
         slices = [slice(0, a) for a in res.shape]
-        slices[axis] = slice(0, res.shape[axis] // 2 + 1)
+        slices[axis] = slice(0, ivy.shape(res, as_array=True)[axis] // 2 + 1)
         res = res[tuple(slices)]
     return res
 
@@ -1878,6 +1878,7 @@ def _mask(vals, length, range_max, dim):
 
 
 @handle_nestable
+@inputs_to_ivy_arrays
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -2134,6 +2135,12 @@ def _get_identity(func, dtype, init):
     return init
 
 
+def _int_arg_to_tuple(arg, dims):
+    if isinstance(arg, int):
+        arg = tuple([arg] * dims)
+    return arg
+
+
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
@@ -2188,7 +2195,22 @@ def reduce_window(
     """
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
-    op, dims, strides = operand, window_dimensions, window_strides
+    op = operand
+
+    dims, strides, padding, base_dilation, window_dilation = ivy.map(
+        _int_arg_to_tuple,
+        unique={
+            "arg" : [
+                window_dimensions,
+                window_strides,
+                padding,
+                base_dilation,
+                window_dilation
+            ]
+        },
+        constant={"dims" : len(op.shape)},
+    )
+
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
@@ -2202,3 +2224,72 @@ def reduce_window(
     view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
     ret = ivy.reduce(view, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
+
+
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+# @outputs_to_ivy_arrays
+def fft2(
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute the 2-dimensional discrete Fourier Transform.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs FFT2.
+    s
+        sequence of ints, optional
+        Shape (length of each transformed axis) of the output (s[0] refers to axis 0,
+        s[1] to axis 1, etc.). This corresponds to n for fft(x, n). Along each axis,
+        if the given shape is smaller than that of the input, the input is cropped.
+        If it is larger, the input is padded with zeros. if s is not given, the shape
+        of the input along the axes specified by axes is used.
+    dim
+        Axes over which to compute the FFT2. If not given, the last two axes are used.
+        A repeated index in axes means the transform over that axis is performed
+        multiple times. A one-element sequence means that a one-dimensional FFT is
+        performed.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\frac{1}{n}$.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the FFT2 operation.
+
+    Examples
+    --------
+    >>> a = ivy.array([[0, 0, 0, 0, 0],
+                       [1, 1, 1, 1, 1],
+                       [2, 2, 2, 2, 2],
+                       [3, 3, 3, 3, 3],
+                       [4, 4, 4, 4, 4]])
+    >>> ivy.fft2(a)
+    array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        , # may vary
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5+17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5 +4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5 -4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5-17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+              0.  +0.j        ,   0.  +0.j        ]])
+    """
+    return ivy.current_backend(x).fft2(x, s=s, dim=dim, norm=norm, out=out)

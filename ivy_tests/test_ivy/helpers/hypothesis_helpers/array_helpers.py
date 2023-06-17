@@ -1019,6 +1019,7 @@ def array_indices_axis(
     indices = indices[0]
     if disable_random_axis:
         return [x_dtype, indices_dtype], x, indices
+
     return [x_dtype, indices_dtype], x, indices, axis, batch_dims
 
 
