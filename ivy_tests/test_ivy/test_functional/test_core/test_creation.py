@@ -210,7 +210,7 @@ def _asarray_helper(draw):
             )
         )
         sh = ivy.Shape(sh)
-        np_array = np.arange(3).astype(x_dtype[0])
+        np_array = x[0]
         ivy_array = ivy.array(x[0], dtype=x_dtype[0])
         python_vals = ivy.to_list(ivy_array)
         dim = draw(
