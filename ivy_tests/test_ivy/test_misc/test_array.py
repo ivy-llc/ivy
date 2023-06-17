@@ -250,9 +250,15 @@ def test_array_property_T(
     )
 
 
-@handle_method(method_tree="Array.__getitem__", query_dtype_and_x=_getitem_setitem())
+@handle_method(
+    method_tree="Array.__getitem__",
+    dtypes_x_query=helpers.dtype_array_index(
+        available_dtypes=helpers.get_dtypes("valid"),
+        allow_neg_step=False,
+    ),
+)
 def test_array__getitem__(
-    query_dtype_and_x,
+    dtypes_x_query,
     init_flags,
     method_flags,
     method_name,
@@ -260,16 +266,15 @@ def test_array__getitem__(
     ground_truth_backend,
     on_device,
 ):
-    query, x_dtype = query_dtype_and_x
-    dtype, x = x_dtype
+    dtypes, x, query = dtypes_x_query
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
-        method_input_dtypes=dtype,
+        init_all_as_kwargs_np={"data": x},
+        init_input_dtypes=[dtypes[0]],
+        method_input_dtypes=[dtypes[1]],
         method_all_as_kwargs_np={"query": query},
         class_name=class_name,
         method_name=method_name,
