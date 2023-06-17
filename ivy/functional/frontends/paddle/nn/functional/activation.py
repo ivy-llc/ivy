@@ -131,3 +131,101 @@ def celu(
     prod = alpha * (ivy.exp(x / alpha) - 1)
     ret = ivy.maximum(0, x) + ivy.minimum(0, prod)
     return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def elu(x, alpha=1.0, name=None):
+    ret = ivy.where(ivy.less_equal(x, 0), alpha * (ivy.exp(x) - 1), x)
+    return ret
+
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def leaky_relu(x, alpha=0.02, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.leaky_relu(x, alpha=alpha)
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def relu(x, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.relu(x)
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def sigmoid(x, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.sigmoid(x)
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def silu(x, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.sigmoid(x) * x
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softmax(x, axis=-1, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.softmax(x, axis=axis)
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softplus(x, beta=1, threshold=20, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.softplus(x, beta=beta, threshold=threshold)
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def swish(x, beta=1, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.multiply(x, ivy.sigmoid(beta * x))
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def mish(x, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.multiply(x, ivy.tanh(ivy.softplus(x)))
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def tanhshrink(x, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.subtract(x, ivy.tanh(x))
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32",)}, "paddle")
+@to_ivy_arrays_and_back
+def thresholded_relu(x, threshold=1, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.where(ivy.less_equal(x, threshold), 0, x)
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
