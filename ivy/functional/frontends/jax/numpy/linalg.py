@@ -1,4 +1,6 @@
 # local
+import jax.numpy
+
 import ivy
 from ivy.functional.frontends.jax import DeviceArray
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
@@ -156,4 +158,8 @@ def cond(x, p=None):
 
 @to_ivy_arrays_and_back
 def multi_dot(arrays, /, *, precision=None):
+    dtype = arrays[0].dtype
+    for i in range(1, len(arrays)):
+        dtype = jax.numpy.promote_types(dtype, arrays[i].dtype)
+    arrays = list(array.astype(dtype) for array in arrays)
     return ivy.multi_dot(arrays)

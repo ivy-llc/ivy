@@ -1869,12 +1869,14 @@ def matrices_for_dot_product(draw):
         )
     )
     input_dtypes = draw(
-        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("numeric")))
     )
     xs = []
     for i in range(num_arrays):
         shape = matrix_dims[i : i + 2]
         dtype = input_dtypes[i]
-        x = draw(helpers.array_values(shape=shape, dtype=dtype))
+        x = draw(
+            helpers.array_values(shape=shape, dtype=dtype, min_value=-5, max_value=5)
+        )
         xs.append(x)
     return xs, input_dtypes
