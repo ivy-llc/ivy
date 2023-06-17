@@ -58,7 +58,7 @@ class ndarray:
         return len(self.shape)
 
     @property
-    def flat(self, item):
+    def flat(self):
         return self.flatten().flat
 
     # Setters #

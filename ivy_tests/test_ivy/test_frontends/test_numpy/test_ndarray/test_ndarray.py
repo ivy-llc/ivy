@@ -126,7 +126,7 @@ def test_numpy_ndarray_property_flat(dtype_x):
     dtype, x, shape = dtype_x
     x_ivy = ivy.array(*x, dtype=dtype)
 
-    flat_ivy = x_ivy.flat
+    flat_ivy = x_ivy.flat()
     flat_generated = x_ivy.flatten().flat
 
     ivy.utils.assertions.check_equal(flat_ivy, flat_generated, as_array=True)
