@@ -214,16 +214,17 @@ def test_sparse_cross_entropy(
 # log_poisson_loss
 @handle_test(
     fn_tree="functional.ivy.log_poisson_loss",
-    dtype_and_targets=helpers.dtype_and_values(
+    dtype_and_targets=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float64"),
         min_value=0,
         max_value=1,
         allow_inf=False,
-        min_num_dims=1,
+        min_num_dims=3,
         max_num_dims=3,
         min_dim_size=3,
+        min_axis=3,
     ),
-    dtype_and_log_input=helpers.dtype_and_values(
+    dtype_and_log_input=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float64"),
         small_abs_safety_factor=2,
         safety_factor_scale="log",
@@ -231,9 +232,10 @@ def test_sparse_cross_entropy(
         allow_inf=False,
         exclude_min=True,
         exclude_max=True,
-        min_num_dims=1,
+        min_num_dims=3,
         max_num_dims=3,
         min_dim_size=3,
+        min_axis=3,
     ),
     compute_full_loss=st.booleans,
 )

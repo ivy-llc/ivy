@@ -391,9 +391,12 @@ def sparse_cross_entropy(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
-    log_input = ivy.array(log_input)
-    targets = ivy.array(targets)
+def log_poisson_loss(
+    targets: Union[ivy.Array, ivy.NativeArray],
+    log_input: Union[ivy.Array, ivy.NativeArray],
+    compute_full_loss: bool = False,
+    name=None,
+) -> ivy.Array:
     try:
         targets.get_shape().assert_is_compatible_with(log_input.get_shape())
     except ValueError:
