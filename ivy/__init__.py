@@ -843,7 +843,7 @@ def _assert_array_significant_figures_formatting(sig_figs):
 
 
 # ToDo: SF formating for complex number
-def sf(x, sig_fig=3):
+def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
     if isinstance(x, complex):
