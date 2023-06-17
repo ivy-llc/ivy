@@ -398,11 +398,11 @@ def log_poisson_loss(
     name=None,
 ) -> ivy.Array:
     try:
-        targets.get_shape().assert_is_compatible_with(log_input.get_shape())
+        assert targets.shape == log_input.shape
     except ValueError:
         raise ValueError(
             "`log_input` and `targets` must have the same shape, received "
-            f"({log_input.get_shape()} vs {targets.get_shape()})."
+            f"({log_input.shape} vs {targets.shape})."
         )
 
     result = ivy.exp(log_input) - log_input * targets

@@ -214,30 +214,29 @@ def test_sparse_cross_entropy(
 # log_poisson_loss
 @handle_test(
     fn_tree="functional.ivy.log_poisson_loss",
-    dtype_and_targets=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float64"),
+    dtype_and_targets=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=1,
         allow_inf=False,
-        min_num_dims=3,
+        min_num_dims=1,
         max_num_dims=3,
         min_dim_size=3,
-        min_axis=3,
     ),
-    dtype_and_log_input=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float64"),
+    dtype_and_log_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,
         safety_factor_scale="log",
         max_value=1,
         allow_inf=False,
         exclude_min=True,
         exclude_max=True,
-        min_num_dims=3,
+        min_num_dims=1,
         max_num_dims=3,
         min_dim_size=3,
-        min_axis=3,
     ),
-    compute_full_loss=st.booleans,
+    compute_full_loss=st.sampled_from([True, False]),
+    test_with_out=st.just(False),
 )
 def test_log_poisson_loss(
     dtype_and_targets,
@@ -258,7 +257,7 @@ def test_log_poisson_loss(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        true=targets[0],
-        pred=log_input[0],
+        targets=targets[0],
+        log_input=log_input[0],
         compute_full_loss=compute_full_loss,
     )
