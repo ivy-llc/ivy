@@ -2067,8 +2067,8 @@ def test_tensorflow_truncatediv(
         x=x[0],
         y=x[1],
     )
-    
-    
+
+
 # Truncatemod
 @handle_frontend_test(
     fn_tree="tensorflow.truncatemod",
