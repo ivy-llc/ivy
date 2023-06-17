@@ -844,7 +844,7 @@ def test_jax_numpy_cond(
     dtypes_and_xs=array_helpers.matrices_for_dot_product(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_multi_dot(
+def test_jax_numpy_multi_dot(
     *,
     dtypes_and_xs,
     on_device,
