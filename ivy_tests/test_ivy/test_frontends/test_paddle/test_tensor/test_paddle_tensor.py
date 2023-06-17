@@ -715,7 +715,7 @@ def test_paddle_sqrt(
     init_tree="paddle.to_tensor",
     method_name="tanh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_tanh(
@@ -843,6 +843,7 @@ def test_paddle_cholesky(
         method_flags=method_flags,
         on_device=on_device,
     )
+
 
 # all
 @handle_frontend_method(
