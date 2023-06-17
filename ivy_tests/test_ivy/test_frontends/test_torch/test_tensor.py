@@ -9221,18 +9221,20 @@ def test_torch_instance_is_meta(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     # Test for a meta tensor
-    meta_tensor = frontend.tensor()
+    meta_tensor = None
     helpers.test_frontend_method(
         init_input_dtypes=None,
-        init_all_as_kwargs_np={"meta_tensor": meta_tensor},
         method_input_dtypes=None,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        init_all_as_kwargs_np={"ivy_array": meta_tensor},
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
+        on_device=on_device,
         test_values=False
     )
 
@@ -9240,12 +9242,13 @@ def test_torch_instance_is_meta(
     data_tensor = frontend.tensor([1, 2, 3])
     helpers.test_frontend_method(
         init_input_dtypes=None,
-        init_all_as_kwargs_np={"data_tensor": data_tensor},
         method_input_dtypes=None,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        init_all_as_kwargs_np={"ivy_array": data_tensor},
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
+        on_device=on_device,
         test_values=False
     )
