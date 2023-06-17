@@ -129,8 +129,8 @@ def mod(x1, x2, /):
 
 @to_ivy_arrays_and_back
 def modf(x, /, out=None):
-    y1 = ivy.where(x >= 0, ivy.floor(x), ivy.ceil(x)) # integral part
-    y2 = x - y1 # fractional part
+    y1 = ivy.where(x >= 0, ivy.floor(x), ivy.ceil(x))  # integral part
+    y2 = x - y1  # fractional part
     dtype_str = str(x.dtype)
     if "float" in dtype_str:
         return y2, y1
@@ -386,7 +386,7 @@ def fmin(x1, x2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("uint16",)},
+    {"0.4.12 and below": ("uint16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -440,7 +440,7 @@ def sinc(x, /):
 
 @with_unsupported_dtypes(
     {
-        "0.4.10 and below": (
+        "0.4.12 and below": (
             "bfloat16",
             "float16",
         )
@@ -475,7 +475,7 @@ def vdot(a, b):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("bfloat16",)},
+    {"0.4.12 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -580,7 +580,7 @@ def polyadd(a1, a2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("float16",)},
+    {"0.4.12 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -606,7 +606,7 @@ def polyder(p, m=1):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("float16",)},
+    {"0.4.12 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
