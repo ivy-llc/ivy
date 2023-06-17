@@ -167,3 +167,7 @@ class Tensor:
     @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
     def cholesky(self, upper=False, name=None):
         return ivy.cholesky(self._ivy_array, upper=upper)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def multiply(self, y, name=None):
+        return paddle_frontend.multiply(self, y)
