@@ -740,12 +740,9 @@ def test_torch_frombuffer(
 @handle_frontend_test(
     fn_tree="torch.complex",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.shared(
-            helpers.get_dtypes("numeric", full=False), key="dtype"
-        )
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
-    fill_value=_fill_value(),
-    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_complex(
     *,
