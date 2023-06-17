@@ -37,8 +37,7 @@ def fmax(
     {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
-    return paddle.divide(paddle.sin(y), y)
+    return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
 
 
 def float_power(
@@ -84,7 +83,7 @@ def copysign(
         signs = ivy.sign(x2)
         result = ivy.multiply(ivy.abs(x1), signs)
         if result.shape == [1]:
-            result = ivy.squeeze(result)
+            result = paddle.fluid.layers.squeeze(result, [0])
         return result
 
 

@@ -1878,7 +1878,6 @@ def _mask(vals, length, range_max, dim):
 
 
 @handle_nestable
-@inputs_to_ivy_arrays
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -2135,12 +2134,6 @@ def _get_identity(func, dtype, init):
     return init
 
 
-def _int_arg_to_tuple(arg, dims):
-    if isinstance(arg, int):
-        arg = tuple([arg] * dims)
-    return arg
-
-
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
@@ -2195,22 +2188,7 @@ def reduce_window(
     """
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
-    op = operand
-
-    dims, strides, padding, base_dilation, window_dilation = ivy.map(
-        _int_arg_to_tuple,
-        unique={
-            "arg": [
-                window_dimensions,
-                window_strides,
-                padding,
-                base_dilation,
-                window_dilation,
-            ]
-        },
-        constant={"dims": len(op.shape)},
-    )
-
+    op, dims, strides = operand, window_dimensions, window_strides
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
