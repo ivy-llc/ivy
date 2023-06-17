@@ -1020,24 +1020,25 @@ def array_indices_axis(
 
     return [x_dtype, indices_dtype], x, indices, axis, batch_dims
 
+
 @st.composite
 def array_indices_put_along_axis(
-        draw,
-        *,
-        array_dtypes,
-        indices_dtypes=get_dtypes("valid"),
-        disable_random_axis=False,
-        axis_zero=False,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-        first_dimension_only=False,
-        indices_same_dims=False,
-        valid_bounds=True,
-        values=None,
-        values_dtypes=get_dtypes("valid"),
+    draw,
+    *,
+    array_dtypes,
+    indices_dtypes=get_dtypes("valid"),
+    disable_random_axis=False,
+    axis_zero=False,
+    allow_inf=False,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    first_dimension_only=False,
+    indices_same_dims=False,
+    valid_bounds=True,
+    values=None,
+    values_dtypes=get_dtypes("valid"),
 ):
     """
     Generate two arrays x & indices, the values in the indices array are indices of the

@@ -106,6 +106,7 @@ def test_numpy_diagonal(
         axis2=axis[1],
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.put_along_axis",
     dtype_x_indices_axis=helpers.array_indices_put_along_axis(
@@ -138,4 +139,3 @@ def test_numpy_put_along_axis(
         axis=axis,
         values=values,
     )
-

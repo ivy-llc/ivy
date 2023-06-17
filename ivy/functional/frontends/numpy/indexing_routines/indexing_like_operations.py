@@ -1,7 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
-    outputs_to_numpy_arrays,
     inputs_to_ivy_arrays,
 )
 
@@ -26,7 +25,7 @@ def indices(dimensions, dtype=int, sparse=False):
     else:
         res = ivy.empty((N,) + dimensions, dtype=dtype)
     for i, dim in enumerate(dimensions):
-        idx = ivy.arange(dim, dtype=dtype).reshape(shape[:i] + (dim,) + shape[i + 1:])
+        idx = ivy.arange(dim, dtype=dtype).reshape(shape[:i] + (dim,) + shape[i + 1 :])
         if sparse:
             res = res + (idx,)
         else:
@@ -79,4 +78,3 @@ def diag(v, k=0):
 @to_ivy_arrays_and_back
 def diagonal(a, offset, axis1, axis2):
     return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
-
