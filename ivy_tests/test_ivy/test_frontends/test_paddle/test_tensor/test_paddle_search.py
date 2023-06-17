@@ -54,8 +54,6 @@ def test_paddle_argmin(
     test_flags,
     fn_tree,
 ):
-    # Skipped dtype test due to paddle functions only accepting str and np.ndarray,
-    # but test_frontend_function changes dtype kwargs to native dtype
     input_dtypes, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
