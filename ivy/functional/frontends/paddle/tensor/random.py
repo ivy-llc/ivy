@@ -27,3 +27,12 @@ def randint(low=0, high=None, shape=[1], dtype=None, name=None):
 @to_ivy_arrays_and_back
 def randn(shape, dtype=None, seed=0, name=None):
     return ivy.random_normal(shape=shape, dtype=dtype, seed=seed)
+
+
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def normal(mean=0.0, std=1.0, shape=None, name=None):
+    return ivy.random_normal(mean=mean, std=std, shape=shape)

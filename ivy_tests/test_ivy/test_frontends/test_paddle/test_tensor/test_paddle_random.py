@@ -102,3 +102,33 @@ def test_paddle_randn(
         dtype=dtype[0],
         seed=seed,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.normal",
+    input_dtypes=helpers.get_dtypes("float"),
+    mean=st.floats(allow_nan=False, allow_infinity=False),
+    std=st.floats(min_value=1e-5, max_value=10),
+    shape=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_paddle_normal(
+    input_dtypes,
+    mean,
+    std,
+    shape,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        mean=mean,
+        std=std,
+        shape=shape,
+    )
