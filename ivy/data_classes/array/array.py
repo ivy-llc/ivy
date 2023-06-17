@@ -381,7 +381,7 @@ class Array(
                 + repr[repr.find("(") :]
                 + self._post_repr.format(ivy.current_backend_str())
             )
-        
+
     def __dir__(self):
         return self._data.__dir__()
 
