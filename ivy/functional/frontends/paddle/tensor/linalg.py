@@ -120,3 +120,13 @@ def pinv(x, rcond=1e-15, hermitian=False, name=None):
 @to_ivy_arrays_and_back
 def cholesky(x, /, *, upper=False, name=None):
     return ivy.cholesky(x, upper=upper)
+
+
+# bmm
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def bmm(x, y, transpose_x=False, transpose_y=False, name=None):
+    if len(ivy.shape(x)) != 3 or len(ivy.shape(y)) != 3:
+        raise RuntimeError("input must be 3D matrices")
+    x, y = promote_types_of_paddle_inputs(x, y)
+    return ivy.matmul(x, y, transpose_a=transpose_x, transpose_b=transpose_y)

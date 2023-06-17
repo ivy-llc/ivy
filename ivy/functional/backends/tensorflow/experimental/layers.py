@@ -560,7 +560,7 @@ def fft(
         else:
             s[dim] = n - s[dim]
             z = tf.zeros(s, x.dtype)
-            x = tf.concat([x, z], axis=dim)
+            x = tf.concat([x, z], dim)
         del s
     operation_name = f"{n} points FFT at dim {dim} with {norm} normalization"
     if dim != -1 or dim != len(x.shape) - 1:
@@ -576,6 +576,24 @@ def fft(
     return ret
 
 
+def dropout(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    scale: bool = True,
+    dtype: tf.DType = None,
+    training: bool = True,
+    seed: Optional[int] = None,
+    noise_shape: Optional[Sequence[int]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x = ivy.astype(x, dtype) if dtype else x
+    res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed) if training else x
+    res = tf.multiply(res, (1.0 - prob)) if not scale else res
+    return res
+
+
 def dropout1d(
     x: Union[tf.Tensor, tf.Variable],
     prob: float,
@@ -586,17 +604,39 @@ def dropout1d(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if training:
+        is_batched = len(x.shape) == 3
         if data_format == "NCW":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            perm = (0, 2, 1) if is_batched else (1, 0)
             x = tf.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-2] = 1
-        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        res = tf.nn.dropout(x, prob)
         if data_format == "NCW":
             res = tf.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
+
+
+def dropout2d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if training:
+        is_batched = len(x.shape) == 4
+        if data_format == "NCHW":
+            perm = (0, 2, 3, 1) if is_batched else (1, 2, 0)
+            x = tf.transpose(x, perm)
+        res = tf.nn.dropout(x, prob)
+        if data_format == "NCHW":
+            perm = (0, 3, 1, 2) if is_batched else (2, 0, 1)
+            res = tf.transpose(res, perm)
+    else:
+        res = x
+    return res
 
 
 def dropout3d(
@@ -613,16 +653,13 @@ def dropout3d(
         if data_format == "NCDHW":
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = tf.transpose(x, perm)
-        noise_shape = list(x.shape)
-        sl = slice(1, -1) if is_batched else slice(-1)
-        noise_shape[sl] = [1] * 3
-        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        res = tf.nn.dropout(x, prob)
         if data_format == "NCDHW":
             perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
             res = tf.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
 
 
 def ifft(
@@ -754,3 +791,100 @@ interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor
     and mode not in ["nearest", "area", "bicubic"]
     and recompute_scale_factor
 )
+
+
+def _fft2_norm(
+    x: Union[tf.Tensor, tf.Variable],
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+):
+    n = tf.constant(s[0] * s[1], dtype=tf.complex128)
+    if norm == "backward":
+        return x
+    elif norm == "ortho":
+        return x / tf.sqrt(n)
+    elif norm == "forward":
+        return x / n
+    else:
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+
+
+def trans_x_to_s(
+    x: Union[tf.Tensor, tf.Variable],
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+) -> Union[tf.Tensor, tf.Variable]:
+    """change the shape of the input array x to the desired output shape s."""
+    if x.dtype != tf.complex128 or x.dtype != tf.complex64:
+        x = tf.cast(x, tf.float32)
+    x_shape = x.shape
+    if dim == (-1, -2) or dim == (1, 0):
+        s = (s[1], s[0])
+    if s[0] >= x_shape[0] and s[1] >= x_shape[1]:
+        paddings = tf.constant([[0, s[0] - x_shape[0]], [0, s[1] - x_shape[1]]])
+        x_new = tf.pad(x, paddings=paddings)
+    elif (s[0] <= x_shape[0] or s[1] <= x_shape[1]) and min(s) > min(x_shape):
+        x_new = x[: s[0], : s[1]]
+        if s[0] != x_new.shape[0]:
+            size = s[0] - x_new.shape[0]
+            z = tf.zeros((size, s[1]))
+            x_new = tf.concat([x_new, z], 0)
+        elif s[1] != x_new.shape[1]:
+            size = s[1] - x_new.shape[1]
+            z = tf.zeros((s[0], size))
+            x_new = tf.concat([x_new, z], 1)
+    elif (s[0] >= x_shape[0] and s[1] <= x_shape[1]) and min(s) <= min(x_shape):
+        x_new = x[: s[0], : s[1]]
+        size = s[0] - x_new.shape[0]
+        z = tf.zeros((size, s[1]))
+        x_new = tf.concat([x_new, z], 0)
+    elif (s[0] < x_shape[0] and s[1] > x_shape[1]) and min(s) == min(x_shape):
+        x_new = x[: s[0], : s[1]]
+        size = s[1] - x_new.shape[1]
+        z = tf.zeros((s[0], size))
+        x_new = tf.concat([x_new, z], axis=1)
+    else:
+        x_new = x[: s[0], : s[1]]
+    return x_new
+
+
+def fft2(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if s is None:
+        s = (x.shape[dim[0]], x.shape[dim[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    operation_name = f"{s} points FFT at dim {dim} with {norm} normalization"
+    if len(x.shape) == 2:
+        x_new = trans_x_to_s(x, s, dim)
+        x_complex = tf.cast(x_new, tf.complex128)
+        tf_fft2 = tf.signal.fft2d(x_complex, name=operation_name)
+    elif len(x.shape) > 2:
+        x_s = [trans_x_to_s(x[:, :, i], s, dim) for i in range(x.shape[2])]
+        x_new = tf.convert_to_tensor(x_s, dtype=x.dtype)
+        x_complex = tf.cast(x_new, tf.complex128)
+        tf_fft2 = tf.transpose(tf.signal.fft2d(x_complex, name=operation_name))
+
+    # Apply the same normalization as 'backward' in NumPy
+    tf_fft2 = _fft2_norm(tf_fft2, s, dim, norm)
+    return tf_fft2

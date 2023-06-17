@@ -670,12 +670,15 @@ def sign(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    np_variant: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
-    if ivy.is_complex_dtype(x):
-        return tf.cast(tf.math.sign(tf.math.real(x)), x.dtype)
+    if x.dtype in [tf.complex64, tf.complex128] and np_variant:
+        real = tf.math.real(x)
+        imag = tf.math.imag(x)
+        return tf.cast(tf.where(real != 0, tf.sign(real), tf.sign(imag)), x.dtype)
     return tf.math.sign(x)
 
 

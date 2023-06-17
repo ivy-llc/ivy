@@ -660,8 +660,20 @@ def round(
 round.support_native_out = True
 
 
+def _abs_variant_sign(x):
+    return np.divide(x, np.abs(x), where=x != 0)
+
+
 @_scalar_output_to_0d_array
-def sign(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def sign(
+    x: np.ndarray,
+    /,
+    *,
+    np_variant: Optional[bool] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if "complex" in str(x.dtype):
+        return np.sign(x, out=out) if np_variant else _abs_variant_sign(x)
     return np.sign(x, out=out)
 
 
