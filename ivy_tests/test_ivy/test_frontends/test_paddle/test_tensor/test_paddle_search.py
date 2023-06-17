@@ -36,6 +36,7 @@ def test_paddle_argmax(
         keepdim=keepdim,
     )
 
+
 @handle_frontend_test(
     fn_tree="paddle.argmin",
     dtype_x_and_axis=helpers.dtype_values_axis(
