@@ -49,10 +49,6 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
     for fw in pkgs:
         fw, ver = fw.split("/")
         path = base + fw + "/" + ver
-        modified_env = {
-            "PATH": os.environ["PATH"],
-            "PYTHONPATH": f"{path}:{os.environ.get('PYTHONPATH', '')}",
-        }
         # check to see if this pkg has specific version dependencies
         with open(path_to_json, "r") as file:
             json_data = json.load(file)
@@ -77,7 +73,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         ]
 
                         result = subprocess.run(
-                            commands, capture_output=True, text=True, env=modified_env
+                            commands, capture_output=True, text=True
                         )
 
                         if result.returncode == 0:
@@ -99,7 +95,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         ]
 
                         result = subprocess.run(
-                            commands, capture_output=True, text=True, env=modified_env
+                            commands, capture_output=True, text=True
                         )
 
                         if result.returncode == 0:
@@ -120,9 +116,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         "--no-cache-dir",
                     ]
 
-                    result = subprocess.run(
-                        commands, capture_output=True, text=True, env=modified_env
-                    )
+                    result = subprocess.run(commands, capture_output=True, text=True)
 
                     if result.returncode == 0:
                         print("Command executed successfully.")
