@@ -892,3 +892,68 @@ class _ArrayWithLayersExperimental(abc.ABC):
             base_dilation=base_dilation,
             window_dilation=window_dilation,
         )
+
+    def fft2(
+        self: ivy.Array,
+        *,
+        s: Sequence[int] = None,
+        dim: Sequence[int] = (-2, -1),
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the 2-dimensional discrete Fourier Transform.
+
+        Parameters
+        ----------
+        x
+            Input volume *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT2.
+        s
+            sequence of ints, optional
+            Shape (length of each transformed axis) of the output (s[0] refers
+            to axis 0, s[1] to axis 1, etc.). This corresponds to n for fft(x, n).
+            Along each axis, if the given shape is smaller than that of the input,
+            the input is cropped. If it is larger, the input is padded with zeros.
+            If s is not given, the shape of the input along the axes specified by
+            axes is used.
+        dim
+            Axes over which to compute the FFT2. If not given, the last two axes are
+            used. A repeated index in axes means the transform over that axis is
+            performed multiple times. A one-element sequence means that a
+            one-dimensional FFT is performed.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the FFT2 operation.
+
+        Examples
+        --------
+        >>> a = ivy.array([[0, 0, 0, 0, 0],
+                        [1, 1, 1, 1, 1],
+                        [2, 2, 2, 2, 2],
+                        [3, 3, 3, 3, 3],
+                        [4, 4, 4, 4, 4]])
+        >>> ivy.fft2(a)
+        array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        , # may vary
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5+17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5 +4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5 -4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5-17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ]])
+        """
+        return ivy.fft2(self._data, s=s, dim=dim, norm=norm, out=out)

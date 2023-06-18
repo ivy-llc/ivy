@@ -71,13 +71,22 @@ def poisson(
     device: Optional[str] = None,
     dtype: Optional[np.dtype] = None,
     seed: Optional[int] = None,
+    fill_value: Optional[Union[float, int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     lam = np.array(lam)
-    _check_shapes_broadcastable(shape, lam.shape)
+
     if seed:
         np.random.seed(seed)
-    return np.asarray(np.random.poisson(lam, shape), dtype=dtype)
+    if shape is not None:
+        _check_shapes_broadcastable(lam.shape, shape)
+    if np.any(lam < 0):
+        pos_lam = np.where(lam < 0, 0, lam)
+        ret = np.random.poisson(pos_lam, shape)
+        ret = np.where(lam < 0, fill_value, ret)
+    else:
+        ret = np.random.poisson(lam, shape)
+    return np.asarray(ret, dtype=dtype)
 
 
 def bernoulli(
