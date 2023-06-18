@@ -195,12 +195,12 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
     fn_tree="numpy.fft.rfft2",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
-        min_num_dims=0,
+        min_num_dims=0 or None,
         max_num_dims=2,
         force_tuple_axis=True
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
-    s=st.lists(st.integers(), min_size=2, max_size=2),
+    s=st.lists(st.integers()),
 )
 def test_ivy_rfft2(dtype_input_axis, norm, s, axes, frontend, test_flags, fn_tree, on_device):
     input_dtype, x, axis = dtype_input_axis
