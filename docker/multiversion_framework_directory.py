@@ -70,7 +70,6 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         commands = [
                             "pip",
                             "install",
-                            "--upgrade",
                             f"{dep}=={keys[dep][ver]}",
                             "--target",
                             path,
@@ -86,14 +85,13 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         else:
                             print(
                                 "Command encountered an error. Return code:"
-                                f" {result.returncode, result.stderr}"
+                                f" {result.returncode}"
                             )
 
                     else:
                         commands = [
                             "pip",
                             "install",
-                            " --upgrade",
                             dep,
                             "--target",
                             path,
@@ -109,14 +107,13 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         else:
                             print(
                                 "Command encountered an error. Return code:"
-                                f" {result.returncode, result.stderr}"
+                                f" {result.returncode}"
                             )
 
                 else:
                     commands = [
                         "pip",
                         "install",
-                        "--upgrade",
                         keys,
                         "--target",
                         path,
@@ -132,7 +129,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                     else:
                         print(
                             "Command encountered an error. Return code:"
-                            f" {result.returncode, result.stderr}"
+                            f" {result.returncode}"
                         )
 
 
