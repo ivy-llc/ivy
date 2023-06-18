@@ -531,7 +531,6 @@ fomaml_step.computes_gradients = True
 
 @handle_exceptions
 @handle_array_function
-
 def reptile_step(
     batch: ivy.Container,
     cost_fn: Callable,
@@ -584,6 +583,49 @@ def reptile_step(
     Tuple
         The cost, the gradients with respect to the outer loop variables, and additional
         information from the inner loop optimization.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> from ivy.functional.ivy.gradients import gradient_descent_update
+    >>> import ivy
+    >>> from ivy.functional.ivy.gradients import _variable
+
+    >>> def inner_cost_fn(batch_in, v):
+    ...     return batch_in.mean().x / v.mean().latent
+
+    >>> num_tasks = 2
+    >>> batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
+    >>> variables = ivy.Container({
+    ...     "latent": _variable(ivy.repeat(ivy.array([[1.0]]), num_tasks, axis=0))
+    ... })
+
+    >>> cost, gradients = ivy.reptile_step(batch, inner_cost_fn, variables, 5, 0.01, num_tasks=num_tasks)
+    >>> print(cost)
+    ivy.array(1.4485182)
+    >>> print(gradients)
+    {
+        latent: ivy.array([-139.9569855])
+    }
+
+    >>> batch = ivy.Container({"x": ivy.arange(1, 4, dtype="float32")})
+    >>> variables = ivy.Container({
+    ...     "latent": _variable(ivy.array([1.0, 2.0]))
+    ... })
+
+    >>> cost, gradients, firsts = ivy.reptile_step(batch, inner_cost_fn, variables, 4, 0.025,
+    ...                                            batched=False, num_tasks=2, return_inner_v='first')
+    >>> print(cost)
+    ivy.array(0.9880483)
+    >>> print(gradients)
+    {
+        latent: ivy.array([-13.01766968, -13.01766968])
+    }
+    >>> print(firsts)
+    {
+        latent: ivy.array([[1.02197957, 2.02197981]])
+    }
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
@@ -619,6 +661,7 @@ def reptile_step(
 
 
 reptile_step.computes_gradients = True
+
 
 
 
