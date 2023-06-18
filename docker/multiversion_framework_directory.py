@@ -73,7 +73,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                             f"{dep}=={keys[dep][ver]}",
                             "--target",
                             path,
-                            "--no-cache-dir",
+                            "--no-cache-dir --upgrade",
                         ]
 
                         result = subprocess.run(
@@ -95,7 +95,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                             dep,
                             "--target",
                             path,
-                            "--no-cache-dir",
+                            "--no-cache-dir --upgrade",
                         ]
 
                         result = subprocess.run(
@@ -117,7 +117,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         keys,
                         "--target",
                         path,
-                        "--no-cache-dir",
+                        "--no-cache-dir --upgrade",
                     ]
 
                     result = subprocess.run(
