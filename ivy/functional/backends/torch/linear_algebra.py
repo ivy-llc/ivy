@@ -122,9 +122,14 @@ def inner(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret_dtype = x1.dtype
     if ivy.is_int_dtype(x1):
+        # https://github.com/pytorch/pytorch/issues/103366
         x1 = x1.long()
         x2 = x2.long()
-    return torch.inner(x1, x2, out=out).type(ret_dtype)
+        ret = torch.inner(x1, x2).type(ret_dtype)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return torch.inner(x1, x2, out=out)
 
 
 inner.support_native_out = True

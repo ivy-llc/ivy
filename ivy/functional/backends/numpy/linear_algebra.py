@@ -384,7 +384,9 @@ def vector_norm(
         x = np.expand_dims(x, 0)
         ret_scalar = True
 
-    if isinstance(axis, list):
+    if axis is None:
+        x = x.reshape([-1])
+    elif isinstance(axis, list):
         axis = tuple(axis)
 
     np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)

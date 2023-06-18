@@ -280,7 +280,7 @@ def matmul(
 
 
 @with_supported_dtypes(
-    {"2.12.0 and below": ("float32", "float64", "float16", "complex")}, backend_version
+    {"2.12.0 and below": ("float32", "float64", "complex")}, backend_version
 )
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
@@ -297,8 +297,6 @@ def matrix_norm(
             tf.linalg.svd(x, compute_uv=False),
             axis=-1,
         )
-        if keepdims:
-            ret = tf.reshape(ret, (*ret.shape, 1, 1))
     elif ord == -1:
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True),
@@ -311,8 +309,6 @@ def matrix_norm(
             tf.linalg.svd(x, compute_uv=False),
             axis=-1,
         )
-        if keepdims:
-            ret = tf.reshape(ret, (*ret.shape, 1, 1))
     elif ord == float("-inf"):
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True),
@@ -321,10 +317,10 @@ def matrix_norm(
         )
     else:
         ret = tf.norm(x, ord=ord, axis=axis, keepdims=keepdims)
-        if ret.dtype is tf.complex64:
-            ret = tf.cast(ret, tf.float32)
-        elif ret.dtype is tf.complex128:
-            ret = tf.cast(ret, tf.float64)
+    ret = tf.cast(ret, ret.dtype.real_dtype)
+    if keepdims and ord in [-2, "nuc"]:
+        for dim in axis:
+            ret = tf.expand_dims(ret, dim % tf.rank(x))
     return ret
 
 
@@ -421,7 +417,7 @@ def matrix_transpose(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if conjugate:
-        tf.math.conj(x)
+        x = tf.math.conj(x)
     return tf.linalg.matrix_transpose(x)
 
 

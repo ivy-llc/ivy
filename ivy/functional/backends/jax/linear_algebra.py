@@ -428,7 +428,9 @@ def vector_norm(
         x = jnp.expand_dims(x, 0)
         ret_scalar = True
 
-    if isinstance(axis, list):
+    if axis is None:
+        x = x.reshape([-1])
+    elif isinstance(axis, list):
         axis = tuple(axis)
 
     jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
