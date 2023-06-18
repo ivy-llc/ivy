@@ -243,6 +243,12 @@ def test_mse_loss(
         true = true[0]
     if isinstance(pred, list):
         pred = pred[0]
+        
+    # Adjust shapes for broadcasting
+    while len(pred.shape) < len(true.shape):
+        pred = pred.unsqueeze(0)
+    while len(pred.shape) > len(true.shape):
+        true = true.unsqueeze(0)
 
     # Add dimension handling
     if len(pred.shape) > len(true.shape):
@@ -294,6 +300,11 @@ def test_mae_loss(
         true = true[0]
     if isinstance(pred, list):
         pred = pred[0]
+    # Adjust shapes for broadcasting
+    while len(pred.shape) < len(true.shape):
+	pred = pred.unsqueeze(0)
+    while len(pred.shape) > len(true.shape):
+	true = true.unsqueeze(0)
 
     # Add dimension handling
     if len(pred.shape) > len(true.shape):
@@ -311,4 +322,3 @@ def test_mae_loss(
         pred=pred,
         reduction=reduction,
     )
-
