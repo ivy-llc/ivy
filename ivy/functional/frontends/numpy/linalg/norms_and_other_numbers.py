@@ -33,16 +33,10 @@ def norm(x, ord=None, axis=None, keepdims=False):
 
 
 # matrix_rank
-# TODO: add support for hermitian
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def matrix_rank(A, tol=None, hermitian=False):
-    if A.ndim < 2:
-        return int(not all(A == 0))
-    S = ivy.svd(A, compute_uv=False)[0]
-    if tol is None:
-        tol = S.max() * max(A.shape) * ivy.finfo(S.dtype).eps
-    return ivy.count_nonzero(S > tol, axis=-1).astype(ivy.int64)
+    return ivy.matrix_rank(A, atol=tol, hermitian=hermitian)
 
 
 # det

@@ -1282,3 +1282,99 @@ def test_maxpool3d_layer(
         test_gradients=test_gradients,
         on_device=on_device,
     )
+
+
+# AdaptiveAveragePool2d
+@st.composite
+def array_for_adaptive(
+    draw,
+    num_dims=3,
+    max_dim_size=8,
+    min_dim_size=3,
+    num_out_size=2,
+):
+    dtypes, arrays = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=num_dims,
+            max_num_dims=num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    size = draw(
+        helpers.list_of_size(
+            x=helpers.ints(min_value=3, max_value=5),
+            size=num_out_size,
+        )
+    )
+    output_size = size[0] if num_out_size == 1 else size
+    return dtypes, arrays, output_size
+
+
+@handle_method(
+    method_tree="AdaptiveAvgPool2d.__call__",
+    dt_arr_size=array_for_adaptive(),
+)
+def test_adaptive_avg_pool2d_layer(
+    *,
+    dt_arr_size,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, out_size = dt_arr_size
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "output_size": out_size,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="AdaptiveAvgPool1d.__call__",
+    dt_arr_size=array_for_adaptive(max_dim_size=3, min_dim_size=2, num_out_size=1),
+)
+def test_adaptive_avg_pool1d_layer(
+    *,
+    dt_arr_size,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, out_size = dt_arr_size
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "output_size": out_size,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )

@@ -38,6 +38,14 @@ def hardshrink(x, threshold=0.5, name=None):
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def hardswish(x, name=None):
+    relu6_val = ivy.relu6(ivy.add(x, 3))
+    ret = ivy.multiply(x, ivy.divide(relu6_val, 6))
+    return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def hardtanh(
     x,
     /,
@@ -123,3 +131,53 @@ def celu(
     prod = alpha * (ivy.exp(x / alpha) - 1)
     ret = ivy.maximum(0, x) + ivy.minimum(0, prod)
     return ret
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def rrelu(
+    x,
+    /,
+    *,
+    lower=0.125,
+    upper=0.3333333333333333,
+    training=False,
+    name=None,
+):
+    if lower < 0 or lower > 1:
+        raise ValueError(
+            "The lower value must be no less than zero or greater than one. Received:"
+            f" {lower}."
+        )
+
+    if upper < lower:
+        raise ValueError(
+            "The upper value must be greater than lower value. Received: lower"
+            f" {lower}, upper {upper}."
+        )
+
+    if upper > 1:
+        raise ValueError(
+            f"The upper value must be no greater than one. Received: {upper}."
+        )
+
+    is_test = not training
+    if is_test:
+        add = lower + upper
+        ret = add * x * 0.5
+        out = ivy.where(x >= 0, x, ret)
+        return out.astype(x.dtype)
+    # else:
+    # ToDo implement a correctly after fixing ivy.random_uniform
+    # a = ivy.random_normal(low=lower, high=upper)
+    # ret = ivy.where(x >= 0, x, ivy.multiply(a, x))
+    # return ret.astype(x.dtype)
+
+
+def tanhshrink(
+    x,
+    /,
+    *,
+    name=None,
+):
+    return ivy.subtract(x, ivy.tanh(x))
