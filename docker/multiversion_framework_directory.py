@@ -29,7 +29,7 @@ def install_pkg(path, pkg, base="fw/"):
     elif pkg.split("==")[0] == "jax":
         subprocess.run(
             (
-                f"pip install --upgrade --target {path} 'jax' -f"
+                f"pip install --upgrade {pkg} --target  {path}  -f"
                 " https://storage.googleapis.com/jax-releases/jax_releases.html  "
                 " --no-cache-dir"
             ),
@@ -133,5 +133,6 @@ if __name__ == "__main__":
     json_path = (  # path to the json file storing version specific deps
         "requirement_mappings_multiversion.json"
     )
-    install_deps(arg_lis[1:], json_path)
+
     directory_generator(arg_lis[1:])
+    install_deps(arg_lis[1:], json_path)
