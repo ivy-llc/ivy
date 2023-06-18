@@ -66,16 +66,14 @@ def test_torch_dropout(
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     training=st.booleans(),
-    data_format=st.sampled_from(["NCHW", "NHWC"]),
-    test_gradients=st.just(False),
     test_with_out=st.just(False),
+    test_inplace=st.just(False),
 )
 def test_torch_dropout2d(
     *,
     dtype_and_x,
     prob,
     training,
-    data_format,
     test_flags,
     backend_fw,
     on_device,
@@ -91,14 +89,13 @@ def test_torch_dropout2d(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        x=x[0],
-        prob=prob,
+        input=x[0],
+        p=prob,
         training=training,
-        data_format=data_format,
-        return_flat_np_arrays=True,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    x = np.asarray(x[0], dtype[0]).flatten()
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
