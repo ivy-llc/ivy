@@ -1,7 +1,9 @@
 import mxnet as mx
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
+
 import ivy
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def concat(
@@ -11,7 +13,7 @@ def concat(
     axis: int = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.concat Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def expand_dims(
@@ -22,7 +24,7 @@ def expand_dims(
     axis: Union[(int, Sequence[int])] = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.expand_dims Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def flip(
@@ -33,7 +35,7 @@ def flip(
     axis: Optional[Union[(int, Sequence[int])]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.flip Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def permute_dims(
@@ -44,7 +46,7 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.permute_dims Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def reshape(
@@ -57,7 +59,7 @@ def reshape(
     allowzero: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.reshape Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def roll(
@@ -68,7 +70,7 @@ def roll(
     axis: Optional[Union[(int, Sequence[int])]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.roll Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def squeeze(
@@ -79,7 +81,10 @@ def squeeze(
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.squeeze Not Implemented")
+    if copy:
+        newarr = x.copy()
+        return mx.nd.squeeze(newarr, axis=axis)
+    return mx.nd.squeeze(x, axis=axis)
 
 
 def stack(
@@ -89,7 +94,7 @@ def stack(
     axis: int = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.stack Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def split(
@@ -101,7 +106,7 @@ def split(
     axis: int = 0,
     with_remainder: bool = False,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.split Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def repeat(
@@ -112,7 +117,7 @@ def repeat(
     axis: int = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.repeat Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def tile(
@@ -128,13 +133,13 @@ def tile(
 def constant_pad(
     x, /, pad_width, *, value=0, out: Optional[Union[(None, mx.ndarray.NDArray)]] = None
 ):
-    raise NotImplementedError("mxnet.constant_pad Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def zero_pad(
     x, /, pad_width, *, out: Optional[Union[(None, mx.ndarray.NDArray)]] = None
 ):
-    raise NotImplementedError("mxnet.zero_pad Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def swapaxes(
@@ -146,7 +151,7 @@ def swapaxes(
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
-    raise NotImplementedError("mxnet.swapaxes Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def clip(
@@ -157,7 +162,7 @@ def clip(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.clip Not Implemented")
+    return mx.nd.clip(x, x_min, x_max)
 
 
 def unstack(
@@ -168,4 +173,4 @@ def unstack(
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[None]:
-    raise NotImplementedError("mxnet.unstack Not Implemented")
+    raise IvyNotImplementedException()

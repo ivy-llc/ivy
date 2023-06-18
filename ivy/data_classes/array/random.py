@@ -357,6 +357,7 @@ class _ArrayWithRandom(abc.ABC):
 
     def shuffle(
         self: ivy.Array,
+        axis: Optional[int] = 0,
         /,
         *,
         seed: Optional[int] = None,
@@ -371,6 +372,8 @@ class _ArrayWithRandom(abc.ABC):
         ----------
         self
             Input array. Should have a numeric data type.
+        axis
+            The axis which x is shuffled along. Default is 0.
         seed
             A python integer. Used to create a random seed distribution
         out
@@ -389,4 +392,4 @@ class _ArrayWithRandom(abc.ABC):
         >>> print(y)
         ivy.array([2, 5, 9])
         """
-        return ivy.shuffle(self, seed=seed, out=out)
+        return ivy.shuffle(self, axis, seed=seed, out=out)

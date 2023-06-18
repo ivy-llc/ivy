@@ -11,45 +11,38 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-# Array API Standard #
-# -------------------#
-
-
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
 @to_native_arrays_and_back
-def msort(
-    a: Union[ivy.Array, ivy.NativeArray, list, tuple],
+def invert_permutation(
+    x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
-    *,
-    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return a copy of an array sorted along the first axis.
+    Compute the inverse of an index permutation.
 
     Parameters
     ----------
-    a
-        array-like input.
-    out
-        optional output array, for writing the result to.
+    x
+        1-D integer array-like, which represents indices of a zero-based array and is
+        supposedly used to permute the array.
 
     Returns
     -------
     ret
-        sorted array of the same type and shape as a
+        the inverse of the index permutation represented by ''x''
 
     Examples
     --------
-    >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
-    >>> ivy.msort(a)
-    ivy.array(
-        [[6, 2, 6],
-         [8, 9, 6]]
-        )
+    >>> a = ivy.asarray([0, 3, 1, 2])
+    >>> ivy.invert_permutation(a)
+    ivy.array([0, 2, 3, 1])
     """
-    return ivy.current_backend().msort(a, out=out)
+    return ivy.current_backend().invert_permutation(x)
+
+
+# Array API Standard #
+# -------------------#
 
 
 @handle_exceptions

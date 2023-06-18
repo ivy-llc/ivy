@@ -1,7 +1,11 @@
 "Collection of MXNet network layers, wrapped to fit Ivy syntax and signature."
+# global
 import mxnet as mx
 from typing import Optional, Tuple, Union, Sequence
 import ivy
+
+# local
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def conv1d(
@@ -15,7 +19,7 @@ def conv1d(
     dilations: Union[(int, Tuple[int])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.conv1d Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def conv1d_transpose(
@@ -30,7 +34,7 @@ def conv1d_transpose(
     dilations: Union[(int, Tuple[int])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
-    raise NotImplementedError("mxnet.conv1d_transpose Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def conv2d(
@@ -44,7 +48,7 @@ def conv2d(
     dilations: Union[(int, Tuple[(int, int)])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.conv2d Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def conv2d_transpose(
@@ -59,7 +63,7 @@ def conv2d_transpose(
     dilations: Union[(int, Tuple[(int, int)])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
-    raise NotImplementedError("mxnet.conv2d_transpose Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def depthwise_conv2d(
@@ -73,7 +77,7 @@ def depthwise_conv2d(
     dilations: Union[(int, Tuple[(int, int)])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.depthwise_conv2d Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def conv3d(
@@ -87,7 +91,7 @@ def conv3d(
     dilations: Union[(int, Tuple[(int, int, int)])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
-    raise NotImplementedError("mxnet.conv3d Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def conv3d_transpose(
@@ -102,7 +106,7 @@ def conv3d_transpose(
     dilations: Union[(int, Tuple[(int, int, int)])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> None:
-    raise NotImplementedError("mxnet.conv3d_transpose Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def conv_general_dilated(
@@ -122,7 +126,7 @@ def conv_general_dilated(
     bias: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.conv_general_dilated Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def conv_general_transpose(
@@ -140,4 +144,4 @@ def conv_general_transpose(
     bias: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.conv_general_transpose Not Implemented")
+    raise IvyNotImplementedException()

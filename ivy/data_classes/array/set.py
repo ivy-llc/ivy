@@ -105,6 +105,7 @@ class _ArrayWithSet(abc.ABC):
         /,
         *,
         axis: Optional[int] = None,
+        by_value: bool = True,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.unique_all. This method simply wraps
@@ -120,14 +121,16 @@ class _ArrayWithSet(abc.ABC):
             the axis to apply unique on. If None, the unique elements of the flattened
             ``x`` are returned.
 
+        by_value
+            If False, the unique elements will be sorted in the same order that they
+            occur in ''x''. Otherwise, they will be sorted by value.
+
         Returns
         -------
         ret
             a namedtuple ``(values, indices, inverse_indices, counts)``.
             The details can be found in the docstring for ivy.unique_all.
 
-            .. note::
-               The returned unique elements are ordered by value.
 
         Examples
         --------
@@ -139,7 +142,7 @@ class _ArrayWithSet(abc.ABC):
                 inverse_indices=ivy.array([[3, 2], [1, 0]]),
                counts=ivy.array([1, 1, 1, 1]))
         """
-        return ivy.unique_all(self._data, axis=axis)
+        return ivy.unique_all(self._data, axis=axis, by_value=by_value)
 
     def unique_inverse(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
         """

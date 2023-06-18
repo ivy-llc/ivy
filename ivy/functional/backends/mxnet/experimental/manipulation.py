@@ -2,6 +2,8 @@ from typing import Union, Optional, Sequence, Tuple, List
 from numbers import Number
 import mxnet as mx
 
+from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def moveaxis(
     a: Union[(None, mx.ndarray.NDArray)],
@@ -12,7 +14,7 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.moveaxis Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def heaviside(
@@ -22,7 +24,7 @@ def heaviside(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.heaviside Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def flipud(
@@ -32,7 +34,7 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.flipud Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def vstack(
@@ -41,7 +43,7 @@ def vstack(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.vstack Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def hstack(
@@ -50,7 +52,7 @@ def hstack(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.hstack Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def rot90(
@@ -62,7 +64,7 @@ def rot90(
     axes: Tuple[(int, int)] = (0, 1),
     out: Union[(None, mx.ndarray.NDArray)] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.rot90 Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def top_k(
@@ -70,11 +72,12 @@ def top_k(
     k: int,
     /,
     *,
-    axis: int = (-1),
+    axis: int = -1,
     largest: bool = True,
+    sorted: bool = True,
     out: Optional[Tuple[(None, None)]] = None,
 ) -> Tuple[(None, None)]:
-    raise NotImplementedError("mxnet.top_k Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def fliplr(
@@ -84,7 +87,7 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.fliplr Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def i0(
@@ -93,7 +96,7 @@ def i0(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.i0 Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def vsplit(
@@ -103,7 +106,7 @@ def vsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.vsplit Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def dsplit(
@@ -113,13 +116,13 @@ def dsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.dsplit Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def atleast_1d(
     *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = None
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.atleast_1d Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def dstack(
@@ -128,19 +131,19 @@ def dstack(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.dstack Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def atleast_2d(
     *arys: Union[(None, mx.ndarray.NDArray)], copy: Optional[bool] = None
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.atleast_2d Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def atleast_3d(
     *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = None
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.atleast_3d Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def take_along_axis(
@@ -152,7 +155,7 @@ def take_along_axis(
     mode: str = "fill",
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.take_along_axis Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def hsplit(
@@ -162,11 +165,11 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.hsplit Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def broadcast_shapes(*shapes: Union[(List[int], List[Tuple])]) -> Tuple[(int, ...)]:
-    raise NotImplementedError("mxnet.broadcast_shapes Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def expand(
@@ -177,7 +180,7 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.expand Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def concat_from_sequence(
@@ -188,4 +191,4 @@ def concat_from_sequence(
     axis: int = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.concat_from_sequence Not Implemented")
+    raise IvyNotImplementedException()

@@ -3,14 +3,16 @@ import numpy as np
 from typing import Optional, Union
 
 
-# msort
-def msort(
-    a: Union[np.ndarray, list, tuple], /, *, out: Optional[np.ndarray] = None
+# invert_permutation
+def invert_permutation(
+    x: Union[np.ndarray, list, tuple],
+    /,
 ) -> np.ndarray:
-    return np.msort(a)
-
-
-msort.support_native_out = False
+    sorted_indices = np.argsort(x)
+    inverse = np.zeros_like(sorted_indices)
+    inverse[sorted_indices] = np.arange(len(x))
+    inverse_permutation = np.argsort(inverse)
+    return inverse_permutation
 
 
 # lexsort

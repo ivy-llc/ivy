@@ -209,6 +209,9 @@ In :code:`matrix_and_vector_products.py`, we can see other functions such as :co
 This is confirmation that we've found the correct place!
 If many of the files are empty and you're unsure where to place your function, feel free to ask the member of the Ivy team reviewing your PR.
 
+Frontend formatting checklist
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Please refer to the `Formatting checklist`_, only changing the comment to :code:`add_frontend_checklist`.
 
 Ivy Experimental API
 --------------------

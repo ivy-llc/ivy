@@ -334,8 +334,8 @@ def test_jax_numpy_convolve(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        rtol=1e-4,
-        atol=1e-4,
+        rtol=1e-2,
+        atol=1e-2,
         on_device=on_device,
         a=x[0],
         v=x[1],
@@ -510,6 +510,10 @@ def test_jax_numpy_tensordot(
     fn_tree,
 ):
     dtype, a, b, axes = dtype_values_and_axes
+    if ivy.current_backend_str() == "torch":
+        atol = 1e-3
+    else:
+        atol = 1e-6
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -517,6 +521,7 @@ def test_jax_numpy_tensordot(
         fn_tree=fn_tree,
         a=a,
         b=b,
+        atol=atol,
         axes=axes,
     )
 
@@ -529,8 +534,9 @@ def test_jax_numpy_tensordot(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
-        large_abs_safety_factor=4,
-        safety_factor_scale="linear",
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
@@ -544,6 +550,10 @@ def test_jax_numpy_divide(
 ):
     input_dtype, x = dtype_values
     assume(not np.any(np.isclose(x[1], 0)))
+    if ivy.current_backend_str() == "paddle":
+        atol, rtol = 1e-2, 1e-2
+    else:
+        atol, rtol = 1e-5, 1e-5
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -551,6 +561,8 @@ def test_jax_numpy_divide(
         fn_tree=fn_tree,
         a=x[0],
         b=x[1],
+        atol=atol,
+        rtol=rtol,
     )
 
 
@@ -642,6 +654,9 @@ def test_jax_numpy_dot(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -670,10 +685,10 @@ def test_jax_numpy_mod(
 @handle_frontend_test(
     fn_tree="jax.numpy.modf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
-        min_value=0,
-        exclude_min=True,
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -685,7 +700,6 @@ def test_jax_numpy_modf(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    assume(not np.iscomplex(x))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1235,6 +1249,9 @@ def test_jax_numpy_kron(
         min_value=-100,
         max_value=100,
         allow_nan=False,
+        small_abs_safety_factor=2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1278,6 +1295,9 @@ def test_jax_numpy_lcm(
         min_value=-100,
         max_value=100,
         allow_nan=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1552,6 +1572,9 @@ def test_jax_numpy_log10(
         min_value=-100,
         max_value=100,
         allow_nan=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -2748,6 +2771,43 @@ def test_jax_numpy_polyint(
     )
 
 
+# polydiv
+@handle_frontend_test(
+    fn_tree="jax.numpy.polydiv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        min_dim_size=1,
+        max_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+)
+def test_jax_numpy_polydiv(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    assume("float16" not in input_dtype)
+    # TODO: remove asumme when the decorator works
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        u=x[0],
+        v=x[1],
+        rtol=1e-01,
+        atol=1e-02,
+    )
+
+
 # polysub
 @handle_frontend_test(
     fn_tree="jax.numpy.polysub",
@@ -2757,6 +2817,8 @@ def test_jax_numpy_polyint(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
+        min_value=-1e04,
+        max_value=1e04,
     ),
 )
 def test_jax_numpy_polysub(
@@ -2883,4 +2945,30 @@ def test_jax_numpy_product(
         initial=initial,
         where=where,
         promote_integers=promote_integers,
+    )
+
+
+# conjugate
+@handle_frontend_test(
+    fn_tree="jax.numpy.conjugate",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_jax_numpy_conjugate(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )

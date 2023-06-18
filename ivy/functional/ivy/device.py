@@ -458,7 +458,7 @@ def used_mem_on_dev(
         The device string to convert to native device handle.
     process_specific
         Whether to check the memory used by this python process alone. Default is
-        False. Currently, it is only supported for cpu.
+        False.
 
     Returns
     -------
@@ -949,7 +949,7 @@ def set_split_factor(
     >>> print(ivy.split_factors)
     {'cpu': 0.2, 'gpu': 0.3}
     """
-    ivy.utils.assertions.check_less(0, factor, allow_equal=True)
+    ivy.utils.assertions.check_less(0, factor, allow_equal=True, as_array=False)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor

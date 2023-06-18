@@ -2,6 +2,8 @@ import mxnet as mx
 from typing import Union, Optional
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
+from ivy.utils.exceptions import IvyNotImplementedException
+import ivy
 
 
 def abs(
@@ -97,7 +99,7 @@ def bitwise_and(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.bitwise_and Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def bitwise_invert(
@@ -106,7 +108,7 @@ def bitwise_invert(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.bitwise_invert Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def bitwise_left_shift(
@@ -116,7 +118,7 @@ def bitwise_left_shift(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.bitwise_left_shift Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def bitwise_or(
@@ -126,7 +128,7 @@ def bitwise_or(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.bitwise_or Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def bitwise_right_shift(
@@ -136,7 +138,7 @@ def bitwise_right_shift(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.bitwise_right_shift Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def bitwise_xor(
@@ -146,7 +148,7 @@ def bitwise_xor(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.bitwise_xor Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def ceil(
@@ -155,7 +157,7 @@ def ceil(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.ceil Not Implemented")
+    return mx.nd.ceil(x)
 
 
 def cos(
@@ -183,7 +185,12 @@ def divide(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.divide Not Implemented")
+    ret = mx.nd.divide(x1, x2)
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
+        ret = mx.nd.array(ret, dtype=x1.dtype)
+    else:
+        ret = mx.nd.array(ret, dtype=ivy.default_float_dtype(as_native=True))
+    return ret
 
 
 def equal(
@@ -193,7 +200,7 @@ def equal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.equal Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def exp(
@@ -211,7 +218,7 @@ def expm1(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.expm1 Not Implemented")
+    return (mx.nd.exp(x) - 1).astype(x.dtype)
 
 
 def floor(
@@ -220,7 +227,7 @@ def floor(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.floor Not Implemented")
+    return mx.nd.floor(x)
 
 
 def floor_divide(
@@ -230,7 +237,17 @@ def floor_divide(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.floor_divide Not Implemented")
+    return mx.nd.floor(mx.nd.divide(x1, x2))
+
+
+def fmin(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
 
 
 def greater(
@@ -240,7 +257,7 @@ def greater(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.greater Not Implemented")
+    return mx.nd.greater(x1, x2)
 
 
 def greater_equal(
@@ -250,7 +267,7 @@ def greater_equal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.greater_equal Not Implemented")
+    return mx.nd.greater_equal(x1, x2)
 
 
 def isfinite(
@@ -259,7 +276,7 @@ def isfinite(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.isfinite Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def isinf(
@@ -270,7 +287,7 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.isinf Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def isnan(
@@ -279,7 +296,17 @@ def isnan(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.isnan Not Implemented")
+    raise IvyNotImplementedException()
+
+
+def lcm(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
 
 
 def less(
@@ -289,7 +316,7 @@ def less(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.less Not Implemented")
+    return mx.nd.less(x1, x2)
 
 
 def less_equal(
@@ -299,7 +326,7 @@ def less_equal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.less_equal Not Implemented")
+    return mx.nd.less_equal(x1, x2)
 
 
 def log(
@@ -317,7 +344,7 @@ def log10(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.log10 Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def log1p(
@@ -326,7 +353,7 @@ def log1p(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.log1p Not Implemented")
+    return mx.nd.log1p(x)
 
 
 def log2(
@@ -335,7 +362,7 @@ def log2(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.log2 Not Implemented")
+    return mx.nd.log2(x)
 
 
 def logaddexp(
@@ -345,7 +372,17 @@ def logaddexp(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.logaddexp Not Implemented")
+    return mx.nd.logaddexp(x1, x2)
+
+
+def logaddexp2(
+    x1: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
+    x2: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
 
 
 def logical_and(
@@ -394,7 +431,7 @@ def multiply(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.multiply Not Implemented")
+    return mx.nd.multiply(x1, x2)
 
 
 def negative(
@@ -403,7 +440,7 @@ def negative(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.negative Not Implemented")
+    return mx.nd.negative(x)
 
 
 def not_equal(
@@ -413,7 +450,7 @@ def not_equal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.not_equal Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def positive(
@@ -422,7 +459,7 @@ def positive(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.positive Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def pow(
@@ -432,7 +469,7 @@ def pow(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.pow Not Implemented")
+    return mx.nd.power(x1, x2)
 
 
 def remainder(
@@ -443,7 +480,7 @@ def remainder(
     modulus: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.remainder Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def round(
@@ -453,7 +490,7 @@ def round(
     decimals: int = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.round Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def sign(
@@ -462,7 +499,7 @@ def sign(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.sign Not Implemented")
+    raise IvyNotImplementedException()
 
 
 @with_supported_dtypes(
@@ -475,10 +512,23 @@ def sin(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    x_dtype = x.dtype
+    # have to handle zero dim array separately from dtype
+    zero_dim = False
     if x.shape == ():
         ret = mx.nd.sin(mx.nd.array([x.asscalar()]))
+        zero_dim = True
+    else:
+        ret = mx.nd.sin(x)
+
+    if "int" in str(x_dtype):
+        ret = ret.astype("float32")
+    else:
+        ret = ret.astype(x_dtype)
+
+    if zero_dim:
         return ret.reshape(())
-    return mx.nd.sin(x)
+    return ret
 
 
 def sinh(
@@ -505,7 +555,7 @@ def square(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.square Not Implemented")
+    return mx.nd.square(x)
 
 
 def subtract(
@@ -516,7 +566,23 @@ def subtract(
     alpha: Optional[Union[(int, float)]] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.subtract Not Implemented")
+    if alpha not in (1, None):
+        ivy.set_array_mode(False)
+        x2 = multiply(x2, alpha)
+        ivy.unset_array_mode()
+    return mx.nd.subtract(x1, x2)
+
+
+def trapz(
+    y: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    x: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    dx: float = 1.0,
+    axis: int = (-1),
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
 
 
 def tan(
@@ -543,7 +609,35 @@ def trunc(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.trunc Not Implemented")
+    raise IvyNotImplementedException()
+
+
+def imag(
+    val: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def angle(
+    input: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def exp2(
+    x: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
 
 
 def erf(
@@ -552,7 +646,7 @@ def erf(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.erf Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def maximum(
@@ -563,7 +657,7 @@ def maximum(
     use_where: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.maximum Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def minimum(
@@ -574,7 +668,7 @@ def minimum(
     use_where: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.minimum Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def reciprocal(
@@ -583,7 +677,7 @@ def reciprocal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.reciprocal Not Implemented")
+    return mx.nd.reciprocal(x)
 
 
 def deg2rad(
@@ -592,7 +686,7 @@ def deg2rad(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.deg2rad Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def rad2deg(
@@ -601,7 +695,7 @@ def rad2deg(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.rad2deg Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def isreal(
@@ -610,7 +704,7 @@ def isreal(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.isreal Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def fmod(
@@ -620,4 +714,13 @@ def fmod(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.fmod Not Implemented")
+    raise IvyNotImplementedException()
+
+
+def real(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()

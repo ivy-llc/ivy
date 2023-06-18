@@ -13,6 +13,7 @@ class _ContainerWithSet(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
+        by_value: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -30,6 +31,9 @@ class _ContainerWithSet(ContainerBase):
         axis
             the axis to apply unique on. If None, the unique elements of the flattened
             ``x`` are returned.
+        by_value
+            If False, the unique elements will be sorted in the same order that they
+            occur in ''x''. Otherwise, they will be sorted by value.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -75,6 +79,7 @@ class _ContainerWithSet(ContainerBase):
             "unique_all",
             x,
             axis=axis,
+            by_value=by_value,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -86,6 +91,7 @@ class _ContainerWithSet(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
+        by_value: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -103,6 +109,9 @@ class _ContainerWithSet(ContainerBase):
         axis
             the axis to apply unique on. If None, the unique elements of the flattened
             ``x`` are returned.
+        by_value
+            If False, the unique elements will be sorted in the same order that they
+            occur in ''x''. Otherwise, they will be sorted by value.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -147,6 +156,7 @@ class _ContainerWithSet(ContainerBase):
         return self._static_unique_all(
             self,
             axis=axis,
+            by_value=by_value,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

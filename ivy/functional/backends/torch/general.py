@@ -1,6 +1,6 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 # global
-from functools import reduce
+from functools import reduce as _reduce
 import math
 from numbers import Number
 from operator import mul
@@ -53,7 +53,7 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex", "bfloat16")}, backend_version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
@@ -196,7 +196,7 @@ def gather_nd_helper(params, indices):
     else:
         num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -298,9 +298,11 @@ def inplace_update(
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if is_variable(x_native):
-            x_native.data = val_native
+            x_native.copy_ = val_native
         else:
             x_native[()] = val_native
+        if ivy.is_native_array(x):
+            return x_native
         if ivy.is_ivy_array(x):
             x.data = x_native
             _update_torch_views(x)
@@ -327,7 +329,7 @@ def multiprocessing(context: Optional[str] = None):
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("bfloat16",),
+        "2.0.1 and below": ("bfloat16",),
     },
     backend_version,
 )
@@ -343,8 +345,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(len(target.shape), 1)
-        ivy.utils.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1, as_array=False)
+        ivy.utils.assertions.check_equal(target.shape[0], size, as_array=False)
     dtype = updates.dtype
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
@@ -379,7 +381,7 @@ scatter_flat.support_native_out = True
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -449,7 +451,7 @@ def scatter_nd(
             torch.tensor(indices) if isinstance(indices, (tuple, list)) else indices
         )
         if len(indices.shape) < 2:
-            indices = torch.unsqueeze(indices, 0)
+            indices = torch.unsqueeze(indices, -1)
         if torch.any(indices == -1):
             shape = (
                 shape
@@ -477,7 +479,7 @@ def scatter_nd(
                 )
                 for index in indices
             ]
-            indices = torch.concat(indices, axis=0)
+            indices = torch.concat(indices, axis=-1)
 
     # broadcast updates to indices
     expected_shape = (
@@ -494,17 +496,19 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(
+            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
+        )
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
+        _reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
     ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
-    flat_result_size = reduce(mul, shape, 1)
+    flat_result_size = _reduce(mul, shape, 1)
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "
@@ -565,7 +569,7 @@ def shape(
         return ivy.Shape(x.shape)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
@@ -582,7 +586,7 @@ def vmap(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
+    {"2.0.1 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
 )
 def isin(
     elements: torch.tensor,

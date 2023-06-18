@@ -21,6 +21,7 @@ def fliplr(input):
         2,
         allow_equal=True,
         message="requires tensor to be at least 2D",
+        as_array=False,
     )
     return ivy.fliplr(input)
 
@@ -32,6 +33,7 @@ def flipud(input):
         1,
         allow_equal=True,
         message="requires tensor to be at least 1D",
+        as_array=False,
     )
     return ivy.flipud(input)
 
@@ -43,12 +45,14 @@ def roll(input, shifts, dims=None):
 
 @to_ivy_arrays_and_back
 def meshgrid(*tensors, indexing=None):
+    if indexing is None:
+        indexing = "ij"
     return tuple(ivy.meshgrid(*tensors, indexing=indexing))
 
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
+    {"2.0.1 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
     "torch",
 )
 def cumsum(input, dim, *, dtype=None, out=None):
@@ -58,7 +62,7 @@ def cumsum(input, dim, *, dtype=None, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def trace(input):
     if "int" in input.dtype:
         input = input.astype("int64")
@@ -66,13 +70,16 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
-@with_unsupported_dtypes(
-    {"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
-)
+@with_unsupported_dtypes({"2.0.1 and below": ("int8", "uint8", "int16")}, "torch")
 @to_ivy_arrays_and_back
 def tril_indices(row, col, offset=0, *, dtype=ivy.int64, device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
+
+
+@to_ivy_arrays_and_back
+def cummax(input, dim, *, out=None):
+    return ivy.cummax(input, axis=dim, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -121,7 +128,7 @@ def flatten(input, start_dim=0, end_dim=-1):
     return ivy.flatten(input, start_dim=start_dim, end_dim=end_dim)
 
 
-@with_supported_dtypes({"1.11.0 and below": ("float",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number
@@ -162,7 +169,7 @@ def renorm(input, p, dim, maxnorm, *, out=None):
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "float16",
             "bfloat16",
             "integer",
@@ -188,7 +195,7 @@ def logcumsumexp(input, dim, *, out=None):
 
 @with_supported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.0.1 and below": (
             "int32",
             "int64",
         )
@@ -215,6 +222,7 @@ def rot90(input, k, dims):
         2,
         allow_equal=True,
         message="expected total dims >= 2, but got total dims = " + str(total_dims),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -222,6 +230,7 @@ def rot90(input, k, dims):
         2,
         message="expected total rotation dims == 2, but got dims = "
         + str(total_rot_dims),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -232,6 +241,7 @@ def rot90(input, k, dims):
         + str(dims[0])
         + " and dim1 = "
         + str(dims[1]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -249,6 +259,7 @@ def rot90(input, k, dims):
         dims[0],
         total_dims,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_greater(
@@ -256,12 +267,14 @@ def rot90(input, k, dims):
         -total_dims,
         allow_equal=True,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_less(
         dims[1],
         total_dims,
         message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_greater(
@@ -269,6 +282,7 @@ def rot90(input, k, dims):
         -total_dims,
         allow_equal=True,
         message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
+        as_array=False,
     )
 
     k = (4 + (k % 4)) % 4
@@ -288,25 +302,26 @@ def rot90(input, k, dims):
 
 @to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
-    if N == 0:
-        return ivy.array([], dtype=x.dtype)
-    else:
-        return ivy.vander(x, N=N, increasing=increasing, out=None)
+    # if N == 0:
+    #     return ivy.array([], dtype=x.dtype)
+    # else:
+    return ivy.vander(x, N=N, increasing=increasing, out=None)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("int8",)}, "torch")
 def lcm(input, other, *, out=None):
     return ivy.lcm(input, other, out=out)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def einsum(equation, *operands):
     return ivy.einsum(equation, *operands)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def cross(input, other, dim=None, *, out=None):
     if dim is None:
         dim = -1
@@ -327,7 +342,7 @@ def tensordot(a, b, dims=2, out=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
+    {"2.0.1 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
 )
 def diff(input, n=1, dim=-1, prepend=None, append=None):
     return ivy.diff(input, n=n, axis=dim, prepend=prepend, append=append, out=None)
@@ -381,3 +396,8 @@ def diag(input, diagonal=0, *, out=None):
 @to_ivy_arrays_and_back
 def clone(input):
     return ivy.copy_array(input)
+
+
+@to_ivy_arrays_and_back
+def cov(input, /, *, correction=1, fweights=None, aweights=None):
+    return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)

@@ -8,6 +8,7 @@ import copy as python_copy
 from types import FunctionType
 from typing import Callable
 import inspect
+import numpy as np
 
 
 # for wrapping (sequence matters)
@@ -26,16 +27,170 @@ FN_DECORATORS = [
     "handle_view_indexing",
     "handle_view",
     "handle_array_like_without_promotion",
+    "handle_mixed_function",
     "handle_nestable",
     "handle_exceptions",
-    "with_unsupported_dtypes",
     "handle_nans",
-    "handle_mixed_function",
 ]
 
 
 # Helpers #
 # --------#
+
+# for casting modes, order is the hierarchy
+casting_modes_dict = {
+    "uint": lambda: ivy.valid_uint_dtypes,
+    "int": lambda: sorted(
+        tuple(set(ivy.valid_int_dtypes).difference(set(ivy.valid_uint_dtypes)))
+    ),
+    "float": lambda: ivy.valid_float_dtypes,
+    "complex": lambda: ivy.valid_complex_dtypes,
+}
+
+
+def caster(dtype, intersect):
+    if hasattr(dtype, "dtype"):
+        dtype = ivy.as_ivy_dtype(dtype.dtype)
+    else:
+        dtype = ivy.as_ivy_dtype(dtype)
+    if str(dtype) in intersect:
+        # based on upcasting or downcasting do something
+        if ivy.cast_dtypes():
+            # all casting types is enabled
+            # check cross_casting
+            ret_dtype = cross_caster(intersect)
+            if ret_dtype:
+                return ret_dtype
+            # check upcasting
+            ret_dtype = upcaster(dtype, intersect)
+            if ret_dtype:
+                return ret_dtype
+            # check downcasting
+            ret_dtype = downcaster(dtype, intersect)
+            if ret_dtype:
+                return ret_dtype
+        elif ivy.crosscast_dtypes:
+            # check cross_casting
+            ret_dtype = cross_caster(intersect)
+            if ret_dtype:
+                return ret_dtype
+        elif ivy.upcast_dtypes:
+            # check upcasting
+            ret_dtype = upcaster(dtype, intersect)
+            if ret_dtype:
+                return ret_dtype
+        elif ivy.downcast_dtypes:
+            # check downcasting
+            ret_dtype = downcaster(dtype, intersect)
+            if ret_dtype:
+                return ret_dtype
+
+
+def upcaster(dtype, intersect):
+    # upcasting is enabled, we upcast to the highest
+    if "uint" in str(dtype):
+        index = casting_modes_dict["uint"]().index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["uint"]()):
+            if casting_modes_dict["uint"]()[index] not in intersect:
+                result = casting_modes_dict["uint"]()[index]
+                break
+            index += 1
+        return result
+
+    if "int" in dtype:
+        index = casting_modes_dict["int"]().index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["int"]()):
+            if casting_modes_dict["int"]()[index] not in intersect:
+                result = casting_modes_dict["int"]()[index]
+                break
+            index += 1
+        return result
+
+    if "float" in dtype:
+        index = casting_modes_dict["float"]().index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["float"]()):
+            if casting_modes_dict["float"]()[index] not in intersect:
+                result = casting_modes_dict["float"]()[index]
+                break
+            index += 1
+        return result
+
+    if "complex" in dtype:
+        index = casting_modes_dict["complex"]().index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["complex"]()):
+            if casting_modes_dict["complex"]()[index] not in intersect:
+                result = casting_modes_dict["complex"]()[index]
+                break
+            index += 1
+        return result
+
+
+def downcaster(dtype, intersect):
+    # downcasting is enabled, we upcast to the highest
+    if "uint" in str(dtype):
+        index = casting_modes_dict["uint"]().index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if casting_modes_dict["int"]()[index] not in intersect:
+                result = casting_modes_dict["uint"]()[index]
+                break
+            index -= 1
+        return result
+
+    if "int" in dtype:
+        index = casting_modes_dict["int"]().index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if casting_modes_dict["int"]()[index] not in intersect:
+                result = casting_modes_dict["int"]()[index]
+                break
+            index -= 1
+        return result
+
+    if "float" in dtype:
+        index = casting_modes_dict["float"]().index(dtype) - 1
+
+        result = ""
+        while index >= 0:
+            if casting_modes_dict["float"]()[index] not in intersect:
+                result = casting_modes_dict["float"]()[index]
+                break
+            index -= 1
+        return result
+
+    if "complex" in dtype:
+        index = casting_modes_dict["complex"]().index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if casting_modes_dict["complex"]()[index] not in intersect:
+                result = casting_modes_dict["complex"]()[index]
+                break
+            index -= 1
+        return result
+
+
+def cross_caster(intersect):
+    # check if this is an integer unsupported case
+    # intersect is unordered, sorting it makes a list
+    # and remaking it a set messes the order
+    # so we stick with making both of these
+    # sorted lists
+    dtype = ""
+    valid_float = sorted(ivy.valid_float_dtypes)
+    valid_int = sorted(ivy.valid_int_dtypes)
+    intersect = sorted(intersect)
+    if intersect == valid_int:
+        # make dtype equal to default float
+        dtype = ivy.default_float_dtype()
+    elif intersect == valid_float:
+        # make dtype equal to default int
+        dtype = ivy.default_int_dtype()
+
+    return str(dtype)
 
 
 def try_array_function_override(func, overloaded_args, types, args, kwargs):
@@ -141,15 +296,15 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
 # ---------------#
 
 
-def handle_array_function(func):
+def handle_array_function(fn):
     """
-    Wrap a function `func` to be passed to array_function method.
+    Wrap a function `fn` to be passed to array_function method.
 
     Wrap a function to extract the relevant argument types to be passed
     to array_function method.
     """
 
-    @functools.wraps(func)
+    @functools.wraps(fn)
     def _handle_array_function(*args, **kwargs):
         overloaded_types = []
         overloaded_args = []
@@ -194,11 +349,11 @@ def handle_array_function(func):
                             overloaded_args.insert(index, arg)
 
         success, value = try_array_function_override(
-            ivy.__dict__[func.__name__], overloaded_args, overloaded_types, args, kwargs
+            ivy.__dict__[fn.__name__], overloaded_args, overloaded_types, args, kwargs
         )
         if success:
             return value
-        return func(*args, **kwargs)
+        return fn(*args, **kwargs)
 
     _handle_array_function.handle_array_function = True
     return _handle_array_function
@@ -267,7 +422,7 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with native arrays passed in the arguments.
         """
-        if not ivy.get_array_mode():
+        if not ivy.array_mode:
             return fn(*args, **kwargs)
         # check if kwargs contains an out argument, and if so, remove it
         has_out = False
@@ -307,6 +462,13 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
+        if not ivy.array_mode:
+            warnings.warn(
+                "In the case of Compositional function, operators might cause"
+                " inconsistent behavior when array_mode is set to False"
+            )
+            return fn(*args, **kwargs)
+
         has_out = False
         if "out" in kwargs:
             out = kwargs["out"]
@@ -328,9 +490,7 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
     def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
@@ -343,14 +503,23 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
             [args, kwargs],
-            lambda x: (
-                x.shape if isinstance(x, ivy.Shape) and ivy.get_array_mode() else x
-            ),
+            lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
         )
         return fn(*args, **kwargs)
 
     _outputs_to_ivy_shapes.outputs_to_ivy_shapes = True
     return _outputs_to_ivy_shapes
+
+
+def to_native_shapes_and_back(fn: Callable) -> Callable:
+    """
+    Make `fn` receive `ivy.NativeShape` and return `ivy.Shape`.
+
+    Wrap `fn` so that input shapes are all converted to
+    `ivy.NativeShape` instances and return shapes are all converted to
+    `ivy.Shape` instances.
+    """
+    return outputs_to_ivy_shapes(inputs_to_native_shapes(fn))
 
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -377,7 +546,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         # convert all arrays in the return to `ivy.Array` instances
         return (
             ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
-            if ivy.get_array_mode()
+            if ivy.array_mode
             else ret
         )
 
@@ -432,6 +601,27 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
     `ivy.Array` instances.
     """
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+
+
+def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
+    """
+    Wrap `fn` and convert all frontend arrays in its return to ivy arrays.
+
+    Used in cases when a frontend function receives a callable (frontend
+    function) argument. To be able to use that callable in a composition
+    of ivy functions, its outputs need to be converted to ivy arrays.
+    """
+
+    @functools.wraps(fn)
+    def _outputs_to_ivy_arrays(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        return ivy.nested_map(
+            ret,
+            lambda x: x.ivy_array if hasattr(x, "ivy_array") else x,
+            shallow=False,
+        )
+
+    return _outputs_to_ivy_arrays
 
 
 def handle_view(fn: Callable) -> Callable:
@@ -499,6 +689,33 @@ def handle_view_indexing(fn: Callable) -> Callable:
 
     _handle_view_indexing.handle_view_indexing = True
     return _handle_view_indexing
+
+
+def _convert_numpy_arrays_to_backend_specific(*args):
+    if isinstance(args, np.ndarray):
+        np_arr_idxs = ivy.nested_argwhere(args, lambda x: isinstance(x, np.ndarray))
+        np_arr_val = ivy.multi_index_nest(args, np_arr_idxs)
+        backend_arr_vals = [ivy.array(x).to_native() for x in np_arr_val]
+        ivy.set_nest_at_indices(args, np_arr_idxs, backend_arr_vals)
+    return args
+
+
+def handle_numpy_arrays_in_specific_backend(fn: Callable) -> Callable:
+    """
+    Wrap `fn` and converts all `numpy.ndarray` inputs to `torch.Tensor` instances.
+
+    Used for functional backends (PyTorch). Converts all `numpy.ndarray`
+    inputs to `torch.Tensor` instances.
+    """
+
+    @functools.wraps(fn)
+    def _handle_numpy_array_in_torch(*args, **kwargs):
+        args = _convert_numpy_arrays_to_backend_specific(*args)
+        ret = fn(*args, **kwargs)
+        return ret
+
+    _handle_numpy_array_in_torch.handle_numpy_arrays_in_specific_backend = True
+    return _handle_numpy_array_in_torch
 
 
 # Data Type Handling #
@@ -618,7 +835,7 @@ def infer_device(fn: Callable) -> Callable:
 
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
-    handle_out_in_ivy = hasattr(fn, "mixed_function")
+    is_compos_fn = "ivy.functional.ivy" in fn.__module__
 
     @functools.wraps(fn)
     def _handle_out_argument(*args, out=None, **kwargs):
@@ -642,8 +859,11 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
-        if out is None or handle_out_in_ivy:
+        nonlocal handle_out_in_backend
+        if out is None or is_compos_fn:
             return fn(*args, out=out, **kwargs)
+        if ivy.gradients._is_variable(out):
+            handle_out_in_backend = False
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
@@ -741,7 +961,7 @@ def handle_nestable(fn: Callable) -> Callable:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs
             )
-        if ivy.get_nestable_mode() and (
+        if ivy.nestable_mode and (
             ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
             or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
         ):
@@ -803,35 +1023,84 @@ def _wrap_function(
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
-            if attr.startswith("_") or hasattr(ivy, attr) or attr == "handles_out_arg":
+            if attr.startswith("_") or hasattr(ivy, attr):
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
         # Copy docstring
         docstring_attr = ["__annotations__", "__doc__"]
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
-        # wrap decorators
-        mixed = hasattr(original, "mixed_function")
-        if mixed:
-            to_replace = {
-                True: ["inputs_to_ivy_arrays"],
-                False: [
-                    "outputs_to_ivy_arrays",
-                    "inputs_to_native_arrays",
-                ],
-            }
-            # if the backend has a primary implementation
-            # we'll store the compositional fn's reference
-            # for the handle_mixed_function decorator
-            if to_wrap != original:
-                to_wrap.compos = original
-            for attr in to_replace[compositional]:
-                setattr(original, attr, True)
+
+        mixed_fn = (
+            original != to_wrap
+            and hasattr(original, "inputs_to_ivy_arrays")
+            and not original.__name__.startswith("inplace")
+        )
 
         for attr in FN_DECORATORS:
-            if hasattr(original, attr) and not hasattr(to_wrap, attr):
+            if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
+                mixed_fn
+                and (
+                    attr
+                    in [
+                        "inputs_to_native_arrays",
+                        "outputs_to_ivy_arrays",
+                        "handle_mixed_function",
+                    ]
+                )
+            ):
+                if mixed_fn:
+                    if attr == "inputs_to_ivy_arrays":
+                        continue
+                    if attr == "handle_mixed_function":
+                        if hasattr(to_wrap, "partial_mixed_handler"):
+                            to_wrap.compos = original
+                            to_wrap = handle_mixed_function(
+                                getattr(to_wrap, "partial_mixed_handler")
+                            )(to_wrap)
+                        continue
                 to_wrap = getattr(ivy, attr)(to_wrap)
+
     return to_wrap
+
+
+def casting_modes_ops(fn):
+    @functools.wraps(fn)
+    def method(*args, **kwargs):
+        # we first check if it has unsupported/supported dtypes uniquely added to it
+        intersect = set(ivy.function_unsupported_dtypes(fn)).difference(
+            set(ivy.invalid_dtypes)
+        )
+        if not intersect:
+            # doesn't have unsupported dtypes specified
+            # so check if it's one of the device_and_dtype one
+            intersect = set(
+                ivy.function_unsupported_devices_and_dtypes(fn).get(
+                    ivy.default_device().split(":")[0], {None}
+                )
+            ).difference(set(ivy.invalid_dtypes))
+            if not intersect:
+                # no unsupported dtype specified
+                return fn(*args, **kwargs)
+
+        if "dtype" in kwargs and kwargs["dtype"] is not None:
+            dtype = caster(kwargs["dtype"], intersect)
+            if dtype:
+                kwargs["dtype"] = ivy.as_native_dtype(dtype)
+
+        def mini_helper(x):
+            if not hasattr(x, "dtype"):
+                return x
+            dtype = caster(x, intersect)
+            if dtype:
+                x = ivy.to_native(ivy.astype(x, ivy.as_native_dtype(dtype)))
+            return x
+
+        args = ivy.nested_map(args, mini_helper, include_derived=True)
+        kwargs = ivy.nested_map(kwargs, mini_helper)
+        return fn(*args, **kwargs)
+
+    return method
 
 
 # Gets dtype from a version dictionary
@@ -868,8 +1137,8 @@ def _dtype_from_version(dic, version):
         if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split("."))):
             return dic[key]
 
-    # if no version is found, return the last version
-    return dic[list(dic.keys())[-1]]
+    # if no version is found, we return empty tuple
+    return ()
 
 
 def _versioned_attribute_factory(attribute_function, base):
@@ -943,6 +1212,8 @@ def _dtype_device_wrapper_creator(attrib, t):
                 # we do nothing
                 return func
             if not exclusive:
+                # exclusive attribute comes into existence
+                # only when exlusive is passed as true
                 setattr(func, "exclusive", True)
             # set the attribute on the function and return the function as is
 
@@ -954,14 +1225,24 @@ def _dtype_device_wrapper_creator(attrib, t):
                     if not (
                         attrib == attribs or (attrib, attribs) in attribute_conflict
                     ):
+                        # cases when we encounter two different decorators
+                        # applied to the function, but they are not same
+                        # and aren't in conflicting dict either
                         setattr(func, attrib, val)
                         setattr(func, "dictionary_info", version_dict)
                     elif hasattr(func, "exclusive"):
                         if attrib == attribs:
+                            # we see a higher decorator with exclusivity applied
+                            # we use this decorator's dict information
+                            # and previous decorator's dict information
+                            # to update this
                             old_version_dict = getattr(func, "dictionary_info")
                             old_version_dict.update(version_dict)
                             val = _versioned_attribute_factory(
-                                lambda: _dtype_from_version(version_dict, version), t
+                                lambda: _dtype_from_version(
+                                    version_dict, old_version_dict
+                                ),
+                                t,
                             )
                             setattr(func, attrib, val)
                         else:
@@ -970,8 +1251,10 @@ def _dtype_device_wrapper_creator(attrib, t):
             else:
                 setattr(func, attrib, val)
                 setattr(func, "dictionary_info", version_dict)
-
-            return func
+            if "frontends" in func.__module__:
+                # it's a frontend func, no casting modes for this
+                return func
+            return casting_modes_ops(func)
 
         return _wrapped
 
@@ -1021,7 +1304,7 @@ def handle_nans(fn: Callable) -> Callable:
             The return of the function, with handling of inputs based
             on the selected `nan_policy`.
         """
-        nan_policy = ivy.get_nan_policy()
+        nan_policy = ivy.nan_policy
         # skip the check if the current nan policy is `nothing``
         if nan_policy == "nothing":
             return fn(*args, **kwargs)
@@ -1076,6 +1359,9 @@ attribute_conflict = {
     ("unsupported_device_and_dtype", "supported_device_and_dtype"),
     ("supported_device_and_dtype", "unsupported_device_and_dtype"),
 }
+
+# TODO see if the globals_getter_func can be hacked to return
+# the globals in the module where it is working
 
 
 def globals_getter_func(x=None):
@@ -1356,7 +1642,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
 class override(contextlib.ContextDecorator):
     def __call__(self, func=None):
         if func:
-            setattr(func, "override")
+            setattr(func, "override", "override")
             return func
 
     def __enter__(self):

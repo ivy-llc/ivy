@@ -3,6 +3,7 @@ from typing import Optional, Union, Sequence, List
 import numpy as np
 import ivy
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from ivy.utils.exceptions import IvyNotImplementedException
 
 ivy_dtype_dict = {
     np.dtype("int8"): "int8",
@@ -20,6 +21,7 @@ ivy_dtype_dict = {
     np.float16: "float16",
     np.float32: "float32",
     np.float64: "float64",
+    np.bool_: "bool",
 }
 native_dtype_dict = {
     "int8": np.int8,
@@ -90,13 +92,16 @@ def astype(
     copy: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.astype Not Implemented")
+    dtype = ivy.as_native_dtype(dtype)
+    if x.dtype == dtype:
+        return mx.nd.copy(x) if copy else x
+    return x.astype(dtype)
 
 
 def broadcast_arrays(
     *arrays: Union[(None, mx.ndarray.NDArray)]
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.broadcast_arrays Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def broadcast_to(
@@ -106,7 +111,7 @@ def broadcast_to(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.broadcast_to Not Implemented")
+    raise IvyNotImplementedException()
 
 
 @_handle_nestable_dtype_info
@@ -127,7 +132,7 @@ def iinfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> np.iinfo:
 def result_type(
     *arrays_and_dtypes: Union[(None, mx.ndarray.NDArray, None)]
 ) -> ivy.Dtype:
-    raise NotImplementedError("mxnet.result_type Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def as_ivy_dtype(
@@ -193,8 +198,8 @@ def dtype(
 
 
 def dtype_bits(dtype_in: Union[(None, str, np.dtype)], /) -> int:
-    raise NotImplementedError("mxnet.dtype_bits Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def is_native_dtype(dtype_in: Union[(None, str)], /) -> bool:
-    raise NotImplementedError("mxnet.is_native_dtype Not Implemented")
+    raise IvyNotImplementedException()
