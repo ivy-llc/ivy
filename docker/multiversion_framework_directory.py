@@ -133,5 +133,5 @@ if __name__ == "__main__":
     json_path = (  # path to the json file storing version specific deps
         "requirement_mappings_multiversion.json"
     )
-    directory_generator(arg_lis[1:])
     install_deps(arg_lis[1:], json_path)
+    directory_generator(arg_lis[1:])
