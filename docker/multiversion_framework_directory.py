@@ -69,7 +69,8 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         # we install this one
                         commands = [
                             "pip",
-                            "install --upgrade",
+                            "install",
+                            "--upgrade",
                             f"{dep}=={keys[dep][ver]}",
                             "--target",
                             path,
@@ -91,7 +92,8 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                     else:
                         commands = [
                             "pip",
-                            "install  --upgrade",
+                            "install",
+                            " --upgrade",
                             dep,
                             "--target",
                             path,
@@ -113,7 +115,8 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                 else:
                     commands = [
                         "pip",
-                        "install --upgrade",
+                        "install",
+                        "--upgrade",
                         keys,
                         "--target",
                         path,
