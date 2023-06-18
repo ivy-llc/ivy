@@ -531,122 +531,64 @@ fomaml_step.computes_gradients = True
 
 @handle_exceptions
 @handle_array_function
+
 def reptile_step(
     batch: ivy.Container,
-    cost_fn: Callable[[ivy.Container, ivy.Container], ivy.Array],
+    cost_fn: Callable,
     variables: ivy.Container,
     inner_grad_steps: int,
     inner_learning_rate: float,
     /,
     *,
-    inner_optimization_step: Callable[
-        [Callable[[ivy.Array, ivy.Container], ivy.Array], ivy.Container, float],
-        ivy.Container,
-    ] = gradient_descent_update,
+    inner_optimization_step: Callable = gradient_descent_update,
     batched: bool = True,
     return_inner_v: Union[str, bool] = False,
     num_tasks: Optional[int] = None,
-    stop_gradients: bool = True,
+    stop_gradients: bool = True
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
     """
     Perform a step of Reptile.
 
-    This function performs a single step of Reptile meta-learning algorithm. It updates
-    the `variables` using the provided `batch` and `cost_fn` through the inner loop
-    optimization.
-
     Parameters
     ----------
-    batch : ivy.Container
+    batch :
         The input batch.
-    cost_fn : Callable[[ivy.Container, ivy.Container], ivy.Array]
+    cost_fn :
         The cost function that receives the task-specific sub-batch and variables, and
         returns the cost.
-    variables : ivy.Container
+    variables :
         Variables to be optimized.
-    inner_grad_steps : int
+    inner_grad_steps :
         Number of gradient steps to perform during the inner loop.
-    inner_learning_rate : float
+    inner_learning_rate :
         The learning rate of the inner loop.
-    inner_optimization_step : Callable[
-            [Callable[[ivy.Array, ivy.Container], ivy.Array], ivy.Container, float],
-            ivy.Container,
-        ], optional
+    inner_optimization_step :
         The function used for the inner loop optimization. It takes the cost function,
         variables, and learning rate as arguments, and returns the updated variables.
         Default is `gradient_descent_update`.
-    batched : bool, optional
+    batched :
         Whether to batch along the time dimension and run the meta steps in batch.
         Default is `True`.
-    return_inner_v : Union[str, bool], optional
+    return_inner_v :
         Either `'first'`, `'all'`, or `False`. If `'first'`, the variables for the first
         task inner loop will also be returned. If `'all'`, variables for all tasks will
         be returned. Default is `False`.
-    num_tasks : Optional[int], optional
+    num_tasks :
         Number of unique tasks to inner-loop optimize for the meta step. Determined from
         the batch by default.
-    stop_gradients : bool, optional
+    stop_gradients :
         Whether to stop the gradients of the cost. Default is `True`.
 
     Returns
     -------
-    Tuple[ivy.Array, ivy.Container, Any]
+    Tuple
         The cost, the gradients with respect to the outer loop variables, and additional
         information from the inner loop optimization.
-
-    Examples
-    --------
-    >>> import ivy
-    >>> import numpy as np
-    >>> from ivy.meta import reptile_step
-
-    >>> # Define a dummy cost function
-    >>> def cost_fn(sub_batch, variables):
-    ...     return ivy.reduce_mean(variables * sub_batch)
-
-    >>> # Define the input batch and variables
-    >>> batch = ivy.Container(ivy.array(np.random.random((10, 5))), cont_type='batch')
-    >>> variables = ivy.Container(ivy.array(np.random.random((5,))), cont_type='weights')
-
-    >>> # Perform a step of Reptile
-    >>> cost, gradients, _ = reptile_step(
-    ...     batch, cost_fn, variables, inner_grad_steps=5, inner_learning_rate=0.1
-    ... )
-
-    >>> print(cost.shape)
-    (5,)
-    >>> print(gradients.shape)
-    (5,)
-
-    Notes
-    -----
-    The Reptile algorithm aims to approximate the optimal initialization of the
-    variables for a set of tasks. It achieves this by iteratively performing the
-    following steps:
-    1. For each task in the batch, perform a few gradient steps using the inner loop
-       optimization function.
-    2. Compute the average gradient across tasks.
-    3. Update the outer loop variables using the average gradient.
-
-    The `inner_grad_steps` and `inner_learning_rate` parameters control the number of
-    gradient steps performed and the learning rate used during the inner loop
-    optimization.
-
-    The `inner_optimization_step` parameter specifies the function used for the inner
-    loop optimization. It takes the cost function, variables, and learning rate as
-    arguments and returns the updated variables. The default function
-    `gradient_descent_update` performs gradient descent using the provided learning
-    rate.
-
-    The `return_inner_v` parameter controls which variables are returned from the inner
-    loop optimization. If set to `'first'`, the variables for the first task inner loop
-    will also be returned. If set to `'all'`, variables for all tasks will be returned.
-    By default, only the cost and gradients are returned.
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
 
-    rets = _train_tasks(
+    ret = _train_tasks(
         batch,
         None,
         None,
@@ -667,16 +609,17 @@ def reptile_step(
         num_tasks,
         stop_gradients,
     )
-    cost = rets[0]
+    cost = ret[0]
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
-    grads = rets[1] / inner_learning_rate
+    grads = ret[1] / inner_learning_rate
     if return_inner_v:
-        return cost, grads, rets[2]
+        return cost, grads, ret[2]
     return cost, grads
 
 
 reptile_step.computes_gradients = True
+
 
 
 # Second Order
