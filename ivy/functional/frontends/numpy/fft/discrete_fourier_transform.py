@@ -127,7 +127,7 @@ def rfftfreq(n, d=1.0):
     return results * val
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("int",)}, "numpy")
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def ifftn(a, s=None, axes=None, norm=None):
     a = ivy.array(a, dtype=ivy.complex128)
@@ -136,7 +136,6 @@ def ifftn(a, s=None, axes=None, norm=None):
     elif (norm != 'ortho' and norm != None):
         raise ValueError("Invalid norm value. Should be None or 'ortho'.")
 
-    a = ivy.array(a)
     if s is None:
         s = a.shape
 
@@ -146,7 +145,7 @@ def ifftn(a, s=None, axes=None, norm=None):
         axes = tuple(axes)
 
     for axis in axes:
-        a = ivy.ifft(a, n=s[axis], axis=axis, norm=norm)
+        a = ivy.ifft(a, dim=axis, norm=norm, n=s[axis])
 
     return a
 
