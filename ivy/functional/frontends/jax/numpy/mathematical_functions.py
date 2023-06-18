@@ -585,24 +585,16 @@ def polyadd(a1, a2):
 )
 @to_ivy_arrays_and_back
 def polyder(p, m=1):
-    p = ivy.atleast_1d(p)
-    n = p.size
 
     if m < 0:
         raise ValueError("Order of derivative must be positive.")
 
     if m == 0:
         return p
-
-    if n == 1 or m >= n:
-        return ivy.array(0, dtype=p.dtype)
-
-    result = ivy.array(
-        [factorial(n - 1 - k) // factorial(n - 1 - k - m) * p[k] for k in range(n - m)],
-        dtype=p.dtype,
-    )
-
-    return result
+    p_dtype = p.dtype
+    coeff = ivy.prod(ivy.expand_dims(ivy.arange(m, len(p), dtype=p_dtype))
+            - ivy.expand_dims(ivy.arange(m, dtype=p_dtype), axis=1), axis=0)
+    return (p[:-m] * coeff[::-1]).astype(p_dtype)
 
 
 @with_unsupported_dtypes(
@@ -712,3 +704,8 @@ def product(
 @to_ivy_arrays_and_back
 def round(x, decimals=0, /):
     return ivy.round(x, decimals)
+
+
+@to_ivy_arrays_and_back
+def conjugate(x, /):
+    return ivy.conj(x)
