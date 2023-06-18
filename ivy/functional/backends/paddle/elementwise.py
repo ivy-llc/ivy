@@ -154,7 +154,6 @@ def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.int8,
         paddle.int16,
         paddle.int32,
-        paddle.int64,
         paddle.uint8,
         paddle.float16,
         paddle.complex64,
@@ -164,6 +163,8 @@ def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         if paddle.is_complex(x):
             return paddle.complex(paddle.ceil(x.real()), paddle.ceil(x.imag()))
         return paddle.ceil(x.astype("float32")).astype(x.dtype)
+    elif x.dtype == paddle.int64:
+        return paddle.ceil(x.astype("float64")).astype(x.dtype)
     return paddle.ceil(x)
 
 
@@ -172,7 +173,6 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.int8,
         paddle.int16,
         paddle.int32,
-        paddle.int64,
         paddle.uint8,
         paddle.float16,
         paddle.complex64,
@@ -182,6 +182,8 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         if paddle.is_complex(x):
             return paddle.complex(paddle.floor(x.real()), paddle.floor(x.imag()))
         return paddle.floor(x.astype("float32")).astype(x.dtype)
+    elif x.dtype == paddle.int64:
+        return paddle.floor(x.astype("float64")).astype(x.dtype)
     return paddle.floor(x)
 
 
