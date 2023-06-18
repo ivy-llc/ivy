@@ -81,6 +81,18 @@ def _x_and_filters(
             dim = 2
     else:
         dim = len(data_format) - 2
+    if padding == "EXPLICIT":
+        padding = draw(
+            helpers.lists(
+                x=st.integers(min_value=0, max_value=2),
+                min_size=dim * 2,
+                max_size=dim * 2,
+            )
+        )
+        if data_format.find("C") == 1:
+            padding = [1, 1, 1, 1] + padding
+        else:
+            padding = [0, 0] + padding + [0, 0]
     if atrous:
         dilations = draw(st.integers(dilation_min, dilation_max))
     else:

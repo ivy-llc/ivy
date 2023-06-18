@@ -53,7 +53,9 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def mean(input, dim=None, keepdim=False, *, out=None):
+def mean(input, dim=None, axis=None, keepdim=False, *, out=None):
+    if dim is None:
+        dim = axis
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
@@ -160,6 +162,7 @@ def moveaxis(input, source, destination):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     temp_std = ivy.std(
         input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
