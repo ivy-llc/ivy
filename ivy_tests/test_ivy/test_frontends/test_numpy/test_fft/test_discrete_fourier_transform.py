@@ -200,7 +200,7 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
         force_tuple_axis=True
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
-    s=st.lists(st.integers()),
+    s=st.one_of(st.lists(st.integers()), st.none())
 )
 def test_ivy_rfft2(dtype_input_axis, norm, s, axes, frontend, test_flags, fn_tree, on_device):
     input_dtype, x, axis = dtype_input_axis
