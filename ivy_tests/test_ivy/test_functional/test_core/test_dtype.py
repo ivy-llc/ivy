@@ -20,7 +20,7 @@ def test_dtype_instances():
     assert ivy.exists(ivy.int32)
     assert ivy.exists(ivy.int64)
     assert ivy.exists(ivy.uint8)
-    if ivy.current_backend_str() not in ["torch", "paddle"]:
+    if ivy.current_backend_str() not in ["torch", "paddle", "mxnet"]:
         assert ivy.exists(ivy.uint16)
         assert ivy.exists(ivy.uint32)
         assert ivy.exists(ivy.uint64)
@@ -173,14 +173,6 @@ def test_broadcast_to(
     on_device,
     ground_truth_backend,
 ):
-    if backend_fw.current_backend_str() == "torch":
-        if input_dtype == "bfloat16" or (
-            "uint" in input_dtype and "uint8" not in input_dtype
-        ):
-            # Torch has no inference strategy for bfloat16
-            # Torch has no support for uint above uint8
-            return
-
     array, to_shape = array_and_shape
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -373,6 +365,20 @@ def test_result_type(
 
 # Extra Ivy Function Tests #
 # ------------------------ #
+
+
+# is_hashable_dtype
+@handle_test(
+    fn_tree="functional.ivy.is_hashable_dtype",
+    input_dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_is_hashable_dtype(
+    *,
+    input_dtype,
+):
+    input_dtype = input_dtype[0]
+    res = ivy.is_hashable_dtype(input_dtype)
+    assert res
 
 
 # as_ivy_dtype
@@ -886,7 +892,15 @@ _composition_1.test_unsupported_dtypes = {
         "complex64",
         "complex128",
     ),
-    "paddle": ("uint16","uint32","uint64","bfloat16","complex64", "complex128",),
+    "paddle": (
+        "uint16",
+        "uint32",
+        "uint64",
+        "bfloat16",
+        "complex64",
+        "complex128",
+    ),
+    "mxnet": ("uint16", "uint32", "uint64", "complex64", "complex128"),
 }
 
 
@@ -900,7 +914,12 @@ _composition_2.test_unsupported_dtypes = {
     "jax": ("complex64", "complex128"),
     "tensorflow": ("complex64", "complex128"),
     "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
-    "paddle": ("uint16","uint32","uint64","bfloat16",),
+    "paddle": (
+        "uint16",
+        "uint32",
+        "uint64",
+        "bfloat16",
+    ),
 }
 
 
@@ -936,7 +955,7 @@ def test_function_unsupported_dtypes(*, func):
             {
                 "torch": {
                     "cumsum": {
-                        "1.11.0": {"bfloat16", "uint8", "float16"},
+                        "2.0.1": {"bfloat16", "uint8", "float16"},
                         "1.12.1": set(),
                     }
                 }
@@ -979,7 +998,7 @@ def test_function_dtype_versioning(
             {
                 "torch": {
                     "cumsum": {
-                        "1.11.0": {"bfloat16", "uint8", "float16"},
+                        "2.0.1": {"bfloat16", "uint8", "float16"},
                         "1.12.1": set(),
                     }
                 }
@@ -1031,14 +1050,13 @@ def test_invalid_dtype(
     fw = backend_fw.current_backend_str()
     invalid_dtypes = backend_fw.invalid_dtypes
     if dtype_in in invalid_dtypes:
-        assert res is True, (
-            f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
-        )
+        assert (
+            res is True
+        ), f"fDtype = {dtype_in!r} is a valid dtype for {fw}, butresult = {res}"
     else:
-        assert res is False, (
-            f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, but"
-            f"result = {res}"
-        )
+        assert (
+            res is False
+        ), f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, butresult = {res}"
 
 
 # unset_default_dtype
@@ -1132,11 +1150,25 @@ def test_valid_dtype(
     fw = backend_fw.current_backend_str()
     valid_dtypes = backend_fw.valid_dtypes
     if dtype_in in valid_dtypes:
-        assert res is True, (
-            f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, but"
-            f"result = {res}"
-        )
+        assert (
+            res is True
+        ), f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, butresult = {res}"
     else:
-        assert res is False, (
-            f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
-        )
+        assert (
+            res is False
+        ), f"fDtype = {dtype_in!r} is a valid dtype for {fw}, butresult = {res}"
+
+
+# is_native_dtype
+@handle_test(
+    fn_tree="functional.ivy.is_native_dtype",
+    input_dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_is_native_dtype(
+    input_dtype,
+):
+    input_dtype = input_dtype[0]
+    if isinstance(input_dtype, str):
+        assert ivy.is_native_dtype(input_dtype) is False
+
+    assert ivy.is_native_dtype(ivy.as_native_dtype(input_dtype)) is True

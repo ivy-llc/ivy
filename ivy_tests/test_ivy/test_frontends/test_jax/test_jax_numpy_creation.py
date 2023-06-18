@@ -21,8 +21,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     as_list=st.booleans(),
     copy=st.booleans(),
-    ndmin=helpers.ints(min_value=0, max_value=10),
-    test_with_out=st.just(False),
+    ndmin=helpers.ints(min_value=0, max_value=9),
+    test_with_out=st.just(True),
 )
 def test_jax_numpy_array(
     *,
@@ -38,7 +38,7 @@ def test_jax_numpy_array(
     input_dtype, x = dtype_and_x
 
     if as_list:
-        if isinstance(x, list):
+        if isinstance(x, list) and "complex" not in input_dtype[0]:
             x = [list(i) if len(i.shape) > 0 else [float(i)] for i in x]
         else:
             x = list(x)
@@ -399,7 +399,7 @@ def test_jax_numpy_empty(
 @handle_frontend_test(
     fn_tree="jax.numpy.vander",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.tuples(
             st.integers(min_value=1, max_value=5),
         ),
@@ -538,7 +538,7 @@ def test_jax_numpy_empty_like(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        prototype=x[0],
         dtype=dtype[0],
         shape=shape,
     )
@@ -627,6 +627,48 @@ def test_jax_numpy_logspace(
     )
 
 
+# meshgrid
+@handle_frontend_test(
+    fn_tree="jax.numpy.meshgrid",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=1, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+        shared_dtype=True,
+    ),
+    sparse=st.booleans(),
+    indexing=st.sampled_from(["xy", "ij"]),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_meshgrid(
+    dtype_and_arrays,
+    sparse,
+    indexing,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, arrays = dtype_and_arrays
+    kw = {}
+    i = 0
+    for x_ in arrays:
+        kw["x{}".format(i)] = x_
+        i += 1
+    test_flags.num_positional_args = len(arrays)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kw,
+        sparse=sparse,
+        indexing=indexing,
+    )
+
+
 # linspace
 @handle_frontend_test(
     fn_tree="jax.numpy.linspace",
@@ -695,8 +737,7 @@ def test_jax_numpy_copy(
 # single
 @handle_frontend_test(
     fn_tree="jax.numpy.single",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_single(
     dtype_and_x,
@@ -712,5 +753,232 @@ def test_jax_numpy_single(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0]
+        x=x[0],
+    )
+
+
+# double
+@handle_frontend_test(
+    fn_tree="jax.numpy.double",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_jax_numpy_double(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# bool_
+@handle_frontend_test(
+    fn_tree="jax.numpy.bool_",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("bool")),
+)
+def test_jax_numpy_bool_(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.geomspace",
+    dtype_start_stop=_get_dtype_and_range(),
+    num=helpers.ints(min_value=5, max_value=50),
+    endpoint=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_geomspace(
+    dtype_start_stop,
+    num,
+    endpoint,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, start, stop = dtype_start_stop
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        start=start,
+        stop=stop,
+        num=num,
+        endpoint=endpoint,
+        dtype=input_dtypes[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.csingle",
+    aliases=["jax.numpy.complex64"],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_jax_numpy_csingle(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.cdouble",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex")
+    ),
+)
+def test_jax_numpy_cdouble(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.compress",
+    dtype_arr_ax=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=10,
+        max_dim_size=100,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    condition=helpers.array_values(
+        dtype=helpers.get_dtypes("bool"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
+        ),
+    ),
+    test_with_out=st.just(True),
+)
+def test_jax_numpy_compress(
+    *,
+    dtype_arr_ax,
+    condition,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, arr, ax = dtype_arr_ax
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition,
+        a=arr[0],
+        axis=ax,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.iterable",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_jax_numpy_iterable(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.size",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        abs_smallest_val=0,
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=100,
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+    ),
+)
+def test_jax_numpy_size(
+    dtype_x_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
     )

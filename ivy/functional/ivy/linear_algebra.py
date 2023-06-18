@@ -21,12 +21,12 @@ inf = float("inf")
 # -------------------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -34,7 +34,8 @@ def cholesky(
     upper: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the cholesky decomposition of the x matrix.
+    """
+    Compute the cholesky decomposition of the x matrix.
 
     Parameters
     ----------
@@ -61,7 +62,8 @@ def cholesky(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cholesky.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.cholesky.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -154,16 +156,15 @@ def cholesky(
     >>> print(y)
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
-
     """
     return current_backend(x).cholesky(x, upper=upper, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -175,9 +176,12 @@ def cross(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """The cross product of 3-element vectors. If x1 and x2 are multi-dimensional
-    arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
-    of corresponding 3-element vectors is independently computed.
+    """
+    Return cross product of 3-element vectors.
+
+    If x1 and x2 are multi- dimensional arrays (i.e., both have a rank greater than 1),
+    then the cross- product of each pair of corresponding 3-element vectors is
+    independently computed.
 
     Parameters
     ----------
@@ -203,7 +207,8 @@ def cross(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.cross.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -250,16 +255,16 @@ def cross(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
+    """Return the determinant of a square matrix (or a stack of square matrices)``x``.
 
     Parameters
     ----------
@@ -281,7 +286,8 @@ def det(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.det.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -320,12 +326,12 @@ def det(
     return current_backend(x).det(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -335,7 +341,7 @@ def diagonal(
     axis2: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
+    """Return the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -369,7 +375,8 @@ def diagonal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.diagonal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -497,19 +504,19 @@ def diagonal(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+    """Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
     matrices) and ``L`` is a vector (or a stack of vectors).
 
@@ -547,7 +554,8 @@ def eig(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.eigh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -558,12 +566,12 @@ def eig(
     return current_backend(x).eig(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -571,7 +579,7 @@ def eigh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+    """Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
     matrices) and ``L`` is a vector (or a stack of vectors).
 
@@ -612,7 +620,8 @@ def eigh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.eigh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -623,12 +632,12 @@ def eigh(
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -636,7 +645,8 @@ def eigvalsh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+    """
+    Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
 
     .. note::
        The function ``eig`` will be added in a future version of the specification, as
@@ -653,8 +663,9 @@ def eigvalsh(
         input array having shape (..., M, M) and whose innermost two dimensions form
         square matrices. Must have floating-point data type.
     UPLO
-        optional string being 'L' or 'U', specifying whether the calculation is done with
-        the lower triangular part of `x` ('L', default) or the upper triangular part ('U').
+        optional string being 'L' or 'U', specifying whether the calculation is done
+        with the lower triangular part of `x` ('L', default) or the
+        upper triangular part ('U').
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -668,7 +679,8 @@ def eigvalsh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.eigvalsh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -721,16 +733,15 @@ def eigvalsh(
         b: ivy.array([[-1., 1., 4.]]),
         c: ivy.array([[-8.88178420e-16, 5.35898387e-01, 7.46410179e+00]])
     }
-
     """
     return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def inner(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -738,7 +749,7 @@ def inner(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the inner product of two vectors ``x1`` and ``x2``.
+    """Return the inner product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
@@ -764,12 +775,12 @@ def inner(
     return current_backend(x1, x2).inner(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def inv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -777,7 +788,7 @@ def inv(
     adjoint: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the multiplicative inverse of a square matrix (or a stack of square
+    """Return the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
 
     Parameters
@@ -800,7 +811,8 @@ def inv(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.inv.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.inv.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -834,8 +846,9 @@ def inv(
     >>> x = ivy.Container(a=ivy.array([[11., 100., 10.],
     ...                                [300., 40., 20.], [25., 30, 100.]]),
     ...                   b=ivy.array([[4., 400., 50.], [10., 10., 15.],
-    ...                               [50., 5000., 40.]]), c=ivy.array([[25., 22., 100.],
-    ...                               [55, 20., 20.], [55., 50., 100.]]))
+    ...                               [50., 5000., 40.]]),
+    ...                   c=ivy.array([[25., 22., 100.], [55, 20., 20.],
+    ...                               [55., 50., 100.]]))
     >>> y = ivy.Container.static_inv(x)
     >>> print(y)
     {
@@ -855,11 +868,11 @@ def inv(
     return current_backend(x).inv(x, adjoint=adjoint, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -871,7 +884,8 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the matrix product.
+    """
+    Compute the matrix product.
 
     Parameters
     ----------
@@ -936,11 +950,11 @@ def matmul(
 
             array having shape (L,), and K != L.
 
-        -   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape
-            (..., L, N), and K != L.
+        -   if x1 is a one-dimensional array having shape (K,), x2 is an array
+            having shape (..., L, N), and K != L.
 
-        -   if x1 is an array having shape (..., M, K), x2 is a one-dimensional array having
-            shape (L,), and K != L.
+        -   if x1 is an array having shape (..., M, K), x2 is a one-dimensional array
+            having shape (L,), and K != L.
 
         -   if x1 is an array having shape (..., M, K), x2 is an array having shape
             (..., L, N), and K != L.
@@ -948,7 +962,8 @@ def matmul(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matmul.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matmul.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1001,7 +1016,6 @@ def matmul(
     >>> print(z)
     ivy.array([[ 1.],
        [11.]])
-
     """
     return current_backend(x1).matmul(
         x1,
@@ -1014,12 +1028,12 @@ def matmul(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1029,7 +1043,8 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the matrix p-norm.
+    """
+    Compute the matrix p-norm.
 
     Parameters
     ----------
@@ -1093,7 +1108,8 @@ def matrix_norm(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_norm.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matrix_norm.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1158,28 +1174,29 @@ def matrix_norm(
         b: ivy.array([[[4.]], 
                       [[12.]]])
     }
-
     """
     return current_backend(x).matrix_norm(
         x, ord=ord, axis=axis, keepdims=keepdims, out=out
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Raises a square matrix (or a stack of square matrices) x to an integer power n.
+    """
+    Raise a square matrix (or a stack of square matrices) x to an integer power n.
 
     Parameters
     ----------
         x
-            input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+            input array having shape (..., M, M) and whose innermost two dimensions form
+            square matrices.
             Should have a floating-point data type.
         n
             integer exponent.
@@ -1187,16 +1204,21 @@ def matrix_power(
     Returns
     -------
         ret
-            if n is equal to zero, an array containing the identity matrix for each square matrix.
-            If n is less than zero, an array containing the inverse of each square matrix raised to the absolute value of n,
-            provided that each square matrix is invertible.
-            If n is greater than zero, an array containing the result of raising each square matrix to the power n.
-            The returned array must have the same shape as x and a floating-point data type determined by Type Promotion Rules.
+            if n is equal to zero, an array containing the identity matrix for each
+            square matrix.
+            If n is less than zero, an array containing the inverse of each
+            square matrix raised to the absolute value of n, provided that each
+            square matrix is invertible.
+            If n is greater than zero, an array containing the result of raising
+            each square matrix to the power n.
+            The returned array must have the same shape as x and a floating-point
+            data type determined by Type Promotion Rules.
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_power.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matrix_power.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1253,27 +1275,28 @@ def matrix_power(
         b: ivy.array([[1., 0.],
                       [0., 0.]])
     }
-
     """
     return current_backend(x).matrix_power(x, n, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the rank (i.e., number of non-zero singular values) of a matrix (or a
-    stack of matrices).
+    """
+    Return the rank (i.e., number of non-zero singular values) of a matrix (or a stack
+    of matrices).
 
     Parameters
     ----------
@@ -1295,6 +1318,12 @@ def matrix_rank(
         where ``eps`` must be the machine epsilon associated with the floating-point
         data type determined by :ref:`type-promotion` (as applied to ``x``).
         Default: ``None``.
+    
+    hermitian
+        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed to be Hermitian,
+        enabling a more efficient method for finding eigenvalues, but x is not checked inside the function. 
+        Instead, We just use the lower triangular of the matrix to compute.
+        Default: ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1309,7 +1338,8 @@ def matrix_rank(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_rank.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matrix_rank.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1356,18 +1386,18 @@ def matrix_rank(
         a:ivy.array(2.),
         b:ivy.array(1.)
     }
-
-
     """
-    return current_backend(x).matrix_rank(x, atol=atol, rtol=rtol, out=out)
+    return current_backend(x).matrix_rank(
+        x, atol=atol, rtol=rtol, hermitian=hermitian, out=out
+    )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def matrix_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1399,7 +1429,8 @@ def matrix_transpose(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matrix_transpose.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matrix_transpose.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1450,11 +1481,11 @@ def matrix_transpose(
     return current_backend(x).matrix_transpose(x, conjugate=conjugate, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1462,7 +1493,7 @@ def outer(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the outer product of two vectors ``x1`` and ``x2``.
+    """Return the outer product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
@@ -1487,7 +1518,8 @@ def outer(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.outer.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.outer.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1537,12 +1569,12 @@ def outer(
     return current_backend(x1, x2).outer(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1550,7 +1582,7 @@ def pinv(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
+    """Return the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
     ``x``.
 
     Parameters
@@ -1584,7 +1616,8 @@ def pinv(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.pinv.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.pinv.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1608,12 +1641,12 @@ def pinv(
     return current_backend(x).pinv(x, rtol=rtol, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def qr(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1622,7 +1655,7 @@ def qr(
     out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
-    Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
+    Return the qr decomposition x = QR of a full column rank matrix (or a stack of
     matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
     upper-triangular matrix (or a stack of matrices).
 
@@ -1661,7 +1694,8 @@ def qr(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.qr.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.qr.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1672,40 +1706,53 @@ def qr(
     return current_backend(x).qr(x, mode=mode, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """
-    Returns the sign and the natural logarithm of the absolute value of the determinant of a square matrix (or a stack of square matrices) ``x``.
+    Return the sign and the natural logarithm of the absolute value of the determinant
+    of a square matrix (or a stack of square matrices) ``x``.
     .. note::
-       The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.
-    
+       The purpose of this function is to calculate the determinant more accurately
+       when the determinant is either very small or very large, as calling ``det`` may
+       overflow or underflow.
+
     Parameters
     ----------
     x:
-        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Should have a real-valued floating-point data type.
-    
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions
+        form square matrices. Should have a real-valued floating-point data type.
+
     Returns
     -------
     ret:
         a namedtuple (``sign``, ``logabsdet``) whose
-        -   first element must have the field name ``sign`` and must be an array containing a number representing the sign of the determinant for each square matrix.
-        -   second element must have the field name ``logabsdet`` and must be an array containing the determinant for each square matrix.
-        For a real matrix, the sign of the determinant must be either ``1``, ``0``, or ``-1``.
-        Each returned array must have shape ``shape(x)[:-2]`` and a real-valued floating-point data type determined by :ref:`type-promotion`.
+        -   first element must have the field name ``sign`` and must be an array
+        containing a number representing the sign of the determinant for
+        each square matrix.
+        -   second element must have the field name ``logabsdet`` and must be an array
+        containing the determinant for each square matrix.
+        For a real matrix, the sign of the determinant must be
+        either ``1``, ``0``, or ``-1``.
+        Each returned array must have shape ``shape(x)[:-2]`` and a real-valued
+        floating-point data type determined by :ref:`type-promotion`.
         .. note::
-           If a determinant is zero, then the corresponding ``sign`` should be ``0`` and ``logabsdet`` should be ``-infinity``; however, depending on the underlying algorithm, the returned result may differ. In all cases, the determinant should be equal to ``sign * exp(logsabsdet)`` (although, again, the result may be subject to numerical precision errors).
+           If a determinant is zero, then the corresponding ``sign`` should be ``0``
+           and ``logabsdet`` should be ``-infinity``; however, depending on the
+           underlying algorithm, the returned result may differ. In all cases,
+           the determinant should be equal to ``sign * exp(logsabsdet)``
+           (although, again, the result may be subject to numerical precision errors).
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/\
-        signatures.linalg.slogdet.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.slogdet.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1753,11 +1800,11 @@ def slogdet(
     return current_backend(x).slogdet(x)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1766,7 +1813,7 @@ def solve(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns the solution to the system of linear equations represented by the well-
+    Return the solution to the system of linear equations represented by the well-
     determined (i.e., full rank) linear matrix equation AX = B.
 
     Parameters
@@ -1796,7 +1843,8 @@ def solve(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.solve.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.solve.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1807,11 +1855,11 @@ def solve(
     return current_backend(x1, x2).solve(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1819,7 +1867,7 @@ def svd(
     compute_uv: bool = True,
     full_matrices: bool = True,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-    """Returns a singular value decomposition A = USVh of a matrix (or a stack of
+    """Return a singular value decomposition A = USVh of a matrix (or a stack of
     matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal
     columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh``
     is a matrix (or a stack of matrices) with orthonormal rows.
@@ -1838,11 +1886,12 @@ def svd(
         Default: ``True``.
     compute_uv
         If ``True`` then left and right singular vectors will be computed and returned
-        in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be computed,
-        which can be significantly faster.
+        in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be
+        computed, which can be significantly faster.
     .. note::
-        with backend set as torch, svd with still compute left and right singular vectors irrespective
-        of the value of compute_uv, however Ivy will still only return the singular values.
+        with backend set as torch, svd with still compute left and right singular
+        vectors irrespective of the value of compute_uv, however Ivy will still
+        only return the singular values.
 
     Returns
     -------
@@ -1879,7 +1928,8 @@ def svd(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svd.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.svd.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1930,16 +1980,16 @@ def svd(
     return current_backend(x).svd(x, compute_uv=compute_uv, full_matrices=full_matrices)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Returns the singular values of a matrix (or a stack of matrices) ``x``.
+    """Return the singular values of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -1960,7 +2010,8 @@ def svdvals(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svdvals.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.svdvals.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2054,11 +2105,11 @@ def svdvals(
     return current_backend(x).svdvals(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2067,7 +2118,8 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a tensor contraction of x1 and x2 over specific axes.
+    """
+    Return a tensor contraction of x1 and x2 over specific axes.
 
     Parameters
     ----------
@@ -2091,7 +2143,8 @@ def tensordot(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.tensordot.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.tensordot.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2130,17 +2183,15 @@ def tensordot(
         a: ivy.array(89.),
         b: ivy.array(76.)
     }
-
-
     """
     return current_backend(x1, x2).tensordot(x1, x2, axes=axes, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def tensorsolve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2149,7 +2200,6 @@ def tensorsolve(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-
     ndim1 = ivy.get_num_dims(x1)
     ndim2 = ivy.get_num_dims(x2)
 
@@ -2169,8 +2219,8 @@ def tensorsolve(
 
     if ivy.shape(ivy.flatten(x1))[0] != prod**2:
         raise ivy.utils.exceptions.IvyException(
-            "Input arrays must satisfy the requirement \
-            prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
+            "Input arrays must satisfy the requirement "
+            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
         )
 
     x1 = ivy.reshape(x1, (prod, prod))
@@ -2181,12 +2231,12 @@ def tensorsolve(
     # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2196,7 +2246,7 @@ def trace(
     axis2: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the sum along the specified diagonals of a matrix (or a stack of
+    """Return the sum along the specified diagonals of a matrix (or a stack of
     matrices) ``x``.
 
     Parameters
@@ -2296,11 +2346,11 @@ def trace(
     return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2309,7 +2359,8 @@ def vecdot(
     axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the (vector) dot product of two arrays.
+    """
+    Compute the (vector) dot product of two arrays.
 
     Parameters
     ----------
@@ -2344,30 +2395,30 @@ def vecdot(
 
         -   if provided an invalid ``axis``.
 
-        -   if the size of the axis over which to compute the dot product is not the same
-            for both ``x1`` and ``x2``.
+        -   if the size of the axis over which to compute the dot product is not
+            the same for both ``x1`` and ``x2``.
 
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.vecdot.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.vecdot.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x1).vecdot(x1, x2, axis=axis, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2378,7 +2429,7 @@ def vector_norm(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
+    r"""Compute the vector norm of a vector (or batch of vectors) ``x``.
 
     Parameters
     ----------
@@ -2444,7 +2495,8 @@ def vector_norm(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.vector_norm.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.vector_norm.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2508,12 +2560,12 @@ def vector_norm(
 # ------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def diag(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2521,8 +2573,9 @@ def diag(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the specified diagonals of the input array,
-    or an array with the input array's elements as diagonals.
+    """
+    Return the specified diagonals of the input array, or an array with the input
+    array's elements as diagonals.
 
     Parameters
     ----------
@@ -2548,7 +2601,8 @@ def diag(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.diagonal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2589,12 +2643,12 @@ def diag(
     return current_backend(x).diag(x, k=k, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def vander(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2603,12 +2657,11 @@ def vander(
     increasing: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Generates a Vandermonde matrix.
-    The columns of the output matrix are elementwise powers
-    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x.
-    If increasing is True, the order of the columns is reversed
-    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression
-    in each row is named for Alexandre-Theophile Vandermonde.
+    """
+    Generate a Vandermonde matrix. The columns of the output matrix are elementwise
+    powers of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. If increasing is True,
+    the order of the columns is reversed x^0, x^1, ..., x^{(N-1)}. Such a matrix with a
+    geometric progression in each row is named for Alexandre-Theophile Vandermonde.
 
     Parameters
     ----------
@@ -2659,21 +2712,21 @@ def vander(
         [ 1,  5, 25]]
         )
     """
-    return current_backend().vander(x, N=N, increasing=increasing, out=out)
+    return current_backend(x).vander(x, N=N, increasing=increasing, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Given vector, return the associated `Skew-symmetric matrix
-        <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product/>`_.
-
+    """
+    Given vector, return the associated `Skew-symmetric matrix
+    <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product/>`_.
 
     Parameters
     ----------
@@ -2692,16 +2745,15 @@ def vector_to_skew_symmetric_matrix(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def lu_factor(
     A: Union[ivy.Array, ivy.NativeArray],
     /,

@@ -111,7 +111,7 @@ Integrating custom classes with Ivy
 
 Ivy's functional API and its functions can easily be integrated with non-Ivy classes. Whether these classes are ones that inherit from Ivy or completely standalone custom classes, using Ivy's :code:`__ivy_array_function__`, Ivy's functions can handle inputs of those types.
 
-To make use of that feature, the class must contain an implementation for these functions and it must contain an implementation for the function :code:`__ivy_array_function__`. If a non-Ivy class is passed to an Ivy function, a call to this class's :code:`__ivy_array_function__` is made which directs Ivy's function to handle that input type correctly. This allows users to define custome implementations for any of the functions that can be found in Ivy's functional API which would further make it easy to integrate those classes with other Ivy projects.
+To make use of that feature, the class must contain an implementation for these functions and it must contain an implementation for the function :code:`__ivy_array_function__`. If a non-Ivy class is passed to an Ivy function, a call to this class's :code:`__ivy_array_function__` is made which directs Ivy's function to handle that input type correctly. This allows users to define custom implementations for any of the functions that can be found in Ivy's functional API which would further make it easy to integrate those classes with other Ivy projects.
 
 **Note**
 This functionality is inspired by `NumPy's`_ :code:`__ivy_array_function__` and `PyTorch's`_ :code:`__torch_function__`. 

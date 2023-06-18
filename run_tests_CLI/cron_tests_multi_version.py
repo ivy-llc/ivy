@@ -3,51 +3,51 @@ import sys
 
 # BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 torch_req = [
-    "torch/1.4.0",
-    "torch/1.5.0",
-    "torch/1.10.1",
-    "torch/1.10.2",
-    "torch/1.11.0",
-    "torch/1.12.0",
+    # "torch/1.4.0",
+    # "torch/1.5.0",
+    # "torch/1.10.1",
+    # "torch/1.10.2",
+    # "torch/2.0.1",
+    # "torch/1.12.0",
     "torch/1.12.1",
     "torch/1.13.0",
 ]
 tensorflow_req = [
-    "tensorflow/2.2.0",
-    "tensorflow/2.2.1",
-    "tensorflow/2.2.2",
-    "tensorflow/2.4.4",
-    "tensorflow/2.9.0",
-    "tensorflow/2.9.1",
-    "tensorflow/2.9.1",
+    # "tensorflow/2.2.0",
+    # "tensorflow/2.2.1",
+    # "tensorflow/2.2.2",
+    # "tensorflow/2.4.4",
+    # "tensorflow/2.9.0",
+    # "tensorflow/2.12.0",
+    "tensorflow/2.12.0",
     "tensorflow/2.9.2",
 ]
 jax_only_req = [
-    "jax/0.1.60",
-    "jax/0.1.61",
-    "jax/0.3.10",
-    "jax/0.3.13",
-    "jax/0.3.14",
-    "jax/0.3.14",
-    "jax/0.3.15",
+    # "jax/0.1.60",
+    # "jax/0.1.61",
+    # "jax/0.3.10",
+    # "jax/0.3.13",
+    # "jax/0.4.10",
+    # "jax/0.4.10",
+    # "jax/0.3.15",
     "jax/0.3.16",
     "jax/0.3.17",
 ]
 jaxlib_req = [
-    "jaxlib/0.1.50",
-    "jaxlib/0.1.60",
-    "jaxlib/0.1.61",
-    "jaxlib/0.3.10",
-    "jaxlib/0.3.14",
-    "jaxlib/0.3.15",
+    # "jaxlib/0.1.50",
+    # "jaxlib/0.1.60",
+    # "jaxlib/0.1.61",
+    # "jaxlib/0.3.10",
+    # "jaxlib/0.4.10",
+    # "jaxlib/0.3.15",
     "jaxlib/0.3.20",
     "jaxlib/0.3.22",
 ]
 numpy_req = [
-    "numpy/1.17.3",
-    "numpy/1.17.4",
-    "numpy/1.23.1",
-    "numpy/1.24.0",
+    # "numpy/1.17.3",
+    # "numpy/1.17.4",
+    # "numpy/1.23.1",
+    # "numpy/1.24.0",
     "numpy/1.24.1",
     "numpy/1.24.2",
 ]
@@ -64,7 +64,7 @@ framework_versions = {
 
 run_iter = int(sys.argv[1])
 os.system(
-    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names" # noqa
+    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names"  # noqa
 )
 test_names_without_backend = []
 test_names = []

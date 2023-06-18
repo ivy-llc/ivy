@@ -9,7 +9,8 @@ TO_IGNORE = ["shape"]
 
 
 def _wrap_function(function_name: str) -> Callable:
-    """Wraps the function called `function_name`.
+    """
+    Wrap the function called `function_name`.
 
     Parameters
     ----------
@@ -29,13 +30,15 @@ def _wrap_function(function_name: str) -> Callable:
     >>> x = ivy.array([-1])
     >>> print(absolute(x))
     ivy.array([1])
-
     """
 
     def new_function(self, *args, **kwargs):
-        """Add the data of the current array from which the instance function is invoked
-        as the first arg parameter or kwarg parameter. Return the new function with
-        the name function_name and the new args variable or kwargs as the new inputs.
+        """
+        Add the data of the current array from which the instance function is invoked as
+        the first arg parameter or kwarg parameter.
+
+        Return the new function with the name function_name and the new
+        args variable or kwargs as the new inputs.
         """
         function = ivy.__dict__[function_name]
         # gives us the position and name of the array argument
@@ -60,8 +63,9 @@ def _wrap_function(function_name: str) -> Callable:
 def add_ivy_array_instance_methods(
     cls: Type[ivy.Array], modules: List[ModuleType], to_ignore: Iterable = ()
 ):
-    """Loop over all ivy modules such as activations, general, etc. and add
-    the module functions to ivy arrays as instance methods using _wrap_function.
+    """
+    Loop over all ivy modules such as activations, general, etc. and add the module
+    functions to ivy arrays as instance methods using _wrap_function.
 
     Parameters
     ----------
@@ -83,7 +87,6 @@ def add_ivy_array_instance_methods(
     >>> ivy.add_ivy_array_instance_methods(ArrayExample, [activations])
     >>> print(hasattr(ArrayExample, "relu"), hasattr(ArrayExample, "softmax"))
     True True
-
     """
     to_ignore = TO_IGNORE + list(to_ignore)
     for module in modules:

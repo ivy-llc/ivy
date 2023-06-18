@@ -28,7 +28,7 @@ def sum(
     if ivy.is_array(where):
         x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
     if initial is not None:
-        s = ivy.shape(x, as_array=True)
+        s = ivy.to_list(ivy.shape(x, as_array=True))
         s[axis] = 1
         header = ivy.full(ivy.Shape(tuple(s)), initial)
         if ivy.is_array(where):
@@ -79,9 +79,9 @@ def nansum(
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, fill_values), out=out)
     if initial is not None:
-        s = ivy.shape(a, as_array=True)
-        s[axis] = 1
-        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a[axis] = 1
+        s = ivy.shape(a, as_array=False)
+        header = ivy.full(s, initial)
         a = ivy.concat([header, a], axis=axis)
     return ivy.sum(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
@@ -98,9 +98,9 @@ def nanprod(
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, fill_values), out=out)
     if initial is not None:
-        s = ivy.shape(a, as_array=True)
-        s[axis] = 1
-        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a[axis] = 1
+        s = ivy.shape(a, as_array=False)
+        header = ivy.full(s, initial)
         a = ivy.concat([header, a], axis=axis)
     return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
@@ -138,3 +138,19 @@ def nancumsum(a, /, axis=None, dtype=None, out=None):
 @to_ivy_arrays_and_back
 def diff(x, /, *, n=1, axis=-1, prepend=None, append=None):
     return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)
+
+
+@to_ivy_arrays_and_back
+def ediff1d(ary, to_end=None, to_begin=None):
+    diffs = ivy.diff(ary)
+    if to_begin is not None:
+        if not isinstance(to_begin, (list, tuple)):
+            to_begin = [to_begin]
+        to_begin = ivy.array(to_begin)
+        diffs = ivy.concat((to_begin, diffs))
+    if to_end is not None:
+        if not isinstance(to_end, (list, tuple)):
+            to_end = [to_end]
+        to_end = ivy.array(to_end)
+        diffs = ivy.concat((diffs, to_end))
+    return diffs

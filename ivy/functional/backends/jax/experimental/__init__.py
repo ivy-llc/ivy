@@ -4,7 +4,6 @@ import jax
 backend_version = {"version": jax.__version__}
 
 # local sub-modules
-# flake8: noqa
 from .activations import *
 from .converters import *
 from .creation import *

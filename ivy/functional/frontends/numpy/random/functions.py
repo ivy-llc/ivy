@@ -79,13 +79,86 @@ def beta(a, b, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def shuffle(x, /):
+def shuffle(x, axis=0, /):
     if isinstance(x, int):
         x = ivy.arange(x)
-    return ivy.shuffle(x)
+    return ivy.shuffle(x, axis)
 
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def standard_normal(size=None):
     return ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_gamma(shape, size=None):
+    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def binomial(n, p, size=None):
+    if p < 0 or p > 1:
+        raise ValueError("p must be in the interval (0, 1)")
+    if n < 0:
+        raise ValueError("n must be strictly positive")
+    if size is None:
+        size = 1
+    else:
+        size = size
+    if isinstance(size, int):
+        size = (size,)
+    binomial_numbers = ivy.zeros(
+        size, dtype=int
+    )  # Initialize an array to store the binomial numbers
+
+    for i in ivy.ndindex(size):
+        successes = 0
+        for j in range(n):
+            uniform_number = (
+                ivy.random_uniform()
+            )  # Generate a random number from a uniform distribution
+            if uniform_number < p:
+                successes += 1
+        binomial_numbers[i] = successes  # Store the number of successes
+    return binomial_numbers
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def chisquare(df, size=None):
+    df = ivy.array(df)  # scalar ints and floats are also array_like
+    if ivy.any(df <= 0):
+        raise ValueError("df <= 0")
+
+    # ivy.gamma() throws an error if both alpha is an array and a shape is passed
+    # so this part broadcasts df into the shape of `size`` first to keep it happy.
+    if size is not None:
+        df = df * ivy.ones(size)
+
+    return ivy.gamma(df / 2, 2, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def lognormal(mean=0.0, sigma=1.0, size=None):
+    ret = ivy.exp(ivy.random_normal(mean=mean, std=sigma, shape=size, dtype="float64"))
+    return ret
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def negative_binomial(n, p, size=None):
+    if p <= 0 or p >= 1:
+        raise ValueError("p must be in the interval (0, 1)")
+    if n <= 0:
+        raise ValueError("n must be strictly positive")
+    # numpy implementation uses scale = (1 - p) / p
+    scale = (1 - p) / p
+    # poisson requires shape to be a tuple
+    if isinstance(size, int):
+        size = (size,)
+    lambda_ = ivy.gamma(n, scale, shape=size)
+    return ivy.poisson(lam=lambda_, shape=size)

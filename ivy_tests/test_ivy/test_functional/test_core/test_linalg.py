@@ -361,15 +361,25 @@ def test_matmul(
     )
 
 
+@st.composite
+def _det_helper(draw):
+    square = draw(helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])))
+    shape_prefix = draw(helpers.get_shape())
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=2,
+            max_value=5,
+            shape=shape_prefix + square,
+        )
+    )
+    return dtype_x
+
+
 # det
 @handle_test(
     fn_tree="functional.ivy.det",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=2,
-        max_value=5,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    dtype_x=_det_helper(),
 )
 def test_det(
     *,
@@ -381,6 +391,7 @@ def test_det(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -630,13 +641,7 @@ def test_outer(
 # execute with grads error
 @handle_test(
     fn_tree="functional.ivy.slogdet",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=2,
-        max_value=5,
-        safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ),
+    dtype_x=_det_helper(),
     test_with_out=st.just(False),
 )
 def test_slogdet(
@@ -886,9 +891,9 @@ def test_trace(
         small_abs_safety_factor=100,
         safety_factor_scale="log",
         min_num_dims=1,
-        max_num_dims=5,
+        max_num_dims=4,
         min_dim_size=1,
-        max_dim_size=5,
+        max_dim_size=4,
     ),
 )
 def test_vecdot(
@@ -925,11 +930,14 @@ def test_vecdot(
         min_value=-1e04,
         max_value=1e04,
         abs_smallest_val=1e-04,
+        max_axes_size=2,
+        force_int_axis=True,
     ),
     kd=st.booleans(),
     ord=st.one_of(
-        helpers.ints(min_value=1, max_value=2),
-        helpers.floats(min_value=1.0, max_value=2.0),
+        helpers.ints(min_value=0, max_value=5),
+        helpers.floats(min_value=1.0, max_value=5.0),
+        st.sampled_from((float("inf"), -float("inf"))),
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
 )
@@ -1152,28 +1160,23 @@ def test_svd(
 # matrix_norm
 @handle_test(
     fn_tree="functional.ivy.matrix_norm",
-    dtype_value_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=2), key="shape"),
+    ground_truth_backend="torch",
+    dtype_value_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=10,
-        min_value=-1e20,
-        max_value=1e20,
-        large_abs_safety_factor=10,
-        small_abs_safety_factor=10,
-        safety_factor_scale="log",
+        valid_axis=True,
+        min_axes_size=2,
+        max_axes_size=2,
+        force_tuple_axis=True,
+        allow_neg_axes=False,
     ),
     kd=st.booleans(),
-    axis=st.just((-2, -1)),
-    ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
+    ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), float("inf"), "fro", "nuc")),
 )
 def test_matrix_norm(
     *,
-    dtype_value_shape,
+    dtype_value_axis,
     kd,
-    axis,
     ord,
     test_flags,
     backend_fw,
@@ -1181,8 +1184,8 @@ def test_matrix_norm(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_value_shape
-    assume(matrix_is_stable(x[0], cond_limit=10))
+    dtype, x, axis = dtype_value_axis
+    assume(np.all(matrix_is_stable(np.array(x), cond_limit=10)).item())
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -1201,32 +1204,41 @@ def test_matrix_norm(
 
 @st.composite
 def _matrix_rank_helper(draw):
-    dtype_x = draw(
+    _batch_shape = draw(
+        helpers.get_shape(min_num_dims=1, max_num_dims=3, min_dim_size=1)
+    )
+    _batch_dim = draw(st.sampled_from([(), _batch_shape]))
+    _matrix_dim = draw(helpers.ints(min_value=2, max_value=20))
+    shape = _batch_dim + (_matrix_dim, _matrix_dim)
+    dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
-            shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+            shape=shape,
             min_value=-1e05,
             max_value=1e05,
             abs_smallest_val=1e-05,
             safety_factor_scale="log",
         )
     )
-    return dtype_x
+    if np.all(x[0].T == x[0]):
+        hermitian = draw(st.booleans())
+    else:
+        hermitian = False
+    return dtype, x[0], hermitian
 
 
 # matrix_rank
 @handle_test(
     fn_tree="functional.ivy.matrix_rank",
-    dtype_x=_matrix_rank_helper(),
-    atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
-    | st.just(None),
-    rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
-    | st.just(None),
+    dtype_x_hermitian=_matrix_rank_helper(),
+    atol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    ground_truth_backend="numpy",
 )
 def test_matrix_rank(
     *,
-    dtype_x,
+    dtype_x_hermitian,
     atol,
     rtol,
     test_flags,
@@ -1235,8 +1247,8 @@ def test_matrix_rank(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_x
-    x_temp = x[0]
+    dtype, x, hermitian = dtype_x_hermitian
+    x_temp = x
     for x_i in x_temp.reshape(-1, *x_temp.shape[-2:]):
         assume(round(np.linalg.det(x_i.astype("float64")), 1) != 0.0)
     helpers.test_function(
@@ -1246,9 +1258,10 @@ def test_matrix_rank(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
+        x=x,
         atol=atol,
-        rtol_=rtol,
+        rtol=rtol,
+        hermitian=hermitian,
     )
 
 

@@ -21,9 +21,9 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.linear. This method simply
-        wraps the function, and so the docstring for ivy.linear also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.linear. This method simply wraps the
+        function, and so the docstring for ivy.linear also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -58,7 +58,6 @@ class _ArrayWithLayers(abc.ABC):
         ivy.array([[ 16.4,  35.2,  54. ],
                    [ 36.2,  84.7, 133. ],
                    [ 56. , 134. , 212. ]])
-
         """
         return ivy.linear(
             self._data,
@@ -80,9 +79,9 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.dropout. This method simply
-        wraps the function, and so the docstring for ivy.droput also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.dropout. This method simply wraps the
+        function, and so the docstring for ivy.droput also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -159,9 +158,9 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.dropout1d. This method simply
-        wraps the function, and so the docstring for ivy.droput1d also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.dropout1d. This method simply wraps the
+        function, and so the docstring for ivy.droput1d also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -172,7 +171,7 @@ class _ArrayWithLayers(abc.ABC):
         training
             Turn on dropout if training, turn off otherwise. Default is ``True``.
         data_format
-            "NWC" or "NCW". Default is ``"NCW"``.
+            "NWC" or "NCW". Default is ``"NWC"``.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -197,6 +196,54 @@ class _ArrayWithLayers(abc.ABC):
             out=out,
         )
 
+    def dropout2d(
+        self: ivy.Array,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NHWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.dropout2d. This method simply wraps the
+        function, and so the docstring for ivy.droput1d also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array x to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NHWC" or "NCHW". Default is ``"NHWC"``.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the output after dropout is performed.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 1, 1], [2, 2, 2]])
+        >>> y = x.dropout2d(0.5)
+        >>> print(y)
+        ivy.array([[2., 0., 2.], [0., 0., 4.]])
+        """
+        return ivy.dropout2d(
+            self._data,
+            prob,
+            training=training,
+            data_format=data_format,
+            out=out,
+        )
+
     def dropout3d(
         self: ivy.Array,
         prob: float,
@@ -207,9 +254,9 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.dropout3d. This method simply
-        wraps the function, and so the docstring for ivy.droput3d also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.dropout3d. This method simply wraps the
+        function, and so the docstring for ivy.droput3d also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -229,7 +276,6 @@ class _ArrayWithLayers(abc.ABC):
         -------
         ret
             Result array of the output after dropout is performed.
-
         """
         return ivy.dropout3d(
             self._data,
@@ -250,10 +296,10 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.scaled_dot_product_attention.
-        This method simply wraps the function, and so the docstring for
-        ivy.scaled_dot_product_attention also applies to this method with
-        minimal changes.
+        ivy.Array instance method variant of ivy.scaled_dot_product_attention. This
+        method simply wraps the function, and so the docstring for
+        ivy.scaled_dot_product_attention also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -308,7 +354,6 @@ class _ArrayWithLayers(abc.ABC):
         >>> q.scaled_dot_product_attention(k, v, 1, mask=mask, out=out)
         >>> print(out)
         ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
-
         """
         return ivy.scaled_dot_product_attention(
             self._data,
@@ -362,9 +407,9 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.conv1d. This method simply
-        wraps the function, and so the docstring for ivy.conv1d also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.conv1d. This method simply wraps the
+        function, and so the docstring for ivy.conv1d also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -549,9 +594,9 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.conv2d`. This method simply
-        wraps the function, and so the docstring for `ivy.conv2d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.conv2d`. This method simply wraps the
+        function, and so the docstring for `ivy.conv2d` also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -593,7 +638,6 @@ class _ArrayWithLayers(abc.ABC):
                   [[3.],[6.],[9.]],
                   [[2.],[4.],[6.]]
                   ]])
-
         """
         return ivy.conv2d(
             self,
@@ -682,9 +726,9 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.conv3d`. This method simply
-        wraps the function, and so the docstring for `ivy.conv3d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.conv3d`. This method simply wraps the
+        function, and so the docstring for `ivy.conv3d` also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -719,7 +763,6 @@ class _ArrayWithLayers(abc.ABC):
         >>> result = x.conv3d(filters, 2, 'SAME')
         >>> print(result)
         ivy.array([[[[[4.],[4.]],[[4.],[4.]]],[[[4.],[4.]],[[4.],[4.]]]]])
-
         """
         return ivy.conv3d(
             self._data,
@@ -744,9 +787,9 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.conv3d_transpose`. This
-        method simply wraps the function, and so the docstring for
-        `ivy.conv3d_transpose` also applies to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.conv3d_transpose`. This method simply
+        wraps the function, and so the docstring for `ivy.conv3d_transpose` also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -809,9 +852,9 @@ class _ArrayWithLayers(abc.ABC):
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Tuple[ivy.Array, ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.lstm_update. This method simply
-        wraps the function, and so the docstring for ivy.lstm_update also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.lstm_update. This method simply wraps
+        the function, and so the docstring for ivy.lstm_update also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -847,7 +890,6 @@ class _ArrayWithLayers(abc.ABC):
         (6, 20, 5)
         >>> result[1].shape
         (6, 5)
-
         """
         return ivy.lstm_update(
             self._data,

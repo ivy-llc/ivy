@@ -212,7 +212,7 @@ The signature for :func:`ivy.tan` is as follows:
 
 Let's start with the functional examples, with :class:`ivy.Array` instances in the input:
 
-.. code-block:: python
+.. parsed-literal::
 
     Examples
     --------
@@ -256,7 +256,7 @@ Point 5 is not relevant, as there is only one array input, and so broadcasting r
 We then also add an example with an :class:`ivy.Container` input, in order to satisfy point 6.
 Point 7 is not relevant as there is only one input argument (excluding :code:`out` which does not count, as it essentially acts as an output)
 
-.. code-block:: python
+.. parsed-literal::
 
     With :class:`ivy.Container` input:
 
@@ -273,7 +273,7 @@ Point 7 is not relevant as there is only one input argument (excluding :code:`ou
 We then add an :class:`ivy.Container` static method example to the docstring of :meth:`ivy.Container.static_tan` in order to satisfy point 8.
 Point 9 is not relevant as there is only one input argument (excluding :code:`out` which does not count, as it essentially acts as an output).
 
-.. code-block:: python
+.. parsed-literal::
 
     Examples
     --------
@@ -353,7 +353,7 @@ The signature for :func:`ivy.roll` is as follows:
 
 Let's start with the functional examples, with :class:`ivy.Array` instances in the input:
 
-.. code-block:: python
+.. parsed-literal::
 
     Examples
     --------
@@ -405,7 +405,7 @@ Point 5 is not relevant, as there is only one array input, and so broadcasting r
 
 We then also add an example with an :class:`ivy.Container` for one of the inputs, in order to satisfy point 6.
 
-.. code-block:: python
+.. parsed-literal::
 
     With one :class:`ivy.Container` input:
 
@@ -421,7 +421,7 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
 Unlike :func:`ivy.tan`, point 7 is relevant in this case, as there are three function inputs in total (excluding :code:`out`).
 We can therefore add an example with multiple :class:`ivy.Container` inputs, in order to satisfy point 7.
 
-.. code-block:: python
+.. parsed-literal::
 
     With multiple :class:`ivy.Container` inputs:
 
@@ -439,7 +439,7 @@ We can therefore add an example with multiple :class:`ivy.Container` inputs, in 
 
 We then add an :class:`ivy.Container` static method example with an :class:`ivy.Container` for one of the inputs, to the docstring of :meth:`ivy.Container.static_roll`, in order to satisfy point 8.
 
-.. code-block:: python
+.. parsed-literal::.. code-block:: python
 
     Examples
     --------
@@ -457,7 +457,7 @@ We then add an :class:`ivy.Container` static method example with an :class:`ivy.
 
 We then add an :class:`ivy.Container` static method example with multiple :class:`ivy.Container` inputs, to the docstring of :meth:`ivy.Container.static_roll`, in order to satisfy point 9.
 
-.. code-block:: python
+.. parsed-literal::
 
     With multiple :class:`ivy.Container` inputs:
 
@@ -537,7 +537,7 @@ The signature for :func:`ivy.add` is as follows:
 
 Let's start with the functional examples, with :class:`ivy.Array` instances in the input:
 
-.. code-block:: python
+.. parsed-literal::
 
     Examples
     --------
@@ -587,7 +587,7 @@ This causes the broadcasting rules to apply, which dictates how the operation is
 
 We then also add an example with an :class:`ivy.Container` for one of the inputs, in order to satisfy point 6.
 
-.. code-block:: python
+.. parsed-literal::
 
     With one :class:`ivy.Container` input:
 
@@ -608,7 +608,7 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
 Again, unlike :func:`ivy.tan`, point 7 is relevant in this case, as there are two function inputs in total (exluding :code:`out`).
 We can therefore add an example with multiple :class:`ivy.Container` inputs, in order to satisfy point 7.
 
-.. code-block:: python
+.. parsed-literal::
 
     With multiple :class:`ivy.Container` inputs:
 
@@ -627,7 +627,7 @@ We can therefore add an example with multiple :class:`ivy.Container` inputs, in 
 
 We then add an :class:`ivy.Container` static method example with an :class:`ivy.Container` for one of the inputs, to the docstring of :meth:`ivy.Container.static_add`, in order to satisfy point 8.
 
-.. code-block:: python
+.. parsed-literal::
 
     Examples
     --------
@@ -650,7 +650,7 @@ We then add an :class:`ivy.Container` static method example with an :class:`ivy.
 
 We then add an :class:`ivy.Container` static method example with multiple :class:`ivy.Container` inputs, also to the docstring of :meth:`ivy.Container.static_add`, in order to satisfy point 9.
 
-.. code-block:: python
+.. parsed-literal::
 
     With multiple :class:`ivy.Container` inputs:
 
@@ -704,7 +704,7 @@ We then add an instance method example to :meth:`ivy.Container.add` in order to 
 
 Point 12 is satisfied by the following example in the :meth:`ivy.Array.__add__` docstring, with the operator called on two :class:`ivy.Array` instances.
 
-.. code-block:: python
+.. parsed-literal::
 
     Examples
     --------
@@ -719,7 +719,7 @@ Point 12 is satisfied by the following example in the :meth:`ivy.Array.__add__` 
 
 Point 13 is satisfied by the following example in the :meth:`ivy.Array.__add__` docstring, with the operator called with an :class:`ivy.Array` instance on the left and :class:`ivy.Container` on the right.
 
-.. code-block:: python
+.. parsed-literal::
 
     With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
@@ -756,7 +756,7 @@ Point 14 is satisfied by the following example in the :meth:`ivy.Array.__radd__`
 
 Point 15 is satisfied by the following example in the :meth:`ivy.Container.__add__` docstring, with the operator called on two :class:`ivy.Container` instances containing :code:`Number` instances at the leaves.
 
-.. code-block:: python
+.. parsed-literal::
 
     Examples
     --------
@@ -774,7 +774,7 @@ Point 15 is satisfied by the following example in the :meth:`ivy.Container.__add
 
 Point 16 is satisfied by the following example in the :meth:`ivy.Container.__add__` docstring, with the operator called on two :class:`ivy.Container` instances containing :class:`ivy.Array` instances at the leaves.
 
-.. code-block:: python
+.. parsed-literal::
 
     With :class:`ivy.Array` instances at the leaves:
 
@@ -791,7 +791,7 @@ Point 16 is satisfied by the following example in the :meth:`ivy.Container.__add
 
 Point 17 is satisfied by the following example in the :meth:`ivy.Container.__add__` docstring, with the operator called with an :class:`ivy.Container` instance on the left and :class:`ivy.Array` on the right.
 
-.. code-block:: python
+.. parsed-literal::
 
     With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 

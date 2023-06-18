@@ -23,8 +23,8 @@ class _ContainerWithUtility(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.all. This method simply wraps the
-        function, and so the docstring for ivy.all also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.all also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -106,8 +106,8 @@ class _ContainerWithUtility(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.all. This method simply wraps the
-        function, and so the docstring for ivy.all also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.all also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -189,8 +189,8 @@ class _ContainerWithUtility(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.any. This method simply wraps the
-        function, and so the docstring for ivy.any also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.any also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -272,8 +272,8 @@ class _ContainerWithUtility(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.any. This method simply wraps the
-        function, and so the docstring for ivy.any also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.any also applies to this method with
+        minimal changes.
 
         Parameters
         ----------

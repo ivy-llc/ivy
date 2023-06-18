@@ -6,7 +6,10 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
     handle_jax_dtype,
+    inputs_to_ivy_arrays,
 )
+
+from ivy.func_wrapper import handle_out_argument
 
 
 @handle_jax_dtype
@@ -91,15 +94,17 @@ def triu(m, k=0):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
-    return DeviceArray(ivy.empty(shape, dtype=dtype))
+    return DeviceArray(ivy.empty(shape=shape, dtype=dtype))
 
 
 @to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
+    if x.ndim != 1:
+        raise ValueError("x must be a one-dimensional array")
     if N == 0:
-        return ivy.array([], dtype=x.dtype)
+        return ivy.array([], dtype=x.dtype).reshape((x.shape[0], 0))
     else:
-        return ivy.vander(x, N=N, increasing=increasing, out=None)
+        return ivy.vander(x, N=N, increasing=increasing)
 
 
 @to_ivy_arrays_and_back
@@ -115,17 +120,19 @@ def identity(n, dtype=None):
 
 @to_ivy_arrays_and_back
 def ndim(a):
+    if not isinstance(a, ivy.Array):
+        return 0
     return ivy.astype(ivy.array(a.ndim), ivy.int64)
 
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-def empty_like(a, dtype=None, shape=None):
+def empty_like(prototype, dtype=None, shape=None):
     # XLA cannot create uninitialized arrays
     # jax.numpy.empty_like returns an array initialized with zeros.
     if shape:
         return ivy.zeros(shape, dtype=dtype)
-    return ivy.zeros_like(a, dtype=dtype)
+    return ivy.zeros_like(prototype, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
@@ -137,7 +144,7 @@ def full(shape, fill_value, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.12 and below": (
             "float16",
             "bfloat16",
         )
@@ -151,11 +158,18 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
 
 
+@to_ivy_arrays_and_back
+def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
+    # TODO: handle 'copy' argument when ivy.meshgrid supports it
+    ivy_meshgrid = ivy.meshgrid(*x, sparse=sparse, indexing=indexing)
+    return ivy_meshgrid
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.12 and below": (
             "float16",
             "bfloat16",
         )
@@ -175,3 +189,72 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 def single(x):
     return ivy.astype(x, ivy.float32)
+
+
+@to_ivy_arrays_and_back
+def double(x):
+    return ivy.astype(x, ivy.float64)
+
+
+@to_ivy_arrays_and_back
+def bool_(x):
+    return ivy.astype(x, ivy.bool)
+
+
+@to_ivy_arrays_and_back
+def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
+    cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
+    x = ivy.linspace(
+        0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis
+    )
+    x = ivy.exp(x)
+    x = start * x
+    x[0] = (start * cr) / cr
+    if endpoint:
+        x[-1] = stop
+    return x.asarray(dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def csingle(x):
+    return ivy.astype(x, ivy.complex64)
+
+
+@to_ivy_arrays_and_back
+def cdouble(x):
+    return ivy.astype(x, ivy.complex128)
+
+
+@to_ivy_arrays_and_back
+@handle_out_argument
+def compress(condition, a, *, axis=None, out=None):
+    condition_arr = ivy.asarray(condition).astype(bool)
+    if condition_arr.ndim != 1:
+        raise ivy.utils.exceptions.IvyException("Condition must be a 1D array")
+    if axis is None:
+        arr = ivy.asarray(a).flatten()
+        axis = 0
+    else:
+        arr = ivy.moveaxis(a, axis, 0)
+
+    condition_arr, extra = condition_arr[: arr.shape[0]], condition_arr[arr.shape[0] :]
+    if any(extra):
+        raise ivy.utils.exceptions.IvyException(
+            "Condition contains entries that are out of bounds"
+        )
+    arr = arr[: condition_arr.shape[0]]
+    return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@inputs_to_ivy_arrays
+def iterable(y):
+    return hasattr(y, "__iter__") and y.ndim > 0
+
+
+@to_ivy_arrays_and_back
+def size(a, axis=None):
+    ivy.set_default_int_dtype("int64")
+    if axis is not None:
+        sh = ivy.shape(a)
+        return sh[axis]
+    return a.size

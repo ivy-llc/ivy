@@ -1,27 +1,42 @@
 # global
+from hypothesis import assume
 
 # local
+import ivy
 from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# shape
+# unique
 @handle_frontend_test(
     fn_tree="numpy.unique",
-    xs_n_input_dtypes_n_unique_idx=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        force_int_axis=True,
+        valid_axis=True,
     ),
+    return_index=st.booleans(),
+    return_inverse=st.booleans(),
+    return_counts=st.booleans(),
+    none_axis=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_unique(
     *,
-    xs_n_input_dtypes_n_unique_idx,
+    dtype_x_axis,
+    return_index,
+    return_inverse,
+    return_counts,
+    none_axis,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtypes, xs = xs_n_input_dtypes_n_unique_idx
+    input_dtypes, xs, axis = dtype_x_axis
+    if none_axis:
+        axis = None
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -29,9 +44,10 @@ def test_numpy_unique(
         fn_tree=fn_tree,
         on_device=on_device,
         array=xs[0],
-        return_index=True,
-        return_inverse=True,
-        return_counts=True,
+        return_index=return_index,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        axis=axis,
     )
 
 
@@ -77,22 +93,22 @@ def test_numpy_append(
 @handle_frontend_test(
     fn_tree="numpy.trim_zeros",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
     ),
-    trim=st.sampled_from(['f', 'b', 'fb'])
+    trim=st.sampled_from(["f", "b", "fb"]),
 )
 def test_numpy_trim_zeros(
-        frontend,
-        on_device,
-        *,
-        dtype_and_x,
-        trim,
-        fn_tree,
-        test_flags,
+    frontend,
+    on_device,
+    *,
+    dtype_and_x,
+    trim,
+    fn_tree,
+    test_flags,
 ):
     input_dtypes, x = dtype_and_x
+    if ivy.current_backend_str() == "paddle":
+        assume(input_dtypes[0] not in ["float16"])
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -100,5 +116,5 @@ def test_numpy_trim_zeros(
         fn_tree=fn_tree,
         on_device=on_device,
         filt=x[0],
-        trim=trim
+        trim=trim,
     )

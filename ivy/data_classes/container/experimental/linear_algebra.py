@@ -119,9 +119,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container]]:
         """
-        ivy.Container instance method variant of ivy.eigh_tridiagonal.
-        This method simply wraps the function, and so the docstring for
-        ivy.eigh_tridiagonal also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.eigh_tridiagonal. This method
+        simply wraps the function, and so the docstring for ivy.eigh_tridiagonal also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -237,9 +237,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.diagflat.
-        This method simply wraps the function, and so the docstring for
-        ivy.diagflat also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.diagflat. This method simply wraps
+        the function, and so the docstring for ivy.diagflat also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -278,9 +278,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.kron. This method simply wraps
-        the function, and so the docstring for ivy.kron also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.kron also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -330,9 +330,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.kron.
-        This method simply wraps the function, and so the docstring for
-        ivy.kron also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.kron also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -380,9 +380,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.diagflat.
-        This method simply wraps the function, and so the docstring for
-        ivy.diagflat also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.diagflat. This method simply wraps
+        the function, and so the docstring for ivy.diagflat also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -414,9 +414,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.eig.
-        This method simply wraps the function, and so the docstring for
-        ivy.eig also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.eig. This method simply wraps the
+        function, and so the docstring for ivy.eig also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -467,9 +467,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.eig.
-        This method simply wraps the function, and so the docstring for
-        ivy.eig also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.eig. This method simply wraps the
+        function, and so the docstring for ivy.eig also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -520,9 +520,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.eigvals.
-        This method simply wraps the function, and so the docstring for
-        ivy.eigvals also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.eigvals. This method simply wraps the
+        function, and so the docstring for ivy.eigvals also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -567,9 +567,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.eigvals.
-        This method simply wraps the function, and so the docstring for
-        ivy.eigvals also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.eigvals. This method simply wraps
+        the function, and so the docstring for ivy.eigvals also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -613,9 +613,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container static method variant of ivy.adjoint. This method simply wraps
-        the function, and so the docstring for ivy.adjoint also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.adjoint. This method simply wraps the
+        function, and so the docstring for ivy.adjoint also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -662,9 +662,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container instance method variant of ivy.adjoint.
-        This method simply wraps the function, and so the docstring for
-        ivy.adjoint also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.adjoint. This method simply wraps
+        the function, and so the docstring for ivy.adjoint also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -751,9 +751,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.multi_dot.
-        This method simply wraps the function, and so the docstring for
-        ivy.multi_dot also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.multi_dot. This method simply wraps
+        the function, and so the docstring for ivy.multi_dot also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -793,9 +793,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container static method variant of ivy.cond.
-        This method simply wraps the function, and so the docstring for
-        ivy.cond also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.cond. This method simply wraps the
+        function, and so the docstring for ivy.cond also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -838,9 +838,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         p: Optional[Union[int, float, None]] = None,
     ):
         """
-        ivy.Container instance method variant of ivy.cond.
-        This method simply wraps the function, and so the docstring for
-        ivy.cond also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.cond. This method simply wraps the
+        function, and so the docstring for ivy.cond also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -880,6 +880,226 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         return self.static_cond(
             self,
             p=p,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_cov(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        /,
+        *,
+        rowVar: bool = True,
+        bias: bool = False,
+        ddof: int = None,
+        fweights: ivy.Array = None,
+        aweights: ivy.Array = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.cov. This method simply wraps the
+        function, and so the docstring for ivy.cov also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x1
+            a 1D or 2D input array, nativearray or container, with a numeric data type.
+        x2
+            optional second 1D or 2D input array, nativearray, or container, with a
+            numeric data type. Must have the same shape as x1.
+        rowVar
+            optional variable where each row of input is interpreted as a variable
+            (default = True). If set to False, each column is instead interpreted
+            as a variable.
+        bias
+            optional variable for normalizing input (default = False) by (N - 1) where
+            N is the number of given observations. If set to True, then normalization
+            is instead by N. Can be overridden by keyword ``ddof``.
+        ddof
+            optional variable to override ``bias`` (default = None). ddof=1 will return
+            the unbiased estimate, even with fweights and aweights given. ddof=0 will
+            return the simple average.
+        fweights
+            optional 1D array of integer frequency weights; the number of times each
+            observation vector should be repeated.
+        aweights
+            optional 1D array of observation vector weights. These relative weights are
+            typically large for observations considered "important" and smaller for
+            observations considered less "important". If ddof=0 is specified, the array
+            of weights can be used to assign probabilities to observation vectors.
+        dtype
+            optional variable to set data-type of the result. By default, data-type
+            will have at least ``numpy.float64`` precision.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the covariance matrix of an input matrix, or the
+            covariance matrix of two variables. The returned container must have a
+            floating-point data type determined by Type Promotion Rules and must be
+            a square matrix of shape (N, N), where N is the number of rows in the
+            input(s).
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.array([1., 2., 3.])
+        >>> y = ivy.Container(a=ivy.array([3. ,2. ,1.]), b=ivy.array([-1., -2., -3.]))
+        >>> z = ivy.Container.static_cov(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([ 1., -1.]
+                         [-1.,  1.]),
+            b: ivy.array([ 1., -1.]
+                         [-1.,  1.])
+        }
+        With multiple :class:`ivy.Container` inputs:
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
+        >>> y = ivy.Container(a=ivy.array([3., 2., 1.]), b=ivy.array([3., 2., 1.]))
+        >>> z = ivy.Container.static_cov(x, y)
+        >>> print(z)
+        {
+            a: ivy.container([ 1., -1., -1., -1.]
+                         [ 1.,  1., -1., -1.]),
+            b: ivy.container([-1., -1.,  1.,  1.]
+                         [-1.,  1.,  1.,  1.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "cov",
+            x1,
+            x2,
+            rowVar=rowVar,
+            bias=bias,
+            ddof=ddof,
+            fweights=fweights,
+            aweights=aweights,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def cov(
+        self: ivy.Container,
+        x2: ivy.Container = None,
+        /,
+        *,
+        rowVar: bool = True,
+        bias: bool = False,
+        ddof: Optional[int] = None,
+        fweights: Optional[ivy.Array] = None,
+        aweights: Optional[ivy.Array] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.cov. This method simply wraps the
+        function, and so the docstring for ivy.cov also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            a 1D or 2D input container, with a numeric data type.
+        x2
+            optional second 1D or 2D input array, nativearray, or container, with a
+            numeric data type. Must have the same shape as ``self``.
+        rowVar
+            optional variable where each row of input is interpreted as a variable
+            (default = True). If set to False, each column is instead interpreted
+            as a variable.
+        bias
+            optional variable for normalizing input (default = False) by (N - 1) where
+            N is the number of given observations. If set to True, then normalization
+            is instead by N. Can be overridden by keyword ``ddof``.
+        ddof
+            optional variable to override ``bias`` (default = None). ddof=1 will return
+            the unbiased estimate, even with fweights and aweights given. ddof=0 will
+            return the simple average.
+        fweights
+            optional 1D array of integer frequency weights; the number of times each
+            observation vector should be repeated.
+        aweights
+            optional 1D array of observation vector weights. These relative weights are
+            typically large for observations considered "important" and smaller for
+            observations considered less "important". If ddof=0 is specified, the array
+            of weights can be used to assign probabilities to observation vectors.
+        dtype
+            optional variable to set data-type of the result. By default, data-type
+            will have at least ``numpy.float64`` precision.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the covariance matrix of an input matrix, or the
+            covariance matrix of two variables. The returned container must have a
+            floating-point data type determined by Type Promotion Rules and must be
+            a square matrix of shape (N, N), where N is the number of variables in the
+            input(s).
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
+        >>> y = ivy.Container(a=ivy.array([3., 2., 1.]), b=ivy.array([3., 2., 1.]))
+        >>> z = x.cov(y)
+        >>> print(z)
+        {
+            a: ivy.container([ 1., -1., -1., -1.]
+                         [ 1.,  1., -1., -1.]),
+            b: ivy.container([-1., -1.,  1.,  1.]
+                         [-1.,  1.,  1.,  1.])
+        }
+        """
+        return self.static_cov(
+            self,
+            x2,
+            rowVar=rowVar,
+            bias=bias,
+            ddof=ddof,
+            fweights=fweights,
+            aweights=aweights,
+            dtype=dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

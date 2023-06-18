@@ -136,10 +136,8 @@ def test_jax_numpy_eig(
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
-    """
-    make symmetric positive-definite since ivy does not support complex
-    data dtypes currently.
-    """
+    """make symmetric positive-definite since ivy does not support complex data dtypes
+    currently."""
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
     ret, frontend_ret = helpers.test_frontend_function(
@@ -457,25 +455,28 @@ def test_jax_slogdet(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.matrix_rank",
-    dtype_and_x=_matrix_rank_helper(),
+    dtype_x_hermitian=_matrix_rank_helper(),
     test_with_out=st.just(False),
+    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_jax_numpy_matrix_rank(
     *,
-    dtype_and_x,
+    dtype_x_hermitian,
+    tol,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, hermitian = dtype_x_hermitian
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        M=x[0],
+        M=x,
+        tol=tol,
     )
 
 
@@ -736,7 +737,6 @@ def test_jax_numpy_pinv(
 # tensorinv
 @st.composite
 def _get_inv_square_matrices(draw):
-
     dim_size = draw(helpers.ints(min_value=1, max_value=10))
 
     batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))

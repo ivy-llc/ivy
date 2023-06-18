@@ -3,8 +3,6 @@ import ivy
 
 # local
 from ivy.functional.frontends.numpy import (
-    from_zero_dim_arrays_to_scalar,
-    handle_numpy_out,
     argmax,
     any,
     ndarray,
@@ -30,7 +28,7 @@ class matrix:
                 "data must be an array, list, or str"
             )
         ivy.utils.assertions.check_equal(
-            len(ivy.shape(self._data)), 2, message="data must be 2D"
+            len(ivy.shape(self._data)), 2, message="data must be 2D", as_array=False
         )
         self._dtype = self._data.dtype
         self._shape = ivy.shape(self._data)

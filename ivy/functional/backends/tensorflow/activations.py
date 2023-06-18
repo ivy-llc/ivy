@@ -1,5 +1,8 @@
-"""Collection of TensorFlow activation functions, wrapped to fit Ivy syntax and
-signature.
+"""
+TensorFlow activation functions.
+
+Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
+and signature.
 """
 
 from typing import Optional, Union
@@ -14,21 +17,21 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def gelu(
     x: Tensor, /, *, approximate: bool = False, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.gelu(x, approximate)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def leaky_relu(
     x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 
@@ -39,14 +42,14 @@ def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.sigmoid(x)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.softmax(x, axis)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def softplus(
     x: Tensor,
     /,
@@ -55,7 +58,6 @@ def softplus(
     threshold: Optional[Union[int, float]] = None,
     out: Optional[Tensor] = None,
 ) -> Tensor:
-
     if beta is not None and beta != 1:
         x_beta = x * beta
         res = (tf.nn.softplus(x_beta)) / beta
@@ -67,7 +69,7 @@ def softplus(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def log_softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ):
@@ -86,7 +88,6 @@ def get(
     *,
     custom_objects: Optional[ivy.Dict] = None,
 ) -> Union[ivy.Callable, None]:
-
     if identifier is None:
         return tf.keras.activations.linear
 
@@ -102,7 +103,7 @@ def get(
         )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def mish(
     x: Tensor,
     /,

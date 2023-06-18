@@ -97,7 +97,7 @@ class Bfloat16Finfo:
 
 def astype(
     x: Union[tf.Tensor, tf.Variable],
-    dtype: tf.DType,
+    dtype: Union[DType, str],
     /,
     *,
     copy: bool = True,
@@ -113,12 +113,18 @@ def broadcast_arrays(
     *arrays: Union[tf.Tensor, tf.Variable],
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(arrays) > 1:
-        desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
+        try:
+            desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
+        except tf.errors.InvalidArgumentError as e:
+            raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
         if len(arrays) > 2:
             for i in range(2, len(arrays)):
-                desired_shape = tf.broadcast_dynamic_shape(
-                    desired_shape, arrays[i].shape
-                )
+                try:
+                    desired_shape = tf.broadcast_dynamic_shape(
+                        desired_shape, arrays[i].shape
+                    )
+                except tf.errors.InvalidArgumentError as e:
+                    raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
     else:
         return [arrays[0]]
     result = []
@@ -128,7 +134,6 @@ def broadcast_arrays(
     return result
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -136,14 +141,15 @@ def broadcast_to(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     if tf.rank(x) > len(shape):
         return tf.broadcast_to(tf.reshape(x, -1), shape)
     return tf.broadcast_to(x, shape)
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[DType, str, tf.Tensor, tf.Variable], /) -> Finfo:
-    if isinstance(type, tf.Tensor):
+def finfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> Finfo:
+    if isinstance(type, (tf.Tensor, np.ndarray)):
         type = type.dtype
     if ivy.as_native_dtype(type) == tf.bfloat16:
         return Finfo(Bfloat16Finfo())
@@ -151,13 +157,13 @@ def finfo(type: Union[DType, str, tf.Tensor, tf.Variable], /) -> Finfo:
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable], /) -> np.iinfo:
-    if isinstance(type, tf.Tensor):
+def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> np.iinfo:
+    if isinstance(type, (tf.Tensor, np.ndarray)):
         type = type.dtype
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, backend_version)
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
 ) -> ivy.Dtype:
@@ -177,7 +183,7 @@ def result_type(
 
 
 def as_ivy_dtype(
-    dtype_in: Union[tf.DType, str, int, float, complex, bool],
+    dtype_in: Union[tf.DType, str, int, float, complex, bool, np.dtype],
     /,
 ) -> ivy.Dtype:
     if dtype_in is int:
@@ -188,7 +194,8 @@ def as_ivy_dtype(
         return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
-
+    if isinstance(dtype_in, np.dtype):
+        dtype_in = dtype_in.name
     if isinstance(dtype_in, str):
         if dtype_in in native_dtype_dict:
             dtype_str = dtype_in
@@ -216,7 +223,9 @@ def as_ivy_dtype(
         )
 
 
-def as_native_dtype(dtype_in: Union[tf.DType, str, bool, int, float], /) -> tf.DType:
+def as_native_dtype(
+    dtype_in: Union[tf.DType, str, bool, int, float, np.dtype],
+) -> tf.DType:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
@@ -225,6 +234,8 @@ def as_native_dtype(dtype_in: Union[tf.DType, str, bool, int, float], /) -> tf.D
         return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return tf.bool
+    if isinstance(dtype_in, np.dtype):
+        dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
     if dtype_in in native_dtype_dict.keys():
@@ -236,13 +247,15 @@ def as_native_dtype(dtype_in: Union[tf.DType, str, bool, int, float], /) -> tf.D
         )
 
 
-def dtype(x: Union[tf.Tensor, tf.Variable], *, as_native: bool = False) -> ivy.Dtype:
+def dtype(
+    x: Union[tf.Tensor, tf.Variable, np.ndarray], *, as_native: bool = False
+) -> ivy.Dtype:
     if as_native:
-        return ivy.to_native(x).dtype
+        return ivy.as_native_dtype(x.dtype)
     return as_ivy_dtype(x.dtype)
 
 
-def dtype_bits(dtype_in: Union[tf.DType, str], /) -> int:
+def dtype_bits(dtype_in: Union[tf.DType, str, np.dtype], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
@@ -254,6 +267,15 @@ def dtype_bits(dtype_in: Union[tf.DType, str], /) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
+
+
+def is_native_dtype(dtype_in: Union[tf.DType, str], /) -> bool:
+    if not ivy.is_hashable_dtype(dtype_in):
+        return False
+    if dtype_in in ivy_dtype_dict and isinstance(dtype_in, tf.dtypes.DType):
+        return True
+    else:
+        return False
 
 
 # ToDo:

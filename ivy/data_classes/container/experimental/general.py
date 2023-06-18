@@ -1,99 +1,156 @@
-import ivy
+# global
+from typing import Optional, Union, List, Dict, Callable, Sequence
+
+# local
 from ivy.data_classes.container.base import ContainerBase
+import ivy
 
 
 class _ContainerWithGeneralExperimental(ContainerBase):
     @staticmethod
-    def static_isin(
-        element: ivy.Container,
-        test_elements: ivy.Container,
+    def _static_reduce(
+        operand: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        init_value: Union[int, float],
+        computation: Callable,
         /,
         *,
-        assume_unique: bool = False,
-        invert: bool = False,
+        axes: Union[int, Sequence[int]] = 0,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.isin. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
-        this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.reduce. This method simply wraps the
+        function, and so the docstring for ivy.reduce also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
-        element
-            input container
-        test_elements
-            values against which to test for each input element
-        assume_unique
-            If True, assumes both elements and test_elements contain unique elements,
-            which can speed up the calculation. Default value is False.
-        invert
-            If True, inverts the boolean return array, resulting in True values for
-            elements not in test_elements. Default value is False.
+        operand
+            The array to act on.
+        init_value
+            The value with which to start the reduction.
+        computation
+            The reduction function.
+        axes
+            The dimensions along which the reduction is performed.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result as
+            dimensions with size one.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
         ret
-            output a boolean container of the same shape as elements that is True for
-            elements in test_elements and False otherwise.
+            The reduced array.
 
         Examples
         --------
-        >>> x = ivy.Container(a=[[10, 7, 4], [3, 2, 1]],\
-                              b=[3, 2, 1, 0])
-        >>> y = ivy.Container(a=[1, 2, 3],\
-                              b=[1, 0, 3])
-        >>> ivy.Container.static_isin(x, y)
-        ivy.Container(a=[[False, False, False], [ True,  True,  True]],\
-                      b=[ True, False,  True])
-
-        >>> ivy.Container.static_isin(x, y, invert=True)
-        ivy.Container(a=[[ True,  True,  True], [False, False, False]],\
-                      b=[False,  True, False])
+        >>> x = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 3], [4, 5, 6]]),
+        >>>     b=ivy.native_array([[7, 8, 9], [10, 5, 1]])
+        >>> )
+        >>> y = ivy.Container.static_reduce(x, 0, ivy.add)
+        >>> print(y)
+        {
+            a: ivy.array([6, 15]),
+            b: ivy.array([24, 16])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
-            "isin", element, test_elements, assume_unique=assume_unique, invert=invert
+            "reduce",
+            operand,
+            init_value,
+            computation,
+            axes=axes,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
-    def isin(
+    def reduce(
         self: ivy.Container,
-        test_elements: ivy.Container,
+        init_value: Union[int, float],
+        computation: Callable,
         /,
         *,
-        assume_unique: bool = False,
-        invert: bool = False,
+        axes: Union[int, Sequence[int]] = 0,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.isin. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.reduce. This method simply wraps
+        the function, and so the docstring for ivy.reduce also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
         self
-            input array
-        test_elements
-            values against which to test for each input element
-        assume_unique
-            If True, assumes both elements and test_elements contain unique elements,
-            which can speed up the calculation. Default value is False.
-        invert
-            If True, inverts the boolean return array, resulting in True values for
-            elements not in test_elements. Default value is False.
+            The array to act on.
+        init_value
+            The value with which to start the reduction.
+        computation
+            The reduction function.
+        axes
+            The dimensions along which the reduction is performed.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result as
+            dimensions with size one.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
         ret
-            output a boolean array of the same shape as elements that is True for
-            elements in test_elements and False otherwise.
+            The reduced array.
 
         Examples
         --------
-        >>> x = ivy.Container(a=[[10, 7, 4], [3, 2, 1]],\
-                                b=[3, 2, 1, 0])
-        >>> y = ivy.Container(a=[1, 2, 3],\
-                                b=[1, 0, 3])
-        >>> x.isin(y)
-        ivy.Container(a=[[False, False, False], [ True,  True,  True]],\
-                        b=[ True, False,  True])
+        >>> x = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 3], [4, 5, 6]]),
+        >>>     b=ivy.native_array([[7, 8, 9], [10, 5, 1]])
+        >>> )
+        >>> y = x.reduce(0, ivy.add)
+        >>> print(y)
+        {
+            a: ivy.array([6, 15]),
+            b: ivy.array([24, 16])
+        }
         """
-        return self.static_isin(
-            self, test_elements, assume_unique=assume_unique, invert=invert
+        return self._static_reduce(
+            self,
+            init_value,
+            computation,
+            axes=axes,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )

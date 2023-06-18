@@ -1,6 +1,10 @@
-# flake8: noqa
+# global
+import sys
+
+# local
 import ivy
 from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
 from typing import Union, Iterable, Tuple
 from numbers import Number
 from .data_type_routines import dtype
@@ -10,218 +14,236 @@ from . import scalars
 from .scalars import *
 
 
+# Constructing dtypes are required as ivy.<dtype>
+# will change dynamically on the backend and may not be available
+_int8 = ivy.IntDtype("int8")
+_int16 = ivy.IntDtype("int16")
+_int32 = ivy.IntDtype("int32")
+_int64 = ivy.IntDtype("int64")
+_uint8 = ivy.UintDtype("uint8")
+_uint16 = ivy.UintDtype("uint16")
+_uint32 = ivy.UintDtype("uint32")
+_uint64 = ivy.UintDtype("uint64")
+_bfloat16 = ivy.FloatDtype("bfloat16")
+_float16 = ivy.FloatDtype("float16")
+_float32 = ivy.FloatDtype("float32")
+_float64 = ivy.FloatDtype("float64")
+_complex64 = ivy.ComplexDtype("complex64")
+_complex128 = ivy.ComplexDtype("complex128")
+_bool = ivy.Dtype("bool")
+
 numpy_promotion_table = {
-    (ivy.bool, ivy.bool): ivy.bool,
-    (ivy.bool, ivy.int8): ivy.int8,
-    (ivy.bool, ivy.int16): ivy.int16,
-    (ivy.bool, ivy.int32): ivy.int32,
-    (ivy.bool, ivy.int64): ivy.int64,
-    (ivy.bool, ivy.uint8): ivy.uint8,
-    (ivy.bool, ivy.uint16): ivy.uint16,
-    (ivy.bool, ivy.uint32): ivy.uint32,
-    (ivy.bool, ivy.uint64): ivy.uint64,
-    (ivy.bool, ivy.bfloat16): ivy.bfloat16,
-    (ivy.bool, ivy.float16): ivy.float16,
-    (ivy.bool, ivy.float32): ivy.float32,
-    (ivy.bool, ivy.float64): ivy.float64,
-    (ivy.bool, ivy.complex64): ivy.complex64,
-    (ivy.bool, ivy.complex128): ivy.complex128,
-    (ivy.bool, ivy.bool): ivy.bool,
-    (ivy.int8, ivy.bool): ivy.int8,
-    (ivy.int8, ivy.int8): ivy.int8,
-    (ivy.int8, ivy.int16): ivy.int16,
-    (ivy.int8, ivy.int32): ivy.int32,
-    (ivy.int8, ivy.int64): ivy.int64,
-    (ivy.int16, ivy.bool): ivy.int16,
-    (ivy.int16, ivy.int8): ivy.int16,
-    (ivy.int16, ivy.int16): ivy.int16,
-    (ivy.int16, ivy.int32): ivy.int32,
-    (ivy.int16, ivy.int64): ivy.int64,
-    (ivy.int32, ivy.bool): ivy.int32,
-    (ivy.int32, ivy.int8): ivy.int32,
-    (ivy.int32, ivy.int16): ivy.int32,
-    (ivy.int32, ivy.int32): ivy.int32,
-    (ivy.int32, ivy.int64): ivy.int64,
-    (ivy.int64, ivy.bool): ivy.int64,
-    (ivy.int64, ivy.int8): ivy.int64,
-    (ivy.int64, ivy.int16): ivy.int64,
-    (ivy.int64, ivy.int32): ivy.int64,
-    (ivy.int64, ivy.int64): ivy.int64,
-    (ivy.uint8, ivy.bool): ivy.uint8,
-    (ivy.uint8, ivy.uint8): ivy.uint8,
-    (ivy.uint8, ivy.uint16): ivy.uint16,
-    (ivy.uint8, ivy.uint32): ivy.uint32,
-    (ivy.uint8, ivy.uint64): ivy.uint64,
-    (ivy.uint16, ivy.bool): ivy.uint16,
-    (ivy.uint16, ivy.uint8): ivy.uint16,
-    (ivy.uint16, ivy.uint16): ivy.uint16,
-    (ivy.uint16, ivy.uint32): ivy.uint32,
-    (ivy.uint16, ivy.uint64): ivy.uint64,
-    (ivy.uint32, ivy.bool): ivy.uint32,
-    (ivy.uint32, ivy.uint8): ivy.uint32,
-    (ivy.uint32, ivy.uint16): ivy.uint32,
-    (ivy.uint32, ivy.uint32): ivy.uint32,
-    (ivy.uint32, ivy.uint64): ivy.uint64,
-    (ivy.uint64, ivy.bool): ivy.uint64,
-    (ivy.uint64, ivy.uint8): ivy.uint64,
-    (ivy.uint64, ivy.uint16): ivy.uint64,
-    (ivy.uint64, ivy.uint32): ivy.uint64,
-    (ivy.uint64, ivy.uint64): ivy.uint64,
-    (ivy.int8, ivy.uint8): ivy.int16,
-    (ivy.int8, ivy.uint16): ivy.int32,
-    (ivy.int8, ivy.uint32): ivy.int64,
-    (ivy.int16, ivy.uint8): ivy.int16,
-    (ivy.int16, ivy.uint16): ivy.int32,
-    (ivy.int16, ivy.uint32): ivy.int64,
-    (ivy.int32, ivy.uint8): ivy.int32,
-    (ivy.int32, ivy.uint16): ivy.int32,
-    (ivy.int32, ivy.uint32): ivy.int64,
-    (ivy.int64, ivy.uint8): ivy.int64,
-    (ivy.int64, ivy.uint16): ivy.int64,
-    (ivy.int64, ivy.uint32): ivy.int64,
-    (ivy.uint8, ivy.int8): ivy.int16,
-    (ivy.uint16, ivy.int8): ivy.int32,
-    (ivy.uint32, ivy.int8): ivy.int64,
-    (ivy.uint8, ivy.int16): ivy.int16,
-    (ivy.uint16, ivy.int16): ivy.int32,
-    (ivy.uint32, ivy.int16): ivy.int64,
-    (ivy.uint8, ivy.int32): ivy.int32,
-    (ivy.uint16, ivy.int32): ivy.int32,
-    (ivy.uint32, ivy.int32): ivy.int64,
-    (ivy.uint8, ivy.int64): ivy.int64,
-    (ivy.uint16, ivy.int64): ivy.int64,
-    (ivy.uint32, ivy.int64): ivy.int64,
-    (ivy.float16, ivy.bool): ivy.float16,
-    (ivy.float16, ivy.float16): ivy.float16,
-    (ivy.float16, ivy.float32): ivy.float32,
-    (ivy.float16, ivy.float64): ivy.float64,
-    (ivy.float32, ivy.bool): ivy.float32,
-    (ivy.float32, ivy.float16): ivy.float32,
-    (ivy.float32, ivy.float32): ivy.float32,
-    (ivy.float32, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.bool): ivy.float64,
-    (ivy.float64, ivy.float16): ivy.float64,
-    (ivy.float64, ivy.float32): ivy.float64,
-    (ivy.float64, ivy.float64): ivy.float64,
-    (ivy.uint64, ivy.int8): ivy.float64,
-    (ivy.int8, ivy.uint64): ivy.float64,
-    (ivy.uint64, ivy.int16): ivy.float64,
-    (ivy.int16, ivy.uint64): ivy.float64,
-    (ivy.uint64, ivy.int32): ivy.float64,
-    (ivy.int32, ivy.uint64): ivy.float64,
-    (ivy.uint64, ivy.int64): ivy.float64,
-    (ivy.int64, ivy.uint64): ivy.float64,
-    (ivy.int8, ivy.float16): ivy.float16,
-    (ivy.float16, ivy.int8): ivy.float16,
-    (ivy.int8, ivy.float32): ivy.float32,
-    (ivy.float32, ivy.int8): ivy.float32,
-    (ivy.int8, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.int8): ivy.float64,
-    (ivy.int16, ivy.float16): ivy.float32,
-    (ivy.float16, ivy.int16): ivy.float32,
-    (ivy.int16, ivy.float32): ivy.float32,
-    (ivy.float32, ivy.int16): ivy.float32,
-    (ivy.int16, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.int16): ivy.float64,
-    (ivy.int32, ivy.float16): ivy.float64,
-    (ivy.float16, ivy.int32): ivy.float64,
-    (ivy.int32, ivy.float32): ivy.float64,
-    (ivy.float32, ivy.int32): ivy.float64,
-    (ivy.int32, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.int32): ivy.float64,
-    (ivy.int64, ivy.float16): ivy.float64,
-    (ivy.float16, ivy.int64): ivy.float64,
-    (ivy.int64, ivy.float32): ivy.float64,
-    (ivy.float32, ivy.int64): ivy.float64,
-    (ivy.int64, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.int64): ivy.float64,
-    (ivy.uint8, ivy.float16): ivy.float16,
-    (ivy.float16, ivy.uint8): ivy.float16,
-    (ivy.uint8, ivy.float32): ivy.float32,
-    (ivy.float32, ivy.uint8): ivy.float32,
-    (ivy.uint8, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.uint8): ivy.float64,
-    (ivy.uint16, ivy.float16): ivy.float32,
-    (ivy.float16, ivy.uint16): ivy.float32,
-    (ivy.uint16, ivy.float32): ivy.float32,
-    (ivy.float32, ivy.uint16): ivy.float32,
-    (ivy.uint16, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.uint16): ivy.float64,
-    (ivy.uint32, ivy.float16): ivy.float64,
-    (ivy.float16, ivy.uint32): ivy.float64,
-    (ivy.uint32, ivy.float32): ivy.float64,
-    (ivy.float32, ivy.uint32): ivy.float64,
-    (ivy.uint32, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.uint32): ivy.float64,
-    (ivy.uint64, ivy.float16): ivy.float64,
-    (ivy.float16, ivy.uint64): ivy.float64,
-    (ivy.uint64, ivy.float32): ivy.float64,
-    (ivy.float32, ivy.uint64): ivy.float64,
-    (ivy.uint64, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.uint64): ivy.float64,
-    (ivy.bfloat16, ivy.bfloat16): ivy.bfloat16,
-    (ivy.bfloat16, ivy.uint8): ivy.bfloat16,
-    (ivy.uint8, ivy.bfloat16): ivy.bfloat16,
-    (ivy.bfloat16, ivy.int8): ivy.bfloat16,
-    (ivy.int8, ivy.bfloat16): ivy.bfloat16,
-    (ivy.bfloat16, ivy.float32): ivy.float32,
-    (ivy.float32, ivy.bfloat16): ivy.float32,
-    (ivy.bfloat16, ivy.float64): ivy.float64,
-    (ivy.float64, ivy.bfloat16): ivy.float64,
-    (ivy.complex64, ivy.bool): ivy.complex64,
-    (ivy.complex64, ivy.int8): ivy.complex64,
-    (ivy.complex64, ivy.int16): ivy.complex64,
-    (ivy.complex64, ivy.int32): ivy.complex128,
-    (ivy.complex64, ivy.int64): ivy.complex128,
-    (ivy.complex64, ivy.uint8): ivy.complex64,
-    (ivy.complex64, ivy.uint16): ivy.complex64,
-    (ivy.complex64, ivy.uint32): ivy.complex128,
-    (ivy.complex64, ivy.uint64): ivy.complex128,
-    (ivy.complex64, ivy.float16): ivy.complex64,
-    (ivy.complex64, ivy.float32): ivy.complex64,
-    (ivy.complex64, ivy.float64): ivy.complex128,
-    (ivy.complex64, ivy.bfloat16): ivy.complex64,
-    (ivy.complex64, ivy.complex64): ivy.complex64,
-    (ivy.complex64, ivy.complex128): ivy.complex128,
-    (ivy.complex128, ivy.bool): ivy.complex128,
-    (ivy.complex128, ivy.int8): ivy.complex128,
-    (ivy.complex128, ivy.int16): ivy.complex128,
-    (ivy.complex128, ivy.int32): ivy.complex128,
-    (ivy.complex128, ivy.int64): ivy.complex128,
-    (ivy.complex128, ivy.uint8): ivy.complex128,
-    (ivy.complex128, ivy.uint16): ivy.complex128,
-    (ivy.complex128, ivy.uint32): ivy.complex128,
-    (ivy.complex128, ivy.uint64): ivy.complex128,
-    (ivy.complex128, ivy.float16): ivy.complex128,
-    (ivy.complex128, ivy.float32): ivy.complex128,
-    (ivy.complex128, ivy.float64): ivy.complex128,
-    (ivy.complex128, ivy.bfloat16): ivy.complex128,
-    (ivy.complex128, ivy.complex64): ivy.complex128,
-    (ivy.complex128, ivy.complex128): ivy.complex128,
-    (ivy.int8, ivy.complex64): ivy.complex64,
-    (ivy.int16, ivy.complex64): ivy.complex64,
-    (ivy.int32, ivy.complex64): ivy.complex128,
-    (ivy.int64, ivy.complex64): ivy.complex128,
-    (ivy.uint8, ivy.complex64): ivy.complex64,
-    (ivy.uint16, ivy.complex64): ivy.complex64,
-    (ivy.uint32, ivy.complex64): ivy.complex128,
-    (ivy.uint64, ivy.complex64): ivy.complex128,
-    (ivy.float16, ivy.complex64): ivy.complex64,
-    (ivy.float32, ivy.complex64): ivy.complex64,
-    (ivy.float64, ivy.complex64): ivy.complex128,
-    (ivy.bfloat16, ivy.complex64): ivy.complex64,
-    (ivy.int8, ivy.complex128): ivy.complex128,
-    (ivy.int16, ivy.complex128): ivy.complex128,
-    (ivy.int32, ivy.complex128): ivy.complex128,
-    (ivy.int64, ivy.complex128): ivy.complex128,
-    (ivy.uint8, ivy.complex128): ivy.complex128,
-    (ivy.uint16, ivy.complex128): ivy.complex128,
-    (ivy.uint32, ivy.complex128): ivy.complex128,
-    (ivy.uint64, ivy.complex128): ivy.complex128,
-    (ivy.float16, ivy.complex128): ivy.complex128,
-    (ivy.float32, ivy.complex128): ivy.complex128,
-    (ivy.float64, ivy.complex128): ivy.complex128,
-    (ivy.bfloat16, ivy.complex128): ivy.complex128,
+    (_bool, _bool): _bool,
+    (_bool, _int8): _int8,
+    (_bool, _int16): _int16,
+    (_bool, _int32): _int32,
+    (_bool, _int64): _int64,
+    (_bool, _uint8): _uint8,
+    (_bool, _uint16): _uint16,
+    (_bool, _uint32): _uint32,
+    (_bool, _uint64): _uint64,
+    (_bool, _bfloat16): _bfloat16,
+    (_bool, _float16): _float16,
+    (_bool, _float32): _float32,
+    (_bool, _float64): _float64,
+    (_bool, _complex64): _complex64,
+    (_bool, _complex128): _complex128,
+    (_bool, _bool): _bool,
+    (_int8, _bool): _int8,
+    (_int8, _int8): _int8,
+    (_int8, _int16): _int16,
+    (_int8, _int32): _int32,
+    (_int8, _int64): _int64,
+    (_int16, _bool): _int16,
+    (_int16, _int8): _int16,
+    (_int16, _int16): _int16,
+    (_int16, _int32): _int32,
+    (_int16, _int64): _int64,
+    (_int32, _bool): _int32,
+    (_int32, _int8): _int32,
+    (_int32, _int16): _int32,
+    (_int32, _int32): _int32,
+    (_int32, _int64): _int64,
+    (_int64, _bool): _int64,
+    (_int64, _int8): _int64,
+    (_int64, _int16): _int64,
+    (_int64, _int32): _int64,
+    (_int64, _int64): _int64,
+    (_uint8, _bool): _uint8,
+    (_uint8, _uint8): _uint8,
+    (_uint8, _uint16): _uint16,
+    (_uint8, _uint32): _uint32,
+    (_uint8, _uint64): _uint64,
+    (_uint16, _bool): _uint16,
+    (_uint16, _uint8): _uint16,
+    (_uint16, _uint16): _uint16,
+    (_uint16, _uint32): _uint32,
+    (_uint16, _uint64): _uint64,
+    (_uint32, _bool): _uint32,
+    (_uint32, _uint8): _uint32,
+    (_uint32, _uint16): _uint32,
+    (_uint32, _uint32): _uint32,
+    (_uint32, _uint64): _uint64,
+    (_uint64, _bool): _uint64,
+    (_uint64, _uint8): _uint64,
+    (_uint64, _uint16): _uint64,
+    (_uint64, _uint32): _uint64,
+    (_uint64, _uint64): _uint64,
+    (_int8, _uint8): _int16,
+    (_int8, _uint16): _int32,
+    (_int8, _uint32): _int64,
+    (_int16, _uint8): _int16,
+    (_int16, _uint16): _int32,
+    (_int16, _uint32): _int64,
+    (_int32, _uint8): _int32,
+    (_int32, _uint16): _int32,
+    (_int32, _uint32): _int64,
+    (_int64, _uint8): _int64,
+    (_int64, _uint16): _int64,
+    (_int64, _uint32): _int64,
+    (_uint8, _int8): _int16,
+    (_uint16, _int8): _int32,
+    (_uint32, _int8): _int64,
+    (_uint8, _int16): _int16,
+    (_uint16, _int16): _int32,
+    (_uint32, _int16): _int64,
+    (_uint8, _int32): _int32,
+    (_uint16, _int32): _int32,
+    (_uint32, _int32): _int64,
+    (_uint8, _int64): _int64,
+    (_uint16, _int64): _int64,
+    (_uint32, _int64): _int64,
+    (_float16, _bool): _float16,
+    (_float16, _float16): _float16,
+    (_float16, _float32): _float32,
+    (_float16, _float64): _float64,
+    (_float32, _bool): _float32,
+    (_float32, _float16): _float32,
+    (_float32, _float32): _float32,
+    (_float32, _float64): _float64,
+    (_float64, _bool): _float64,
+    (_float64, _float16): _float64,
+    (_float64, _float32): _float64,
+    (_float64, _float64): _float64,
+    (_uint64, _int8): _float64,
+    (_int8, _uint64): _float64,
+    (_uint64, _int16): _float64,
+    (_int16, _uint64): _float64,
+    (_uint64, _int32): _float64,
+    (_int32, _uint64): _float64,
+    (_uint64, _int64): _float64,
+    (_int64, _uint64): _float64,
+    (_int8, _float16): _float16,
+    (_float16, _int8): _float16,
+    (_int8, _float32): _float32,
+    (_float32, _int8): _float32,
+    (_int8, _float64): _float64,
+    (_float64, _int8): _float64,
+    (_int16, _float16): _float32,
+    (_float16, _int16): _float32,
+    (_int16, _float32): _float32,
+    (_float32, _int16): _float32,
+    (_int16, _float64): _float64,
+    (_float64, _int16): _float64,
+    (_int32, _float16): _float64,
+    (_float16, _int32): _float64,
+    (_int32, _float32): _float64,
+    (_float32, _int32): _float64,
+    (_int32, _float64): _float64,
+    (_float64, _int32): _float64,
+    (_int64, _float16): _float64,
+    (_float16, _int64): _float64,
+    (_int64, _float32): _float64,
+    (_float32, _int64): _float64,
+    (_int64, _float64): _float64,
+    (_float64, _int64): _float64,
+    (_uint8, _float16): _float16,
+    (_float16, _uint8): _float16,
+    (_uint8, _float32): _float32,
+    (_float32, _uint8): _float32,
+    (_uint8, _float64): _float64,
+    (_float64, _uint8): _float64,
+    (_uint16, _float16): _float32,
+    (_float16, _uint16): _float32,
+    (_uint16, _float32): _float32,
+    (_float32, _uint16): _float32,
+    (_uint16, _float64): _float64,
+    (_float64, _uint16): _float64,
+    (_uint32, _float16): _float64,
+    (_float16, _uint32): _float64,
+    (_uint32, _float32): _float64,
+    (_float32, _uint32): _float64,
+    (_uint32, _float64): _float64,
+    (_float64, _uint32): _float64,
+    (_uint64, _float16): _float64,
+    (_float16, _uint64): _float64,
+    (_uint64, _float32): _float64,
+    (_float32, _uint64): _float64,
+    (_uint64, _float64): _float64,
+    (_float64, _uint64): _float64,
+    (_bfloat16, _bfloat16): _bfloat16,
+    (_bfloat16, _uint8): _bfloat16,
+    (_uint8, _bfloat16): _bfloat16,
+    (_bfloat16, _int8): _bfloat16,
+    (_int8, _bfloat16): _bfloat16,
+    (_bfloat16, _float32): _float32,
+    (_float32, _bfloat16): _float32,
+    (_bfloat16, _float64): _float64,
+    (_float64, _bfloat16): _float64,
+    (_complex64, _bool): _complex64,
+    (_complex64, _int8): _complex64,
+    (_complex64, _int16): _complex64,
+    (_complex64, _int32): _complex128,
+    (_complex64, _int64): _complex128,
+    (_complex64, _uint8): _complex64,
+    (_complex64, _uint16): _complex64,
+    (_complex64, _uint32): _complex128,
+    (_complex64, _uint64): _complex128,
+    (_complex64, _float16): _complex64,
+    (_complex64, _float32): _complex64,
+    (_complex64, _float64): _complex128,
+    (_complex64, _bfloat16): _complex64,
+    (_complex64, _complex64): _complex64,
+    (_complex64, _complex128): _complex128,
+    (_complex128, _bool): _complex128,
+    (_complex128, _int8): _complex128,
+    (_complex128, _int16): _complex128,
+    (_complex128, _int32): _complex128,
+    (_complex128, _int64): _complex128,
+    (_complex128, _uint8): _complex128,
+    (_complex128, _uint16): _complex128,
+    (_complex128, _uint32): _complex128,
+    (_complex128, _uint64): _complex128,
+    (_complex128, _float16): _complex128,
+    (_complex128, _float32): _complex128,
+    (_complex128, _float64): _complex128,
+    (_complex128, _bfloat16): _complex128,
+    (_complex128, _complex64): _complex128,
+    (_complex128, _complex128): _complex128,
+    (_int8, _complex64): _complex64,
+    (_int16, _complex64): _complex64,
+    (_int32, _complex64): _complex128,
+    (_int64, _complex64): _complex128,
+    (_uint8, _complex64): _complex64,
+    (_uint16, _complex64): _complex64,
+    (_uint32, _complex64): _complex128,
+    (_uint64, _complex64): _complex128,
+    (_float16, _complex64): _complex64,
+    (_float32, _complex64): _complex64,
+    (_float64, _complex64): _complex128,
+    (_bfloat16, _complex64): _complex64,
+    (_int8, _complex128): _complex128,
+    (_int16, _complex128): _complex128,
+    (_int32, _complex128): _complex128,
+    (_int64, _complex128): _complex128,
+    (_uint8, _complex128): _complex128,
+    (_uint16, _complex128): _complex128,
+    (_uint32, _complex128): _complex128,
+    (_uint64, _complex128): _complex128,
+    (_float16, _complex128): _complex128,
+    (_float32, _complex128): _complex128,
+    (_float64, _complex128): _complex128,
+    (_bfloat16, _complex128): _complex128,
 }
 
 numpy_str_to_type_table = {
@@ -276,122 +298,122 @@ numpy_type_to_str_and_num_table = {
 }
 
 numpy_scalar_to_dtype = {
-    bool_: ivy.bool,
-    number: ivy.float64,
-    integer: ivy.int64,
-    signedinteger: ivy.int64,
-    byte: ivy.int8,
-    short: ivy.int16,
-    intc: ivy.int32,
-    longlong: ivy.int64,
-    int_: ivy.int64,
-    unsignedinteger: ivy.uint64,
-    ubyte: ivy.uint8,
-    ushort: ivy.uint16,
-    uintc: ivy.uint32,
-    ulonglong: ivy.uint64,
-    uint: ivy.uint64,
-    inexact: ivy.float64,
-    floating: ivy.float64,
-    half: ivy.float16,
-    single: ivy.float32,
-    float_: ivy.float64,
-    bfloat16: ivy.bfloat16,
-    complexfloating: ivy.complex128,
-    csingle: ivy.complex64,
-    complex_: ivy.complex128,
+    bool_: _bool,
+    number: _float64,
+    integer: _int64,
+    signedinteger: _int64,
+    byte: _int8,
+    short: _int16,
+    intc: _int32,
+    longlong: _int64,
+    int_: _int64,
+    unsignedinteger: _uint64,
+    ubyte: _uint8,
+    ushort: _uint16,
+    uintc: _uint32,
+    ulonglong: _uint64,
+    uint: _uint64,
+    inexact: _float64,
+    floating: _float64,
+    half: _float16,
+    single: _float32,
+    float_: _float64,
+    _bfloat16: _bfloat16,
+    complexfloating: _complex128,
+    csingle: _complex64,
+    complex_: _complex128,
 }
 
 numpy_dtype_to_scalar = {v: k for k, v in numpy_scalar_to_dtype.items()}
 
 numpy_casting_rules = {
-    ivy.bool: [
-        ivy.bool,
-        ivy.uint8,
-        ivy.uint16,
-        ivy.uint32,
-        ivy.uint64,
-        ivy.int8,
-        ivy.int16,
-        ivy.int32,
-        ivy.int64,
-        ivy.float16,
-        ivy.float32,
-        ivy.float64,
-        ivy.complex64,
-        ivy.complex128,
+    _bool: [
+        _bool,
+        _uint8,
+        _uint16,
+        _uint32,
+        _uint64,
+        _int8,
+        _int16,
+        _int32,
+        _int64,
+        _float16,
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
     ],
-    ivy.int8: [
-        ivy.int8,
-        ivy.int16,
-        ivy.int32,
-        ivy.int64,
-        ivy.float16,
-        ivy.float32,
-        ivy.float64,
-        ivy.complex64,
-        ivy.complex128,
+    _int8: [
+        _int8,
+        _int16,
+        _int32,
+        _int64,
+        _float16,
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
     ],
-    ivy.int16: [
-        ivy.int16,
-        ivy.int32,
-        ivy.int64,
-        ivy.float32,
-        ivy.float64,
-        ivy.complex64,
-        ivy.complex128,
+    _int16: [
+        _int16,
+        _int32,
+        _int64,
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
     ],
-    ivy.int32: [ivy.int32, ivy.int64, ivy.float64, ivy.complex128],
-    ivy.int64: [ivy.int64, ivy.float64, ivy.complex128],
-    ivy.uint8: [
-        ivy.uint8,
-        ivy.uint16,
-        ivy.uint32,
-        ivy.uint64,
-        ivy.int16,
-        ivy.int32,
-        ivy.int64,
-        ivy.float16,
-        ivy.float32,
-        ivy.float64,
-        ivy.complex64,
-        ivy.complex128,
+    _int32: [_int32, _int64, _float64, _complex128],
+    _int64: [_int64, _float64, _complex128],
+    _uint8: [
+        _uint8,
+        _uint16,
+        _uint32,
+        _uint64,
+        _int16,
+        _int32,
+        _int64,
+        _float16,
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
     ],
-    ivy.uint16: [
-        ivy.uint16,
-        ivy.uint32,
-        ivy.uint64,
-        ivy.int32,
-        ivy.int64,
-        ivy.float32,
-        ivy.float64,
-        ivy.complex64,
-        ivy.complex128,
+    _uint16: [
+        _uint16,
+        _uint32,
+        _uint64,
+        _int32,
+        _int64,
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
     ],
-    ivy.uint32: [
-        ivy.uint32,
-        ivy.uint64,
-        ivy.int64,
-        ivy.float64,
-        ivy.complex128,
+    _uint32: [
+        _uint32,
+        _uint64,
+        _int64,
+        _float64,
+        _complex128,
     ],
-    ivy.uint64: [ivy.uint64, ivy.float64, ivy.complex128],
-    ivy.float16: [
-        ivy.float16,
-        ivy.float32,
-        ivy.float64,
-        ivy.complex64,
-        ivy.complex128,
+    _uint64: [_uint64, _float64, _complex128],
+    _float16: [
+        _float16,
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
     ],
-    ivy.float32: [
-        ivy.float32,
-        ivy.float64,
-        ivy.complex64,
-        ivy.complex128,
+    _float32: [
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
     ],
-    ivy.float64: [ivy.float64, ivy.complex128],
-    ivy.complex64: [ivy.complex64, ivy.complex128],
-    ivy.complex128: [ivy.complex128],
+    _float64: [_float64, _complex128],
+    _complex64: [_complex64, _complex128],
+    _complex128: [_complex128],
 }
 
 
@@ -415,41 +437,33 @@ def promote_types_of_numpy_inputs(
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
-    Promotes the dtype of the given ivy array inputs to a common dtype
-    based on numpy type promotion rules. While passing float or integer values or any
-    other non-array input to this function, it should be noted that the return will
-    be an array-like object. Therefore, outputs from this function should be used
-    as inputs only for those functions that expect an array-like or tensor-like objects,
-    otherwise it might give unexpected results.
+    Promote the dtype of the given ivy array inputs to a common dtype based on numpy
+    type promotion rules.
+
+    While passing float or integer values or any other non-array input
+    to this function, it should be noted that the return will be an
+    array-like object. Therefore, outputs from this function should be
+    used as inputs only for those functions that expect an array-like or
+    tensor-like objects, otherwise it might give unexpected results.
     """
-    # Ignore type of 0-dim arrays to mimic numpy
-    if (
-        hasattr(x1, "shape")
-        and x1.shape == ()
-        and not (hasattr(x2, "shape") and x2.shape == ())
-    ):
-        x1 = ivy.to_scalar(x1)
-    if (
-        hasattr(x2, "shape")
-        and x2.shape == ()
-        and not (hasattr(x1, "shape") and x1.shape == ())
-    ):
-        x2 = ivy.to_scalar(x2)
+    # ToDo: Overflows not working properly for numpy, if a scalar or 0-dim
+    #   is passed with an array, it should go to the next largest dtype that
+    #   can hold the value without overflow. E.g a np.array([5], 'int8') + 300 operation
+    #   results in np.array([305]) with int16 dtype
+    x1 = ivy.asarray(x1)
+    x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
-        x1 = ivy.asarray(x1)
+    # Ignore type of 0-dim arrays or scalars to mimic numpy
+    if not x1.shape == () and x2.shape == () and type1 == type2:
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
-    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+    elif x1.shape == () and not x2.shape == () and type1 == type2:
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
-        x2 = ivy.asarray(x2)
     else:
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2)
         promoted = promote_numpy_dtypes(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
@@ -493,6 +507,7 @@ from .linalg.matrix_and_vector_products import (
     # einsum,
     # einsum_path,
     kron,
+    cross,
 )
 
 from .linalg.decompositions import cholesky, qr, svd
@@ -513,26 +528,29 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _sign,
     _sqrt,
     _square,
+    _lcm,
+    _gcd,
+    _clip,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (
+from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
     _add,
     _divide,
     _float_power,
     _floor_divide,
     _fmod,
     _mod,
+    _modf,
     _multiply,
     _negative,
     _positive,
     _power,
     _reciprocal,
     _subtract,
-    _true_divide,
     _divmod,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
+from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
     _arccos,
     _arcsin,
     _arctan,
@@ -541,11 +559,11 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _rad2deg,
     _sin,
     _tan,
+    _degrees,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
-    _imag,
-    _real,
+from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
+    _conj,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -561,6 +579,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
     _ceil,
     _trunc,
     _floor,
+    _rint,
 )
 
 from ivy.functional.frontends.numpy.logic.comparison import (
@@ -572,7 +591,7 @@ from ivy.functional.frontends.numpy.logic.comparison import (
     _not_equal,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (
+from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (  # noqa
     _exp,
     _exp2,
     _expm1,
@@ -583,6 +602,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarit
     _logaddexp,
     _logaddexp2,
     _ldexp,
+    _frexp,
 )
 
 from ivy.functional.frontends.numpy.logic.array_type_testing import (
@@ -604,6 +624,11 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _maximum,
     _minimum,
     _fmax,
+    _fmin,
+)
+
+from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
+    _nextafter,
 )
 
 _frontend_array = array
@@ -625,6 +650,7 @@ float_power = ufunc("_float_power")
 floor_divide = ufunc("_floor_divide")
 fmod = ufunc("_fmod")
 mod = ufunc("_mod")
+modf = ufunc("_modf")
 multiply = ufunc("_multiply")
 negative = ufunc("_negative")
 positive = ufunc("_positive")
@@ -640,6 +666,7 @@ deg2rad = ufunc("_deg2rad")
 rad2deg = ufunc("_rad2deg")
 sin = ufunc("_sin")
 tan = ufunc("_tan")
+degrees = ufunc("_degrees")
 arccosh = ufunc("_arccosh")
 arcsinh = ufunc("_arcsinh")
 arctanh = ufunc("_arctanh")
@@ -651,7 +678,6 @@ trunc = ufunc("_trunc")
 equal = ufunc("_equal")
 greater = ufunc("_greater")
 greater_equal = ufunc("_greater_equal")
-imag = ufunc("_imag")
 less = ufunc("_less")
 less_equal = ufunc("_less_equal")
 not_equal = ufunc("_not_equal")
@@ -674,8 +700,21 @@ logical_xor = ufunc("_logical_xor")
 matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
-real = ufunc("_real")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
+fmin = ufunc("_fmin")
 ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
+frexp = ufunc("_frexp")
+conj = ufunc("_conj")
+rint = ufunc("_rint")
+nextafter = ufunc("_nextafter")
+conjugate = ufunc("_conj")
+lcm = ufunc("_lcm")
+gcd = ufunc("_gcd")
+clip = ufunc("_clip")
+
+# setting to specific version #
+# --------------------------- #
+
+set_frontend_to_specific_version(sys.modules[__name__])

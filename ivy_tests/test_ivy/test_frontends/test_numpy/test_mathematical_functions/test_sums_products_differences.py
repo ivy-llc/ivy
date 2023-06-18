@@ -329,3 +329,39 @@ def test_numpy_diff(
         x=x[0],
         axis=axis,
     )
+
+
+# ediff1d
+@handle_frontend_test(
+    fn_tree="numpy.ediff1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+    ),
+    to_end=st.one_of(
+        st.integers(-1, 10), st.lists(st.integers(-1, 10), min_size=1, max_size=10)
+    ),
+    to_begin=st.one_of(
+        st.integers(-1, 10), st.lists(st.integers(-1, 10), min_size=1, max_size=10)
+    ),
+)
+def test_numpy_ediff1d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    to_end,
+    to_begin,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        ary=x[0],
+        to_end=to_end,
+        to_begin=to_begin,
+    )

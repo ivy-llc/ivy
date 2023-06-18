@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, Literal, Sequence, Callable
 
 # local
 import ivy
@@ -18,9 +18,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.max_pool1d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool1d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.max_pool1d`. This method simply wraps
+        the function, and so the docstring for `ivy.max_pool1d` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -50,13 +50,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> print(x.max_pool1d(2, 2, 'SAME'))
         ivy.array([[[ 4.,  5.,  6.,  7.],
                 [ 8.,  9., 10., 11.]],
-
                [[16., 17., 18., 19.],
                 [20., 21., 22., 23.]]])
         >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
         >>> print(x.max_pool1d(2, 2, 'VALID'))
         ivy.array([[[ 4.,  5.,  6.,  7.]],
-
            [[16., 17., 18., 19.]]])
         """
         return ivy.max_pool1d(
@@ -81,9 +79,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.max_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.max_pool2d`. This method simply wraps
+        the function, and so the docstring for `ivy.max_pool2d` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -114,8 +112,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         ivy.array([[[[ 2,  3],
                  [ 4,  5],
                  [ 4,  5]]],
-
-
                [[[ 8,  9],
                  [10, 11],
                  [10, 11]]]])
@@ -123,12 +119,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
         >>> print(x.max_pool2d(3, 1, 'VALID'))
         ivy.array([[[[16, 17]],
-
                 [[22, 23]]],
-
-
                [[[40, 41]],
-
                 [[46, 47]]]])
         """
         return ivy.max_pool2d(
@@ -153,7 +145,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Computes a 3-D max pool given 5-D input x.
+        Compute a 3-D max pool given 5-D input x.
 
         Parameters
         ----------
@@ -182,21 +174,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
         >>> print(x.max_pool3d(2, 2, 'VALID'))
         ivy.array([[[[[14., 15.]]]],
-
-
-
            [[[[38., 39.]]]]])
         >>> print(x.max_pool3d(2, 2, 'SAME'))
         ivy.array([[[[[14., 15.]]],
-
-
             [[[22., 23.]]]],
-
-
-
            [[[[38., 39.]]],
-
-
             [[[46., 47.]]]]])
         """
         return ivy.max_pool3d(
@@ -216,12 +198,14 @@ class _ArrayWithLayersExperimental(abc.ABC):
         /,
         *,
         data_format: str = "NWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.avg_pool1d`. This method simply
-        wraps the function, and so the docstring for `ivy.avg_pool1d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.avg_pool1d`. This method simply wraps
+        the function, and so the docstring for `ivy.avg_pool1d` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -236,6 +220,10 @@ class _ArrayWithLayersExperimental(abc.ABC):
             the per-dimension paddings.
         data_format
             "NWC" or "NCW". Defaults to "NWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -251,14 +239,12 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> print(x.avg_pool1d(2, 2, 'SAME'))
         ivy.array([[[ 2.,  3.,  4.,  5.],
                 [ 8.,  9., 10., 11.]],
-
                [[14., 15., 16., 17.],
                 [20., 21., 22., 23.]]])
 
         >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
         >>> print(x.avg_pool1d(2, 2, 'VALID'))
         ivy.array([[[ 2.,  3.,  4.,  5.]],
-
                [[14., 15., 16., 17.]]])
         """
         return ivy.avg_pool1d(
@@ -267,6 +253,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
             out=out,
         )
 
@@ -278,12 +266,15 @@ class _ArrayWithLayersExperimental(abc.ABC):
         /,
         *,
         data_format: str = "NHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.avg_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.avg_pool2d` also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of `ivy.avg_pool2d`. This method simply wraps
+        the function, and so the docstring for `ivy.avg_pool2d` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -298,6 +289,13 @@ class _ArrayWithLayersExperimental(abc.ABC):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If given, it will be used as the divisor,
+            otherwise kernel_size will be used.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -331,6 +329,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             out=out,
         )
 
@@ -342,10 +343,13 @@ class _ArrayWithLayersExperimental(abc.ABC):
         /,
         *,
         data_format: str = "NDHWC",
+        count_include_pad: bool = False,
+        ceil_mode: bool = False,
+        divisor_override: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Computes a 3-D max pool given 5-D input x.
+        Compute a 3-D max pool given 5-D input x.
 
         Parameters
         ----------
@@ -360,6 +364,13 @@ class _ArrayWithLayersExperimental(abc.ABC):
             the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as divisor,
+            otherwise kernel_size will be used.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -374,21 +385,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
         >>> print(x.avg_pool3d(2, 2, 'VALID'))
         ivy.array([[[[[ 7.,  8.]]]],
-
-
-
                [[[[31., 32.]]]]])
         >>> print(x.avg_pool3d(2, 2, 'SAME'))
         ivy.array([[[[[ 7.,  8.]]],
-
-
                 [[[19., 20.]]]],
-
-
-
                [[[[31., 32.]]],
-
-
                 [[[43., 44.]]]]])
         """
         return ivy.avg_pool3d(
@@ -397,6 +398,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
             out=out,
         )
 
@@ -410,9 +414,10 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: Optional[Literal["ortho"]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.dct. This method simply
-        wraps the function, and so the docstring for ivy.dct also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.dct. This method simply wraps the
+        function, and so the docstring for ivy.dct also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -448,6 +453,56 @@ class _ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
+    def idct(
+        self: ivy.Array,
+        /,
+        *,
+        type: Literal[1, 2, 3, 4] = 2,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Optional[Literal["ortho"]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.idct. This method simply wraps the
+        function, and so the docstring for ivy.idct also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input signal.
+        type
+            The type of the idct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal length,
+            then x is truncated, if n is larger than x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+
+        Examples
+        --------
+        >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
+        >>> x.idct(type=2, norm="ortho")
+        ivy.array([ 79.49862671, -70.37691498,  30.00390816, -23.58938599,
+            13.92713165, -10.078475  ,   5.19664812,  -1.95411837])
+        """
+        return ivy.idct(
+            self._data,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
+            out=out,
+        )
+
     def fft(
         self: ivy.Array,
         dim: int,
@@ -457,9 +512,10 @@ class _ArrayWithLayersExperimental(abc.ABC):
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.ifft. This method simply
-        wraps the function, and so the docstring for ivy.ifft also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.ifft. This method simply wraps the
+        function, and so the docstring for ivy.ifft also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -512,9 +568,10 @@ class _ArrayWithLayersExperimental(abc.ABC):
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.ifft. This method simply
-        wraps the function, and so the docstring for ivy.ifft also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.ifft. This method simply wraps the
+        function, and so the docstring for ivy.ifft also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -581,7 +638,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Computes the discrete Fourier transform of input.
+        Compute the discrete Fourier transform of input.
 
         Parameters
         ----------
@@ -666,8 +723,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Down/up samples the input to the given size.
-        The algorithm used for interpolation is determined by mode.
+        Down/up samples the input to the given size. The algorithm used for
+        interpolation is determined by mode.
 
         Parameters
         ----------
@@ -726,7 +783,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         output_size: int,
     ) -> ivy.Array:
         """
-        Applies a 1D adaptive average pooling over an input signal composed of several
+        Apply a 1D adaptive average pooling over an input signal composed of several
         input planes.
 
         Parameters
@@ -742,7 +799,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         -------
             The result of the pooling operation. Will have shape (N, C, L_out) or
             (C, L_out), where L_out = `output_size`
-
         """
         return ivy.adaptive_avg_pool1d(
             self._data,
@@ -754,7 +810,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         output_size: Union[Sequence[int], int],
     ) -> ivy.Array:
         """
-        Applies a 2D adaptive average pooling over an input signal composed of several
+        Apply a 2D adaptive average pooling over an input signal composed of several
         input planes.
 
         Parameters
@@ -770,9 +826,134 @@ class _ArrayWithLayersExperimental(abc.ABC):
         -------
             The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
             (C, S_0, S_1), where S = `output_size`
-
         """
         return ivy.adaptive_avg_pool2d(
             self._data,
             output_size,
         )
+
+    def reduce_window(
+        self: ivy.Array,
+        init_value: Union[int, float],
+        computation: Callable,
+        window_dimensions: Union[int, Sequence[int]],
+        /,
+        *,
+        window_strides: Union[int, Sequence[int]] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+        base_dilation: Union[int, Sequence[int]] = 1,
+        window_dilation: Union[int, Sequence[int]] = 1,
+    ) -> ivy.Array:
+        """
+        Apply a reduction function to all elements in each window of an array.
+
+        Parameters
+        ----------
+        self
+            An array representing the base area on which the window is going to slide
+            over.
+        init_value
+            The starting value for the reduction.
+        computation
+            The reduction function to apply to elements in each window.
+        window_dimensions
+            A sequence containing the window dimensions.
+        window_strides
+            A sequence containing the window strides.
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding
+            to apply before and after each spatial dimension.
+        base_dilation
+            A sequence containing the base dilation values.
+        window_dilation
+            A sequence containing the window dilation values.
+
+        Returns
+        -------
+        ret
+            The result of the pooling-like operation.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3, 4],
+        >>>                [5, 6, 7, 8],
+        >>>                [9, 10, 11, 12]])
+        >>> x.reduce_window(0, ivy.sum, (2, 2))
+        ivy.array([[32.]])
+        """
+        return ivy.reduce_window(
+            self._data,
+            init_value,
+            computation,
+            window_dimensions,
+            window_strides=window_strides,
+            padding=padding,
+            base_dilation=base_dilation,
+            window_dilation=window_dilation,
+        )
+
+    def fft2(
+        self: ivy.Array,
+        *,
+        s: Sequence[int] = None,
+        dim: Sequence[int] = (-2, -1),
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the 2-dimensional discrete Fourier Transform.
+
+        Parameters
+        ----------
+        x
+            Input volume *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT2.
+        s
+            sequence of ints, optional
+            Shape (length of each transformed axis) of the output (s[0] refers
+            to axis 0, s[1] to axis 1, etc.). This corresponds to n for fft(x, n).
+            Along each axis, if the given shape is smaller than that of the input,
+            the input is cropped. If it is larger, the input is padded with zeros.
+            If s is not given, the shape of the input along the axes specified by
+            axes is used.
+        dim
+            Axes over which to compute the FFT2. If not given, the last two axes are
+            used. A repeated index in axes means the transform over that axis is
+            performed multiple times. A one-element sequence means that a
+            one-dimensional FFT is performed.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the FFT2 operation.
+
+        Examples
+        --------
+        >>> a = ivy.array([[0, 0, 0, 0, 0],
+                        [1, 1, 1, 1, 1],
+                        [2, 2, 2, 2, 2],
+                        [3, 3, 3, 3, 3],
+                        [4, 4, 4, 4, 4]])
+        >>> ivy.fft2(a)
+        array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        , # may vary
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5+17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5 +4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5 -4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5-17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ]])
+        """
+        return ivy.fft2(self._data, s=s, dim=dim, norm=norm, out=out)

@@ -1,10 +1,10 @@
-"""Base class for deriving trainable modules"""
+"""Base class for deriving trainable modules."""
 
 # global
 import os
 import abc
 import copy
-from typing import Optional, List, Tuple, Dict
+from typing import Optional, Tuple, Dict
 
 # local
 import ivy
@@ -118,38 +118,36 @@ class Module(ModuleConverters, ModuleHelpers):
         self._dtype = dtype
         self._args = args
         self._kwargs = kwargs
-        if build_mode != "on_init":
-            return
-        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
-
         self._module_graph = None
         self._target = None
         self._lazy_compiled = False
+        if build_mode != "on_init":
+            return
+        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
     # Private #
     # --------#
 
     def _fn_with_var_arg(self, fn, v_fn, /):
         """
-        Use v_fn to extract the variables and use the extracted variables
-        as inputs to the call function fn of the module.
+        Extract variables from `v_fn` and use it as inputs for `fn`.
+
+        Use `v_fn` to extract the variables and use the extracted
+        variables as inputs to the call function fn of the module.
         """
 
-        def new_fn(*a, with_grads=None, **kw):
-            with_grads = ivy.with_grads(with_grads=with_grads)
+        def _fn_with_var_arg_wrapper(*a, **kw):
             if "v" in kw.keys():
                 del kw["v"]
             v = v_fn(self.v)
-            if not with_grads:
-                v = v.stop_gradient()
             return fn(*a, **kw, v=v)
 
-        new_fn.wrapped = True
-        return new_fn
+        _fn_with_var_arg_wrapper.wrapped = True
+        return _fn_with_var_arg_wrapper
 
     def _find_variables(self, /, *, obj=None, _visited=None):
         """
-        Find all interval variables in obj. Return empty Container if obj is None.
+        Find all internal variables in obj. Return empty Container if obj is None.
 
         Parameters
         ----------
@@ -204,8 +202,7 @@ class Module(ModuleConverters, ModuleHelpers):
         """
         Extract the variables from the variables container v using the key
         orig_key_chain and reinstantiate the duplicate variables that were removed by
-        _remove_duplicate_variables in their correct locations using
-        keychain_mappings.
+        _remove_duplicate_variables in their correct locations using keychain_mappings.
 
         Parameters
         ----------
@@ -237,8 +234,8 @@ class Module(ModuleConverters, ModuleHelpers):
         self, keychain_mappings, /, *, key="", obj=None, _visited=None
     ):
         """
-        Wraps the call methods of the Module object by looping over all the items
-        within the module, wrapping the __call__ methods of all submodules using
+        Wrap the call methods of the Module object by looping over all the items within
+        the module, wrapping the __call__ methods of all submodules using
         _fn_with_var_arg.
 
         Parameters
@@ -332,9 +329,9 @@ class Module(ModuleConverters, ModuleHelpers):
 
         created_ids.cont_map(lambda x, kc: unique_callback(x, kc))
         vs_ids.cont_map(
-            lambda x, kc: unique_callback(x, kc)
-            if x not in ids
-            else found_dup_callback(x, kc)
+            lambda x, kc: (
+                unique_callback(x, kc) if x not in ids else found_dup_callback(x, kc)
+            )
         )
         for dup_kc in duplicate_keychains:
             vs = vs.cont_prune_key_chain(dup_kc)
@@ -378,8 +375,7 @@ class Module(ModuleConverters, ModuleHelpers):
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
         """
-        Forward pass of the layer,
-        called after handling the optional input variables.
+        Forward pass of the layer, called after handling the optional input variables.
 
         Raises
         ------
@@ -389,8 +385,7 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def _forward_with_tracking(self, *args, **kwargs):
         """
-        Forward pass while optionally tracking submodule returns
-        and call order.
+        Forward pass while optionally tracking submodule returns and call order.
 
         Returns
         -------
@@ -408,25 +403,21 @@ class Module(ModuleConverters, ModuleHelpers):
             self._check_submod_ret()
         return ret
 
-    def _call(self, *args, v=None, with_grads=None, **kwargs):
+    def _call(self, *args, v=None, **kwargs):
         """
-        The forward pass of the layer,
-        treating layer instance as callable function.
+        Compute forward pass of the layer, treating layer instance as callable function.
 
         Parameters
         ----------
         v
             Replace `v` of current layer when forwarding. Restore
             after the forward finished.
-        with_grads
-            Whether to forward with gradients.
 
         Returns
         -------
         ret
             Result of the forward pass of the layer.
         """
-        with_grads = ivy.with_grads(with_grads=with_grads)
         if not self._built:
             self.build(
                 *args,
@@ -436,8 +427,6 @@ class Module(ModuleConverters, ModuleHelpers):
             )
         if v is not None:
             v_orig = self.v
-            if not with_grads:
-                v = v.stop_gradient()
             self.v = (
                 Container(v, **v.cont_config)
                 if isinstance(v, Container)
@@ -447,13 +436,7 @@ class Module(ModuleConverters, ModuleHelpers):
             self.v = v_orig
             return ret
         elif hasattr(self.__call__, "wrapped"):
-            return self.__call__(*args, with_grads=with_grads, **kwargs)
-        elif not with_grads:
-            v_orig = self.v
-            self.v = v_orig.stop_gradient()
-            ret = self._forward_with_tracking(*args, **kwargs)
-            self.v = v_orig
-            return ret
+            return self.__call__(*args, **kwargs)
         return self._forward_with_tracking(*args, **kwargs)
 
     # Public #
@@ -462,7 +445,6 @@ class Module(ModuleConverters, ModuleHelpers):
         self,
         *args,
         v=None,
-        with_grads=None,
         stateful=None,
         arg_stateful_idxs=None,
         kwarg_stateful_idxs=None,
@@ -481,8 +463,6 @@ class Module(ModuleConverters, ModuleHelpers):
         v
             If given, use this container as internal varibles temporarily.
             Default is ``None``.
-        with_grads
-            If True, forward this pass with gradients.
         track_submod_rets
             If True, will track the returns of submodules.
         submod_depth
@@ -513,7 +493,6 @@ class Module(ModuleConverters, ModuleHelpers):
             v = v if v else self.v
             return self._module_graph(*args, v=v, **kwargs)
 
-        with_grads = ivy.with_grads(with_grads=with_grads)
         with ivy.utils.backend.ContextManager("numpy") as backend:
             self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
             self.submod_call_order = ivy.Container(
@@ -529,7 +508,7 @@ class Module(ModuleConverters, ModuleHelpers):
 
         # convert variables to native arrays so that they can be tracked
         v = ivy.to_native(v)
-        ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
+        ret = self._call(*args, v=v, **kwargs)
         self._unset_submod_flags()
         return ret
 
@@ -680,52 +659,30 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def show_graph(
         self,
-        *args,
-        v=None,
-        with_grads=True,
-        stateful: Optional[List] = None,
-        arg_stateful_idxs: Optional[List] = None,
-        kwarg_stateful_idxs: Optional[List] = None,
         randomness_factor: float = 0.1,
         save_to_disk: bool = False,
+        notebook: bool = False,
         with_edge_labels: bool = True,
         with_arg_labels: bool = True,
         with_output_labels: bool = True,
         output_connected_only: bool = True,
-        include_generators: bool = True,
-        array_caching: bool = True,
         highlight_subgraph: Optional[int] = None,
         fname: Optional[str] = None,
-        return_graph: bool = False,
-        **kwargs,
     ):
-        self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
-        if not self._built:
-            self.build(*args, from_call=False, **kwargs)  # for explicit build modes
-        kwargs["v"] = ivy.default(v, self.v)
-        kwargs["with_grads"] = with_grads
-        graph = ivy.show_graph(
-            self._call,
-            *args,
-            **kwargs,
-            stateful=stateful,
-            arg_stateful_idxs=arg_stateful_idxs,
-            kwarg_stateful_idxs=kwarg_stateful_idxs,
-            randomness_factor=randomness_factor,
+        if not ivy.exists(self._module_graph):
+            raise ValueError("You must compile the module to display the graph.")
+
+        return self._module_graph.show(
             save_to_disk=save_to_disk,
+            notebook=notebook,
             with_edge_labels=with_edge_labels,
             with_arg_labels=with_arg_labels,
             with_output_labels=with_output_labels,
             output_connected_only=output_connected_only,
-            include_generators=include_generators,
-            array_caching=array_caching,
+            randomness_factor=randomness_factor,
             highlight_subgraph=highlight_subgraph,
             fname=fname,
-            return_graph=return_graph,
         )
-
-        if return_graph:
-            return graph
 
     def compile(
         self,
@@ -734,8 +691,8 @@ class Module(ModuleConverters, ModuleHelpers):
         **compile_kwargs,
     ):
         """
-        Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the
-        target backend.
+        Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target
+        backend.
 
         Parameters
         ----------

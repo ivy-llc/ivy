@@ -17,21 +17,24 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
+    *,
+    axis: Optional[int] = None,
+    by_value: bool = True,
 ) -> Tuple[
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """Returns the unique elements of an input array ``x``, the first occurring indices
+    """Return the unique elements of an input array ``x``, the first occurring indices
     for each unique element in ``x``, the indices from the set of unique elements that
     reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
 
@@ -66,8 +69,15 @@ def unique_all(
     Parameters
     ----------
     x
-        input array. If ``x`` has more than one dimension, the function must flatten
-        ``x`` and return the unique elements of the flattened array.
+        input array.
+
+    axis
+        the axis to apply unique on. If None, the unique elements of the flattened ``x``
+        are returned.
+
+    by_value
+        If False, the unique elements will be sorted in the same order that they occur
+        in ''x''. Otherwise, they will be sorted by value.
 
     Returns
     -------
@@ -78,25 +88,22 @@ def unique_all(
           type as ``x``.
         - second element must have the field name ``indices`` and must be an array
           containing the indices (first occurrences) of ``x`` that result in ``values``.
-          The array must have the same shape as ``values`` and must have the default
+          The array must have the same length as ``values`` and must have the default
           array index data type.
         - third element must have the field name ``inverse_indices`` and must be an
           array containing the indices of ``values`` that reconstruct ``x``. The array
-          must have the same shape as ``x`` and must have the default array index data
-          type.
+          must have the same length as the ``axis`` dimension of ``x`` and must have the
+          default array index data type.
         - fourth element must have the field name ``counts`` and must be an array
           containing the number of times each unique element occurs in ``x``. The
-          returned array must have same shape as ``values`` and must have the default
-          array index data type.
-
-        .. note::
-           The order of unique elements is not specified and may vary between
-           implementations.
+          returned array must have the same length as ``values`` and must have the
+          default array index data type.
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_all.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.unique_all.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -122,11 +129,11 @@ def unique_all(
     >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
     >>> z = ivy.unique_all(x)
     >>> print(z)
-    Results(values=ivy.array([-1.2119    , -0.62519997, -0.3238    , -0.0545    ,  0.0775    ,
-        0.2577    ,  0.40329999,  0.59439999,  0.74430001,  0.81010002,
-        0.84600002,  0.92979997,         nan,         nan,         nan,
-               nan]),
-        indices=ivy.array([ 4,  6, 12, 11, 14,  9,  7, 13,  8,  1,  3,  2,  0,  5, 10, 15]),
+    Results(values=ivy.array([-1.2119    , -0.62519997, -0.3238    , -0.0545    ,
+        0.0775    ,    0.2577    ,  0.40329999,  0.59439999,  0.74430001,  0.81010002,
+        0.84600002,  0.92979997,         nan,         nan,         nan,         nan]),
+        indices=ivy.array([ 4,  6, 12, 11, 14,  9,  7, 13,  8,  1,  3,  2,  0,  5,
+                            10, 15]),
         inverse_indices=ivy.array([[12,  9, 11, 10],
                                    [ 0, 12,  1,  6],
                                    [ 8,  5, 12,  3],
@@ -134,19 +141,19 @@ def unique_all(
        counts=ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
 
     """
-    return ivy.current_backend(x).unique_all(x)
+    return ivy.current_backend(x).unique_all(x, axis=axis, by_value=by_value)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """Returns the unique elements of an input array ``x``, and the indices from the
+    """Return the unique elements of an input array ``x``, and the indices from the
      set of unique elements that reconstruct ``x``.
 
      .. admonition:: Data-dependent output shape
@@ -201,7 +208,8 @@ def unique_inverse(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_inverse.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.unique_inverse.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -238,19 +246,19 @@ def unique_inverse(
     return ivy.current_backend(x).unique_inverse(x)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the unique elements of an input array ``x``.
+    """Return the unique elements of an input array ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
@@ -300,7 +308,8 @@ def unique_values(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_values.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.unique_values.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -316,7 +325,8 @@ def unique_values(
     >>> b = ivy.array([1, 2, 3, 4, 5])
     >>> ivy.unique_values(b)
     array([1, 2, 3, 4, 5])
-    >>> c = ivy.array([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 5.0, -0.0, 0.0, float('nan'), float('nan')])
+    >>> c = ivy.array([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 5.0, -0.0, 0.0, float('nan'),
+    ...                float('nan')])
     >>> ivy.unique_values(c)
     array([0., 1., 2., 3., 4., 5., nan, -0.])
 
@@ -324,17 +334,17 @@ def unique_values(
     return ivy.current_backend(x).unique_values(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
 def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """
-    Returns the unique elements of an input array ``x`` and the corresponding counts for
+    Return the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
@@ -384,7 +394,8 @@ def unique_counts(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_counts.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.unique_counts.htmll>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -408,7 +419,8 @@ def unique_counts(
     >>> x = ivy.array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
     >>> y = ivy.unique_counts(x)
     >>> print(y)
-    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998, 2.29999995]),
+    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998,
+                              2.29999995]),
             counts=ivy.array([3, 1, 1, 1, 1]))
 
     With :class:`ivy.Container` input:

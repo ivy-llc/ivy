@@ -2,57 +2,68 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-import numpy as np
-
-# isin
 
 
 @st.composite
-def _isin_data_generation_helper(draw):
-    assume_unique = draw(st.booleans())
-    if assume_unique:
-        dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            num_arrays=2,
-            shared_dtype=True,
-        ).filter(lambda x: np.array_equal(x[1][0], np.unique(x[1][0])))
+def _reduce_helper(draw):
+    # ToDo: remove the filtering when supported dtypes are fixed for mixed functions
+    dtype = draw(
+        helpers.get_dtypes("valid", full=False).filter(lambda x: "complex" not in x[0])
+    )
+    if dtype[0] == "bool":
+        func = draw(st.sampled_from([ivy.logical_and, ivy.logical_or]))
     else:
-        dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            num_arrays=2,
-            shared_dtype=True,
+        func = draw(st.sampled_from([ivy.add, ivy.maximum, ivy.minimum, ivy.multiply]))
+    init_value = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=(),
+            allow_inf=True,
         )
-    return assume_unique, draw(dtype_and_x)
+    )[1]
+    dtype, operand, shape = draw(
+        helpers.dtype_and_values(
+            min_num_dims=1,
+            dtype=dtype,
+            ret_shape=True,
+        )
+    )
+    axes = draw(helpers.get_axis(shape=shape))
+    return dtype, operand[0], init_value[0], func, axes
 
 
+# reduce
 @handle_test(
-    fn_tree="functional.ivy.experimental.isin",
-    assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
-    invert=st.booleans(),
+    fn_tree="functional.ivy.experimental.reduce",
+    args=_reduce_helper(),
+    keepdims=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_isin(
-    assume_unique_and_dtype_and_x,
-    invert,
+def test_reduce(
+    *,
+    args,
+    keepdims,
     test_flags,
     backend_fw,
+    fn_name,
     on_device,
+    ground_truth_backend,
 ):
-    assume_unique, x_and_dtype = assume_unique_and_dtype_and_x
-    dtypes, values = x_and_dtype
-    elements, test_elements = values
+    dtype, operand, init_value, func, axes = args
     helpers.test_function(
-        input_dtypes=dtypes,
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
         test_flags=test_flags,
-        on_device=on_device,
         fw=backend_fw,
-        fn_name="isin",
-        ground_truth_backend="numpy",
-        elements=elements,
-        test_elements=test_elements,
-        invert=invert,
-        assume_unique=assume_unique,
+        fn_name=fn_name,
+        on_device=on_device,
+        operand=operand,
+        init_value=init_value,
+        computation=func,
+        axes=axes,
+        keepdims=keepdims,
     )
