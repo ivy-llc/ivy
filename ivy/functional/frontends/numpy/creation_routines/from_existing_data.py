@@ -26,3 +26,8 @@ def asarray(
 @to_ivy_arrays_and_back
 def copy(a, order="K", subok=False):
     return ivy.copy_array(a)
+
+
+@handle_numpy_dtype
+def frombuffer(buffer, dtype=float, count=-1, offset=0, *, like=None):
+    return ivy.frombuffer(buffer)
