@@ -63,68 +63,87 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                     # check if version is there in this
                     if ver in keys[dep].keys():
                         # we install this one
-                        commands = [
-                            "pip",
-                            "install",
-                            f"{dep}=={keys[dep][ver]}",
-                            "--target",
-                            path,
-                            "--no-cache-dir",
-                        ]
-
-                        result = subprocess.run(
-                            commands, capture_output=True, text=True
+                        # commands = [
+                        #     "pip",
+                        #     "install",
+                        #     f"",
+                        #     "--target",
+                        #     path,
+                        #     "--no-cache-dir",
+                        # ]
+                        #
+                        # result = subprocess.run(
+                        #     commands, capture_output=True, text=True
+                        # )
+                        #
+                        # if result.returncode == 0:
+                        #     print("Command executed successfully.")
+                        # else:
+                        #     print(
+                        #         "Command encountered an error. Return code:"
+                        #         f" {result.returncode}"
+                        #     )
+                        subprocess.run(
+                            (
+                                f"pip3 install  {dep}=={keys[dep][ver]} --target {path} --default-timeout=100  "
+                                " --no-cache-dir"
+                            ),
+                            shell=True,
                         )
-
-                        if result.returncode == 0:
-                            print("Command executed successfully.")
-                        else:
-                            print(
-                                "Command encountered an error. Return code:"
-                                f" {result.returncode}"
-                            )
-
                     else:
-                        commands = [
-                            "pip",
-                            "install",
-                            dep,
-                            "--target",
-                            path,
-                            "--no-cache-dir",
-                        ]
-
-                        result = subprocess.run(
-                            commands, capture_output=True, text=True
-                        )
-
-                        if result.returncode == 0:
-                            print("Command executed successfully.")
-                        else:
-                            print(
-                                "Command encountered an error. Return code:"
-                                f" {result.returncode}"
-                            )
-
+                        # commands = [
+                        #     "pip",
+                        #     "install",
+                        #     dep,
+                        #     "--target",
+                        #     path,
+                        #     "--no-cache-dir",
+                        # ]
+                        #
+                        # result = subprocess.run(
+                        #     commands, capture_output=True, text=True
+                        # )
+                        #
+                        # if result.returncode == 0:
+                        #     print("Command executed successfully.")
+                        # else:
+                        #     print(
+                        #         "Command encountered an error. Return code:"
+                        #         f" {result.returncode}"
+                        #     )
+                    subprocess.run(
+                        (
+                            f"pip3 install  {dep} --target {path} --default-timeout=100  "
+                            " --no-cache-dir"
+                        ),
+                        shell=True,
+                    )
                 else:
-                    commands = [
-                        "pip",
-                        "install",
-                        keys,
-                        "--target",
-                        path,
-                        "--no-cache-dir",
-                    ]
-
-                    result = subprocess.run(commands, capture_output=True, text=True)
-
-                    if result.returncode == 0:
-                        print("Command executed successfully.")
-                    else:
-                        print(
-                            "Command encountered an error. Return code:"
-                            f" {result.returncode}"
-                        )
+                    # commands = [
+                    #     "pip",
+                    #     "install",
+                    #     keys,
+                    #     "--target",
+                    #     path,
+                    #     "--no-cache-dir",
+                    # ]
+                    #
+                    # result = subprocess.run(commands, capture_output=True, text=True)
+                    #
+                    # if result.returncode == 0:
+                    #     print("Command executed successfully.")
+                    # else:
+                    #     print(
+                    #         "Command encountered an error. Return code:"
+                    #         f" {result.returncode}"
+                    #     )
+                    subprocess.run(
+                        (
+                            f"pip3 install  {keys} --target {path} --default-timeout=100  "
+                            " --no-cache-dir"
+                        ),
+                        shell=True,
+                    )
 
 
 if __name__ == "__main__":
