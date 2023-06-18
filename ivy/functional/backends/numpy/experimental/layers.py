@@ -860,22 +860,6 @@ def ifft(
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
-def embedding(
-    weights: np.ndarray,
-    indices: np.ndarray,
-    /,
-    *,
-    max_norm: Optional[int] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    embeddings = np.take(weights, indices, axis=0)
-    if max_norm is not None:
-        norms = np.linalg.norm(embeddings, axis=-1, keepdims=True)
-        embeddings = np.where(norms > max_norm, embeddings * max_norm / norms, embeddings)
-    return embeddings
-
-
 def fft2(
     x: np.ndarray,
     *,
@@ -906,3 +890,19 @@ def fft2(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.fft2(x, s, dim, norm).astype(np.complex128)
+
+
+@with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
+def embedding(
+    weights: np.ndarray,
+    indices: np.ndarray,
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    embeddings = np.take(weights, indices, axis=0)
+    if max_norm is not None:
+        norms = np.linalg.norm(embeddings, axis=-1, keepdims=True)
+        embeddings = np.where(norms > max_norm, embeddings * max_norm / norms, embeddings)
+    return embeddings
