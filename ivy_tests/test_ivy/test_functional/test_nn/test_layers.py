@@ -250,7 +250,7 @@ def _mha_helper(draw):
         _q_shape = _batch_dim + (_num_queries, _pre_embed_dim)
         _kv_shape = _batch_dim + (_num_keys, _pre_embed_dim)
 
-    q = draw(
+        q = draw(
             helpers.array_values(
                 shape=_q_shape,
                 dtype=dtype[0],
@@ -353,7 +353,8 @@ def _mha_helper(draw):
     in_proj_bias = draw(
         helpers.array_values(
             dtype=dtype[0], shape=(3 * _embed_dim), min_value=0, max_value=10
-        ) | st.none()
+        )
+        | st.none()
     )
     _out_dim = draw(helpers.ints(min_value=4, max_value=16))
     out_proj_weights = draw(
@@ -362,7 +363,8 @@ def _mha_helper(draw):
             shape=(_out_dim, _embed_dim),
             min_value=0,
             max_value=2,
-        ) | st.none()
+        )
+        | st.none()
     )
     out_proj_bias = draw(
         helpers.array_values(
@@ -373,7 +375,10 @@ def _mha_helper(draw):
     attention_mask = draw(
         helpers.array_values(
             dtype="bool",
-            shape=_mask_shape,)| st.none())
+            shape=_mask_shape,
+        )
+        | st.none()
+    )
     return (
         dtype,
         q,
@@ -389,28 +394,50 @@ def _mha_helper(draw):
         in_proj_bias,
         out_proj_bias,
     )
-    
 
 
 # multi_head_attention
 @handle_test(
     fn_tree="functional.ivy.multi_head_attention",
-    dtype_mha=x_and_mha(
-        dtypes=helpers.get_dtypes("float"),
-    ),
+    dtype_mha=_mha_helper(),
+    scale=st.floats() | st.none(),
+    dropout=st.floats(min_value=0, max_value=1),
+    training=st.booleans(),
+    is_causal=st.booleans(),
+    return_attention_weights=st.booleans(),
+    average_attention_weights=st.booleans(),
     ground_truth_backend="jax",
 )
 def test_multi_head_attention(
     *,
     dtype_mha,
+    scale,
+    dropout,
+    training,
+    is_causal,
+    return_attention_weights,
+    average_attention_weights,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x_mha, scale, num_heads, context, mask = dtype_mha
-    to_q_fn = lambda x_, v: x_
+    (
+        dtype,
+        q,
+        k,
+        v,
+        num_heads,
+        attention_mask,
+        in_proj_weights,
+        q_proj_weights,
+        k_proj_weights,
+        v_proj_weights,
+        out_proj_weights,
+        in_proj_bias,
+        out_proj_bias,
+    ) = dtype_mha
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -420,17 +447,24 @@ def test_multi_head_attention(
         on_device=on_device,
         atol_=1e-02,
         rtol_=1e-02,
-        x=x_mha,
-        scale=scale,
+        query=q,
+        key=k,
+        value=v,
         num_heads=num_heads,
-        context=context,
-        mask=mask,
-        to_q_fn=to_q_fn,
-        to_kv_fn=to_q_fn,
-        to_out_fn=to_q_fn,
-        to_q_v=None,
-        to_kv_v=None,
-        to_out_v=None,
+        scale=scale,
+        attention_mask=attention_mask,
+        in_proj_weights=in_proj_weights,
+        q_proj_weights=q_proj_weights,
+        k_proj_weights=k_proj_weights,
+        v_proj_weights=v_proj_weights,
+        out_proj_weights=out_proj_weights,
+        in_proj_bias=in_proj_bias,
+        out_proj_bias=out_proj_bias,
+        is_causal=is_causal,
+        return_attention_weights=return_attention_weights,
+        average_attention_weights=average_attention_weights,
+        dropout=dropout,
+        training=training,
     )
 
 
@@ -904,9 +938,18 @@ def test_conv_general_dilated(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
-        x_f_d_df
-    )
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        fc,
+        ff_format,
+        bias,
+    ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
