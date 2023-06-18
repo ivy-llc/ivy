@@ -131,44 +131,29 @@ def rfftfreq(n, d=1.0):
 @to_ivy_arrays_and_back
 def ifftn(a, s=None, axes=None, norm=None):
     a = ivy.array(a, dtype=ivy.complex128)
-    if s is None:
-        s = a.shape
-    else:
-        if a.shape != s:
-            raise ValueError("Input array shape and 's' argument shape do not match.")
-
-    if axes is None:
-        axes = range(a.ndim)
     if norm is None:
         norm = "backward"
-    elif norm != 'ortho':
+    elif (norm != 'ortho' and norm != None):
         raise ValueError("Invalid norm value. Should be None or 'ortho'.")
 
-    axes = tuple(axes)
+    a = ivy.array(a)
+    if s is None:
+        s = a.shape
+
+    if axes is None:
+        axes = tuple(range(a.ndim))
+    else:
+        axes = tuple(axes)
+
     shape = ivy.array(s)
-    ndim = len(shape)
+    product = ivy.prod(shape)
 
-    # Calculate the product of shape elements without np.prod
-    product = 1
-    for dim in shape:
-        product *= dim
-
-    # Roll the axes to align them correctly
     for axis in axes:
-        a = ivy.roll(a, -shape[axis] // 2, axis=axis)
+        a = ivy.ifft(a, n=s[axis], axis=axis, norm=norm)
 
-    output = ifftshift(a, axes=axes)
-
-    # Perform 1D inverse FFT along each axis
-    for axis in axes:
-        output = ivy.ifft(output, n=shape[axis], axis=axis)
-
-    # Multiply by sqrt(product) for 'ortho' normalization
+    # Divide by sqrt(product) for 'ortho' normalization
     if norm == 'ortho':
-        output *= ivy.sqrt(product)
+        a *= ivy.sqrt(product) / ivy.sqrt(ivy.prod(a.shape))
 
-    # Combine real and imaginary parts into complex array
-    output_complex = output.astype(ivy.complex128)
-
-    return output_complex
+    return a
 
