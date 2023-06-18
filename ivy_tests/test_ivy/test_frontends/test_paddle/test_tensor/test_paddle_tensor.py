@@ -887,7 +887,11 @@ def test_paddle_all(
     )
 
 
+<<<<<<< HEAD
 #sort
+=======
+# sort
+>>>>>>> 87dc4bd97a92c55bab0b3bbca026fb0c937a031f
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -927,6 +931,7 @@ def test_paddle_sort(
         method_flags=method_flags,
         on_device=on_device,
     )
+<<<<<<< HEAD
 
 
 # amax
@@ -969,3 +974,5 @@ def test_paddle_amax(
         method_flags=method_flags,
         on_device=on_device,
     )
+=======
+>>>>>>> 87dc4bd97a92c55bab0b3bbca026fb0c937a031f
