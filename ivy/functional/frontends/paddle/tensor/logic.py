@@ -218,3 +218,8 @@ def bitwise_xor(x, y, /, *, name=None, out=None):
 def allclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
     ret = ivy.allclose(x, y, rtol=rtol, atol=atol, equal_nan=equal_nan)
     return paddle.to_tensor([ret])
+
+
+@to_ivy_arrays_and_back
+def is_tensor(x):
+    return ivy.is_array(x)
