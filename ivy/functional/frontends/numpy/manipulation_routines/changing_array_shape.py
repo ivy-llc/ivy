@@ -69,3 +69,7 @@ def asfortranarray(a, dtype=None, *, like=None):
         return [[a[j][i] for j in ivy.range(num_rows)] for i in ivy.range(num_cols)]
 
     return a
+
+@to_ivy_arrays_and_back
+def require(a, dtype=None, requirements=None, *, like=None):
+    return ivy.asarray(a, dtype=dtype)
