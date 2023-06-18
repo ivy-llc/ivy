@@ -15,10 +15,19 @@ def uniform(shape, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
     return ivy.random_uniform(low=min, high=max, shape=shape, dtype=dtype, seed=seed)
 
 
+@to_ivy_arrays_and_back
+def randint(low=0, high=None, shape=[1], dtype=None, name=None):
+    return ivy.randint(low, high, shape=shape, dtype=dtype)
+
+
 @with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
+def poisson(x, name=None):
+    return ivy.poisson(x, shape=None, device=None, dtype=None, seed=None, out=None)
+
+
 def randn(shape, dtype=None, seed=0, name=None):
     return ivy.random_normal(shape=shape, dtype=dtype, seed=seed)

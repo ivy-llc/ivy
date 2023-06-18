@@ -288,6 +288,13 @@ def test_copy_nest():
     assert nest["b"]["c"][0] is nest_copy["b"]["c"][0]
     assert nest["b"]["c"][1] is nest_copy["b"]["c"][1]
 
+    from collections import namedtuple
+
+    NAMEDTUPLE = namedtuple("OutNamedTuple", ["x", "y"])
+    nest = NAMEDTUPLE(x=ivy.array([1.0]), y=ivy.array([2.0]))
+    copied_nest = ivy.copy_nest(nest, include_derived=True)
+    assert isinstance(copied_nest, NAMEDTUPLE)
+
 
 # copy_nest_w_extra_nest_types
 def test_copy_nest_w_extra_nest_types():

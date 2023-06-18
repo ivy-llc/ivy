@@ -251,6 +251,7 @@ def identity_n(input, name=None):
     return [ivy.copy_array(x) for x in input]
 
 
+@to_ivy_arrays_and_back
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
 
@@ -563,3 +564,13 @@ def while_loop(
 @to_ivy_arrays_and_back
 def truncatediv(x, y, name=None):
     return x.trunc_divide(y)
+
+
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("int16", "int8", "uint8", " uint16")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def truncatemod(x, y):
+    x = ivy.broadcast_to(x, ivy.shape(y))
+    y = ivy.broadcast_to(y, ivy.shape(x))
+    return ivy.trunc(x / y) * y + (x % y)

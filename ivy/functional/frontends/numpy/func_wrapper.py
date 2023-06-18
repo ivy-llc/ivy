@@ -377,19 +377,16 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
+            if ivy.current_backend_str() == "jax":
+                import jax
+
+                jax.config.update("jax_enable_x64", True)
             (
                 ivy.set_default_int_dtype("int64")
-                if (
-                    platform.system() != "Windows"
-                    and ivy.current_backend_str() != "jax"
-                )
+                if platform.system() != "Windows"
                 else ivy.set_default_int_dtype("int32")
             )
-            (
-                ivy.set_default_float_dtype("float64")
-                if ivy.current_backend_str() != "jax"
-                else ivy.set_default_float_dtype("float32")
-            )
+            ivy.set_default_float_dtype("float64")
             set_default_dtype = True
         if contains_order:
             if len(args) >= (order_pos + 1):
