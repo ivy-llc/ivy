@@ -78,6 +78,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         ):
             if ivy.current_backend_str() == "jax":
                 import jax
+
                 jax.config.update("jax_enable_x64", True)
             ivy.set_default_int_dtype("int64")
             ivy.set_default_float_dtype(torch_frontend.get_default_dtype())
