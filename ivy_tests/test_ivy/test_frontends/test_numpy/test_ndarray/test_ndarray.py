@@ -123,12 +123,13 @@ def test_numpy_ndarray_property_T(
     )
 )
 def test_numpy_ndarray_property_flat(dtype_x):
-    dtype, x, shape = dtype_x
-    x_ivy = ivy.array(*x, dtype=dtype)
+    dtype, data, shape = dtype_x
 
-    flat_ivy = x_ivy.flat()
-    flat_generated = x_ivy.flatten().flat
+    x = ndarray(shape, dtype[0])
+    x.ivy_array = data[0]
 
+    flat_ivy = x.flat()
+    flat_generated = data[0].flatten().flat
     ivy.utils.assertions.check_equal(flat_ivy, flat_generated, as_array=True)
 
 
