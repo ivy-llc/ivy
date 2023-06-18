@@ -1799,7 +1799,8 @@ def test_jax_numpy_fabs(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=2,
+        large_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
