@@ -197,12 +197,15 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=0,
         max_num_dims=2,
-        force_tuple_axis=True
+        force_tuple_axis=True,
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
-    s=st.one_of(st.lists(st.integers()), st.none())
+    s=st.one_of(st.lists(st.integers()), st.none()),
+    axes=st.one_of(st.none(), st.lists(st.integers())),
 )
-def test_ivy_rfft2(dtype_input_axis, norm, s, axes, frontend, test_flags, fn_tree, on_device):
+def test_numpy_rfft2(
+        dtype_input_axis, norm, s, axes, frontend, test_flags, fn_tree, on_device
+):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
