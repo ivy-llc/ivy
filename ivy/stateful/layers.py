@@ -1852,3 +1852,125 @@ class AdaptiveAvgPool1d(Module):
             x,
             self._output_size,
         )
+
+
+class Embedding(Module):
+    def __init__(
+        self,
+        num_embeddings: int,
+        embedding_dim: int,
+        /,
+        *,
+        weight_initializer=GlorotUniform(),
+        padding_idx: int = None,
+        max_norm: float = None,
+        norm_type: float = 2.0,
+        mask_zero: bool = False,
+        scale_grad_by_freq: bool = False,
+        input_length: int = None,
+        sparse: bool = False,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for embedding layer.
+
+        Parameters
+        ----------
+        num_embeddings
+            size of the dictionary of embeddings
+        embedding_dim
+            the size of each embedding vector
+        weight_initializer
+            initializer for the embedding matrix. Default is GlorotUniform.
+        padding_idx
+            If given, pads the output with zeros whenever it encounters the index.
+        max_norm
+            If given, each embedding vector with norm larger than max_norm
+             is re-normalized to have norm max_norm.
+        norm_type
+            The p of the p-norm to compute for the max_norm option. Default 2.
+        mask_zero
+            Whether the input value 0
+             is a special "padding" value that should be masked out.
+        input_length
+            Length of input sequences, when it is constant.
+        sparse
+            Whether the embeddings should be sparse.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'.
+        dtype
+            the desired data type of the internal variables to be created if not.
+        """
+        self.num_embeddings = num_embeddings
+        self.embedding_dim = embedding_dim
+        if padding_idx is not None:
+            if padding_idx > 0:
+                ivy.assertions.check_less(
+                    padding_idx,
+                    num_embeddings,
+                    message="'Padding_idx must be within num_embeddings'",
+                )
+            elif padding_idx < 0:
+                ivy.assertions.check_greater(
+                    padding_idx,
+                    -num_embeddings,
+                    allow_equal=True,
+                    message="'Padding_idx must be within num_embeddings'",
+                )
+                padding_idx = self.num_embeddings + padding_idx
+        self.padding_idx = padding_idx
+        self.max_norm = max_norm
+        self.norm_type = norm_type
+        self.mask_zero = mask_zero
+        self.input_length = input_length
+        self.scale_grad_by_freq = scale_grad_by_freq
+        self.sparse = sparse
+        self._w_init = weight_initializer
+        self._w_shape = (num_embeddings, embedding_dim)
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _create_variables(self, device, dtype=None):
+        """
+        Create internal variables for the layer.
+
+        Parameters
+        ----------
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
+        """
+        v = {
+            "w": self._w_init.create_variables(
+                self._w_shape,
+                device,
+                self.embedding_dim,
+                self.num_embeddings,
+                dtype=dtype,
+            )
+        }
+
+        return v
+
+    def _forward(self, indices):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        indices
+            The indices of the embedding to be returned.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        # TODO: Add other params once implemented in ivy.
+        return ivy.embedding(
+            self.v.w,
+            indices,
+            max_norm=self.max_norm,
+        )
