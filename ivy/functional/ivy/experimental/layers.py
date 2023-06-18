@@ -1074,10 +1074,10 @@ def embedding(
     )
     if ivy.exists(out):
         return ivy.inplace_update(out, ivy.current_backend(indices).embedding(
-            weights,
-            indices,
-            max_norm=max_norm,
-            out=out,
+                weights,
+                indices,
+                max_norm=max_norm,
+                out=out,
             )
         )
     else:
