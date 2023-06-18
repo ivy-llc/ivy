@@ -1317,6 +1317,9 @@ class Tensor:
     def diag(self, diagonal=0):
         return torch_frontend.diag(self, diagonal=diagonal)
 
+    def take_along_dim(self, indices, dim):
+        return torch_frontend.take_along_dim(self, indices=indices, dim=dim)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
