@@ -5,18 +5,18 @@ import sys
 import json
 
 
-def directory_generator(req, json_path, base="/opt/fw/"):
+def directory_generator(req, base="/opt/fw/"):
     for versions in req:
         if "/" in versions:
             pkg, ver = versions.split("/")
             path = base + pkg + "/" + ver
             if not os.path.exists(path):
-                install_pkg(path, pkg + "==" + ver, json_path)
+                install_pkg(path, pkg + "==" + ver)
         else:
-            install_pkg(base + versions, versions, json_path)
+            install_pkg(base + versions, versions)
 
 
-def install_pkg(path, pkg, json_path, base="fw/"):
+def install_pkg(path, pkg, base="fw/"):
     if pkg.split("==")[0] if "==" in pkg else pkg == "torch":
         subprocess.run(
             (
@@ -26,7 +26,6 @@ def install_pkg(path, pkg, json_path, base="fw/"):
             ),
             shell=True,
         )
-        install_deps(pkg, json_path)
     elif pkg.split("==")[0] == "jax":
         subprocess.run(
             (
@@ -36,7 +35,6 @@ def install_pkg(path, pkg, json_path, base="fw/"):
             ),
             shell=True,
         )
-        install_deps(pkg, json_path)
     else:
         subprocess.run(
             (
@@ -45,7 +43,6 @@ def install_pkg(path, pkg, json_path, base="fw/"):
             ),
             shell=True,
         )
-        install_deps(pkg, json_path)
 
 
 def install_deps(pkgs, path_to_json, base="/opt/fw/"):
@@ -136,5 +133,5 @@ if __name__ == "__main__":
     json_path = (  # path to the json file storing version specific deps
         "requirement_mappings_multiversion.json"
     )
-    directory_generator(arg_lis[1:], json_path)
-    # install_deps(arg_lis[1:], json_path)
+    directory_generator(arg_lis[1:])
+    install_deps(arg_lis[1:], json_path)
