@@ -468,5 +468,3 @@ def test_paddle_isclose(
         y=x[1],
         equal_nan=equal_nan,
     )
-
-   
