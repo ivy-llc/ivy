@@ -135,7 +135,6 @@ def celu(
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-
 def rrelu(
     x,
     /,
@@ -173,6 +172,7 @@ def rrelu(
     # a = ivy.random_normal(low=lower, high=upper)
     # ret = ivy.where(x >= 0, x, ivy.multiply(a, x))
     # return ret.astype(x.dtype)
+
 
 def tanhshrink(
     x,
