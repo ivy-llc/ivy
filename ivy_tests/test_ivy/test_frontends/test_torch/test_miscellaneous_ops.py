@@ -1093,9 +1093,10 @@ def test_torch_gcd(
 @handle_frontend_test(
     fn_tree="torch.tensordot",
     dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
-        helpers.get_dtypes(kind="float")
+        helpers.get_dtypes(kind="float"),
+        min_value=-5,
+        max_value=5,
     ),
-    test_with_out=st.just(False),
 )
 def test_torch_tensordot(
     dtype_values_and_axes,
@@ -1111,7 +1112,7 @@ def test_torch_tensordot(
         fn_tree=fn_tree,
         a=a,
         b=b,
-        rtol=1e-1,
+        rtol=1e-2,
         atol=1e-2,
         dims=dims,
     )

@@ -2946,3 +2946,29 @@ def test_jax_numpy_product(
         where=where,
         promote_integers=promote_integers,
     )
+
+
+# conjugate
+@handle_frontend_test(
+    fn_tree="jax.numpy.conjugate",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_jax_numpy_conjugate(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
