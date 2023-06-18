@@ -661,6 +661,33 @@ def fft(
     return torch.fft.fft(x, n, dim, norm, out=out).to(dtype=out_dtype)
 
 
+def dropout(
+    x: torch.Tensor,
+    prob: float,
+    /,
+    *,
+    scale: bool = True,
+    dtype: torch.dtype = None,
+    training: bool = True,
+    seed: Optional[int] = None,
+    noise_shape: Optional[Sequence[int]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x = ivy.astype(x, dtype) if dtype else x
+    res = torch.nn.functional.dropout(x, prob, training=training)
+    res = torch.multiply(res, (1.0 - prob)) if not scale else res
+    return res
+
+
+dropout.partial_mixed_handler = lambda x, prob, **kwargs: (
+    kwargs.get("noise_shape") is None and kwargs.get("seed") is None
+)
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16",)},
+    backend_version,
+)
 def dropout1d(
     x: torch.Tensor,
     prob: float,
@@ -670,20 +697,38 @@ def dropout1d(
     data_format: str = "NWC",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if training:
-        if data_format == "NWC":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
-            x = torch.permute(x, perm)
-        # ToDo: switch to native dropout1d once torch version is updated.
-        noise_shape = list(x.shape)
-        noise_shape[-1] = 1
-        mask = torch.rand(noise_shape) > prob
-        res = torch.where(mask, x / (1 - prob), torch.zeros_like(x))
-        if data_format == "NWC":
-            res = torch.permute(res, perm)
-        return res
-    else:
-        return x
+    is_batched = len(x.shape) == 3
+    if data_format == "NWC":
+        perm = (0, 2, 1) if is_batched else (1, 0)
+        x = torch.permute(x, perm)
+    res = torch.nn.functional.dropout1d(x, prob, training=training)
+    if data_format == "NWC":
+        res = torch.permute(res, perm)
+    return res
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16",)},
+    backend_version,
+)
+def dropout2d(
+    x: torch.Tensor,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    is_batched = len(x.shape) == 4
+    if data_format == "NHWC":
+        perm = (0, 3, 1, 2) if is_batched else (2, 0, 1)
+        x = torch.permute(x, perm)
+    res = torch.nn.functional.dropout2d(x, prob, training=training)
+    if data_format == "NHWC":
+        perm = (0, 2, 3, 1) if is_batched else (1, 2, 0)
+        res = torch.permute(res, perm)
+    return res
 
 
 @with_unsupported_dtypes(
@@ -704,22 +749,15 @@ def dropout3d(
     data_format: str = "NDHWC",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if training:
-        is_batched = len(x.shape) == 5
-        if data_format == "NDHWC":
-            perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
-            x = torch.permute(x, perm)
-        # ToDo: switch to native dropout1d once torch version is updated.
-        noise_shape = list(x.shape)
-        noise_shape[-3:] = [1] * 3
-        mask = torch.rand(noise_shape) > prob
-        res = torch.where(mask, x / (1 - prob), torch.zeros_like(x))
-        if data_format == "NDHWC":
-            perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
-            res = torch.permute(res, perm)
-        return res
-    else:
-        return x
+    is_batched = len(x.shape) == 5
+    if data_format == "NDHWC":
+        perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
+        x = torch.permute(x, perm)
+    res = torch.nn.functional.dropout3d(x, prob, training=training)
+    if data_format == "NDHWC":
+        perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
+        res = torch.permute(res, perm)
+    return res
 
 
 def ifft(
@@ -822,3 +860,38 @@ def adaptive_avg_pool1d(input, output_size):
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool2d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+def fft2(
+    x: torch.Tensor,
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if not all(isinstance(j, int) for j in dim):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {dim} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[dim[0]], x.shape[dim[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return torch.tensor(
+        torch.fft.fft2(x, s, dim, norm, out=out), dtype=torch.complex128
+    )

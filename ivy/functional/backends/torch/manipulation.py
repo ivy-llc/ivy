@@ -336,7 +336,7 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
-@with_unsupported_dtypes({"2.0.1": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.0.1": ("bool", "float16", "complex")}, backend_version)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],
@@ -346,6 +346,8 @@ def clip(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if hasattr(x_min, "dtype"):
+        x_min = torch.asarray(x_min, device=x.device)
+        x_max = torch.asarray(x_max, device=x.device)
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
         x_min = x_min.to(promoted_type)
