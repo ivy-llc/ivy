@@ -9304,14 +9304,14 @@ def test_torch_instance_take_along_dim(
 ):
     input_dtypes, value, indices, axis, _ = dtype_indices_axis
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes[0],
+        init_input_dtypes=[input_dtypes[0]],
         init_all_as_kwargs_np={
             "data": value,
         },
-        method_input_dtypes=input_dtypes[1],
+        method_input_dtypes=[input_dtypes[1]],
         method_all_as_kwargs_np={
-            "dim": axis,
             "indices": indices,
+            "dim": axis,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
