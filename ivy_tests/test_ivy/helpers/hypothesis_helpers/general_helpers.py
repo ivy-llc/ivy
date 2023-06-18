@@ -528,7 +528,8 @@ def embedding_helper(draw):
         array_helpers.dtype_and_values(
             available_dtypes=[
                 x
-                for x in draw(dtype_helpers.get_dtypes("float"))
+                for x in draw(dtype_helpers.get_dtypes("numeric"))
+                if "float" in x or "complex" in x
             ],
             min_num_dims=2,
             max_num_dims=2,
