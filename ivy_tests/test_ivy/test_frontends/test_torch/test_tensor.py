@@ -9279,6 +9279,41 @@ def test_torch_instance_diag(
         on_device=on_device,
     )
 
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="gather",
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        indices_same_dims=True,
+    ),
+)
+def test_torch_instance_gather(
+    params_indices_others,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtypes, x, indices, axis, batch_dims = params_indices_others
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=[input_dtypes[1]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
 # is_meta
 @handle_frontend_method(
     class_tree=CLASS_TREE,
