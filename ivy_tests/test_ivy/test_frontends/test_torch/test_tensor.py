@@ -9313,3 +9313,44 @@ def test_torch_instance_gather(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="take_along_dim",
+    dtype_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_torch_instance_take_along_dim(
+    dtype_indices_axis,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, value, indices, axis, _ = dtype_indices_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        init_all_as_kwargs_np={
+            "data": value,
+        },
+        method_input_dtypes=[input_dtypes[1]],
+        method_all_as_kwargs_np={
+            "indices": indices,
+            "dim": axis,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
