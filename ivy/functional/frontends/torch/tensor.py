@@ -1313,6 +1313,14 @@ class Tensor:
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
         )
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def floor_(self):
+        self.ivy_array = self.floor().ivy_array
+        return self
+
+    def diag(self, diagonal=0):
+        return torch_frontend.diag(self, diagonal=diagonal)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):

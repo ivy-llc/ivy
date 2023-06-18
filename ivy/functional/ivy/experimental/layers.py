@@ -1878,6 +1878,7 @@ def _mask(vals, length, range_max, dim):
 
 
 @handle_nestable
+@inputs_to_ivy_arrays
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -2199,15 +2200,15 @@ def reduce_window(
     dims, strides, padding, base_dilation, window_dilation = ivy.map(
         _int_arg_to_tuple,
         unique={
-            "arg" : [
+            "arg": [
                 window_dimensions,
                 window_strides,
                 padding,
                 base_dilation,
-                window_dilation
+                window_dilation,
             ]
         },
-        constant={"dims" : len(op.shape)},
+        constant={"dims": len(op.shape)},
     )
 
     init_value = _cast_init(init_value, op.dtype)
