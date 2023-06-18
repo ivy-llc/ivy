@@ -9263,9 +9263,9 @@ def test_torch_instance_gather(
 ):
     input_dtypes, x, indices, axis, batch_dims = params_indices_others
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
+        init_input_dtypes=[input_dtypes[0]],
         init_all_as_kwargs_np={"data": x},
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=[input_dtypes[1]],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
