@@ -223,3 +223,17 @@ def allclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
 @to_ivy_arrays_and_back
 def is_tensor(x):
     return ivy.is_array(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def isclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
+    return ivy.isclose(x, y, rtol=rtol, atol=atol, equal_nan=equal_nan)
