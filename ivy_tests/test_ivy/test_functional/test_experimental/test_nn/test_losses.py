@@ -6,8 +6,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
-<<<<<<< HEAD
-=======
 # cross_entropy
 @handle_test(
     fn_tree="functional.ivy.cross_entropy",
@@ -16,24 +14,16 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_value=1e-04,
         max_value=1,
         allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=1e-04,
         max_value=1,
         allow_inf=False,
-        exclude_min=True,
-        exclude_max=True,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
     ),
     reduction=st.sampled_from(["none", "sum", "mean"]),
     axis=helpers.ints(min_value=-1, max_value=0),
-    epsilon=helpers.floats(min_value=0, max_value=0.49),
+    epsilon=helpers.floats(min_value=0.0, max_value=1.0),
 )
 def test_cross_entropy(
     dtype_and_true,
@@ -220,8 +210,6 @@ def test_sparse_cross_entropy(
         reduction=reduction,
     )
     
-    
->>>>>>> loss_function
 #mse
 @handle_test(
     fn_tree="functional.ivy.experimental.mse_loss",
