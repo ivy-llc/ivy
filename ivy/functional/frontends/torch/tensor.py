@@ -1320,6 +1320,9 @@ class Tensor:
     def gather(self, dim, index):
         return torch_frontend.gather(self, dim=dim, index=index)
 
+    def movedim(self, source, destination):
+        return torch_frontend.movedim(self, source=source, destination=destination)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
