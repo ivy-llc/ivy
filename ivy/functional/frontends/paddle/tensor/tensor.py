@@ -167,3 +167,11 @@ class Tensor:
     @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
     def cholesky(self, upper=False, name=None):
         return ivy.cholesky(self._ivy_array, upper=upper)
+
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def all(self, axis=None, keepdim=False, dtype=None, name=None):
+        return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def sort(self, axis=-1, descending=False, name=None):
+        return ivy.sort(self._ivy_array, axis=axis, descending=descending)

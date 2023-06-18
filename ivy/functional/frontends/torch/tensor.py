@@ -1310,9 +1310,15 @@ class Tensor:
         )
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-    def floor_(self, *, out=None):
+    def floor_(self):
         self.ivy_array = self.floor().ivy_array
         return self
+
+    def diag(self, diagonal=0):
+        return torch_frontend.diag(self, diagonal=diagonal)
+
+    def gather(self, dim, index):
+        return torch_frontend.gather(self, dim=dim, index=index)
 
 
 class Size(tuple):
