@@ -318,6 +318,27 @@ def moments(x, axes, shift=None, keepdims=False, name=None):
     )
 
 
+@with_unsupported_dtypes({"2.12.0 and below":(
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )}, "tensorflow")
+@to_ivy_arrays_and_back
+def normalize_moments( counts, mean_ss, variance_ss, shift=None, name=None):
+    divisor = ivy.reciprocal(counts)
+    if shift is not None:
+        shifted_mean = ivy.multiply(mean_ss,divisor)
+        mean = ivy.add(shifted_mean,shift)
+    else:
+        shifted_mean = ivy.multiply(mean_ss,divisor)
+        mean = shifted_mean
+        
+    variance = ivy.subtract(ivy.multiply(variance_ss,divisor), ivy.square(shifted_mean))
+    return mean, variance
+
+
 @to_ivy_arrays_and_back
 def bias_add(value, bias, data_format=None, name=None):
     if data_format is None:
