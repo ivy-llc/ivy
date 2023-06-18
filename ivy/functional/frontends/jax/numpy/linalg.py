@@ -152,4 +152,3 @@ def cond(x, p=None):
     nan_mask = ivy.logical_and(ivy.isnan(r), ~ivy.isnan(x).any(axis=(-2, -1)))
     r = ivy.where(orig_nan_check, ivy.where(nan_mask, ivy.inf, r), r)
     return r
-    # return ivy.cond(x, p=p)
