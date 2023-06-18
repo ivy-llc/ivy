@@ -43,6 +43,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         destination
             Destination positions for each of the original axes.
             These must also be unique.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -119,6 +126,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             The array to be flipped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -320,6 +334,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             The array to be flipped. Must be at least 2-D.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -389,6 +410,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             input array to flatten.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -545,6 +573,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             Input array.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
@@ -591,6 +626,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a sequence of ints or 1-D array,
             then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -615,7 +657,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def atleast_1d(
         self: ivy.Array,
         *arys: Union[ivy.Array, bool, Number],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_1d. This method simply wraps
@@ -628,6 +670,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Input array. Cannot be a scalar input.
         arys
             An arbitrary number of input arrays.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -680,7 +729,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def atleast_2d(
         self: ivy.Array,
         *arys: ivy.Array,
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_2d. This method simply wraps
@@ -693,6 +742,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Input array. Cannot be a scalar input.
         arys
             An arbitrary number of input arrays.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -713,7 +769,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def atleast_3d(
         self: ivy.Array,
         *arys: Union[ivy.Array, bool, Number],
-        copy: Optional[bool] = False,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_3d. This method simply wraps
@@ -726,6 +782,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Input array. Cannot be a scalar input.
         arys
             An arbitrary number of input arrays.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -812,6 +875,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a sequence of ints or 1-D array,
             then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -857,6 +927,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         shape
             A 1-D Array indicates the shape you want to expand to,
             following the broadcast rule
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to.
 
