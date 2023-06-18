@@ -857,6 +857,18 @@ Passing docstring tests is a necessary but not sufficient condition for the comp
 .. note::
    Docstring examples should not have code that imports ivy or sets a backend, otherwise it leads to segmentation faults.
 
+**Running Docstring Tests Locally**
+
+The script for running the docstring tests locally is located at :code:`ivy/run_docstring_tests_locally.sh`.
+Inorder to run the docstring tests locally, you need to run the script as follows:
+
+.. code-block:: bash
+
+    ./run_docstring_tests_locally.sh --backend <backend_name> --fn <function_name>
+
+The backend name should be one of the backends supported by ivy.
+The function name should be the name of the function for which you want to run the docstring tests.
+
 **Round Up**
 
 These three examples should give you a good understanding of what is required when adding docstring examples.
