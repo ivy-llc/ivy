@@ -85,8 +85,8 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         #     )
                         subprocess.run(
                             (
-                                f"pip3 install  {dep}=={keys[dep][ver]} --target {path} --default-timeout=100  "
-                                " --no-cache-dir"
+                                f"pip3 install  {dep}=={keys[dep][ver]} --target"
+                                f" {path} --default-timeout=100   --no-cache-dir"
                             ),
                             shell=True,
                         )
@@ -111,13 +111,13 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         #         "Command encountered an error. Return code:"
                         #         f" {result.returncode}"
                         #     )
-                    subprocess.run(
-                        (
-                            f"pip3 install  {dep} --target {path} --default-timeout=100  "
-                            " --no-cache-dir"
-                        ),
-                        shell=True,
-                    )
+                        subprocess.run(
+                            (
+                                f"pip3 install  {dep} --target"
+                                f" {path} --default-timeout=100   --no-cache-dir"
+                            ),
+                            shell=True,
+                        )
                 else:
                     # commands = [
                     #     "pip",
@@ -139,8 +139,8 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                     #     )
                     subprocess.run(
                         (
-                            f"pip3 install  {keys} --target {path} --default-timeout=100  "
-                            " --no-cache-dir"
+                            f"pip3 install  {keys} --target"
+                            f" {path} --default-timeout=100   --no-cache-dir"
                         ),
                         shell=True,
                     )
