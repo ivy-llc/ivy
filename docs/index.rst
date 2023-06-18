@@ -1,3 +1,5 @@
+.. title:: Home
+
 .. include:: ../README.rst
 
 .. toctree::
