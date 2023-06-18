@@ -389,7 +389,14 @@ def test_paddle_celu(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_rrelu(*, dtype_and_x, on_device, fn_tree, frontend, test_flags):
+def test_paddle_rrelu(
+    *, 
+    dtype_and_x, 
+    on_device, 
+    fn_tree, 
+    frontend, 
+    test_flags,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
