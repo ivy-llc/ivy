@@ -159,6 +159,10 @@ def outer(input, vec2, *, out=None):
 def pinverse(input, rcond=1e-15):
     return ivy.pinv(input, rtol=rcond)
 
+@to_ivy_arrays_and_back
+def trapz(y, x, *, dim=- 1):
+    return ivy.trapz(y, axis=dim)
+
 
 @to_ivy_arrays_and_back
 def qr(input, some=True, *, out=None):
