@@ -204,7 +204,7 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
     axes=st.one_of(st.none(), st.lists(st.integers())),
 )
 def test_numpy_rfft2(
-        dtype_input_axis, norm, s, axes, frontend, test_flags, fn_tree, on_device
+    dtype_input_axis, norm, s, axes, frontend, test_flags, fn_tree, on_device
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
