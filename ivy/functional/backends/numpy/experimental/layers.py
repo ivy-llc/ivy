@@ -905,4 +905,5 @@ def embedding(
     if max_norm is not None:
         norms = np.linalg.norm(embeddings, axis=-1, keepdims=True)
         embeddings = np.where(norms > max_norm, embeddings * max_norm / norms, embeddings)
+        embeddings = np.where(norms < -max_norm, embeddings * -max_norm / norms, embeddings)
     return embeddings

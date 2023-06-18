@@ -779,4 +779,5 @@ def embedding(
     if max_norm is not None:
         norms = jnp.linalg.norm(embeddings, axis=-1, keepdims=True)
         embeddings = jnp.where(norms > max_norm, embeddings * max_norm / norms, embeddings)
+        embeddings = jnp.where(norms < -max_norm, embeddings * -max_norm / norms, embeddings)
     return embeddings
