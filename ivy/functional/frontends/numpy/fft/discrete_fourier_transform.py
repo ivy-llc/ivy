@@ -145,15 +145,8 @@ def ifftn(a, s=None, axes=None, norm=None):
     else:
         axes = tuple(axes)
 
-    shape = ivy.array(s)
-    product = ivy.prod(shape)
-
     for axis in axes:
         a = ivy.ifft(a, n=s[axis], axis=axis, norm=norm)
-
-    # Divide by sqrt(product) for 'ortho' normalization
-    if norm == 'ortho':
-        a *= ivy.sqrt(product) / ivy.sqrt(ivy.prod(a.shape))
 
     return a
 
