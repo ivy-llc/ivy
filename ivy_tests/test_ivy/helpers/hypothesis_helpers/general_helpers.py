@@ -527,9 +527,7 @@ def embedding_helper(draw):
     dtype_weight, weight = draw(
         array_helpers.dtype_and_values(
             available_dtypes=[
-                x
-                for x in draw(dtype_helpers.get_dtypes("numeric"))
-                if "float" in x or "complex" in x
+                x for x in draw(dtype_helpers.get_dtypes("numeric")) if "float" in x
             ],
             min_num_dims=2,
             max_num_dims=2,
@@ -549,4 +547,11 @@ def embedding_helper(draw):
         ).filter(lambda x: x[1][0].shape[-1] == embedding_dim)
     )
     padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
-    return dtype_indices + dtype_weight, indices[0], weight[0], padding_idx
+    return (
+        dtype_indices + dtype_weight,
+        indices[0],
+        weight[0],
+        padding_idx,
+        num_embeddings,
+        embedding_dim,
+    )

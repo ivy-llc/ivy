@@ -1378,3 +1378,50 @@ def test_adaptive_avg_pool1d_layer(
         test_gradients=test_gradients,
         on_device=on_device,
     )
+
+
+@handle_method(
+    method_tree="Embedding.__call__",
+    params=helpers.embedding_helper(),
+    max_norm=st.floats(
+        min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False
+    ),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+)
+def test_embedding(
+    *,
+    params,
+    max_norm,
+    init_with_v,
+    method_with_v,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    dtype_indices_weight, indices, _, _, num_embeddings, embedding_dim = params
+    dtype, dtype_method = [dtype_indices_weight[1]], [dtype_indices_weight[0]]
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "num_embeddings": num_embeddings,
+            "embedding_dim": embedding_dim,
+            "max_norm": max_norm,
+            "device": on_device,
+            "dtype": dtype[0],
+        },
+        method_input_dtypes=dtype_method,
+        method_all_as_kwargs_np={"indices": indices},
+        class_name=class_name,
+        method_name=method_name,
+        method_with_v=True,
+        test_values="with_v",
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
