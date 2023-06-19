@@ -69,6 +69,12 @@ class Tensor:
             return self
         return torch_frontend.permute(self, list(range(self.ndim))[::-1])
 
+    @property
+    def data(self):
+        return torch_frontend.tensor(
+            ivy.stop_gradient(self.ivy_array, preserve_type=False)
+        )
+
     # Setters #
     # --------#
 
@@ -646,6 +652,9 @@ class Tensor:
 
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self, dim=dim, keepdim=keepdim)
+
+    def is_quantized(self):
+        return "q" in ivy.dtype(self.ivy_array)
 
     def is_cuda(self):
         return "gpu" in ivy.dev(self.ivy_array)
@@ -1302,6 +1311,30 @@ class Tensor:
         return torch_frontend.baddbmm(
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
         )
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def floor_(self):
+        self.ivy_array = self.floor().ivy_array
+        return self
+
+    def diag(self, diagonal=0):
+        return torch_frontend.diag(self, diagonal=diagonal)
+
+    def gather(self, dim, index):
+        return torch_frontend.gather(self, dim=dim, index=index)
+
+    def take_along_dim(self, indices, dim):
+        return torch_frontend.take_along_dim(self, indices=indices, dim=dim)
+
+    def movedim(self, source, destination):
+        return torch_frontend.movedim(self, source=source, destination=destination)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addcdiv_(self, tensor1, tensor2, *, value=1):
+        self.ivy_array = self.addcdiv(
+            tensor1=tensor1, tensor2=tensor2, value=value
+        ).ivy_array
+        return self
 
 
 class Size(tuple):
