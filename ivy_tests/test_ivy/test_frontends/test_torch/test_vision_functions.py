@@ -274,3 +274,50 @@ def test_torch_upsample_bilinear(
         input=x[0],
         size=size,
     )
+
+
+@st.composite
+def _affine_grid_helper(draw):
+    align_corners = draw(st.booleans())
+    size = draw(
+        st.tuples(
+            st.integers(1, 100),
+            st.integers(1, 100),
+            st.integers(1, 100),
+            st.integers(1, 100),
+        )
+    )
+    theta_dtype, theta = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            min_value=0,
+            max_value=1,
+            shape=(size[0], 2, 3),
+        )
+    )
+    return theta_dtype, theta[0], size, align_corners
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.affine_grid",
+    dtype_and_input_and_other=_affine_grid_helper(),
+)
+def test_torch_affine_grid(
+    *,
+    dtype_and_input_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, theta, size, align_corners = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        theta=theta,
+        size=size,
+        align_corners=align_corners,
+    )
