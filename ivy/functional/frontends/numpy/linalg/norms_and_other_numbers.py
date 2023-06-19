@@ -10,7 +10,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 # solve
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def norm(x, ord=None, axis=None, keepdims=False):
@@ -33,16 +33,10 @@ def norm(x, ord=None, axis=None, keepdims=False):
 
 
 # matrix_rank
-# TODO: add support for hermitian
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def matrix_rank(A, tol=None, hermitian=False):
-    if A.ndim < 2:
-        return int(not all(A == 0))
-    S = ivy.svd(A, compute_uv=False)[0]
-    if tol is None:
-        tol = S.max() * max(A.shape) * ivy.finfo(S.dtype).eps
-    return ivy.count_nonzero(S > tol, axis=-1).astype(ivy.int64)
+    return ivy.matrix_rank(A, atol=tol, hermitian=hermitian)
 
 
 # det

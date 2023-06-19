@@ -730,3 +730,464 @@ def test_jax_randint(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@st.composite
+def dtype_p_shape(draw):
+    dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
+    shape = draw(helpers.get_shape(allow_none=False, min_num_dims=1, max_num_dims=3))
+
+    dtype_and_probs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype, min_value=0, max_value=1, shape=shape
+        )
+    )
+    return dtype_and_probs, shape
+
+
+# TODO Update the test by fixing the uint32 unsupported problem
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.bernoulli",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer", full=False),
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    dtype_p_shape_=dtype_p_shape(),
+)
+def test_jax_bernoulli(
+    *,
+    dtype_key,
+    dtype_p_shape_,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+    dtype_p, shape = dtype_p_shape_
+    dtype, p = dtype_p
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype + dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            p=p[0],
+            shape=shape,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+# TODO Update the test by fixing the uint32 unsupported problem
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.fold_in",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    data=helpers.ints(),
+)
+def test_jax_fold_in(
+    *,
+    dtype_key,
+    data,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            data=data,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+# TODO Update the test by fixing the uint32 unsupported problem
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.permutation",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    x=st.integers(min_value=0, max_value=10),
+    axis=st.integers(min_value=0, max_value=0),
+)
+def test_jax_permutation(
+    *,
+    dtype_key,
+    x,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            x=x,
+            axis=axis,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+# loggamma
+# TODO Update the test by fixing the uint32 unsupported problem
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.loggamma",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    a_shape=_all_gamma_params(),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_loggamma(
+    *,
+    dtype_key,
+    a_shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+    a, shape = a_shape
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            a=a,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+# TODO Update the test by fixing the uint32 unsupported problem
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.shuffle",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=("float32", "float64"),
+        valid_axis=True,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+)
+def test_jax_shuffle(
+    *,
+    dtype_key,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    key_dtype, key = dtype_key
+    x_dtypes, x, axis = dtype_x_axis
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=key_dtype + x_dtypes,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            x=x[0],
+            axis=axis,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+# TODO Update the test by fixing the uint32 unsupported problem
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.exponential",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_exponential(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.weibull_min",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_weibull_min(
+    *,
+    dtype_key,
+    shape,
+    scale,
+    concentration,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            scale=scale,
+            concentration=concentration,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@st.composite
+def get_shape_and_arrays(draw):
+    b_shapes = draw(
+        helpers.array_and_broadcastable_shape(dtype=helpers.get_dtypes("float"))
+    )
+    b, shapes = b_shapes
+    shapes = draw(st.sampled_from([None, shapes]))
+    return b, shapes
+
+
+@handle_frontend_test(
+    fn_tree="jax.random.pareto",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    b_shapes=get_shape_and_arrays(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_pareto(
+    *,
+    dtype_key,
+    b_shapes,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+    b, shape = b_shapes
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            b=b,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+    ret_np, ret_from_np = ret
+    if shape is not None:
+        assert ret_np.shape == shape
+    else:
+        assert ret_np.shape == b.shape

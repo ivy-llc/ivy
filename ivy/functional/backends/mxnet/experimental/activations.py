@@ -30,3 +30,7 @@ def logsigmoid(input: None) -> None:
 
 def selu(x: None, /, *, out: Optional[None] = None) -> None:
     raise IvyNotImplementedException()
+
+
+def silu(x: None, /, *, out: Optional[None] = None) -> None:
+    raise IvyNotImplementedException()

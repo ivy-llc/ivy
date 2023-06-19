@@ -19,7 +19,7 @@ def invert_permutation(
     /,
 ) -> ivy.Array:
     """
-    Computes the inverse of an index permutation.
+    Compute the inverse of an index permutation.
 
     Parameters
     ----------

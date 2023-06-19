@@ -1,9 +1,14 @@
 torch-scatter # torch_scatter requires a prior existing installation of torch, hence 2 optional files
 functorch
 scipy
-dm-haiku # mod_name=haiku
+dm-haiku  # mod_name=haiku
 flax
 protobuf
 pydriller
 tqdm
 coverage
+scikit-learn  # mod_name=sklearn
+pandas
+pyspark
+autoflake  # for backend generation
+snakeviz  # for profiling

@@ -8,6 +8,7 @@ import torch
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
+    with_unsupported_device_and_dtypes,
 )
 from .. import backend_version
 
@@ -18,22 +19,10 @@ from .. import backend_version
 # -------------------#
 
 
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
-    /,
-    *,
-    device: torch.device,
-) -> Tuple[torch.Tensor]:
-    n_cols = n_rows if n_cols is None else n_cols
-    return tuple(
-        torch.triu_indices(
-            row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
-        )
-    )
-
-
+@with_unsupported_device_and_dtypes(
+    {"2.0.1 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -98,7 +87,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,

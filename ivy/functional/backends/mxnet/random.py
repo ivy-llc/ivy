@@ -72,6 +72,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 def shuffle(
     x: Union[(None, mx.ndarray.NDArray)],
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,

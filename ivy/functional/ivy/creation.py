@@ -17,6 +17,7 @@ import numpy as np
 # local
 import ivy
 from ivy import to_ivy
+from ivy.utils.exceptions import handle_exceptions
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
@@ -74,6 +75,8 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
 def _ivy_to_native(x):
     # checks the first element of the leaf list and
     # converts it to a native array if it is an ivy array
+    # assumes that either all elements in a leaf list are ivy arrays
+    # or none of them are
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
@@ -86,6 +89,23 @@ def _ivy_to_native(x):
     return x
 
 
+def _shape_to_native(x):
+    # checks the first element of the leaf list and
+    # converts it to a native array if it is an ivy array
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x = list(x) if isinstance(x, tuple) else x
+            x[i] = _shape_to_native(item)
+    else:
+        if (isinstance(x, (list, tuple)) and len(x) > 0) and (
+            isinstance(x[0], ivy.Shape) and ivy.array_mode
+        ):
+            x = ivy.nested_map(x, lambda x: x.shape if isinstance(x, ivy.Shape) else x)
+        elif isinstance(x, ivy.Shape) and ivy.array_mode:
+            x = x.shape
+    return x
+
+
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
@@ -95,10 +115,12 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
 
         This wrapper is specifically for the backend implementations of
         asarray.
+
+        It assumes either all the elements in a leaf list are ivy arrays
+        or none of them are. It checks the first element of all the leaf
+        list. If it is an ivy array, it converts all the elements in the
+        leaf list to native otherwise it skips that leaf list.
         """
-        # When possible we want to not nest this
-        # because nested calls introduce massive overhead
-        # and the checks to see if we can avoid it are cheap
         new_arg = _ivy_to_native(args[0])
         new_args = (new_arg,) + args[1:]
         if dtype is not None:
@@ -145,6 +167,17 @@ def asarray_infer_device(fn: Callable) -> Callable:
 
     _asarray_infer_device.infer_device = True
     return _asarray_infer_device
+
+
+def asarray_inputs_to_native_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _inputs_to_native_shapes(*args, **kwargs):
+        new_arg = _shape_to_native(args[0])
+        new_args = (new_arg,) + args[1:]
+        return fn(*new_args, **kwargs)
+
+    _inputs_to_native_shapes.inputs_to_native_shapes = True
+    return _inputs_to_native_shapes
 
 
 # Type hints #
@@ -226,7 +259,8 @@ def arange(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.arange.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.arange.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -269,7 +303,6 @@ def arange(
 
 @handle_array_like_without_promotion
 @handle_out_argument
-@inputs_to_native_shapes
 @handle_array_function
 def asarray(
     obj: Union[
@@ -349,14 +382,15 @@ def asarray(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.asarray.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.asarray.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(obj).asarray(
+    return current_backend().asarray(
         obj, copy=copy, dtype=dtype, device=device, out=out
     )
 
@@ -399,7 +433,8 @@ def zeros(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.zeros.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -461,7 +496,8 @@ def ones(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.ones.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -552,7 +588,8 @@ def full_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.full_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -599,7 +636,8 @@ def full_like(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]),b=ivy.array([4.123,5.23,6.23]))
+    >>> x = ivy.Container(a=ivy.array([1.2, 2.2324, 3.234]),
+    ...                   b=ivy.array([4.123, 5.23, 6.23]))
     >>> fill_value = 15.0
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
@@ -653,7 +691,8 @@ def ones_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.ones_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -770,7 +809,8 @@ def zeros_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.zeros_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -884,7 +924,8 @@ def tril(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.tril.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.tril.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -932,7 +973,8 @@ def triu(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.triu.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.triu.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -982,7 +1024,8 @@ def empty(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.empty.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1032,7 +1075,8 @@ def empty_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.empty_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1093,7 +1137,8 @@ def eye(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.eye.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.eye.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1154,7 +1199,9 @@ def eye(
                 [0., 1., 0.]]])
     >>> x1.shape
     (3, 2, 3)
-    # Suppose batch_shape = [a, b] then the returning identity array shape is [a, b, numRows, numColumns]
+
+    Suppose batch_shape = [a, b] then the returning identity
+    array shape is [a, b, numRows, numColumns]
 
 
     With :'out' input:
@@ -1241,7 +1288,8 @@ def linspace(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.linspace.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.linspace.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1317,7 +1365,8 @@ def meshgrid(
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
     sparse
-        if True, a sparse grid is returned in order to conserve memory. Default: ``False``.
+        if True, a sparse grid is returned in order to conserve memory.
+        Default: ``False``.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -1351,7 +1400,8 @@ def meshgrid(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
+    the `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.meshgrid.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1460,7 +1510,8 @@ def full(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.full.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1557,7 +1608,8 @@ def from_dlpack(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.from_dlpack.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.from_dlpack.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2024,3 +2076,99 @@ def frombuffer(
         count=count,
         offset=offset,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@outputs_to_ivy_arrays
+@infer_device
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> Tuple[ivy.Array]:
+    """Return the indices of the upper triangular part of a row by col matrix in a
+    2-by-N shape (tuple of two N dimensional arrays), where the first row contains
+    row coordinates of all indices and the second row contains column coordinates.
+    Indices are ordered based on rows and then columns.  The upper triangular part
+    of the matrix is defined as the elements on and above the diagonal.  The argument
+    k controls which diagonal to consider. If k = 0, all elements on and above the main
+    diagonal are retained. A positive value excludes just as many diagonals above the
+    main diagonal, and similarly a negative value includes just as many diagonals
+    below the main diagonal. The main diagonal are the set of indices
+    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].
+
+    Notes
+    -----
+    Primary purpose of this function is to slice an array of shape (n,m). See
+    https://numpy.org/doc/stable/reference/generated/numpy.triu_indices.html
+    for examples
+
+    Tensorflow does not support slicing 2-D tensor with tuple of tensor of indices
+
+    Parameters
+    ----------
+    n_rows
+       number of rows in the 2-d matrix.
+    n_cols
+       number of columns in the 2-d matrix. If None n_cols will be the same as n_rows
+    k
+       number of shifts from the main diagonal. k = 0 includes main diagonal,
+       k > 0 moves upwards and k < 0 moves downwards
+    device
+       device on which to place the created array. Default: ``None``.
+
+    Returns
+    -------
+    ret
+        an 2xN shape, tuple of two N dimensional, where first subarray (i.e. ret[0])
+        contains row coordinates of all indices and the second subarray (i.e ret[1])
+        contains columns indices.
+
+    Function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.triu_indices(4,4,0)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 0, 1, 1, 1, 2, 2, 3]),
+    ivy.array([0, 1, 2, 3, 1, 2, 3, 2, 3, 3]))
+
+    >>> x = ivy.triu_indices(4,4,1)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 1, 1, 2]),
+    ivy.array([1, 2, 3, 2, 3, 3]))
+
+    >>> x = ivy.triu_indices(4,4,-2)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3]),
+    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3]))
+
+    >>> x = ivy.triu_indices(4,2,0)
+    >>> print(x)
+    (ivy.array([0, 0, 1]),
+    ivy.array([0, 1, 1]))
+
+    >>> x = ivy.triu_indices(2,4,0)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 0, 1, 1, 1]),
+    ivy.array([0, 1, 2, 3, 1, 2, 3]))
+
+    >>> x = ivy.triu_indices(4,-4,0)
+    >>> print(x)
+    (ivy.array([]), ivy.array([]))
+
+    >>> x = ivy.triu_indices(4,4,100)
+    >>> print(x)
+    (ivy.array([]), ivy.array([]))
+
+    >>> x = ivy.triu_indices(2,4,-100)
+    >>> print(x)
+    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))
+
+    """
+    return current_backend().triu_indices(n_rows, n_cols, k, device=device)

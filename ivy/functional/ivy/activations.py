@@ -91,6 +91,7 @@ ACTIVATION_FUNCTIONS = [
     "log_softmax",
     "relu",
     "sigmoid",
+    "silu",
     "softmax",
     "softplus",
 ]

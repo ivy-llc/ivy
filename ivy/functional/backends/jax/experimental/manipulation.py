@@ -13,6 +13,7 @@ from typing import (
 import jax.numpy as jnp
 import jax.lax as jlax
 from numbers import Number
+from collections import namedtuple
 
 # local
 import ivy
@@ -233,26 +234,30 @@ def pad(
 
 def vsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    return jnp.vsplit(ary, indices_or_sections)
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    if len(ary.shape) < 3:
+    if ary.ndim < 3:
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
-    return jnp.dsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
@@ -304,7 +309,9 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    return jnp.hsplit(ary, indices_or_sections)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
@@ -343,3 +350,46 @@ def concat_from_sequence(
     elif new_axis == 1:
         ret = jnp.stack(input_sequence, axis=axis)
         return ret
+
+
+def unique_consecutive(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[JaxArray, JaxArray, JaxArray]:
+    Results = namedtuple(
+        "Results",
+        ["output", "inverse_indices", "counts"],
+    )
+    x_shape = None
+    if axis is None:
+        x_shape = x.shape
+        x = x.flatten()
+        axis = -1
+    if axis < 0:
+        axis += x.ndim
+    sub_arrays = jnp.split(
+        x,
+        jnp.where(
+            jnp.any(
+                jnp.diff(x, axis=axis) != 0,
+                axis=tuple(i for i in jnp.arange(x.ndim) if i != axis),
+            )
+        )[0]
+        + 1,
+        axis=axis,
+    )
+    output = jnp.concatenate(
+        [jnp.unique(sub_array, axis=axis) for sub_array in sub_arrays],
+        axis=axis,
+    )
+    counts = jnp.array([sub_array.shape[axis] for sub_array in sub_arrays])
+    inverse_indices = jnp.repeat(jnp.arange(len(counts)), counts)
+    if x_shape:
+        inverse_indices = jnp.reshape(inverse_indices, x_shape)
+    return Results(
+        output.astype(x.dtype),
+        inverse_indices,
+        counts,
+    )

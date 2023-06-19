@@ -71,7 +71,8 @@ def argmax(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmax.html#signatures.searching_functions.argmax>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argmax.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -135,7 +136,7 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -156,7 +157,7 @@ def argmin(
         singleton dimensions, and, accordingly, the result must be compatible with the
         input array (see Broadcasting). Otherwise, if False, the reduced axes
         (dimensions) must not be included in the result. Default = False.
-    output_dtype
+    dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
     out
         if axis is None, a zero-dimensional array containing the index of the first
@@ -172,7 +173,8 @@ def argmin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmin.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argmin.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -222,7 +224,7 @@ def argmin(
         x,
         axis=axis,
         keepdims=keepdims,
-        output_dtype=output_dtype,
+        dtype=dtype,
         select_last_index=select_last_index,
         out=out,
     )
@@ -275,7 +277,8 @@ def nonzero(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.nonzero.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.nonzero.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -404,7 +407,8 @@ def where(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.where.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.where.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
