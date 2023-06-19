@@ -28,41 +28,31 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         max_num_dims=1,
     ),
     reduction=st.sampled_from(["mean", "none", "sum"]),
-    dtype_and_pos_weight=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=0,
-        max_value=10,
-        exclude_min=True,
-        exclude_max=True,
-    ),
 )
 def test_paddle_binary_cross_entropy_with_logits(
     dtype_and_x,
     dtype_and_weight,
     reduction,
-    dtype_and_pos_weight,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
+    # Testing without pos_weight kwarg due to it working differently for paddle as
+    # opposed to other frameworks.
     x_dtype, x = dtype_and_x
     weight_dtype, weight = dtype_and_weight
-    pos_weight_dtype, pos_weight = dtype_and_pos_weight
     helpers.test_frontend_function(
         input_dtypes=[
             x_dtype[0],
             weight_dtype[0],
-            pos_weight_dtype[0],
         ],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=False,
         logit=x[0],
         label=x[0],
         weight=weight[0],
         reduction=reduction,
-        pos_weight=pos_weight[0],
     )
