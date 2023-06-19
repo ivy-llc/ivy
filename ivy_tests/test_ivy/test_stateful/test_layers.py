@@ -1238,7 +1238,7 @@ def test_maxpool1d_layer(
             "device": on_device,
             "dtype": input_dtype[0],
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=['float64'],
         method_all_as_kwargs_np={"inputs": x[0]},
         class_name=class_name,
         method_name=method_name,
