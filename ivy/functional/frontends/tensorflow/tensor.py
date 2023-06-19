@@ -86,8 +86,7 @@ class EagerTensor:
         return self.__rand__(y)
 
     def __array__(self, dtype=None, name="array"):
-        dtype = to_ivy_dtype(dtype)
-        return array(ivy.asarray(self.ivy_array, dtype=dtype))
+        return array(ivy.asarray(self.ivy_array, dtype=to_ivy_dtype(dtype)))
 
     def __bool__(self, name="bool"):
         temp = ivy.squeeze(self.ivy_array, None)
@@ -143,7 +142,7 @@ class EagerTensor:
         return tf_frontend.raw_ops.Less(x=self, y=y, name=name)
 
     def __matmul__(self, y, name="matmul"):
-        return self.__rmatmul__(y)
+        return tf_frontend.linalg.matmul(a=self, b=y, name=name)
 
     def __mul__(self, y, name="mul"):
         return tf_frontend.math.multiply(self, y, name=name)
@@ -181,7 +180,7 @@ class EagerTensor:
         return tf_frontend.raw_ops.FloorDiv(x=x, y=self, name=name)
 
     def __rmatmul__(self, x, name="rmatmul"):
-        return tf_frontend.raw_ops.MatMul(a=x, b=self, name=name)
+        return tf_frontend.linalg.matmul(a=x, b=self, name=name)
 
     def __rmul__(self, x, name="rmul"):
         return tf_frontend.raw_ops.Mul(x=self, y=x, name=name)
