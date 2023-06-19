@@ -198,6 +198,7 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
         min_num_dims=st.one_of(st.integers(min_value=0), st.none()),
         max_num_dims=2,
         force_tuple_axis=True,
+        array_api_dtypes=True,
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
     s=st.one_of(st.lists(st.integers()), st.none()),
