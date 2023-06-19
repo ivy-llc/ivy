@@ -45,6 +45,8 @@ def roll(input, shifts, dims=None):
 
 @to_ivy_arrays_and_back
 def meshgrid(*tensors, indexing=None):
+    if indexing is None:
+        indexing = "ij"
     return tuple(ivy.meshgrid(*tensors, indexing=indexing))
 
 
@@ -332,6 +334,7 @@ def gcd(input, other, *, out=None):
     return ivy.gcd(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def tensordot(a, b, dims=2, out=None):
     a, b = promote_types_of_torch_inputs(a, b)

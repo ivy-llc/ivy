@@ -6,6 +6,7 @@ import builtins
 import numpy as np
 import sys
 import inspect
+import os
 
 
 import ivy.utils.backend.handler
@@ -646,7 +647,7 @@ _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
     from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722
-    compile, transpile, unify = None, None, None
+    pass  # Added for the finally statment
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():
@@ -1279,14 +1280,14 @@ GLOBAL_PROPS = [
 
 
 INTERNAL_FILENAMES = [
-    "ivy/compiler",
-    "ivy/functional",
-    "ivy/data_classes",
-    "ivy/stateful",
-    "ivy/utils",
-    "ivy_tests/test_ivy",
-    "ivy/func_wrapper.py",
-    "ivy/__init__.py",
+    os.path.join("ivy", "compiler"),
+    os.path.join("ivy", "functional"),
+    os.path.join("ivy", "data_classes"),
+    os.path.join("ivy", "stateful"),
+    os.path.join("ivy", "utils"),
+    os.path.join("ivy_tests", "test_ivy"),
+    os.path.join("ivy", "func_wrapper.py"),
+    os.path.join("ivy", "__init__.py"),
 ]
 
 

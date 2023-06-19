@@ -408,6 +408,9 @@ def _x_cast_dtype_shape(draw):
         helpers.dtype_and_values(
             dtype=x_dtype,
             shape=st.shared(helpers.get_shape(), key="value_shape"),
+            large_abs_safety_factor=10,
+            small_abs_safety_factor=10,
+            safety_factor_scale="log",
         ),
     )
     to_shape = draw(
@@ -475,7 +478,7 @@ def test_tensorflow_constant(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        value=x[0],
+        value=x[0].tolist() if x[0].ndim > 0 else x[0].item(),
         dtype=cast_dtype,
         shape=to_shape,
     )
@@ -524,7 +527,7 @@ def test_tensorflow_rank(
     frontend,
     test_flags,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, _ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -854,7 +857,7 @@ def test_tensorflow_shape(
 @handle_frontend_test(
     fn_tree="tensorflow.shape_n",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
+        available_dtypes=helpers.get_dtypes("valid"), min_num_dims=1, max_num_dims=5
     ),
     output_dtype=st.sampled_from(["int32", "int64"]),
 )
@@ -2059,6 +2062,38 @@ def test_tensorflow_truncatediv(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# Truncatemod
+@handle_frontend_test(
+    fn_tree="tensorflow.truncatemod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_truncatemod(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
