@@ -73,7 +73,8 @@ RUN pip install --upgrade -r  requirements.txt &&\
 
 
 # add all the directories to environment path so that python knows where to find them
-ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/jax:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
+ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/jax:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin:${PYTHONPATH}"
+
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
@@ -81,3 +82,4 @@ RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
     rm -rf optional.txt && \
     rm -rf tmp.txt && \
     rm -rf test_dependencies.py
+
