@@ -585,7 +585,7 @@ def test_paddle_conj(
         x=x[0],
     )
 
- 
+
 # floor
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.floor",
