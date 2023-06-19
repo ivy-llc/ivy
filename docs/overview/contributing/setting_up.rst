@@ -679,7 +679,7 @@ Just follow the steps outlined below:
       - :code:`Ivy GPU Development Environment (image)` - This will set up the development environment of ivy for GPU and build image from latest image from dockerhub.
    
    For now, we will select :code:`Ivy Development Environment (image)`.
-   Slect your region and prefered machine type, then click on "Create Codespace".
+   Select your region and prefered machine type, then click on "Create Codespace".
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/devcontainer_config.png?raw=true
    :width: 420
@@ -762,9 +762,9 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true
    :width: 420
 
-4. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
+4. Following all of this, you should refresh the test suite and you should now be able to run tests right from VS Code!
 
-5. TO simply run the tests using play button in the toolbar, you will need to add the .vscode folder to your workspace. Then add the ``settings.json`` file containing the following:
+5. To simply run the tests using play button in the toolbar, you will need to add the .vscode folder to your workspace. Then add the ``settings.json`` file containing the following:
 
 .. code-block:: json
 
