@@ -892,19 +892,19 @@ def test_paddle_all(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="allclose",
-    dtype_x_y=helpers.dtype_and_values(
+    dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2
     ),
 )
 def test_paddle_allclose(
-    dtype_x_y,
+    dtype_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    input_dtype, x, y = dtype_x_y
+    input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -912,7 +912,7 @@ def test_paddle_allclose(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "other": y[0],
+            "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
