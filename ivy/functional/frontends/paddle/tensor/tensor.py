@@ -185,3 +185,4 @@ class Tensor:
     @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def any(self, axis=None, keepdim=False, out=None):
         return ivy.any(self.ivy_array, axis=axis, keepdims=keepdim, out=out)
+    

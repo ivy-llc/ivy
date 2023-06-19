@@ -894,8 +894,7 @@ def test_paddle_all(
     method_name="allclose",
     dtype_x_y=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        
+        num_arrays=2
     )
 )
 def test_paddle_allclose(
@@ -1005,3 +1004,4 @@ def test_paddle_any(
         method_flags=method_flags,
         on_device=on_device,
     )
+    
