@@ -255,61 +255,62 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    axis_ = list(axis)  # paddle.moveaxis doesn't support tuple axes
     if ord == "nuc":
-        if isinstance(axis, int):
-            axis_ = [axis]
-        else:
-            axis_ = list(axis)
         x = paddle.moveaxis(x, axis_, [-2, -1])
-        ret = paddle.sum(
-            paddle.linalg.svd(x)[1],
+        # backend implementation is used here instead of native implementation
+        # because native implementation causes issues when the return should be
+        # a scalar which is solved in the backend implementation
+        ret = paddle_backend.sum(
+            paddle_backend.svd(x)[1],
             axis=-1,
         )
     elif ord == 1:
-        ret = paddle.amax(
-            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
+        ret = paddle_backend.max(
+            paddle.sum(paddle_backend.abs(x), axis=axis[0], keepdim=True),
             axis=axis,
-            keepdim=keepdims,
+            keepdims=keepdims,
         )
     elif ord == -1:
-        ret = paddle.amin(
-            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
+        ret = paddle_backend.min(
+            paddle.sum(paddle_backend.abs(x), axis=axis[0], keepdim=True),
             axis=axis,
-            keepdim=keepdims,
+            keepdims=keepdims,
         )
     elif ord == 2:
-        x = paddle.moveaxis(x, axis, [-2, -1])
-        ret = paddle.amax(
-            paddle.linalg.svd(x)[1],
+        x = paddle.moveaxis(x, axis_, [-2, -1])
+        ret = paddle_backend.max(
+            paddle_backend.svd(x)[1],
             axis=-1,
         )
     elif ord == -2:
-        x = paddle.moveaxis(x, axis, [-2, -1])
-        ret = paddle.amin(
-            paddle.linalg.svd(x)[1],
+        x = paddle.moveaxis(x, axis_, [-2, -1])
+        ret = paddle_backend.min(
+            paddle_backend.svd(x)[1],
             axis=-1,
         )
     elif ord == float("inf"):
-        ret = paddle.amax(
+        ret = paddle_backend.max(
             paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
             axis=axis,
-            keepdim=keepdims,
+            keepdims=keepdims,
         )
     elif ord == float("-inf"):
-        ret = paddle.amin(
+        ret = paddle_backend.min(
             paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
             axis=axis,
-            keepdim=keepdims,
+            keepdims=keepdims,
         )
     else:
         ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
     if x.ndim == 2 and not keepdims:
         ret = paddle.squeeze(ret)
     elif keepdims and ord in ["nuc", -2, 2]:
-        if x.ndim == 2:
-            ret = ret.unsqueeze(-1)
-        else:
-            ret = ret.unsqueeze(-2, -1)
+        # only these norms because the use of SVD
+        for dim in axis:
+            # although expand_dims support tuple axes, we have to loop
+            # over the axes because it faces problems when the input is a scalar
+            ret = paddle_backend.expand_dims(ret, axis=dim % x.ndim)
     return ret
 
 
@@ -342,28 +343,29 @@ def matrix_rank(
     hermitian: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.ndim < 2:
+    if (x.ndim < 2) or (0 in x.shape):
         return paddle.to_tensor(0).squeeze().astype(x.dtype)
-    atol = atol if atol is not None else 0.0
+    # we don't use the native matrix_rank function because the behaviour of the
+    # tolerance argument is difficult to unify
+
+    if hermitian:
+        svd_values = paddle_backend.abs(paddle_backend.eigvalsh(x))
+    else:
+        svd_values = paddle_backend.svd(x)[1]
+    sigma = paddle_backend.max(svd_values, axis=-1, keepdims=False)
+    atol = (
+        atol if atol is not None else ivy.finfo(x.dtype).eps * max(x.shape[-2:]) * sigma
+    )
     rtol = rtol if rtol is not None else 0.0
-    svd_values = ivy.svd(x, compute_uv=False)
-    sigma = ivy.max(svd_values)
-    tol = ivy.maximum(atol, rtol * sigma)
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.int32,
-        paddle.int64,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bool,
-    ]:
-        return (
-            paddle.linalg.matrix_rank(x.cast("float32"), tol=tol)
-            .squeeze()
-            .cast(x.dtype)
-        )
-    return paddle.linalg.matrix_rank(x, tol=tol).squeeze().cast(x.dtype)
+    tol = paddle_backend.maximum(atol, paddle_backend.multiply(rtol, sigma))
+    # make sure it's broadcastable again with svd_values
+    tol = paddle_backend.expand_dims(tol, axis=-1)
+    ret = paddle.count_nonzero(paddle_backend.greater(svd_values, tol), axis=-1)
+    if x.ndim == 2 and tol.ndim < 2:
+        # to fix the output shape when input is unbatched
+        # and tol is batched
+        ret = paddle_backend.squeeze(ret, axis=None)
+    return ret
 
 
 def matrix_transpose(
@@ -490,9 +492,8 @@ def svd(
         paddle.float16,
         paddle.bool,
     ]:
-        ret = paddle.linalg.svd(x.cast("float32"), full_matrices=full_matrices).cast(
-            x.dype
-        )
+        ret = paddle.linalg.svd(x.cast("float32"), full_matrices=full_matrices)
+        ret = tuple(r.cast(x.dtype) for r in ret)
     else:
         ret = paddle.linalg.svd(x, full_matrices=full_matrices)
     if compute_uv:
