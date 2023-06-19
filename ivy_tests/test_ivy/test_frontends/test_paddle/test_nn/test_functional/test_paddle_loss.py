@@ -38,8 +38,8 @@ def test_paddle_binary_cross_entropy_with_logits(
     frontend,
     test_flags,
 ):
-    # Testing without pos_weight kwarg due to it working differently for paddle as
-    # opposed to other frameworks.
+    # TODO: paddle's implementation of pos_weight is wrong
+    # https://github.com/PaddlePaddle/Paddle/blob/f0422a28d75f9345fa3b801c01cd0284b3b44be3/python/paddle/nn/functional/loss.py#L831
     x_dtype, x = dtype_and_x
     weight_dtype, weight = dtype_and_weight
     helpers.test_frontend_function(
