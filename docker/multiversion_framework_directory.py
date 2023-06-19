@@ -29,7 +29,7 @@ def install_pkg(path, pkg, base="fw/"):
     elif pkg.split("==")[0] == "jax":
         subprocess.run(
             (
-                f"pip install --upgrade --target {path} 'jax' -f"
+                f"pip install --upgrade {pkg} --target  {path}  -f"
                 " https://storage.googleapis.com/jax-releases/jax_releases.html  "
                 " --no-cache-dir"
             ),
@@ -49,10 +49,6 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
     for fw in pkgs:
         fw, ver = fw.split("/")
         path = base + fw + "/" + ver
-        modified_env = {
-            "PATH": os.environ["PATH"],
-            "PYTHONPATH": f"{path}:{os.environ.get('PYTHONPATH', '')}",
-        }
         # check to see if this pkg has specific version dependencies
         with open(path_to_json, "r") as file:
             json_data = json.load(file)
@@ -66,71 +62,30 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                     dep = list(keys.keys())[0]
                     # check if version is there in this
                     if ver in keys[dep].keys():
-                        # we install this one
-                        commands = [
-                            "pip",
-                            "install",
-                            f"{dep}=={keys[dep][ver]}",
-                            "--target",
-                            path,
-                            "--no-cache-dir",
-                        ]
-
-                        result = subprocess.run(
-                            commands, capture_output=True, text=True, env=modified_env
+                        subprocess.run(
+                            (
+                                "pip3 install --upgrade"
+                                f" {dep}=={keys[dep][ver]} --target"
+                                f" {path} --default-timeout=100   --no-cache-dir"
+                            ),
+                            shell=True,
                         )
-
-                        if result.returncode == 0:
-                            print("Command executed successfully.")
-                        else:
-                            print(
-                                "Command encountered an error. Return code:"
-                                f" {result.returncode}"
-                            )
-
                     else:
-                        commands = [
-                            "pip",
-                            "install",
-                            dep,
-                            "--target",
-                            path,
-                            "--no-cache-dir",
-                        ]
-
-                        result = subprocess.run(
-                            commands, capture_output=True, text=True, env=modified_env
+                        subprocess.run(
+                            (
+                                f"pip3 install  {dep} --target"
+                                f" {path} --default-timeout=100   --no-cache-dir"
+                            ),
+                            shell=True,
                         )
-
-                        if result.returncode == 0:
-                            print("Command executed successfully.")
-                        else:
-                            print(
-                                "Command encountered an error. Return code:"
-                                f" {result.returncode}"
-                            )
-
                 else:
-                    commands = [
-                        "pip",
-                        "install",
-                        keys,
-                        "--target",
-                        path,
-                        "--no-cache-dir",
-                    ]
-
-                    result = subprocess.run(
-                        commands, capture_output=True, text=True, env=modified_env
+                    subprocess.run(
+                        (
+                            f"pip3 install  {keys} --target"
+                            f" {path} --default-timeout=100   --no-cache-dir"
+                        ),
+                        shell=True,
                     )
-
-                    if result.returncode == 0:
-                        print("Command executed successfully.")
-                    else:
-                        print(
-                            "Command encountered an error. Return code:"
-                            f" {result.returncode}"
-                        )
 
 
 if __name__ == "__main__":
@@ -139,5 +94,6 @@ if __name__ == "__main__":
     json_path = (  # path to the json file storing version specific deps
         "requirement_mappings_multiversion.json"
     )
+
     directory_generator(arg_lis[1:])
     install_deps(arg_lis[1:], json_path)
