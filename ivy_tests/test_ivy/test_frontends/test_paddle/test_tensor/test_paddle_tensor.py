@@ -892,15 +892,17 @@ def test_paddle_all(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="allclose",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), 
+        num_arrays=2,
+        shared_dtype=True,
     ),
     rtol=1e-05,
     atol=1e-08,
     equal_nan=st.booleans(),
 )
 def test_paddle_allclose(
-    dtype_x,
+    dtype_and_x,
     rtol,
     atol,
     equal_nan,
@@ -910,17 +912,15 @@ def test_paddle_allclose(
     frontend,
     on_device,
 ):
-    input_dtype, x = dtype_x
-    x = x[0]
-    y = x[1]
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "object": x,
+            "object": x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "other": y,
+            "other": x[1],
             "rtol": rtol,
             "atol": atol,
             "equal_nan": equal_nan,
