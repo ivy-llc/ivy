@@ -1265,10 +1265,6 @@ promotion_table = {
 }
 
 
-def ivy_tests():
-    return None
-
-
 # global parameter properties
 GLOBAL_PROPS = [
     "array_significant_figures",

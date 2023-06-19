@@ -128,8 +128,8 @@ def test_numpy_ndarray_property_flat(dtype_x):
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
 
-    flat_ivy = x.flat()
-    flat_generated = data[0].flatten().flat
+    flat_ivy = x.flat
+    flat_generated = data[0].reshape(-1)
     ivy.utils.assertions.check_equal(flat_ivy, flat_generated, as_array=True)
 
 
