@@ -154,7 +154,7 @@ def test_jax_numpy_eig(
     )
 
     ret = [ivy.to_numpy(x).astype(np.float64) for x in ret]
-    frontend_ret = [x.astype(np.float64) for x in frontend_ret[0]]
+    frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
     L, Q = ret
     frontend_L, frontend_Q = frontend_ret
