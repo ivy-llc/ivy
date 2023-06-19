@@ -37,7 +37,6 @@ def to_device(
     ret = paddle.to_tensor(
         x, place=as_native_dev(device), stop_gradient=x.stop_gradient
     )
-    ret = ivy.reshape(ret, (-1,))
     return ret
 
 
