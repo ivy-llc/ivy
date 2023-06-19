@@ -285,9 +285,10 @@ The implementations of :func:`ivy.tan` for each backend are as follows.
 
 .. code-block:: python
 
-    @_handle_0_dim_output
+    @_scalar_output_to_0d_array
     def tan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
         return np.tan(x, out=out)
+
 
     tan.support_native_out = True
 
@@ -306,8 +307,9 @@ The implementations of :func:`ivy.tan` for each backend are as follows.
 **PyTorch** (includes :code:`support_native_out` attribute):
 
 .. code-block:: python
-
+    
     def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        x = _cast_for_unary_op(x)
         return torch.tan(x, out=out)
 
     tan.support_native_out = True
@@ -353,7 +355,7 @@ This is why we need to call :func:`ivy.inplace_update` explicitly here, to ensur
 Another case where we need to use :func:`ivy.inplace_update`_ with a function that has :attr:`support_native_out` is for the example of the :code:`torch` backend implementation of the :func:`ivy.remainder` function
 
 .. code-block:: python
-
+ 
     def remainder(
         x1: Union[float, torch.Tensor],
         x2: Union[float, torch.Tensor],
@@ -377,6 +379,9 @@ Another case where we need to use :func:`ivy.inplace_update`_ with a function th
         return torch.remainder(x1, x2, out=out).to(x1.dtype)
 
 
+    remainder.support_native_out = True
+
+
 Here, even though the :func:`torch.round` function natively supports the :code:`out` argument, in case the :code:`dtype` of the :code:`out` argument is different
 from the :code:`dtype` of the result of the function, we need to use :func:`ivy.inplace_update`, while still trying to utilize the native :code:`out` argument whenever
 the :code:`dtype` is the same for maximum possible extent of the native inplace update.
@@ -397,6 +402,7 @@ The second and third points are the most important points.
 
 We'll use :func:`ivy.cross_entropy` as an example:
 
+
 .. code-block:: python
 
     def cross_entropy(
@@ -404,13 +410,15 @@ We'll use :func:`ivy.cross_entropy` as an example:
         pred: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: Optional[int] = -1,
-        epsilon: float =1e-7,
-        out: Optional[ivy.Array] = None
+        axis: int = -1,
+        epsilon: float = 1e-7,
+        reduction: str = "sum",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
         log_pred = ivy.log(pred)
-        return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
+        return _reduce_loss(reduction, log_pred * true, axis, out=out)
 
 By handling the :code:`out` argument in the function, we are able to get the benefits outlined above.
 Firstly, the return of :func:`ivy.sum` is the same shape and type as the return of the entire function, and so we can also write this output to the :code:`out` argument inplace.
@@ -430,6 +438,21 @@ Technically, this could be handled using the `handle_out_argument`_ wrapping, bu
 
 As explained in the :ref:`Function Types` section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected. We must add the :code:`handle_out_argument` to the :code:`add_wrappers`key of
 the :code:`mixed_backend_wrappers` attribute so that the decorator gets added to the primary implementation when the backend is set. Here's an `example_` from the linear function.
+
+
+copy argument
+-------------
+
+As well as the :code:`out` argument, many also support the :code:`copy` argument.
+The functions with support for the :code:`copy` argument are either in the `Array API Standard`_, and the standard mandates the inclusion of :code:`copy` in each case.
+Or they are expected to return views with specific backends (hence being decorated with the :code:`@handle_view` wrapper) and the :code:`copy` is added to allow a way to prevent views from being created.
+
+The :code:`copy` argument dictates whether a new copy should be created, or whether the input array should be updated inplace.
+When :code:`copy` is not specified explicitly, then an inplace update is performed with the same behaviour as :code:`copy=False`.
+Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
+If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
+If both are specified, then priority is given to the more general :code:`out` argument.
+As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
 
 
 Views
@@ -483,20 +506,6 @@ Here's a brief description of what happens during an inplace operation with a Py
    If populated it performs the reverse functional operation with itself as the input and inplace updates the view that made it (reverses the operation that made it).
    If the manipulation stack is empty or already exhausted it goes to the array’s PyTorch base and repeats the recursively until everything is exhausted and the base is None.
 #. All other views are expected to be updated automatically through PyTorch's native view handling.
-
-copy argument
--------------
-
-As well as the :code:`out` argument, many also support the :code:`copy` argument.
-The functions with support for the :code:`copy` argument are either in the `Array API Standard`_, and the standard mandates the inclusion of :code:`copy` in each case.
-Or they are expected to return views with specific backends (hence being decorated with the :code:`@handle_view` wrapper) and the :code:`copy` is added to allow a way to prevent views from being created.
-
-The :code:`copy` argument dictates whether a new copy should be created, or whether the input array should be updated inplace.
-When :code:`copy` is not specified explicitly, then an inplace update is performed with the same behaviour as :code:`copy=False`.
-Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
-If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
-If both are specified, then priority is given to the more general :code:`out` argument.
-As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
 
 **Round Up**
 

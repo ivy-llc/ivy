@@ -911,16 +911,16 @@ class _ArrayWithLayersExperimental(abc.ABC):
             where d_in indicates the dimension that needs FFT2.
         s
             sequence of ints, optional
-            Shape (length of each transformed axis) of the output (s[0] refers 
-            to axis 0, s[1] to axis 1, etc.). This corresponds to n for fft(x, n). 
+            Shape (length of each transformed axis) of the output (s[0] refers
+            to axis 0, s[1] to axis 1, etc.). This corresponds to n for fft(x, n).
             Along each axis, if the given shape is smaller than that of the input,
-            the input is cropped. If it is larger, the input is padded with zeros. 
+            the input is cropped. If it is larger, the input is padded with zeros.
             If s is not given, the shape of the input along the axes specified by
             axes is used.
         dim
-            Axes over which to compute the FFT2. If not given, the last two axes are 
-            used. A repeated index in axes means the transform over that axis is 
-            performed multiple times. A one-element sequence means that a 
+            Axes over which to compute the FFT2. If not given, the last two axes are
+            used. A repeated index in axes means the transform over that axis is
+            performed multiple times. A one-element sequence means that a
             one-dimensional FFT is performed.
         norm
             Optional argument, "backward", "ortho" or "forward". Defaults to be
@@ -955,5 +955,5 @@ class _ArrayWithLayersExperimental(abc.ABC):
                 0.  +0.j        ,   0.  +0.j        ],
             [-12.5-17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
                 0.  +0.j        ,   0.  +0.j        ]])
-            """
+        """
         return ivy.fft2(self._data, s=s, dim=dim, norm=norm, out=out)

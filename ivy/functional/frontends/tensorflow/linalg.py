@@ -12,6 +12,10 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 
 @to_ivy_arrays_and_back
 def matrix_rank(a, tol=None, validate_args=False, name=None):
+    # TODO:The tests will fail because output shapes mismatch
+    # DO NOT for any reason change anything with the backend function
+    # all the fixes must be here as the backend function is
+    # working as expected and in compliance with Array API
     return ivy.astype(ivy.matrix_rank(a, atol=tol), ivy.int32)
 
 
@@ -293,3 +297,14 @@ def diag(
     if (num_cols and num_rows) and (size == (num_cols * num_rows)):
         output = ivy.reshape(output, (num_rows, num_cols))
     return ivy.astype(output, ivy.dtype(diagonal))
+
+
+@to_ivy_arrays_and_back
+def band_part(input, num_lower, num_upper, name=None):
+    m, n = ivy.meshgrid(
+        ivy.arange(input.shape[-2]), ivy.arange(input.shape[-1]), indexing="ij"
+    )
+    mask = ((num_lower < 0) | ((m - n) <= num_lower)) & (
+        (num_upper < 0) | ((n - m) <= num_upper)
+    )
+    return ivy.where(mask, input, ivy.zeros_like(input))
