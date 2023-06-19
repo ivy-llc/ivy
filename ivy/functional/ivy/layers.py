@@ -173,6 +173,7 @@ def linear(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def dropout(

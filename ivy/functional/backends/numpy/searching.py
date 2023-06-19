@@ -41,7 +41,7 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[np.dtype] = None,
+    dtype: Optional[np.dtype] = None,
     select_last_index: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -54,9 +54,9 @@ def argmin(
             ret = np.array(x.size - ret - 1)
     else:
         ret = np.array(np.argmin(x, axis=axis, keepdims=keepdims))
-    if output_dtype:
-        output_dtype = ivy.as_native_dtype(output_dtype)
-        return ret.astype(output_dtype)
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        return ret.astype(dtype)
     return ret
 
 
@@ -68,11 +68,6 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[np.ndarray, Tuple[np.ndarray]]:
-    if len(x.shape) == 0:
-        raise ivy.utils.exceptions.IvyValueError(
-            "Cannot call nonzero on a zero dim array"
-        )
-
     res = np.nonzero(x)
 
     if size is not None:

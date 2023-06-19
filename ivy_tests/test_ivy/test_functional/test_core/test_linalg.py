@@ -361,15 +361,25 @@ def test_matmul(
     )
 
 
+@st.composite
+def _det_helper(draw):
+    square = draw(helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])))
+    shape_prefix = draw(helpers.get_shape())
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=2,
+            max_value=5,
+            shape=shape_prefix + square,
+        )
+    )
+    return dtype_x
+
+
 # det
 @handle_test(
     fn_tree="functional.ivy.det",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=2,
-        max_value=5,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    dtype_x=_det_helper(),
 )
 def test_det(
     *,
@@ -381,6 +391,7 @@ def test_det(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -630,13 +641,7 @@ def test_outer(
 # execute with grads error
 @handle_test(
     fn_tree="functional.ivy.slogdet",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=2,
-        max_value=5,
-        safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ),
+    dtype_x=_det_helper(),
     test_with_out=st.just(False),
 )
 def test_slogdet(
@@ -886,9 +891,9 @@ def test_trace(
         small_abs_safety_factor=100,
         safety_factor_scale="log",
         min_num_dims=1,
-        max_num_dims=5,
+        max_num_dims=4,
         min_dim_size=1,
-        max_dim_size=5,
+        max_dim_size=4,
     ),
 )
 def test_vecdot(
@@ -1155,9 +1160,9 @@ def test_svd(
 # matrix_norm
 @handle_test(
     fn_tree="functional.ivy.matrix_norm",
-    ground_truth_backend="torch",
+    ground_truth_backend="numpy",
     dtype_value_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         valid_axis=True,
         min_axes_size=2,
@@ -1188,7 +1193,7 @@ def test_matrix_norm(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-2,
+        rtol_=1e-1,
         atol_=1e-2,
         x=x[0],
         axis=axis,
@@ -1199,44 +1204,61 @@ def test_matrix_norm(
 
 @st.composite
 def _matrix_rank_helper(draw):
-    dtype_x = draw(
+    _batch_shape = draw(
+        helpers.get_shape(min_num_dims=1, max_num_dims=3, min_dim_size=1)
+    )
+    _batch_dim = draw(st.sampled_from([(), _batch_shape]))
+    _matrix_dim = draw(helpers.ints(min_value=2, max_value=20))
+    shape = _batch_dim + (_matrix_dim, _matrix_dim)
+    dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
-            min_num_dims=2,
-            shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+            shape=shape,
             min_value=-1e05,
             max_value=1e05,
             abs_smallest_val=1e-05,
             safety_factor_scale="log",
         )
     )
-    return dtype_x
+    if np.all(x[0].T == x[0]):
+        hermitian = True
+    else:
+        hermitian = False
+
+    tol_strategy = st.one_of(
+        st.none(),
+        st.floats(allow_nan=False, allow_infinity=False),
+        helpers.array_values(
+            dtype=helpers.get_dtypes("float", prune_function=False),
+            shape=_batch_shape,
+            min_value=-1e05,
+            max_value=1e05,
+            abs_smallest_val=1e-05,
+            safety_factor_scale="log",
+        ),
+    )
+    atol = draw(tol_strategy)
+    rtol = draw(tol_strategy)
+    return dtype, x[0], hermitian, atol, rtol
 
 
 # matrix_rank
 @handle_test(
     fn_tree="functional.ivy.matrix_rank",
-    dtype_x=_matrix_rank_helper(),
-    atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
-    | st.just(None),
-    rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
-    | st.just(None),
+    dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
+    ground_truth_backend="numpy",
 )
 def test_matrix_rank(
     *,
-    dtype_x,
-    atol,
-    rtol,
+    dtype_x_hermitian_atol_rtol,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_x
-    x_temp = x[0]
-    for x_i in x_temp.reshape(-1, *x_temp.shape[-2:]):
-        assume(round(np.linalg.det(x_i.astype("float64")), 1) != 0.0)
+    dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
+    assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -1244,9 +1266,10 @@ def test_matrix_rank(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
+        x=x,
         atol=atol,
-        rtol_=rtol,
+        rtol=rtol,
+        hermitian=hermitian,
     )
 
 

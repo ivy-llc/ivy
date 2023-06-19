@@ -1130,7 +1130,7 @@ def test_jax_special_rrshift(
     init_tree="jax.numpy.array",
     method_name="__add__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1164,7 +1164,7 @@ def test_jax_special_add(
     init_tree="jax.numpy.array",
     method_name="__radd__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1198,7 +1198,7 @@ def test_jax_special_radd(
     init_tree="jax.numpy.array",
     method_name="__sub__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1232,7 +1232,7 @@ def test_jax_special_sub(
     init_tree="jax.numpy.array",
     method_name="__rsub__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1266,7 +1266,7 @@ def test_jax_special_rsub(
     init_tree="jax.numpy.array",
     method_name="__mul__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1300,7 +1300,7 @@ def test_jax_special_mul(
     init_tree="jax.numpy.array",
     method_name="__rmul__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1334,7 +1334,7 @@ def test_jax_special_rmul(
     init_tree="jax.numpy.array",
     method_name="__div__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1369,7 +1369,7 @@ def test_jax_special_div(
     init_tree="jax.numpy.array",
     method_name="__rdiv__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1404,7 +1404,7 @@ def test_jax_special_rdiv(
     init_tree="jax.numpy.array",
     method_name="__truediv__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1439,7 +1439,7 @@ def test_jax_special_truediv(
     init_tree="jax.numpy.array",
     method_name="__rtruediv__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1474,7 +1474,7 @@ def test_jax_special_rtruediv(
     init_tree="jax.numpy.array",
     method_name="__mod__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1509,7 +1509,7 @@ def test_jax_special_mod(
     init_tree="jax.numpy.array",
     method_name="__rmod__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),

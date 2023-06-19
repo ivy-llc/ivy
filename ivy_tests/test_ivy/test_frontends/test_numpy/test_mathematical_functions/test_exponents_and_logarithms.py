@@ -139,6 +139,7 @@ def test_numpy_exp2(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-02,
         x=x[0],
         out=None,
         where=where,

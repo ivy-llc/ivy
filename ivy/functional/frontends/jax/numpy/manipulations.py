@@ -319,7 +319,7 @@ def blackman(M):
     if M < 1:
         return ivy.array([])
     if M == 1:
-        return ivy.ones(1)
+        return ivy.ones((1,))
     n = ivy.arange(0, M)
     alpha = 0.16
     a0 = (1 - alpha) / 2

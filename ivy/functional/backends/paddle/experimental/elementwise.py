@@ -18,7 +18,7 @@ from .. import backend_version
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    {"2.4.2 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
@@ -33,8 +33,12 @@ def fmax(
     return paddle.fmax(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
+    y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
+    return paddle.divide(paddle.sin(y), y)
 
 
 def float_power(
@@ -49,6 +53,25 @@ def float_power(
     return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
 
 
+def frexp(
+    x: Union[paddle.Tensor, Number],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException
+
+
+def ldexp(
+    x1: Union[paddle.Tensor, Number],
+    x2: Union[paddle.Tensor, Number],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException
+
+
 def copysign(
     x1: Union[paddle.Tensor, Number],
     x2: Union[paddle.Tensor, Number],
@@ -59,7 +82,10 @@ def copysign(
     with ivy.ArrayMode(False):
         x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)), ivy.divide(1, x2), x2)
         signs = ivy.sign(x2)
-        return ivy.multiply(ivy.abs(x1), signs)
+        result = ivy.multiply(ivy.abs(x1), signs)
+        if result.shape == [1]:
+            result = ivy.squeeze(result)
+        return result
 
 
 @with_unsupported_device_and_dtypes(
@@ -74,7 +100,10 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+    result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+    if result.shape == [1]:
+        result = paddle.fluid.layers.squeeze(result, [0])
+    return result
 
 
 @with_unsupported_device_and_dtypes(
@@ -93,56 +122,6 @@ def isclose(
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-def nan_to_num(
-    x: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = True,
-    nan: Optional[Union[float, int]] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        if ivy.is_int_dtype(x):
-            if posinf is None:
-                posinf = ivy.iinfo(x).max
-            if neginf is None:
-                neginf = ivy.iinfo(x).min
-        elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
-            if posinf is None:
-                posinf = ivy.finfo(x).max
-            if neginf is None:
-                neginf = ivy.finfo(x).min
-        ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
-        ret = ivy.where(
-            ivy.logical_and(ivy.isinf(ret), ret > 0),
-            paddle.to_tensor(posinf, dtype=x.dtype),
-            ret,
-        )
-        ret = ivy.where(
-            ivy.logical_and(ivy.isinf(ret), ret < 0),
-            paddle.to_tensor(neginf, dtype=x.dtype),
-            ret,
-        )
-        if copy:
-            return ret.clone()
-        else:
-            x = ret
-            return x
-
-
-def logaddexp2(
-    x1: Union[paddle.Tensor, float, list, tuple],
-    x2: Union[paddle.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
-
-
 def diff(
     x: Union[paddle.Tensor, list, tuple],
     /,
@@ -156,7 +135,14 @@ def diff(
     ret_dtype = x.dtype
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         x = x.cast("float32")
-    prepend, append = [paddle.to_tensor(a, dtype=x.dtype) for a in [prepend, append]]
+
+    def _tensor(val):
+        if val is not None and not isinstance(val, paddle.Tensor):
+            return paddle.to_tensor(val, dtype=ret_dtype)
+        return val
+
+    prepend = _tensor(prepend)
+    append = _tensor(append)
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append).cast(
         ret_dtype
     )
@@ -224,6 +210,9 @@ def fix(
         return ivy.trunc(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def nextafter(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -581,28 +570,6 @@ def xlogy(
         return ivy.where(
             x_ok, ivy.multiply(safe_x, ivy.log(safe_y)), ivy.zeros_like(x)
         ).cast(ret_dtype)
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "float32",
-                "float64",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.real(x)
 
 
 def count_nonzero(

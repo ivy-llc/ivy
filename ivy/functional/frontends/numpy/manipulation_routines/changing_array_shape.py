@@ -43,8 +43,18 @@ def moveaxis(a, source, destination):
 
 
 @to_ivy_arrays_and_back
+def asfarray(a, dtype=ivy.float64):
+    return ivy.asarray(a, dtype=ivy.float64)
+
+
+@to_ivy_arrays_and_back
 def asarray_chkfinite(a, dtype=None, order=None):
     a = ivy.asarray(a, dtype=dtype)
     if not ivy.all(ivy.isfinite(a)):
         raise ValueError("array must not contain infs or NaNs")
     return a
+
+
+@to_ivy_arrays_and_back
+def require(a, dtype=None, requirements=None, *, like=None):
+    return ivy.asarray(a, dtype=dtype)

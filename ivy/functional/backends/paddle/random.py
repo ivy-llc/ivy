@@ -41,7 +41,7 @@ def random_uniform(
     dtype = ivy.as_native_dtype(dtype)
     low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
     high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     # Set range and seed
     rng = high - low
     if seed:
@@ -68,7 +68,7 @@ def random_normal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     if seed:
         paddle.seed(seed)
     if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
@@ -115,7 +115,7 @@ def randint(
     _randint_check_dtype_and_bound(low, high, dtype)
     low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
     high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     range = high - low
     if seed:
         _ = paddle.seed(seed)
@@ -130,6 +130,7 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     _ = paddle.seed(seed_value)
+    return
 
 
 def shuffle(
