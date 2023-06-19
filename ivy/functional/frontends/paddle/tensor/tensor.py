@@ -176,10 +176,9 @@ class Tensor:
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
 
-    with_supported_dtypes(
+    @with_supported_dtypes(
         {"2.4.2 and below": ("float16", "float32", "float64", "int32", "int64")},
         "paddle",
     )
-
     def isnan(self, name=None):
         return ivy.isnan(self._ivy_array)
