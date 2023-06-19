@@ -103,8 +103,17 @@ def conv1d_transpose(
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     out: Optional[paddle.Tensor] = None,
-):
-    raise IvyNotImplementedException()
+) -> paddle.Tensor:
+    res = paddle.nn.functional.Conv1DTranspose(
+        x,
+        filters,
+        data_format=data_format,
+        stride=strides,
+        padding=padding,
+        dilation=dilations,
+    )
+    return res
+    #raise IvyNotImplementedException()
 
 
 # noinspection PyUnresolvedReferences
