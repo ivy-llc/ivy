@@ -10,11 +10,17 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     fn_tree="paddle.fft.fft",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=(7,),
-        min_axis=-1,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        min_dim_size=2,
+        valid_axis=True,
         force_int_axis=True,
     ),
-    n=st.integers(min_value=2, max_value=10),
+    n=st.one_of(
+        st.integers(min_value=2, max_value=10),
+        st.just(None),
+    ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
 )
 def test_paddle_fft(
