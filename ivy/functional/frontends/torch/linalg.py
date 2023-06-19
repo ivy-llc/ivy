@@ -6,6 +6,21 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 
 
+
+
+@to_ivy_arrays_and_back
+def norm(input, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
+    if type(dim) == int:
+        return vector_norm(input, ord, dim, keepdim, dtype=None, out=None)
+    elif type(dim) == "tuple":
+        return matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+    elif dim == None and ord == None:
+        input = input.view(-1)
+        return vector_norm(input, ord, dim, keepdim, dtype=None, out=None)
+
+
+
+
 @to_ivy_arrays_and_back
 def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.vector_norm(
