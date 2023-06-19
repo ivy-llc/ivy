@@ -235,7 +235,7 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
 
 @to_ivy_arrays_and_back
 def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
-    results = ivy.unique_all(input, axis=dim)
+    results = ivy.unique_all(input, by_value=sorted, axis=dim)
 
     fields = ["output"]
     if return_inverse:
