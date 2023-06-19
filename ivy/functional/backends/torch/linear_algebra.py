@@ -509,14 +509,6 @@ def vector_norm(
 vector_norm.support_native_out = True
 
 
-def norm(
-
-) -> torch.Tensor:
-    if(type(dim) == int):
-        return vector_norm(input)
-    elif type(dim) == 'tuple':
-
-
 
 # Extra #
 # ----- #
