@@ -567,3 +567,32 @@ def test_numpy_negative_binomial(
         p=p,
         size=size,
     )
+# laplace
+@helpers.handle_frontend_test(
+    fn_tree="numpy.random.laplace",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    mean=st.floats(allow_nan=False, allow_infinity=False, width=32),
+    scale=st.floats(allow_nan=False, allow_infinity=False, width=32, min_value=0),
+    size=st.tuples(st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)),
+)
+def test_ivy_laplace(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    mean,
+    scale,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mean=mean,
+        scale=scale,
+        size=size,
+    )
