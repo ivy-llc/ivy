@@ -1323,6 +1323,9 @@ class Tensor:
     def take_along_dim(self, indices, dim):
         return torch_frontend.take_along_dim(self, indices=indices, dim=dim)
 
+    def movedim(self, source, destination):
+        return torch_frontend.movedim(self, source=source, destination=destination)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
