@@ -1,5 +1,4 @@
 # global
-
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
@@ -40,7 +39,7 @@ def lexsort(keys, /, *, axis=-1):
 def partition(a, kth, axis=-1, kind="introselect", order=None):
     sorted_arr = ivy.sort(a, axis=axis)
     for k in kth:
-        index_to_remove = ivy.argwhere(a == sorted_arr[k])[0][0]
+        index_to_remove = ivy.argwhere(a == sorted_arr[k])[0, 0]
         a = ivy.concat((a[:index_to_remove], a[index_to_remove + 1 :]))
         left = ivy.array([], dtype=a.dtype)
         right = ivy.array([], dtype=a.dtype)
