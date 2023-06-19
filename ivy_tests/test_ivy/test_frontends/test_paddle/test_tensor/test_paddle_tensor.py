@@ -912,15 +912,15 @@ def test_paddle_allclose(
 ):
     input_dtype, x = dtype_x
     x = x[0]
-    y = x + np.random.randn(*x.shape) * 1e-4
+    y = x[1]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "x": x,
-            "y": y,
+            "object": x,
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
+            "other": y,
             "rtol": rtol,
             "atol": atol,
             "equal_nan": equal_nan,
