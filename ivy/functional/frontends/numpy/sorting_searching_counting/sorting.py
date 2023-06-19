@@ -40,7 +40,10 @@ def partition(a, kth, axis=-1, kind="introselect", order=None):
     sorted_arr = ivy.sort(a, axis=axis)
     for k in kth:
         index_to_remove = ivy.argwhere(a == sorted_arr[k])[0, 0]
-        a = ivy.concat((a[:index_to_remove], a[index_to_remove + 1 :]))
+        if len(a) == 1:
+            a = ivy.array([], dtype=a.dtype)
+        else:
+            a = ivy.concat((a[:index_to_remove], a[index_to_remove + 1 :]))
         left = ivy.array([], dtype=a.dtype)
         right = ivy.array([], dtype=a.dtype)
         equal = ivy.array([], dtype=a.dtype)
