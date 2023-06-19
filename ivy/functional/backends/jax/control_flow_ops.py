@@ -2,7 +2,7 @@ import jax
 
 
 def if_else(cond, body_fn, orelse_fn, vars):
-    cond = bool(cond)
+    cond = bool(cond(*vars))
     with jax.disable_jit():
         final_vars = jax.lax.cond(
             cond, lambda: body_fn(*vars), lambda: orelse_fn(*vars)

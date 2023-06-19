@@ -11,7 +11,7 @@ import tensorflow as tf
 
 
 def if_else(cond, body_fn, orelse_fn, vars):
-    cond = bool(cond)
+    cond = bool(cond(*vars))
     # return tf.cond(cond, lambda: body_fn(*vars), lambda: orelse_fn(*vars))
 
     # use pythonic placeholder until the graph compiler supports callable arguments
