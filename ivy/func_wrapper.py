@@ -1064,11 +1064,12 @@ def _wrap_function(
         # be run from the primary implementation.
         if partial_mixed:
             array_spec = to_wrap.compos.__dict__["array_spec"]
-            for attr in FN_DECORATORS[-1:14:-1]:
+            for attr in FN_DECORATORS[
+                -1 : FN_DECORATORS.index("handle_mixed_function") : -1
+            ]:
                 if hasattr(to_wrap.compos, attr):
                     to_wrap.compos = to_wrap.compos.__wrapped__
             to_wrap.compos.__dict__["array_spec"] = array_spec
-
     return to_wrap
 
 
