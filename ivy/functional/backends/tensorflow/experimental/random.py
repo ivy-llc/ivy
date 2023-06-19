@@ -104,6 +104,7 @@ def poisson(
     device: str,
     dtype: DType,
     seed: Optional[int] = None,
+    fill_value: Optional[Union[float, int]] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     lam = tf.cast(lam, "float32")
@@ -112,9 +113,13 @@ def poisson(
             tf.random.set_seed(seed)
         if shape is None:
             return tf.random.poisson((), lam, dtype=dtype, seed=seed)
-        _check_shapes_broadcastable(shape, lam.shape)
+        shape = tf.cast(shape, "int32")
+        _check_shapes_broadcastable(lam.shape, shape)
         lam = tf.broadcast_to(lam, tuple(shape))
-        return tf.random.poisson((), lam, dtype=dtype, seed=seed)
+        ret = tf.random.poisson((), lam, dtype=dtype, seed=seed)
+        if tf.reduce_any(lam < 0):
+            return tf.where(lam < 0, fill_value, ret)
+        return ret
 
 
 def bernoulli(
