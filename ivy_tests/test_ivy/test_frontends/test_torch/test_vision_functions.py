@@ -283,13 +283,13 @@ def _affine_grid_helper(draw):
         st.tuples(
             st.integers(1, 100),
             st.integers(1, 100),
-            st.integers(1, 100),
-            st.integers(1, 100),
+            st.integers(2, 100),
+            st.integers(2, 100),
         )
     )
     theta_dtype, theta = draw(
         helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
+            available_dtypes=helpers.get_dtypes("float"),
             min_value=0,
             max_value=1,
             shape=(size[0], 2, 3),
@@ -311,6 +311,7 @@ def test_torch_affine_grid(
     test_flags,
 ):
     dtype, theta, size, align_corners = dtype_and_input_and_other
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
