@@ -7,9 +7,7 @@ import ivy.functional.frontends.jax as jax_frontend
 
 class DeviceArray:
     def __init__(self, array, weak_type=False):
-        self._ivy_array = (
-            array if isinstance(array, ivy.Array) else ivy.array(array)
-        )
+        self._ivy_array = array if isinstance(array, ivy.Array) else ivy.array(array)
         self.weak_type = weak_type
 
     def __repr__(self):
@@ -221,5 +219,5 @@ class DeviceArray:
         ndim = len(self.shape)
         if ndim == 0:
             raise TypeError("iteration over a 0-d devicearray not supported")
-        for i in range(ndim):
+        for i in range(self.shape[0]):
             yield self[i]

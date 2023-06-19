@@ -14,6 +14,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 from . import backend_version
 
@@ -73,6 +74,7 @@ def arange(
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         tf.Tensor,
@@ -109,7 +111,7 @@ def asarray(
                 except (TypeError, ValueError):
                     dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -119,7 +121,7 @@ def asarray(
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
@@ -133,18 +135,19 @@ def asarray(
 
                 dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 return tf.convert_to_tensor(
-                    ivy.nested_map(
-                        obj, lambda x: tf.convert_to_tensor(x, dtype), shallow=False
-                    ),
+                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype), shallow=False),
                     dtype=dtype,
                 )
             else:
-                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype, item=obj))
+                if dtype is None:
+                    dtype = ivy.as_native_dtype(
+                        ivy.default_dtype(dtype=dtype, item=obj)
+                    )
                 try:
                     tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.convert_to_tensor(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.cast(tensor, dtype)
@@ -349,6 +352,7 @@ def ones_like(
         return tf.ones_like(x, dtype=dtype)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
 def tril(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -356,6 +360,8 @@ def tril(
     k: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # TODO: A way around tf.experimental.numpy.tril as it doesn't support bool
+    #  and neither rank 1 tensors while np.tril does support both. Needs superset.
     return tf.experimental.numpy.tril(x, k)
 
 

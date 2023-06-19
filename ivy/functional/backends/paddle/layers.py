@@ -219,6 +219,7 @@ def conv_general_dilated(
     *,
     dims: Optional[int] = 2,
     data_format: Optional[str] = "channel_last",
+    filter_format: Optional[str] = "channel_last",
     feature_group_count: Optional[int] = 1,
     x_dilations: Optional[
         Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
@@ -231,6 +232,9 @@ def conv_general_dilated(
 ):
     if data_format == "channel_first":
         x = paddle.transpose(x, perm=(0, *range(2, dims + 2), 1))
+
+    if filter_format == "channel_first":
+        filters = paddle.transpose(filters, (*range(2, dims + 2), 1, 0))
 
     # adding dilation in input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations

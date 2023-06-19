@@ -7,6 +7,38 @@ import ivy
 
 
 class _ArrayWithNormsExperimental(abc.ABC):
+    def l1_normalize(
+        self: ivy.Array,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Normalize the array to have unit L1 norm.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which to normalize. If ``None``, the whole array is normalized.
+        out
+            Optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The normalized array.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> x.l1_normalize(axis=1)
+        ivy.array([[0.3333, 0.6667],
+                   [0.4286, 0.5714]])
+        """
+        return ivy.l1_normalize(self, axis=axis, out=out)
+
     def l2_normalize(
         self: ivy.Array,
         axis: Optional[int] = None,

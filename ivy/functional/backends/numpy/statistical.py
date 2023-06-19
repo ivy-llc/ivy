@@ -1,4 +1,5 @@
 # global
+import math
 import numpy as np
 from typing import Union, Optional, Sequence, Tuple
 
@@ -170,7 +171,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,
@@ -207,7 +208,7 @@ def cumprod(
 cumprod.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.24.3 and below": "bfloat16"}, backend_version)
 def cummin(
     x: np.ndarray,
     /,
@@ -271,12 +272,12 @@ cumsum.support_native_out = True
 
 
 def cummax(
-        x: np.ndarray,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
-        *,
-        out: Optional[np.ndarray] = None,
+    x: np.ndarray,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
     if x.dtype in (np.bool_, np.float16):
         x = x.astype(np.float64)
@@ -291,9 +292,9 @@ def cummax(
             x = np.maximum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=x.dtype)
             x = np.swapaxes(x, axis, -1)
             indices = np.swapaxes(indices, axis, -1)
-            x, indices = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1),\
-                np.concatenate((np.zeros_like(indices[..., -1:]),
-                                indices[..., :-1]), -1)
+            x, indices = np.concatenate(
+                (np.zeros_like(x[..., -1:]), x[..., :-1]), -1
+            ), np.concatenate((np.zeros_like(indices[..., -1:]), indices[..., :-1]), -1)
             x, indices = np.swapaxes(x, axis, -1), np.swapaxes(indices, axis, -1)
             res, indices = np.flip(x, axis=axis), np.flip(indices, axis=axis)
 
@@ -317,15 +318,14 @@ cummax.support_native_out = True
 
 
 def __find_cummax_indices(
-        x: np.ndarray,
-        axis: int = 0,
+    x: np.ndarray,
+    axis: int = 0,
 ) -> np.ndarray:
     indices = []
     if type(x[0]) == np.ndarray:
         if axis >= 1:
             for ret1 in x:
-                indice = __find_cummax_indices(ret1,
-                                               axis=axis - 1)
+                indice = __find_cummax_indices(ret1, axis=axis - 1)
                 indices.append(indice)
 
         else:
@@ -338,8 +338,9 @@ def __find_cummax_indices(
                 if tuple(multi_index[1:]) not in n1:
                     n1[tuple(multi_index[1:])] = multi_index[0]
                     indices[y_index] = multi_index[0]
-                elif y >= x[tuple([n1[tuple(multi_index[1:])]] +
-                                  list(multi_index[1:]))]:
+                elif (
+                    y >= x[tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))]
+                ):
                     n1[tuple(multi_index[1:])] = multi_index[0]
                     indices[y_index] = multi_index[0]
                 else:
@@ -376,3 +377,20 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+
+def igamma(
+    a: np.ndarray,
+    /,
+    *,
+    x: np.ndarray,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    def igamma_cal(a, x):
+        t = np.linspace(0, x, 10000, dtype=np.float64)
+        y = np.exp(-t) * (t ** (a - 1))
+        integral = np.trapz(y, t)
+        return np.float32(integral / math.gamma(a))
+
+    igamma_vec = np.vectorize(igamma_cal)
+    return igamma_vec(a, x)

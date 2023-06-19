@@ -1032,19 +1032,157 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_fft(
+    def static_idct(
         x: ivy.Container,
-        dim: int,
         /,
         *,
-        norm: str = "backward",
-        n: Optional[Union[int, Tuple[int]]] = None,
+        type: Literal[1, 2, 3, 4] = 2,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Optional[Literal["ortho"]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.idct. This method simply wraps the
+        function, and so the docstring for ivy.idct also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container with the input signals.
+        type
+            The type of the dct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal length,
+            then x is truncated, if n is larger than x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The transformed input.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
+        ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
+        >>> ivy.Container.static_idct(x, type=2, norm='ortho')
+        {
+            a: ivy.array([79.49862671, -70.37691498, 30.00390816, -23.58938599,
+                          13.92713165, -10.078475, 5.19664812, -1.95411837]),
+            b: ivy.array([9.93732834, -8.79711437, 3.75048852, -2.94867325, 1.74089146,
+                          -1.25980937, 0.64958102, -0.2442648])
+        }
+
+        With multiple :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([  8, 16,  24,  32,   40,   48,   56,   64]),
+        ...                   b=ivy.array([11., 54, 23., 13., 255., 255., 132., 182.]))
+        >>> n = ivy.Container(a=9, b=5)
+        >>> type = ivy.Container(a=2, b=4)
+        >>> norm = ivy.Container(a="ortho", b=None)
+        >>> ivy.Container.static_idct(x, type=type, n=n, norm=norm)
+        {
+            a: ivy.array([86.29723358, -66.6950531, 9.93914509, 2.88008738,
+                          -16.18951225, 18.06697273, -17.57439804, 11.68861485,
+                          -4.41308832]),
+            b: ivy.array([242.0700836, -253.2449036, 285.6711426, -514.501709,
+                          467.4924011])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "idct",
+            x,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def idct(
+        self: ivy.Container,
+        /,
+        *,
+        type: Literal[1, 2, 3, 4] = 2,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Optional[Literal["ortho"]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.idct. This method simply wraps the
+        function, and so the docstring for ivy.idct also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container with the input signals.
+        type
+            The type of the idct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal length,
+            then x is truncated, if n is larger then x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The transformed input.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
+        ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
+        >>> x.idct(type=2, norm='ortho')
+        {
+            a: ivy.array([79.49862671, -70.37691498, 30.00390816, -23.58938599,
+                  13.92713165, -10.078475, 5.19664812, -1.95411837]),
+            b: ivy.array([9.94, -8.79711437, 3.76, -2.94867325, 1.74089146,
+                  -1.25980937, 0.64958102, -0.2442648])
+        }
+        """
+        return self.static_idct(
+            self,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
+            out=out,
+        )
+
+    @staticmethod
+    def _static_fft(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        dim: int,
+        /,
+        *,
+        norm: str = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        out: Optional[ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.fft. This method simply wraps the
         function, and so the docstring for ivy.fft also applies to this method with
@@ -1097,11 +1235,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
             dim,
             norm=norm,
             n=n,
+            out=out,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def fft(
@@ -1112,7 +1250,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         norm: str = "backward",
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
-    ):
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.fft. This method simply wraps the
         function, and so the docstring for ivy.fft also applies to this method with
@@ -1159,12 +1301,16 @@ class _ContainerWithLayersExperimental(ContainerBase):
                        1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
         }
         """
-        return self.static_fft(
+        return self._static_fft(
             self,
             dim,
             norm=norm,
             n=n,
             out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod

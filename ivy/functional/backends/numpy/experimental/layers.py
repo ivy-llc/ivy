@@ -2,13 +2,15 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 
 # local
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims):
@@ -38,8 +40,7 @@ def _determine_depth_max_pooling(x, kernel, strides, dims):
             strides = [strides[-1], *[1] * (dims - 1)]
         else:
             kernel = spatial_kernel
-            if len(strides) == dims + 2:
-                strides = strides[1:-1]
+            strides = strides[1:-1] if len(strides) == dims + 2 else strides
     return x, kernel, strides, depth_pooling
 
 
@@ -632,9 +633,14 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return np.fft.fft(x, n, dim, norm)
+    if x.dtype in [np.uint64, np.int64, np.float64, np.complex128]:
+        out_dtype = np.complex128
+    else:
+        out_dtype = np.complex64
+    return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
+@with_supported_dtypes({"1.24.3 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -730,6 +736,20 @@ def dct(
     return dct_out.astype(np.float32) if cast_final else dct_out
 
 
+def idct(
+    x: np.ndarray,
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
+
+
 def dropout1d(
     x: np.ndarray,
     prob: float,
@@ -740,18 +760,45 @@ def dropout1d(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if training:
+        x_shape = x.shape
+        is_batched = len(x_shape) == 3
         if data_format == "NCW":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            perm = (0, 2, 1) if is_batched else (1, 0)
             x = np.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-2] = 1
-        mask = np.random.binomial(1, 1 - prob, noise_shape)
+            x_shape = x.shape
+        mask = np.random.binomial(1, 1 - prob, x_shape)
         res = np.where(mask, x / (1 - prob), 0)
         if data_format == "NCW":
             res = np.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
+
+
+def dropout2d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if training:
+        x_shape = x.shape
+        is_batched = len(x_shape) == 4
+        if data_format == "NCHW":
+            perm = (0, 2, 3, 1) if is_batched else (1, 2, 0)
+            x = np.transpose(x, perm)
+            x_shape = x.shape
+        mask = np.random.binomial(1, 1 - prob, x_shape)
+        res = np.where(mask, x / (1 - prob), 0)
+        if data_format == "NCHW":
+            perm = (0, 3, 1, 2) if is_batched else (2, 0, 1)
+            res = np.transpose(res, perm)
+    else:
+        res = x
+    return res
 
 
 def dropout3d(
@@ -764,21 +811,20 @@ def dropout3d(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if training:
-        is_batched = len(x.shape) == 5
+        x_shape = x.shape
+        is_batched = len(x_shape) == 5
         if data_format == "NCDHW":
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = np.transpose(x, perm)
-        noise_shape = list(x.shape)
-        sl = slice(1, -1) if is_batched else slice(-1)
-        noise_shape[sl] = [1] * 3
-        mask = np.random.binomial(1, 1 - prob, noise_shape)
+            x_shape = x.shape
+        mask = np.random.binomial(1, 1 - prob, x_shape)
         res = np.where(mask, x / (1 - prob), 0)
         if data_format == "NCDHW":
             perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
             res = np.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
 
 
 def ifft(
@@ -811,3 +857,35 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
+
+
+def fft2(
+    x: np.ndarray,
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if not all(isinstance(j, int) for j in dim):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {dim} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[dim[0]], x.shape[dim[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return np.fft.fft2(x, s, dim, norm).astype(np.complex128)

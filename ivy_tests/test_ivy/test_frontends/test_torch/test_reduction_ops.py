@@ -6,11 +6,11 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
     _get_castable_dtype,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
-    statistical_dtype_values as statistical_dtype_values_experimental,
+    _quantile_helper,
 )
 
 
@@ -87,8 +87,13 @@ def test_torch_argmax(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
         min_num_dims=1,
-        min_axis=-1,
-        max_axis=0,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        min_value=1,
+        max_value=5,
+        valid_axis=True,
+        allow_neg_axes=True,
     ),
     keepdims=st.booleans(),
 )
@@ -280,7 +285,7 @@ def test_torch_sum(
 
 @handle_frontend_test(
     fn_tree="torch.mean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="mean",
         min_value=-1e04,
         max_value=1e04,
@@ -311,7 +316,7 @@ def test_torch_mean(
 
 @handle_frontend_test(
     fn_tree="torch.nanmean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="nanmean",
         min_value=-1e04,
         max_value=1e04,
@@ -374,7 +379,7 @@ def test_torch_median(
 
 @handle_frontend_test(
     fn_tree="torch.std",
-    dtype_and_x=statistical_dtype_values(function="std"),
+    dtype_and_x=_statistical_dtype_values(function="std"),
     keepdims=st.booleans(),
 )
 def test_torch_std(
@@ -448,7 +453,7 @@ def test_torch_prod(
 
 @handle_frontend_test(
     fn_tree="torch.var",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="var",
         min_value=-1e04,
         max_value=1e04,
@@ -478,10 +483,9 @@ def test_torch_var(
     )
 
 
-# ToDo, fails for TensorFlow backend, tf.reduce_min doesn't support bool
-# ToDo, fails for torch backend, tf.argmin_cpu doesn't support bool
+# min
 @handle_frontend_test(
-    fn_tree="torch.argmin",
+    fn_tree="torch.min",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -617,7 +621,7 @@ def test_torch_max(
 
 @handle_frontend_test(
     fn_tree="torch.std_mean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="std_mean",
         min_value=-1e04,
         max_value=1e04,
@@ -649,7 +653,7 @@ def test_torch_std_mean(
 
 @handle_frontend_test(
     fn_tree="torch.var_mean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="var_mean",
         min_value=-1e04,
         max_value=1e04,
@@ -713,7 +717,7 @@ def test_torch_aminmax(
 
 @handle_frontend_test(
     fn_tree="torch.quantile",
-    dtype_and_x=statistical_dtype_values_experimental(function="quantile"),
+    dtype_and_x=_quantile_helper(),
     keepdims=st.booleans(),
 )
 def test_torch_quantile(
@@ -846,19 +850,11 @@ def test_torch_unique(
 
 @st.composite
 def _get_axis_and_p(draw):
-    p = draw(
-        st.one_of(
-            helpers.ints(min_value=0, max_value=5),
-            helpers.floats(min_value=1.0, max_value=5.0),
-            st.sampled_from((float("inf"), -float("inf"))),
-        )
-    )
+    p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
     if p == "fro" or p == "nuc":
-        force_tuple_axis = True
         max_axes_size = 2
         min_axes_size = 2
     else:
-        force_tuple_axis = False
         min_axes_size = 1
         max_axes_size = 5
     dtype_x_axis = draw(
@@ -866,11 +862,13 @@ def _get_axis_and_p(draw):
             available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
             valid_axis=True,
+            min_value=-1e04,
+            max_value=1e04,
             min_axes_size=min_axes_size,
             max_axes_size=max_axes_size,
             large_abs_safety_factor=2,
             safety_factor_scale="log",
-            force_tuple_axis=force_tuple_axis,
+            force_int_axis=True,
         )
     )
     return p, dtype_x_axis

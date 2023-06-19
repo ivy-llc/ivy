@@ -220,7 +220,6 @@ def var(
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,
 )
@@ -367,8 +366,9 @@ def cummax(
         if exclusive and reverse:
             x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)
             x1, x2 = torch.transpose(x1, axis, -1), torch.transpose(x2, axis, -1)
-            x1, x2 = torch.concat((torch.zeros_like(x1[..., -1:]), x1[..., :-1]), -1), \
-                torch.concat((torch.zeros_like(x2[..., -1:]), x2[..., :-1]), -1)
+            x1, x2 = torch.concat(
+                (torch.zeros_like(x1[..., -1:]), x1[..., :-1]), -1
+            ), torch.concat((torch.zeros_like(x2[..., -1:]), x2[..., :-1]), -1)
             x1, x2 = torch.transpose(x1, axis, -1), torch.transpose(x2, axis, -1)
             res1, res2 = torch.flip(x1, dims=(axis,)), torch.flip(x2, dims=(axis,))
         elif exclusive:

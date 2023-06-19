@@ -2,6 +2,7 @@
 _round = round
 import tensorflow as tf
 from typing import Union, Optional, Sequence, Tuple
+
 # local
 import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
@@ -132,6 +133,10 @@ def var(
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if correction == 0:
         return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
+    if correction == 1:
+        return tf.experimental.numpy.var(
+            x, axis=axis[0], out=out, keepdims=keepdims, dtype=x.dtype, ddof=1
+        )
     size = 1
     for a in axis:
         size *= x.shape[a]
@@ -154,7 +159,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -177,7 +182,7 @@ def cumprod(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("float16", "bfloat16", "complex128", "complex64")},
+    {"2.12.0 and below": ("bfloat16", "complex")},
     backend_version,
 )
 def cummin(
@@ -246,42 +251,52 @@ def cummax(
 
     if exclusive or reverse:
         if exclusive and reverse:
-            x, indices = __find_cummax(tf.experimental.numpy.flip(x, axis=axis),
-                                       axis=axis)
-            x, indices = tf.experimental.numpy.swapaxes(x, axis, -1), \
-                tf.experimental.numpy.swapaxes(indices, axis, -1)
-            x, indices = tf.experimental.numpy.concatenate((
-                tf.experimental.numpy.zeros_like(x[..., -1:]), x[..., :-1]), -1), \
-                tf.experimental.numpy.concatenate((
+            x, indices = __find_cummax(
+                tf.experimental.numpy.flip(x, axis=axis), axis=axis
+            )
+            x, indices = tf.experimental.numpy.swapaxes(
+                x, axis, -1
+            ), tf.experimental.numpy.swapaxes(indices, axis, -1)
+            x, indices = tf.experimental.numpy.concatenate(
+                (tf.experimental.numpy.zeros_like(x[..., -1:]), x[..., :-1]), -1
+            ), tf.experimental.numpy.concatenate(
+                (
                     tf.experimental.numpy.zeros_like(indices[..., -1:]),
-                    indices[..., :-1]), -1)
-            x, indices = tf.experimental.numpy.swapaxes(x, axis, -1), \
-                tf.experimental.numpy.swapaxes(indices, axis, -1)
-            res, indices = tf.experimental.numpy.flip(x, axis=axis), \
-                tf.experimental.numpy.flip(indices, axis=axis)
+                    indices[..., :-1],
+                ),
+                -1,
+            )
+            x, indices = tf.experimental.numpy.swapaxes(
+                x, axis, -1
+            ), tf.experimental.numpy.swapaxes(indices, axis, -1)
+            res, indices = tf.experimental.numpy.flip(
+                x, axis=axis
+            ), tf.experimental.numpy.flip(indices, axis=axis)
         elif exclusive:
             x = tf.experimental.numpy.swapaxes(x, axis, -1)
-            x = tf.experimental.numpy.concatenate((
-                tf.experimental.numpy.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = tf.experimental.numpy.concatenate(
+                (tf.experimental.numpy.zeros_like(x[..., -1:]), x[..., :-1]), -1
+            )
             x = tf.experimental.numpy.swapaxes(x, axis, -1)
             res, indices = __find_cummax(x, axis=axis)
         elif reverse:
             x = tf.experimental.numpy.flip(x, axis=axis)
             x, indices = __find_cummax(x, axis=axis)
-            res, indices = tf.experimental.numpy.flip(x, axis=axis), \
-                tf.experimental.numpy.flip(indices, axis=axis)
+            res, indices = tf.experimental.numpy.flip(
+                x, axis=axis
+            ), tf.experimental.numpy.flip(indices, axis=axis)
         return res, indices
 
     return __find_cummax(x, axis=axis)
 
 
-def __find_cummax(
-        x: tf.Tensor,
-        axis: int = 0
-) -> Tuple[tf.Tensor, tf.Tensor]:
+def __find_cummax(x: tf.Tensor, axis: int = 0) -> Tuple[tf.Tensor, tf.Tensor]:
     values, indices = [], []
-    if isinstance(x[0], tf.Tensor) and isinstance(x[0].numpy().tolist(), list) \
-            and len(x[0].numpy().tolist()) >= 1 :
+    if (
+        isinstance(x[0], tf.Tensor)
+        and isinstance(x[0].numpy().tolist(), list)
+        and len(x[0].numpy().tolist()) >= 1
+    ):
         if axis >= 1:
             for ret1 in x:
                 value, indice = __find_cummax(ret1, axis=axis - 1)
@@ -300,24 +315,35 @@ def __find_cummax(
                     n1[tuple(multi_index[1:])] = multi_index[0]
                     indices[y_index] = multi_index[0]
                     values[y_index] = y
-                elif y >= x_list[tuple([n1[tuple(multi_index[1:])]] +
-                                       list(multi_index[1:]))]:
+                elif (
+                    y
+                    >= x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
+                ):
                     n1[tuple(multi_index[1:])] = multi_index[0]
                     indices[y_index] = multi_index[0]
                     values[y_index] = y
                 else:
                     indices[y_index] = n1[tuple(multi_index[1:])]
-                    values[y_index] = x_list[tuple([n1[tuple(multi_index[1:])]] +
-                                                   list(multi_index[1:]))]
+                    values[y_index] = x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
     else:
         x_indices = tf.convert_to_tensor(list(range(0, x.shape[0])), dtype=x.dtype)
-        values, indices = tf.scan(lambda a, b: a if a > b
-                                  or tf.experimental.numpy.where
-                                  (x[0].numpy() == b[0].numpy()) == 0
-                                  else b, (x, x_indices))
+        values, indices = tf.scan(
+            lambda a, b: (
+                a
+                if a > b
+                or tf.experimental.numpy.where(x[0].numpy() == b[0].numpy()) == 0
+                else b
+            ),
+            (x, x_indices),
+        )
 
-    return tf.convert_to_tensor(values, dtype=x.dtype), \
-        tf.cast(tf.convert_to_tensor(indices), dtype=tf.int64)
+    return tf.convert_to_tensor(values, dtype=x.dtype), tf.cast(
+        tf.convert_to_tensor(indices), dtype=tf.int64
+    )
 
 
 def __get_index(lst, indices=None, prefix=None):

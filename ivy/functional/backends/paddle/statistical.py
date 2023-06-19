@@ -184,7 +184,7 @@ def sum(
     if x.dtype in [paddle.int8, paddle.uint8]:
         ret = paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
     else:
-        ret = paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+        ret = paddle.sum(x.cast(dtype), axis=axis, dtype=dtype, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
@@ -225,7 +225,7 @@ def cumprod(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else x.dtype
-    if dtype in [paddle.uint8, paddle.int8, paddle.int16]:
+    if ivy.as_native_dtype(dtype) in [paddle.uint8, paddle.int8, paddle.int16]:
         x = paddle.cast(x, "int32")
     else:
         x = paddle.cast(x, dtype)
@@ -311,7 +311,7 @@ def cumsum(
         paddle.float16,
         paddle.bool,
     ]:
-        x = paddle.cast(x, "float32")
+        x = paddle.cast(x, "int32")
     else:
         x = paddle.cast(x, dtype)
     if not (exclusive or reverse):
@@ -370,12 +370,12 @@ def cummax(
         return __find_cummax(x, axis=axis)
 
     elif exclusive and reverse:
-        x, indices = __find_cummax(ivy.flip(x, axis=(axis, )), axis=axis)
+        x, indices = __find_cummax(ivy.flip(x, axis=(axis,)), axis=axis)
         x, indices = ivy.swapaxes(x, axis, -1), ivy.swapaxes(indices, axis, -1)
-        x = ivy.concat((ivy.zeros_like(x[..., -1:]),
-                        x[..., :-1]), axis=-1)
-        indices = ivy.concat((ivy.zeros_like
-                              (indices[..., -1:]), indices[..., :-1]), axis=-1)
+        x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
+        indices = ivy.concat(
+            (ivy.zeros_like(indices[..., -1:]), indices[..., :-1]), axis=-1
+        )
         x, indices = ivy.swapaxes(x, axis, -1), ivy.swapaxes(indices, axis, -1)
         return ivy.flip(x, axis=(axis,)), ivy.flip(indices, axis=(axis,))
 
@@ -393,23 +393,26 @@ def cummax(
 
 
 def __find_cummax(
-        x: paddle.Tensor,
-        axis: int = 0,
-        dtype: Optional[paddle.dtype] = None
+    x: paddle.Tensor, axis: int = 0, dtype: Optional[paddle.dtype] = None
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     indices = []
     values = []
     x_dtype = x.dtype if dtype is None else dtype
-    if isinstance(x.tolist()[0], list)\
-       and len(x[0].shape) >= 1 and \
-       ((type(x[0]) == paddle.Tensor) or
-       (type(x[0]) == ivy.data_classes.array.array.Array)) :
+    if (
+        isinstance(x.tolist()[0], list)
+        and len(x[0].shape) >= 1
+        and (
+            (type(x[0]) == paddle.Tensor)
+            or (type(x[0]) == ivy.data_classes.array.array.Array)
+        )
+    ):
         if axis >= 1:
             if not isinstance(x, list):
                 x = x.tolist()
             for ret1 in x:
-                value, indice = __find_cummax(paddle.to_tensor(ret1, dtype=x_dtype),
-                                              axis=axis - 1, dtype=x_dtype)
+                value, indice = __find_cummax(
+                    paddle.to_tensor(ret1, dtype=x_dtype), axis=axis - 1, dtype=x_dtype
+                )
                 indices.append(indice)
                 values.append(value)
         else:
@@ -425,15 +428,20 @@ def __find_cummax(
                     n1[tuple(multi_index[1:])] = multi_index[0]
                     indices[y_index] = multi_index[0]
                     values[y_index] = y
-                elif y >= x_list[tuple([n1[tuple(multi_index[1:])]] +
-                                       list(multi_index[1:]))]:
+                elif (
+                    y
+                    >= x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
+                ):
                     n1[tuple(multi_index[1:])] = multi_index[0]
                     indices[y_index] = multi_index[0]
                     values[y_index] = y
                 else:
                     indices[y_index] = n1[tuple(multi_index[1:])]
-                    values[y_index] = x_list[tuple([n1[tuple(multi_index[1:])]] +
-                                                   list(multi_index[1:]))]
+                    values[y_index] = x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
     else:
         if not isinstance(x, list):
             x = x.tolist()
@@ -447,10 +455,11 @@ def __find_cummax(
             indices.append(n)
 
     if type(x) == paddle.Tensor:
-        return paddle.to_tensor(values, dtype=x.dtype), \
-            paddle.to_tensor(indices, dtype='int64')
+        return paddle.to_tensor(values, dtype=x.dtype), paddle.to_tensor(
+            indices, dtype="int64"
+        )
     else:
-        return ivy.array(values, dtype=x_dtype), ivy.array(indices, dtype='int64')
+        return ivy.array(values, dtype=x_dtype), ivy.array(indices, dtype="int64")
 
 
 def __get_index(lst, indices=None, prefix=None):

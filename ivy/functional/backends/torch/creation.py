@@ -19,6 +19,7 @@ from ivy.functional.ivy.creation import (
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 from . import backend_version
 
@@ -45,8 +46,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
-# noinspection PyUnboundLocalVariable,PyShadowingNames
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def arange(
     start: float,
     /,
@@ -98,6 +98,7 @@ def _stack_tensors(x, dtype):
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         torch.Tensor,
@@ -153,7 +154,7 @@ def asarray(
 
     elif isinstance(obj, np.ndarray) and dtype is None:
         dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-    else:
+    elif dtype is None:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
     if dtype == torch.bfloat16 and isinstance(obj, np.ndarray):

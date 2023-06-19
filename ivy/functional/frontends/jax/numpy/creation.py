@@ -6,6 +6,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
     handle_jax_dtype,
+    inputs_to_ivy_arrays,
 )
 
 from ivy.func_wrapper import handle_out_argument
@@ -143,7 +144,7 @@ def full(shape, fill_value, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.10 and below": (
+        "0.4.12 and below": (
             "float16",
             "bfloat16",
         )
@@ -168,7 +169,7 @@ def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.10 and below": (
+        "0.4.12 and below": (
             "float16",
             "bfloat16",
         )
@@ -193,6 +194,11 @@ def single(x):
 @to_ivy_arrays_and_back
 def double(x):
     return ivy.astype(x, ivy.float64)
+
+
+@to_ivy_arrays_and_back
+def bool_(x):
+    return ivy.astype(x, ivy.bool)
 
 
 @to_ivy_arrays_and_back
@@ -238,3 +244,17 @@ def compress(condition, a, *, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@inputs_to_ivy_arrays
+def iterable(y):
+    return hasattr(y, "__iter__") and y.ndim > 0
+
+
+@to_ivy_arrays_and_back
+def size(a, axis=None):
+    ivy.set_default_int_dtype("int64")
+    if axis is not None:
+        sh = ivy.shape(a)
+        return sh[axis]
+    return a.size

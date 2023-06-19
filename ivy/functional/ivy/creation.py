@@ -75,6 +75,8 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
 def _ivy_to_native(x):
     # checks the first element of the leaf list and
     # converts it to a native array if it is an ivy array
+    # assumes that either all elements in a leaf list are ivy arrays
+    # or none of them are
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
@@ -87,6 +89,23 @@ def _ivy_to_native(x):
     return x
 
 
+def _shape_to_native(x):
+    # checks the first element of the leaf list and
+    # converts it to a native array if it is an ivy array
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x = list(x) if isinstance(x, tuple) else x
+            x[i] = _shape_to_native(item)
+    else:
+        if (isinstance(x, (list, tuple)) and len(x) > 0) and (
+            isinstance(x[0], ivy.Shape) and ivy.array_mode
+        ):
+            x = ivy.nested_map(x, lambda x: x.shape if isinstance(x, ivy.Shape) else x)
+        elif isinstance(x, ivy.Shape) and ivy.array_mode:
+            x = x.shape
+    return x
+
+
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
@@ -96,10 +115,12 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
 
         This wrapper is specifically for the backend implementations of
         asarray.
+
+        It assumes either all the elements in a leaf list are ivy arrays
+        or none of them are. It checks the first element of all the leaf
+        list. If it is an ivy array, it converts all the elements in the
+        leaf list to native otherwise it skips that leaf list.
         """
-        # When possible we want to not nest this
-        # because nested calls introduce massive overhead
-        # and the checks to see if we can avoid it are cheap
         new_arg = _ivy_to_native(args[0])
         new_args = (new_arg,) + args[1:]
         if dtype is not None:
@@ -146,6 +167,17 @@ def asarray_infer_device(fn: Callable) -> Callable:
 
     _asarray_infer_device.infer_device = True
     return _asarray_infer_device
+
+
+def asarray_inputs_to_native_shapes(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _inputs_to_native_shapes(*args, **kwargs):
+        new_arg = _shape_to_native(args[0])
+        new_args = (new_arg,) + args[1:]
+        return fn(*new_args, **kwargs)
+
+    _inputs_to_native_shapes.inputs_to_native_shapes = True
+    return _inputs_to_native_shapes
 
 
 # Type hints #
@@ -227,7 +259,8 @@ def arange(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.arange.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.arange.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -270,7 +303,6 @@ def arange(
 
 @handle_array_like_without_promotion
 @handle_out_argument
-@inputs_to_native_shapes
 @handle_array_function
 def asarray(
     obj: Union[
@@ -350,14 +382,15 @@ def asarray(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.asarray.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.asarray.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(obj).asarray(
+    return current_backend().asarray(
         obj, copy=copy, dtype=dtype, device=device, out=out
     )
 
@@ -400,7 +433,8 @@ def zeros(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.zeros.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -462,7 +496,8 @@ def ones(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.ones.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -553,7 +588,8 @@ def full_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.full_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -600,7 +636,8 @@ def full_like(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]),b=ivy.array([4.123,5.23,6.23]))
+    >>> x = ivy.Container(a=ivy.array([1.2, 2.2324, 3.234]),
+    ...                   b=ivy.array([4.123, 5.23, 6.23]))
     >>> fill_value = 15.0
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
@@ -654,7 +691,8 @@ def ones_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.ones_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -771,7 +809,8 @@ def zeros_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.zeros_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -885,7 +924,8 @@ def tril(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.tril.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.tril.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -933,7 +973,8 @@ def triu(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.triu.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.triu.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -983,7 +1024,8 @@ def empty(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.empty.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1033,7 +1075,8 @@ def empty_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.empty_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1094,7 +1137,8 @@ def eye(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.eye.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.eye.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1155,7 +1199,9 @@ def eye(
                 [0., 1., 0.]]])
     >>> x1.shape
     (3, 2, 3)
-    # Suppose batch_shape = [a, b] then the returning identity array shape is [a, b, numRows, numColumns]
+
+    Suppose batch_shape = [a, b] then the returning identity
+    array shape is [a, b, numRows, numColumns]
 
 
     With :'out' input:
@@ -1242,7 +1288,8 @@ def linspace(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.linspace.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.linspace.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1318,7 +1365,8 @@ def meshgrid(
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
     sparse
-        if True, a sparse grid is returned in order to conserve memory. Default: ``False``.
+        if True, a sparse grid is returned in order to conserve memory.
+        Default: ``False``.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -1352,7 +1400,8 @@ def meshgrid(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
+    the `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.meshgrid.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1461,7 +1510,8 @@ def full(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.full.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1558,7 +1608,8 @@ def from_dlpack(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.from_dlpack.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.from_dlpack.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
