@@ -916,7 +916,7 @@ def test_paddle_allclose(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "data": x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -998,11 +998,11 @@ def test_paddle_any(
     frontend,
     on_device,
 ):
-  input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "data": x[0],
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
@@ -1028,6 +1028,12 @@ def test_paddle_any(
 )
 def test_paddle_isinf(
     dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
