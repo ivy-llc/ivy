@@ -893,9 +893,8 @@ def test_paddle_all(
     init_tree="paddle.to_tensor",
     method_name="allclose",
     dtype_x_y=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2
-    )
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+    ),
 )
 def test_paddle_allclose(
     dtype_x_y,
@@ -974,7 +973,8 @@ def test_paddle_sort(
         available_dtypes=st.one_of(helpers.get_dtypes("float")),
         min_axis=-1,
         max_axis=0,
-        min_num_dims=1
+        min_num_dims=1,
+        force_int_axis=True,
     ),
     keep_dims=st.booleans(),
 )

@@ -3,7 +3,6 @@ import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
-from ivy.functional.ivy.experimental.elementwise import allclose
 
 
 class Tensor:
@@ -174,7 +173,9 @@ class Tensor:
     
     @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def allclose(self, other, rtol=1e-05, atol=1e-08, equal_nan=False, out=None):
-        return ivy.allclose(self.ivy_array, other, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out)
+        return ivy.allclose(
+            self.ivy_array, other, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
+        )
 
 
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
