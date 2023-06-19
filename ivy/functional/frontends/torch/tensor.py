@@ -1324,6 +1324,19 @@ class Tensor:
     def gather(self, dim, index):
         return torch_frontend.gather(self, dim=dim, index=index)
 
+    def take_along_dim(self, indices, dim):
+        return torch_frontend.take_along_dim(self, indices=indices, dim=dim)
+
+    def movedim(self, source, destination):
+        return torch_frontend.movedim(self, source=source, destination=destination)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addcdiv_(self, tensor1, tensor2, *, value=1):
+        self.ivy_array = self.addcdiv(
+            tensor1=tensor1, tensor2=tensor2, value=value
+        ).ivy_array
+        return self
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
