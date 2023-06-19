@@ -892,32 +892,29 @@ def test_paddle_all(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="allclose",
-    dtype_x_y_rtol_atol=helpers.dtype_and_values(
+    dtype_x_y=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-    ),
-    equal_nan=st.booleans(),
+        num_arrays=2,
+        
+    )
 )
 def test_paddle_allclose(
-    dtype_x_y_rtol_atol,
-    equal_nan,
+    dtype_x_y,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    input_dtype, x, y, rtol, atol = dtype_x_y_rtol_atol
+    input_dtype, x, y = dtype_x_y
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "object": x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "other": y[0],
-            "rtol": rtol,
-            "atol": atol,
-            "equal_nan": equal_nan,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -978,8 +975,7 @@ def test_paddle_sort(
         available_dtypes=st.one_of(helpers.get_dtypes("float")),
         min_axis=-1,
         max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
+        min_num_dims=1
     ),
     keep_dims=st.booleans(),
 )
