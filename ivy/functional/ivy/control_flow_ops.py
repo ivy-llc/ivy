@@ -55,11 +55,6 @@ def if_else(
     ivy.array([0.5, 1.0, 1.5])
     """
 
-    # back-compatibility
-    if isinstance(cond, bool):
-        v = cond
-        cond = lambda *_: v
-
     @to_native_arrays_and_back
     @handle_array_like_without_promotion
     def _if_else(cond, body_fn, orelse_fn, vars):

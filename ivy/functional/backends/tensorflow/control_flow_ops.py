@@ -11,6 +11,10 @@ import tensorflow as tf
 
 
 def if_else(cond, body_fn, orelse_fn, vars):
+    # back-compatibility
+    if isinstance(cond, bool):
+        v = cond
+        cond = lambda *_: v
     cond = bool(cond(*vars))
     # return tf.cond(cond, lambda: body_fn(*vars), lambda: orelse_fn(*vars))
 
