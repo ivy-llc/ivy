@@ -2154,6 +2154,7 @@ def _int_arg_to_tuple(arg, dims):
         arg = tuple([arg] * dims)
     return arg
 
+
 avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
@@ -2162,6 +2163,7 @@ avg_pool2d.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
+
 
 @handle_exceptions
 @handle_nestable
