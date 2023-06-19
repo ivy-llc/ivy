@@ -172,9 +172,9 @@ class Tensor:
     
     
     @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
-    def allclose(self, other, rtol=1e-05, atol=1e-08, equal_nan=False, out=None):
+    def allclose(self, other, rtol=1e-05, atol=1e-08, equal_nan=False):
         return ivy.allclose(
-            self.ivy_array, other, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
+            self.ivy_array, other, rtol=rtol, atol=atol, equal_nan=equal_nan
         )
 
 
@@ -184,6 +184,6 @@ class Tensor:
 
     
     @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
-    def any(self, axis=None, keepdim=False, out=None):
-        return ivy.any(self.ivy_array, axis=axis, keepdims=keepdim, out=out)
+    def any(self, axis=None, keepdim=False):
+        return ivy.any(self.ivy_array, axis=axis, keepdims=keepdim)
     

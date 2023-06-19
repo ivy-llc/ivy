@@ -895,9 +895,15 @@ def test_paddle_all(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2
     ),
+    rtol=1e-05,
+    atol=1e-08,
+    equal_nan=st.booleans(),
 )
 def test_paddle_allclose(
     dtype_x,
+    rtol,
+    atol,
+    equal_nan,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -905,14 +911,19 @@ def test_paddle_allclose(
     on_device,
 ):
     input_dtype, x = dtype_x
+    x = x[0]
+    y = x + np.random.randn(*x.shape) * 1e-4
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "x": x,
+            "y": y,
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "other": x[1],
+            "rtol": rtol,
+            "atol": atol,
+            "equal_nan": equal_nan,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
