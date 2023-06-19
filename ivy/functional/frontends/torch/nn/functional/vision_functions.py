@@ -328,7 +328,6 @@ def affine_grid(theta, size, align_corners=False):
         N, C, H, W = size
         base_grid = ivy.empty((N, H, W, 3))
         if align_corners:
-            base_grid = ivy.empty((N, H, W, 3))
             base_grid[:, :, :, 0] = ivy.linspace(-1, 1, W)
             base_grid[:, :, :, 1] = ivy.expand_dims(ivy.linspace(-1, 1, H), axis=-1)
             base_grid[:, :, :, 2] = ivy.full((H, W), 1)
