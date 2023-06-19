@@ -194,11 +194,10 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
 @handle_frontend_test(
     fn_tree="numpy.fft.rfft2",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=st.one_of(st.integers(min_value=0), st.none()),
         max_num_dims=2,
         force_tuple_axis=True,
-        array_api_dtypes=True,
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
     s=st.one_of(st.lists(st.integers()), st.none()),
