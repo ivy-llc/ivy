@@ -76,20 +76,20 @@ def test_paddle_uniform(
 
 @handle_frontend_test(
     fn_tree="paddle.poisson",
-    input_dtypes=helpers.get_dtypes("float"),
-    x=st.lists(
-        st.floats(allow_nan=False, allow_infinity=False, min_value=0, max_value=1),
-        min_size=2,
-        max_size=9,
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
     ),
 )
-def test_paddle_poisson(x, frontend, test_flags, fn_tree):
-    x = st.lists(
-        st.floats(allow_nan=False, allow_infinity=False, min_value=0, max_value=1),
-        min_size=2,
-        max_size=9,
-    )
+def test_paddle_poisson(dtype_and_x, frontend, test_flags, fn_tree):
+    dtype, x = dtype_and_x
     helpers.test_frontend_function(
+        input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
