@@ -2,7 +2,8 @@ FROM debian:buster
 WORKDIR /ivy
 
 
-
+COPY /docker/multiversion_framework_directory.py .
+COPY /docker/requirement_mappings_multiversion.json .
 
 ARG fw
 ARG pycon=3.8.10
@@ -40,8 +41,6 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
     pip3 install --no-cache-dir -r requirements.txt
 
 
-COPY /docker/multiversion_framework_directory.py .
-COPY /docker/requirement_mappings_multiversion.json .
 
 # requirement mappings directs which dependency to be installed and where
 SHELL ["/bin/bash", "-c"]
