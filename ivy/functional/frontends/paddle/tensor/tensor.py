@@ -192,3 +192,8 @@ class Tensor:
     def any(self, axis=None, keepdim=False):
         return ivy.any(self.ivy_array, axis=axis, keepdims=keepdim)
     
+    
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def astype(self, dtype, copy):
+        return ivy.astype(self._ivy_array, dtype=dtype, copy=copy)
+    
