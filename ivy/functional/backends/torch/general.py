@@ -397,9 +397,8 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # handle numeric updates
     updates = torch.tensor(
-        [updates] if isinstance(updates, (float, int, bool)) else updates,
+        updates,
         dtype=(
             ivy.dtype(out, as_native=True)
             if ivy.exists(out)
@@ -407,81 +406,7 @@ def scatter_nd(
         ),
     )
 
-    # handle non-tensor indices
-    if indices == ():
-        return updates
-    elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
-        if updates.shape == () and ivy.exists(out) and out.shape == ():
-            return updates
-        shape = out.shape if ivy.exists(out) else updates.shape
-        indices = torch.stack(
-            [
-                torch.reshape(value, (-1,))
-                for value in torch.meshgrid(*[torch.range(0, shape[0] - 1)])
-            ],
-            dim=-1,
-        )
-    elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = (
-            shape
-            if ivy.exists(shape)
-            else out.shape if ivy.exists(out) else updates.shape
-        )
-        indices = _parse_ellipsis(indices, len(shape))
-        indices = torch.stack(
-            [
-                torch.reshape(value, (-1,))
-                for value in torch.meshgrid(
-                    *[
-                        (
-                            torch.range(0, s - 1)
-                            if idx == slice(None, None, None)
-                            else torch.Tensor([idx % s])
-                        )
-                        for s, idx in zip(shape, indices)
-                    ],
-                    indexing="ij",
-                )
-            ],
-            dim=-1,
-        )
-    else:
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = (
-            torch.tensor(indices) if isinstance(indices, (tuple, list)) else indices
-        )
-        if len(indices.shape) < 2:
-            indices = torch.unsqueeze(indices, -1)
-        if torch.any(indices == -1):
-            shape = (
-                shape
-                if ivy.exists(shape)
-                else out.shape if ivy.exists(out) else updates.shape
-            )
-            indices = _parse_index(indices, len(shape))
-            indices = [
-                torch.stack(
-                    [
-                        torch.reshape(value, (-1,))
-                        for value in torch.meshgrid(
-                            *[
-                                (
-                                    torch.range(0, s - 1)
-                                    if idx == slice(None, None, None)
-                                    else torch.tensor([idx % s])
-                                )
-                                for s, idx in zip(shape, index)
-                            ],
-                            indexing="xy",
-                        )
-                    ],
-                    dim=-1,
-                )
-                for index in indices
-            ]
-            indices = torch.concat(indices, axis=-1)
-
-    # broadcast updates to indices
+    # broadcast updates and indices to correct shape
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
         if ivy.exists(out)

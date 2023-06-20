@@ -319,26 +319,6 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    # parse numeric inputs
-    if (
-        indices != Ellipsis
-        and not (
-            isinstance(indices, (tuple, list))
-            and (Ellipsis in indices or len(indices) != 0)
-        )
-        and not isinstance(indices, slice)
-        and not (
-            isinstance(indices, (tuple, list))
-            and any(isinstance(k, slice) for k in indices)
-        )
-    ):
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = jnp.array(indices)
-        if len(indices.shape) < 2:
-            indices = jnp.expand_dims(indices, -1)
-    # keep below commented out, array API tests are passing without this
-    # updates = [updates] if isinstance(updates, Number) else updates
-
     updates = jnp.array(
         updates,
         dtype=(
@@ -348,23 +328,20 @@ def scatter_nd(
         ),
     )
 
-    # handle Ellipsis
-    if isinstance(indices, tuple) or indices is Ellipsis or isinstance(indices, slice):
-        indices_tuple = indices
-    else:
-        expected_shape = (
-            indices.shape[:-1] + out.shape[indices.shape[-1] :]
-            if ivy.exists(out)
-            else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
-        )
-        if sum(updates.shape) < sum(expected_shape):
-            updates = ivy.broadcast_to(updates, expected_shape)._data
-        elif sum(updates.shape) > sum(expected_shape):
-            indices = ivy.broadcast_to(
-                indices, updates.shape[:1] + (indices.shape[-1],)
-            )._data
-        indices_flat = indices.reshape(-1, indices.shape[-1]).T
-        indices_tuple = tuple(indices_flat) + (Ellipsis,)
+    # broadcast updates and indices to correct shape
+    expected_shape = (
+        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        if ivy.exists(out)
+        else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+    )
+    if sum(updates.shape) < sum(expected_shape):
+        updates = ivy.broadcast_to(updates, expected_shape)._data
+    elif sum(updates.shape) > sum(expected_shape):
+        indices = ivy.broadcast_to(
+            indices, updates.shape[:1] + (indices.shape[-1],)
+        )._data
+    indices_flat = indices.reshape(-1, indices.shape[-1]).T
+    indices_tuple = tuple(indices_flat) + (Ellipsis,)
 
     # implementation
     target = out

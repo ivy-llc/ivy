@@ -598,6 +598,7 @@ def values_and_ndindices(
             )
             nd_index.append(axis_index)
         indices.append(nd_index)
+    indices = np.array(indices)
     return [x_dtype, indices_dtype, updates_dtype], x, indices, updates
 
 

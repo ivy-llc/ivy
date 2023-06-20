@@ -300,170 +300,21 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.exists(out) and not isinstance(updates, (Number, list, tuple)):
+    if ivy.exists(out):
         out = (
             tf.cast(out, dtype=updates.dtype)
             if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(out.dtype)
             else out
         )
-    # handle numeric updates
-    if hasattr(updates, "dtype"):
-        updates_dtype = updates.dtype
-    else:
-        updates_dtype = ivy.default_dtype(item=updates)
+    updates_dtype = updates.dtype
     if ivy.exists(out):
         dtype = ivy.promote_types(out.dtype, updates_dtype)
     updates = tf.cast(
         updates,
         (ivy.as_native_dtype(dtype) if ivy.exists(out) else updates_dtype),
     )
-    contains_slices = (
-        any(isinstance(idx, slice) for idx in indices)
-        if isinstance(indices, (tuple, list))
-        else isinstance(indices, slice)
-    )
-    # hanle non-tensor indices
-    if indices == ():
-        return updates
 
-    elif (
-        indices is Ellipsis
-        or (isinstance(indices, tuple) and indices == (Ellipsis,))
-        or (isinstance(indices, slice) and indices == slice(None, None, None))
-    ):
-        if updates.shape == () and ivy.exists(out) and out.shape == ():
-            return updates
-        shape = out.shape if ivy.exists(out) else updates.shape
-        indices = tf.stack(
-            [
-                tf.reshape(value, (-1,))
-                for value in tf.meshgrid(*[tf.range(shape[0])], indexing="ij")
-            ],
-            axis=-1,
-        )
-    elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = (
-            shape
-            if ivy.exists(shape)
-            else out.shape if ivy.exists(out) else updates.shape
-        )
-        indices = _parse_ellipsis(indices, len(shape))
-        indices = tf.stack(
-            [
-                tf.reshape(value, (-1,))
-                for value in tf.meshgrid(
-                    *[
-                        (
-                            tf.range(s)
-                            if idx == slice(None, None, None)
-                            else (
-                                tf.range(
-                                    ivy.default(idx.start, 0),
-                                    ivy.default(idx.stop, s),
-                                    ivy.default(idx.step, 1),
-                                )
-                                if isinstance(idx, slice)
-                                and (idx != slice(None, None, None))
-                                else tf.constant([idx % s])
-                            )
-                        )
-                        for s, idx in zip(shape, indices)
-                    ],
-                    indexing="ij",
-                )
-            ],
-            axis=-1,
-        )
-    elif contains_slices:
-        shape = (
-            shape
-            if ivy.exists(shape)
-            else out.shape if ivy.exists(out) else updates.shape
-        )
-        if isinstance(indices, (tuple, list)):
-            indices = _parse_index(indices, len(shape)) if -1 in indices else indices
-            indices = tf.stack(
-                [
-                    tf.reshape(value, (-1,))
-                    for value in tf.meshgrid(
-                        *[
-                            (
-                                tf.range(s)
-                                if idx == slice(None, None, None)
-                                else (
-                                    tf.range(
-                                        ivy.default(idx.start, 0),
-                                        ivy.default(idx.stop, s),
-                                        ivy.default(idx.step, 1),
-                                    )
-                                    if isinstance(idx, slice)
-                                    and (idx != slice(None, None, None))
-                                    else tf.constant([idx % s])
-                                )
-                            )
-                            for s, idx in zip(shape, indices)
-                        ],
-                        indexing="ij",
-                    )
-                ],
-                axis=-1,
-            )
-        else:
-            indices = tf.stack(
-                [
-                    tf.reshape(value, (-1,))
-                    for value in tf.meshgrid(
-                        *[
-                            tf.range(
-                                ivy.default(indices.start, 0),
-                                ivy.default(indices.stop, shape[0]),
-                                ivy.default(indices.step, 1),
-                            )
-                        ],
-                        indexing="ij",
-                    )
-                ],
-                axis=-1,
-            )
-    else:
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = tf.constant(indices)
-        if len(indices.shape) < 2:
-            indices = tf.expand_dims(indices, -1)
-        if tf.reduce_any(indices < 0):
-            shape = list(shape) if ivy.exists(shape) else list(out.shape)
-            indices = _parse_index(indices, shape)
-            indices = [
-                tf.stack(
-                    [
-                        tf.reshape(value, (-1,))
-                        for value in tf.meshgrid(
-                            *[
-                                (
-                                    tf.range(s)
-                                    if idx == slice(None, None, None)
-                                    else (
-                                        tf.range(
-                                            ivy.default(idx.start, 0),
-                                            ivy.ivy.default(idx.stop, s),
-                                            ivy.default(idx.step, 1),
-                                        )
-                                        if isinstance(idx, slice)
-                                        and idx != slice(None, None, None)
-                                        else tf.constant([idx % s])
-                                    )
-                                )
-                                for s, idx in zip(shape, index)
-                            ],
-                            indexing="xy",
-                        )
-                    ],
-                    axis=-1,
-                )
-                for index in indices
-            ]
-            indices = tf.concat(indices, axis=-1)
-    # broadcast updates to correct shape
+    # broadcast updates and indices to correct shape
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
         if ivy.exists(out)
