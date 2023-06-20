@@ -1087,12 +1087,12 @@ def mha_forward_args(draw, dtypes):
     embed_dim = draw(helpers.ints(min_value=2, max_value=4))
     batch_size = draw(helpers.ints(min_value=1, max_value=2)) * 3
     seq_len = draw(helpers.ints(min_value=2, max_value=4))
-
     shape = (
         seq_len,
         batch_size,
         embed_dim,
     )
+    
     heads = draw(helpers.ints(min_value=1, max_value=4))
     head_dim = embed_dim // heads
     if head_dim * heads != embed_dim:
