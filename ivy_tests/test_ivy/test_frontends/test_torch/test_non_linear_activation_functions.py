@@ -1082,7 +1082,7 @@ def test_torch_softplus(
 
 
 @st.composite
-def q_k_v(draw, dtypes):
+def mha_forward_args(draw, dtypes):
     dtype = draw(dtypes)
     embed_dim = draw(helpers.ints(min_value=2, max_value=4))
     batch_size = draw(helpers.ints(min_value=1, max_value=2)) * 3
@@ -1097,6 +1097,12 @@ def q_k_v(draw, dtypes):
     head_dim = embed_dim // heads
     if head_dim * heads != embed_dim:
         heads = 1
+        head_dim = embed_dim
+
+    if dtype[0] == "float32":
+        is_causal = False
+    else:
+        is_causal = draw(helpers.array_bools(size=1))[0]
     
     q = draw(
         helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
@@ -1192,7 +1198,7 @@ def q_k_v(draw, dtypes):
                     dtype=dtype[0],
                     min_value=0.1,
                     max_value=1,
-                    shape=(batch_size, seq_len, embed_dim),
+                    shape=(batch_size * heads, seq_len, head_dim),
                 )
             ),
             None,
@@ -1229,13 +1235,14 @@ def q_k_v(draw, dtypes):
         static_v,
         attn_mask,
         key_padding_mask,
+        is_causal,
     )
 
 
 # multi_head_attention_forward
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multi_head_attention_forward",
-    dtype_q_k_v=q_k_v(
+    dtype_mha_args=mha_forward_args(
         dtypes=helpers.get_dtypes("float"),
     ),
     add_zero_attn=st.just(False),
@@ -1243,22 +1250,20 @@ def q_k_v(draw, dtypes):
     training=st.just(False),
     need_weights=st.booleans(),
     average_attn_weights=st.booleans(),
-    is_causal=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_multi_head_attention_forward(
+def test_torch_multi_head_attention_forward(
     *,
     on_device,
     fn_tree,
     frontend,
     test_flags,
-    dtype_q_k_v,
+    dtype_mha_args,
     add_zero_attn,
     dropout_p,
     training,
     need_weights,
     average_attn_weights,
-    is_causal,
 ):
     (
         dtype,
@@ -1281,7 +1286,8 @@ def test_multi_head_attention_forward(
         static_v,
         attn_mask,
         key_padding_mask,
-    ) = dtype_q_k_v
+        is_causal,
+    ) = dtype_mha_args
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1310,8 +1316,8 @@ def test_multi_head_attention_forward(
         q_proj_weight=q_proj_weight,
         k_proj_weight=k_proj_weight,
         v_proj_weight=v_proj_weight,
-        static_k=None,
-        static_v=None,
+        static_k=static_k,
+        static_v=static_v,
         average_attn_weights=average_attn_weights,
-        is_causal=False,
+        is_causal=is_causal,
     )
