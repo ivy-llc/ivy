@@ -138,9 +138,12 @@ def rfft2(a, s=None, axes=(-2, -1), norm=None):
         s = a.shape
     else:
         s = list(s)
+    axes = list(axes)
     # a = ivy.array(a, "float64")
     if len(axes) > len(s):
-        raise ValueError("Invalid axes. The number of axes cannot exceed the number of dimensions of the input.")
+        raise ValueError(
+            "Invalid axes. The number of axes cannot exceed the number of dimensions of the input."
+        )
     if norm is None:
         norm = "backward"
     return ivy.dft(a, axes=axes, inverse=False, onesided=True, dft_length=s, norm=norm)
