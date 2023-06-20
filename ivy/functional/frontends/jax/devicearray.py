@@ -128,7 +128,7 @@ class DeviceArray:
             self,
             axis=axis,
             dtype=dtype,
-            out=None,
+            out=out,
             keepdims=keepdims,
             initial=initial,
             where=where,
