@@ -587,7 +587,7 @@ def reptile_step(
 
     Examples
     --------
-    With :class:`ivy.Array` input:
+    With :class:`ivy.Container` input:
 
     >>> from ivy.functional.ivy.gradients import gradient_descent_update
     >>> import ivy
