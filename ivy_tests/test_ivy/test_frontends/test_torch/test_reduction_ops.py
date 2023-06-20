@@ -873,10 +873,16 @@ def _get_axis_and_p(draw, kind="valid"):
     )
 
     input_dtype, x, axis = dtype_x_axis
-    if input_dtype[0].is_complex_dtype:
-        kind = "complex"
-    if input_dtype[0].is_float_dtype:
-        kind = "float"
+    if type(input_dtype[0]) == str:
+        if "complex" in input_dtype[0]:
+            kind = "complex"
+        if "float" in input_dtype[0]:
+            kind = "float"
+    else:
+        if input_dtype[0].is_complex_dtype:
+            kind = "complex"
+        if input_dtype[0].is_float_dtype:
+            kind = "float"
 
     dtype = draw(helpers.get_dtypes(kind, full=False))
     dtype = dtype[0]
