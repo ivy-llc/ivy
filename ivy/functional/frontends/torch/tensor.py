@@ -355,11 +355,8 @@ class Tensor:
     def logical_not(self, *, out=None):
         return torch_frontend.logical_not(self, out=out)
 
-    def logical_not_(self, *, out=None):
-        ret = torch_frontend.logical_not(self, out=out)
-        self.ivy_array = ivy.inplace_update(
-            self.ivy_array, ivy.astype(ret.ivy_array, self.dtype)
-        )
+    def logical_not_(self):
+        self.ivy_array = ivy.astype(self.logical_not().ivy_array, self.dtype)
         return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
@@ -1296,7 +1293,10 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def eq_(self, other):
-        return torch_frontend.eq(self, other)
+        self.ivy_array = ivy.astype(
+            torch_frontend.eq(self, other).ivy_array, self.dtype
+        )
+        return self
 
     def var(self, dim=None, *, correction=1, keepdim=False):
         return torch_frontend.var(self, dim=dim, unbiased=correction, keepdim=keepdim)
