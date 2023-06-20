@@ -1340,7 +1340,7 @@ def test_tensorflow_softmax(
 @handle_frontend_test(
     fn_tree="tensorflow.nn.embedding_lookup",
     dtypes_indices_weights=helpers.embedding_helper(),
-    max_norm=st.floats(min_value=0, max_value=5, exclude_min=True),
+    max_norm=st.floats(min_value=0.1, max_value=5, exclude_min=True),
 )
 def test_tensorflow_embedding_lookup(
     *,

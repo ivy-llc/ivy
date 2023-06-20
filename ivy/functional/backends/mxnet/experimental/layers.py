@@ -147,6 +147,18 @@ def dropout1d(
     raise IvyNotImplementedException()
 
 
+def dropout2d(
+    x: mx.nd.NDArray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    raise IvyNotImplementedException()
+
+
 def dropout3d(
     x: mx.nd.NDArray,
     prob: float,

@@ -3002,7 +3002,7 @@ class _ContainerWithGeneral(ContainerBase):
             Container of the denominators of the division.
         min_denominator
             Container of the minimum denominator to use,
-            use global ivy._MIN_DENOMINATOR by default.
+            use global ivy.min_denominator by default.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -3106,7 +3106,7 @@ class _ContainerWithGeneral(ContainerBase):
             Container of the denominators of the division.
         min_denominator
             Container of the minimum denominator to use,
-            use global ivy._MIN_DENOMINATOR by default.
+            use global ivy.min_denominator by default.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -3191,7 +3191,7 @@ class _ContainerWithGeneral(ContainerBase):
         exponent
             Container of the exponent.
         min_base
-            The minimum base to use, use global ivy._MIN_BASE by default.
+            The minimum base to use, use global ivy.min_base by default.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -3244,7 +3244,7 @@ class _ContainerWithGeneral(ContainerBase):
         exponent
             Container of the exponent.
         min_base
-            The minimum base to use, use global ivy._MIN_BASE by default.
+            The minimum base to use, use global ivy.min_base by default.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply

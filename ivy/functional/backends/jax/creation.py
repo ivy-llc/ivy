@@ -5,6 +5,7 @@ from typing import Union, Optional, List, Sequence, Tuple
 
 import jax.dlpack
 import jax.numpy as jnp
+import jax._src as _src
 import jaxlib.xla_extension
 
 # local
@@ -229,7 +230,7 @@ def linspace(
         if endpoint:
             out = jax.lax.concatenate(
                 [out, jax.lax.expand_dims(broadcast_stop, (axis,))],
-                jax._src.util.canonicalize_axis(axis, out.ndim),
+                _src.util.canonicalize_axis(axis, out.ndim),
             )
 
     elif num == 1:

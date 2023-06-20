@@ -137,3 +137,65 @@ def test_paddle_stack(
         x=xs,
         axis=axis,
     )
+
+
+# concat
+@st.composite
+def _arrays_idx_n_dtypes(draw):
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+    )
+    common_shape = draw(
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_dims - 1,
+        )
+    )
+    unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
+    unique_dims = draw(
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_arrays,
+        )
+    )
+    xs = []
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("valid")))
+    )
+    dtype = draw(st.sampled_from(input_dtypes))
+    for ud in unique_dims:
+        x = draw(
+            helpers.array_values(
+                shape=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:],
+                dtype=dtype,
+            )
+        )
+        xs.append(x)
+    input_dtypes = [dtype] * len(input_dtypes)
+    return xs, input_dtypes, unique_idx
+
+
+@handle_frontend_test(
+    fn_tree="paddle.concat",
+    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    test_with_out=st.just(False),
+)
+def test_paddle_concat(
+    *,
+    xs_n_input_dtypes_n_unique_idx,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs,
+        axis=unique_idx,
+    )

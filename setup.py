@@ -87,10 +87,10 @@ with open("ivy/_version.py") as f:
     exec(f.read(), __version__)
 
 setup(
-    name="ivy-core",
+    name="ivy",
     version=__version__,
-    author="Ivy Team",
-    author_email="ivydl.team@gmail.com",
+    author="Unify",
+    author_email="hello@unify.ai",
     description=(
         "The unified machine learning framework, enabling framework-agnostic "
         "functions, layers and libraries."
