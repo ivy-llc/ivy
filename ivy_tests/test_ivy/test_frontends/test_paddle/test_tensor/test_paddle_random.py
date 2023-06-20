@@ -75,32 +75,54 @@ def test_paddle_uniform(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.randn",
-    input_dtypes=helpers.get_dtypes("valid"),
-    shape=st.tuples(
-        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    fn_tree="paddle.poisson",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
-    seed=st.integers(min_value=0, max_value=5),
+)
+def test_paddle_poisson(dtype_and_x, frontend, test_flags, fn_tree):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.randn",
+    input_dtypes=st.sampled_from(["int32", "int64"]),
+    shape=helpers.get_shape(
+        allow_none=False, min_num_dims=1, max_num_dims=1, min_dim_size=2
+    ),
+    dtype=st.sampled_from(["float32", "float64"]),
 )
 def test_paddle_randn(
+    *,
     input_dtypes,
     shape,
     dtype,
-    seed,
     frontend,
     test_flags,
     fn_tree,
 ):
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=[input_dtypes],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         test_values=False,
         shape=shape,
-        dtype=dtype[0],
-        seed=seed,
+        dtype=dtype,
     )
 
 
