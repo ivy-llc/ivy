@@ -1,6 +1,7 @@
 # global
 import ivy
 from hypothesis import assume, strategies as st
+import random
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1077,4 +1078,240 @@ def test_torch_softplus(
         input=x[0],
         beta=beta,
         threshold=threshold,
+    )
+
+
+@st.composite
+def q_k_v(draw, dtypes):
+    dtype = draw(dtypes)
+    embed_dim = draw(helpers.ints(min_value=2, max_value=4))
+    batch_size = draw(helpers.ints(min_value=1, max_value=2)) * 3
+    seq_len = draw(helpers.ints(min_value=2, max_value=4))
+
+    shape = (
+        seq_len,
+        batch_size,
+        embed_dim,
+    )
+    heads = draw(helpers.ints(min_value=1, max_value=4))
+    head_dim = embed_dim // heads
+    if head_dim * heads != embed_dim:
+        heads = 1
+    
+    q = draw(
+        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
+    )
+    k = draw(
+        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
+    )
+    v = draw(
+        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
+    )
+    in_proj_weight = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            min_value=0.1,
+            max_value=1,
+            shape=(embed_dim*3, embed_dim),
+        )
+    )
+    in_proj_bias = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            min_value=0.1,
+            max_value=1,
+            shape=(embed_dim*3,),
+        )
+    )
+    
+    if random.randint(0, 1) == 0:
+        use_separate_proj_weight = True
+        q_proj_weight = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                min_value=0.1,
+                max_value=1,
+                shape=(embed_dim, embed_dim),
+            )
+        )
+        k_proj_weight = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                min_value=0.1,
+                max_value=1,
+                shape=(embed_dim, embed_dim),
+            )
+        )
+        v_proj_weight = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                min_value=0.1,
+                max_value=1,
+                shape=(embed_dim, embed_dim),
+            )
+        )
+    else:
+        use_separate_proj_weight = False
+        q_proj_weight = None
+        k_proj_weight = None
+        v_proj_weight = None
+    
+    out_proj_weight = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            min_value=0.1,
+            max_value=1,
+            shape=(embed_dim, embed_dim),
+        )
+    )
+    out_proj_bias = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            min_value=0.1,
+            max_value=1,
+            shape=(embed_dim,),
+        )
+    )
+    bias_k = random.choice([
+        draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                min_value=0.1,
+                max_value=1,
+                shape=(embed_dim,),
+            )
+        ),
+        None,
+    ])
+    bias_v = bias_k
+
+    if bias_k is None:
+        static_k = random.choice([
+            draw(
+                helpers.array_values(
+                    dtype=dtype[0],
+                    min_value=0.1,
+                    max_value=1,
+                    shape=(batch_size, seq_len, embed_dim),
+                )
+            ),
+            None,
+        ])
+        static_v = static_k
+    else:
+        static_k = None
+        static_v = None
+
+    attn_mask = ivy.ones((seq_len, seq_len), dtype=dtype[0])
+    key_padding_mask = random.choice([
+        ivy.random_normal(shape=(seq_len, seq_len), dtype=dtype[0]) > 0,
+        None,
+    ])
+    
+    return (
+        dtype,
+        q,
+        k,
+        v,
+        heads,
+        use_separate_proj_weight,
+        embed_dim,
+        in_proj_weight,
+        in_proj_bias,
+        out_proj_weight,
+        out_proj_bias,
+        q_proj_weight,
+        k_proj_weight,
+        v_proj_weight,
+        bias_k,
+        bias_v,
+        static_k,
+        static_v,
+        attn_mask,
+        key_padding_mask,
+    )
+
+
+# multi_head_attention_forward
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.multi_head_attention_forward",
+    dtype_q_k_v=q_k_v(
+        dtypes=helpers.get_dtypes("float"),
+    ),
+    add_zero_attn=st.just(False),
+    dropout_p=st.just(0.),
+    training=st.just(False),
+    need_weights=st.booleans(),
+    average_attn_weights=st.booleans(),
+    is_causal=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_multi_head_attention_forward(
+    *,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    dtype_q_k_v,
+    add_zero_attn,
+    dropout_p,
+    training,
+    need_weights,
+    average_attn_weights,
+    is_causal,
+):
+    (
+        dtype,
+        q,
+        k,
+        v,
+        heads,
+        use_separate_proj_weight,
+        embed_dim,
+        in_proj_weight,
+        in_proj_bias,
+        out_proj_weight,
+        out_proj_bias,
+        q_proj_weight,
+        k_proj_weight,
+        v_proj_weight,
+        bias_k,
+        bias_v,
+        static_k,
+        static_v,
+        attn_mask,
+        key_padding_mask,
+    ) = dtype_q_k_v
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        query=q,
+        key=k,
+        value=v,
+        embed_dim_to_check=embed_dim,
+        num_heads=heads,
+        in_proj_weight=in_proj_weight,
+        in_proj_bias=in_proj_bias,
+        bias_k=bias_k,
+        bias_v=bias_v,
+        add_zero_attn=add_zero_attn,
+        dropout_p=dropout_p,
+        out_proj_weight=out_proj_weight,
+        out_proj_bias=out_proj_bias,
+        training=training,
+        key_padding_mask=key_padding_mask,
+        need_weights=need_weights,
+        attn_mask=attn_mask,
+        use_separate_proj_weight=use_separate_proj_weight,
+        q_proj_weight=q_proj_weight,
+        k_proj_weight=k_proj_weight,
+        v_proj_weight=v_proj_weight,
+        static_k=None,
+        static_v=None,
+        average_attn_weights=average_attn_weights,
+        is_causal=False,
     )
