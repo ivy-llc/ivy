@@ -6,7 +6,6 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
-from math import factorial
 
 
 # sign
@@ -585,15 +584,17 @@ def polyadd(a1, a2):
 )
 @to_ivy_arrays_and_back
 def polyder(p, m=1):
-
     if m < 0:
         raise ValueError("Order of derivative must be positive.")
 
     if m == 0:
         return p
     p_dtype = p.dtype
-    coeff = ivy.prod(ivy.expand_dims(ivy.arange(m, len(p), dtype=p_dtype))
-            - ivy.expand_dims(ivy.arange(m, dtype=p_dtype), axis=1), axis=0)
+    coeff = ivy.prod(
+        ivy.expand_dims(ivy.arange(m, len(p), dtype=p_dtype))
+        - ivy.expand_dims(ivy.arange(m, dtype=p_dtype), axis=1),
+        axis=0,
+    )
     return (p[:-m] * coeff[::-1]).astype(p_dtype)
 
 
