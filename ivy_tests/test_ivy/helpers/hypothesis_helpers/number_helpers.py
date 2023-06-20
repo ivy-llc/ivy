@@ -2,10 +2,7 @@ from hypothesis import strategies as st
 from hypothesis.internal.floats import float_of
 
 # local
-from ivy_tests.test_ivy.helpers.hypothesis_helpers import (
-    general_helpers as gh,
-    dtype_helpers,
-)
+from . import general_helpers as gh, dtype_helpers
 
 
 floats_info = {

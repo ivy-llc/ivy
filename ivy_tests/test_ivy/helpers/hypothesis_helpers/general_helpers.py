@@ -5,11 +5,7 @@ import math
 # local
 import ivy
 import numpy as np
-from ivy_tests.test_ivy.helpers.hypothesis_helpers import (
-    array_helpers,
-    number_helpers,
-    dtype_helpers,
-)
+from . import array_helpers, number_helpers, dtype_helpers
 from ivy.functional.ivy.layers import _deconv_length
 
 
