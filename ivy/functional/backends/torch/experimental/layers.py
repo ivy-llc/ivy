@@ -792,6 +792,7 @@ def ifft(
     return torch.fft.ifft(x, n, dim, norm, out=out).resolve_conj()
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def embedding(
     weights: torch.Tensor,
     indices: torch.Tensor,
