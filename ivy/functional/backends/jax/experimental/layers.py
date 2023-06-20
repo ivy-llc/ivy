@@ -766,7 +766,9 @@ def fft2(
     return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)
 
 
-@with_unsupported_dtypes({"0.4.12 and below": ("bfloat16", "float16", "complex")}, backend_version)
+@with_unsupported_dtypes(
+    {"0.4.12 and below": ("bfloat16", "float16", "complex")}, backend_version
+)
 def embedding(
     weights: JaxArray,
     indices: JaxArray,
@@ -778,6 +780,10 @@ def embedding(
     embeddings = jnp.take(weights, indices, axis=0)
     if max_norm is not None:
         norms = jnp.linalg.norm(embeddings, axis=-1, keepdims=True)
-        embeddings = jnp.where(norms > max_norm, embeddings * max_norm / norms, embeddings)
-        embeddings = jnp.where(norms < -max_norm, embeddings * -max_norm / norms, embeddings)
+        embeddings = jnp.where(
+            norms > max_norm, embeddings * max_norm / norms, embeddings
+        )
+        embeddings = jnp.where(
+            norms < -max_norm, embeddings * -max_norm / norms, embeddings
+        )
     return embeddings
