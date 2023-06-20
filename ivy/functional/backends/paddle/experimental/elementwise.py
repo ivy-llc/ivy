@@ -33,8 +33,12 @@ def fmax(
     return paddle.fmax(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
+    y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
+    return paddle.divide(paddle.sin(y), y)
 
 
 def float_power(
@@ -78,7 +82,10 @@ def copysign(
     with ivy.ArrayMode(False):
         x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)), ivy.divide(1, x2), x2)
         signs = ivy.sign(x2)
-        return ivy.multiply(ivy.abs(x1), signs)
+        result = ivy.multiply(ivy.abs(x1), signs)
+        if result.shape == [1]:
+            result = ivy.squeeze(result)
+        return result
 
 
 @with_unsupported_device_and_dtypes(
@@ -95,7 +102,7 @@ def nansum(
 ) -> paddle.Tensor:
     result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
     if result.shape == [1]:
-        result = paddle.fluid.layers.squeeze(x)
+        result = paddle.fluid.layers.squeeze(result, [0])
     return result
 
 
@@ -128,7 +135,14 @@ def diff(
     ret_dtype = x.dtype
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         x = x.cast("float32")
-    prepend, append = [paddle.to_tensor(a, dtype=x.dtype) for a in [prepend, append]]
+
+    def _tensor(val):
+        if val is not None and not isinstance(val, paddle.Tensor):
+            return paddle.to_tensor(val, dtype=ret_dtype)
+        return val
+
+    prepend = _tensor(prepend)
+    append = _tensor(append)
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append).cast(
         ret_dtype
     )

@@ -105,6 +105,7 @@ def confusion_matrix(
             ivy.shape(predictions),
             ivy.shape(weights),
             message="weights shape do not match predictions",
+            as_array=False,
         )
         weights = ivy.astype(weights, dtype, copy=False)
 
@@ -413,7 +414,9 @@ def tan(x, name=None):
 def unsorted_segment_mean(
     data, segment_ids, num_segments, name="unsorted_segment_mean"
 ):
-    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -428,7 +431,9 @@ def unsorted_segment_mean(
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
-    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -461,17 +466,10 @@ def argmin(input, axis=None, output_type="int64", name=None):
 def truediv(x, y, name="truediv"):
     x, y = check_tensorflow_casting(x, y)
     x_dtype = ivy.dtype(x)
-
-    if ivy.current_backend_str() == "torch":
-        if x_dtype in [ivy.int8, ivy.int16]:
-            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-        elif x_dtype in [ivy.int32, ivy.int64]:
-            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
-    else:
-        if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
-            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-        elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
-            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    if x_dtype in ["int8", "uint8", "int16", "uint16"]:
+        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+    elif x_dtype in ["int32", "uint32", "int64", "uint64"]:
+        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
 
 
@@ -698,3 +696,8 @@ def in_top_k(target, pred, k, name=None):
 @to_ivy_arrays_and_back
 def conj(x, name=None):
     return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def top_k(input, k=1, sorted=True, name=None):
+    return ivy.top_k(input, k, sorted=sorted)
