@@ -26,7 +26,6 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def linear(
@@ -165,6 +164,16 @@ def linear(
     if ivy.exists(out):
         return ivy.inplace_update(out, y)
     return y
+
+
+linear.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 # Dropout #

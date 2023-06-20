@@ -744,6 +744,7 @@ def ifft(
     return ret
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def embedding(
     weights: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
