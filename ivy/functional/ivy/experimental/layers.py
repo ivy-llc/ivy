@@ -1619,6 +1619,8 @@ def interpolate(
             equation = "ijkl,km,ln->ijmn"
         elif mode == "trilinear" or dims == 3:
             equation = "ijklm,kn,lo,mp->ijnop"
+        if mode == "bicubic":
+            return _upsample_bicubic2d_default(x, size, align_corners)
         if mode == "bicubic_tensorflow":
             kernel_func = lambda inputs: _cubic_kernel(inputs)
         if mode == "lanczos3":
@@ -1704,8 +1706,6 @@ def interpolate(
                         ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
                             1 / scale_x
                         )
-    elif mode == "bicubic":
-        return _upsample_bicubic2d_default(x, size, align_corners)
     elif mode == "mitchellcubic":
         batch, channels, in_height, in_width = x.shape
         out_height, out_width = size
