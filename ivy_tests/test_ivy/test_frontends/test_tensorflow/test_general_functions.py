@@ -267,22 +267,6 @@ def test_tensorflow_eye(
     )
 
 
-@st.composite
-def elems_reshaped(draw):
-    shape = draw(
-        st.lists(st.integers(min_value=1, max_value=10), min_size=1, max_size=4)
-    )
-    elems_size = np.prod(shape).item()
-    elems = draw(
-        st.lists(
-            st.floats(min_value=-1000, max_value=1000),
-            min_size=elems_size,
-            max_size=elems_size,
-        )
-    )
-    return np.reshape(elems, shape)
-
-
 # foldl
 @handle_frontend_test(
     fn_tree="tensorflow.foldl",
@@ -294,20 +278,26 @@ def elems_reshaped(draw):
         ],
     ),
     initializer=st.one_of(st.none(), st.floats(min_value=-1000, max_value=1000)),
-    dtype=helpers.get_dtypes("float", full=False),
-    elems_reshaped=elems_reshaped(),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=-1000,
+        max_value=1000,
+        max_dim_size=10,
+        max_num_dims=4,
+        min_dim_size=1,
+    ),
 )
 def test_tensorflow_foldl(
     *,
     fn,
-    elems_reshaped,
-    dtype,
+    dtype_and_values,
     initializer,
     frontend,
     fn_tree,
     test_flags,
 ):
-    elems = elems_reshaped
+    dtype, elems = dtype_and_values
+    elems = np.atleast_1d(elems)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         fn=fn,

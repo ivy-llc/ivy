@@ -90,25 +90,21 @@ def foldl(
     elems,
     initializer=None,
     parallel_iterations=10,
-    back_prop=True,
     swap_memory=False,
     name=None,
 ):
-    try:
-        ivy.utils.assertions.check_isinstance(elems, ivy.Array)
-    except ivy.utils.exceptions.IvyException:
-        ivy.utils.exceptions.IvyException("elems must be an iterable object")
-    if not callable(fn):
-        ivy.utils.exceptions.IvyException(f"{fn.__name__} must be a callable function")
+    ivy.utils.assertions.check_isinstance(
+        elems, (list, ivy.Array), "elems must be an iterable object"
+    )
+    ivy.utils.assertions.check_true(
+        callable(fn), f"{fn.__name__} must be a callable function"
+    )
 
-    if initializer is None and elems.shape[0] > 0:
-        result = functools.reduce(fn, elems)
-        if isinstance(result, (int, float)):
-            return ivy.array([result])
-        else:
-            return result
-    elif initializer is not None:
+    elems = ivy.atleast_1d(elems)
+    if initializer is not None:
         return functools.reduce(fn, elems, initializer)
+    elif initializer is None and ivy.shape(elems)[0] > 0:
+        return functools.reduce(fn, elems[1:], elems[0])
     else:
         return elems
 
