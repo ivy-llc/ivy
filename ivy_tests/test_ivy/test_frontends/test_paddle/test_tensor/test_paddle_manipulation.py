@@ -199,3 +199,50 @@ def test_paddle_concat(
         x=xs,
         axis=unique_idx,
     )
+
+
+# tile
+@st.composite
+def _tile_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=4,
+            min_dim_size=2,
+            max_dim_size=3,
+            ret_shape=True,
+        )
+    )
+    repeats = draw(
+        helpers.list_of_size(
+            x=helpers.ints(min_value=1, max_value=3),
+            size=len(shape)
+        )
+    )
+    return dtype, x, repeats
+
+
+@handle_frontend_test(
+    fn_tree="paddle.tile",
+    dt_x_repeats=_tile_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_tile(
+    *,
+    dt_x_repeats,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, repeats = dt_x_repeats
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        repeat_times=repeats,
+    )
