@@ -398,7 +398,7 @@ class Tensor:
     
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def floor_(self, *, out=None):
-        self.ivy_array = torch_frontend.floor(self).ivy_array
+        self.ivy_array =self.floor().ivy_array
         return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
