@@ -355,7 +355,6 @@ class Shape:
     def shape(self):
         return self._shape
 
-
     @property
     def value(self):
         return self._value
@@ -463,7 +462,6 @@ class Shape:
     def assert_is_fully_defined(self):
         if not self.is_fully_defined():
             raise ValueError("Shape %s is not fully defined" % self)
-
 
     def as_list(self):
         if self._shape is None:
