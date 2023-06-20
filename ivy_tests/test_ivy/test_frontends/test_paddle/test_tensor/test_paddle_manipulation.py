@@ -217,7 +217,7 @@ def _tile_helper(draw):
     repeats = draw(
         helpers.list_of_size(
             x=helpers.ints(min_value=1, max_value=3),
-            size=len(shape)
+            size=len(shape),
         )
     )
     return dtype, x, repeats
