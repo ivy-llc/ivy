@@ -564,7 +564,7 @@ def reptile_step(
     inner_optimization_step
         The function used for the inner loop optimization. It takes the learnable weights,
         the derivative of the cost with respect to the weights, and the learning rate as 
-        arguments; and returns the updated variables.
+        arguments, and returns the updated variables.
         Default is `gradient_descent_update`.
     batched
         Whether to batch along the time dimension and run the meta steps in batch.
