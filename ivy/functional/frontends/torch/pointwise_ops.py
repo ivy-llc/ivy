@@ -363,6 +363,7 @@ def pow(input, exponent, *, out=None):
     return ivy.pow(input, exponent, out=out)
 
 
+@with_unsupported_dtypes({"1.12.0 and below": ("bfloat16", "float16")}, "jax")
 @to_ivy_arrays_and_back
 def float_power(input, exponent, *, out=None):
     input, exponent = torch_frontend.promote_types_of_torch_inputs(input, exponent)

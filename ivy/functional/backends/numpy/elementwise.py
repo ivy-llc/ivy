@@ -397,7 +397,7 @@ def isinf(
         return np.isneginf(x)
     elif detect_positive:
         return np.isposinf(x)
-    return np.full_like(x, False, dtype=np.bool)
+    return np.full_like(x, False, dtype=bool)
 
 
 @_scalar_output_to_0d_array

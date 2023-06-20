@@ -281,9 +281,9 @@ def ldexp(
 
 
 def frexp(
-    x: np.ndarray,
-    /,
-    *,
-    out: Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]] = (None, None),
+    x: np.ndarray, /, *, out: Optional[Tuple[np.ndarray, np.ndarray]] = None
 ) -> Tuple[np.ndarray, np.ndarray]:
-    return np.frexp(x, out=out)
+    if out is None:
+        return np.frexp(x, out=(None, None))
+    else:
+        return np.frexp(x, out=out)

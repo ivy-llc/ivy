@@ -1006,7 +1006,7 @@ def embedding(
             ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
         else:
             ret[i] = weights[x, :]
-    return ret
+    return ret if not ivy.exists(out) else ivy.inplace_update(out, ret)
 
 
 @handle_exceptions

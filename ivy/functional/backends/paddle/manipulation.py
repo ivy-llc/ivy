@@ -25,15 +25,10 @@ def concat(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtypes_list = list(set(map(lambda x: x.dtype, xs)))
-    num_dtypes = len(dtypes_list)
-    if num_dtypes == 1:
-        dtype = dtypes_list[0]
-    elif num_dtypes == 2:
-        dtype = ivy.promote_types(*dtypes_list)
-    else:
-        raise ivy.utils.exceptions.IvyException(
-            "Tensor list contains more than two dtypes"
-        )
+    dtype = dtypes_list.pop()
+    if len(dtypes_list) > 0:
+        for d in dtypes_list:
+            dtype = ivy.promote_types(dtype, d)
     if dtype == paddle.int16:
         xs = list(map(lambda x: x.cast("int32"), xs))
         return paddle.concat(xs, axis).cast("int16")
@@ -211,12 +206,10 @@ def stack(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype_list = set(map(lambda x: x.dtype, arrays))
-    if len(dtype_list) == 1:
-        dtype = dtype_list.pop()
-    elif len(dtype_list) == 2:
-        dtype = ivy.promote_types(*dtype_list)
-    else:
-        raise ValueError("Cannot promote more than 2 dtypes per stack.")
+    dtype = dtype_list.pop()
+    if len(dtype_list) > 0:
+        for d in dtype_list:
+            dtype = ivy.promote_types(dtype, d)
 
     arrays = list(map(lambda x: x.cast(dtype), arrays))
 

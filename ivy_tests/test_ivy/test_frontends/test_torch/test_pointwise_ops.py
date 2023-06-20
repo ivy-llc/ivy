@@ -2479,7 +2479,6 @@ def test_torch_frexp(
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
-        out=None,
     )
 
 

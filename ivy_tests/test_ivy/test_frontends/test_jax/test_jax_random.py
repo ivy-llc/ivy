@@ -1072,3 +1072,60 @@ def test_jax_exponential(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.weibull_min",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_weibull_min(
+    *,
+    dtype_key,
+    shape,
+    scale,
+    concentration,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            scale=scale,
+            concentration=concentration,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape

@@ -612,7 +612,7 @@ from .data_classes.container import (
     Container,
     add_ivy_container_instance_methods,
 )
-from ivy.data_classes.nested_array import NestedArray
+from .data_classes.nested_array import NestedArray
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,

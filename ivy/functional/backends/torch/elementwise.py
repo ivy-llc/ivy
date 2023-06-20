@@ -5,7 +5,10 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, handle_numpy_arrays_in_specific_backend
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    handle_numpy_arrays_in_specific_backend,
+)
 from ivy import promote_types_of_inputs
 from . import backend_version
 
@@ -650,9 +653,12 @@ def abs(
     x = _cast_for_unary_op(x)
     if x.dtype is torch.bool:
         return x
-    ret = ivy.where(where, torch.abs(x, out=out), x)
+    where = _cast_for_unary_op(where)
+    ret = torch.where(where, torch.abs(x), x)
     if ivy.is_complex_dtype(x.dtype):
-        return ivy.real(ret)
+        ret = torch.real(ret)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -872,10 +878,7 @@ def minimum(
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if use_where:
-        ret = torch.where(x1 <= x2, x1, x2)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        return ret
+        return torch.where(x1 <= x2, x1, x2, out=out)
     return torch.minimum(x1, x2, out=out)
 
 
@@ -894,10 +897,7 @@ def maximum(
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if use_where:
-        ret = torch.where(x1 >= x2, x1, x2)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        return ret
+        return torch.where(x1 >= x2, x1, x2, out=out)
     return torch.maximum(x1, x2, out=out)
 
 
@@ -916,6 +916,9 @@ def reciprocal(
 reciprocal.support_native_out = True
 
 
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("complex64", "complex128")}, backend_version
+)
 @handle_numpy_arrays_in_specific_backend
 def deg2rad(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.deg2rad(x, out=out)
@@ -924,6 +927,9 @@ def deg2rad(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
 deg2rad.support_native_out = True
 
 
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("complex64", "complex128")}, backend_version
+)
 @handle_numpy_arrays_in_specific_backend
 def rad2deg(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.rad2deg(x, out=out)

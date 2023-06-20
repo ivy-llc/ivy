@@ -93,7 +93,10 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+    result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+    if result.shape == [1]:
+        result = paddle.fluid.layers.squeeze(x)
+    return result
 
 
 @with_unsupported_device_and_dtypes(

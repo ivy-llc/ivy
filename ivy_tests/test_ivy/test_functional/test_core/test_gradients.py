@@ -73,7 +73,9 @@ def get_gradient_arguments_with_lr(
 # stop_gradient
 @handle_test(
     fn_tree="functional.ivy.stop_gradient",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     preserve_type=st.booleans(),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),

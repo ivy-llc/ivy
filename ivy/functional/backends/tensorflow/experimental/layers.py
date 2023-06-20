@@ -490,7 +490,7 @@ def _fft_norm(
     *,
     norm: str = "backward",
 ):
-    n = tf.constant(x.shape[dim])
+    n = tf.constant(x.shape[dim], dtype=x.dtype)
     if norm == "backward":
         return x
     elif norm == "ortho":

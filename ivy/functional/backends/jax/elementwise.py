@@ -438,14 +438,12 @@ def round(
     x: JaxArray, /, *, decimals: int = 0, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if "int" in str(x.dtype):
-        return x
+        ret = jnp.copy(x)
     else:
-        if decimals == 0:
-            return jnp.round(x)
-        ret_dtype = x.dtype
-        factor = jnp.power(10, decimals).astype(ret_dtype)
-        factor_denom = jnp.where(jnp.isinf(factor), 1.0, factor)
-        return jnp.round(x * factor) / factor_denom
+        ret = jnp.round(x, decimals=decimals)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @with_unsupported_dtypes({"1.1.9 and below": ("complex",)}, backend_version)

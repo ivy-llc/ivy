@@ -31,7 +31,7 @@ def _check_bounds_and_get_shape(low, high, shape):
             type="all",
             message="low and high bounds must be numerics when shape is specified",
         )
-        return shape
+        return ivy.Shape(shape)
 
     valid_types = (ivy.Array,)
     if len(backend_stack) == 0:
@@ -44,7 +44,7 @@ def _check_bounds_and_get_shape(low, high, shape):
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
-    return ()
+    return ivy.Shape(())
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):

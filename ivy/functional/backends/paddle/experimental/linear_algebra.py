@@ -93,3 +93,18 @@ def cond(
     out: Optional[paddle.Tensor] = None,
 ) -> Any:
     raise IvyNotImplementedException()
+
+
+def cov(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[paddle.Tensor] = None,
+    aweights: Optional[paddle.Tensor] = None,
+    dtype: Optional[paddle.dtype] = None,
+):
+    raise IvyNotImplementedException()

@@ -71,10 +71,6 @@ _i0B = [
 ]
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}},
-    backend_version,
-)
 def moveaxis(
     a: paddle.Tensor,
     source: Union[int, Sequence[int]],
@@ -84,6 +80,12 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if isinstance(source, tuple):
+        source = list(source)
+    if isinstance(destination, tuple):
+        source = list(destination)
+    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
     return paddle.moveaxis(a, source, destination)
 
 

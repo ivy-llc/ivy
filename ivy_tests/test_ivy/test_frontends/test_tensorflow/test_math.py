@@ -1404,6 +1404,9 @@ def test_tensorflow_unsorted_segment_sqrt_n(
     fn_tree="tensorflow.math.zero_fraction",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
@@ -1552,7 +1555,7 @@ def test_tensorflow_equal(
 @handle_frontend_test(
     fn_tree="tensorflow.math.not_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
     ),
