@@ -95,28 +95,15 @@ def tpu_is_available() -> bool:
 
 
 def handle_soft_device_variable(*args, **kwargs):
-    if ivy.get_soft_device_mode():
-        default_device = ivy.default_device()
-        args, kwargs = ivy.nested_map(
-            [args, kwargs],
-            lambda x: (
-                paddle.to_tensor(x, place=as_native_dev(default_device))
-                if (isinstance(x, paddle.Tensor) and ivy.dev(x) != default_device)
-                else x
-            ),
-        )
-    else:
-        inputs = list(args)
-        inputs.extend(kwargs.values())
-        devices = set(
-            ivy.dev(x) for x in inputs if isinstance(x, (ivy.Array, paddle.Tensor))
-        )
-        if len(devices) > 1:
-            raise ivy.utils.exceptions.IvyBackendException(
-                "Expected all input arrays to be on the same device, ",
-                "but found atleast two devices - {}".format(devices),
-                "Set `ivy.set_soft_device_mode(True)` to handle this problem.",
-            )
+    default_device = ivy.default_device()
+    args, kwargs = ivy.nested_map(
+        [args, kwargs],
+        lambda x: (
+            paddle.to_tensor(x, place=as_native_dev(default_device))
+            if (isinstance(x, paddle.Tensor) and ivy.dev(x) != default_device)
+            else x
+        ),
+    )
     return args, kwargs
 
 

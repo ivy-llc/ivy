@@ -790,9 +790,26 @@ def handle_device_shifting_for_arrays(fn: Callable) -> Callable:
         -------
             The return of the function.
         """
-        args, kwargs = ivy.current_backend().handle_soft_device_variable(
-            *args, **kwargs
-        )
+        if ivy.get_soft_device_mode():
+            args, kwargs = ivy.current_backend().handle_soft_device_variable(
+                *args, **kwargs
+            )
+        else:
+            inputs = list(args)
+            inputs.extend(kwargs.values())
+            devices = set(ivy.dev(x) for x in inputs if isinstance(x, ivy.Array))
+            if len(devices) == 1:
+                array_device = next(iter(devices))
+                with ivy.DefaultDevice(array_device):
+                    args, kwargs = ivy.current_backend().handle_soft_device_variable(
+                        *args, **kwargs
+                    )
+            elif len(devices) > 1:
+                raise ivy.utils.exceptions.IvyException(
+                    "Expected all input arrays to be on the same device ",
+                    "but found atleast two devices - {}".format(devices),
+                    "Set `ivy.set_soft_device_mode(True)` to handle this problem.",
+                )
         return fn(*args, **kwargs)
 
     _handle_device_shifting_for_arrays.handle_device_shifting_for_arrays = True
