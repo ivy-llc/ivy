@@ -74,6 +74,16 @@ def gamma(
     return ret
 
 
+def _poisson_with_neg_lam(lam, fill_value, device, dtype):
+    if torch.any(lam < 0):
+        pos_lam = torch.where(lam < 0, 0, lam)
+        ret = torch.poisson(pos_lam).type(dtype).to(device)
+        ret = torch.where(lam < 0, fill_value, ret)
+    else:
+        ret = torch.poisson(lam).type(dtype).to(device)
+    return ret
+
+
 def poisson(
     lam: Union[float, torch.Tensor],
     *,
@@ -81,16 +91,19 @@ def poisson(
     device: torch.device,
     dtype: torch.dtype,
     seed: Optional[int] = None,
+    fill_value: Optional[Union[float, int]] = 0,
     out: Optional[torch.Tensor] = None,
 ):
     lam = torch.tensor(lam, device=device, dtype=torch.float32)
     if seed:
         torch.manual_seed(seed)
     if shape is None:
-        return torch.poisson(lam).type(dtype).to(device)
-    _check_shapes_broadcastable(shape, lam.shape)
-    lam = torch.broadcast_to(lam, tuple(shape))
-    return torch.poisson(lam).type(dtype).to(device)
+        return _poisson_with_neg_lam(lam, fill_value, device, dtype)
+    shape = torch.tensor(shape, device=device, dtype=torch.int32)
+    list_shape = shape.tolist()
+    _check_shapes_broadcastable(lam.shape, list_shape)
+    lam = torch.broadcast_to(lam, list_shape)
+    return _poisson_with_neg_lam(lam, fill_value, device, dtype)
 
 
 def bernoulli(
