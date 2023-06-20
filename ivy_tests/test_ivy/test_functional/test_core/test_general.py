@@ -5,6 +5,8 @@ import time
 import math
 from types import SimpleNamespace
 
+from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _setitem_helper
+
 try:
     import tensorflow as tf
 except ImportError:
@@ -245,6 +247,43 @@ def test_get_item(
         fn_name=fn_name,
         x=x,
         query=indices,
+        copy=copy,
+    )
+
+
+# set_item
+# TODO: add container instance methods
+@handle_test(
+    fn_tree="functional.ivy.set_item",
+    dtypes_x_query_val=_setitem_helper(
+        available_dtypes=helpers.get_dtypes("valid"),
+        allow_neg_step=False,
+    ),
+    copy=st.booleans(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_set_item(
+    dtypes_x_query_val,
+    copy,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtypes, x, query, val = dtypes_x_query_val
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x,
+        query=query,
+        val=val,
         copy=copy,
     )
 
