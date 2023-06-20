@@ -1073,12 +1073,14 @@ def embedding(
         len(weights.shape), 2, message="weights must be 2-d", as_array=False
     )
     if ivy.exists(out):
-        return ivy.inplace_update(out, ivy.current_backend(indices).embedding(
+        return ivy.inplace_update(
+            out,
+            ivy.current_backend(indices).embedding(
                 weights,
                 indices,
                 max_norm=max_norm,
                 out=out,
-            )
+            ),
         )
     else:
         return ivy.current_backend(indices).embedding(
