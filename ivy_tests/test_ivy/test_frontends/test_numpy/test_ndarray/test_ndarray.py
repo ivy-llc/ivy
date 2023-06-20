@@ -135,6 +135,7 @@ def test_numpy_ndarray_property_flat(dtype_x):
 
     assert np.allclose(flat_ivy, flat_generated)
 
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
