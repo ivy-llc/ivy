@@ -129,9 +129,11 @@ def test_numpy_ndarray_property_flat(dtype_x):
     x.ivy_array = data[0]
 
     flat_ivy = x.flat
-    flat_generated = data[0].reshape(-1)
-    ivy.utils.assertions.check_equal(flat_ivy, flat_generated, as_array=True)
+    flat_generated = data[0].flatten()
+    flat_ivy = helpers.flatten_and_to_np(ret=flat_ivy)
+    flat_generated = helpers.flatten_and_to_np(ret=flat_generated)
 
+    assert np.allclose(flat_ivy, flat_generated)
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
