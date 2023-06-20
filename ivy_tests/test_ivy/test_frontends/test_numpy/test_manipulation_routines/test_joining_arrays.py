@@ -65,32 +65,24 @@ def test_numpy_concatenate(
 # stack
 @handle_frontend_test(
     fn_tree="numpy.stack",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-    ),
-    factor=helpers.ints(min_value=2, max_value=6),
+    dtype_and_x=_arrays_idx_n_dtypes(),
 )
 def test_numpy_stack(
     dtype_and_x,
-    factor,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x = dtype_and_x
-    xs = [x[0]]
-    for i in range(factor):
-        xs += [x[0]]
+    xs, input_dtypes, unique_idx, _, _ = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype[0]] * (factor + 1),
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         arrays=xs,
-        axis=0,
+        axis=unique_idx,
     )
 
 
