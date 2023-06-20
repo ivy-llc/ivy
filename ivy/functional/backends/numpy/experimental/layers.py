@@ -889,3 +889,14 @@ def fft2(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.fft2(x, s, dim, norm).astype(np.complex128)
+
+
+def ifftn(
+    x: np.ndarray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
