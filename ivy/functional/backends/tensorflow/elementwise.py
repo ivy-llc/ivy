@@ -516,7 +516,7 @@ def logaddexp2(
     if not ivy.is_float_dtype(x1):
         x1 = tf.cast(x1, ivy.default_float_dtype(as_native=True))
         x2 = tf.cast(x2, ivy.default_float_dtype(as_native=True))
-    return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
+    return tf.experimental.numpy.logaddexp2(x1, x2)
 
 
 def logical_and(
