@@ -1298,7 +1298,7 @@ INTERNAL_FILENAMES = [
 
 
 def _is_from_internal(filename):
-    return ivy.any([fn in filename for fn in INTERNAL_FILENAMES])
+    return builtins.any([fn in filename for fn in INTERNAL_FILENAMES])
 
 
 class IvyWithGlobalProps(sys.modules[__name__].__class__):
