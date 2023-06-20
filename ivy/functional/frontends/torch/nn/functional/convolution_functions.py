@@ -12,10 +12,16 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
     out_channels = weight.shape[0] if not transpose else weight.shape[1] * groups
 
     ivy.utils.assertions.check_equal(
-        in_channels % groups, 0, message="in_channels must be divisible by groups"
+        in_channels % groups,
+        0,
+        message="in_channels must be divisible by groups",
+        as_array=False,
     )
     ivy.utils.assertions.check_equal(
-        out_channels % groups, 0, message="out_channels must be divisible by groups"
+        out_channels % groups,
+        0,
+        message="out_channels must be divisible by groups",
+        as_array=False,
     )
 
     if bias is not None:
@@ -23,17 +29,24 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
             bias.shape[0],
             out_channels,
             message="bias must be same shape as out_channels",
+            as_array=False,
         )
 
     if padding == "same":
         if isinstance(stride, int):
             ivy.utils.assertions.check_equal(
-                stride, 1, message="padding cannot be 'same' for stride > 1"
+                stride,
+                1,
+                message="padding cannot be 'same' for stride > 1",
+                as_array=False,
             )
         else:
             for i in stride:
                 ivy.utils.assertions.check_equal(
-                    i, 1, message="padding cannot be 'same' for stride > 1"
+                    i,
+                    1,
+                    message="padding cannot be 'same' for stride > 1",
+                    as_array=False,
                 )
 
     if not transpose:
@@ -42,12 +55,14 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
             in_channels,
             in_channels_by_groups * groups,
             message="in_channels must be consistent between input and weight",
+            as_array=False,
         )
     else:
         ivy.utils.assertions.check_equal(
             in_channels,
             weight.shape[0],
             message="in_channels must be consistent between input and weight",
+            as_array=False,
         )
 
 
@@ -307,6 +322,14 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
                 j_in : j_in + kernel_size[1] * dilation[1] : dilation[1],
             ] += patch
             k += 1
-    return ivy.array(
-        output_padded[:, :, padding[0] : -padding[0], padding[1] : -padding[1]]
+    ret = ivy.array(
+        output_padded[
+            :,
+            :,
+            padding[0] : output_padded.shape[2] - padding[0],
+            padding[1] : output_padded.shape[3] - padding[1],
+        ]
     )
+    if orig_ndim == 2:
+        return ivy.squeeze(ret, axis=0)
+    return ret

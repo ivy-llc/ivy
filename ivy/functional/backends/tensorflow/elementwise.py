@@ -670,12 +670,15 @@ def sign(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    np_variant: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
-    if ivy.is_complex_dtype(x):
-        return tf.cast(tf.math.sign(tf.math.real(x)), x.dtype)
+    if x.dtype in [tf.complex64, tf.complex128] and np_variant:
+        real = tf.math.real(x)
+        imag = tf.math.imag(x)
+        return tf.cast(tf.where(real != 0, tf.sign(real), tf.sign(imag)), x.dtype)
     return tf.math.sign(x)
 
 
@@ -909,7 +912,8 @@ def isreal(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("unsigned", "complex", "bool")}, backend_version
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64", "complex", "bool")},
+    backend_version,
 )
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
@@ -919,6 +923,7 @@ def fmod(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = promote_types_of_inputs(x1, x2)
+    # tf.math.floormod returns wrong results
     res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
     return tf.where(x1 < 0, -res, res)
 
