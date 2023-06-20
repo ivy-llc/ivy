@@ -484,10 +484,11 @@ def scatter_nd(
             else ivy.default_dtype(item=updates)
         ),
     )
-
-    # convert indices to slices
-    if isinstance(indices, tuple) and all(isinstance(index, int) for index in indices):
-        indices = tuple([slice(index, index + 1) for index in indices])
+    contains_slices = (
+        any(isinstance(idx, slice) for idx in indices)
+        if isinstance(indices, (tuple, list))
+        else isinstance(indices, slice)
+    )
 
     # hanle non-tensor indices
     if isinstance(indices, (Sequence, paddle.Tensor)) and len(indices) == 0:
@@ -543,7 +544,7 @@ def scatter_nd(
             ],
             axis=-1,
         )
-    else:
+    elif contains_slices:
         shape = (
             shape
             if ivy.exists(shape)
@@ -594,7 +595,44 @@ def scatter_nd(
                 ],
                 axis=-1,
             )
-
+    else:
+        indices = [[indices]] if isinstance(indices, Number) else indices
+        indices = paddle.to_tensor(indices)
+        if len(indices.shape) < 2:
+            indices = paddle_backend.expand_dims(indices, axis=-1)
+        if paddle_backend.any(indices < 0):
+            shape = list(shape) if ivy.exists(shape) else list(out.shape)
+            indices = _parse_index(indices, shape)
+            indices = [
+                paddle_backend.stack(
+                    [
+                        paddle.flatten(value)
+                        for value in paddle_backend.meshgrid(
+                            *[
+                                (
+                                    paddle.arange(s)
+                                    if idx == slice(None, None, None)
+                                    else (
+                                        paddle.arange(
+                                            ivy.default(idx.start, 0),
+                                            ivy.default(idx.stop, s),
+                                            ivy.default(idx.step, 1),
+                                        )
+                                        if isinstance(idx, slice)
+                                        and idx != slice(None, None, None)
+                                        else paddle.to_tensor([idx % s])
+                                    )
+                                )
+                                for s, idx in zip(shape, index)
+                            ],
+                            indexing="xy",
+                        )
+                    ],
+                    axis=-1,
+                )
+                for index in indices
+            ]
+            indices = paddle_backend.concat(indices, axis=-1)
     # broadcast updates to correct shape
     shape = list(shape) if shape is not None else None
     expected_shape = (
