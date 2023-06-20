@@ -213,6 +213,21 @@ quantile.unsupported_dtypes = {
 
 
 @to_ivy_arrays_and_back
+def nanquantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
+    return ivy.nanquantile(
+        input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
+    )
+
+
+nanquantile.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16"),
+    "jax": ("float16", "bfloat16"),
+    "tensorflow": ("float16", "bfloat16"),
+}
+
+
+@to_ivy_arrays_and_back
 def count_nonzero(input, dim=None):
     return ivy.count_nonzero(input, axis=dim).astype(ivy.int64)
 

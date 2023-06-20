@@ -747,6 +747,37 @@ def test_torch_quantile(
 
 
 @handle_frontend_test(
+    fn_tree="torch.nanquantile",
+    dtype_and_x=_statistical_dtype_values(function="nanquantile"),
+    keepdims=st.booleans(),
+)
+def test_torch_nanquantile(
+    *,
+    dtype_and_x,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis, interpolation, q = dtype_and_x
+    if type(axis) is tuple:
+        axis = axis[0]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        q=q,
+        dim=axis,
+        keepdim=keepdims,
+        interpolation=interpolation[0],
+    )
+
+
+@handle_frontend_test(
     fn_tree="torch.count_nonzero",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
