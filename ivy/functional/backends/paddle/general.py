@@ -41,6 +41,8 @@ def get_item(
     *,
     copy: bool = None,
 ) -> paddle.Tensor:
+    if copy:
+        x = paddle.clone(x)
     # regular queries x[idx_1,idx_2,...,idx_i]
     if not isinstance(query, paddle.Tensor):
         x_dtype = x.dtype
