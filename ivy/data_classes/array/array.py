@@ -1146,7 +1146,10 @@ class Array(
             return to_ivy(copy.deepcopy(self._data))
 
     def __len__(self):
-        return len(self._data)
+        try:
+            return len(self._data)
+        except TypeError:
+            return self._data.shape[0]
 
     def __iter__(self):
         if self.ndim == 0:

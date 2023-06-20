@@ -217,67 +217,22 @@ def matrix_rank(
     hermitian: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    def dim_reduction(array):
-        if array.ndim == 1:
-            ret = array[0]
-        elif array.ndim == 2:
-            ret = array[0][0]
-        elif array.ndim == 3:
-            ret = array[0][0][0]
-        elif array.ndim == 4:
-            ret = array[0][0][0][0]
-        return ret
-
-    if len(x.shape) == 3:
-        if x.shape[-3] == 0:
-            return jnp.asarray(0).astype(x.dtype)
-    elif len(x.shape) > 3:
-        if x.shape[-3] == 0 or x.shape[-4] == 0:
-            return jnp.asarray(0).astype(x.dtype)
-    axis = None
-    ret_shape = x.shape[:-2]
-    if len(x.shape) == 2:
-        singular_values = jnp.linalg.svd(x, compute_uv=False)
-    elif len(x.shape) > 2:
-        y = x.reshape((-1, *x.shape[-2:]))
-        singular_values = jnp.asarray(
-            [
-                jnp.linalg.svd(split[0], compute_uv=False)
-                for split in jnp.split(y, y.shape[0], axis=0)
-            ]
-        )
-        axis = 1
-    if len(x.shape) < 2 or len(singular_values.shape) == 0:
-        return jnp.array(0, dtype=x.dtype)
-    max_values = jnp.max(singular_values, axis=axis)
-    if atol is None:
-        if rtol is None:
-            ret = jnp.sum(singular_values != 0, axis=axis)
-        else:
-            try:
-                max_rtol = max_values * rtol
-            except ValueError:
-                if ivy.all(
-                    element == rtol[0] for element in rtol
-                ):  # all elements are same in rtol
-                    rtol = dim_reduction(rtol)
-                    max_rtol = max_values * rtol
-            if not isinstance(rtol, float) and rtol.size > 1:
-                if ivy.all(element == max_rtol[0] for element in max_rtol):
-                    max_rtol = dim_reduction(max_rtol)
-            elif not isinstance(max_values, float) and max_values.size > 1:
-                if ivy.all(element == max_values[0] for element in max_values):
-                    max_rtol = dim_reduction(max_rtol)
-            ret = ivy.sum(singular_values > max_rtol, axis=axis)
-    else:  # atol is not None
-        if rtol is None:  # atol is not None, rtol is None
-            ret = jnp.sum(singular_values > atol, axis=axis)
-        else:
-            tol = jnp.max(atol, max_values * rtol)
-            ret = jnp.sum(singular_values > tol, axis=axis)
-    if len(ret_shape):
-        ret = ret.reshape(ret_shape)
-    return ret.astype(x.dtype)
+    if (x.ndim < 2) or (0 in x.shape):
+        return jnp.asarray(0, jnp.int64)
+    # we don't use the native matrix_rank function because the behaviour of the
+    # tolerance argument is difficult to unify,
+    # and the native implementation is compositional
+    svd_values = jnp.linalg.svd(x, hermitian=hermitian, compute_uv=False)
+    sigma = jnp.max(svd_values, axis=-1, keepdims=False)
+    atol = (
+        atol if atol is not None else jnp.finfo(x.dtype).eps * max(x.shape[-2:]) * sigma
+    )
+    rtol = rtol if rtol is not None else 0.0
+    tol = jnp.maximum(atol, rtol * sigma)
+    # make sure it's broadcastable again with svd_values
+    tol = jnp.expand_dims(tol, axis=-1)
+    ret = jnp.count_nonzero(svd_values > tol, axis=-1)
+    return ret
 
 
 @with_unsupported_dtypes(
@@ -473,7 +428,9 @@ def vector_norm(
         x = jnp.expand_dims(x, 0)
         ret_scalar = True
 
-    if isinstance(axis, list):
+    if axis is None:
+        x = x.reshape([-1])
+    elif isinstance(axis, list):
         axis = tuple(axis)
 
     jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
