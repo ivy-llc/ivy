@@ -33,6 +33,8 @@ listing:
 
 Welcome to Ivy's tutorials webpage! Our goal is to provide you with a comprehensive learning experience on a variety of topics. We have organized our tutorials into three main sections to help you find exactly what you need. 
 
+If you are in a rush, you can jump straight into the **[Quickstart](quickstart.ipynb)**, a quick and general introduction to Ivy's features and capabilities!
+
 - In the **Learn the basics** section, you will find basic and to the point tutorials to help you get started with Ivy.
 
 - The **Guides** section includes more involved tutorials for those who want to dive deeper into the framework. 

@@ -16,6 +16,7 @@ website:
     logo: "assets/img/ivy_logo_text.png"
     collapse-level: 1
     contents:
+      - quickstart.ipynb
       - section: "Learn the Basics"
         contents:
           - "learn_the_basics/01_write_ivy_code.ipynb"
