@@ -252,7 +252,7 @@ def test_get_item(
 
 
 # set_item
-# TODO: add container instance methods
+# TODO: add container and array instance methods
 @handle_test(
     fn_tree="functional.ivy.set_item",
     dtypes_x_query_val=_setitem_helper(
@@ -263,6 +263,7 @@ def test_get_item(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_set_item(
     dtypes_x_query_val,
