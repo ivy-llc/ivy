@@ -848,6 +848,7 @@ def test_torch_unique(
     )
 
 
+@st.composite
 def _get_axis_and_p(draw, kind="valid"):
     p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
     if p == "fro" or p == "nuc":
