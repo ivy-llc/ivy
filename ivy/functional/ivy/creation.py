@@ -2004,7 +2004,7 @@ def logspace(
                [1000., 2154.43469003]
                [10000., 10000.]])
     """
-    return base ** linspace(
+    result = base ** linspace(
         start,
         stop,
         num,
@@ -2012,8 +2012,10 @@ def logspace(
         axis=axis,
         dtype=dtype,
         device=device,
-        out=out,
     )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, result)
+    return result
 
 
 @handle_nestable
