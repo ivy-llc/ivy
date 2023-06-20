@@ -11,8 +11,8 @@ def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
                 "if `operand` is passed, positional `operands` should not be passed"
             )
         operands = (operand,)
-         if pred:
-        return true_fun(*operands)
+        if pred:
+            return true_fun(*operands)
     return false_fun(*operands)
 
 @to_ivy_arrays_and_back
