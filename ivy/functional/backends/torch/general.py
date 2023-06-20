@@ -16,7 +16,6 @@ import torch
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
-from ivy.functional.ivy.general import _parse_ellipsis
 from . import backend_version, is_variable
 
 torch_scatter = None
@@ -98,6 +97,25 @@ def get_item(
                 new_query.append(q)
             shape_idx += 1
         return x.__getitem__(new_query)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
+def set_item(
+    x: Union[torch.Tensor],
+    query: Union[torch.Tensor, Tuple],
+    val: torch.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> torch.Tensor:
+    x = x.detach()
+    if copy:
+        x = torch.clone(x)
+    val = val.to(x.dtype)
+    if isinstance(query, torch.Tensor) and query.dtype != torch.bool:
+        return x.__setitem__(query.to(torch.int64), val)
+    x[query] = val
+    return x
 
 
 def to_numpy(
