@@ -1296,7 +1296,10 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def eq_(self, other):
-        return torch_frontend.eq(self, other)
+        self.ivy_array = ivy.astype(
+            torch_frontend.eq(self, other).ivy_array, self.dtype
+        )
+        return self
 
     def var(self, dim=None, *, correction=1, keepdim=False):
         return torch_frontend.var(self, dim=dim, unbiased=correction, keepdim=keepdim)
