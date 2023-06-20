@@ -2755,6 +2755,59 @@ def get_item(
     return current_backend(x).get_item(x, query, copy=copy)
 
 
+@handle_nestable
+@handle_view_indexing
+@to_native_arrays_and_back
+@handle_array_function
+def set_item(
+    x: Union[ivy.Array, ivy.NativeArray],
+    query: Union[ivy.Array, ivy.NativeArray, Tuple],
+    val: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> ivy.Array:
+    """
+    Replace slices of x (defined by query) with val, identical to x[query] = val.
+
+    Parameters
+    ----------
+    x
+        the array to be updated.
+    query
+        either an index array, or a tuple of integers or slices.
+    val
+        the array containing the values to be infused into x
+    copy
+        boolean indicating whether to copy x.
+        If True, the function will update and return a copy of x.
+        If False, the function will update x inplace.
+
+    Returns
+    -------
+    ret
+        the array with updated values at the specified indices.
+
+    Functional Examples
+    -------------------
+
+    >>> x = ivy.array([0, -1, 20])
+    >>> query = ivy.array([0, 1])
+    >>> val = ivy.array([10, 10])
+    >>> ivy.set_item(x, query, val)
+    >>> print(x)
+    ivy.array([10, 10, 20])
+
+    >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
+    >>> query = (1, 0:1)
+    >>> val = ivy.array([10, 10])
+    >>> y = ivy.set_item(x, query, val, copy=True)
+    >>> print(y)
+    ivy.array([[0, -1, 20], [10, 10, -8]])
+    """
+    return current_backend(x).set_item(x, query, val, copy=copy)
+
+
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
