@@ -305,5 +305,11 @@ def bernoulli(
         Drawn samples from the Bernoulli distribution
     """
     return ivy.current_backend(probs).bernoulli(
-        logits, probs, shape=shape, device=device, dtype=dtype, seed=seed, out=out
+        probs,
+        logits=logits,
+        shape=shape,
+        device=device,
+        dtype=dtype,
+        seed=seed,
+        out=out,
     )
