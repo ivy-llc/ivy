@@ -131,21 +131,82 @@ def rfftfreq(n, d=1.0):
 @to_ivy_arrays_and_back
 def ifftn(a, s=None, axes=None, norm=None):
     a = ivy.array(a, dtype=ivy.complex128)
+    # Check if s and/or axes provided are tuples
+    if s is not None:
+        if not isinstance(s, tuple):
+            raise TypeError("'int' object is not iterable")
+
+    if axes is not None:
+        if not isinstance(axes, tuple):
+            raise TypeError("'int' object is not iterable")
+
+    # Check if both s and axes are provided or both not provided or either is
+    if (axes is None and s is None):
+        # If both axes and s (shape) not provided set axes to perform ifft on all axes
+        axes = tuple(range(a.ndim))
+
+    elif (axes is None and s is not None):
+        if len(s) > len(a.shape):
+            raise ValueError(f'axis -{len(a.shape) + 1} is out of bounds for array of dimension {len(a.shape)}')
+        # If axes is not provided but s is, use the last len(s) axes
+        else:
+            last_axes = []
+            num_axes = len(a.shape)
+            num_last_axes = len(s)
+
+            for i in range(num_last_axes):
+                last_axes.append(num_axes + i - num_last_axes)
+
+            axes = tuple(last_axes)
+
+    elif (axes is not None and s is not None):
+        # Check is axes and s have same shape if not raise value error if both are provided
+        if len(s) != len(axes):
+            raise ValueError("Shape and axes have different lengths.")
+
+    # Check is s is provided
+    if s is None:
+        output_shape = []
+        for axis in axes:
+            output_shape.append(a.shape[axis])
+        s = tuple(output_shape)
+
+    # Check norm
     if norm is None:
         norm = "backward"
     elif (norm != 'ortho' and norm != None):
         raise ValueError("Invalid norm value. Should be None or 'ortho'.")
 
-    if s is None:
-        s = a.shape
+    # Now we perform the operation ifft
+    # 1st we check if the axes tuple is unique or not, if unique its straightforward if not pretty long
 
-    if axes is None:
-        axes = tuple(range(a.ndim))
+    if (len(set(axes)) == len(axes)):
+        # This means the axes have unique axis
+        for i in range(len(axes)):
+            a = ivy.ifft(a, n=s[i], dim=axes[i], norm=norm)
+        return a
+
     else:
-        axes = tuple(axes)
+        # If the axes is not unique (has repeating axis values)
+        # 1st we perform an inversion on the s tuple based on repeating values of axes tuple
+        first_list = list(axes)
+        second_list = list(s)
 
-    for axis in axes:
-        a = ivy.ifft(a, dim=axis, norm=norm, n=s[axis])
+        repeated_indices = [i for i, val in enumerate(first_list) if first_list.count(val) > 1]
+        repeated_values = list(set([first_list[idx] for idx in repeated_indices]))
 
-    return a
+        new_second_list = second_list.copy()
+
+        for val in repeated_values:
+            indices = [i for i, v in enumerate(first_list) if v == val]
+            swap_values = [second_list[idx] for idx in indices[::-1]]
+            for idx, swap_idx, swap_val in zip(indices, indices[::-1], swap_values):
+                new_second_list[idx] = swap_val
+
+        s_new = tuple(new_second_list)
+
+        # Now perform the ifft similar to the previous ifft
+        for i in range(len(axes)):
+            a = ivy.ifft(a, n=s_new[i], dim=axes[i], norm=norm)
+        return a
 
