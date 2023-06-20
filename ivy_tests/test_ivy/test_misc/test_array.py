@@ -6,6 +6,7 @@ import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method, handle_test
+from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _setitem_helper
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
     not_too_close_to_zero,
     pow_helper,
@@ -15,19 +16,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_second_matrix_and_dtype,
 )
 from ivy.data_classes.array import Array
-
-
-# getitem and setitem helper
-@st.composite
-def _getitem_setitem(draw, available_dtypes=None):
-    if available_dtypes is None:
-        available_dtypes = helpers.get_dtypes("numeric")
-    arr_size = draw(helpers.ints(min_value=2, max_value=10))
-    x = draw(
-        helpers.dtype_and_values(available_dtypes=available_dtypes, shape=(arr_size,))
-    )
-    index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
-    return index, x
 
 
 def test_array_function():
@@ -283,12 +271,16 @@ def test_array__getitem__(
 
 @handle_method(
     method_tree="Array.__setitem__",
-    query_dtype_and_x=_getitem_setitem(),
-    val=st.floats(min_value=-6, max_value=6),
+    ground_truth_backend="numpy",
+    dtypes_x_query_val=_setitem_helper(
+        available_dtypes=helpers.get_dtypes("valid"),
+        allow_neg_step=False,
+    ),
+    # ToDo: fix container method
+    method_container_flags=st.just([False]),
 )
 def test_array__setitem__(
-    query_dtype_and_x,
-    val,
+    dtypes_x_query_val,
     method_name,
     class_name,
     ground_truth_backend,
@@ -296,22 +288,15 @@ def test_array__setitem__(
     method_flags,
     on_device,
 ):
-    query, x_dtype = query_dtype_and_x
-    dtype, x = x_dtype
-    if ivy.is_uint_dtype(dtype[0]):
-        val = abs(int(val))
-    elif ivy.is_int_dtype(dtype[0]):
-        val = int(val)
-    elif ivy.is_bool_dtype(dtype[0]):
-        val = bool(val)
+    dtypes, x, query, val = dtypes_x_query_val
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
-        method_input_dtypes=[],
+        init_all_as_kwargs_np={"data": x},
+        init_input_dtypes=[dtypes[0]],
+        method_input_dtypes=[*dtypes[1:]],
         method_all_as_kwargs_np={"query": query, "val": val},
         class_name=class_name,
         method_name=method_name,
