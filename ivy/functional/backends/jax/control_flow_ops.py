@@ -2,7 +2,12 @@ import jax
 
 
 def if_else(cond, body_fn, orelse_fn, vars):
-    cond = bool(cond)
+    # back-compatibility
+    if isinstance(cond, bool):
+        v = cond
+        cond = lambda *_: v
+
+    cond = bool(cond(*vars))
     with jax.disable_jit():
         final_vars = jax.lax.cond(
             cond, lambda: body_fn(*vars), lambda: orelse_fn(*vars)
