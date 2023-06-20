@@ -1830,27 +1830,37 @@ def dtype_array_index(
             shape=shape,
         )
     )
-    index = ()
-    for s in shape:
-        index_type = draw(st.sampled_from(["int", "ellipsis", "slice"]))
-        if not allow_slices or index_type == "int":
-            index += (draw(st.integers(min_value=-s + 1, max_value=s - 1)),)
-        if index_type == "ellipsis" and Ellipsis not in index:
-            index += (Ellipsis,)
-        elif index_type == "slice":
-            start = draw(
-                st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))
+    supported_index_types = ["int", "ellipsis", "slice"] if allow_slices else ["int"]
+    index_types = draw(
+            st.lists(
+                st.sampled_from(supported_index_types),
+                min_size=len(shape),
+                max_size=len(shape)
+            ).filter(lambda x: x.count("ellipsis") < 1)
+    )
+    index = tuple([
+        (
+            draw(st.integers(min_value=-s + 1, max_value=s - 1))
+            if index_type == "int"
+            else (
+                Ellipsis
+                if index_type == "ellipsis"
+                else (
+                    slice(
+                        start := draw(st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))),
+                        end := draw(st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))),
+                        draw(st.integers(min_value=1, max_value=s))
+                        if (0 if start is None else s + start if start < 0 else start) <
+                           (s - 1 if end is None else s + end if end < 0 else end)
+                        else (
+                            draw(st.integers(max_value=-1, min_value=-s))
+                            if allow_neg_step
+                            else assume(False)
+                        )
+                    )
+                )
             )
-            end = draw(
-                st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))
-            )
-            true_start = 0 if start is None else s + start if start < 0 else start
-            true_end = s - 1 if end is None else s + end if end < 0 else end
-            if true_start < true_end:
-                step = draw(st.integers(min_value=1, max_value=s))
-            else:
-                if not allow_neg_step:
-                    assume(False)
-                step = draw(st.integers(max_value=-1, min_value=-s))
-            index += (slice(start, end, step),)
+        )
+        for s, index_type in zip(shape, index_types)
+    ])
     return dtype, array, index
