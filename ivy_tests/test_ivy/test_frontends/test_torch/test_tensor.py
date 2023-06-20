@@ -8567,7 +8567,7 @@ def test_torch_instance_multiply(
     method_name="norm",
     p_dtype_x_axis=_get_axis_and_p(),
     keepdim=st.booleans(),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype=helpers.get_dtypes("real_and_complex", full=False),
 )
 def test_torch_instance_norm(
     p_dtype_x_axis,

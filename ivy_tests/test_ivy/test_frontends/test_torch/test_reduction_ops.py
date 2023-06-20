@@ -849,7 +849,7 @@ def test_torch_unique(
 
 
 @st.composite
-def _get_axis_and_p(draw):
+def _get_axis_and_p(draw, kind="valid"):
     p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
     if p == "fro" or p == "nuc":
         max_axes_size = 2
@@ -859,7 +859,7 @@ def _get_axis_and_p(draw):
         max_axes_size = 5
     dtype_x_axis = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes(kind),
             min_num_dims=2,
             valid_axis=True,
             min_value=-1e04,
@@ -871,13 +871,26 @@ def _get_axis_and_p(draw):
             force_int_axis=True,
         )
     )
-    return p, dtype_x_axis
+    input_dtype, x, axis = dtype_x_axis
+    if input_dtype[0].is_complex_dtype:
+        kind = "complex"
+    if input_dtype[0].is_float_dtype:
+        kind = "float"
+
+    dtype = draw(helpers.get_dtypes(kind, full=False))
+    dtype = dtype[0]
+    if ivy.can_cast(input_dtype[0], dtype):
+        _, dtype = ivy.promote_types_of_inputs(input_dtype[0], dtype)
+    else:
+        dtype = input_dtype[0]
+
+    return p, dtype_x_axis, dtype
 
 
 # norm
 @handle_frontend_test(
     fn_tree="torch.norm",
-    p_dtype_x_axis=_get_axis_and_p(),
+    p_dtype_x_axis=_get_axis_and_p("real_and_complex"),
     keepdim=st.booleans(),
     dtype=helpers.get_dtypes("float", full=False),
 )
@@ -891,7 +904,7 @@ def test_torch_norm(
     fn_tree,
     on_device,
 ):
-    p, values = p_dtype_x_axis
+    p, values, dtype = p_dtype_x_axis
     input_dtype, x, axis = values
 
     helpers.test_frontend_function(
@@ -906,6 +919,8 @@ def test_torch_norm(
         p=p,
         dim=axis,
         keepdim=keepdim,
+        out=None,
+        dtype=dtype,
     )
 
 

@@ -1250,8 +1250,11 @@ class Tensor:
         self.ivy_array = self.fmod(other).ivy_array
         return self
 
+    @with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
     def norm(self, p="fro", dim=None, keepdim=False, dtype=None):
-        return torch_frontend.norm(self, p=p, dim=dim, keepdim=keepdim, dtype=dtype)
+        return torch_frontend.norm(
+            self, p=p, dim=dim, keepdim=keepdim, out=None, dtype=dtype
+        )
 
     def tolist(self):
         return self._ivy_array.to_list()
