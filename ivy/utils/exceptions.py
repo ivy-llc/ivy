@@ -41,8 +41,8 @@ def _write_new_stack_trace(
 
 
 def _custom_exception_handle(type, value, tb_history):
-    trace_mode = ivy.get_exception_trace_mode()
-    func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
+    trace_mode = ivy.exception_trace_mode
+    func_wrapper_trace_mode = ivy.show_func_wrapper_trace_mode
     buffer = io.StringIO()
     if trace_mode == "none":
         return
@@ -57,8 +57,8 @@ def _custom_exception_handle(type, value, tb_history):
 
 
 def _write_traceback_history(buffer):
-    trace_mode = ivy.get_exception_trace_mode()
-    func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
+    trace_mode = ivy.exception_trace_mode
+    func_wrapper_trace_mode = ivy.show_func_wrapper_trace_mode
     if trace_mode == "none":
         return
     if trace_mode == "full" and func_wrapper_trace_mode:
@@ -92,7 +92,7 @@ def _add_native_error(default):
     ret
         list containing all the messages, with the native error appended if it exists
     """
-    trace_mode = ivy.get_exception_trace_mode()
+    trace_mode = ivy.exception_trace_mode
     if isinstance(default[-1], Exception):
         if isinstance(default[-1], IvyException):
             if default[-1].native_error is not None:
