@@ -722,17 +722,19 @@ def test_jax_numpy_tensorsolve(
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
         safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
+    rcond=st.floats(1e-5, 1e-3),
 )
 def test_jax_numpy_pinv(
     dtype_and_x,
     frontend,
     fn_tree,
     test_flags,
+    rcond,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -741,6 +743,7 @@ def test_jax_numpy_pinv(
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
+        rcond=rcond,
         atol=1e-1,
         rtol=1e-1,
     )
