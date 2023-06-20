@@ -7,6 +7,41 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
+    fn_tree="associative_scan",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_associative_scan(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    def _test_op(acc, x):
+        return acc + x  # Replace with your desired associative operation
+
+    input_dtype, x = dtype_and_x
+    init_val = x[0][0]  # Use the first element as the initial value
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        op=_test_op,
+        init_val=init_val,
+        xs=x[0],
+    )
+
+
+@handle_frontend_test(
     fn_tree="jax.lax.cond",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),

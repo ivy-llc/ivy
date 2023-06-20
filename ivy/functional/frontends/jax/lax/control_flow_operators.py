@@ -4,17 +4,26 @@ from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
-def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
-    if operand is not None:
-        if operands:
-            raise ivy.utils.exceptions.IvyException(
-                "if `operand` is passed, positional `operands` should not be passed"
-            )
-        operands = (operand,)
+def associative_scan(fn, elems, reverse=False, axis=0):
+    if not callable(fn):
+        raise ivy.exceptions.IvyException("associative_scan: Argument fn should be callable.")
 
-    if pred:
-        return true_fun(*operands)
-    return false_fun(*operands)
+    if axis != 0:
+        raise ivy.exceptions.IvyException("associative_scan: Axis other than 0 is not supported.")
+
+    if reverse:
+        elems = elems[::-1]
+
+    acc = elems[0]
+    results = [acc]
+    for elem in elems[1:]:
+        acc = fn(acc, elem)
+        results.append(acc)
+
+    if reverse:
+        results = results[::-1]
+
+    return ivy.stack(results, axis=axis)
 
 
 @to_ivy_arrays_and_back
