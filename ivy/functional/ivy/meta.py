@@ -543,44 +543,45 @@ def reptile_step(
     batched: bool = True,
     return_inner_v: Union[str, bool] = False,
     num_tasks: Optional[int] = None,
-    stop_gradients: bool = True
+    stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
     """
     Perform a step of Reptile.
 
     Parameters
     ----------
-    batch :
+    batch
         The input batch.
-    cost_fn :
+    cost_fn
         The cost function that receives the task-specific sub-batch and variables, and
         returns the cost.
-    variables :
+    variables
         Variables to be optimized.
-    inner_grad_steps :
+    inner_grad_steps
         Number of gradient steps to perform during the inner loop.
-    inner_learning_rate :
+    inner_learning_rate
         The learning rate of the inner loop.
-    inner_optimization_step :
-        The function used for the inner loop optimization. It takes the cost function,
-        variables, and learning rate as arguments, and returns the updated variables.
+    inner_optimization_step
+        The function used for the inner loop optimization. It takes the learnable weights,
+        the derivative of the cost with respect to the weights, and the learning rate as 
+        arguments; and returns the updated variables.
         Default is `gradient_descent_update`.
-    batched :
+    batched
         Whether to batch along the time dimension and run the meta steps in batch.
         Default is `True`.
-    return_inner_v :
+    return_inner_v
         Either `'first'`, `'all'`, or `False`. If `'first'`, the variables for the first
         task inner loop will also be returned. If `'all'`, variables for all tasks will
         be returned. Default is `False`.
-    num_tasks :
+    num_tasks
         Number of unique tasks to inner-loop optimize for the meta step. Determined from
         the batch by default.
-    stop_gradients :
+    stop_gradients
         Whether to stop the gradients of the cost. Default is `True`.
 
     Returns
     -------
-    Tuple
+    ret
         The cost, the gradients with respect to the outer loop variables, and additional
         information from the inner loop optimization.
 
@@ -591,6 +592,8 @@ def reptile_step(
     >>> from ivy.functional.ivy.gradients import gradient_descent_update
     >>> import ivy
     >>> from ivy.functional.ivy.gradients import _variable
+
+    >>> ivy.set_backend("torch")
 
     >>> def inner_cost_fn(batch_in, v):
     ...     return batch_in.mean().x / v.mean().latent
@@ -630,7 +633,7 @@ def reptile_step(
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
 
-    ret = _train_tasks(
+    rets = _train_tasks(
         batch,
         None,
         None,
@@ -651,18 +654,16 @@ def reptile_step(
         num_tasks,
         stop_gradients,
     )
-    cost = ret[0]
+    cost = rets[0]
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
-    grads = ret[1] / inner_learning_rate
+    grads = rets[1] / inner_learning_rate
     if return_inner_v:
-        return cost, grads, ret[2]
+        return cost, grads, rets[2]
     return cost, grads
 
 
 reptile_step.computes_gradients = True
-
-
 
 
 # Second Order
