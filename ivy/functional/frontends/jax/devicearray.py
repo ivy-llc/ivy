@@ -114,6 +114,27 @@ class DeviceArray:
             out=out_arr,
         )
 
+    def sum(
+        self,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+    ):
+        return jax_frontend.numpy.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=None,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
+        )
+
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 
