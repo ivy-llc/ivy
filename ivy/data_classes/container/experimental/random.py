@@ -296,6 +296,7 @@ class _ContainerWithRandomExperimental(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         seed: Optional[int] = None,
+        fill_value: Optional[Union[float, int]] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -318,7 +319,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
         seed
-            A python integer. Used to create a random seed distribution
+            A python integer. Used to create a random seed distribution.
+        fill_value
+            if lam is negative, fill the output array with this value
+            on that specific dimension.
         out
             optional output container, for writing the result to.
 
@@ -349,6 +353,8 @@ class _ContainerWithRandomExperimental(ContainerBase):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
+            fill_value=fill_value,
             out=out,
         )
 
@@ -360,6 +366,7 @@ class _ContainerWithRandomExperimental(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         seed: Optional[int] = None,
+        fill_value: Optional[Union[float, int]] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -382,7 +389,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
         seed
-            A python integer. Used to create a random seed distribution
+            A python integer. Used to create a random seed distribution.
+        fill_value
+            if lam is negative, fill the output array with this value
+            on that specific dimension.
         out
             optional output container, for writing the result to.
 
@@ -409,6 +419,7 @@ class _ContainerWithRandomExperimental(ContainerBase):
             device=device,
             dtype=dtype,
             seed=seed,
+            fill_value=fill_value,
             out=out,
         )
 

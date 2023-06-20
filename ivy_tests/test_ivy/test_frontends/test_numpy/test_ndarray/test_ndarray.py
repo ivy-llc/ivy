@@ -60,7 +60,7 @@ def test_numpy_ndarray_property_dtype(
     dtype, data, shape = dtype_x
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]), as_array=False)
 
 
 @given(
@@ -75,7 +75,7 @@ def test_numpy_ndarray_property_shape(
     dtype, data, shape = dtype_x
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(shape), as_array=False)
 
 
 @given(
@@ -90,7 +90,7 @@ def test_numpy_ndarray_property_ndim(
     dtype, data, shape = dtype_x
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim)
+    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
 
 
 @given(

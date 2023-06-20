@@ -87,8 +87,13 @@ def test_torch_argmax(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
         min_num_dims=1,
-        min_axis=-1,
-        max_axis=0,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        min_value=1,
+        max_value=5,
+        valid_axis=True,
+        allow_neg_axes=True,
     ),
     keepdims=st.booleans(),
 )
@@ -478,10 +483,9 @@ def test_torch_var(
     )
 
 
-# ToDo, fails for TensorFlow backend, tf.reduce_min doesn't support bool
-# ToDo, fails for torch backend, tf.argmin_cpu doesn't support bool
+# min
 @handle_frontend_test(
-    fn_tree="torch.argmin",
+    fn_tree="torch.min",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
