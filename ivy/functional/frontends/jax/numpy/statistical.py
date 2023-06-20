@@ -483,4 +483,6 @@ def correlate(a, v, mode="valid", precision=None):
 
 @to_ivy_arrays_and_back
 def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=None):
-    return ivy.cov(m, y, rowVar=rowvar, bias=bias, ddof=ddof, fweights=fweights, aweights=aweights)
+    return ivy.cov(
+        m, y, rowVar=rowvar, bias=bias, ddof=ddof, fweights=fweights, aweights=aweights
+    )
