@@ -323,6 +323,13 @@ def _num_to_bit_list(value, num_dims):
 
 # ToDo: find a way around for negative indexing, which torch does not support
 @to_ivy_arrays_and_back
+def convert_negative_index(index, length):
+    if index < 0:
+        index += length
+    return index
+
+
+@to_ivy_arrays_and_back
 def strided_slice(
     input_,
     begin,
@@ -358,6 +365,12 @@ def strided_slice(
         lambda x: [ivy.to_scalar(i) for i in x] if ivy.is_ivy_array(x) else x,
         [begin, end, strides],
     )
+
+    # Convert negative indices
+    for i in range(len(begin)):
+        begin[i] = convert_negative_index(begin[i], input_shape[i])
+        end[i] = convert_negative_index(end[i], input_shape[i])
+
     for i, v in enumerate(shrink_axis_mask):
         if v == 1:
             begin_mask[i] = 0
@@ -414,9 +427,9 @@ def strided_slice(
                     e = b + 1 if s > 0 else b - 1
                 else:
                     e = 1 if s > 0 else input_shape[i] - 2
-            full_slice += (py_slice(b, e, s),)
+            full_slice += (slice(b, e, s),)
     if all(i is None for i in full_slice):
-        full_slice += (...,)
+        full_slice += (Ellipsis,)
     ret = input_[full_slice]
     shrink_indices = [
         i
