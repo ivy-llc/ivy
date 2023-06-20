@@ -6,7 +6,6 @@ def available_frameworks():
     for fw in frameworks:
         try:
             exec(f"import {fw}")
-            assert exec(fw), f"{fw} is imported to see if the user has it installed"
         except ImportError:
             frameworks.remove(fw)
 
