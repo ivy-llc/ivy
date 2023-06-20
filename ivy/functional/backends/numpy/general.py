@@ -41,6 +41,21 @@ def get_item(
     return x.__getitem__(query)
 
 
+@_scalar_output_to_0d_array
+def set_item(
+    x: Union[np.ndarray],
+    query: Union[np.ndarray, Tuple],
+    val: np.ndarray,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> np.ndarray:
+    if copy:
+        x = np.copy(x)
+    x.__setitem__(query, val)
+    return x
+
+
 def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return x.copy()

@@ -61,6 +61,20 @@ def get_item(
     return x.__getitem__(query)
 
 
+def set_item(
+    x: Union[JaxArray],
+    query: Union[JaxArray, Tuple],
+    val: JaxArray,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> JaxArray:
+    ret = x.at[query].set(val)
+    if not copy:
+        return ivy.inplace_update(x, _to_device(ret))
+    return _to_device(ret)
+
+
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
