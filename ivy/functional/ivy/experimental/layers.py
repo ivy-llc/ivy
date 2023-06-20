@@ -1032,7 +1032,6 @@ def ifft(
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
-@inputs_to_ivy_arrays
 @to_native_arrays_and_back
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
