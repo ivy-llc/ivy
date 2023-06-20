@@ -214,9 +214,7 @@ quantile.unsupported_dtypes = {
 
 @to_ivy_arrays_and_back
 def nanquantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
-    return ivy.nanquantile(
-        input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
-    )
+    return ivy.nanquantile(input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out)
 
 
 nanquantile.unsupported_dtypes = {
