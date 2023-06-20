@@ -359,4 +359,4 @@ def test_paddle_empty_like(
         test_values=False,
         x=x[0],
         dtype=dtype[0],
-        )
+    )
