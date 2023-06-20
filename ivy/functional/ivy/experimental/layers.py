@@ -1030,7 +1030,9 @@ def ifft(
 
 @handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
 @handle_out_argument
+@to_native_arrays_and_back
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1070,19 +1072,23 @@ def embedding(
     ivy.utils.assertions.check_equal(
         len(weights.shape), 2, message="weights must be 2-d", as_array=False
     )
-
-    ret = ivy.empty(
-        indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
-    )
-    if not ivy.is_ivy_array(indices):
-        indices = ivy.array(indices, dtype=ivy.int32)
-
-    for i, x in ivy.ndenumerate(indices):
-        if ivy.exists(max_norm):
-            ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
-        else:
-            ret[i] = weights[x, :]
-    return ret if not ivy.exists(out) else ivy.inplace_update(out, ret)
+    if ivy.exists(out):
+        return ivy.inplace_update(
+            out,
+            ivy.current_backend(indices).embedding(
+                weights,
+                indices,
+                max_norm=max_norm,
+                out=out,
+            ),
+        )
+    else:
+        return ivy.current_backend(indices).embedding(
+            weights,
+            indices,
+            max_norm=max_norm,
+            out=out,
+        )
 
 
 @handle_exceptions
@@ -1504,8 +1510,8 @@ def _upsample_bicubic2d_default(
     return result
 
 
+@handle_exceptions
 @handle_nestable
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def interpolate(
@@ -1833,6 +1839,16 @@ def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
     return p
 
 
+interpolate.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 def _compute_idx(in_size, out_size, device):
     out_range = ivy.arange(out_size, device=device, dtype=ivy.int64)
     i0 = ivy.trunc_divide(out_range * in_size, out_size).astype(ivy.int64)
@@ -1945,7 +1961,11 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
+@handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -2139,6 +2159,16 @@ def _int_arg_to_tuple(arg, dims):
     if isinstance(arg, int):
         arg = tuple([arg] * dims)
     return arg
+
+
+avg_pool2d.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions
