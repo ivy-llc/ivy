@@ -751,6 +751,7 @@ def test_torch_quantile(
     dtype_and_x=_statistical_dtype_values(function="nanquantile"),
     keepdims=st.booleans(),
 )
+
 def test_torch_nanquantile(
     *,
     dtype_and_x,
