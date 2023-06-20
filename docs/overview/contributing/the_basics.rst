@@ -65,13 +65,13 @@ c. Comment on the ToDo list issue with a reference to this issue like so:
    Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
    No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
 
-d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following comment in the PR:
+d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
    :code:`Close #Issue_number`
 
-   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is the 
-   first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
-   Also remember to make the PR name well described and if there are some details that can support your changes add them to the first comment of the PR.
+   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is in the 
+   description of the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
+   Also remember to make the PR name well described and if there are some details that can support your changes add them to the description of the PR.
 
 e. Wait for us to review your PR.
    Once we have reviewed your PR we will either merge or request changes.
