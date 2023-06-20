@@ -52,7 +52,11 @@ def current_backend_str() -> str:
 @with_unsupported_dtypes(
     {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def get_item(x: tf.Tensor, /, query: tf.Tensor, *, copy: bool = None) -> tf.Tensor:
+def get_item(
+    x: Union[tf.Tensor, tf.Variable], /, query: tf.Tensor, *, copy: bool = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if copy:
+        x = tf.identity(x)
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
@@ -470,10 +474,18 @@ def scatter_nd(
     elif sum(updates.shape) >= sum(expected_shape):
         indices_shape = updates.shape[:1] + indices.shape[-1:]
         if sum(indices.shape) < sum(indices_shape):
-            indices = ivy.broadcast_to(indices, indices_shape)._data
+            indices = (
+                tf.broadcast_to(indices, shape)
+                if len(indices_shape) > tf.rank(indices)
+                else tf.broadcast_to(tf.reshape(indices, -1), indices_shape)
+            )
         else:
-            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
-                updates = ivy.reshape(updates, expected_shape)._data
+            updates = (
+                tf.broadcast_to(updates, expected_shape)
+                if len(expected_shape) > tf.rank(updates)
+                else tf.broadcast_to(tf.reshape(updates, -1), expected_shape)
+            )
+
     # implementation
     target = out
     target_given = ivy.exists(target)
