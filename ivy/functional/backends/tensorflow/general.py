@@ -52,7 +52,11 @@ def current_backend_str() -> str:
 @with_unsupported_dtypes(
     {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def get_item(x: tf.Tensor, /, query: tf.Tensor, *, copy: bool = None) -> tf.Tensor:
+def get_item(
+    x: Union[tf.Tensor, tf.Variable], /, query: tf.Tensor, *, copy: bool = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if copy:
+        x = tf.identity(x)
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)

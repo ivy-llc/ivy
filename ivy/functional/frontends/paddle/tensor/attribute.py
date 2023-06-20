@@ -8,3 +8,8 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 @to_ivy_arrays_and_back
 def is_complex(x):
     return ivy.is_complex_dtype(x)
+
+
+@to_ivy_arrays_and_back
+def is_floating_point(x):
+    return ivy.is_float_dtype(x)

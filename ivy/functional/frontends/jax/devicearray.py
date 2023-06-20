@@ -92,7 +92,7 @@ class DeviceArray:
             dtype=dtype,
             out=out,
         )
-    
+
     def nonzero(self, *, size=None, fill_value=None):
         return jax_frontend.numpy.nonzero(
             self,
