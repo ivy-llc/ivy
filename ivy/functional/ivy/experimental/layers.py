@@ -1030,7 +1030,9 @@ def ifft(
 
 @handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
 @handle_out_argument
+@to_native_arrays_and_back
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1070,19 +1072,23 @@ def embedding(
     ivy.utils.assertions.check_equal(
         len(weights.shape), 2, message="weights must be 2-d", as_array=False
     )
-
-    ret = ivy.empty(
-        indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
-    )
-    if not ivy.is_ivy_array(indices):
-        indices = ivy.array(indices, dtype=ivy.int32)
-
-    for i, x in ivy.ndenumerate(indices):
-        if ivy.exists(max_norm):
-            ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
-        else:
-            ret[i] = weights[x, :]
-    return ret if not ivy.exists(out) else ivy.inplace_update(out, ret)
+    if ivy.exists(out):
+        return ivy.inplace_update(
+            out,
+            ivy.current_backend(indices).embedding(
+                weights,
+                indices,
+                max_norm=max_norm,
+                out=out,
+            ),
+        )
+    else:
+        return ivy.current_backend(indices).embedding(
+            weights,
+            indices,
+            max_norm=max_norm,
+            out=out,
+        )
 
 
 @handle_exceptions
@@ -1878,6 +1884,7 @@ def _mask(vals, length, range_max, dim):
 
 
 @handle_nestable
+@inputs_to_ivy_arrays
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -2134,6 +2141,12 @@ def _get_identity(func, dtype, init):
     return init
 
 
+def _int_arg_to_tuple(arg, dims):
+    if isinstance(arg, int):
+        arg = tuple([arg] * dims)
+    return arg
+
+
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
@@ -2188,7 +2201,22 @@ def reduce_window(
     """
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
-    op, dims, strides = operand, window_dimensions, window_strides
+    op = operand
+
+    dims, strides, padding, base_dilation, window_dilation = ivy.map(
+        _int_arg_to_tuple,
+        unique={
+            "arg": [
+                window_dimensions,
+                window_strides,
+                padding,
+                base_dilation,
+                window_dilation,
+            ]
+        },
+        constant={"dims": len(op.shape)},
+    )
+
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):

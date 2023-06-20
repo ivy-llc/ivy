@@ -123,8 +123,7 @@ def vecdot(x, y, *, dim=-1, out=None):
 
 @to_ivy_arrays_and_back
 def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
-    # TODO: add handling for hermitian once complex numbers are supported
-    return ivy.astype(ivy.matrix_rank(input, atol=atol, rtol=rtol, out=out), ivy.int64)
+    return ivy.matrix_rank(input, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
 
 
 @to_ivy_arrays_and_back

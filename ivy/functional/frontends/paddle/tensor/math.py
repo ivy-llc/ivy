@@ -30,7 +30,7 @@ def cosh(x, name=None):
     return ivy.cosh(x)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def tanh(x, name=None):
     return ivy.tanh(x)
@@ -156,3 +156,9 @@ def log1p(x, name=None):
 @to_ivy_arrays_and_back
 def rad2deg(x, name=None):
     return ivy.rad2deg(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def tan(x, name=None):
+    return ivy.tan(x)

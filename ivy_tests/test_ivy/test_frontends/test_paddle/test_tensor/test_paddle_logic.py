@@ -350,3 +350,121 @@ def test_paddle_bitwise_and(
         x=x[0],
         y=x[1],
     )
+
+
+# bitwise_xor
+@handle_frontend_test(
+    fn_tree="paddle.bitwise_xor",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(True),
+)
+def test_paddle_bitwise_xor(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# allclose
+@handle_frontend_test(
+    fn_tree="paddle.allclose",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    equal_nan=st.booleans(),
+)
+def test_paddle_allclose(
+    *,
+    dtype_and_x,
+    equal_nan,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        equal_nan=equal_nan,
+    )
+
+
+# is_tensor
+@handle_frontend_test(
+    fn_tree="paddle.is_tensor",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_paddle_is_tensor(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
+
+
+# isclose
+@handle_frontend_test(
+    fn_tree="paddle.isclose",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    equal_nan=st.booleans(),
+)
+def test_paddle_isclose(
+    *,
+    dtype_and_x,
+    equal_nan,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        equal_nan=equal_nan,
+    )

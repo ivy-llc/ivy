@@ -84,7 +84,7 @@ def copysign(
         signs = ivy.sign(x2)
         result = ivy.multiply(ivy.abs(x1), signs)
         if result.shape == [1]:
-            result = paddle.fluid.layers.squeeze(result, [0])
+            result = ivy.squeeze(result)
         return result
 
 
