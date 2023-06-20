@@ -871,6 +871,7 @@ def _get_axis_and_p(draw, kind="valid"):
             force_int_axis=True,
         )
     )
+
     input_dtype, x, axis = dtype_x_axis
     if input_dtype[0].is_complex_dtype:
         kind = "complex"
@@ -880,7 +881,7 @@ def _get_axis_and_p(draw, kind="valid"):
     dtype = draw(helpers.get_dtypes(kind, full=False))
     dtype = dtype[0]
     if ivy.can_cast(input_dtype[0], dtype):
-        _, dtype = ivy.promote_types_of_inputs(input_dtype[0], dtype)
+        dtype = ivy.promote_types(input_dtype[0], dtype)
     else:
         dtype = input_dtype[0]
 
@@ -890,15 +891,13 @@ def _get_axis_and_p(draw, kind="valid"):
 # norm
 @handle_frontend_test(
     fn_tree="torch.norm",
-    p_dtype_x_axis=_get_axis_and_p("real_and_complex"),
+    p_dtype_x_axis=_get_axis_and_p(),
     keepdim=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_torch_norm(
     *,
     p_dtype_x_axis,
     keepdim,
-    dtype,
     frontend,
     test_flags,
     fn_tree,

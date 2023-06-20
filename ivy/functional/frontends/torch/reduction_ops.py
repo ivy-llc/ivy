@@ -1,5 +1,5 @@
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
 
@@ -255,8 +255,8 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("bfloat16",)},
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float", "complex")},
     "torch",
 )
 def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
