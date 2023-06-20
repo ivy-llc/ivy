@@ -777,6 +777,7 @@ class Tensor:
         else:
             return str(self.dtype)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def type_as(self, other):
         if self.dtype != other.dtype:
             self.ivy_array = ivy.astype(self.ivy_array, other.dtype)
