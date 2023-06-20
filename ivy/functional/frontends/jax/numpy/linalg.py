@@ -68,8 +68,8 @@ def slogdet(a, method=None):
 
 
 @to_ivy_arrays_and_back
-def matrix_rank(M):
-    return ivy.matrix_rank(M)
+def matrix_rank(M, tol=None):
+    return ivy.matrix_rank(M, atol=tol)
 
 
 @to_ivy_arrays_and_back
@@ -109,7 +109,7 @@ def tensorsolve(a, b, axes=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.12 and below": ("float16", "bfloat16")}, "jax")
 def tensorinv(a, ind=2):
     old_shape = ivy.shape(a)
     prod = 1
