@@ -373,9 +373,9 @@ class Array(
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
         arr_np = backend.to_numpy(self._data)
-        arr_np = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
+        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
-            repr = arr_np.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
+            repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             return (
                 self._pre_repr
                 + repr[repr.find("(") :]
