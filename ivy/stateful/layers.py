@@ -1852,3 +1852,52 @@ class AdaptiveAvgPool1d(Module):
             x,
             self._output_size,
         )
+
+
+# Fourier transforms #
+# --------#
+class IFFT(Module):
+    def __init__(
+        self,
+        dim,
+        *,
+        norm="backward",
+        n=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying an inverse fast Fourier transform.
+
+        Parameters
+        ----------
+        dim
+            An integer specifying the dimension over which to compute the inverse fft.
+            Default is the last axis.
+        norm
+            A string specifying the normalization mode. Default is 'backward'.
+        n
+            An integer specifying the sequence length. Default is the size of the input.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x : array
+            The input array to the layer.
+
+        Returns
+        -------
+        array
+            The output array of the layer.
+        """
+        return ivy.ifft(x, self._dim, self._norm, self._n)

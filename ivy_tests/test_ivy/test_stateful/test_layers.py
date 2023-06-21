@@ -1378,3 +1378,38 @@ def test_adaptive_avg_pool1d_layer(
         test_gradients=test_gradients,
         on_device=on_device,
     )
+
+
+# IFFT
+@handle_method(
+    method_tree="IFFT.__call__",
+)
+def test_ifft_layer(
+    *,
+    dt_arr_size,
+    dim,
+    norm,
+    n,
+    on_device,
+    class_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, out_size = dt_arr_size
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "dim": dim,
+            "norm": norm,
+            "n": n,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        on_device=on_device,
+    )
