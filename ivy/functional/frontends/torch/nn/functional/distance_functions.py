@@ -44,8 +44,8 @@ def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
-def pdist(x,*, p):
-    x = ivy.array([abs(x[i] - x[j]) for i in range(len(x) - 1) for j in range(i + 1, len(x))])
+def pdist(input, *, p-2):
+    x = ivy.array([abs(input[i] - input[j]) for i in range(len(input) - 1) for j in range(i + 1, len(input))])
     return ivy.vector_norm(x, ord=p, axis=1)
 
 
