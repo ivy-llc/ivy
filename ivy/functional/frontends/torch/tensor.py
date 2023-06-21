@@ -355,11 +355,8 @@ class Tensor:
     def logical_not(self, *, out=None):
         return torch_frontend.logical_not(self, out=out)
 
-    def logical_not_(self, *, out=None):
-        ret = torch_frontend.logical_not(self, out=out)
-        self.ivy_array = ivy.inplace_update(
-            self.ivy_array, ivy.astype(ret.ivy_array, self.dtype)
-        )
+    def logical_not_(self):
+        self.ivy_array = ivy.astype(self.logical_not().ivy_array, self.dtype)
         return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
@@ -780,6 +777,7 @@ class Tensor:
         else:
             return str(self.dtype)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def type_as(self, other):
         if self.dtype != other.dtype:
             self.ivy_array = ivy.astype(self.ivy_array, other.dtype)
@@ -1078,6 +1076,10 @@ class Tensor:
         return torch_frontend.greater(self, other)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def __ge__(self, other):
+        return torch_frontend.greater_equal(self, other)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __ne__(self, other):
         return self.ne(other)
 
@@ -1282,16 +1284,25 @@ class Tensor:
         return torch_frontend.copysign(self, other, out=out)
 
     @with_unsupported_dtypes(
-        {"2.0.1 and below": ("complex", "float16", "bfloat16", "bool")}, "torch"
+        {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
     )
     def greater(self, other, *, out=None):
         return torch_frontend.greater(self, other, out=out)
 
-    @with_unsupported_dtypes(
-        {"2.0.1 and below": ("complex", "float16", "bfloat16", "bool")}, "torch"
-    )
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
     def greater_(self, other):
         self.ivy_array = ivy.astype(self.greater(other).ivy_array, self.dtype)
+        return self
+
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
+    )
+    def greater_equal(self, other, *, out=None):
+        return torch_frontend.greater_equal(self, other, out=out)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
+    def greater_equal_(self, other):
+        self.ivy_array = ivy.astype(self.greater_equal(other).ivy_array, self.dtype)
         return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
