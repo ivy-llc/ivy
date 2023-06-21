@@ -752,9 +752,9 @@ def test_paddle_tan(
 
 # neg
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.neg",
+    fn_tree="paddle.neg",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_neg(
@@ -772,7 +772,7 @@ def test_paddle_neg(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        x=x[0],
     )
 
 
