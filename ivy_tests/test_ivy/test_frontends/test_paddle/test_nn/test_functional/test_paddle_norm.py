@@ -49,6 +49,8 @@ def _instance_and_batch_norm_helper(draw, *, min_num_dims=1, min_dim_size=1):
     eps=helpers.floats(min_value=1e-5, max_value=0.1),
     training=st.booleans(),
     data_format=st.sampled_from(["NCHW", "NHWC"]),
+    use_global_stats=st.booleans(),
+    name=st.none(),
 )
 def test_paddle_batch_norm(
     *,
@@ -60,6 +62,8 @@ def test_paddle_batch_norm(
     frontend,
     test_flags,
     fn_tree,
+    use_global_stats,
+    name=None,
 ):
     input_dtype, input, weight, bias, running_mean, running_var = data
     helpers.test_frontend_function(
@@ -69,7 +73,7 @@ def test_paddle_batch_norm(
         atol=1e-1,
         rtol=1e-1,
         fn_tree=fn_tree,
-        input=input,
+        x=input,
         running_mean=running_mean,
         running_var=running_var,
         weight=weight,
@@ -78,4 +82,6 @@ def test_paddle_batch_norm(
         momentum=momentum,
         eps=eps,
         data_format=data_format,
+        use_global_stats=use_global_stats,
+        name=name,
     )
