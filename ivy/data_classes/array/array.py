@@ -1146,15 +1146,17 @@ class Array(
             return to_ivy(copy.deepcopy(self._data))
 
     def __len__(self):
-        return len(self._data)
+        try:
+            return len(self._data)
+        except TypeError:
+            return self._data.shape[0]
 
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ivy.Array not supported")
         if ivy.current_backend_str() == "paddle":
-            if self.ndim == 1:
-                ret = [to_ivy(i).squeeze(0) for i in self._data]
-                return iter(ret)
-            elif self.dtype in ["int8", "int16", "uint8", "float16"]:
+            if self.dtype in ["int8", "int16", "uint8", "float16"]:
                 return iter([to_ivy(i) for i in ivy.unstack(self._data)])
+            elif self.ndim == 1:
+                return iter([to_ivy(i).squeeze(0) for i in self._data])
         return iter([to_ivy(i) for i in self._data])

@@ -227,9 +227,9 @@ A general workflow for these tasks would be:
 
 #. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`, sometimes as a composition if the respective backends do not behave in a similar way.
    You may also use submodule-specific helper functions to recreate the behaviour.
-   Refer the `Backend API Guide <https://unify.ai/docs/ivy/deep_dive/navigating_the_code.html#backend-api>`_ on how this can be done.
+   Refer the `Backend API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#backend-api>`_ on how this can be done.
 #. Implement the functions in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation.
-   Refer the `Ivy API Guide <https://unify.ai/docs/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
+   Refer the `Ivy API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
 #. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
    in :mod:`ivy/array/experimental/[relevant_submodule].py`
 #. Write tests for the function using the :ref:`Ivy Tests` guide, and make sure they are passing.
