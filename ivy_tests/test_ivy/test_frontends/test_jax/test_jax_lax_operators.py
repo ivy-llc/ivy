@@ -1745,17 +1745,16 @@ def test_jax_lax_dot(
 
 @st.composite
 def _get_dtype_inputs_for_batch_matmul(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=4))
-    batch_size = draw(helpers.ints(min_value=1, max_value=3))
+    dim_size_left = draw(helpers.ints(min_value=1, max_value=4))
+    dim_size_right = draw(helpers.ints(min_value=1, max_value=4))
+    batch_size = draw(helpers.ints(min_value=0, max_value=3))
     dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
-    if dim_size == 1:
+
+    if batch_size == 0:
         lhs = draw(
             helpers.array_values(
                 dtype=dtype[0],
-                shape=(
-                    dim_size,
-                    dim_size,
-                ),
+                shape=(dim_size_left, dim_size_right),
                 min_value=2,
                 max_value=5,
             )
@@ -1763,10 +1762,7 @@ def _get_dtype_inputs_for_batch_matmul(draw):
         rhs = draw(
             helpers.array_values(
                 dtype=dtype[0],
-                shape=(
-                    dim_size,
-                    dim_size,
-                ),
+                shape=(dim_size_right, dim_size_left),
                 min_value=2,
                 max_value=5,
             )
@@ -1775,7 +1771,7 @@ def _get_dtype_inputs_for_batch_matmul(draw):
         lhs = draw(
             helpers.array_values(
                 dtype=dtype[0],
-                shape=(batch_size, dim_size, dim_size),
+                shape=(batch_size, dim_size_left, dim_size_right),
                 min_value=2,
                 max_value=5,
             )
@@ -1783,11 +1779,12 @@ def _get_dtype_inputs_for_batch_matmul(draw):
         rhs = draw(
             helpers.array_values(
                 dtype=dtype[0],
-                shape=(batch_size, dim_size, dim_size),
+                shape=(batch_size, dim_size_right, dim_size_left),
                 min_value=2,
                 max_value=5,
             )
         )
+
     return dtype, lhs, rhs
 
 
