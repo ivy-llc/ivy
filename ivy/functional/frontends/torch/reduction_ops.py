@@ -141,7 +141,9 @@ def min(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def max(input, dim=None, keepdim=False, *, out=None):
+def max(input, dim=None, axis=None, keepdim=False, *, out=None):
+    if dim is None:
+        dim = axis
     if dim is None:
         return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
     elif out is not None:
