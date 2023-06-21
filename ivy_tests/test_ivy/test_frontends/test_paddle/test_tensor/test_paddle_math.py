@@ -749,6 +749,7 @@ def test_paddle_tan(
         x=x[0],
     )
 
+
 # sign
 @handle_frontend_test(
     fn_tree="paddle.sign",
