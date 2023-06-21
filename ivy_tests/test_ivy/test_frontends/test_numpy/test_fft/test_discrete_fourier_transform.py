@@ -196,12 +196,10 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
 
 @handle_frontend_test(
     fn_tree="numpy.fft.ifftn",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), shape=(4, 4)
-    ),
+    dtype_and_x=x_and_ifft(),
 )
 def test_numpy_ifftn(dtype_and_x, frontend, test_flags, fn_tree, on_device):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, dim, norm, n = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -211,6 +209,6 @@ def test_numpy_ifftn(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         test_values=True,
         a=x,
         s=None,
-        axes=(1,),
-        norm=None,
+        axes=None,
+        norm=norm,
     )
