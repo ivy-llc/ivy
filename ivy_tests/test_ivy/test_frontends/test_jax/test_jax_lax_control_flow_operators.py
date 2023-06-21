@@ -236,7 +236,7 @@ def test_jax_lax_scan(
     for elem in x:
         carry, y = _test_f(carry, elem)
         expected_ys.append(y)
-    expected_result = (expected_carry, ivy.stack(expected_ys))
+    expected_result = (expected_carry, np.stack(expected_ys))
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
