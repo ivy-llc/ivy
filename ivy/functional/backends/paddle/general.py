@@ -4,6 +4,8 @@ from numbers import Number
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
+import functools
+from operator import mul
 
 # local
 import ivy
@@ -33,13 +35,32 @@ def current_backend_str() -> str:
 
 
 def get_item(
-    x: paddle.Tensor, query: Union[paddle.Tensor, Tuple], *, copy: bool = None
+    x: paddle.Tensor,
+    /,
+    query: Union[paddle.Tensor, Tuple],
+    *,
+    copy: bool = None,
 ) -> paddle.Tensor:
+    if copy:
+        x = paddle.clone(x)
     # regular queries x[idx_1,idx_2,...,idx_i]
     if not isinstance(query, paddle.Tensor):
-        if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-            return x.cast("float32").__getitem__(query).cast(x.dtype)
-        return x.__getitem__(query)
+        x_dtype = x.dtype
+        if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+            x = x.cast("float32")
+        ret = x.__getitem__(query)
+        ret_numel = functools.reduce(mul, ret.shape) if len(ret.shape) > 0 else 0
+        if (
+            isinstance(query, Number)
+            or (
+                isinstance(query, tuple)
+                and all(isinstance(index, int) for index in query)
+            )
+        ) and ret_numel == 1:
+            ret = ret.squeeze(axis=-1)
+        if ret.dtype != x_dtype:
+            return ret.cast(x_dtype)
+        return ret
 
     # masked queries x[bool_1,bool_2,...,bool_i]
     if query.dtype == paddle.bool:
@@ -632,8 +653,7 @@ def scatter_nd(
         if sum(indices.shape) < sum(indices_shape):
             indices = paddle_backend.broadcast_to(indices, indices_shape)
         else:
-            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
-                updates = paddle_backend.reshape(updates, expected_shape)
+            updates = paddle_backend.broadcast_to(updates, expected_shape)
     # implementation
     target = out
     target_given = ivy.exists(target)
