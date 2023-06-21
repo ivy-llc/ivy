@@ -285,16 +285,23 @@ def test_tensorflow_eye(
         max_dim_size=10,
         max_num_dims=4,
         min_dim_size=1,
+        min_num_dims=1,
     ),
+    parallel_iterations=st.just(10),
+    swap_memory=st.booleans(),
+    name=st.none(),
 )
 def test_tensorflow_foldl(
     *,
     fn,
-    dtype_and_values,
     initializer,
+    dtype_and_values,
     frontend,
     fn_tree,
     test_flags,
+    parallel_iterations,
+    swap_memory,
+    name,
 ):
     dtype, elems = dtype_and_values
     elems = np.atleast_1d(elems)
@@ -303,6 +310,9 @@ def test_tensorflow_foldl(
         fn=fn,
         elems=elems,
         initializer=initializer,
+        parallel_iterations=parallel_iterations,
+        swap_memory=swap_memory,
+        name=name,
         frontend=frontend,
         fn_tree=fn_tree,
         test_flags=test_flags,

@@ -99,14 +99,20 @@ def foldl(
     ivy.utils.assertions.check_true(
         callable(fn), f"{fn.__name__} must be a callable function"
     )
-
-    elems = ivy.atleast_1d(elems)
+    if len(ivy.shape(elems)) == 0 or ivy.get_num_dims(elems) == 0:
+        ivy.utils.exceptions.IvyValueError(
+            "elems must be a non-empty iterable object with at least one dimension"
+        )
     if initializer is not None:
-        return functools.reduce(fn, elems, initializer)
+        result = functools.reduce(fn, elems, initializer)
     elif initializer is None and ivy.shape(elems)[0] > 0:
-        return functools.reduce(fn, elems[1:], elems[0])
+        result = functools.reduce(fn, elems[1:], elems[0])
     else:
-        return elems
+        result = elems
+    if all(ivy.get_num_dims(e) == 0 for e in elems):
+        result = ivy.to_scalar(result)
+
+    return result
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
