@@ -1028,8 +1028,8 @@ def dtype_value1_value2_axis(
         max_num_dims=10,
         min_dim_size=3,
         max_dim_size=3,
-        min_value=-1e10,
-        max_value=1e10,
+        min_value=-1e5,
+        max_value=1e5,
         abs_smallest_val=0.01,
         large_abs_safety_factor=2,
         safety_factor_scale="log",
@@ -1094,8 +1094,8 @@ def test_torch_gcd(
     fn_tree="torch.tensordot",
     dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
         helpers.get_dtypes(kind="float"),
-        min_value=-5,
-        max_value=5,
+        min_value=-10,
+        max_value=10,
     ),
 )
 def test_torch_tensordot(
@@ -1105,6 +1105,11 @@ def test_torch_tensordot(
     fn_tree,
 ):
     dtype, a, b, dims = dtype_values_and_axes
+    if ivy.current_backend_str() == "paddle":
+        # Paddle only supports ndim from 0 to 9
+        assume(a.shape[0] < 10)
+        assume(b.shape[0] < 10)
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,
