@@ -191,8 +191,6 @@ def conv3d(
 
 
 # noinspection PyUnresolvedReferences
-import paddle
-
 def conv3d_transpose(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -207,7 +205,6 @@ def conv3d_transpose(
 ) -> paddle.Tensor:
     if isinstance(padding, str):
         padding = padding.upper()
-
     input_shape = x.shape
     output_channels = filters.shape[1]
 
