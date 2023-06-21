@@ -1295,7 +1295,7 @@ def test_torch_multi_head_attention_forward(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=not training,
+        test_values=not training or dropout_p == 0.,
         query=q,
         key=k,
         value=v,
