@@ -1,7 +1,7 @@
 # local
 import ivy
-from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
@@ -23,3 +23,22 @@ def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
 
     cosine = numerator / denominator
     return cosine
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def dropout2d(x, *, p=0.5):
+    if not isinstance(x, ivy.Array):
+        raise TypeError(f'Input x must be an instance of {ivy.backend} Tensor but was {type(x)}')
+    if p < 0 or p > 1:
+        raise ValueError(f'Input p must be a value between 0 and 1, but was {p}')
+    
+    if x.shape != (None, 4, None, None):
+        raise ValueError(f'Input x must be a 4D Tensor but was {x.shape}')
+    
+    if p == 0:
+        return x
+    
+    mask =  ivy.random.choice([0, 1], size=x.shape, p=[p, 1 - p])
+    mask /= (1 - p)
+    return x * mask
