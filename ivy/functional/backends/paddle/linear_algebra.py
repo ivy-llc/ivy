@@ -376,6 +376,8 @@ def matrix_transpose(
     conjugate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if conjugate:
+        x = paddle.conj(x)
     perm = list(range(x.ndim))
     perm[-1], perm[-2] = perm[-2], perm[-1]
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
