@@ -205,20 +205,25 @@ def conv3d_transpose(
 ) -> paddle.Tensor:
     if data_format == "NCDHW":
         x = paddle.transpose(x, perm=(0, 2, 3, 4, 1))
+
     df = "NDHWC"
     x = _pad_before_conv(x, filters, strides, padding, 3, dilations, df)
-    filters = paddle.transpose(filters, perm=(3, 2, 0, 1, 4))
-    padding = "VALID"
+    filters = paddle.transpose(filters, perm=(3, 2, 0, 1))
+    if padding == "SAME":
+        padding = "VALID"
+    else:
+        padding = padding
 
     res = paddle.nn.functional.conv3d_transpose(
         x,
         filters,
-        output_size=output_shape,
+        data_format=df,
         stride=strides,
         padding=padding,
         dilation=dilations,
-        data_format=df,
+        output_padding=output_shape,
     )
+
     if data_format == "NCDHW":
         res = paddle.transpose(res, perm=(0, 4, 1, 2, 3))
     return res
