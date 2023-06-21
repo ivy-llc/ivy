@@ -1,6 +1,7 @@
 from hypothesis import strategies as st
 
 import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -85,7 +86,7 @@ def test_torch_pairwise_distance(
 # P-norm Distance
 @handle_frontend_test(
     fn_tree="torch.nn.functional.pdist",
-    dtype_and_x = helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=2,
