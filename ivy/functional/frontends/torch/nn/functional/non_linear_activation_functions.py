@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -357,6 +357,7 @@ def softplus(input, beta=1, threshold=20):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 def multi_head_attention_forward(
     query,
     key,

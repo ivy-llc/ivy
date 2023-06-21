@@ -1243,7 +1243,7 @@ def mha_forward_args(draw, dtypes):
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multi_head_attention_forward",
     dtype_mha_args=mha_forward_args(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("valid"),
     ),
     add_zero_attn=st.just(False),
     dropout_p=st.just(0.),
