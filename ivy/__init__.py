@@ -844,22 +844,16 @@ def _assert_array_significant_figures_formatting(sig_figs):
 
 
 # ToDo: SF formating for complex number
-def _sf(x, sig_fig=3):
+def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
     if isinstance(x, complex):
         return complex(x)
-    if "float" in type(x).__name__:
-        x = float(
-            np.format_float_positional(
-                x, precision=sig_fig, unique=False, fractional=False, trim="k"
-            )
-        )
+    if np.issubdtype(x.dtype, np.floating):
+        x_positive = np.where(np.isfinite(x) & (x != 0), np.abs(x), 10 ** (sig_fig - 1))
+        mags = 10 ** (sig_fig - 1 - np.floor(np.log10(x_positive)))
+        return np.round(x * mags) / mags
     return x
-
-
-vec_sig_fig = np.vectorize(_sf)
-vec_sig_fig.__name__ = "vec_sig_fig"
 
 
 ivy.array_significant_figures = 10
