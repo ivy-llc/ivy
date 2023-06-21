@@ -49,7 +49,15 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
-def get_item(x: JaxArray, /, query: JaxArray, *, copy: bool = None) -> JaxArray:
+def get_item(
+    x: JaxArray,
+    /,
+    query: JaxArray,
+    *,
+    copy: bool = None,
+) -> JaxArray:
+    if copy:
+        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 
