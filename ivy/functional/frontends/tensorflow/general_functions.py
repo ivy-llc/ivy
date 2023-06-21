@@ -100,7 +100,7 @@ def foldl(
         callable(fn), f"{fn.__name__} must be a callable function"
     )
     if len(ivy.shape(elems)) == 0 or ivy.get_num_dims(elems) == 0:
-        ivy.utils.exceptions.IvyValueError(
+        raise ivy.utils.exceptions.IvyValueError(
             "elems must be a non-empty iterable object with at least one dimension"
         )
     if initializer is not None:
