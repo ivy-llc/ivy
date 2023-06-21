@@ -320,6 +320,9 @@ def lcm(input, other, *, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def einsum(equation, *operands):
+    if len(operands) == 1 and isinstance(operands[0], (list, tuple)):
+        _operands = operands[0]
+        return ivy.einsum(equation, *_operands)
     return ivy.einsum(equation, *operands)
 
 
