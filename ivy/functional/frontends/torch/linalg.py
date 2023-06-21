@@ -19,8 +19,6 @@ def norm(input, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
         return vector_norm(input, ord, dim, keepdim, dtype=None, out=None)
 
 
-
-
 @to_ivy_arrays_and_back
 def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.vector_norm(
