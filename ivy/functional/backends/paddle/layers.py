@@ -203,13 +203,28 @@ def conv3d_transpose(
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if data_format == "NCDHW":
+        x = paddle.transpose(x, perm=(0, 2, 3, 4, 1))
+
+    df = "NDHWC"
+    x = _pad_before_conv(x, filters, strides, padding, 3, dilations, df)
+    filters = paddle.transpose(filters, perm=(3, 2, 0, 1, 4))
+    padding = "VALID"
+
+    res = paddle.nn.functional.conv3d_transpose(
+        x,
+        filters,
+        output_size=output_shape,
+        stride=strides,
+        padding=padding,
+        dilation=dilations,
+        data_format=df,
+    )
+    if data_format == "NCDHW":
+        res = paddle.transpose(res, perm=(0, 4, 1, 2, 3))
+    return res
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}},
-    backend_version,
-)
 def conv_general_dilated(
     x: paddle.Tensor,
     filters: paddle.Tensor,
