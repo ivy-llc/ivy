@@ -15,6 +15,9 @@
       <option name="extraHosts">
         <list />
       </option>
+      <envs>
+        <env name="PYTHONPATH" value="/opt/fw/numpy:/opt/fw/jax:/opt/fw/tensorflow:/opt/fw/torch:/opt/fw/paddle:/opt/fw/mxnet" />
+      <envs/>
       <option name="links">
         <list />
       </option>
