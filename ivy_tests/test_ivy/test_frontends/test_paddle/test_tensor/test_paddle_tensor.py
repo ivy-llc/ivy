@@ -1060,12 +1060,10 @@ def test_paddle_isinf(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     dtype=st.one_of(helpers.get_dtypes("valid")),
-    copy=st.booleans(),
 )
 def test_paddle_astype(
     dtype_and_x,
     dtype,
-    copy,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -1083,7 +1081,6 @@ def test_paddle_astype(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "dtype": dtype,
-            "copy": copy,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
