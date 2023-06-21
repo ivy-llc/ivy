@@ -1380,9 +1380,40 @@ def test_adaptive_avg_pool1d_layer(
     )
 
 
+@st.composite
+def _embedding_helper(draw):
+    dtype_weight, weight = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=1,
+        )
+    )
+    num_embeddings, embedding_dim = weight[0].shape
+    dtype_indices, indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_num_dims=2,
+            min_dim_size=1,
+            min_value=0,
+            max_value=num_embeddings - 1,
+        ).filter(lambda x: x[1][0].shape[-1] == embedding_dim)
+    )
+    padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
+    return (
+        dtype_indices + dtype_weight,
+        indices[0],
+        weight[0],
+        padding_idx,
+        num_embeddings,
+        embedding_dim,
+    )
+
+
 @handle_method(
     method_tree="Embedding.__call__",
-    params=helpers.embedding_helper(),
+    params=_embedding_helper(),
     max_norm=st.floats(
         min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False
     ),
@@ -1420,7 +1451,7 @@ def test_embedding(
         method_all_as_kwargs_np={"indices": indices},
         class_name=class_name,
         method_name=method_name,
-        method_with_v=True,
+        method_with_v=method_with_v,
         test_values="with_v",
         test_gradients=test_gradients,
         on_device=on_device,
