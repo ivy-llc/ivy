@@ -649,7 +649,7 @@ def test_paddle_log2(
 @handle_frontend_test(
     fn_tree="paddle.log1p",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_log1p(
