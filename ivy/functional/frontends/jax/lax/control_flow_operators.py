@@ -1,7 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-# from typing import Callable
+
 
 @to_ivy_arrays_and_back
 def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
@@ -58,6 +58,7 @@ def while_loop(cond_fun, body_fun, init_val):
     while cond_fun(val):
         val = body_fun(val)
     return val
+
 
 @to_ivy_arrays_and_back
 def scan(f, init, xs, length=None):
