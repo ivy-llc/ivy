@@ -287,6 +287,48 @@ def test_jax_devicearray_cumprod(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
+    method_name="cumsum",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_value=-100,
+        max_value=100,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+)
+def test_jax_devicearray_cumsum(
+    dtype_and_x,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
     method_name="nonzero",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -351,6 +393,46 @@ def test_jax_devicearray_ravel(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "order": order,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="sort",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=["int64"],
+        force_int_axis=True,
+        min_axis=-1,
+        max_axis=-1,
+        min_dim_size=2,
+        max_dim_size=100,
+        min_num_dims=2,
+    ),
+)
+def test_jax_devicearray_sort(
+    dtype_x_axis,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -1639,6 +1721,43 @@ def test_jax_special_getitem(
         init_all_as_kwargs_np={"object": x},
         method_input_dtypes=[input_dtype[1]],
         method_all_as_kwargs_np={"idx": index},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="round",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
+    decimals=st.one_of(
+        st.integers(min_value=-10, max_value=10),
+    ),
+)
+def test_jax_devicearray_round(
+    dtype_x,
+    decimals,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"decimals": decimals},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

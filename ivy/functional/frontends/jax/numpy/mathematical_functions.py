@@ -6,7 +6,6 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
-from math import factorial
 
 
 # sign
@@ -386,7 +385,7 @@ def fmin(x1, x2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("uint16",)},
+    {"0.4.12 and below": ("uint16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -440,7 +439,7 @@ def sinc(x, /):
 
 @with_unsupported_dtypes(
     {
-        "0.4.10 and below": (
+        "0.4.12 and below": (
             "bfloat16",
             "float16",
         )
@@ -475,7 +474,7 @@ def vdot(a, b):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("bfloat16",)},
+    {"0.4.12 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -580,33 +579,27 @@ def polyadd(a1, a2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("float16",)},
+    {"0.4.12 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
 def polyder(p, m=1):
-    p = ivy.atleast_1d(p)
-    n = p.size
-
     if m < 0:
         raise ValueError("Order of derivative must be positive.")
 
     if m == 0:
         return p
-
-    if n == 1 or m >= n:
-        return ivy.array(0, dtype=p.dtype)
-
-    result = ivy.array(
-        [factorial(n - 1 - k) // factorial(n - 1 - k - m) * p[k] for k in range(n - m)],
-        dtype=p.dtype,
+    p_dtype = p.dtype
+    coeff = ivy.prod(
+        ivy.expand_dims(ivy.arange(m, len(p), dtype=p_dtype))
+        - ivy.expand_dims(ivy.arange(m, dtype=p_dtype), axis=1),
+        axis=0,
     )
-
-    return result
+    return (p[:-m] * coeff[::-1]).astype(p_dtype)
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("float16",)},
+    {"0.4.12 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -711,4 +704,9 @@ def product(
 
 @to_ivy_arrays_and_back
 def round(x, decimals=0, /):
-    return ivy.round(x, decimals)
+    return ivy.round(x, decimals=decimals)
+
+
+@to_ivy_arrays_and_back
+def conjugate(x, /):
+    return ivy.conj(x)

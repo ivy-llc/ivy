@@ -475,6 +475,39 @@ def test_paddle_pinv(
     )
 
 
+# solve
+@handle_frontend_test(
+    fn_tree="paddle.solve",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
+    ),
+    aliases=["paddle.tensor.linalg.solve"],
+    test_with_out=st.just(False),
+)
+def test_paddle_solve(
+    *,
+    dtype_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
 # cholesky
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.cholesky",
@@ -540,4 +573,36 @@ def test_paddle_bmm(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# matrix_power
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.matrix_power",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+    ),
+    n=helpers.ints(min_value=1, max_value=8),
+    test_with_out=st.just(False),
+)
+def test_paddle_matrix_power(
+    dtype_and_x,
+    n,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        n=n,
     )
