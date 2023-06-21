@@ -18,29 +18,12 @@ def batch_norm(
     momentum=0.9,
     epsilon=1e-05,
     data_format="NCHW",
-    use_global_stats=None,
-    name=None,
 ):
     ivy.utils.assertions.check_less(
         ivy.get_num_dims(x),
         2,
         message="input dim must be larger than 1",
         as_array=False,
-    )
-
-    if use_global_stats is None:
-        use_global_stats = not training
-        trainable_statistics = False
-    else:
-        trainable_statistics = not use_global_stats
-
-    out = (
-        "use_global_stats",
-        use_global_stats,
-        "trainable_statistics",
-        trainable_statistics,
-        "name",
-        name,
     )
 
     n_dims = len(x.shape)
@@ -56,7 +39,6 @@ def batch_norm(
         eps=epsilon,
         momentum=momentum,
         data_format=data_format,
-        out=out,
     )
 
     return ivy.permute_dims(normalized, axes=(0, n_dims - 1, *range(1, n_dims - 1)))
