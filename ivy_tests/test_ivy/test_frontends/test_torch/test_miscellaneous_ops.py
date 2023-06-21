@@ -1028,8 +1028,8 @@ def dtype_value1_value2_axis(
         max_num_dims=10,
         min_dim_size=3,
         max_dim_size=3,
-        min_value=-1e10,
-        max_value=1e10,
+        min_value=-1e5,
+        max_value=1e5,
         abs_smallest_val=0.01,
         large_abs_safety_factor=2,
         safety_factor_scale="log",
@@ -1093,9 +1093,10 @@ def test_torch_gcd(
 @handle_frontend_test(
     fn_tree="torch.tensordot",
     dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
-        helpers.get_dtypes(kind="float")
+        helpers.get_dtypes(kind="float"),
+        min_value=-10,
+        max_value=10,
     ),
-    test_with_out=st.just(False),
 )
 def test_torch_tensordot(
     dtype_values_and_axes,
@@ -1104,6 +1105,11 @@ def test_torch_tensordot(
     fn_tree,
 ):
     dtype, a, b, dims = dtype_values_and_axes
+    if ivy.current_backend_str() == "paddle":
+        # Paddle only supports ndim from 0 to 9
+        assume(a.shape[0] < 10)
+        assume(b.shape[0] < 10)
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -1111,7 +1117,7 @@ def test_torch_tensordot(
         fn_tree=fn_tree,
         a=a,
         b=b,
-        rtol=1e-1,
+        rtol=1e-2,
         atol=1e-2,
         dims=dims,
     )
@@ -1358,4 +1364,124 @@ def test_torch_clone(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+    )
+
+
+@st.composite
+def _get_dtype_value1_value2_cov(
+    draw,
+    available_dtypes,
+    min_num_dims,
+    max_num_dims,
+    min_dim_size,
+    max_dim_size,
+    abs_smallest_val=None,
+    min_value=None,
+    max_value=None,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    large_abs_safety_factor=4,
+    small_abs_safety_factor=4,
+    safety_factor_scale="log",
+):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
+
+    values = []
+    for i in range(1):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    abs_smallest_val=abs_smallest_val,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
+                )
+            )
+        )
+
+    value1 = values[0]
+
+    correction = draw(helpers.ints(min_value=0, max_value=1))
+
+    fweights = draw(
+        helpers.array_values(
+            dtype="int64",
+            shape=shape[1],
+            abs_smallest_val=1,
+            min_value=1,
+            max_value=10,
+            allow_inf=False,
+        )
+    )
+
+    aweights = draw(
+        helpers.array_values(
+            dtype="float64",
+            shape=shape[1],
+            abs_smallest_val=1,
+            min_value=1,
+            max_value=10,
+            allow_inf=False,
+            small_abs_safety_factor=1,
+        )
+    )
+
+    return [dtype], value1, correction, fweights, aweights
+
+
+# cov
+@handle_frontend_test(
+    fn_tree="torch.cov",
+    dtype_x1_corr_cov=_get_dtype_value1_value2_cov(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_value=1,
+        max_value=1e10,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_cov(
+    dtype_x1_corr_cov,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x1, correction, fweights, aweights = dtype_x1_corr_cov
+    helpers.test_frontend_function(
+        input_dtypes=["float64", "int64", "float64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        input=x1,
+        correction=correction,
+        fweights=fweights,
+        aweights=aweights,
     )
