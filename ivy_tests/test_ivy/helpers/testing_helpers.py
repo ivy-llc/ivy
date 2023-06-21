@@ -324,7 +324,6 @@ def handle_test(
     is_hypothesis_test = len(_given_kwargs) != 0
 
     possible_arguments = {}
-    ground_truth_backend = st.just(ground_truth_backend)
     if is_hypothesis_test and is_fn_tree_provided:
         # Use the default strategy
         if number_positional_args is None:
