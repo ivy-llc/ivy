@@ -255,6 +255,7 @@ def test_get_item(
 # TODO: add container and array instance methods
 @handle_test(
     fn_tree="functional.ivy.set_item",
+    ground_truth_backend="numpy",
     dtypes_x_query_val=_setitem_helper(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
