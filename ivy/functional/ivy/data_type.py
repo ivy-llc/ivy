@@ -1083,7 +1083,9 @@ def default_float_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_argwhere(input, lambda x: _check_float64(x)):
+            if ivy.nested_argwhere(
+                input, lambda x: _check_float64(x), stop_after_n_found=1
+            ):
                 ret = ivy.float64
             else:
                 if not default_float_dtype_stack:
@@ -1287,6 +1289,7 @@ def default_int_dtype(
                     if ivy.is_array(x)
                     else x > 9223372036854775807 and x != ivy.inf
                 ),
+                stop_after_n_found=1,
             ):
                 ret = ivy.uint64
             elif ivy.nested_argwhere(
@@ -1296,6 +1299,7 @@ def default_int_dtype(
                     if ivy.is_array(x)
                     else x > 2147483647 and x != ivy.inf
                 ),
+                stop_after_n_found=1,
             ):
                 ret = ivy.int64
             else:
@@ -1399,6 +1403,7 @@ def default_uint_dtype(
                     if is_native(x)
                     else x > 9223372036854775807 and x != ivy.inf
                 ),
+                stop_after_n_found=1,
             ):
                 ret = ivy.uint64
             else:
@@ -1493,8 +1498,7 @@ def default_complex_dtype(
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_argwhere(
-                input,
-                lambda x: _check_complex128(x),
+                input, lambda x: _check_complex128(x), stop_after_n_found=1
             ):
                 ret = ivy.complex128
             else:
