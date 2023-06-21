@@ -191,62 +191,59 @@ def conv3d(
 
 
 # noinspection PyUnresolvedReferences
+import paddle
+
 def conv3d_transpose(
     x: paddle.Tensor,
     filters: paddle.Tensor,
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int, int, int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: Optional[int] = 2,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: Optional[str] = "NDHWC",
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
-    bias: Optional[paddle.Tensor] = None,
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[paddle.Tensor] = None,
-):
-    if data_format == "channel_first":
-        x = paddle.transpose(x, perm=(0, *range(2, dims + 2), 1))
+) -> paddle.Tensor:
+    if isinstance(padding, str):
+        padding = padding.upper()
 
-    df = "NLC" if dims == 1 else _get_x_data_format(dims, data_format="channel_last")
-    x = _pad_before_conv(x, filters, strides, padding, dims, dilations, df)
-    filters = paddle.transpose(filters, perm=(dims + 1, dims, *range(dims)))
-    padding = "VALID"
+    input_shape = x.shape
+    output_channels = filters.shape[1]
 
-    if dims == 1:
-        res = paddle.nn.functional.conv_transpose1d(
-            x,
-            filters,
-            bias=bias,
-            data_format=df,
-            stride=strides,
-            padding=padding,
-            dilation=dilations,
-        )
-    elif dims == 2:
-        res = paddle.nn.functional.conv_transpose2d(
-            x,
-            filters,
-            bias=bias,
-            data_format=df,
-            stride=strides,
-            padding=padding,
-            dilation=dilations,
-        )
-    elif dims == 3:
-        res = paddle.nn.functional.conv_transpose3d(
-            x,
-            filters,
-            bias=bias,
-            data_format=df,
-            stride=strides,
-            padding=padding,
-            dilation=dilations,
-        )
+    # Transpose the input and filters if data_format is "NCDHW"
+    if data_format == "NCDHW":
+        x = paddle.transpose(x, perm=(0, 2, 3, 4, 1))
+        filters = paddle.transpose(filters, perm=(4, 3, 0, 1, 2))
 
-    if data_format == "channel_first":
-        res = paddle.transpose(res, perm=(0, dims + 1, *range(1, dims + 1)))
+    # Determine the output padding
+    if output_shape is None:
+        # Calculate the output shape based on the input shape and strides
+        output_shape = [
+            input_shape[0],
+            input_shape[1] * strides[0],
+            input_shape[2] * strides[1],
+            input_shape[3] * strides[2],
+            output_channels,
+        ]
+
+    x = paddle.nn.functional.pad(x, padding)
+
+    # perform the conv3d_transpose operation using conv3d with transposed filters
+    res = paddle.nn.functional.conv3d(
+        x,
+        paddle.transpose(filters, perm=(1, 0, 2, 3, 4)),
+        stride=strides,
+        padding=0,
+        dilation=dilations,
+        groups=input_shape[1],
+    )
+
+    res = res[:, : output_shape[1], : output_shape[2], : output_shape[3], :]
+
+    if data_format == "NCDHW":
+        res = paddle.transpose(res, perm=(0, 4, 1, 2, 3))
+
     return res
 
 
