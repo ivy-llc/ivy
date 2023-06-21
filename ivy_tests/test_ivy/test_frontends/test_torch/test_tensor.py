@@ -2607,13 +2607,21 @@ def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
             allow_neg_step=allow_neg_step,
         )
     )
+    real_shape = x[index].shape
+    if len(real_shape):
+        val_size = draw(st.integers(0, len(real_shape)))
+        val_shape = tuple(draw(st.sets(st.sampled_from(real_shape), min_size=val_size, max_size=val_size)))
+    else:
+        val_shape = real_shape
     val_dtype, val = draw(
         helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            shape=x[index].shape,
+            dtype=input_dtype,
+            shape=val_shape,
         )
     )
-    return input_dtype + val_dtype, x, index, val[0]
+    val_dtype = draw(helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x))[-1]
+    val = val[0].astype(val_dtype)
+    return input_dtype + [val_dtype], x, index, val
 
 
 # __setitem__
