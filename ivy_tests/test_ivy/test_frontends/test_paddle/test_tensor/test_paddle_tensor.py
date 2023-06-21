@@ -929,25 +929,6 @@ def test_paddle_sort(
     )
 
 
-<<<<<<< HEAD
-# amax
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="amax",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=st.one_of(helpers.get_dtypes("float")),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
-    ),
-    keep_dims=st.booleans(),
-)
-def test_paddle_amax(
-    dtype_x_axis,
-    keep_dims,
-=======
 #  isinf
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -959,30 +940,12 @@ def test_paddle_amax(
 )
 def test_paddle_isinf(
     dtype_and_x,
->>>>>>> upstream/master
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-<<<<<<< HEAD
-    input_dtypes, x, axis = dtype_x_axis
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={
-            "axis": axis,
-            "keepdim": keep_dims,
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-=======
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -995,7 +958,6 @@ def test_paddle_isinf(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
->>>>>>> upstream/master
         on_device=on_device,
     )
 
@@ -1029,5 +991,48 @@ def test_paddle_isfinite(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# amax
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="amax",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=st.one_of(helpers.get_dtypes("float", "int")),
+        min_axis=None,
+        max_axis=4,
+        min_num_dims=0,
+        max_num_dims=4,
+        force_int_axis=False,
+    ),
+    keep_dims=st.booleans(),
+)
+def test_paddle_amax(
+    dtype_x_axis,
+    keep_dims,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdim": keep_dims,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         on_device=on_device,
     )

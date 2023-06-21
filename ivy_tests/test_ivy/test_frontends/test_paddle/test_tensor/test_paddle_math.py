@@ -754,11 +754,12 @@ def test_paddle_tan(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.amax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
+        available_dtypes=helpers.get_dtypes("float", "int"),
+        min_axis=None,
+        max_axis=4,
+        min_num_dims=0,
+        max_num_dims=4,
+        force_int_axis=False,
     ),
 )
 def test_paddle_amax(

@@ -188,6 +188,6 @@ class Tensor:
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
     
-    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle")
     def amax(self, axis=None, keepdim=False, name=None):
         return ivy.amax(self._ivy_array, axis=axis, keepdims=keepdim) 
