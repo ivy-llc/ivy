@@ -7,11 +7,14 @@ import functools
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as frontend
+import ivy.functional.frontends.numpy as np_frontend
 
 
 def to_ivy_dtype(dtype):
     if not dtype or isinstance(dtype, str):
         return dtype
+    if isinstance(dtype, np_frontend.dtype):
+        return dtype.ivy_dtype
     return frontend.as_dtype(dtype).ivy_dtype
 
 
