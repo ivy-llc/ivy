@@ -767,16 +767,11 @@ def test_paddle_sign(
     test_flags,
 ):
     input_dtype, x = dtype_and_x
-
-    def sign(x):
-        return np.sign(x)
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        reference_fn=sign,
         on_device=on_device,
         x=x[0],
     )
