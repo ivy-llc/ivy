@@ -69,10 +69,9 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> JaxArray:
-    ret = x.at[query].set(val)
-    if not copy:
-        return ivy.inplace_update(x, _to_device(ret))
-    return _to_device(ret)
+    if copy:
+        x = x.copy()
+    return x.at[query].set(val)
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
