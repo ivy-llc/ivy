@@ -21,6 +21,7 @@ def fliplr(input):
         2,
         allow_equal=True,
         message="requires tensor to be at least 2D",
+        as_array=False,
     )
     return ivy.fliplr(input)
 
@@ -32,6 +33,7 @@ def flipud(input):
         1,
         allow_equal=True,
         message="requires tensor to be at least 1D",
+        as_array=False,
     )
     return ivy.flipud(input)
 
@@ -43,6 +45,8 @@ def roll(input, shifts, dims=None):
 
 @to_ivy_arrays_and_back
 def meshgrid(*tensors, indexing=None):
+    if indexing is None:
+        indexing = "ij"
     return tuple(ivy.meshgrid(*tensors, indexing=indexing))
 
 
@@ -109,6 +113,9 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32", "int32", "int64")}, "paddle"
+)
 @to_ivy_arrays_and_back
 def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
@@ -218,6 +225,7 @@ def rot90(input, k, dims):
         2,
         allow_equal=True,
         message="expected total dims >= 2, but got total dims = " + str(total_dims),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -225,6 +233,7 @@ def rot90(input, k, dims):
         2,
         message="expected total rotation dims == 2, but got dims = "
         + str(total_rot_dims),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -235,6 +244,7 @@ def rot90(input, k, dims):
         + str(dims[0])
         + " and dim1 = "
         + str(dims[1]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -252,6 +262,7 @@ def rot90(input, k, dims):
         dims[0],
         total_dims,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_greater(
@@ -259,12 +270,14 @@ def rot90(input, k, dims):
         -total_dims,
         allow_equal=True,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_less(
         dims[1],
         total_dims,
         message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_greater(
@@ -272,6 +285,7 @@ def rot90(input, k, dims):
         -total_dims,
         allow_equal=True,
         message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
+        as_array=False,
     )
 
     k = (4 + (k % 4)) % 4
@@ -306,6 +320,8 @@ def lcm(input, other, *, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def einsum(equation, *operands):
+    if len(operands) == 1 and isinstance(operands[0], (list, tuple)):
+        operands = operands[0]
     return ivy.einsum(equation, *operands)
 
 
@@ -323,6 +339,7 @@ def gcd(input, other, *, out=None):
     return ivy.gcd(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def tensordot(a, b, dims=2, out=None):
     a, b = promote_types_of_torch_inputs(a, b)
@@ -385,3 +402,8 @@ def diag(input, diagonal=0, *, out=None):
 @to_ivy_arrays_and_back
 def clone(input):
     return ivy.copy_array(input)
+
+
+@to_ivy_arrays_and_back
+def cov(input, /, *, correction=1, fweights=None, aweights=None):
+    return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)

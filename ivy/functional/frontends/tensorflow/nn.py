@@ -288,6 +288,7 @@ def local_response_normalization(
         ivy.get_num_dims(input),
         4,
         message="4D input, but got input with sizes " + str(input_shape),
+        as_array=False,
     )
     sqr_sum = ivy.empty(input_shape[:-1] + (0,), dtype=ivy.dtype(input))
     for d in range(depth):
@@ -458,3 +459,26 @@ def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
 @to_ivy_arrays_and_back
 def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+# pool
+@to_ivy_arrays_and_back
+def pool(
+    input,
+    window_shape,
+    pooling_type,
+    strides=None,
+    padding="VALID",
+    data_format=None,
+    dilations=None,
+    name=None,
+):
+    return ivy.pool(
+        input,
+        window_shape,
+        pooling_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+    )
