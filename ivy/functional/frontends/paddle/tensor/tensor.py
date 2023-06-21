@@ -187,3 +187,24 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
+
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
+        "paddle",
+    )
+    def bitwise_and(self, x, y, out=None):
+        return ivy.bitwise_and(x, y, out, name=None)
+
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
+        "paddle",
+    )
+    def bitwise_not(self, x, out=None, name=None):
+        return ivy.bitwise_invert(x, out=out)
+
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def min(self, x, axis=None, keepdim=None, name=None):
+        return ivy.min
