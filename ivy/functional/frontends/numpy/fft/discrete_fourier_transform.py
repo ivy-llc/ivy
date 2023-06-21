@@ -141,13 +141,16 @@ def ifftn(a, s=None, axes=None, norm=None):
             raise TypeError("'int' object is not iterable")
 
     # Check if both s and axes are provided or both not provided or either is
-    if (axes is None and s is None):
+    if axes is None and s is None:
         # If both axes and s (shape) not provided set axes to perform ifft on all axes
         axes = tuple(range(a.ndim))
 
-    elif (axes is None and s is not None):
+    elif axes is None and s is not None:
         if len(s) > len(a.shape):
-            raise ValueError(f'axis -{len(a.shape) + 1} is out of bounds for array of dimension {len(a.shape)}')
+            raise ValueError(
+                f"axis -{len(a.shape) + 1} is out of bounds for array of dimension"
+                f" {len(a.shape)}"
+            )
         # If axes is not provided but s is, use the last len(s) axes
         else:
             last_axes = []
@@ -159,7 +162,7 @@ def ifftn(a, s=None, axes=None, norm=None):
 
             axes = tuple(last_axes)
 
-    elif (axes is not None and s is not None):
+    elif axes is not None and s is not None:
         # Check is axes and s have same shape if not raise value error if both are provided
         if len(s) != len(axes):
             raise ValueError("Shape and axes have different lengths.")
@@ -178,7 +181,7 @@ def ifftn(a, s=None, axes=None, norm=None):
     # Now we perform the operation ifft
     # 1st we check if the axes tuple is unique or not, if unique its straightforward if not pretty long
 
-    if (len(set(axes)) == len(axes)):
+    if len(set(axes)) == len(axes):
         # This means the axes have unique axis
         for i in range(len(axes)):
             a = ivy.ifft(a, n=s[i], dim=axes[i], norm=norm)
@@ -190,7 +193,9 @@ def ifftn(a, s=None, axes=None, norm=None):
         first_list = list(axes)
         second_list = list(s)
 
-        repeated_indices = [i for i, val in enumerate(first_list) if first_list.count(val) > 1]
+        repeated_indices = [
+            i for i, val in enumerate(first_list) if first_list.count(val) > 1
+        ]
         repeated_values = list(set([first_list[idx] for idx in repeated_indices]))
 
         new_second_list = second_list.copy()
@@ -207,5 +212,3 @@ def ifftn(a, s=None, axes=None, norm=None):
         for i in range(len(axes)):
             a = ivy.ifft(a, n=s_new[i], dim=axes[i], norm=norm)
         return a
-
-
