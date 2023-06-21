@@ -1101,8 +1101,6 @@ def test_ifftn(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        # rtol_=1e-2,
-        # atol_=1e-2,
         x=x,
         s=s,
         axes=axes,

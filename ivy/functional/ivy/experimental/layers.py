@@ -2313,29 +2313,29 @@ def ifftn(
 
     Parameters
     ----------
-    x : array_like
+    x
         Input array of complex numbers.
-    s : sequence of ints, optional
+    s
         Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
         `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
         the input is cropped. If larger, input is padded with zeros. If `s` is not
         given, shape of input along axes specified by axes is used.
-    axes : sequence of ints, optional
+    axes
         Axes over which to compute the IFFT. If not given, last `len(s)` axes are
         used, or all axes if `s` is also not specified. Repeated indices in axes
         means inverse transform over that axis is performed multiple times.
-    norm : {"backward", "ortho", "forward"}, optional
+    norm
         Indicates direction of the forward/backward pair of transforms is scaled
         and with what normalization factor. "backward" indicates no normalization.
         "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$. "forward"
         indicates normalization by $\frac{1}{n}$.
-    out : Optional[ivy.Array], optional
+    out
         Optional output array for writing the result to. It must have a shape that
         the inputs broadcast to.
 
     Returns
     -------
-    out :
+    out
         The truncated or zero-padded input, transformed along the axes indicated
         by axes, or by a combination of s or x, as explained in the parameters
         section above.

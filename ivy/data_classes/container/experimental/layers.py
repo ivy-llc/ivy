@@ -1942,8 +1942,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             used, or all axes if `s` is also not specified. Repeated indices in axes
             means inverse transform over that axis is performed multiple times.
         norm
-            Optional argument, "backward", "ortho" or "forward". Defaults to be
-            "backward".
+            Optional argument, "backward", "ortho" or "forward".
+            Defaults to be "backward".
             "backward" indicates no normalization.
             "ortho" indicates normalization by 1/sqrt(n).
             "forward" indicates normalization by 1/n.
@@ -1987,7 +1987,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         Parameters
         ----------
         x
-              Input array of complex numbers.
+            Input array of complex numbers.
 
         s
             sequence of ints, optional
@@ -2000,8 +2000,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             used, or all axes if `s` is also not specified. Repeated indices in axes
             means inverse transform over that axis is performed multiple times.
         norm
-            Optional argument, "backward", "ortho" or "forward". Defaults to be
-            "backward".
+            Optional argument, "backward", "ortho" or "forward".
+            Defaults to be "backward".
             "backward" indicates no normalization.
             "ortho" indicates normalization by 1/sqrt(n).
             "forward" indicates normalization by 1/n.
