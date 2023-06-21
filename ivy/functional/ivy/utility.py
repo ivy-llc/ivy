@@ -24,7 +24,6 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting_for_arrays
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

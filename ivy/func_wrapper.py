@@ -795,8 +795,7 @@ def handle_device_shifting_for_arrays(fn: Callable) -> Callable:
                 *args, **kwargs
             )
         else:
-            inputs = list(args)
-            inputs.extend(kwargs.values())
+            inputs = args + tuple(kwargs.values())
             devices = set(ivy.dev(x) for x in inputs if isinstance(x, ivy.Array))
             if len(devices) == 1:
                 array_device = next(iter(devices))
@@ -806,9 +805,9 @@ def handle_device_shifting_for_arrays(fn: Callable) -> Callable:
                     )
             elif len(devices) > 1:
                 raise ivy.utils.exceptions.IvyException(
-                    "Expected all input arrays to be on the same device ",
-                    "but found atleast two devices - {}".format(devices),
-                    "Set `ivy.set_soft_device_mode(True)` to handle this problem.",
+                    "Expected all input arrays to be on the same device, "
+                    f"but found atleast two devices - {devices}, "
+                    "set `ivy.set_soft_device_mode(True)` to handle this problem."
                 )
         return fn(*args, **kwargs)
 

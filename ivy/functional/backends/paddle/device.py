@@ -95,12 +95,12 @@ def tpu_is_available() -> bool:
 
 
 def handle_soft_device_variable(*args, **kwargs):
-    default_device = ivy.default_device()
+    default_device = as_native_dev(ivy.default_device())
     args, kwargs = ivy.nested_map(
         [args, kwargs],
         lambda x: (
-            paddle.to_tensor(x, place=as_native_dev(default_device))
-            if (isinstance(x, paddle.Tensor) and ivy.dev(x) != default_device)
+            paddle.to_tensor(x, place=default_device)
+            if (isinstance(x, paddle.Tensor) and x.place != default_device)
             else x
         ),
     )

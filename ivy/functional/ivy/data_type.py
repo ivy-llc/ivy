@@ -1524,7 +1524,6 @@ def default_complex_dtype(
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting_for_arrays
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], *, as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:

@@ -3844,7 +3844,6 @@ def isin(
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting_for_arrays
 def itemsize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3878,7 +3877,6 @@ def itemsize(
 @handle_exceptions
 @handle_nestable
 @to_native_arrays_and_back
-@handle_device_shifting_for_arrays
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

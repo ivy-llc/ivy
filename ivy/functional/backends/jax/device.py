@@ -124,12 +124,12 @@ def tpu_is_available() -> bool:
 
 
 def handle_soft_device_variable(*args, **kwargs):
-    default_device = ivy.default_device()
+    default_device = as_native_dev(ivy.default_device())
     args, kwargs = ivy.nested_map(
         [args, kwargs],
         lambda x: (
-            jax.device_put(x, as_native_dev(default_device))
-            if (isinstance(x, JaxArray) and ivy.dev(x) != default_device)
+            jax.device_put(x, default_device)
+            if (isinstance(x, jax.Array) and x.device != default_device)
             else x
         ),
     )
