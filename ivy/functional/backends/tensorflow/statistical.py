@@ -361,6 +361,10 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("unsigned","int8", "int16")},
+    backend_version,
+)
 def einsum(
     equation: str,
     *operands: Union[tf.Tensor, tf.Variable],

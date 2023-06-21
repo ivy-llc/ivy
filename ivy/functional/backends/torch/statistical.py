@@ -387,6 +387,10 @@ def cummax(
 cummax.support_native_out = True
 
 
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16",)},
+    backend_version,
+)
 def einsum(
     equation: str,
     *operands: torch.Tensor,
