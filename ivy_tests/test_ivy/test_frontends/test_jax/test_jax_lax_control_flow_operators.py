@@ -205,6 +205,7 @@ def test_jax_lax_while_loop(
         init_val=x[0],
     )
 
+
 @handle_frontend_test(
     fn_tree="jax.lax.scan",
     dtype_and_x=helpers.dtype_and_values(
@@ -229,14 +230,14 @@ def test_jax_lax_scan(
         return new_carry, y
 
     input_dtype, x = dtype_and_x
-    length = len(x)  
-    expected_carry = 0  
+    length = len(x)
+    expected_carry = 0
     expected_ys = []
     carry = expected_carry
     for elem in x:
         carry, y = _test_f(carry, elem)
         expected_ys.append(y)
-    expected_result = (expected_carry, np.stack(expected_ys))
+    expected_result = (expected_carry, ivy.stack(expected_ys))
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -245,9 +246,8 @@ def test_jax_lax_scan(
         fn_tree=fn_tree,
         on_device=on_device,
         f=_test_f,
-        init=0,  
+        # init=0,
         xs=x,
         length=length,
         expected_result=expected_result,
     )
-    
