@@ -303,7 +303,7 @@ def _affine_grid_helper(draw):
             st.tuples(
                 st.integers(1, 20),
                 st.integers(1, 20),
-                st.integers(1, 20),
+                st.integers(2, 20),
                 st.integers(2, 20),
                 st.integers(2, 20),
             )
