@@ -1,4 +1,4 @@
-"""Collection of tests for creation functions."""
+F"""Collection of tests for creation functions."""
 
 # global
 from hypothesis import strategies as st, assume

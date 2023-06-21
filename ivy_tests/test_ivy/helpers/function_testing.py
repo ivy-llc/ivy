@@ -351,7 +351,7 @@ def test_function(
                 f" returned: {out}"
             )
     # compute the return with a Ground Truth backend
-    ivy.set_backend(test_flags.ground_truth_backend[0])
+    ivy.set_backend(test_flags.ground_truth_backend)
     ivy.set_default_device(on_device)
     try:
         args, kwargs = create_args_kwargs(
@@ -423,7 +423,7 @@ def test_function(
                 atol_=atol_,
                 xs_grad_idxs=xs_grad_idxs,
                 ret_grad_idxs=ret_grad_idxs,
-                ground_truth_backend=test_flags.ground_truth_backend[0],
+                ground_truth_backend=test_flags.ground_truth_backend,
                 on_device=on_device,
             )
 
@@ -431,7 +431,7 @@ def test_function(
         ret_device = ivy.dev(ret_from_target)
 
         assert ret_device == ret_from_gt_device, (
-            f"ground truth backend ({test_flags.ground_truth_backend[0]}) returned"
+            f"ground truth backend ({test_flags.ground_truth_backend}) returned"
             f" array on device {ret_from_gt_device} but target backend ({ivy.backend})"
             f" returned array on device {ret_device}"
         )
@@ -457,7 +457,7 @@ def test_function(
         ret_np_from_gt_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
-        ground_truth_backend=test_flags.ground_truth_backend[0],
+        ground_truth_backend=test_flags.ground_truth_backend,
     )
 
 
