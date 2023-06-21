@@ -1807,6 +1807,7 @@ def dtype_array_index(
     min_dim_size=1,
     max_dim_size=10,
     allow_slices=True,
+    allow_mask=True,
     allow_neg_step=True,
 ):
     dtype = draw(
@@ -1815,7 +1816,6 @@ def dtype_array_index(
             available_dtypes=available_dtypes,
         )
     )
-    dtype.append("int32")
     shape = draw(
         helpers.get_shape(
             min_num_dims=min_num_dims,
@@ -1830,37 +1830,50 @@ def dtype_array_index(
             shape=shape,
         )
     )
-    supported_index_types = ["int", "ellipsis", "slice"] if allow_slices else ["int"]
+    if allow_mask and draw(st.booleans()):
+        index = draw(
+            helpers.array_values(
+                dtype='bool',
+                shape=shape,
+            ).filter(lambda x: np.sum(x) > 0)
+        )
+        dtype.append("bool")
+        return dtype, array, index
+    dtype.append("int32")
+    supported_index_types = ["int", "slice"] if allow_slices else ["int"]
     index_types = draw(
-            st.lists(
-                st.sampled_from(supported_index_types),
-                min_size=len(shape),
-                max_size=len(shape)
-            ).filter(lambda x: x.count("ellipsis") < 1)
+        st.lists(
+            st.sampled_from(supported_index_types),
+            min_size=len(shape),
+            max_size=len(shape)
+        )
     )
-    index = tuple([
+    index = [
         (
             draw(st.integers(min_value=-s + 1, max_value=s - 1))
             if index_type == "int"
             else (
-                Ellipsis
-                if index_type == "ellipsis"
-                else (
-                    slice(
-                        start := draw(st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))),
-                        end := draw(st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))),
-                        draw(st.integers(min_value=1, max_value=s))
-                        if (0 if start is None else s + start if start < 0 else start) <
-                           (s - 1 if end is None else s + end if end < 0 else end)
-                        else (
-                            draw(st.integers(max_value=-1, min_value=-s))
-                            if allow_neg_step
-                            else assume(False)
-                        )
+                slice(
+                    start := draw(st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))),
+                    end := draw(st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))),
+                    draw(st.integers(min_value=1, max_value=s))
+                    if (0 if start is None else s + start if start < 0 else start) <
+                       (s - 1 if end is None else s + end if end < 0 else end)
+                    else (
+                        draw(st.integers(max_value=-1, min_value=-s))
+                        if allow_neg_step
+                        else assume(False)
                     )
                 )
             )
         )
         for s, index_type in zip(shape, index_types)
-    ])
+    ]
+    if draw(st.booleans()):
+        start = draw(st.integers(min_value=0, max_value=len(index)-1))
+        end = draw(st.integers(min_value=start, max_value=len(index)-1))
+        index = index[:start] + [Ellipsis] + index[end:]
+    index = tuple(index)
+    if len(index) == 1 and draw(st.booleans()):
+        index = index[0]
     return dtype, array, index
