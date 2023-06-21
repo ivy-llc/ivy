@@ -1503,15 +1503,15 @@ def test_tensorflow_avg_pool1d(
 
 @st.composite
 def _pool_args(draw):
-    dims = draw(st.integers(min_value=1, max_value=3))
-    data_formats = ["NWC", "NHWC", "NDHWC"]
-    data_format = data_formats[dims - 1]
+    dims = draw(st.integers(min_value=3, max_value=5))
+    data_formats = {3: "NWC", 4: "NHWC", 5: "NDHWC"}
+    data_format = data_formats[dims]
     pooling_type = draw(st.one_of(st.just("AVG"), st.just("MAX")))
     return (
         draw(
             helpers.arrays_for_pooling(
-                min_dims=dims + 2,
-                max_dims=dims + 2,
+                min_dims=dims,
+                max_dims=dims,
                 min_side=1,
                 max_side=4,
                 return_dilation=True,
@@ -1519,7 +1519,7 @@ def _pool_args(draw):
         ),
         data_format,
         pooling_type,
-        dims + 2,
+        dims,
     )
 
 
