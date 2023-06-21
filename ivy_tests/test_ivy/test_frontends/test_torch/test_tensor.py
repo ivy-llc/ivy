@@ -2,6 +2,7 @@
 import pytest
 from types import SimpleNamespace
 import numpy as np
+import math
 
 from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import (
     _topk_helper,
@@ -2608,9 +2609,15 @@ def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
         )
     )
     real_shape = x[index].shape
-    if len(real_shape):
-        val_size = draw(st.integers(0, len(real_shape)))
-        val_shape = tuple(draw(st.sets(st.sampled_from(real_shape), min_size=val_size, max_size=val_size)))
+    if isinstance(index, np.ndarray) and ivy.is_bool_dtype(index):
+        val_shape = draw(st.sampled_from([(math.prod(real_shape),), (), (1,)]))
+    elif len(real_shape):
+        val_shape = real_shape[:draw(st.integers(0, len(real_shape)))]
+        val_size = len(val_shape)
+        if val_size:
+            val_shape = tuple(draw(st.permutations(val_shape)))
+        else:
+            val_shape = ()
     else:
         val_shape = real_shape
     val_dtype, val = draw(

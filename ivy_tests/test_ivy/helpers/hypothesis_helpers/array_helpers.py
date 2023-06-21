@@ -1831,10 +1831,11 @@ def dtype_array_index(
         )
     )
     if allow_mask and draw(st.booleans()):
+        mask_shape = shape[:draw(st.integers(0, len(shape)))]
         index = draw(
             helpers.array_values(
                 dtype='bool',
-                shape=shape,
+                shape=mask_shape,
             ).filter(lambda x: np.sum(x) > 0)
         )
         dtype.append("bool")
