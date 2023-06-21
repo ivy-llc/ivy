@@ -61,11 +61,15 @@ def test_paddle_cosine_similarity(
         ),
     ),
     p=st.floats(min_value=0.0, max_value=1.0),
+    training=st.booleans(),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
 )
 def test_paddle_dropout2d(
     *,
     d_type_and_x,
     p,
+    training,
+    data_format,
     on_device,
     fn_tree,
     frontend,
@@ -80,5 +84,7 @@ def test_paddle_dropout2d(
         on_device=on_device,
         x=x[0],
         p=p,
+        training=training,
+        data_format=data_format,
     )
     
