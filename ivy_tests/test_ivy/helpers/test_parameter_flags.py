@@ -95,7 +95,7 @@ class FunctionTestFlags(TestFlags):
         test_gradients,
         test_compile,
     ):
-        self.ground_truth_backend = (ground_truth_backend,)
+        self.ground_truth_backend = ground_truth_backend
         self.num_positional_args = num_positional_args
         self.with_out = with_out
         self.instance_method = instance_method
