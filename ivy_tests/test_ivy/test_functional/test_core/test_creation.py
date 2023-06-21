@@ -208,32 +208,33 @@ def _asarray_helper(draw):
             shared_dtype=True,
         )
     )
-    nested_structure = draw(st.booleans())
-    if nested_structure:
-        sh = draw(
-            helpers.lists(
-                x=st.integers(min_value=1, max_value=20), min_size=1, max_size=5
-            )
-        )
-        sh = ivy.Shape(sh)
-        np_array = x[0]
-        ivy_array = ivy.array(x[0], dtype=x_dtype[0])
-        python_vals = ivy.to_list(ivy_array)
-        dim = draw(
-            helpers.lists(
-                x=st.integers(min_value=1, max_value=5), min_size=1, max_size=5
-            )
-        )
-        nested_values = draw(
-            helpers.create_nested_input(dim, [sh, ivy_array, np_array, python_vals])
-        )
-        x = [nested_values]
+    x_list = ivy.nested_map(x, lambda x: x.tolist(), shallow=False)
+    sh = draw(helpers.get_shape(min_num_dims=1))
+    sh = ivy.Shape(sh)
+    np_array = x[0]
+    ivy_array = ivy.array(x[0], dtype=x_dtype[0])
+    python_vals = ivy.to_list(ivy_array)
+    dim = draw(helpers.get_shape(min_num_dims=1))
+    nested_values = draw(
+        helpers.create_nested_input(dim, [sh, ivy_array, np_array, python_vals])
+    )
     dtype = draw(
         helpers.get_castable_dtype(
             draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
         )
     )[-1]
     dtype = draw(st.sampled_from([dtype, draw(st.none())]))
+    x = draw(
+        st.sampled_from(
+            [
+                x,
+                x_list,
+                sh,
+                ivy_array,
+                nested_values,
+            ]
+        )
+    )
     return x_dtype, x, dtype
 
 
@@ -242,14 +243,12 @@ def _asarray_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.asarray",
     x_dtype_x_and_dtype=_asarray_helper(),
-    as_list=st.booleans(),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
 )
 def test_asarray(
     *,
     x_dtype_x_and_dtype,
-    as_list,
     test_flags,
     backend_fw,
     fn_name,
@@ -257,20 +256,13 @@ def test_asarray(
     ground_truth_backend,
 ):
     x_dtype, x, dtype = x_dtype_x_and_dtype
-
+    if isinstance(x, list) and len(x) == 1:
+        x = x[0]
+    if test_flags.container[0]:
+        assume(not ivy.is_ivy_container(x))
     # avoid casting complex to non-complex
     if dtype is not None:
         assume(not ("complex" in x_dtype[0] and "complex" not in dtype))
-
-    if as_list:
-        if isinstance(x, list):
-            x = x = [i.tolist() for i in x]
-        else:
-            x = x.tolist()
-    else:
-        if len(x) == 1:
-            x = x[0]
-
     helpers.test_function(
         input_dtypes=x_dtype,
         test_flags=test_flags,
