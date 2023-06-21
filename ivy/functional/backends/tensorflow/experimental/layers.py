@@ -470,7 +470,7 @@ def pool(
         dilations=dilations,
     )
 
-
+@with_supported_dtypes({"2.12.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
