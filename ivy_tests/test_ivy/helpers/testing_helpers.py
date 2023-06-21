@@ -331,7 +331,7 @@ def handle_test(
             number_positional_args = num_positional_args(fn_name=fn_tree)
         # Generate the test flags strategy
         possible_arguments["test_flags"] = pf.function_flags(
-            ground_truth_backend=ground_truth_backend,
+            ground_truth_backend=st.just(ground_truth_backend),
             num_positional_args=number_positional_args,
             instance_method=test_instance_method,
             with_out=test_with_out,
