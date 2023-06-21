@@ -100,40 +100,44 @@ def test_linspace(
 # logspace
 @handle_test(
     fn_tree="functional.ivy.logspace",
-    dtype_and_start_stop=helpers.dtype_and_values(
+    dtype_and_start_stop_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        min_value=None,
-        max_value=None,
+        min_value=-1e5,
+        max_value=1e5,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        allow_inf=False,
         shared_dtype=True,
-        large_abs_safety_factor=24,
-        small_abs_safety_factor=24,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        valid_axis=True,
+        force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("float", full=False),
     num=helpers.ints(min_value=1, max_value=5),
-    base=helpers.floats(min_value=0.1, max_value=3.0),
-    axis=st.none(),
-    test_with_out=st.just("False"),
+    base=helpers.floats(min_value=0.1, max_value=20.0),
+    endpoint=st.booleans(),
 )
 def test_logspace(
     *,
-    dtype_and_start_stop,
+    dtype_and_start_stop_axis,
+    dtype,
     num,
     base,
-    axis,
+    endpoint,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, start_stop = dtype_and_start_stop
+    input_dtypes, start_stop, axis = dtype_and_start_stop_axis
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -145,6 +149,8 @@ def test_logspace(
         num=num,
         base=base,
         axis=axis,
+        endpoint=endpoint,
+        dtype=dtype[0],
         device=on_device,
         ground_truth_backend=ground_truth_backend,
     )
