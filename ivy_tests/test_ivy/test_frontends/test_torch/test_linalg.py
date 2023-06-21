@@ -74,13 +74,13 @@ def _get_dtype_and_matrix(draw):
         )
     )
 
-#norm
+
+# norm
 @handle_frontend_test(
     fn_tree="torch.linalg.norm",
     dtype_values_axis=helpers.dtype_and_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        valid_axis=True,
-        
+        valid_axis=True, 
     ),
     keepdim=st.booleans(),
     ord=st.one_of(

@@ -6,8 +6,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 
 
-
-
 @to_ivy_arrays_and_back
 def norm(input, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
     if type(dim) == int:

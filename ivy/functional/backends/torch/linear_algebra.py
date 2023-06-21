@@ -509,15 +509,6 @@ def vector_norm(
 vector_norm.support_native_out = True
 
 
-
-# Extra #
-# ----- #
-
-
-
-
-
-
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def diag(
     x: torch.Tensor,
