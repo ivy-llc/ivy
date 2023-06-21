@@ -14,7 +14,7 @@ def norm(input, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
         return vector_norm(input, ord, dim, keepdim, dtype=None, out=None)
     elif type(dim) == "tuple":
         return matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
-    elif dim == None and ord == None:
+    elif dim is None and ord is None:
         input = input.view(-1)
         return vector_norm(input, ord, dim, keepdim, dtype=None, out=None)
 

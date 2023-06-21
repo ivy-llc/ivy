@@ -84,12 +84,12 @@ def _get_dtype_and_matrix(draw):
     ),
     keepdim=st.booleans(),
     ord=st.one_of(
-        st.sampled_from(["fro", "nuc", np.inf, -np.inf]),
         helpers.ints(min_value=0, max_value=5),
-        helpers.float(min_value=1.0, max_value=5.0),
+        helpers.floats(min_value=1.0, max_value=5.0),
+        st.sampled_from(["fro", "nuc", np.inf, -np.inf]),
+    ),
     dtype=helpers.get_dtypes("numeric", full=False),
 )
-
 def test_torch_norm(
     *,
     dtype_values_axis,
@@ -100,9 +100,7 @@ def test_torch_norm(
     fn_tree,
     frontend,
     test_flags,
-
 ):
-
     dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
