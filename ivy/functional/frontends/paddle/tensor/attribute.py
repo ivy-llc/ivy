@@ -11,5 +11,10 @@ def is_complex(x):
 
 
 @to_ivy_arrays_and_back
+def is_integer(x):
+    return ivy.is_int_dtype(x)
+
+
+@to_ivy_arrays_and_back
 def is_floating_point(x):
     return ivy.is_float_dtype(x)
