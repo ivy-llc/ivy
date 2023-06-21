@@ -34,7 +34,6 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def flatten(
@@ -56,6 +55,13 @@ def flatten(
     ----------
     x
         input array to flatten.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     start_dim
         first dim to flatten. If not set, defaults to 0.
     end_dim
@@ -173,6 +179,16 @@ def flatten(
     return ivy.reshape(x, tuple(lst), order=order, out=out)
 
 
+flatten.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -199,6 +215,13 @@ def moveaxis(
     destination
         Destination positions for each of the original axes.
         These must also be unique.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to.
 
@@ -285,6 +308,13 @@ def flipud(
     ----------
     m
         The array to be flipped.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to.
 
@@ -410,6 +440,13 @@ def rot90(
     ----------
     m
         Input array of two or more dimensions.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     k
         Number of times the array is rotated by 90 degrees.
     axes
@@ -571,6 +608,13 @@ def fliplr(
     ----------
     m
         The array to be flipped. Must be at least 2-D.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to.
 
@@ -1190,6 +1234,13 @@ def vsplit(
         equal sections, provided that n must be a divisor of the split axis.
         If indices_or_sections is a sequence of ints or 1-D array,
         then input is split at each of the indices.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1237,6 +1288,13 @@ def dsplit(
         the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a sequence of ints or 1-D array,
         then input is split at each of the indices.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1264,7 +1322,7 @@ def dsplit(
 @to_native_arrays_and_back
 def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least one dimension. Scalar inputs are converted to
@@ -1274,6 +1332,13 @@ def atleast_1d(
     ----------
     arys
         One or more input arrays.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1341,7 +1406,7 @@ def dstack(
 @to_native_arrays_and_back
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least two dimension. Scalar inputs are converted to
@@ -1353,6 +1418,13 @@ def atleast_2d(
         One or more array-like sequences. Non-array inputs are
         converted to arrays. Arrays that already have two or more
         dimensions are preserved.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1380,7 +1452,7 @@ def atleast_2d(
 @to_native_arrays_and_back
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
-    copy: Optional[bool] = False,
+    copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
     """
     Convert inputs to arrays with at least three dimension. Scalar inputs are converted
@@ -1392,6 +1464,13 @@ def atleast_3d(
         One or more array-like sequences. Non-array inputs are
         converted to arrays. Arrays that already have three or more
         dimensions are preserved.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1497,6 +1576,13 @@ def hsplit(
         equal sections, provided that n must be a divisor of the split axis.
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1575,7 +1661,14 @@ def expand(
         Array input.
     shape
         A 1-D Array indicates the shape you want to expand to,
-        following the broadcast rule
+        following the broadcast rule.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to.
 
