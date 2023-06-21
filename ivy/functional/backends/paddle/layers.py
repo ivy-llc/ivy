@@ -205,7 +205,6 @@ def conv3d_transpose(
 ) -> paddle.Tensor:
     if data_format == "NCDHW":
         x = paddle.transpose(x, perm=(0, 2, 3, 4, 1))
-
     df = "NDHWC"
     x = _pad_before_conv(x, filters, strides, padding, 3, dilations, df)
     filters = paddle.transpose(filters, perm=(3, 2, 0, 1, 4))
@@ -225,6 +224,10 @@ def conv3d_transpose(
     return res
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def conv_general_dilated(
     x: paddle.Tensor,
     filters: paddle.Tensor,
