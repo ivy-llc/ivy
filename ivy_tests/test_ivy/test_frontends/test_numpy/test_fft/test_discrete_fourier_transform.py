@@ -190,6 +190,7 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
         d=d,
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.fft.ifftn",
     dtype_and_x=helpers.dtype_and_values(

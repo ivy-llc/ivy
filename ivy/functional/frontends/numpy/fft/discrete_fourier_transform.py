@@ -174,8 +174,6 @@ def ifftn(a, s=None, axes=None, norm=None):
     # Check norm
     if norm is None:
         norm = "backward"
-    elif (norm != 'ortho' and norm != None):
-        raise ValueError("Invalid norm value. Should be None or 'ortho'.")
 
     # Now we perform the operation ifft
     # 1st we check if the axes tuple is unique or not, if unique its straightforward if not pretty long
