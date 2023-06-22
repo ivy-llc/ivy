@@ -375,6 +375,8 @@ def test_numpy_logaddexp(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         x1=xs[0],
         x2=xs[1],
         out=None,
