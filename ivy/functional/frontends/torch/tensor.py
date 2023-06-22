@@ -402,13 +402,15 @@ class Tensor:
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
-    def new_zeros(self, *size, dtype=None, device=None, requires_grad=False):
+    def new_zeros(
+        self, size, *, dtype=None, device=None, requires_grad=False, layout=None
+    ):
         if isinstance(size[0], tuple):
             return torch_frontend.zeros(
-                size[0], dtype=dtype, device=device, requires_grad=requires_grad
+                size=size[0], dtype=dtype, device=device, requires_grad=requires_grad
             )
         return torch_frontend.zeros(
-            size, dtype=dtype, device=device, requires_grad=requires_grad
+            size=size, dtype=dtype, device=device, requires_grad=requires_grad
         )
 
     def to(self, *args, **kwargs):
