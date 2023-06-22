@@ -29,7 +29,13 @@ def current_backend_str() -> str:
 
 
 @_scalar_output_to_0d_array
-def get_item(x: np.ndarray, /, query: np.ndarray, *, copy: bool = None) -> np.ndarray:
+def get_item(
+    x: np.ndarray,
+    /,
+    query: np.ndarray,
+    *,
+    copy: bool = None,
+) -> np.ndarray:
     if copy:
         return x.__getitem__(query).copy()
     return x.__getitem__(query)
