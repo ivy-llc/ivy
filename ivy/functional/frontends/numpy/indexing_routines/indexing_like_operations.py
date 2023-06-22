@@ -78,3 +78,7 @@ def diag(v, k=0):
 @to_ivy_arrays_and_back
 def diagonal(a, offset, axis1, axis2):
     return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
+
+
+def choose(a, choices, out=None, mode='raise'):
+    return ivy.choose(a, choices, out=out, mode=mode)
