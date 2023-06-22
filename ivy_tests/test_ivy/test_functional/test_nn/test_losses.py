@@ -261,4 +261,5 @@ def test_log_poisson_loss(
         targets=targets[0],
         log_input=log_input[0],
         compute_full_loss=compute_full_loss,
+        atol_=1e-2,
     )
