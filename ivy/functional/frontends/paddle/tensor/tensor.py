@@ -207,9 +207,3 @@ class Tensor:
     )
     def isnan(self, name=None):
         return ivy.isnan(self._ivy_array)
-
-    @with_unsupported_dtypes(
-        {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-    )
-    def amax(self, axis=None, keepdim=False, name=None):
-        return ivy.amax(self._ivy_array, axis=axis, keepdims=keepdim)
