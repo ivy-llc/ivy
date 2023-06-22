@@ -345,7 +345,7 @@ def test_paddle_eye(
         max_dim_size=5,
     ),
 )
-def test_triu(*, dtype_and_x, test_flags, fn_tree, on_device, frontend):
+def test_paddle_triu(*, dtype_and_x, test_flags, fn_tree, on_device, frontend):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_function(
