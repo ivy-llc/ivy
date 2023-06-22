@@ -103,8 +103,8 @@ def multinomial(
                         population_size,
                     )
                 )
-                / population_size
-        )
+
+        ) / population_size
     if seed:
         paddle.seed(seed)
     if not replace:
