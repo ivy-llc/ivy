@@ -217,9 +217,3 @@ class Tensor:
     )
     def logical_not(self, out=None, name=None):
         return ivy.logical_not(self.ivy_array)
-
-    @with_unsupported_dtypes(
-        {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-    )
-    def amax(self, axis=None, keepdim=False, name=None):
-        return ivy.amax(self._ivy_array, axis=axis, keepdims=keepdim)
