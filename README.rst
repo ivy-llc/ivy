@@ -280,7 +280,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     def loss_fn(pred, target):
         return ivy.mean((pred - target) ** 2)
 
-    for epoch in range(50):
+    for epoch in range(40):
         # forward pass
         pred = model(x)
 
