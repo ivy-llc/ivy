@@ -3918,11 +3918,34 @@ def test_tensorflow_Zeta(
         q=x[1],
     )
 
-Imag = to_ivy_arrays_and_back(
-    with_supported_dtypes(
-        {
-         "3.10.0 and below":("complex64", "complex128"),
-        },
-        "tensorflow",)
-(map_raw_ops_alias(tf_frontend.math.imag))
+# Imag
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["complex64"],
+    ),
+    test_with_out=st.just(False),
 )
+def test_tensorflow_Imag(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    print(
+        f"input dtype is: {input_dtype} and value is: {x[0]} on device : {on_device} "
+    )
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        input=x[0],
+    )
+
