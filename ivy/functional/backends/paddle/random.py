@@ -111,7 +111,7 @@ def multinomial(
         orig_probs_shape = list(probs.shape)
         probs_flat = paddle.reshape(probs, (-1, orig_probs_shape[-1]))
         probs_flat = probs_flat / paddle.sum(
-            probs_flat, axis=-1, keepdim=True
+            probs_flat, axis=-1, keepdim=True,
         )
         probs_stack = paddle.split(probs_flat, probs_flat.shape[0], axis=0)
         samples_stack = []
@@ -127,7 +127,8 @@ def multinomial(
             samples_stack.append(indices)
         samples_flat = paddle.stack(samples_stack)
         return paddle.to_tensor(
-            paddle.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
+            paddle.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples])
+        )
     else:
         if len(probs.shape) == 1:
             probs = probs[None]
