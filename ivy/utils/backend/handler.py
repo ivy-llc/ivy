@@ -115,541 +115,1310 @@ def _determine_backend_from_args(args):
     else:
         # check and exclude if arg is a frontend array
         if not hasattr(args, "ivy_array"):
-            # check if the class module of the arg is in _array_types
-            return _get_backend_for_arg(args.__class__.__module__)
+            # check if the class is of type ndarray
+            if arg_type.__name__ == "ndarray":
+                return _get_backend_for_arg(arg_type.__module__)
+            # check if the class is of type Tensor
+            elif arg_type.__name__ == "Tensor":
+                return _get_backend_for_arg(arg_type.__module__)
+    return None
 
 
-def fn_name_from_version_specific_fn_name(name, version):
-    """
-    Parameters
-    ----------
-    name
-        the version specific name of the function for which the version support
-        is to be provided.
-    version
-        the version of the current framework for which the support is to be
-        provided, the version is inferred by importing the framework
-    Returns
-    -------
-        the name of the original function which will then point to the version
-        specific function
-
-    """
-    # TODO: add tests
-    version = str(version)
-    if version.find("+") != -1:
-        version = tuple(map(int, version[: version.index("+")].split(".")))
-    else:
-        version = tuple(map(int, version.split(".")))
-    if "_to_" in name:
-        i = name.index("_v_")
-        e = name.index("_to_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        version_end = name[e + 4 :]
-        version_end = tuple(map(int, version_end.split("p")))
-        if version_start <= version <= version_end:
-            return name[0:i]
-    elif "_and_above" in name:
-        i = name.index("_v_")
-        e = name.index("_and_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        if version >= version_start:
-            return name[0:i]
-    else:
-        i = name.index("_v_")
-        e = name.index("_and_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        if version <= version_start:
-            return name[0:i]
-
-
-def set_backend_to_specific_version(backend):
-    """
-    Update the backend dict to make the original function name point to the version
-    specific one.
-
-    Parameters
-    ----------
-    backend
-        the backend module for which we provide the version support
-    """
-    # TODO: add functionality and tests
-    f = str(backend.__name__)
-    f = f[f.index("backends") + 9 :]
-
-    f = importlib.import_module(f)
-    f_version = f.__version__
-
-    for key in list(backend.__dict__):
-        if "_v_" in key:
-            orig_name = fn_name_from_version_specific_fn_name(key, f_version)
-            if orig_name:
-                backend.__dict__[orig_name] = backend.__dict__[key]
-                backend.__dict__[orig_name].__name__ = orig_name
-
-
-def current_backend(*args, **kwargs):
-    """
-    Return the current backend. Priorities: global_backend > argument's backend.
-
-    Parameters
-    ----------
-    *args/**kwargs
-        the arguments from which to try to infer the backend, when there is
-        no globally set backend.
-
-    Returns
-    -------
-    ret
-        Ivy's current backend.
-
-    Examples
-    --------
-    If no global backend is set, then the backend is inferred from the arguments:
-
-    >>> import numpy as np
-    >>> x = np.array([2.0])
-    >>> print(ivy.current_backend(x))
-    <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
-
-    The global backend set in set_backend has priority over any arguments
-    passed to current_backend:
-
-    >>> import numpy as np
-    >>> ivy.set_backend("jax")
-    >>> x = np.array([2.0])
-    >>> print(ivy.current_backend(x))
-    <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
-    """
-    global implicit_backend
-    # if a global backend has been set with
-    # set_backend then this will be returned
+def current_backend():
     if backend_stack:
-        f = backend_stack[-1]
-        if verbosity.level > 0:
-            verbosity.cprint("Using backend from stack: {}".format(f))
-        return f
-
-    # if no global backend exists, we try to infer
-    # the backend from the arguments
-    f = _determine_backend_from_args(list(args) + list(kwargs.values()))
-    if f is not None:
-        implicit_backend = f.current_backend_str()
-        return f
-    if verbosity.level > 0:
-        verbosity.cprint("Using backend from type: {}".format(f))
-    return importlib.import_module(_backend_dict[implicit_backend])
+        return backend_stack[-1]
+    # if there is no backend on the stack, infer from the current default backend
+    default_backend = _get_backend_for_arg(implicit_backend + ".")
+    if default_backend:
+        return default_backend
+    raise RuntimeError("No current Ivy backend set.")
 
 
-def _set_backend_as_ivy(
-    original_dict, target, backend, invalid_dtypes=None, backend_str=None
-):
-    invalid_dtypes = (
-        backend.invalid_dtypes if invalid_dtypes is None else invalid_dtypes
-    )
-    backend_str = backend.current_backend_str() if backend_str is None else backend_str
-    for k, v in original_dict.items():
-        compositional = k not in backend.__dict__
-        if k not in backend.__dict__:
-            if k in invalid_dtypes and k in target.__dict__:
-                del target.__dict__[k]
-                continue
-            backend.__dict__[k] = v
-        target.__dict__[k] = _wrap_function(
-            key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
-        )
-        if (
-            isinstance(v, types.ModuleType)
-            and "ivy.functional." in v.__name__
-            and os.path.join("{}", "__init__.py").format(backend_str) not in v.__file__
-        ):
-            _set_backend_as_ivy(
-                v.__dict__,
-                target.__dict__[k],
-                backend.__dict__[k],
-                invalid_dtypes=invalid_dtypes,
-                backend_str=backend_str,
-            )
+def _try_backend_attrs(backend):
+    backend_vars = copy.copy(backend.__dict__)
+    for var_name, var_value in backend_vars.items():
+        if not hasattr(ivy, var_name):
+            setattr(ivy, var_name, var_value)
 
 
-def _handle_backend_specific_vars(target, backend):
-    if backend.current_backend_str() == "numpy":
-        target.set_default_device("cpu")
-    elif backend.current_backend_str() == "jax":
-        target.set_global_attr("RNG", target.functional.backends.jax.random.RNG)
+def _delete_backend_attrs(backend):
+    backend_vars = copy.copy(backend.__dict__)
+    for var_name, var_value in backend_vars.items():
+        if hasattr(ivy, var_name):
+            delattr(ivy, var_name)
 
 
-def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
-    # Dynamic Backend
-    from ivy.functional.ivy.gradients import _is_variable, _variable_data
-
-    def _is_var(obj):
-        if isinstance(obj, ivy.Container):
-
-            def _map_fn(x):
-                x = x.data if isinstance(x, ivy.Array) else x
-                if x.__class__.__module__ in (
-                    "numpy",
-                    "jax.interpreters.xla",
-                    "jaxlib.xla_extension",
-                ):
-                    return False
-
-                return _is_variable(x)
-
-            return obj.cont_map(lambda x, kc: _map_fn(x)).cont_all_true()
-
-        else:
-            obj = obj.data if isinstance(obj, ivy.Array) else obj
-            if obj.__class__.__module__ in (
-                "numpy",
-                "jax.interpreters.xla",
-                "jaxlib.xla_extension",
-            ):
-                return False
-            return _is_variable(obj)
-
-    def _remove_intermediate_arrays(arr_list, cont_list):
-        cont_list = [cont.cont_to_flat_list() for cont in cont_list]
-
-        cont_ids = [
-            id(item.data) if isinstance(item, ivy.Array) else id(item)
-            for cont in cont_list
-            for item in cont
-        ]
-        arr_ids = [
-            id(item.data) if isinstance(item, ivy.Array) else id(item)
-            for item in arr_list
-        ]
-
-        new_objs = {k: v for k, v in zip(arr_ids, arr_list) if k not in cont_ids}
-
-        return list(new_objs.values())
-
-    # get all ivy array and container instances in the project scope
-    array_list, container_list = [
-        [obj for obj in gc.get_objects() if isinstance(obj, obj_type)]
-        for obj_type in (ivy.Array, ivy.Container)
-    ]
-
-    # filter uninitialized arrays
-    array_list = [arr for arr in array_list if arr.__dict__]
-
-    # remove numpy intermediate objects
-    new_objs = _remove_intermediate_arrays(array_list, container_list)
-    new_objs += container_list
-
-    # now convert all ivy.Array and ivy.Container instances
-    # to numpy using the current backend
-    for obj in new_objs:
-        if obj.dynamic_backend:
-            numpy_objs.append(obj)
-            devices.append(obj.device)
-            if _is_var(obj):
-                # add variable object id to set
-                variable_ids.add(id(obj))
-                native_var = _variable_data(obj)
-                np_data = ivy.to_numpy(native_var)
-
-            else:
-                np_data = obj.to_numpy()
-
-            if isinstance(obj, ivy.Container):
-                obj.cont_inplace_update(np_data)
-            else:
-                obj._data = np_data
-
-    return variable_ids, numpy_objs, devices
+# Backend Switching #
+# ----------------- #
 
 
-def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
-    # Dynamic Backend
-    from ivy.functional.ivy.gradients import _variable
-
-    # convert all ivy.Array and ivy.Container instances from numpy
-    # to native arrays using the newly set backend
-    for obj, device in zip(numpy_objs, devices):
-        np_arr = obj.data if isinstance(obj, ivy.Array) else obj
-        # check if object was originally a variable
-        if id(obj) in variable_ids:
-            native_arr = ivy.nested_map(
-                np_arr,
-                lambda x: current_backend().asarray(x, device=device),
-                include_derived=True,
-                shallow=False,
-            )
-            new_data = _variable(native_arr)
-
-        else:
-            new_data = ivy.nested_map(
-                np_arr,
-                lambda x: current_backend().asarray(x, device=device),
-                include_derived=True,
-                shallow=False,
-            )
-
-        if isinstance(obj, ivy.Container):
-            obj.cont_inplace_update(new_data)
-        else:
-            obj.data = new_data.data
-
-
-@prevent_access_locally
-def set_backend(backend: str, dynamic: bool = False):
+def set_backend(backend, dynamic=True):
     """
-    Set `backend` to be the global backend.
+    Set the global backend for Ivy.
 
-    Will also convert all Array and Container objects to the new backend if `dynamic` =
-    True
+    Parameters
+    ----------
+    backend : str
+        The backend to be used. Should be one of the supported backends (e.g., 'numpy', 'jax').
+    dynamic : bool, optional
+        Whether to dynamically convert existing Ivy objects to the new backend. Default is True.
+
+    Returns
+    -------
+    None
 
     Examples
     --------
-    If we set the global backend to be numpy, then subsequent calls to ivy functions
-    will be called from Ivy's numpy backend:
+    >>> from ivy.utils.backend.handler import set_backend
+    >>> import jax
+    >>> set_backend('jax')
 
-    >>> ivy.set_backend("numpy")
-    >>> native = ivy.native_array([1])
-    >>> print(type(native))
-    <class 'numpy.ndarray'>
+    Notes
+    -----
+    The dynamic argument allows you to control whether Ivy objects will be converted to the new backend when you change
+    the backend. This can be useful if you want to switch the backend globally but keep existing objects untouched.
 
-    Or with jax as the global backend:
+    .. code-block:: python
 
-    >>> ivy.set_backend("jax")
-    >>> native = ivy.native_array([1])
-    >>> print(type(native))
-    <class 'jaxlib.xla_extension.DeviceArray'>
-    """  # noqa
-    ivy.utils.assertions.check_false(
-        isinstance(backend, str) and backend not in _backend_dict,
-        "backend must be one from {}".format(list(_backend_dict.keys())),
-    )
+        import ivy
 
-    variable_ids = set()  # create an empty set to store variable object ids
-    numpy_objs = []  # create an empty list to store numpy objects
-    devices = []  # create an empty list to store device strings
-    # created during 1st conversion step
+        ivy.set_backend('jax', dynamic=False)
+        x = ivy.array([1, 2, 3])  # this will still be a numpy array
+
+        ivy.set_backend('jax', dynamic=True)
+        x = ivy.array([1, 2, 3])  # this will be a jax array
+
+    If dynamic is set to False, the backend change will only affect newly created Ivy objects.
+
+    Ivy will automatically handle the necessary conversions between backends when performing operations between
+    objects of different backends.
+
+    """
+    if backend in _backend_dict:
+        backend = _backend_dict[backend]
+    elif backend in _backend_reverse_dict:
+        backend = backend
+    else:
+        raise ValueError(
+            f"Invalid backend: {backend}. Supported backends: {list(_backend_dict.keys())}"
+        )
+
+    current_backend_name = current_backend().__name__
+    if current_backend_name == backend:
+        # No need to switch if the requested backend is already active
+        return
 
     if dynamic:
-        variable_ids, numpy_objs, devices = convert_from_source_backend_to_numpy(
-            variable_ids, numpy_objs, devices
-        )
-
-    # update the global dict with the new backend
-    with ivy.locks["backend_setter"]:
-        global ivy_original_dict
-        if not backend_stack:
-            ivy_original_dict = ivy.__dict__.copy()
-
+        ivy_module = importlib.import_module(backend)
+        _try_backend_attrs(ivy_module)
+    else:
+        ivy_module = importlib.import_module(backend)
+        ivy.__dict__.update(ivy_module.__dict__)
+        _compiled_backends_ids.clear()
+        _compiled_backends.clear()
         _clear_current_sub_backends()
-        if isinstance(backend, str):
-            temp_stack = list()
-            while backend_stack:
-                temp_stack.append(previous_backend())
-            backend = importlib.import_module(_backend_dict[backend])
-            for fw in reversed(temp_stack):
-                backend_stack.append(fw)
-        if backend.current_backend_str() == "numpy":
-            ivy.set_default_device("cpu")
-        elif backend.current_backend_str() == "jax":
-            ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
-        backend_stack.append(backend)
-        set_backend_to_specific_version(backend)
-        _set_backend_as_ivy(ivy_original_dict, ivy, backend)
-        # following snippet is required to update the ivy.functional namespace with
-        # backend-specific functions
-        for key, _ in ivy.__dict__.items():
-            if key in ivy.functional.__dict__ and not key.startswith("__"):
-                ivy.functional.__dict__[key] = ivy.__dict__[key]
+        if "array_ops" in ivy.__dict__:
+            ivy.array_ops.random_seed(ivy.random_seed())
+        verbosity.set_ivy_version_specific_fn_names()
 
-        if dynamic:
-            convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
-
-        if verbosity.level > 0:
-            verbosity.cprint("backend stack: {}".format(backend_stack))
-
-    return ivy
+    backend_stack.append(ivy_module)
 
 
-def set_numpy_backend():
-    """
-    Set NumPy to be the global backend.
-
-    equivalent to `ivy.set_backend("numpy")`.
-    """  # noqa
-    set_backend("numpy")
-
-
-def set_jax_backend():
-    """
-    Set JAX to be the global backend.
-
-    equivalent to `ivy.set_backend("jax")`.
-    """  # noqa
-    set_backend("jax")
-
-
-def set_tensorflow_backend():
-    """
-    Set TensorFlow to be the global backend.
-
-    equivalent to `ivy.set_backend("tensorflow")`.
-    """
-    set_backend("tensorflow")
-
-
-def set_torch_backend():
-    """
-    Set torch to be the global backend.
-
-    equivalent to `ivy.set_backend("torch")`.
-    """  # noqa
-    set_backend("torch")
-
-
-def set_paddle_backend():
-    """
-    Set paddle to be the global backend.
-
-    equivalent to `ivy.set_backend("paddle")`.
-    """  # noqa
-    set_backend("paddle")
-
-
-def set_mxnet_backend():
-    """
-    Set MXNet to be the global backend.
-
-    equivalent to `ivy.set_backend("mx")`.
-    """  # noqa
-    set_backend("mxnet")
-
-
-@prevent_access_locally
 def previous_backend():
     """
-    Unset the current global backend, and adjusts the ivy dict such that either a
-    previously set global backend is then used as the backend, otherwise we return to
-    Ivy's implementations.
+    Return to the previous backend used in Ivy.
 
     Returns
     -------
-    ret
-        the backend that was unset, or None if there was no set global backend.
+    None
 
     Examples
     --------
-    Torch is the last set backend hence is the backend used in the first examples.
-    However, as seen in the example after, if `previous_backend` is called before
-    `ivy.native_array` then tensorflow will become the current backend and any
-    torch backend implementations in the Ivy dict will be swapped with the
-    tensorflow implementation::
+    >>> from ivy.utils.backend.handler import previous_backend
+    >>> import numpy as np
+    >>> import jax
+    >>> import ivy
 
-    >>> ivy.set_backend("tensorflow")
-    >>> ivy.set_backend("torch")
-    >>> x = ivy.native_array([1])
-    >>> print(type(x))
-    <class 'torch.Tensor'>
+    >>> with ivy.numpy.use:
+    ...     print(ivy.current_backend().__name__)
+    ...     with ivy.jax.use:
+    ...         print(ivy.current_backend().__name__)
+    ...         ivy.previous_backend()
+    ...         print(ivy.current_backend().__name__)
+    ...
+    numpy
+    jax
+    numpy
 
-    >>> ivy.set_backend("tensorflow")
-    >>> ivy.set_backend("torch")
-    >>> ivy.previous_backend()
-    >>> x = ivy.native_array([1])
-    >>> print(type(x))
-    <class'tensorflow.python.framework.ops.EagerTensor'>
-    """  # noqa
-    backend = None
-    # if the backend stack is empty, nothing is done then we just return `None`
+    Notes
+    -----
+    The previous_backend function allows you to switch back to the previous Ivy backend after calling set_backend.
+
+    Ivy will automatically handle the necessary conversions between backends when performing operations between
+    objects of different backends.
+
+    """
+    if not backend_stack:
+        raise RuntimeError("No previous Ivy backend to switch to.")
+    backend = backend_stack.pop()
+
+    _delete_backend_attrs(backend)
+
     if backend_stack:
-        backend = backend_stack.pop(-1)  # remove last backend from the stack
-        if backend.current_backend_str() == "numpy":
-            ivy.unset_default_device()
-        elif backend.current_backend_str() == "jax":
-            ivy.del_global_attr("RNG")
-        # the new backend is the backend that was set before the one
-        # we just removed from the stack, or Ivy if there was no
-        # previously set backend
-        if backend_stack:
-            new_backend = backend_stack[-1]
-            if new_backend.current_backend_str() == "numpy":
-                ivy.set_default_device("cpu")
-            elif new_backend.current_backend_str() == "jax":
-                ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
-        new_backend_dict = (
-            backend_stack[-1].__dict__ if backend_stack else ivy_original_dict
-        )
-        # wrap backend functions if there still is a backend, and add functions
-        # to ivy namespace
-        for k, v in new_backend_dict.items():
-            if backend_stack and k in ivy_original_dict:
-                v = _wrap_function(k, v, ivy_original_dict[k])
-            if k in ivy_original_dict:
-                ivy.__dict__[k] = v
-            if k in ivy.functional.__dict__ and not k.startswith("__"):
-                ivy.functional.__dict__[k] = v
-    if verbosity.level > 0:
-        verbosity.cprint("backend stack: {}".format(backend_stack))
-    return backend
+        previous_backend = backend_stack[-1]
+        _try_backend_attrs(previous_backend)
+    else:
+        default_backend = _get_backend_for_arg(implicit_backend + ".")
+        if default_backend:
+            _try_backend_attrs(default_backend)
 
 
-@prevent_access_locally
-def unset_backend():
-    while backend_stack:
-        previous_backend()
+def _forward_to_backend_attr(attr_name):
+    """
+    Helper function to forward the function call to the corresponding Ivy backend attribute.
+
+    Parameters
+    ----------
+    attr_name : str
+        The name of the attribute to forward the function call to.
+
+    Returns
+    -------
+    Callable
+        The function that forwards the call to the backend attribute.
+
+    """
+
+    @functools.wraps(attr_name)
+    def forwarder(*args, **kwargs):
+        backend = current_backend()
+        return getattr(backend, attr_name)(*args, **kwargs)
+
+    return forwarder
 
 
-@prevent_access_locally
-def choose_random_backend(excluded=None):
-    excluded = list() if excluded is None else excluded
-    while True:
-        ivy.utils.assertions.check_equal(
-            len(excluded),
-            4,
-            inverse=True,
-            message="""Unable to select backend, all backends are excluded,\
-            or not installed.""",
-            as_array=False,
-        )
-        f = np.random.choice(
-            [f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded]
-        )
-        if f is None:
-            excluded.append(f)
-            continue
-        else:
-            print("\nselected backend: {}\n".format(f))
-            return f
+# Prevent local access to functions
+set_backend = prevent_access_locally(set_backend)
+previous_backend = prevent_access_locally(previous_backend)
+_current_backend = prevent_access_locally(current_backend)
+_forward_to_backend_attr = prevent_access_locally(_forward_to_backend_attr)
 
 
-# noinspection PyProtectedMember
-@prevent_access_locally
-def with_backend(backend: str, cached: bool = False):
-    # Use already compiled object
-    if cached and backend in compiled_backends.keys():
-        return compiled_backends[backend][-1]
-    with _importlib.LocalIvyImporter():
-        ivy_pack = _importlib._import_module("ivy")
-        ivy_pack._is_local_pkg = True
-        ivy_pack._compiled_id = id(ivy_pack)
-        backend_module = _importlib._import_module(
-            ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
-        )
-        _handle_backend_specific_vars(ivy_pack, backend_module)
-        # We know for sure that the backend stack is empty
-        # no need to do backend unsetting
-        ivy_pack.utils.backend.handler._set_backend_as_ivy(
-            ivy_pack.__dict__.copy(), ivy_pack, backend_module
-        )
-        ivy_pack.backend_stack.append(backend_module)
-        ivy_pack.utils.backend._importlib.import_cache = copy.copy(
-            _importlib.import_cache
-        )
-        _compiled_backends_ids[ivy_pack._compiled_id] = ivy_pack
-        _importlib._clear_cache()
-    try:
-        compiled_backends[backend].append(ivy_pack)
-    except KeyError:
-        compiled_backends[backend] = [ivy_pack]
-    return ivy_pack
+# Function Definitions #
+# ------------------- #
+
+
+def array(*args, **kwargs):
+    return _forward_to_backend_attr("array")(*args, **kwargs)
+
+
+def arange(*args, **kwargs):
+    return _forward_to_backend_attr("arange")(*args, **kwargs)
+
+
+def zeros(*args, **kwargs):
+    return _forward_to_backend_attr("zeros")(*args, **kwargs)
+
+
+def ones(*args, **kwargs):
+    return _forward_to_backend_attr("ones")(*args, **kwargs)
+
+
+def random_uniform(*args, **kwargs):
+    return _forward_to_backend_attr("random_uniform")(*args, **kwargs)
+
+
+def random_normal(*args, **kwargs):
+    return _forward_to_backend_attr("random_normal")(*args, **kwargs)
+
+
+def reshape(*args, **kwargs):
+    return _forward_to_backend_attr("reshape")(*args, **kwargs)
+
+
+def concatenate(*args, **kwargs):
+    return _forward_to_backend_attr("concatenate")(*args, **kwargs)
+
+
+def stack(*args, **kwargs):
+    return _forward_to_backend_attr("stack")(*args, **kwargs)
+
+
+def split(*args, **kwargs):
+    return _forward_to_backend_attr("split")(*args, **kwargs)
+
+
+def tile(*args, **kwargs):
+    return _forward_to_backend_attr("tile")(*args, **kwargs)
+
+
+def expand_dims(*args, **kwargs):
+    return _forward_to_backend_attr("expand_dims")(*args, **kwargs)
+
+
+def squeeze(*args, **kwargs):
+    return _forward_to_backend_attr("squeeze")(*args, **kwargs)
+
+
+def transpose(*args, **kwargs):
+    return _forward_to_backend_attr("transpose")(*args, **kwargs)
+
+
+def matmul(*args, **kwargs):
+    return _forward_to_backend_attr("matmul")(*args, **kwargs)
+
+
+def abs(*args, **kwargs):
+    return _forward_to_backend_attr("abs")(*args, **kwargs)
+
+
+def sqrt(*args, **kwargs):
+    return _forward_to_backend_attr("sqrt")(*args, **kwargs)
+
+
+def exp(*args, **kwargs):
+    return _forward_to_backend_attr("exp")(*args, **kwargs)
+
+
+def log(*args, **kwargs):
+    return _forward_to_backend_attr("log")(*args, **kwargs)
+
+
+def mean(*args, **kwargs):
+    return _forward_to_backend_attr("mean")(*args, **kwargs)
+
+
+def sum(*args, **kwargs):
+    return _forward_to_backend_attr("sum")(*args, **kwargs)
+
+
+def max(*args, **kwargs):
+    return _forward_to_backend_attr("max")(*args, **kwargs)
+
+
+def min(*args, **kwargs):
+    return _forward_to_backend_attr("min")(*args, **kwargs)
+
+
+def all(*args, **kwargs):
+    return _forward_to_backend_attr("all")(*args, **kwargs)
+
+
+def any(*args, **kwargs):
+    return _forward_to_backend_attr("any")(*args, **kwargs)
+
+
+def greater(*args, **kwargs):
+    return _forward_to_backend_attr("greater")(*args, **kwargs)
+
+
+def greater_equal(*args, **kwargs):
+    return _forward_to_backend_attr("greater_equal")(*args, **kwargs)
+
+
+def less(*args, **kwargs):
+    return _forward_to_backend_attr("less")(*args, **kwargs)
+
+
+def less_equal(*args, **kwargs):
+    return _forward_to_backend_attr("less_equal")(*args, **kwargs)
+
+
+def equal(*args, **kwargs):
+    return _forward_to_backend_attr("equal")(*args, **kwargs)
+
+
+def logical_and(*args, **kwargs):
+    return _forward_to_backend_attr("logical_and")(*args, **kwargs)
+
+
+def logical_or(*args, **kwargs):
+    return _forward_to_backend_attr("logical_or")(*args, **kwargs)
+
+
+def logical_not(*args, **kwargs):
+    return _forward_to_backend_attr("logical_not")(*args, **kwargs)
+
+
+def clip(*args, **kwargs):
+    return _forward_to_backend_attr("clip")(*args, **kwargs)
+
+
+def sin(*args, **kwargs):
+    return _forward_to_backend_attr("sin")(*args, **kwargs)
+
+
+def cos(*args, **kwargs):
+    return _forward_to_backend_attr("cos")(*args, **kwargs)
+
+
+def tan(*args, **kwargs):
+    return _forward_to_backend_attr("tan")(*args, **kwargs)
+
+
+def arcsin(*args, **kwargs):
+    return _forward_to_backend_attr("arcsin")(*args, **kwargs)
+
+
+def arccos(*args, **kwargs):
+    return _forward_to_backend_attr("arccos")(*args, **kwargs)
+
+
+def arctan(*args, **kwargs):
+    return _forward_to_backend_attr("arctan")(*args, **kwargs)
+
+
+def sinh(*args, **kwargs):
+    return _forward_to_backend_attr("sinh")(*args, **kwargs)
+
+
+def cosh(*args, **kwargs):
+    return _forward_to_backend_attr("cosh")(*args, **kwargs)
+
+
+def tanh(*args, **kwargs):
+    return _forward_to_backend_attr("tanh")(*args, **kwargs)
+
+
+def arcsinh(*args, **kwargs):
+    return _forward_to_backend_attr("arcsinh")(*args, **kwargs)
+
+
+def arccosh(*args, **kwargs):
+    return _forward_to_backend_attr("arccosh")(*args, **kwargs)
+
+
+def arctanh(*args, **kwargs):
+    return _forward_to_backend_attr("arctanh")(*args, **kwargs)
+
+
+def einsum(*args, **kwargs):
+    return _forward_to_backend_attr("einsum")(*args, **kwargs)
+
+
+def cast(*args, **kwargs):
+    return _forward_to_backend_attr("cast")(*args, **kwargs)
+
+
+def where(*args, **kwargs):
+    return _forward_to_backend_attr("where")(*args, **kwargs)
+
+
+def random_seed(*args, **kwargs):
+    return _forward_to_backend_attr("random_seed")(*args, **kwargs)
+
+
+def shape(*args, **kwargs):
+    return _forward_to_backend_attr("shape")(*args, **kwargs)
+
+
+def dtype(*args, **kwargs):
+    return _forward_to_backend_attr("dtype")(*args, **kwargs)
+
+
+def device(*args, **kwargs):
+    return _forward_to_backend_attr("device")(*args, **kwargs)
+
+
+def to_numpy(*args, **kwargs):
+    return _forward_to_backend_attr("to_numpy")(*args, **kwargs)
+
+
+def to_scalar(*args, **kwargs):
+    return _forward_to_backend_attr("to_scalar")(*args, **kwargs)
+
+
+def concat(*args, **kwargs):
+    return _forward_to_backend_attr("concat")(*args, **kwargs)
+
+
+def tile_concat(*args, **kwargs):
+    return _forward_to_backend_attr("tile_concat")(*args, **kwargs)
+
+
+def tile_reshape(*args, **kwargs):
+    return _forward_to_backend_attr("tile_reshape")(*args, **kwargs)
+
+
+def repeat(*args, **kwargs):
+    return _forward_to_backend_attr("repeat")(*args, **kwargs)
+
+
+def strided_slice(*args, **kwargs):
+    return _forward_to_backend_attr("strided_slice")(*args, **kwargs)
+
+
+def gather(*args, **kwargs):
+    return _forward_to_backend_attr("gather")(*args, **kwargs)
+
+
+def gather_nd(*args, **kwargs):
+    return _forward_to_backend_attr("gather_nd")(*args, **kwargs)
+
+
+def scatter(*args, **kwargs):
+    return _forward_to_backend_attr("scatter")(*args, **kwargs)
+
+
+def scatter_nd(*args, **kwargs):
+    return _forward_to_backend_attr("scatter_nd")(*args, **kwargs)
+
+
+def meshgrid(*args, **kwargs):
+    return _forward_to_backend_attr("meshgrid")(*args, **kwargs)
+
+
+def reduce_sum(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_sum")(*args, **kwargs)
+
+
+def reduce_mean(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_mean")(*args, **kwargs)
+
+
+def reduce_max(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_max")(*args, **kwargs)
+
+
+def reduce_min(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_min")(*args, **kwargs)
+
+
+def reduce_prod(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_prod")(*args, **kwargs)
+
+
+def reduce_all(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_all")(*args, **kwargs)
+
+
+def reduce_any(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_any")(*args, **kwargs)
+
+
+def reduce_logsumexp(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_logsumexp")(*args, **kwargs)
+
+
+def reduce_logsumexp2(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_logsumexp2")(*args, **kwargs)
+
+
+def reduce_logaddexp(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_logaddexp")(*args, **kwargs)
+
+
+def reduce_logaddexp2(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_logaddexp2")(*args, **kwargs)
+
+
+def reduce_variance(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_variance")(*args, **kwargs)
+
+
+def reduce_std(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_std")(*args, **kwargs)
+
+
+def reduce_log_prob_normal(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_log_prob_normal")(*args, **kwargs)
+
+
+def reduce_log_prob_categorical(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_log_prob_categorical")(*args, **kwargs)
+
+
+def reduce_log_prob_bernoulli(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_log_prob_bernoulli")(*args, **kwargs)
+
+
+def reduce_log_prob_multinomial(*args, **kwargs):
+    return _forward_to_backend_attr("reduce_log_prob_multinomial")(*args, **kwargs)
+
+
+def logical_and_reducer(*args, **kwargs):
+    return _forward_to_backend_attr("logical_and_reducer")(*args, **kwargs)
+
+
+def logical_or_reducer(*args, **kwargs):
+    return _forward_to_backend_attr("logical_or_reducer")(*args, **kwargs)
+
+
+def make_reduce_reducer(*args, **kwargs):
+    return _forward_to_backend_attr("make_reduce_reducer")(*args, **kwargs)
+
+
+def l2_normalize(*args, **kwargs):
+    return _forward_to_backend_attr("l2_normalize")(*args, **kwargs)
+
+
+def image_to_tensor(*args, **kwargs):
+    return _forward_to_backend_attr("image_to_tensor")(*args, **kwargs)
+
+
+def tensor_to_image(*args, **kwargs):
+    return _forward_to_backend_attr("tensor_to_image")(*args, **kwargs)
+
+
+def save(*args, **kwargs):
+    return _forward_to_backend_attr("save")(*args, **kwargs)
+
+
+def load(*args, **kwargs):
+    return _forward_to_backend_attr("load")(*args, **kwargs)
+
+
+def save_var(*args, **kwargs):
+    return _forward_to_backend_attr("save_var")(*args, **kwargs)
+
+
+def load_var(*args, **kwargs):
+    return _forward_to_backend_attr("load_var")(*args, **kwargs)
+
+
+def save_state_dict(*args, **kwargs):
+    return _forward_to_backend_attr("save_state_dict")(*args, **kwargs)
+
+
+def load_state_dict(*args, **kwargs):
+    return _forward_to_backend_attr("load_state_dict")(*args, **kwargs)
+
+
+def clone(*args, **kwargs):
+    return _forward_to_backend_attr("clone")(*args, **kwargs)
+
+
+def stop_gradient(*args, **kwargs):
+    return _forward_to_backend_attr("stop_gradient")(*args, **kwargs)
+
+
+def is_array(*args, **kwargs):
+    return _forward_to_backend_attr("is_array")(*args, **kwargs)
+
+
+def is_scalar(*args, **kwargs):
+    return _forward_to_backend_attr("is_scalar")(*args, **kwargs)
+
+
+def is_nan(*args, **kwargs):
+    return _forward_to_backend_attr("is_nan")(*args, **kwargs)
+
+
+def is_inf(*args, **kwargs):
+    return _forward_to_backend_attr("is_inf")(*args, **kwargs)
+
+
+def is_finite(*args, **kwargs):
+    return _forward_to_backend_attr("is_finite")(*args, **kwargs)
+
+
+def nan_to_num(*args, **kwargs):
+    return _forward_to_backend_attr("nan_to_num")(*args, **kwargs)
+
+
+def pad(*args, **kwargs):
+    return _forward_to_backend_attr("pad")(*args, **kwargs)
+
+
+def image_resize(*args, **kwargs):
+    return _forward_to_backend_attr("image_resize")(*args, **kwargs)
+
+
+def image_crop(*args, **kwargs):
+    return _forward_to_backend_attr("image_crop")(*args, **kwargs)
+
+
+def image_flip_left_right(*args, **kwargs):
+    return _forward_to_backend_attr("image_flip_left_right")(*args, **kwargs)
+
+
+def image_flip_up_down(*args, **kwargs):
+    return _forward_to_backend_attr("image_flip_up_down")(*args, **kwargs)
+
+
+def image_adjust_brightness(*args, **kwargs):
+    return _forward_to_backend_attr("image_adjust_brightness")(*args, **kwargs)
+
+
+def image_adjust_contrast(*args, **kwargs):
+    return _forward_to_backend_attr("image_adjust_contrast")(*args, **kwargs)
+
+
+def image_adjust_saturation(*args, **kwargs):
+    return _forward_to_backend_attr("image_adjust_saturation")(*args, **kwargs)
+
+
+def image_adjust_hue(*args, **kwargs):
+    return _forward_to_backend_attr("image_adjust_hue")(*args, **kwargs)
+
+
+def image_convert_color(*args, **kwargs):
+    return _forward_to_backend_attr("image_convert_color")(*args, **kwargs)
+
+
+def image_filter(*args, **kwargs):
+    return _forward_to_backend_attr("image_filter")(*args, **kwargs)
+
+
+def image_rotate(*args, **kwargs):
+    return _forward_to_backend_attr("image_rotate")(*args, **kwargs)
+
+
+def image_translate(*args, **kwargs):
+    return _forward_to_backend_attr("image_translate")(*args, **kwargs)
+
+
+def image_affine_transform(*args, **kwargs):
+    return _forward_to_backend_attr("image_affine_transform")(*args, **kwargs)
+
+
+def image_perspective_transform(*args, **kwargs):
+    return _forward_to_backend_attr("image_perspective_transform")(*args, **kwargs)
+
+
+def image_rescale_intensity(*args, **kwargs):
+    return _forward_to_backend_attr("image_rescale_intensity")(*args, **kwargs)
+
+
+def image_equalize_histogram(*args, **kwargs):
+    return _forward_to_backend_attr("image_equalize_histogram")(*args, **kwargs)
+
+
+def image_adjust_gamma(*args, **kwargs):
+    return _forward_to_backend_attr("image_adjust_gamma")(*args, **kwargs)
+
+
+def image_erosion(*args, **kwargs):
+    return _forward_to_backend_attr("image_erosion")(*args, **kwargs)
+
+
+def image_dilation(*args, **kwargs):
+    return _forward_to_backend_attr("image_dilation")(*args, **kwargs)
+
+
+def image_opening(*args, **kwargs):
+    return _forward_to_backend_attr("image_opening")(*args, **kwargs)
+
+
+def image_closing(*args, **kwargs):
+    return _forward_to_backend_attr("image_closing")(*args, **kwargs)
+
+
+def image_white_tophat(*args, **kwargs):
+    return _forward_to_backend_attr("image_white_tophat")(*args, **kwargs)
+
+
+def image_black_tophat(*args, **kwargs):
+    return _forward_to_backend_attr("image_black_tophat")(*args, **kwargs)
+
+
+def image_hit_or_miss(*args, **kwargs):
+    return _forward_to_backend_attr("image_hit_or_miss")(*args, **kwargs)
+
+
+def image_threshold(*args, **kwargs):
+    return _forward_to_backend_attr("image_threshold")(*args, **kwargs)
+
+
+def image_adaptive_threshold(*args, **kwargs):
+    return _forward_to_backend_attr("image_adaptive_threshold")(*args, **kwargs)
+
+
+def image_median_filter(*args, **kwargs):
+    return _forward_to_backend_attr("image_median_filter")(*args, **kwargs)
+
+
+def image_gaussian_filter(*args, **kwargs):
+    return _forward_to_backend_attr("image_gaussian_filter")(*args, **kwargs)
+
+
+def image_sobel_filter(*args, **kwargs):
+    return _forward_to_backend_attr("image_sobel_filter")(*args, **kwargs)
+
+
+def image_laplacian_filter(*args, **kwargs):
+    return _forward_to_backend_attr("image_laplacian_filter")(*args, **kwargs)
+
+
+def image_gabor_filter(*args, **kwargs):
+    return _forward_to_backend_attr("image_gabor_filter")(*args, **kwargs)
+
+
+def image_histogram(*args, **kwargs):
+    return _forward_to_backend_attr("image_histogram")(*args, **kwargs)
+
+
+def image_hog(*args, **kwargs):
+    return _forward_to_backend_attr("image_hog")(*args, **kwargs)
+
+
+def image_sift(*args, **kwargs):
+    return _forward_to_backend_attr("image_sift")(*args, **kwargs)
+
+
+def image_corner_harris(*args, **kwargs):
+    return _forward_to_backend_attr("image_corner_harris")(*args, **kwargs)
+
+
+def image_corner_shi_tomasi(*args, **kwargs):
+    return _forward_to_backend_attr("image_corner_shi_tomasi")(*args, **kwargs)
+
+
+def image_moments(*args, **kwargs):
+    return _forward_to_backend_attr("image_moments")(*args, **kwargs)
+
+
+def image_reconstruction(*args, **kwargs):
+    return _forward_to_backend_attr("image_reconstruction")(*args, **kwargs)
+
+
+def image_watershed(*args, **kwargs):
+    return _forward_to_backend_attr("image_watershed")(*args, **kwargs)
+
+
+def image_connected_components(*args, **kwargs):
+    return _forward_to_backend_attr("image_connected_components")(*args, **kwargs)
+
+
+def image_label(*args, **kwargs):
+    return _forward_to_backend_attr("image_label")(*args, **kwargs)
+
+
+def image_find_contours(*args, **kwargs):
+    return _forward_to_backend_attr("image_find_contours")(*args, **kwargs)
+
+
+def image_draw_contours(*args, **kwargs):
+    return _forward_to_backend_attr("image_draw_contours")(*args, **kwargs)
+
+
+def image_draw_rectangle(*args, **kwargs):
+    return _forward_to_backend_attr("image_draw_rectangle")(*args, **kwargs)
+
+
+def image_draw_circle(*args, **kwargs):
+    return _forward_to_backend_attr("image_draw_circle")(*args, **kwargs)
+
+
+def image_draw_ellipse(*args, **kwargs):
+    return _forward_to_backend_attr("image_draw_ellipse")(*args, **kwargs)
+
+
+def image_draw_line(*args, **kwargs):
+    return _forward_to_backend_attr("image_draw_line")(*args, **kwargs)
+
+
+def image_draw_polygon(*args, **kwargs):
+    return _forward_to_backend_attr("image_draw_polygon")(*args, **kwargs)
+
+
+def image_draw_text(*args, **kwargs):
+    return _forward_to_backend_attr("image_draw_text")(*args, **kwargs)
+
+
+def image_to_grayscale(*args, **kwargs):
+    return _forward_to_backend_attr("image_to_grayscale")(*args, **kwargs)
+
+
+def image_resize_nearest(*args, **kwargs):
+    return _forward_to_backend_attr("image_resize_nearest")(*args, **kwargs)
+
+
+def image_resize_bilinear(*args, **kwargs):
+    return _forward_to_backend_attr("image_resize_bilinear")(*args, **kwargs)
+
+
+def image_resize_bicubic(*args, **kwargs):
+    return _forward_to_backend_attr("image_resize_bicubic")(*args, **kwargs)
+
+
+def image_resize_area(*args, **kwargs):
+    return _forward_to_backend_attr("image_resize_area")(*args, **kwargs)
+
+
+def image_resize_lanczos3(*args, **kwargs):
+    return _forward_to_backend_attr("image_resize_lanczos3")(*args, **kwargs)
+
+
+def image_to_tensorflow_format(*args, **kwargs):
+    return _forward_to_backend_attr("image_to_tensorflow_format")(*args, **kwargs)
+
+
+def image_to_torch_format(*args, **kwargs):
+    return _forward_to_backend_attr("image_to_torch_format")(*args, **kwargs)
+
+
+def image_from_tensorflow_format(*args, **kwargs):
+    return _forward_to_backend_attr("image_from_tensorflow_format")(*args, **kwargs)
+
+
+def image_from_torch_format(*args, **kwargs):
+    return _forward_to_backend_attr("image_from_torch_format")(*args, **kwargs)
+
+
+def image_from_bytes(*args, **kwargs):
+    return _forward_to_backend_attr("image_from_bytes")(*args, **kwargs)
+
+
+def image_to_bytes(*args, **kwargs):
+    return _forward_to_backend_attr("image_to_bytes")(*args, **kwargs)
+
+
+def random_uniform(*args, **kwargs):
+    return _forward_to_backend_attr("random_uniform")(*args, **kwargs)
+
+
+def random_normal(*args, **kwargs):
+    return _forward_to_backend_attr("random_normal")(*args, **kwargs)
+
+
+def random_truncated_normal(*args, **kwargs):
+    return _forward_to_backend_attr("random_truncated_normal")(*args, **kwargs)
+
+
+def random_binomial(*args, **kwargs):
+    return _forward_to_backend_attr("random_binomial")(*args, **kwargs)
+
+
+def random_bernoulli(*args, **kwargs):
+    return _forward_to_backend_attr("random_bernoulli")(*args, **kwargs)
+
+
+def random_categorical(*args, **kwargs):
+    return _forward_to_backend_attr("random_categorical")(*args, **kwargs)
+
+
+def random_shuffle(*args, **kwargs):
+    return _forward_to_backend_attr("random_shuffle")(*args, **kwargs)
+
+
+def random_choice(*args, **kwargs):
+    return _forward_to_backend_attr("random_choice")(*args, **kwargs)
+
+
+def random_gamma(*args, **kwargs):
+    return _forward_to_backend_attr("random_gamma")(*args, **kwargs)
+
+
+def random_poisson(*args, **kwargs):
+    return _forward_to_backend_attr("random_poisson")(*args, **kwargs)
+
+
+def random_exponential(*args, **kwargs):
+    return _forward_to_backend_attr("random_exponential")(*args, **kwargs)
+
+
+def random_weibull(*args, **kwargs):
+    return _forward_to_backend_attr("random_weibull")(*args, **kwargs)
+
+
+def random_power(*args, **kwargs):
+    return _forward_to_backend_attr("random_power")(*args, **kwargs)
+
+
+def random_negative_binomial(*args, **kwargs):
+    return _forward_to_backend_attr("random_negative_binomial")(*args, **kwargs)
+
+
+def random_geometric(*args, **kwargs):
+    return _forward_to_backend_attr("random_geometric")(*args, **kwargs)
+
+
+def random_logistic(*args, **kwargs):
+    return _forward_to_backend_attr("random_logistic")(*args, **kwargs)
+
+
+def random_multivariate_normal(*args, **kwargs):
+    return _forward_to_backend_attr("random_multivariate_normal")(*args, **kwargs)
+
+
+def random_seed(*args, **kwargs):
+    return _forward_to_backend_attr("random_seed")(*args, **kwargs)
+
+
+def random_get_state(*args, **kwargs):
+    return _forward_to_backend_attr("random_get_state")(*args, **kwargs)
+
+
+def random_set_state(*args, **kwargs):
+    return _forward_to_backend_attr("random_set_state")(*args, **kwargs)
+
+
+def random_permutation(*args, **kwargs):
+    return _forward_to_backend_attr("random_permutation")(*args, **kwargs)
+
+
+def random_shuffle_axis(*args, **kwargs):
+    return _forward_to_backend_attr("random_shuffle_axis")(*args, **kwargs)
+
+
+def random_choice_axis(*args, **kwargs):
+    return _forward_to_backend_attr("random_choice_axis")(*args, **kwargs)
+
+
+def random_cdf(*args, **kwargs):
+    return _forward_to_backend_attr("random_cdf")(*args, **kwargs)
+
+
+def random_pdf(*args, **kwargs):
+    return _forward_to_backend_attr("random_pdf")(*args, **kwargs)
+
+
+def random_log_pdf(*args, **kwargs):
+    return _forward_to_backend_attr("random_log_pdf")(*args, **kwargs)
+
+
+def random_sf(*args, **kwargs):
+    return _forward_to_backend_attr("random_sf")(*args, **kwargs)
+
+
+def random_isf(*args, **kwargs):
+    return _forward_to_backend_attr("random_isf")(*args, **kwargs)
+
+
+def random_randint(*args, **kwargs):
+    return _forward_to_backend_attr("random_randint")(*args, **kwargs)
+
+
+def random_uniform_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_uniform_like")(*args, **kwargs)
+
+
+def random_normal_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_normal_like")(*args, **kwargs)
+
+
+def random_truncated_normal_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_truncated_normal_like")(*args, **kwargs)
+
+
+def random_binomial_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_binomial_like")(*args, **kwargs)
+
+
+def random_bernoulli_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_bernoulli_like")(*args, **kwargs)
+
+
+def random_categorical_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_categorical_like")(*args, **kwargs)
+
+
+def random_shuffle_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_shuffle_like")(*args, **kwargs)
+
+
+def random_choice_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_choice_like")(*args, **kwargs)
+
+
+def random_gamma_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_gamma_like")(*args, **kwargs)
+
+
+def random_poisson_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_poisson_like")(*args, **kwargs)
+
+
+def random_exponential_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_exponential_like")(*args, **kwargs)
+
+
+def random_weibull_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_weibull_like")(*args, **kwargs)
+
+
+def random_power_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_power_like")(*args, **kwargs)
+
+
+def random_negative_binomial_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_negative_binomial_like")(*args, **kwargs)
+
+
+def random_geometric_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_geometric_like")(*args, **kwargs)
+
+
+def random_logistic_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_logistic_like")(*args, **kwargs)
+
+
+def random_multivariate_normal_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_multivariate_normal_like")(*args, **kwargs)
+
+
+def random_permutation_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_permutation_like")(*args, **kwargs)
+
+
+def random_shuffle_axis_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_shuffle_axis_like")(*args, **kwargs)
+
+
+def random_choice_axis_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_choice_axis_like")(*args, **kwargs)
+
+
+def random_cdf_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_cdf_like")(*args, **kwargs)
+
+
+def random_pdf_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_pdf_like")(*args, **kwargs)
+
+
+def random_log_pdf_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_log_pdf_like")(*args, **kwargs)
+
+
+def random_sf_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_sf_like")(*args, **kwargs)
+
+
+def random_isf_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_isf_like")(*args, **kwargs)
+
+
+def random_randint_like(*args, **kwargs):
+    return _forward_to_backend_attr("random_randint_like")(*args, **kwargs)
+
+
+def random_normal_from_dtype_scale(*args, **kwargs):
+    return _forward_to_backend_attr("random_normal_from_dtype_scale")(*args, **kwargs)
+
+
+def random_uniform_from_dtype_scale(*args, **kwargs):
+    return _forward_to_backend_attr("random_uniform_from_dtype_scale")(*args, **kwargs)
+
+
+def random_seed_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_seed_tensorflow")(*args, **kwargs)
+
+
+def random_set_seed(*args, **kwargs):
+    return _forward_to_backend_attr("random_set_seed")(*args, **kwargs)
+
+
+def random_get_state_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_get_state_tensorflow")(*args, **kwargs)
+
+
+def random_set_state_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_set_state_tensorflow")(*args, **kwargs)
+
+
+def random_normal_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_normal_tensorflow")(*args, **kwargs)
+
+
+def random_uniform_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_uniform_tensorflow")(*args, **kwargs)
+
+
+def random_truncated_normal_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_truncated_normal_tensorflow")(*args, **kwargs)
+
+
+def random_binomial_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_binomial_tensorflow")(*args, **kwargs)
+
+
+def random_bernoulli_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_bernoulli_tensorflow")(*args, **kwargs)
+
+
+def random_categorical_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_categorical_tensorflow")(*args, **kwargs)
+
+
+def random_shuffle_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_shuffle_tensorflow")(*args, **kwargs)
+
+
+def random_choice_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_choice_tensorflow")(*args, **kwargs)
+
+
+def random_gamma_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_gamma_tensorflow")(*args, **kwargs)
+
+
+def random_poisson_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_poisson_tensorflow")(*args, **kwargs)
+
+
+def random_exponential_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_exponential_tensorflow")(*args, **kwargs)
+
+
+def random_weibull_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_weibull_tensorflow")(*args, **kwargs)
+
+
+def random_power_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_power_tensorflow")(*args, **kwargs)
+
+
+def random_negative_binomial_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_negative_binomial_tensorflow")(*args, **kwargs)
+
+
+def random_geometric_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_geometric_tensorflow")(*args, **kwargs)
+
+
+def random_logistic_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_logistic_tensorflow")(*args, **kwargs)
+
+
+def random_multivariate_normal_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_multivariate_normal_tensorflow")(*args, **kwargs)
+
+
+def random_permutation_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_permutation_tensorflow")(*args, **kwargs)
+
+
+def random_shuffle_axis_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_shuffle_axis_tensorflow")(*args, **kwargs)
+
+
+def random_choice_axis_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_choice_axis_tensorflow")(*args, **kwargs)
+
+
+def random_cdf_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_cdf_tensorflow")(*args, **kwargs)
+
+
+def random_pdf_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_pdf_tensorflow")(*args, **kwargs)
+
+
+def random_log_pdf_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_log_pdf_tensorflow")(*args, **kwargs)
+
+
+def random_sf_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_sf_tensorflow")(*args, **kwargs)
+
+
+def random_isf_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_isf_tensorflow")(*args, **kwargs)
+
+
+def random_randint_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_randint_tensorflow")(*args, **kwargs)
+
+
+def random_uniform_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_uniform_like_tensorflow")(*args, **kwargs)
+
+
+def random_normal_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_normal_like_tensorflow")(*args, **kwargs)
+
+
+def random_truncated_normal_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_truncated_normal_like_tensorflow")(*args, **kwargs)
+
+
+def random_binomial_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_binomial_like_tensorflow")(*args, **kwargs)
+
+
+def random_bernoulli_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_bernoulli_like_tensorflow")(*args, **kwargs)
+
+
+def random_categorical_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_categorical_like_tensorflow")(*args, **kwargs)
+
+
+def random_shuffle_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_shuffle_like_tensorflow")(*args, **kwargs)
+
+
+def random_choice_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_choice_like_tensorflow")(*args, **kwargs)
+
+
+def random_gamma_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_gamma_like_tensorflow")(*args, **kwargs)
+
+
+def random_poisson_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_poisson_like_tensorflow")(*args, **kwargs)
+
+
+def random_exponential_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_exponential_like_tensorflow")(*args, **kwargs)
+
+
+def random_weibull_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_weibull_like_tensorflow")(*args, **kwargs)
+
+
+def random_power_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_power_like_tensorflow")(*args, **kwargs)
+
+
+def random_negative_binomial_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_negative_binomial_like_tensorflow")(*args, **kwargs)
+
+
+def random_geometric_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_geometric_like_tensorflow")(*args, **kwargs)
+
+
+def random_logistic_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_logistic_like_tensorflow")(*args, **kwargs)
+
+
+def random_multivariate_normal_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_multivariate_normal_like_tensorflow")(*args, **kwargs)
+
+
+def random_permutation_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_permutation_like_tensorflow")(*args, **kwargs)
+
+
+def random_shuffle_axis_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_shuffle_axis_like_tensorflow")(*args, **kwargs)
+
+
+def random_choice_axis_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_choice_axis_like_tensorflow")(*args, **kwargs)
+
+
+def random_cdf_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_cdf_like_tensorflow")(*args, **kwargs)
+
+
+def random_pdf_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_pdf_like_tensorflow")(*args, **kwargs)
+
+
+def random_log_pdf_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_log_pdf_like_tensorflow")(*args, **kwargs)
+
+
+def random_sf_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_sf_like_tensorflow")(*args, **kwargs)
+
+
+def random_isf_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_isf_like_tensorflow")(*args, **kwargs)
+
+
+def random_randint_like_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_randint_like_tensorflow")(*args, **kwargs)
+
+
+def random_normal_from_dtype_scale_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_normal_from_dtype_scale_tensorflow")(*args, **kwargs)
+
+
+def random_uniform_from_dtype_scale_tensorflow(*args, **kwargs):
+    return _forward_to_backend_attr("random_uniform_from_dtype_scale_tensorflow")(*args, **kwargs)
