@@ -291,8 +291,7 @@ def batch_matmul(lhs, rhs, precision=None):
                 lhs.ndim, rhs.ndim
             )
         )
-    ret = ivy.matmul(lhs, rhs)
-    return ret
+    return ivy.matmul(lhs, rhs).astype(lhs.dtype)
 
 
 @with_unsupported_dtypes({"0.4.5 and below": ("bool",)}, "jax")

@@ -1745,47 +1745,28 @@ def test_jax_lax_dot(
 
 @st.composite
 def _get_dtype_inputs_for_batch_matmul(draw):
-    dim_size_left = draw(helpers.ints(min_value=1, max_value=4))
-    dim_size_right = draw(helpers.ints(min_value=1, max_value=4))
-    batch_size = draw(helpers.ints(min_value=0, max_value=3))
-    dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
+    dtype, lhs = draw(
+        helpers.dtype_and_values(
+            min_num_dims=2,
+            max_num_dims=6,
+            min_value=2,
+            max_value=5,
+        )
+    )
+    lhs_shape = lhs[0].shape
+    rhs_shape = list(lhs_shape)
+    rhs_shape[-1], rhs_shape[-2] = rhs_shape[-2], rhs_shape[-1]
+    rhs_shape = tuple(rhs_shape)
+    rhs = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=rhs_shape,
+            min_value=2,
+            max_value=5,
+        )
+    )
 
-    if batch_size == 0:
-        lhs = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=(dim_size_left, dim_size_right),
-                min_value=2,
-                max_value=5,
-            )
-        )
-        rhs = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=(dim_size_right, dim_size_left),
-                min_value=2,
-                max_value=5,
-            )
-        )
-    else:
-        lhs = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=(batch_size, dim_size_left, dim_size_right),
-                min_value=2,
-                max_value=5,
-            )
-        )
-        rhs = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=(batch_size, dim_size_right, dim_size_left),
-                min_value=2,
-                max_value=5,
-            )
-        )
-
-    return dtype, lhs, rhs
+    return dtype, lhs[0], rhs
 
 
 @handle_frontend_test(
