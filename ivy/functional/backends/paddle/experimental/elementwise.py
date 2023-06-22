@@ -33,8 +33,12 @@ def fmax(
     return paddle.fmax(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
+    y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
+    return paddle.divide(paddle.sin(y), y)
 
 
 def float_power(
@@ -65,7 +69,17 @@ def ldexp(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException
+    out_dtype = x1.dtype
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    with ivy.ArrayMode(False):
+        if ivy.any(ivy.less(x2, 0)):
+            pos_exp = ivy.greater_equal(x2, 0).astype(x2.dtype) * x2
+            neg_exp = ivy.less(x2, 0).astype(x2.dtype) * x2
+            ret = ivy.multiply(ivy.pow(2, pos_exp), x1)
+            ret = ivy.divide(ret, ivy.pow(2, -neg_exp))
+        else:
+            ret = ivy.multiply(ivy.pow(2, x2), x1)
+        return ivy.astype(ret, out_dtype, copy=False)
 
 
 def copysign(
@@ -80,7 +94,7 @@ def copysign(
         signs = ivy.sign(x2)
         result = ivy.multiply(ivy.abs(x1), signs)
         if result.shape == [1]:
-            result = paddle.fluid.layers.squeeze(result, [0])
+            result = ivy.squeeze(result)
         return result
 
 
@@ -131,7 +145,14 @@ def diff(
     ret_dtype = x.dtype
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         x = x.cast("float32")
-    prepend, append = [paddle.to_tensor(a, dtype=x.dtype) for a in [prepend, append]]
+
+    def _tensor(val):
+        if val is not None and not isinstance(val, paddle.Tensor):
+            return paddle.to_tensor(val, dtype=ret_dtype)
+        return val
+
+    prepend = _tensor(prepend)
+    append = _tensor(append)
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append).cast(
         ret_dtype
     )
