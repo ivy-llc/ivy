@@ -579,7 +579,7 @@ def test_numpy_negative_binomial(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
 )
-def test_ivy_laplace(
+def test_numpy_laplace(
     input_dtypes,
     size,
     frontend,

@@ -154,7 +154,7 @@ def negative_binomial(n, p, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def laplace_sample(mean=0.0, scale=1.0, size=None):
+def laplace(mean=0.0, scale=1.0, size=None):
     ret = ivy.exp(
         ivy.random.laplace(mean=mean, scale=scale, size=size, dtype="float64")
     )
