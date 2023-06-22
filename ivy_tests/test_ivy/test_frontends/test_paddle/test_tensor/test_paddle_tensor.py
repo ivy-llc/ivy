@@ -1179,3 +1179,4 @@ def test_paddle_amin(
         method_flags=method_flags,
         on_device=on_device,
     )
+
