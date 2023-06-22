@@ -1383,6 +1383,7 @@ def test_adaptive_avg_pool1d_layer(
 # IFFT
 @handle_method(
     method_tree="IFFT.__call__",
+    dt_arr_size=array_for_adaptive(max_dim_size=3, min_dim_size=2, num_out_size=1),
 )
 def test_ifft_layer(
     *,
