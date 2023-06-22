@@ -332,3 +332,27 @@ def test_paddle_eye(
         num_columns=num_columns,
         dtype=dtypes[0],
     )
+
+
+# triu
+@handle_frontend_test(
+    fn_tree="paddle.triu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+)
+def test_triu(*, dtype_and_x, test_flags, fn_tree, on_device, frontend):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        frontend=frontend,
+    )

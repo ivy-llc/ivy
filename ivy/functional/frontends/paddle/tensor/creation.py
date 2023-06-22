@@ -71,3 +71,22 @@ def empty(shape, dtype=None):
 @to_ivy_arrays_and_back
 def eye(num_rows, num_columns=None, dtype=None, name=None):
     return ivy.eye(num_rows, num_columns, dtype=dtype)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "uint8",
+            "int8",
+            "int16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def triu(x, name=None):
+    return ivy.triu(x)
