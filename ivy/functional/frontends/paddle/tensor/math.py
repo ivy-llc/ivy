@@ -160,5 +160,31 @@ def rad2deg(x, name=None):
 
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def deg2rad(x, name=None):
+    return ivy.deg2rad(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def tan(x, name=None):
     return ivy.tan(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def neg(x, name=None):
+    return ivy.negative(x)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def exp(x, name=None):
+    return ivy.exp(x)
+
+
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def amax(x, axis=None, keepdim=False, name=None):
+    return ivy.amax(x, axis=axis, keepdims=keepdim)

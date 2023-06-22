@@ -490,6 +490,82 @@ def avg_pool3d(
     )
 
 
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def pool(
+    x: Union[ivy.Array, ivy.NativeArray],
+    window_shape: Union[int, Tuple[int], Tuple[int, int]],
+    pool_type: str,
+    /,
+    *,
+    strides: Optional[Union[int, Tuple[int], Tuple[int, int]]] = None,
+    padding: str = "VALID",
+    data_format: Optional[str] = None,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = None,
+    ceil_mode: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Perform an N-D pooling operation.
+
+    Parameters
+    ----------
+    x
+        Input array to pool over.
+    window_shape
+        Shape of the pooling window.
+    pool_type
+        Type of pooling operation, either 'MAX' or 'AVG'.
+    strides
+        Strides of the pooling operation.
+    padding
+        Padding type, either 'VALID' or 'SAME'.
+    data_format
+        Data format of the input and output data, either 'NCHW' or 'NHWC'.
+    dilations
+        Dilation rate of the pooling operation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Examples
+    --------
+    >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
+    >>> print(ivy.pool(x, (2, 2), 'MAX', (1, 1), 'SAME'))
+    ivy.array([[[[ 1.,  2.],
+                [ 3.,  4.],
+                [ 4.,  5.]]],
+            [[[ 7.,  8.],
+                [ 9., 10.],
+                [10., 11.]]]])
+    >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
+    >>> print(ivy.pool(x, 3, 'AVG', 1, 'VALID'))
+    ivy.array([[[[ 8.,  9.]],
+            [[14., 15.]]],
+            [[[32., 33.]],
+            [[38., 39.]]]])
+    """
+    return ivy.current_backend(x).pool(
+        x,
+        window_shape,
+        pool_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+        ceil_mode=ceil_mode,
+        out=out,
+    )
+
+
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -1619,6 +1695,8 @@ def interpolate(
             equation = "ijkl,km,ln->ijmn"
         elif mode == "trilinear" or dims == 3:
             equation = "ijklm,kn,lo,mp->ijnop"
+        if mode == "bicubic":
+            return _upsample_bicubic2d_default(x, size, align_corners)
         if mode == "bicubic_tensorflow":
             kernel_func = lambda inputs: _cubic_kernel(inputs)
         if mode == "lanczos3":
@@ -1704,8 +1782,6 @@ def interpolate(
                         ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
                             1 / scale_x
                         )
-    elif mode == "bicubic":
-        return _upsample_bicubic2d_default(x, size, align_corners)
     elif mode == "mitchellcubic":
         batch, channels, in_height, in_width = x.shape
         out_height, out_width = size
