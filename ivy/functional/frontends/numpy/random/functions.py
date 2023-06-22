@@ -163,8 +163,11 @@ def negative_binomial(n, p, size=None):
     lambda_ = ivy.gamma(n, scale, shape=size)
     return ivy.poisson(lam=lambda_, shape=size)
 
+
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def laplace_sample(mean=0.0, scale=1.0, size=None):
-    ret = ivy.exp(ivy.random.laplace(mean=mean, scale=scale, size=size,dtype="float64"))
+    ret = ivy.exp(
+        ivy.random.laplace(mean=mean, scale=scale, size=size, dtype="float64")
+    )
     return ret
