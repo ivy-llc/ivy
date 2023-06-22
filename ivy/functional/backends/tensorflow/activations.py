@@ -13,7 +13,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 
@@ -49,7 +49,9 @@ def softmax(
     return tf.nn.softmax(x, axis)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes(
+    {"2.12.0 and below": ("float16", "bfloat16", "float32", "float64")}, backend_version
+)
 def softplus(
     x: Tensor,
     /,

@@ -113,6 +113,9 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32", "int32", "int64")}, "paddle"
+)
 @to_ivy_arrays_and_back
 def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
@@ -317,6 +320,8 @@ def lcm(input, other, *, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def einsum(equation, *operands):
+    if len(operands) == 1 and isinstance(operands[0], (list, tuple)):
+        operands = operands[0]
     return ivy.einsum(equation, *operands)
 
 
