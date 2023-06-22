@@ -208,9 +208,3 @@ class Tensor:
     def bitwise_xor(self, y, out=None, name=None):
         y_ivy = _to_ivy_array(y)
         return ivy.bitwise_xor(self._ivy_array, y_ivy)
-
-    @with_unsupported_dtypes(
-        {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-    )
-    def amax(self, axis=None, keepdim=False, name=None):
-        return ivy.amax(self._ivy_array, axis=axis, keepdims=keepdim)
