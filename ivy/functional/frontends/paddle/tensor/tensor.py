@@ -143,6 +143,11 @@ class Tensor:
         return ivy.erf(self._ivy_array)
 
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def subtract(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.subtract(self._ivy_array, y_ivy)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def log10(self, name=None):
         return ivy.log10(self._ivy_array)
 
