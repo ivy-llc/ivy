@@ -204,8 +204,6 @@ def kaiser_bessel_derived_window(
     half_w = ivy.sqrt(kaiser_w_csum[:-1] / kaiser_w_csum[-1:])
     window = ivy.concat((half_w, half_w[::-1]), axis=0)
     result = window.astype(dtype)
-    if ivy.exists(out):
-        ivy.inplace_update(out, result)
     return result
 
 
@@ -263,8 +261,6 @@ def hamming_window(
     else:
         count = ivy.linspace(0, window_length, window_length)
     result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
-    if ivy.exists(out):
-        ivy.inplace_update(out, result)
     return result
 
 

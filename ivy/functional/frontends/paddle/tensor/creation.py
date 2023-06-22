@@ -66,3 +66,8 @@ def arange(start, end=None, step=1, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
     return ivy.empty(shape=shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def eye(num_rows, num_columns=None, dtype=None, name=None):
+    return ivy.eye(num_rows, num_columns, dtype=dtype)

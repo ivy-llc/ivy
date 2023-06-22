@@ -148,6 +148,7 @@ def atan2(input, other, *, out=None):
 arctan2 = atan2
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
 @to_ivy_arrays_and_back
 def negative(input, *, out=None):
     return ivy.negative(input, out=out)
@@ -214,6 +215,7 @@ def real(input):
     return ivy.real(input)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def sign(input, *, out=None):
     return ivy.sign(input, out=out)
@@ -245,7 +247,7 @@ def logical_xor(input, other, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def round(input, *, decimals=0, out=None):
-    m = ivy.full(input.shape, 10**decimals)
+    m = ivy.full(input.shape, 10.0**decimals)
     upscale = ivy.multiply(input, m)
     rounded = ivy.round(upscale)
     return ivy.divide(rounded, m, out=out)
@@ -330,6 +332,7 @@ divide = div
 
 @to_ivy_arrays_and_back
 def true_divide(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.divide(input, other, out=out)
 
 
@@ -345,13 +348,13 @@ def log1p(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.divide(tensor1, tensor2)), out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def addcmul(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.multiply(tensor1, tensor2)), out=out)
 
@@ -361,6 +364,7 @@ def pow(input, exponent, *, out=None):
     return ivy.pow(input, exponent, out=out)
 
 
+@with_unsupported_dtypes({"1.12.0 and below": ("bfloat16", "float16")}, "jax")
 @to_ivy_arrays_and_back
 def float_power(input, exponent, *, out=None):
     input, exponent = torch_frontend.promote_types_of_torch_inputs(input, exponent)
@@ -456,9 +460,10 @@ def sigmoid(input, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def lerp(input, end, weight, *, out=None):
-    return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
+    return ivy.lerp(input, end, weight, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def signbit(input, *, out=None):
     return ivy.signbit(input, out=out)
@@ -521,9 +526,11 @@ def erf(input, *, out=None):
 def sgn(input, *, out=None):
     if ivy.is_complex_dtype(input.dtype):
         input_abs = ivy.abs(input, out=out)
-        return ivy.where(
-            input_abs == 0, 0, ivy.divide(input, input_abs, out=out), out=out
-        )
+        # TODO wrap this in Where function after solve it's errors
+        if input_abs == 0:
+            return 0
+        else:
+            return ivy.divide(input, input_abs, out=out)
     else:
         return ivy.sign(input, out=out)
 

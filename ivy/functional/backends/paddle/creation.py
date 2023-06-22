@@ -173,6 +173,8 @@ def empty(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if isinstance(shape, int):
+        shape = [shape]
     return to_device(paddle.empty(shape=shape).cast(dtype), device)
 
 
@@ -387,7 +389,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
 )
 def linspace(
     start: Union[paddle.Tensor, float],
@@ -451,8 +453,7 @@ def linspace(
                 "int16",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
+                "complex",
                 "bool",
             )
         }
@@ -520,8 +521,7 @@ def ones_like(
                 "int8",
                 "int16",
                 "uint8",
-                "complex64",
-                "complex128",
+                "complex",
             )
         }
     },
@@ -540,8 +540,7 @@ def tril(
                 "int8",
                 "int16",
                 "uint8",
-                "complex64",
-                "complex128",
+                "complex",
             )
         }
     },
@@ -647,14 +646,7 @@ def one_hot(
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "complex64",
-                "complex128",
-            )
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def frombuffer(
@@ -702,7 +694,7 @@ def triu_indices(
     device: Place,
 ) -> Tuple[paddle.Tensor]:
     # special case due to inconsistent behavior when n_cols=1 and n_rows=0
-    if not (n_cols and n_rows):
+    if n_cols == 1 and n_rows == 0:
         return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
     return tuple(
         to_device(

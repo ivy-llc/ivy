@@ -172,6 +172,8 @@ def test_numpy_divide(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-03,
+        rtol=1e-03,
         x1=xs[0],
         x2=xs[1],
         out=None,

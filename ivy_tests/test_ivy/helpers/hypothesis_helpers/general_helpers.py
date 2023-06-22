@@ -43,7 +43,7 @@ def matrix_is_stable(x, cond_limit=30):
     ret
         If True, the matrix is suitable for further numerical computations.
     """
-    return np.linalg.cond(x.astype("float64")) <= cond_limit
+    return np.all(np.linalg.cond(x.astype("float64")) <= cond_limit)
 
 
 def apply_safety_factor(
