@@ -16,6 +16,7 @@ def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
         return true_fun(*operands)
     return false_fun(*operands)
 
+
 @to_ivy_arrays_and_back
 def associative_scan(fn, elems, reverse=False, axis=0):
     if not callable(fn):
