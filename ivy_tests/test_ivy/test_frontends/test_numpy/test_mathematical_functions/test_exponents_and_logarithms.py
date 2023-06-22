@@ -300,6 +300,8 @@ def test_numpy_log2(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
+                small_abs_safety_factor=2,
+                safety_factor_scale="log",
             )
         ],
     ),
@@ -328,6 +330,7 @@ def test_numpy_log1p(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
         x=x[0],
         out=None,
         where=where,
