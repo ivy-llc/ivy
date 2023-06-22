@@ -135,7 +135,6 @@ def celu(
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-
 def rrelu(
     x,
     /,
@@ -174,6 +173,9 @@ def rrelu(
     # ret = ivy.where(x >= 0, x, ivy.multiply(a, x))
     # return ret.astype(x.dtype)
 
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def tanhshrink(
     x,
     /,
@@ -181,3 +183,17 @@ def tanhshrink(
     name=None,
 ):
     return ivy.subtract(x, ivy.tanh(x))
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def relu_(x, name=None):
+    ret = ivy.relu(x)
+    ivy.inplace_update(x, ret)
+    return x
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def mish(x, name=None):
+    return ivy.mish(x)

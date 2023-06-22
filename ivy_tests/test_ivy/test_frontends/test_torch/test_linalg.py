@@ -2,7 +2,7 @@
 import math
 import sys
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 
 # local
@@ -12,6 +12,9 @@ from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
     dtype_value1_value2_axis,
+)
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    matrix_is_stable,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
@@ -613,20 +616,17 @@ def test_torch_vecdot(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_rank",
-    dtype_x_hermitian=_matrix_rank_helper(),
-    atol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
 )
 def test_matrix_rank(
-    dtype_x_hermitian,
-    rtol,
-    atol,
+    dtype_x_hermitian_atol_rtol,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, x, hermitian = dtype_x_hermitian
+    dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
+    assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
