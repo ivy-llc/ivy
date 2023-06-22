@@ -23,3 +23,18 @@ absolute = abs
 @to_ivy_arrays_and_back
 def stack(x, axis=0, name=None):
     return ivy.stack(x, axis=axis)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("int8", "int16")}, "paddle")
+@to_ivy_arrays_and_back
+def concat(x, axis, name=None):
+    return ivy.concat(x, axis=axis)
+
+
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "uint8", "int16", "float16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def tile(x, repeat_times, name=None):
+    return ivy.tile(x, repeats=repeat_times)

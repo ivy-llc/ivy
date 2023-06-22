@@ -530,6 +530,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _square,
     _lcm,
     _gcd,
+    _clip,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
@@ -712,6 +713,7 @@ conjugate = ufunc("_conj")
 lcm = ufunc("_lcm")
 gcd = ufunc("_gcd")
 spacing = ufunc("_spacing")
+clip = ufunc("_clip")
 
 # setting to specific version #
 # --------------------------- #

@@ -150,11 +150,11 @@ def bitwise_and(
 
 
 def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in [
+    x_dtype = x.dtype
+    if x_dtype in [
         paddle.int8,
         paddle.int16,
         paddle.int32,
-        paddle.int64,
         paddle.uint8,
         paddle.float16,
         paddle.complex64,
@@ -163,16 +163,18 @@ def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     ]:
         if paddle.is_complex(x):
             return paddle.complex(paddle.ceil(x.real()), paddle.ceil(x.imag()))
-        return paddle.ceil(x.astype("float32")).astype(x.dtype)
+        return paddle.ceil(x.astype("float32")).astype(x_dtype)
+    elif x_dtype == paddle.int64:
+        return paddle.ceil(x.astype("float64")).astype(x_dtype)
     return paddle.ceil(x)
 
 
 def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in [
+    x_dtype = x.dtype
+    if x_dtype in [
         paddle.int8,
         paddle.int16,
         paddle.int32,
-        paddle.int64,
         paddle.uint8,
         paddle.float16,
         paddle.complex64,
@@ -181,7 +183,9 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     ]:
         if paddle.is_complex(x):
             return paddle.complex(paddle.floor(x.real()), paddle.floor(x.imag()))
-        return paddle.floor(x.astype("float32")).astype(x.dtype)
+        return paddle.floor(x.astype("float32")).astype(x_dtype)
+    elif x_dtype == paddle.int64:
+        return paddle.floor(x.astype("float64")).astype(x_dtype)
     return paddle.floor(x)
 
 
@@ -221,7 +225,17 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.asinh(x)
 
 
-def sign(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
+def sign(
+    x: paddle.Tensor,
+    /,
+    *,
+    np_variant: Optional[bool] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
