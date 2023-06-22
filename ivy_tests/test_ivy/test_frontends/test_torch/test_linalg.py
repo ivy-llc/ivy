@@ -3,6 +3,7 @@ import math
 import sys
 import numpy as np
 from hypothesis import strategies as st
+from hypothesis import given
 
 
 # local
@@ -1253,23 +1254,24 @@ def test_torch_multi_dot(
         tensors=x,
     )
 
+
+#Size of parameter has been set as 3 and could be altered to alter results 
+def generate_hermitian_matrix():
+    size = 3  # Size is predetermined as 3x3
+
+    @given(st.complex_numbers())
+    def is_hermitian(matrix):
+        matrix = np.array(matrix).reshape((size, size))
+        return np.allclose(matrix, np.conj(matrix.T))
+
+    hermitian_matrix = st.just(np.zeros((size, size), dtype=np.complex128)).filter(is_hermitian).example()
+    return hermitian_matrix
+    
 @handle_frontend_test(
     fn_tree="torch.linalg.ldl_factor_ex",
     dtype_and_input=helpers.dtype_and_values(
     available_dtypes=helpers.get_dtypes("float")),
 )
-import numpy as np
-#Size of parameter has been set as 3 and could be altered to alter results 
-def generate_hermitian_matrix():
-    size = 3  # Size is predetermined as 3x3
-    # Generate a random complex matrix
-    matrix = np.random.rand(size, size) + 1j * np.random.rand(size, size)
-    
-    # Make the matrix Hermitian
-    hermitian_matrix = matrix + matrix.conj().T
-    
-    return hermitian_matrix
-
 def test_torch_ldl_factor_ex(
     *,
     dtype_and_input,
