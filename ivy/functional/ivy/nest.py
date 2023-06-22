@@ -1048,7 +1048,7 @@ def nested_map(
         nest or not
     shallow
         Whether to inplace update the input nest or not
-        Only works if the nest is a mutable type. Default is ``True``.
+        Only works if nest is a mutable type. Default is ``True``.
 
     Returns
     -------
