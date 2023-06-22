@@ -479,3 +479,10 @@ def correlate(a, v, mode="valid", precision=None):
         data_format="channel_first",
     )
     return ivy.flip(result[0, 0, out_order]) if need_flip else result[0, 0, out_order]
+
+
+@to_ivy_arrays_and_back
+def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=None):
+    return ivy.cov(
+        m, y, rowVar=rowvar, bias=bias, ddof=ddof, fweights=fweights, aweights=aweights
+    )
