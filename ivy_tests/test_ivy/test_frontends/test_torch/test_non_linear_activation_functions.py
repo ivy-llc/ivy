@@ -1078,3 +1078,44 @@ def test_torch_softplus(
         beta=beta,
         threshold=threshold,
     )
+
+
+# gumbel_softmax
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.gumbel_softmax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    tau=st.floats(min_value=0),
+    hard=st.booleans(),
+    eps=st.floats(min_value=0, max_value=1),
+    dim=st.integers(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
+)
+def test_torch_gumbel_softmax(
+    *,
+    dtype_and_x,
+    tau,
+    hard,
+    eps,
+    dim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        logits=x[0],
+        tau=tau,
+        hard=hard,
+        eps=eps,
+        dim=dim,
+    )
