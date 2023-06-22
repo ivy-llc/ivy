@@ -156,8 +156,8 @@ def depthwise_conv2d(
 ) -> paddle.Tensor:
     if data_format == "NHWC":
         x = paddle.transpose(x, perm=(0, 3, 1, 2))
-    strides = [strides]*2 if isinstance(strides, int) else strides
-    dilations = [dilations]*2 if isinstance(dilations, int) else dilations
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     if len(filters.shape) == 3:
         filters = paddle.unsqueeze(filters, axis=-1)
     x = _pad_before_conv(x, filters, strides, padding, 2, dilations, "NCHW")
@@ -174,8 +174,6 @@ def depthwise_conv2d(
         num_groups,
         "NCHW"
     )
-    print(strides)
-    print(f"x:{x}",f"f:{filters}", res.shape, "\n")
     if data_format == "NHWC":
         res = paddle.transpose(res, (0, 2, 3, 1))
     return res
