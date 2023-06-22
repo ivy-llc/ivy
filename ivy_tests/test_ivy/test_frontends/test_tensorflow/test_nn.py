@@ -1499,3 +1499,67 @@ def test_tensorflow_avg_pool1d(
         strides=strides,
         padding=padding,
     )
+
+
+@st.composite
+def _pool_args(draw):
+    dims = draw(st.integers(min_value=3, max_value=5))
+    data_formats = {3: "NWC", 4: "NHWC", 5: "NDHWC"}
+    data_format = data_formats[dims]
+    pooling_type = draw(st.one_of(st.just("AVG"), st.just("MAX")))
+    return (
+        draw(
+            helpers.arrays_for_pooling(
+                min_dims=dims,
+                max_dims=dims,
+                min_side=1,
+                max_side=4,
+                return_dilation=True,
+            )
+        ),
+        data_format,
+        pooling_type,
+        dims,
+    )
+
+
+# pool
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.pool",
+    x_k_s_p_df=_pool_args(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_pool(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (
+        (input_dtype, x, ksize, strides, padding, dilation),
+        data_format,
+        pooling_type,
+        num_dims,
+    ) = x_k_s_p_df
+    if num_dims == 3:
+        strides = (strides[0],)
+    elif num_dims == 4:
+        strides = (strides[0], strides[0])
+    elif num_dims == 5:
+        strides = (strides[0], strides[0], strides[0])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        window_shape=ksize,
+        pooling_type=pooling_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )

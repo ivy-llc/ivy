@@ -174,3 +174,23 @@ def tan(x, name=None):
 @to_ivy_arrays_and_back
 def square(x, name=None):
     return ivy.square(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def neg(x, name=None):
+    return ivy.negative(x)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def exp(x, name=None):
+    return ivy.exp(x)
+
+
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def amax(x, axis=None, keepdim=False, name=None):
+    return ivy.amax(x, axis=axis, keepdims=keepdim)
