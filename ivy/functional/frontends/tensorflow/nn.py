@@ -460,6 +460,7 @@ def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
 def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
 
+
 # pool
 @to_ivy_arrays_and_back
 def pool(
@@ -481,7 +482,7 @@ def pool(
         data_format=data_format,
         dilations=dilations,
     )
-  
+
 
 # log_poisson_loss
 @to_ivy_arrays_and_back
