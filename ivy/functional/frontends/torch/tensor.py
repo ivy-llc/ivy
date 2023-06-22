@@ -602,6 +602,9 @@ class Tensor:
     def dim(self):
         return self.ivy_array.ndim
 
+    def heaviside(self, values, *, out=None):
+        return torch_frontend.heaviside(self, values, out=out)
+
     def new_full(
         self,
         size,
