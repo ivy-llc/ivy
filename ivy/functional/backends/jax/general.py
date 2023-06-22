@@ -49,7 +49,15 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
-def get_item(x: JaxArray, /, query: JaxArray, *, copy: bool = None) -> JaxArray:
+def get_item(
+    x: JaxArray,
+    /,
+    query: JaxArray,
+    *,
+    copy: bool = None,
+) -> JaxArray:
+    if copy:
+        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 
@@ -414,7 +422,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.12 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,
@@ -430,6 +438,6 @@ def itemsize(x: JaxArray) -> int:
     return x.itemsize
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.12 and below": ("bfloat16",)}, backend_version)
 def strides(x: JaxArray) -> Tuple[int]:
     return to_numpy(x).strides

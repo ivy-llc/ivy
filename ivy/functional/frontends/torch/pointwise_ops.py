@@ -148,6 +148,7 @@ def atan2(input, other, *, out=None):
 arctan2 = atan2
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
 @to_ivy_arrays_and_back
 def negative(input, *, out=None):
     return ivy.negative(input, out=out)

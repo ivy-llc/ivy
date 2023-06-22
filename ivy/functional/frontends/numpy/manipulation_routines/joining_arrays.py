@@ -29,18 +29,23 @@ def concatenate(arrays, /, *, axis=0, out=None, dtype=None, casting="same_kind")
 
 @handle_numpy_out
 @to_ivy_arrays_and_back
-def stack(arrays, axis=0, out=None):
-    return ivy.stack(arrays, axis=axis, out=out)
+def stack(arrays, /, *, axis=0, out=None):
+    out_dtype = ivy.dtype(arrays[0])
+    for i in arrays:
+        out_dtype = ivy.as_ivy_dtype(
+            np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
+        )
+    return ivy.stack(arrays, axis=axis, out=out).astype(out_dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
 def vstack(tup):
-    if len(ivy.shape(tup[0])) == 1:
-        xs = []
-        for t in tup:
-            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
-        return ivy.concat(xs, axis=0)
-    return ivy.concat(tup, axis=0)
+    out_dtype = ivy.dtype(tup[0])
+    for i in tup:
+        out_dtype = ivy.as_ivy_dtype(
+            np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
+        )
+    return ivy.vstack(tup)
 
 
 row_stack = vstack
@@ -48,11 +53,9 @@ row_stack = vstack
 
 @to_ivy_arrays_and_back
 def hstack(tup):
-    if len(ivy.shape(tup[0])) == 1:
-        xs = []
-        for t in tup:
-            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
-        ret = ivy.concat(xs, axis=-1)
-    else:
-        ret = ivy.concat(tup, axis=1)
-    return ret
+    out_dtype = ivy.dtype(tup[0])
+    for i in tup:
+        out_dtype = ivy.as_ivy_dtype(
+            np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
+        )
+    return ivy.hstack(tup)
