@@ -1144,7 +1144,7 @@ def test_paddle_subtract(
     init_tree="paddle.to_tensor",
     method_name="amin",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=st.one_of(helpers.get_dtypes("float", "int")),
+        available_dtypes=st.one_of(helpers.get_dtypes("numeric")),
         min_axis=None,
         max_axis=4,
         min_num_dims=0,
