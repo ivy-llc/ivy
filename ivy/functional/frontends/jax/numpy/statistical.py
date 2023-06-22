@@ -520,12 +520,20 @@ def nanpercentile(
         ivy.logging.warning("percentiles must be in the range [0, 100]")
         return []
 
-    # if a.size == 0:
-    #     return ivy.nanmean(a, axis, out=out, keepdims=keepdims)
+    if a.size == 0:
+        return []
 
-    if interpolation is None:
+    if a.ndim == 0:
+        return ivy.nanmean(a, out=out, keepdims=keepdims)
+
+    if interpolation is not None:
+        if method != "linear":
+            ivy.logging.warning("You shall not pass both `method` and `interpolation`!")
+            return []
+    else:
         interpolation = method
 
+    result_percentiles = []
     if axis is None:
         a = ivy.flatten(a)
         nanless_a = _remove_nans(a)
@@ -537,21 +545,41 @@ def nanpercentile(
             interpolation=interpolation,
             out=out,
         )
+
     elif axis == 0:
-        a = ivy.swapaxes(a, 0, 1)
+        try:
+            a = ivy.swapaxes(a, 0, 1)
+        except ivy.utils.exceptions.IvyError:
+            ivy.logging.warning("axis is 0 but couldn't swap")
+        finally:
+            for x in a:
+                nanless_x = _remove_nans(x)
+                result_percentiles.append(
+                    ivy.quantile(
+                        nanless_x,
+                        q,
+                        axis=0,
+                        keepdims=keepdims,
+                        interpolation=interpolation,
+                        out=out,
+                    )
+                )
 
-    result_percentiles = []
-    for x in a:
-        nanless_x = _remove_nans(x)
-        result_percentiles.append(
-            ivy.quantile(
-                nanless_x,
-                q,
-                axis=0,
-                keepdims=keepdims,
-                interpolation=interpolation,
-                out=out,
-            )
-        )
+    elif axis == 1:
+        for qx in q:
+            percentiles = []
+            for ax in a:
+                nanless_x = _remove_nans(ax)
+                percentiles.append(
+                    ivy.quantile(
+                        nanless_x,
+                        qx,
+                        axis=0,
+                        keepdims=keepdims,
+                        interpolation=interpolation,
+                        out=out,
+                    )
+                )
+            result_percentiles.append(percentiles)
 
-    return result_percentiles
+    return ivy.array(result_percentiles)
