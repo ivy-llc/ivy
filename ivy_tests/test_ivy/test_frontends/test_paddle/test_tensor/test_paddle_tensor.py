@@ -1144,7 +1144,8 @@ def test_paddle_subtract(
     init_tree="paddle.to_tensor",
     method_name="numel",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
     ),
 )
 def test_paddle_numel(
