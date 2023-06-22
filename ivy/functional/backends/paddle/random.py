@@ -79,6 +79,10 @@ def random_normal(
     return paddle.normal(mean, std).cast(dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -91,7 +95,44 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if probs is None:
+        probs = (
+                paddle.ones(
+                    (
+                        batch_size,
+                        population_size,
+                    )
+                )
+                / population_size
+        )
+    if seed:
+        paddle.seed(seed)
+    if not replace:
+        orig_probs_shape = list(probs.shape)
+        probs_flat = paddle.reshape(probs, (-1, orig_probs_shape[-1]))
+        probs_flat = probs_flat / paddle.sum(
+            probs_flat, axis=-1, keepdim=True
+        )
+        probs_stack = paddle.split(probs_flat, probs_flat.shape[0], axis=0)
+        samples_stack = []
+        for prob in probs_stack:
+            logits = paddle.cast(paddle.log(prob), paddle.float64)
+            z = paddle.cast(
+                -paddle.log(
+                    -paddle.log(paddle.uniform(paddle.shape(logits), min=0, max=1))
+                ),
+                paddle.float64,
+            )
+            _, indices = paddle.topk(logits + z, k=num_samples)
+            samples_stack.append(indices)
+        samples_flat = paddle.stack(samples_stack)
+        return paddle.to_tensor(
+            paddle.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
+    else:
+        if len(probs.shape) == 1:
+            probs = probs[None]
+        dist = paddle.distribution.Categorical(paddle.log(probs))
+        return dist.sample([batch_size, num_samples]).squeeze(axis=-1)
 
 
 @with_unsupported_device_and_dtypes(
