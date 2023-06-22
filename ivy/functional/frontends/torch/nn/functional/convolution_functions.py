@@ -322,6 +322,14 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
                 j_in : j_in + kernel_size[1] * dilation[1] : dilation[1],
             ] += patch
             k += 1
-    return ivy.array(
-        output_padded[:, :, padding[0] : -padding[0], padding[1] : -padding[1]]
+    ret = ivy.array(
+        output_padded[
+            :,
+            :,
+            padding[0] : output_padded.shape[2] - padding[0],
+            padding[1] : output_padded.shape[3] - padding[1],
+        ]
     )
+    if orig_ndim == 2:
+        return ivy.squeeze(ret, axis=0)
+    return ret

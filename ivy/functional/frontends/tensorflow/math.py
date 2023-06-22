@@ -466,17 +466,10 @@ def argmin(input, axis=None, output_type="int64", name=None):
 def truediv(x, y, name="truediv"):
     x, y = check_tensorflow_casting(x, y)
     x_dtype = ivy.dtype(x)
-
-    if ivy.current_backend_str() == "torch":
-        if x_dtype in [ivy.int8, ivy.int16]:
-            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-        elif x_dtype in [ivy.int32, ivy.int64]:
-            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
-    else:
-        if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
-            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-        elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
-            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    if x_dtype in ["int8", "uint8", "int16", "uint16"]:
+        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+    elif x_dtype in ["int32", "uint32", "int64", "uint64"]:
+        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
 
 
@@ -703,3 +696,8 @@ def in_top_k(target, pred, k, name=None):
 @to_ivy_arrays_and_back
 def conj(x, name=None):
     return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def top_k(input, k=1, sorted=True, name=None):
+    return ivy.top_k(input, k, sorted=sorted)
