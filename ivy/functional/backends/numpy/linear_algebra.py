@@ -200,7 +200,7 @@ def matrix_transpose(
     x: np.ndarray, /, *, conjugate: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if conjugate:
-        np.conjugate(x)
+        x = np.conjugate(x)
     return np.swapaxes(x, -1, -2)
 
 

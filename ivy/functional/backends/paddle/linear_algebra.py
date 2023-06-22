@@ -376,6 +376,8 @@ def matrix_transpose(
     conjugate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if conjugate:
+        x = paddle.conj(x)
     perm = list(range(x.ndim))
     perm[-1], perm[-2] = perm[-2], perm[-1]
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
@@ -538,6 +540,21 @@ def tensordot(
     return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "unsigned",
+                "float16",
+                "complex",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def trace(
     x: paddle.Tensor,
     /,

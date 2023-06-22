@@ -892,6 +892,16 @@ def fft2(
     return np.fft.fft2(x, s, dim, norm).astype(np.complex128)
 
 
+def ifftn(
+    x: np.ndarray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
+
 @with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
 def embedding(
     weights: np.ndarray,
@@ -911,3 +921,4 @@ def embedding(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
     return embeddings
+
