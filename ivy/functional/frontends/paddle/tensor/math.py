@@ -182,7 +182,7 @@ def exp(x, name=None):
     return ivy.exp(x)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": "complex"}, "paddle")
+@with_unsupported_dtypes({"2.4.2 and below": "float"}, "paddle")
 @to_ivy_arrays_and_back
 def amax(x, axis=None, keepdim=False, name=None):
     return ivy.amax(x, axis=axis, keepdims=keepdim)
