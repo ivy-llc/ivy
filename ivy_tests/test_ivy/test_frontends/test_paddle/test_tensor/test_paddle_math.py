@@ -832,7 +832,7 @@ def test_paddle_amax(
         x=x[0],
     )
 
-
+    
 # reciprocal
 @handle_frontend_test(
     fn_tree="paddle.reciprocal",
