@@ -806,7 +806,7 @@ def test_paddle_exp(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.amax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", "int"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=None,
         max_axis=4,
         min_num_dims=0,
