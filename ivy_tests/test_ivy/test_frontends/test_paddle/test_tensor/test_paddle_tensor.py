@@ -1070,12 +1070,7 @@ def test_paddle_erf(
     init_tree="paddle.to_tensor",
     method_name="amax",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=st.one_of(helpers.get_dtypes("float", "int")),
-        min_axis=None,
-        max_axis=4,
-        min_num_dims=0,
-        max_num_dims=4,
-        force_int_axis=False,
+        available_dtypes=st.one_of(helpers.get_dtypes("numeric")),
     ),
     keep_dims=st.booleans(),
 )
@@ -1145,11 +1140,6 @@ def test_paddle_subtract(
     method_name="amin",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=st.one_of(helpers.get_dtypes("numeric")),
-        min_axis=None,
-        max_axis=4,
-        min_num_dims=0,
-        max_num_dims=4,
-        force_int_axis=False,
     ),
     keep_dims=st.booleans(),
 )
