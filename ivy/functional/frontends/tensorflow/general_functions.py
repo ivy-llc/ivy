@@ -12,6 +12,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
+import functools
 
 
 @to_ivy_arrays_and_back
@@ -81,6 +82,37 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 @to_ivy_arrays_and_back
 def fill(dims, value, name=None):
     return ivy.full(dims, value)
+
+
+@to_ivy_arrays_and_back
+def foldl(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    swap_memory=False,
+    name=None,
+):
+    ivy.utils.assertions.check_isinstance(
+        elems, (list, ivy.Array), "elems must be an iterable object"
+    )
+    ivy.utils.assertions.check_true(
+        callable(fn), f"{fn.__name__} must be a callable function"
+    )
+    if len(ivy.shape(elems)) == 0 or ivy.get_num_dims(elems) == 0:
+        raise ivy.utils.exceptions.IvyValueError(
+            "elems must be a non-empty iterable object with at least one dimension"
+        )
+    if initializer is not None:
+        result = functools.reduce(fn, elems, initializer)
+    elif initializer is None and ivy.shape(elems)[0] > 0:
+        result = functools.reduce(fn, elems[1:], elems[0])
+    else:
+        result = elems
+    if all(ivy.get_num_dims(e) == 0 for e in elems):
+        result = ivy.to_scalar(result)
+
+    return result
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")

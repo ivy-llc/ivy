@@ -835,7 +835,6 @@ def infer_device(fn: Callable) -> Callable:
 
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
-    is_compos_fn = "ivy.functional.ivy" in fn.__module__
 
     @functools.wraps(fn)
     def _handle_out_argument(*args, out=None, **kwargs):
@@ -860,7 +859,7 @@ def handle_out_argument(fn: Callable) -> Callable:
             inplace updates.
         """
         nonlocal handle_out_in_backend
-        if out is None or is_compos_fn:
+        if out is None:
             return fn(*args, out=out, **kwargs)
         if ivy.gradients._is_variable(out):
             handle_out_in_backend = False
@@ -1023,7 +1022,11 @@ def _wrap_function(
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
-            if attr.startswith("_") or hasattr(ivy, attr):
+            if (
+                attr.startswith("_")
+                or hasattr(ivy, attr)
+                or attr == "mixed_backend_wrappers"
+            ):
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
         # Copy docstring
@@ -1031,36 +1034,42 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
 
-        mixed_fn = (
-            original != to_wrap
-            and hasattr(original, "inputs_to_ivy_arrays")
-            and not original.__name__.startswith("inplace")
-        )
+        mixed_fn = hasattr(original, "mixed_backend_wrappers") and original != to_wrap
+        partial_mixed = mixed_fn and hasattr(to_wrap, "partial_mixed_handler")
+        add_wrappers, skip_wrappers = [], []
+        if mixed_fn:
+            backend_wrappers = getattr(original, "mixed_backend_wrappers")
+            add_wrappers = backend_wrappers.get("to_add")
+            skip_wrappers = backend_wrappers.get("to_skip")
 
         for attr in FN_DECORATORS:
-            if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
-                mixed_fn
-                and (
-                    attr
-                    in [
-                        "inputs_to_native_arrays",
-                        "outputs_to_ivy_arrays",
-                        "handle_mixed_function",
-                    ]
-                )
-            ):
-                if mixed_fn:
-                    if attr == "inputs_to_ivy_arrays":
-                        continue
-                    if attr == "handle_mixed_function":
-                        if hasattr(to_wrap, "partial_mixed_handler"):
-                            to_wrap.compos = original
-                            to_wrap = handle_mixed_function(
-                                getattr(to_wrap, "partial_mixed_handler")
-                            )(to_wrap)
-                        continue
-                to_wrap = getattr(ivy, attr)(to_wrap)
+            if hasattr(original, attr) and not hasattr(to_wrap, attr):
+                if attr not in skip_wrappers:
+                    to_wrap = getattr(ivy, attr)(to_wrap)
 
+            elif mixed_fn:
+                if attr == "handle_mixed_function":
+                    if partial_mixed:
+                        to_wrap.compos = original
+                        to_wrap = handle_mixed_function(
+                            getattr(to_wrap, "partial_mixed_handler")
+                        )(to_wrap)
+                    continue
+                if attr in add_wrappers:
+                    to_wrap = getattr(ivy, attr)(to_wrap)
+
+        # we should remove the all the decorators
+        # after handle_mixed_fuction in FN_DECORATORS
+        # from the compos function because these will
+        # be run from the primary implementation.
+        if partial_mixed:
+            array_spec = to_wrap.compos.__dict__["array_spec"]
+            for attr in FN_DECORATORS[
+                -1 : FN_DECORATORS.index("handle_mixed_function") : -1
+            ]:
+                if hasattr(to_wrap.compos, attr):
+                    to_wrap.compos = to_wrap.compos.__wrapped__
+            to_wrap.compos.__dict__["array_spec"] = array_spec
     return to_wrap
 
 
@@ -1197,12 +1206,27 @@ def _dtype_device_wrapper_creator(attrib, t):
             "unsigned": ivy.valid_uint_dtypes,
             "complex": ivy.valid_complex_dtypes,
         }
+
         for key, value in version_dict.items():
-            for i, v in enumerate(value):
-                if v in typesets:
-                    version_dict[key] = (
-                        version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
-                    )
+            # check if value is a dict too, in case of device_dtype decorators
+            if isinstance(value, dict):
+                for key2, value2 in value.items():
+                    for i, v in enumerate(value2):
+                        if v in typesets:
+                            version_dict[key][key2] = (
+                                version_dict[key][key2][:i]
+                                + typesets[v]
+                                + version_dict[key][key2][i + 1 :]
+                            )
+            else:
+                # usual decorator case
+                for i, v in enumerate(value):
+                    if v in typesets:
+                        version_dict[key] = (
+                            version_dict[key][:i]
+                            + typesets[v]
+                            + version_dict[key][i + 1 :]
+                        )
 
         def _wrapped(func):
             val = _versioned_attribute_factory(

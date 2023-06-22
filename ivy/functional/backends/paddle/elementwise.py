@@ -844,12 +844,16 @@ def abs(
     return ret
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def logaddexp(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle_backend.log(
-        paddle_backend.add(paddle_backend.exp(x1), paddle_backend.exp(x2))
+    amax = paddle_backend.maximum(x1, x2)
+    return amax + paddle_backend.log(
+        paddle_backend.exp(x1 - amax) + paddle_backend.exp(x2 - amax)
     ).astype(ret_dtype)
 
 
