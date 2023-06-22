@@ -628,7 +628,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
-    _nextafter,
+    _nextafter, _spacing,
 )
 
 _frontend_array = array
@@ -712,6 +712,7 @@ nextafter = ufunc("_nextafter")
 conjugate = ufunc("_conj")
 lcm = ufunc("_lcm")
 gcd = ufunc("_gcd")
+spacing = ufunc("_spacing")
 clip = ufunc("_clip")
 
 # setting to specific version #
