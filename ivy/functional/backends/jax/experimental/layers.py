@@ -183,7 +183,7 @@ def general_pool(
         y = jnp.squeeze(y, axis=0)
     return y
 
-
+@with_supported_dtypes({'0.3.25 and below':('float64'),'0.3.25 and above':('float64')}, backend_version)
 def max_pool1d(
     x: JaxArray,
     kernel: Union[int, Tuple[int]],
