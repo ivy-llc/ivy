@@ -400,7 +400,7 @@ class Array(
         return ivy.get_item(self._data, query)
 
     def __setitem__(self, query, val):
-        self._data = ivy.set_item(self._data, query, val)
+        self._data = ivy.set_item(self._data, query, val)._data
 
     def __contains__(self, key):
         return self._data.__contains__(key)
