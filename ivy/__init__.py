@@ -1069,6 +1069,7 @@ downcast_dtypes = False
 upcast_dtypes = False
 crosscast_dtypes = False
 cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
+throw_error_for_dtypes = True
 
 
 def downcast_data_types(val=True):
@@ -1093,6 +1094,18 @@ def cast_data_types(val=True):
     upcast_dtypes = val
     downcast_dtypes = val
     crosscast_dtypes = val
+
+
+def is_any_casting():
+    return downcast_dtypes or upcast_dtypes or crosscast_dtypes
+
+
+def throw_error_for_unsupported_dtypes(val=None):
+    # set this to false to turn off the error message
+    global throw_error_for_dtypes
+    if val is None:
+        return throw_error_for_dtypes
+    throw_error_for_dtypes = val
 
 
 # Promotion Tables #
