@@ -7,7 +7,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
-    fn_tree="associative_scan",
+    fn_tree="jax.lax.associative_scan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
