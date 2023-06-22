@@ -8,7 +8,6 @@ from typing import Optional, Union, Sequence
 # local
 import ivy
 from paddle.fluid.libpaddle import Place
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.backends.paddle.device import to_device
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
