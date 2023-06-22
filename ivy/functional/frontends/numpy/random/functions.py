@@ -110,20 +110,8 @@ def binomial(n, p, size=None):
         size = size
     if isinstance(size, int):
         size = (size,)
-    binomial_numbers = ivy.zeros(
-        size, dtype=int
-    )  # Initialize an array to store the binomial numbers
-
-    for i in ivy.ndindex(size):
-        successes = 0
-        for j in range(n):
-            uniform_number = (
-                ivy.random_uniform()
-            )  # Generate a random number from a uniform distribution
-            if uniform_number < p:
-                successes += 1
-        binomial_numbers[i] = successes  # Store the number of successes
-    return binomial_numbers
+    lambda_ = ivy.multiply(n, p)
+    return ivy.poisson(lambda_, shape=size)
 
 
 @to_ivy_arrays_and_back
