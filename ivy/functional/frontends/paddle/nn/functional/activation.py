@@ -191,3 +191,9 @@ def relu_(x, name=None):
     ret = ivy.relu(x)
     ivy.inplace_update(x, ret)
     return x
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def mish(x, name=None):
+    return ivy.mish(x)
