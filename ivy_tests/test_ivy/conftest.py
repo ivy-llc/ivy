@@ -44,12 +44,17 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
 
 
-def default_framework_mapper(fw, set_too=False):
-    # do a path search, get the latest one
+def default_framework_mapper(fw,fw_path='/opt/fw/', set_too=False):
+    # do a path search, get the latest
+    # so that we can get the higest version
+    # available dynamically and set that for
+    # use by the rest of the code
+    # eg: torch/1.11.0 and torch/1.12.0
+    # this will map to torch/1.12.0
     versions = os.listdir(f"/opt/fw/{fw}")
     versions.sort()
     if set_too:
-        sys.path.insert(1, f"/opt/fw/{fw}/{versions[-1]}")
+        sys.path.insert(1, f"{fw_path}{fw}/{versions[-1]}")
     return versions[-1]
 
 
@@ -104,10 +109,11 @@ def pytest_configure(config):
                 # we have the process running, the framework imported within,
                 # we now pack the queue and the process and store it in dict
                 # for future access
-                mod_backend[fw.split("/")[0]] = (proc, input_queue, output_queue)
+                fwrk,ver = fw.split("/")
+                mod_backend[fwrk] = (proc, input_queue, output_queue)
                 # set the latest version for the rest of the test code and move on
-                default_framework_mapper(fw.split("/")[0], set_too=True)
-                found_backends.add(fw.split("/")[0])
+                default_framework_mapper(fwrk, set_too=True)
+                found_backends.add(fwrk)
 
         if found_backends:
             # we know it's multiversion+multiprocessing

@@ -16,11 +16,11 @@ from .function_testing import (
     test_gradient_ground_truth_computation,
 )
 
-
+framework_path = "/opt/fw/"
 def backend_proc(input_queue, output_queue):
     # first argument is going to be the framework and its path
     framework = input_queue.get()
-    path = "/opt/fw/" + framework
+    path = framework_path + framework
     sys.path.insert(1, path)
     framework = framework.split("/")[0]
     framework = importlib.import_module(framework)
@@ -317,7 +317,7 @@ def backend_proc(input_queue, output_queue):
 def frontend_proc(input_queue, output_queue):
     # first argument is going to be the framework and its path
     framework = input_queue.get()
-    sys.path.insert(1, f"/opt/fw/{framework}")
+    sys.path.insert(1, f"{framework_path}{framework}")
     importlib.import_module(framework.split("/")[0])
     while True:
         # subsequent arguments will be passed

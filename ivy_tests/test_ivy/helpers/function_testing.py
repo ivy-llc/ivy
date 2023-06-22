@@ -461,13 +461,13 @@ def test_function(
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
     fw = backend_to_test
-    if mod_backend[fw]:
+    if mod_backend[backend_to_test]:
         # multiprocessing
-        proc, input_queue, output_queue = mod_backend[fw]
+        proc, input_queue, output_queue = mod_backend[backend_to_test]
         input_queue.put(
             (
                 "function_backend_computation",
-                fw,
+                backend_to_test,
                 test_flags,
                 all_as_kwargs_np,
                 input_dtypes,
@@ -500,7 +500,7 @@ def test_function(
             kwarg_np_arrays,
             test_flags,
         ) = test_function_backend_computation(
-            fw, test_flags, all_as_kwargs_np, input_dtypes, on_device, fn_name
+            backend_to_test, test_flags, all_as_kwargs_np, input_dtypes, on_device, fn_name
         )
 
     # compute the return with a Ground Truth backend
@@ -551,9 +551,9 @@ def test_function(
         and "bool" not in input_dtypes
         and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
     ):
-        if fw not in fw_list or not ivy.nested_argwhere(
+        if backend_to_test not in fw_list or not ivy.nested_argwhere(
             all_as_kwargs_np,
-            lambda x: (x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None),
+            lambda x: (x.dtype in fw_list[backend_to_test] if isinstance(x, np.ndarray) else None),
         ):
             gradient_test(
                 fn=fn_name,
