@@ -49,5 +49,10 @@ def _spacing(
     subok=True,
 ):
     # Implement the frontend function using Ivy compositions
-    spacing = ivy.subtract(ivy.nextafter(ivy.abs(x), ivy.sign(x)), x)
+    if dtype is None:
+        dtype = ivy.dtype(x)
+    y = ivy.floor(ivy.log2(ivy.abs(x + 1)))
+    spacing = ivy.multiply(ivy.finfo(dtype).eps, ivy.pow(2, y))
+    if dtype != "float16":
+        spacing = ivy.sign(x) * spacing
     return spacing

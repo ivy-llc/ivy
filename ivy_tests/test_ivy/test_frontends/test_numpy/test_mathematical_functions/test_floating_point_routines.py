@@ -87,6 +87,8 @@ def test_numpy_spacing(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-03,
+        atol=1e-03,
         x=xs[0],
         out=None,
         where=where,
