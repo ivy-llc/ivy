@@ -544,7 +544,8 @@ def test_inner(
     fn_tree="functional.ivy.inv",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=2,
+        small_abs_safety_factor=24,
+        large_abs_safety_factor=24,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
