@@ -456,6 +456,7 @@ def ldexp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    out_dtype = x1.dtype
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if tf.math.reduce_any(tf.math.less(x2, 0)):
         pos_exp = tf.cast(tf.math.greater_equal(x2, 0), x2.dtype) * x2
@@ -467,7 +468,7 @@ def ldexp(
     else:
         x2 = tf.cast(x2, x1.dtype)
         ret = x1 * tf.math.pow(2, x2)
-    return ret
+    return tf.cast(ret, out_dtype)
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
