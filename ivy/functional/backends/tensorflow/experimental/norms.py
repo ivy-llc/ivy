@@ -8,14 +8,10 @@ from . import backend_version
     {
         "2.12.0 and below": {
             "cpu": (
-                "float16",
-                "bfloat16",
                 "float32",
                 "float64",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
+                "complex64",
+                "complex128",
             )
         }
     },

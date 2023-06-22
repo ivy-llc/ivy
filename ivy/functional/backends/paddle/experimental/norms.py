@@ -130,11 +130,7 @@ def l1_normalize(
 
     norm = paddle.norm(x, p=1, axis=axis, keepdim=True)
 
-    if out is None:
-        return paddle.divide(x, norm)
-    else:
-        out[:] = paddle.divide(x, norm)
-        return out
+    return paddle.divide(x, norm)
 
 
 def l2_normalize(
