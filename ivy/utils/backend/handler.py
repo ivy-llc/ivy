@@ -41,6 +41,134 @@ for backend in os.listdir(os.path.join(ivy.__path__[0].rpartition(os.path.sep)[0
     _backend_dict[backend] = backend_path
     _backend_reverse_dict[backend_path] = backend
 
+def set_backend_to_specific_version(backend):
+    """
+    Update the backend dict to make the original function name point to the version
+    specific one.
+    Parameters
+    ----------
+    backend
+        the backend module for which we provide the version support
+    """
+    # TODO: add functionality and tests
+    f = str(backend.__name__)
+    f = f[f.index("backends") + 9 :]
+
+    f = importlib.import_module(f)
+    f_version = f.__version__
+
+    for key in list(backend.__dict__):
+        if "_v_" in key:
+            orig_name = fn_name_from_version_specific_fn_name(key, f_version)
+            if orig_name:
+                backend.__dict__[orig_name] = backend.__dict__[key]
+                backend.__dict__[orig_name].__name__ = orig_name
+
+
+def current_backend(*args, **kwargs):
+    """
+    Return the current backend. Priorities: global_backend > argument's backend.
+    Parameters
+    ----------
+    *args/**kwargs
+        the arguments from which to try to infer the backend, when there is
+        no globally set backend.
+    Returns
+    -------
+    ret
+        Ivy's current backend.
+    Examples
+    --------
+    If no global backend is set, then the backend is inferred from the arguments:
+    >>> import numpy as np
+    >>> x = np.array([2.0])
+    >>> print(ivy.current_backend(x))
+    <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
+    The global backend set in set_backend has priority over any arguments
+    passed to current_backend:
+    >>> import numpy as np
+    >>> ivy.set_backend("jax")
+    >>> x = np.array([2.0])
+    >>> print(ivy.current_backend(x))
+    <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
+    """
+    global implicit_backend
+    # if a global backend has been set with
+    # set_backend then this will be returned
+    if backend_stack:
+        f = backend_stack[-1]
+        if verbosity.level > 0:
+            verbosity.cprint("Using backend from stack: {}".format(f))
+        return f
+
+    # if no global backend exists, we try to infer
+    # the backend from the arguments
+    f = _determine_backend_from_args(list(args) + list(kwargs.values()))
+    if f is not None:
+        implicit_backend = f.current_backend_str()
+        return f
+    if verbosity.level > 0:
+        verbosity.cprint("Using backend from type: {}".format(f))
+    return importlib.import_module(_backend_dict[implicit_backend])
+
+
+def _set_backend_as_ivy(
+    original_dict, target, backend, invalid_dtypes=None, backend_str=None
+):
+    invalid_dtypes = (
+        backend.invalid_dtypes if invalid_dtypes is None else invalid_dtypes
+    )
+    backend_str = backend.current_backend_str() if backend_str is None else backend_str
+    for k, v in original_dict.items():
+        compositional = k not in backend.__dict__
+        if k not in backend.__dict__:
+            if k in invalid_dtypes and k in target.__dict__:
+                del target.__dict__[k]
+                continue
+            backend.__dict__[k] = v
+        target.__dict__[k] = _wrap_function(
+            key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
+        )
+        if (
+            isinstance(v, types.ModuleType)
+            and "ivy.functional." in v.__name__
+            and os.path.join("{}", "__init__.py").format(backend_str) not in v.__file__
+        ):
+            _set_backend_as_ivy(
+                v.__dict__,
+                target.__dict__[k],
+                backend.__dict__[k],
+                invalid_dtypes=invalid_dtypes,
+                backend_str=backend_str,
+            )
+
+
+def _handle_backend_specific_vars(target, backend):
+    if backend.current_backend_str() == "numpy":
+        target.set_default_device("cpu")
+    elif backend.current_backend_str() == "jax":
+        target.set_global_attr("RNG", target.functional.backends.jax.random.RNG)
+
+
+def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
+    # Dynamic Backend
+    from ivy.functional.ivy.gradients import _is_variable, _variable_data
+
+    def _is_var(obj):
+        if isinstance(obj, ivy.Container):
+
+            def _map_fn(x):
+                x = x.data if isinstance(x, ivy.Array) else x
+                if x.__class__.__module__ in (
+                    "numpy",
+                    "jax.interpreters.xla",
+                    "jaxlib.xla_extension",
+                ):
+                    return False
+
+                return _is_variable(x)
+
+            return obj.cont_map(lambda x, kc: _map_fn(x)).cont_all_true()
 
 # Backend Getting/Setting #
 # ----------------------- #
