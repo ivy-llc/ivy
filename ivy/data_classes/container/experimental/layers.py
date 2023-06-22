@@ -1922,9 +1922,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container static method variant of ivy.ifftn. This method simply wraps the
-        function, and so the docstring for ivy.ifftn  also applies to this method with
-        minimal changes.
+        ivy.Container static method variant of ivy.ifftn. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.ifftn  also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1980,9 +1980,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ):
         """
-        ivy.Container static method variant of ivy.ifftn. This method simply wraps the
-        function, and so the docstring for ivy.ifftn also applies to this method with
-        minimal changes.
+        ivy.Container static method variant of ivy.ifftn. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.ifftn also applies to this method with minimal changes.
 
         Parameters
         ----------
