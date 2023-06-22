@@ -71,7 +71,8 @@ def argmax(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmax.html#signatures.searching_functions.argmax>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argmax.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -172,7 +173,8 @@ def argmin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmin.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argmin.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -275,7 +277,8 @@ def nonzero(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.nonzero.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.nonzero.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -404,7 +407,8 @@ def where(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.where.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.where.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

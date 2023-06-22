@@ -123,8 +123,7 @@ def vecdot(x, y, *, dim=-1, out=None):
 
 @to_ivy_arrays_and_back
 def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
-    # TODO: add handling for hermitian once complex numbers are supported
-    return ivy.astype(ivy.matrix_rank(input, atol=atol, rtol=rtol, out=out), ivy.int64)
+    return ivy.matrix_rank(input, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -249,3 +248,18 @@ def vander(x, N=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def multi_dot(tensors, *, out=None):
     return ivy.multi_dot(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+def solve_ex(A, B, *, left=True, check_errors=False, out=None):
+    try:
+        result = ivy.solve(A, B, out=out)
+        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
+        return result, info
+    except RuntimeError as e:
+        if check_errors:
+            raise RuntimeError(e)
+        else:
+            result = A * math.nan
+            info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
+            return result, info

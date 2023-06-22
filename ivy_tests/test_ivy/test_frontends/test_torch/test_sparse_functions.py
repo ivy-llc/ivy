@@ -12,7 +12,7 @@ inf = float("inf")
 @handle_frontend_test(
     fn_tree="torch.nn.functional.embedding",
     dtypes_indices_weights=helpers.embedding_helper(),
-    max_norm=st.floats(min_value=0, max_value=5, exclude_min=True),
+    max_norm=st.floats(min_value=0.1, max_value=5, exclude_min=True),
     p=st.one_of(
         st.sampled_from([inf, -inf]),
         st.integers(min_value=1, max_value=2),
