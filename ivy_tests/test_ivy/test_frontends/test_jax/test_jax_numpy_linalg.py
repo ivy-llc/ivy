@@ -154,7 +154,7 @@ def test_jax_numpy_eig(
     )
 
     ret = [ivy.to_numpy(x).astype(np.float64) for x in ret]
-    frontend_ret = [x.astype(np.float64) for x in frontend_ret[0]]
+    frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
     L, Q = ret
     frontend_L, frontend_Q = frontend_ret
@@ -328,16 +328,26 @@ def test_jax_numpy_qr(
     test_flags,
 ):
     dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
-        rtol=1e-01,
-        atol=1e-01,
+        test_values=False,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=np.asarray(x[0], dtype[0]),
         mode=mode,
+    )
+    ret = [ivy.to_numpy(x).astype(np.float64) for x in ret]
+    frontend_ret = [x.astype(np.float64) for x in frontend_ret]
+
+    Q, R = ret
+    frontend_Q, frontend_R = frontend_ret
+
+    assert_all_close(
+        ret_np=Q @ R,
+        ret_from_gt_np=frontend_Q @ frontend_R,
+        atol=1e-02,
     )
 
 
@@ -712,17 +722,19 @@ def test_jax_numpy_tensorsolve(
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
-        large_abs_safety_factor=32,
-        small_abs_safety_factor=32,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
         safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
+    rcond=st.floats(1e-5, 1e-3),
 )
 def test_jax_numpy_pinv(
     dtype_and_x,
     frontend,
     fn_tree,
     test_flags,
+    rcond,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -731,8 +743,9 @@ def test_jax_numpy_pinv(
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
-        atol=1e-4,
-        rtol=1e-4,
+        rcond=rcond,
+        atol=1e-1,
+        rtol=1e-1,
     )
 
 

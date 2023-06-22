@@ -278,7 +278,7 @@ def matrix_transpose(
     x: torch.Tensor, /, *, conjugate: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if conjugate:
-        torch.conj(x)
+        x = torch.conj(x)
     return torch.swapaxes(x, -1, -2)
 
 

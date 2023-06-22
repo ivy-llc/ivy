@@ -739,7 +739,7 @@ def nested_argwhere(
                     break
             else:
                 _indices += [ind]
-            if stop_after_n_found is not None and len(_indices) >= stop_after_n_found:
+            if stop_after_n_found is not None and n >= stop_after_n_found:
                 break
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
