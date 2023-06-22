@@ -294,3 +294,39 @@ def test_mish(
         atol_=1e-02,
         x=x[0],
     )
+
+
+# elu
+@handle_test(
+    fn_tree="functional.ivy.elu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False, key="elu"),
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
+        safety_factor_scale="log",
+    ),
+    alpha=st.floats(min_value=-1e-4, max_value=1e-4),
+)
+def test_elu(
+    *,
+    dtype_and_x,
+    alpha,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x[0],
+        alpha=alpha,
+    )
