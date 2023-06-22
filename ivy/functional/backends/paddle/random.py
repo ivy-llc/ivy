@@ -96,14 +96,8 @@ def multinomial(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if probs is None:
-        probs = (
-                paddle.ones(
-                    (
-                        batch_size,
-                        population_size,
-                    )
-                )
-
+        probs = paddle.ones(
+            (batch_size, num_samples)
         ) / population_size
     if seed:
         paddle.seed(seed)
@@ -111,7 +105,9 @@ def multinomial(
         orig_probs_shape = list(probs.shape)
         probs_flat = paddle.reshape(probs, (-1, orig_probs_shape[-1]))
         probs_flat = probs_flat / paddle.sum(
-            probs_flat, axis=-1, keepdim=True,
+            probs_flat,
+            axis=-1,
+            keepdim=True,
         )
         probs_stack = paddle.split(probs_flat, probs_flat.shape[0], axis=0)
         samples_stack = []
