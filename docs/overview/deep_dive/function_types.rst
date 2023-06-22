@@ -129,7 +129,7 @@ When the function is called with some parameters, the :code:`handle_mixed_functi
 In case of the torch backend implementation of :code:`ivy.linear`, the lambda function simply checks whether the weight matrix has a dimensionality of 2. This decorator not only enables us to leverage the performance advantages offered by the backend function but also facilitates the support of super-set behavior. For further insights into decorators, please refer to the :ref:`Function Wrapping` section.
 
 We must add the :code:`mixed_backend_wrappers` attribute to the compositional implementation of mixed functions to specify which additional wrappers need to be applied to the primary implementation and which ones from the compositional implementation should be skipped.
-We do this by creating a dictionary of two keys, :code:`add_wrappers` and `skip_wrappers`, each containing the tuple of wrappers to be added or skipped respectively. In general, :code:`handle_out_argument`, :code:`inputs_to_native_arrays` and :code:`outputs_to_ivy_arrays` always
+We do this by creating a dictionary of two keys, :code:`to_add` and :code:`to_skip`, each containing the tuple of wrappers to be added or skipped respectively. In general, :code:`handle_out_argument`, :code:`inputs_to_native_arrays` and :code:`outputs_to_ivy_arrays` always
 should always be added to the primary implementation and :code:`inputs_to_ivy_arrays` should be skipped. Here's a `example`_ from the linear layer. When the backend is set, we `handle`_ these wrappers for the primary implementation inside the :code:`_wrap_function`.
 
 
