@@ -172,7 +172,7 @@ def depthwise_conv2d(
         padding,
         dilations,
         num_groups,
-        "NCHW"
+        "NCHW",
     )
     if data_format == "NHWC":
         res = paddle.transpose(res, (0, 2, 3, 1))
