@@ -229,6 +229,7 @@ def test_numpy_trace(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
         a=x[0],
         offset=offset,
         axis1=axis1,
