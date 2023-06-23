@@ -1,10 +1,8 @@
 # local
 import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
-from ivy.functional.frontends.paddle.func_wrapper import (
-    _to_ivy_array,
-)
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
 
 
 class Tensor:
@@ -110,6 +108,10 @@ class Tensor:
     def asin(self, name=None):
         return ivy.asin(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def cosh(self, name=None):
+        return ivy.cosh(self._ivy_array)
+
     @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
     def log(self, name=None):
         return ivy.log(self._ivy_array)
@@ -196,7 +198,24 @@ class Tensor:
     @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def all(self, axis=None, keepdim=False, dtype=None, name=None):
         return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
+    
+    
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def allclose(self, other, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
+        return ivy.allclose(self._ivy_array, other, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
 
     @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
+
+    
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def any(self, axis=None, keepdim=False, name=None):
+        return ivy.any(self._ivy_array, axis=axis, keepdims=keepdim)
+    
+    
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def astype(self, dtype):
+        return ivy.astype(self._ivy_array, dtype=dtype)
+    
