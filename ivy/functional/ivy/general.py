@@ -2808,6 +2808,29 @@ def set_item(
     return current_backend(x).set_item(x, query, val, copy=copy)
 
 
+def _numel(shape):
+    return math.prod(shape) if shape != () else 1
+
+
+def _broadcast_to(input, target_shape):
+    input = ivy.squeeze(input)
+    if _numel(input.shape) == _numel(target_shape):
+        return ivy.reshape(input, target_shape)
+    else:
+        input = ivy.expand_dims(input, axis=0) if not len(input.shape) else input
+        new_dims = ()
+        i_i = 0
+        for i_t, t in enumerate(target_shape):
+            if len(input.shape) + len(new_dims) >= len(target_shape):
+                break
+            if i_i >= len(input.shape) or t != input.shape[i_i]:
+                new_dims += (i_t,)
+            else:
+                i_i += 1
+        input = ivy.expand_dims(input, axis=new_dims)
+        return ivy.broadcast_to(input, target_shape)
+
+
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
