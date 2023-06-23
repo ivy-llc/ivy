@@ -255,34 +255,16 @@ def test_jax_lax_while_loop(
 #     )
 
 
-@handle_frontend_test(
-    fn_tree="jax.lax.scan",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_value=-1000,
-        max_value=1000,
-        min_num_dims=1,
-        min_dim_size=1,
-    ),
-)
-# def scan(
-#     f: Callable[[int, int], Tuple[int, int]],
-#     init: int,
-#     xs: List[int],
-#     length: int,
-#     reverse: bool = False,
-#     unroll: int = 1,
-# ) -> Tuple[int, List[int]]:
-#     carry = init
-#     ys = []
-
-#     for x in xs:
-#         carry, y = f(carry, x)
-#         ys.append(y)
-
-#     return carry, ivy.stack(ys)
-
-
+# @handle_frontend_test(
+#     fn_tree="jax.lax.scan",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("numeric"),
+#         min_value=-1000,
+#         max_value=1000,
+#         min_num_dims=1,
+#         min_dim_size=1,
+#     ),
+# )
 # def test_jax_lax_scan(
 #     *,
 #     dtype_and_x,
@@ -333,8 +315,37 @@ def test_jax_lax_while_loop(
 #     )
 
 
-# import ivy
+# # import ivy
 
+# # def scan(
+# #     f: Callable[[int, int], Tuple[int, int]],
+# #     init: int,
+# #     xs: List[int],
+# #     length: int,
+# #     reverse: bool = False,
+# #     unroll: int = 1,
+# # ) -> Tuple[int, List[int]]:
+# #     carry = init
+# #     ys = []
+
+# #     for x in xs:
+# #         carry, y = f(carry, x)
+# #         ys.append(y)
+
+# #     return carry, ivy.stack(ys)
+
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.scan",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-1000,
+        max_value=1000,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+)
 def test_jax_lax_scan(
     *,
     dtype_and_x,
@@ -384,3 +395,22 @@ def test_jax_lax_scan(
         # expected_result=expected_result,
     )
 
+
+# import ivy
+
+# def scan(
+#     f: Callable[[int, int], Tuple[int, int]],
+#     init: int,
+#     xs: List[int],
+#     length: int,
+#     reverse: bool = False,
+#     unroll: int = 1,
+# ) -> Tuple[int, List[int]]:
+#     carry = init
+#     ys = []
+
+#     for x in xs:
+#         carry, y = f(carry, x)
+#         ys.append(y)
+
+#     return carry, ivy.stack(ys)
