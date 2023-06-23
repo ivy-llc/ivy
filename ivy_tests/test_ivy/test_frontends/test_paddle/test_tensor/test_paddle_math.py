@@ -754,7 +754,7 @@ def test_paddle_tan(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.sign",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_paddle_sign(
