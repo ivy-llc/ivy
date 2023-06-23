@@ -209,6 +209,13 @@ class Tensor:
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
 
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
+        "paddle",
+    )
+    def bitwise_xor(self, y, out=None, name=None):
+        return paddle_frontend.bitwise_xor(self, y)
+
     @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def any(self, axis=None, keepdim=False, name=None):
         return ivy.any(self._ivy_array, axis=axis, keepdims=keepdim)
