@@ -130,48 +130,7 @@ def rfftfreq(n, d=1.0):
 @with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def ifftn(a, s=None, axes=None, norm=None):
-    a = ivy.array(a, dtype=ivy.complex128)
-    if s is not None:
-        if not isinstance(s, tuple):
-            raise TypeError("'int' object is not iterable")
-
-    if axes is not None:
-        if not isinstance(axes, tuple):
-            raise TypeError("'int' object is not iterable")
-
-    if axes is None and s is None:
-        axes = tuple(range(a.ndim))
-
-    elif axes is None and s is not None:
-        if len(s) > len(a.shape):
-            raise ValueError(
-                f"axis -{len(a.shape) + 1} is out of bounds for array of dimension"
-                f" {len(a.shape)}"
-            )
-        else:
-            last_axes = []
-            num_axes = len(a.shape)
-            num_last_axes = len(s)
-
-            for i in range(num_last_axes):
-                last_axes.append(num_axes + i - num_last_axes)
-
-            axes = tuple(last_axes)
-
-    elif axes is not None and s is not None:
-        if len(s) != len(axes):
-            raise ValueError("Shape and axes have different lengths.")
-
-    if s is None:
-        output_shape = []
-        for axis in axes:
-            output_shape.append(a.shape[axis])
-        s = tuple(output_shape)
-
-    if norm is None:
-        norm = "backward"
-
+    a = ivy.asarray(a, dtype=ivy.complex128)
     a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
-
     return a
 
