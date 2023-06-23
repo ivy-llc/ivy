@@ -940,6 +940,9 @@ class Tensor:
         self.ivy_array = self.fix().ivy_array
         return self
 
+    def isinf(self):
+        return torch_frontend.isinf(self._ivy_array)
+
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
 

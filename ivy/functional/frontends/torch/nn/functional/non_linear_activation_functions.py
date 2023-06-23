@@ -357,6 +357,26 @@ def softplus(input, beta=1, threshold=20):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
+    gumbels = -ivy.empty_like(logits).exponential().log()
+    gumbels = (logits + gumbels) / tau
+    y_soft = ivy.softmax(x=gumbels, axis=dim)
+
+    if hard:
+        indices = y_soft.max(axis=dim, keepdims=True)[1]
+        y_hard = ivy.zeros_like(logits)
+        updates = ivy.ones_like(indices)
+        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
+
+        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
+    else:
+        ret = y_soft
+
+    return ret
+
+
+@to_ivy_arrays_and_back
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 def multi_head_attention_forward(
     query,
@@ -387,8 +407,9 @@ def multi_head_attention_forward(
 ):
     # q/k/v shape: (seq_len, batch_size, embed_dim)
     seq_len, batch_size, embed_dim = query.shape
-    assert embed_dim == embed_dim_to_check, \
-        f"was expecting embedding dimension of {embed_dim_to_check}, but got {embed_dim}"
+    assert (
+        embed_dim == embed_dim_to_check
+    ), f"was expecting embedding dimension of {embed_dim_to_check}, but got {embed_dim}"
     assert key.shape == value.shape
 
     head_dim = embed_dim // num_heads
@@ -396,15 +417,19 @@ def multi_head_attention_forward(
     scale = ivy.sqrt(head_dim)
 
     if use_separate_proj_weight:
-        assert key.shape[:2] == value.shape[:2], \
-            f"key's sequence and batch dims {key.shape[:2]} do not match value's {value.shape[:2]}"
+        assert key.shape[:2] == value.shape[:2], (
+            f"key's sequence and batch dims {key.shape[:2]} do not match value's"
+            f" {value.shape[:2]}"
+        )
     else:
-        assert key.shape == value.shape, f"key shape {key.shape} does not match value shape {value.shape}"
-    
+        assert (
+            key.shape == value.shape
+        ), f"key shape {key.shape} does not match value shape {value.shape}"
+
     if is_causal and key_padding_mask is None and not need_weights:
         mask = ivy.tril(ivy.ones((seq_len, seq_len), dtype=query.dtype), k=0)
         attn_mask = ivy.zeros((seq_len, seq_len), dtype=query.dtype)
-        attn_mask = ivy.where(mask == 0., float("-inf"), 0)
+        attn_mask = ivy.where(mask == 0.0, float("-inf"), 0)
 
     if in_proj_bias is None:
         q_bias, k_bias, v_bias = None, None, None
@@ -412,7 +437,9 @@ def multi_head_attention_forward(
         q_bias, k_bias, v_bias = ivy.split(in_proj_bias, num_or_size_splits=3)
 
     if not use_separate_proj_weight:
-        q_proj_weight, k_proj_weight, v_proj_weight = ivy.split(in_proj_weight, num_or_size_splits=3)
+        q_proj_weight, k_proj_weight, v_proj_weight = ivy.split(
+            in_proj_weight, num_or_size_splits=3
+        )
 
     q = ivy.linear(query, q_proj_weight, bias=q_bias)
     k = ivy.linear(key, k_proj_weight, bias=k_bias)
@@ -424,34 +451,52 @@ def multi_head_attention_forward(
         k = ivy.concat([k, ivy.tile(bias_k, (1, batch_size, 1))])
         v = ivy.concat([v, ivy.tile(bias_v, (1, batch_size, 1))])
         if attn_mask is not None:
-            attn_mask = ivy.concat([attn_mask, ivy.zeros((attn_mask.shape[0], 1), dtype=attn_mask.dtype)], axis=1)
+            attn_mask = ivy.concat(
+                [attn_mask, ivy.zeros((attn_mask.shape[0], 1), dtype=attn_mask.dtype)],
+                axis=1,
+            )
         if key_padding_mask is not None:
             key_padding_mask = ivy.concat(
-                [key_padding_mask, ivy.zeros((key_padding_mask.shape[0], 1), dtype=key_padding_mask.dtype).bool()],
-                axis=1
+                [
+                    key_padding_mask,
+                    ivy.zeros(
+                        (key_padding_mask.shape[0], 1), dtype=key_padding_mask.dtype
+                    ).bool(),
+                ],
+                axis=1,
             )
 
     q = ivy.swapaxes(q.reshape((q.shape[0], batch_size * num_heads, head_dim)), 0, 1)
-    
+
     if static_k is None:
-        k = ivy.swapaxes(k.reshape((k.shape[0], batch_size * num_heads, head_dim)), 0, 1)
+        k = ivy.swapaxes(
+            k.reshape((k.shape[0], batch_size * num_heads, head_dim)), 0, 1
+        )
     else:
-        assert static_k.shape[0] == batch_size * num_heads, \
-            f"expecting static_k.shape[0] of {batch_size * num_heads}, but got {static_k.shape[0]}"
-        assert static_k.shape[2] == head_dim, \
-            f"expecting static_k.shape[2] of {head_dim}, but got {static_k.shape[2]}"
+        assert static_k.shape[0] == batch_size * num_heads, (
+            f"expecting static_k.shape[0] of {batch_size * num_heads}, but got"
+            f" {static_k.shape[0]}"
+        )
+        assert (
+            static_k.shape[2] == head_dim
+        ), f"expecting static_k.shape[2] of {head_dim}, but got {static_k.shape[2]}"
         k = static_k
-    
+
     if static_v is None:
-        v = ivy.swapaxes(v.reshape((v.shape[0], batch_size * num_heads, head_dim)), 0, 1)
+        v = ivy.swapaxes(
+            v.reshape((v.shape[0], batch_size * num_heads, head_dim)), 0, 1
+        )
     else:
-        assert static_v.shape[0] == batch_size * num_heads, \
-            f"expecting static_v.shape[0] of {batch_size * num_heads}, but got {static_v.shape[0]}"
-        assert static_v.shape[2] == head_dim, \
-            f"expecting static_v.shape[2] of {head_dim}, but got {static_v.shape[2]}"
+        assert static_v.shape[0] == batch_size * num_heads, (
+            f"expecting static_v.shape[0] of {batch_size * num_heads}, but got"
+            f" {static_v.shape[0]}"
+        )
+        assert (
+            static_v.shape[2] == head_dim
+        ), f"expecting static_v.shape[2] of {head_dim}, but got {static_v.shape[2]}"
         v = static_v
 
-    # TODO add_zero_attn doesn't work for all cases 
+    # TODO add_zero_attn doesn't work for all cases
     # fix this and add test cases (by changing to add_zero_attn=st.booleans())
     if add_zero_attn:
         zero_attn_shape = (batch_size * num_heads, 1, head_dim)
@@ -472,14 +517,12 @@ def multi_head_attention_forward(
         attn_mask = ivy.expand_dims(attn_mask, axis=0)
         attn_weights += attn_mask
 
-    if key_padding_mask is not None:    
-        key_padding_mask = ivy.expand_dims(ivy.expand_dims(key_padding_mask, axis=1), axis=2)
-        attn_weights = attn_weights.reshape((batch_size, num_heads, seq_len, src_len))
-        attn_weights = ivy.where(
-            key_padding_mask < 0.,
-            float("-inf"),
-            attn_weights
+    if key_padding_mask is not None:
+        key_padding_mask = ivy.expand_dims(
+            ivy.expand_dims(key_padding_mask, axis=1), axis=2
         )
+        attn_weights = attn_weights.reshape((batch_size, num_heads, seq_len, src_len))
+        attn_weights = ivy.where(key_padding_mask < 0.0, float("-inf"), attn_weights)
         attn_weights = attn_weights.reshape((batch_size * num_heads, seq_len, src_len))
 
     attn_weights = ivy.softmax(attn_weights, axis=-1)
@@ -487,7 +530,9 @@ def multi_head_attention_forward(
 
     attn_output = ivy.matmul(attn_weights, v)
     assert list(attn_output.shape) == [batch_size * num_heads, seq_len, head_dim]
-    attn_output = ivy.swapaxes(attn_output, 0, 1).reshape((seq_len, batch_size, embed_dim))
+    attn_output = ivy.swapaxes(attn_output, 0, 1).reshape(
+        (seq_len, batch_size, embed_dim)
+    )
     attn_output = ivy.linear(attn_output, out_proj_weight, bias=out_proj_bias)
 
     if need_weights:
