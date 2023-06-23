@@ -171,8 +171,7 @@ def ifftn(a, s=None, axes=None, norm=None):
     if norm is None:
         norm = "backward"
 
-    for i in reversed(range(len(axes))):
-        a = ivy.ifft(a, dim=axes[i], norm=norm, n=s[i])
+    a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
 
     return a
 
