@@ -50,9 +50,7 @@ def valid_idct(draw):
             max_value=65280,
             min_value=-65280,
             min_num_dims=1,
-            max_num_dims=5,
             min_dim_size=2,
-            max_dim_size=10,
             shared_dtype=True,
         )
     )

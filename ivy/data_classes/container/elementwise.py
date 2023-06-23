@@ -5510,6 +5510,100 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
+    def static_logaddexp2(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.logaddexp2. This method simply wraps
+        the function, and so the docstring for ivy.logaddexp2 also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input container with array-like items.
+        x2
+            second input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise logaddexp2 of input arrays.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.array([4, 5, 6]),\
+                               b=5)
+        >>> ivy.Container.static_logaddexp2(x1, x2)
+        {
+            a: ivy.array([4.169925, 5.169925, 6.169925])
+            b: ivy.array([5.08746284, 5.169925  , 5.32192809])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "logaddexp2",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def logaddexp2(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.logaddexp2. This method simply
+        wraps the function, and so the docstring for ivy.logaddexp2 also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input container with array-like items.
+        x2
+            second input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise logaddexp2 of input arrays.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.array([4, 5, 6]),\
+                               b=5)
+        >>> x1.logaddexp2(x2)
+        {
+            a: ivy.array([4.169925, 5.169925, 6.169925])
+            b: ivy.array([5.08746284, 5.169925  , 5.32192809])
+        }
+        """
+        return self.static_logaddexp2(self, x2, out=out)
+
+    @staticmethod
     def _static_logical_and(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -5930,19 +6024,21 @@ class _ContainerWithElementwise(ContainerBase):
             must have a data type of ``bool``.
 
         This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/
+        API_specification/generated/array_api.logical_or.html>`_
         in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for
+        simplicity, but this function is *nestable*, and therefore also
+        accepts :class:`ivy.Container` instances in place of any of the arguments.
 
         Examples
         --------
         Using :class:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
+        >>> x = ivy.Container(a=ivy.array([False,True,True]),
+        ...                   b=ivy.array([3.14, 2.718, 1.618]))
         >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
         >>> z = x.logical_or(y)
         >>> print(z)
@@ -6800,6 +6896,131 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
+    def static_real(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.real. This method simply wraps the
+        function, and so the docstring for ivy.real also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the test result. An element ``out_i`` is ``out_i``
+            if ``x_i`` is real number part only else ``real number part``,
+            if it contains real and complex part both.
+            The returned array should have a data type of ``float``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]),
+        ...                   b=ivy.array([7.9, 0.31+3.3j, -4.2-5.9j]))
+        >>> z = ivy.Container.static_real(x)
+        >>> print(z)
+        {
+            a: ivy.array([-1., 0., 0.]),
+            b: ivy.array([7.9, 0.31, -4.2])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "real",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def real(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.real. This method simply wraps the
+        function, and so the docstring for ivy.real also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the test result.
+            An element ``out_i`` is ``self_i`` if ``self_i`` is real number
+            else ``took real number part only`` if ``self_i``
+            contains real number and complex number both.
+            The returned array should have a data type of ``float``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1j, 0.335+2.345j, 1.23+7j]),\
+                          b=ivy.array([0.0, 1.2+3.3j, 1+0j]))
+        >>> x.real()
+        {
+            a: ivy.array([0., 0.335, 1.23]),
+            b: ivy.array([0.0, 1.2, 1.])
+        }
+        """
+        return self.static_real(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def _static_remainder(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -7129,6 +7350,7 @@ class _ContainerWithElementwise(ContainerBase):
         x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        np_variant: Optional[bool] = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -7179,6 +7401,7 @@ class _ContainerWithElementwise(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "sign",
             x,
+            np_variant=np_variant,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -7189,6 +7412,7 @@ class _ContainerWithElementwise(ContainerBase):
     def sign(
         self: ivy.Container,
         *,
+        np_variant: Optional[bool] = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -7240,6 +7464,7 @@ class _ContainerWithElementwise(ContainerBase):
         """
         return self._static_sign(
             self,
+            np_variant=np_variant,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

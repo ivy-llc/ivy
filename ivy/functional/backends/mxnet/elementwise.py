@@ -375,6 +375,16 @@ def logaddexp(
     return mx.nd.logaddexp(x1, x2)
 
 
+def logaddexp2(
+    x1: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
+    x2: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def logical_and(
     x1: Union[(None, mx.ndarray.NDArray)],
     x2: Union[(None, mx.ndarray.NDArray)],
@@ -700,6 +710,15 @@ def isreal(
 def fmod(
     x1: Union[(None, mx.ndarray.NDArray)],
     x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def real(
+    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,

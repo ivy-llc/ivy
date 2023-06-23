@@ -11,6 +11,8 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
+import functools
 
 
 @to_ivy_arrays_and_back
@@ -25,6 +27,7 @@ def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.9.0 and below": ("float16",)}, "tensorflow")
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -51,9 +54,10 @@ def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     ], global_norm
 
 
+@with_supported_dtypes({"2.12.0 and below": ("float", "complex")}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
-    t = ivy.array(t)
+    t, clip_norm = check_tensorflow_casting(t, clip_norm)
     l2sum = ivy.sum(t * t, axis=axes, keepdims=True)
     pred = l2sum > 0
 
@@ -78,6 +82,37 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 @to_ivy_arrays_and_back
 def fill(dims, value, name=None):
     return ivy.full(dims, value)
+
+
+@to_ivy_arrays_and_back
+def foldl(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    swap_memory=False,
+    name=None,
+):
+    ivy.utils.assertions.check_isinstance(
+        elems, (list, ivy.Array), "elems must be an iterable object"
+    )
+    ivy.utils.assertions.check_true(
+        callable(fn), f"{fn.__name__} must be a callable function"
+    )
+    if len(ivy.shape(elems)) == 0 or ivy.get_num_dims(elems) == 0:
+        raise ivy.utils.exceptions.IvyValueError(
+            "elems must be a non-empty iterable object with at least one dimension"
+        )
+    if initializer is not None:
+        result = functools.reduce(fn, elems, initializer)
+    elif initializer is None and ivy.shape(elems)[0] > 0:
+        result = functools.reduce(fn, elems[1:], elems[0])
+    else:
+        result = elems
+    if all(ivy.get_num_dims(e) == 0 for e in elems):
+        result = ivy.to_scalar(result)
+
+    return result
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
@@ -211,7 +246,7 @@ def ensure_shape(x, shape, name=None):
 @with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
-def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
+def range(start, limit=None, delta=1, dtype=None, name=None):
     return ivy.arange(start, limit, delta, dtype=dtype)
 
 
@@ -225,6 +260,7 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
             direction,
             "DESCENDING",
             message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
+            as_array=False,
         )
     return ivy.sort(values, axis=axis, descending=descending)
 
@@ -247,6 +283,7 @@ def identity_n(input, name=None):
     return [ivy.copy_array(x) for x in input]
 
 
+@to_ivy_arrays_and_back
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
 
@@ -286,9 +323,11 @@ def boolean_mask(tensor, mask, axis=None, name=None):
             n,
             allow_equal=True,
             message="Value of axis must be such that axis + dim(mask) <= dim(tensor)",
+            as_array=False,
         )
         tensor_shape = ivy.shape(tensor)
-        for i in range(axis - 1, -1, -1):
+        range_array = ivy.arange(axis - 1, -1, -1)
+        for i in ivy.to_list(range_array):
             mask = ivy.expand_dims(mask, axis=0)
             mask = ivy.repeat(mask, tensor_shape[i], axis=0)
         return ivy.get_item(tensor, mask)
@@ -430,8 +469,10 @@ def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("unsigned", "integer")}, "tensorflow")
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
 
 
@@ -478,6 +519,7 @@ def split(value, num_or_size_splits, axis=0, num=None, name=None):
     )
 
 
+@to_ivy_arrays_and_back
 def repeat(
     input,
     repeats,
@@ -548,3 +590,19 @@ def while_loop(
     name=None,
 ):
     return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def truncatediv(x, y, name=None):
+    return x.trunc_divide(y)
+
+
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("int16", "int8", "uint8", " uint16")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def truncatemod(x, y):
+    x = ivy.broadcast_to(x, ivy.shape(y))
+    y = ivy.broadcast_to(y, ivy.shape(x))
+    return ivy.trunc(x / y) * y + (x % y)

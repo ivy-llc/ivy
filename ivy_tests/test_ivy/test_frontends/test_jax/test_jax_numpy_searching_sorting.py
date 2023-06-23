@@ -105,29 +105,30 @@ def test_jax_numpy_argsort(
 
 
 # msort
-@handle_frontend_test(
-    fn_tree="jax.numpy.msort",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        min_dim_size=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_numpy_msort(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        a=x[0],
-    )
+# @handle_frontend_test(
+#     fn_tree="jax.numpy.msort",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("numeric"),
+#         min_num_dims=2,
+#         min_dim_size=2,
+#     ),
+#     test_with_out=st.just(False),
+# )
+# def test_jax_numpy_msort(
+#     dtype_and_x,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         a=x[0],
+#     )
+# TODO : deprecated since jax 0.4.1. Uncomment with multiversion testing pipeline enabled.
 
 
 # nonzero
@@ -260,7 +261,7 @@ def test_jax_numpy_extract(
     ),
     test_with_out=st.just(False),
 )
-def test_numpy_sort(
+def test_jax_numpy_sort(
     *,
     dtype_x_axis,
     frontend,
@@ -276,7 +277,7 @@ def test_numpy_sort(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        x=x[0],
         axis=axis,
     )
 

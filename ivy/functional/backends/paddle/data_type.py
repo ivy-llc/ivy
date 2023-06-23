@@ -143,6 +143,7 @@ def broadcast_to(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
@@ -263,7 +264,7 @@ def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
 
 
 def is_native_dtype(dtype_in: Union[paddle.dtype, str], /) -> bool:
-    if dtype_in.__hash__ is None:
+    if not ivy.is_hashable_dtype(dtype_in):
         return False
     if dtype_in in ivy_dtype_dict:
         return True

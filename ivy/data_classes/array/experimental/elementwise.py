@@ -363,41 +363,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             self._data, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
 
-    def logaddexp2(
-        self: Union[ivy.Array, float, list, tuple],
-        x2: Union[ivy.Array, float, list, tuple],
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.logaddexp2. This method simply wraps
-        the function, and so the docstring for ivy.logaddexp2 also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            First array-like input.
-        x2
-            Second array-like input
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Element-wise logaddexp2 of x1 and x2.
-
-        Examples
-        --------
-        >>> x1 = ivy.array([1, 2, 3])
-        >>> x2 = ivy.array([4, 5, 6])
-        >>> x1.logaddexp2(x2)
-        ivy.array([4.169925, 5.169925, 6.169925])
-        """
-        return ivy.logaddexp2(self._data, x2, out=out)
-
     def signbit(
         self: Union[ivy.Array, float, int, list, tuple],
         /,
@@ -794,35 +759,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([1.0986, 1.3863, 0.0000])
         """
         return ivy.xlogy(self._data, y, out=out)
-
-    def real(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.real. This method simply wraps the
-        function, and so the docstring for ivy.real also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array. Should have a real-valued floating-point data type.
-        out
-            optional output array, for writing the result to.
-            It must have a shape that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            an array containing test results. If input in an
-            array is real then, it is returned unchanged. on the
-            other hand, if it is complex then, it returns real part from it
-
-        Examples
-        --------
-        >>> x = ivy.array([4+3j, 6+2j, 1-6j])
-        >>> x.real()
-        ivy.array([4., 6., 1.])
-        """
-        return ivy.real(self._data, out=out)
 
     def binarizer(
         self: ivy.Array, /, *, threshold: float = 0, out: Optional[ivy.Array] = None

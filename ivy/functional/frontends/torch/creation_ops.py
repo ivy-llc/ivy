@@ -196,8 +196,7 @@ def logspace(
 def eye(
     n, m=None, *, out=None, dtype=None, layout=None, device=None, requires_grad=False
 ):
-    ret = ivy.eye(n_rows=n, n_columns=m, dtype=dtype, device=device, out=out)
-    return ret
+    return ivy.eye(n, m, dtype=dtype, device=device, out=out)
 
 
 @to_ivy_arrays_and_back

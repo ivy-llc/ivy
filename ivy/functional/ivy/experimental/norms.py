@@ -33,10 +33,11 @@ def l1_normalize(
     x
         Input array.
     axis
-        Axis or axes along which to normalize. If ``None``, the whole array is normalized.
+        Axis or axes along which to normalize. If ``None``,
+         the whole array is normalized.
     out
-        Optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        Optional output array, for writing the result to.
+         It must have a shape that the inputs broadcast to.
 
     Returns
     -------
@@ -95,7 +96,6 @@ def l2_normalize(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def batch_norm(
@@ -106,10 +106,10 @@ def batch_norm(
     *,
     offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
     scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-    training: bool = False,
-    eps: float = 1e-5,
-    momentum: float = 1e-1,
-    data_format: str = "NSC",
+    training: Optional[bool] = False,
+    eps: Optional[float] = 1e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
     out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
     """
@@ -194,13 +194,27 @@ def batch_norm(
             xnormalized, axes=(0, xdims - 1, *range(1, xdims - 1))
         )
 
+    if ivy.exists(out):
+        xnormalized = ivy.inplace_update(out[0], xnormalized)
+        runningmean = ivy.inplace_update(out[1], runningmean)
+        runningvariance = ivy.inplace_update(out[2], runningvariance)
+
     return xnormalized, runningmean, runningvariance
+
+
+batch_norm.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def instance_norm(
@@ -211,10 +225,10 @@ def instance_norm(
     *,
     offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
     scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-    training: bool = False,
-    eps: float = 0e-5,
-    momentum: float = 1e-1,
-    data_format: str = "NSC",
+    training: Optional[bool] = False,
+    eps: Optional[float] = 0e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
     out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
     """
@@ -292,7 +306,6 @@ def instance_norm(
         training=training,
         eps=eps,
         momentum=momentum,
-        out=out,
     )
     xnormalized = xnormalized.reshape((*S, N, C))
 
@@ -305,11 +318,25 @@ def instance_norm(
             xnormalized, axes=(xdims - 2, *range(0, xdims - 2), xdims - 1)
         )
 
-    return (
-        xnormalized,
-        runningmean.reshape((N, C)).mean(axis=0),
-        runningvariance.reshape((N, C)).mean(axis=0),
-    )
+    runningmean = runningmean.reshape((N, C)).mean(axis=0)
+    runningvariance = runningvariance.reshape((N, C)).mean(axis=0)
+
+    if ivy.exists(out):
+        xnormalized = ivy.inplace_update(out[0], xnormalized)
+        runningmean = ivy.inplace_update(out[1], runningmean)
+        runningvariance = ivy.inplace_update(out[2], runningvariance)
+
+    return (xnormalized, runningmean, runningvariance)
+
+
+instance_norm.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions

@@ -1529,6 +1529,41 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.logaddexp(self._data, x2, out=out)
 
+    def logaddexp2(
+        self: Union[ivy.Array, float, list, tuple],
+        x2: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.logaddexp2. This method simply wraps
+        the function, and so the docstring for ivy.logaddexp2 also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First array-like input.
+        x2
+            Second array-like input
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise logaddexp2 of x1 and x2.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([4, 5, 6])
+        >>> x1.logaddexp2(x2)
+        ivy.array([4.169925, 5.169925, 6.169925])
+        """
+        return ivy.logaddexp2(self._data, x2, out=out)
+
     def logical_and(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
@@ -1635,13 +1670,14 @@ class _ArrayWithElementwise(abc.ABC):
             must have a data type of ``bool``.
 
         This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/
+        API_specification/generated/array_api.logical_or.html>`_
         in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for
+        simplicity, but this function is *nestable*, and therefore also
+        accepts :class:`ivy.Container` instances in place of any of the arguments.
 
         Examples
         --------
@@ -2069,6 +2105,35 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.pow(self._data, x2, out=out)
 
+    def real(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.real. This method simply wraps the
+        function, and so the docstring for ivy.real also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued floating-point data type.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing test results. If input in an
+            array is real then, it is returned unchanged. on the
+            other hand, if it is complex then, it returns real part from it
+
+        Examples
+        --------
+        >>> x = ivy.array([4+3j, 6+2j, 1-6j])
+        >>> x.real()
+        ivy.array([4., 6., 1.])
+        """
+        return ivy.real(self._data, out=out)
+
     def remainder(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
@@ -2177,7 +2242,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.round(self._data, decimals=decimals, out=out)
 
-    def sign(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def sign(
+        self: ivy.Array,
+        *,
+        np_variant: Optional[bool] = True,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sign. This method simply wraps the
         function, and so the docstring for ivy.sign also applies to this method with
@@ -2215,7 +2285,7 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[-1., -1.,  0.,  1.,  1.],
         [ 1., -1.,  1., -1.,  1.]])
         """
-        return ivy.sign(self._data, out=out)
+        return ivy.sign(self._data, np_variant=np_variant, out=out)
 
     def sin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

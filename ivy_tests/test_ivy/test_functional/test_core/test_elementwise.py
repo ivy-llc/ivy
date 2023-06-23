@@ -19,21 +19,34 @@ def not_too_close_to_zero(x):
     return f(x)
 
 
+@st.composite
+def _array_with_mask(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
+        )
+    )
+    dtype2, where = draw(
+        helpers.dtype_and_values(available_dtypes=["bool"], shape=shape)
+    )
+    return ([dtype[0], dtype2[0]], x, where)
+
+
 # abs
 @handle_test(
     fn_tree="functional.ivy.abs",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x_and_where=_array_with_mask(),
 )
 def test_abs(
     *,
-    dtype_and_x,
+    dtype_and_x_and_where,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, where = dtype_and_x_and_where
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -42,7 +55,7 @@ def test_abs(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
-        where=True,
+        where=where[0],
     )
 
 
@@ -377,7 +390,8 @@ def test_bitwise_left_shift(
         )
     )
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="numpy",  # tensorflow gt has maximum shift that is equal
+        # to dtype bits - 1 while other backends overflow to zero
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -1245,6 +1259,45 @@ def test_logaddexp(
     )
 
 
+# logaddexp2
+@handle_test(
+    fn_tree="functional.ivy.logaddexp2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_logaddexp2(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        ground_truth_backend=ground_truth_backend,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
 # logical_and
 @handle_test(
     fn_tree="functional.ivy.logical_and",
@@ -1539,7 +1592,7 @@ def pow_helper(draw, available_dtypes=None):
 
     def cast_filter(dtype1_x1_dtype2):
         dtype1, _, dtype2 = dtype1_x1_dtype2
-        if (ivy.as_ivy_dtype(dtype1), ivy.as_ivy_dtype(dtype2)) in ivy.promotion_table:
+        if ivy.can_cast(dtype1, dtype2):
             return True
         return False
 
@@ -1620,6 +1673,34 @@ def test_pow(
     )
 
 
+# real
+@handle_test(
+    fn_tree="functional.ivy.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
+)
+def test_real(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # remainder
 @handle_test(
     fn_tree="functional.ivy.remainder",
@@ -1685,7 +1766,7 @@ def test_round(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="numpy",
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -1700,12 +1781,17 @@ def test_round(
 @handle_test(
     fn_tree="functional.ivy.sign",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=5,
+        small_abs_safety_factor=5,
+        safety_factor_scale="log",
     ),
+    np_variant=st.booleans(),
 )
 def test_sign(
     *,
     dtype_and_x,
+    np_variant,
     test_flags,
     backend_fw,
     fn_name,
@@ -1722,6 +1808,7 @@ def test_sign(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        np_variant=np_variant,
     )
 
 
