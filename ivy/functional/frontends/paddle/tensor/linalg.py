@@ -137,3 +137,9 @@ def bmm(x, y, transpose_x=False, transpose_y=False, name=None):
 @to_ivy_arrays_and_back
 def matrix_power(x, n, name=None):
     return ivy.matrix_power(x, n)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def cond(x, p=None, name=None):
+    return ivy.cond(x, p=p, out=name)
