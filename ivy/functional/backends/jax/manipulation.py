@@ -116,8 +116,8 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:

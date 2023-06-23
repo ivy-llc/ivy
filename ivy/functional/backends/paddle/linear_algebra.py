@@ -20,7 +20,7 @@ from .elementwise import _elementwise_helper
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -87,7 +87,7 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -179,7 +179,7 @@ def inner(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def inv(
@@ -331,7 +331,7 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def matrix_rank(
@@ -479,7 +479,7 @@ def solve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex",)}},
     backend_version,
 )
 def svd(
@@ -507,7 +507,7 @@ def svd(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def svdvals(
@@ -540,6 +540,21 @@ def tensordot(
     return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "unsigned",
+                "float16",
+                "complex",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def trace(
     x: paddle.Tensor,
     /,
@@ -637,7 +652,7 @@ def diag(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},
+    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16")}},
     backend_version,
 )
 def vander(
@@ -659,7 +674,7 @@ def vander(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("unsigned", "int8", "int16", "float16")},
+    {"2.5.0 and below": ("unsigned", "int8", "int16", "float16")},
     backend_version,
 )
 def vector_to_skew_symmetric_matrix(
