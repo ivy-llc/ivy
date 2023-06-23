@@ -2609,15 +2609,8 @@ def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
         )
     )
     real_shape = x[index].shape
-    if isinstance(index, np.ndarray) and ivy.is_bool_dtype(index):
-        val_shape = draw(st.sampled_from([(math.prod(real_shape),), (), (1,)]))
-    elif len(real_shape):
-        val_shape = real_shape[:draw(st.integers(0, len(real_shape)))]
-        val_size = len(val_shape)
-        if val_size:
-            val_shape = tuple(draw(st.permutations(val_shape)))
-        else:
-            val_shape = ()
+    if len(real_shape):
+        val_shape = real_shape[draw(st.integers(0, len(real_shape))):]
     else:
         val_shape = real_shape
     val_dtype, val = draw(
