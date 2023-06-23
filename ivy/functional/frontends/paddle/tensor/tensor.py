@@ -206,5 +206,4 @@ class Tensor:
         "paddle",
     )
     def bitwise_xor(self, y, out=None, name=None):
-        y_ivy = _to_ivy_array(y)
-        return ivy.bitwise_xor(self._ivy_array, y_ivy)
+        return paddle_frontend.bitwise_xor(self, y)
