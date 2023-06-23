@@ -114,6 +114,11 @@ def pinv(x, rcond=1e-15, hermitian=False, name=None):
     # TODO: Add hermitian functionality
     return ivy.pinv(x, rtol=rcond)
 
+# qr
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def qr(x, mode = 'reduced', name=None):
+    return ivy.qr(x, mode=mode)
 
 # cholesky
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
