@@ -7,7 +7,7 @@ versions = {
     "numpy": "1.25.0",
     "jax": "0.4.12",
     "scipy": "1.10.1",
-    "paddle": "2.4.2",
+    "paddle": "2.5.0",
 }
 
 
