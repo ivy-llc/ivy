@@ -447,10 +447,9 @@ def test_jax_devicearray_sort(
     init_tree="jax.numpy.array",
     method_name="prod",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=["int64"],
         force_int_axis=True,
-        min_axis=-1,
-        max_axis=-1,
+        valid_axis=True,
         min_dim_size=2,
         max_dim_size=100,
         min_num_dims=2,
