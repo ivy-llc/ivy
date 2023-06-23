@@ -402,7 +402,7 @@ For these reasons, all frontend functions which correspond to functions with lim
 
 .. code-block:: python
 
-   @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+   @with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 
 The same logic applies to unsupported devices.
 Even if the wrapped Ivy function supports more devices, we should still flag the frontend function supported devices to be the same as those supported by the function in the native framework.

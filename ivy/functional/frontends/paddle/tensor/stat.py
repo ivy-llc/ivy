@@ -6,7 +6,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def mean(input, axis=None, keepdim=False, out=None):
     ret = ivy.mean(input, axis=axis, keepdims=keepdim, out=out)
@@ -14,7 +14,7 @@ def mean(input, axis=None, keepdim=False, out=None):
     return ret
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("complex", "int8")}, "paddle")
+@with_unsupported_dtypes({"2.5.0 and below": ("complex", "int8")}, "paddle")
 @to_ivy_arrays_and_back
 def numel(x, name=None):
     prod = ivy.prod(x.size, dtype=ivy.int64)

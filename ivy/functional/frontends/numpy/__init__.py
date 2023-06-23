@@ -628,7 +628,8 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
-    _nextafter, _spacing,
+    _nextafter,
+    _spacing,
 )
 
 _frontend_array = array

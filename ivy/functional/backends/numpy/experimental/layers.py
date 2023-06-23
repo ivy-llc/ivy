@@ -641,7 +641,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.24.3 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.25.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -890,6 +890,17 @@ def fft2(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.fft2(x, s, dim, norm).astype(np.complex128)
+
+
+def ifftn(
+    x: np.ndarray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
 
 
 @with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
