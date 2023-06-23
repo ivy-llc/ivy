@@ -2617,6 +2617,8 @@ def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
         helpers.dtype_and_values(
             dtype=input_dtype,
             shape=val_shape,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
         )
     )
     val_dtype = draw(helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x))[-1]
