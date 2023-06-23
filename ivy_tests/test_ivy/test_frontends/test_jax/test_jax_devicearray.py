@@ -324,7 +324,7 @@ def test_jax_devicearray_cumsum(
         method_flags=method_flags,
         on_device=on_device,
     )
-
+    
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,

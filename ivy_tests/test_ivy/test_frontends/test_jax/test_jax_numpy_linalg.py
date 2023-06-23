@@ -342,13 +342,14 @@ def test_jax_numpy_qr(
     frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
     Q, R = ret
-    frontend_Q, frontend_R = frontend_ret
+    frontend_Q, frontend_R  = frontend_ret
 
     assert_all_close(
         ret_np=Q @ R,
         ret_from_gt_np=frontend_Q @ frontend_R,
         atol=1e-02,
     )
+
 
 
 # eigvals
