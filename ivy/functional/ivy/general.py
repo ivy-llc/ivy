@@ -2808,6 +2808,28 @@ def set_item(
     return current_backend(x).set_item(x, query, val, copy=copy)
 
 
+def _parse_query(indices, shape):
+    indices = list(indices) if isinstance(indices, tuple) else indices
+    for i, idx in enumerate(indices):
+        s = shape[i]
+        if isinstance(idx, slice):
+            step = 1 if idx.step is None else idx.step
+            if idx.start is None:
+                start = 0 if step >= 0 else s
+            else:
+                start = idx.start
+            if idx.stop is None:
+                stop = s if step >= 0 else 0
+            else:
+                stop = idx.stop
+            start = start + s if start < 0 else start
+            stop = stop + s if stop < 0 else stop
+            indices[i] = slice(start, stop, step)
+        else:
+            indices[i] = idx + s if idx < 0 else idx
+    return indices
+
+
 def _numel(shape):
     return math.prod(shape) if shape != () else 1
 
