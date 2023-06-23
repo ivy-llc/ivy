@@ -852,7 +852,7 @@ def test_paddle_reciprocal(
         on_device=on_device,
         x=x[0],
     )
-    
+
 
 # isnan
 @handle_frontend_test(
