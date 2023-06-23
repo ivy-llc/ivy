@@ -836,12 +836,14 @@ def handle_device_shifting(fn: Callable) -> Callable:
     def _handle_device_shifting(*args, **kwargs):
         """
         Move all array inputs of the function to `ivy.default_device()`.
+
         Parameters
         ----------
         args
             The arguments to be passed to the function.
         kwargs
             The keyword arguments to be passed to the function.
+
         Returns
         -------
             The return of the function.
