@@ -7,7 +7,7 @@ import ivy.functional.frontends.tensorflow.nn as tf_nn
 
 # should have float16 as well but sqrt doesn't support it
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.9.0 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.12.0 and below": ("float32",)}, "tensorflow")
 def fused_batch_norm(
     x,
     scale,
@@ -80,7 +80,7 @@ def fused_batch_norm(
         return y, old_mean, old_var
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
 def depthwise_conv2d(
     input,
     filter,
@@ -105,7 +105,7 @@ def depthwise_conv2d(
 
 @with_unsupported_dtypes(
     {
-        "2.9.0 and below": (
+        "2.12.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -138,7 +138,7 @@ def separable_conv2d(
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"2.9.0 and below": ("float16",)},
+    {"2.12.0 and below": ("float16",)},
     "tensorflow",
 )
 def max_pool(value, ksize, strides, padding, data_format="NHWC", name=None, input=None):

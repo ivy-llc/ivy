@@ -23,7 +23,7 @@ def _get_reduction_func(reduction):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float32",)},
+    {"2.5.0 and below": ("float32",)},
     "paddle",
 )
 @inputs_to_ivy_arrays

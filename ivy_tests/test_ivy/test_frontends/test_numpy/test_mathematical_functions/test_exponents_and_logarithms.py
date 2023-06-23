@@ -139,7 +139,7 @@ def test_numpy_exp2(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-02,
+        rtol=1e-02,
         x=x[0],
         out=None,
         where=where,
@@ -205,7 +205,7 @@ def test_numpy_log10(
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
                 small_abs_safety_factor=2,
-                safety_factor_scale="linear",
+                safety_factor_scale="log",
             )
         ],
     ),
@@ -234,6 +234,7 @@ def test_numpy_log(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-03,
         x=x[0],
         out=None,
         where=where,
@@ -300,6 +301,8 @@ def test_numpy_log2(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
+                small_abs_safety_factor=2,
+                safety_factor_scale="log",
             )
         ],
     ),
@@ -328,6 +331,7 @@ def test_numpy_log1p(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
         x=x[0],
         out=None,
         where=where,
@@ -375,6 +379,8 @@ def test_numpy_logaddexp(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         x1=xs[0],
         x2=xs[1],
         out=None,

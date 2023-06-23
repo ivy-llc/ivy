@@ -413,7 +413,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.12 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.13 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -766,8 +766,19 @@ def fft2(
     return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)
 
 
+def ifftn(
+    x: JaxArray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fft.ifftn(x, s, axes, norm)
+
+
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.13 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -786,4 +797,3 @@ def embedding(
         embeddings = jnp.where(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
-    return embeddings
