@@ -210,10 +210,3 @@ def isfinite(x, name=None):
 @to_ivy_arrays_and_back
 def isinf(x, name=None):
     return ivy.isinf(x)
-
-  
-@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
-@to_ivy_arrays_and_back
-def reciprocal(x, name=None):
-    return ivy.reciprocal(x)
-
