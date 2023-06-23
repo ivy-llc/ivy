@@ -4,6 +4,7 @@ from hypothesis import assume, given
 from hypothesis import strategies as st
 
 import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
@@ -962,7 +963,7 @@ def test_paddle_all(
     init_tree="paddle.to_tensor",
     method_name="allclose",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), 
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1000,8 +1001,8 @@ def test_paddle_allclose(
         method_flags=method_flags,
         on_device=on_device,
     )
-    
-    
+
+
 # sort
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1085,7 +1086,7 @@ def test_paddle_any(
         on_device=on_device,
     )
 
-    
+
 #  isinf
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1119,7 +1120,6 @@ def test_paddle_isinf(
     )
 
 
-    
 # astype
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1157,8 +1157,7 @@ def test_paddle_astype(
         frontend=frontend,
         on_device=on_device,
     )
-    
-    
+
 
 #  isfinite
 @handle_frontend_method(
@@ -1224,7 +1223,7 @@ def test_paddle_erf(
         frontend=frontend,
         on_device=on_device,
     )
-    
+
 
 # subtract
 @handle_frontend_method(
