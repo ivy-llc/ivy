@@ -47,6 +47,7 @@ def det(a):
 
 
 # slogdet
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @inputs_to_ivy_arrays
 @from_zero_dim_arrays_to_scalar
 def slogdet(a):
