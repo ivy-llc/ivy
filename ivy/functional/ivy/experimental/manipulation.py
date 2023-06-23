@@ -34,7 +34,6 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def flatten(
@@ -178,6 +177,16 @@ def flatten(
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
     return ivy.reshape(x, tuple(lst), order=order, out=out)
+
+
+flatten.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_nestable
