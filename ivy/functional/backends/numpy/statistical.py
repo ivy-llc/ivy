@@ -171,7 +171,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.24.3 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,
@@ -208,7 +208,7 @@ def cumprod(
 cumprod.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.24.3 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": "bfloat16"}, backend_version)
 def cummin(
     x: np.ndarray,
     /,
