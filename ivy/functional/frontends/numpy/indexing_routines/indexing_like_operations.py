@@ -81,4 +81,33 @@ def diagonal(a, offset, axis1, axis2):
 
 
 def choose(a, choices, out=None, mode='raise'):
-    return ivy.choose(a, choices, out=out, mode=mode)
+    a = ivy.array(a)
+    choices = ivy.array(choices)
+
+    n = len(choices)
+
+    if out is not None:
+        raise ValueError("Not yet implemented when out is not None")
+
+    # broadcast all the elements of choices to the shape of a
+    for i in range(len(choices)):
+        choices[i] = ivy.broadcast_to(choices[i], a.shape)
+        
+    # understand the indexes that have to be used
+    if mode == "raise":
+        if not all(x < n for x in a):
+            raise ValueError("Invalid entry in choice array")
+    elif mode == "wrap":
+        a = ivy.array([x % n for x in a])
+    elif mode == "clip":
+        a = ivy.clip(a, 0, n-1)
+    else:
+        raise ValueError(f"clipmode must be one of 'clip', 'raise', or 'wrap' (got '{mode}')")
+
+    # construct the new array
+    res = []
+
+    for idx, val in enumerate(a):
+        res.append(choices[val][idx].to_scalar())
+
+    return ivy.array(res)
