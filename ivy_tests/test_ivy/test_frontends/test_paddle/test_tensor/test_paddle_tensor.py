@@ -1,13 +1,13 @@
 # global
-import ivy
-from hypothesis import strategies as st, assume, given
 import numpy as np
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy.functional.frontends.paddle import Tensor
-
+from ivy_tests.test_ivy.helpers import handle_frontend_method
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 
@@ -404,6 +404,39 @@ def test_paddle_asin(
     ),
 )
 def test_paddle_asinh(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# cosh
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="cosh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_cosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -923,6 +956,52 @@ def test_paddle_all(
     )
 
 
+# allclose
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="allclose",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), 
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    # rtol=1e-05,
+    # atol=1e-08,
+    # equal_nan=st.booleans(),
+)
+def test_paddle_allclose(
+    dtype_and_x,
+    # rtol,
+    # atol,
+    # equal_nan,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+            # "rtol": rtol,
+            # "atol": atol,
+            # "equal_nan": equal_nan,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+    
+    
 # sort
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -965,6 +1044,48 @@ def test_paddle_sort(
     )
 
 
+# any
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="any",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=st.one_of(helpers.get_dtypes("float")),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    keep_dims=st.booleans(),
+)
+def test_paddle_any(
+    dtype_x_axis,
+    keep_dims,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdim": keep_dims,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+    
 #  isinf
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -997,6 +1118,47 @@ def test_paddle_isinf(
         on_device=on_device,
     )
 
+
+    
+# astype
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="astype",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    dtype=st.one_of(helpers.get_dtypes("valid")),
+)
+def test_paddle_astype(
+    dtype_and_x,
+    dtype,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    if dtype is None:
+        dtype = input_dtype
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dtype": dtype,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+    
+    
 
 #  isfinite
 @handle_frontend_method(
