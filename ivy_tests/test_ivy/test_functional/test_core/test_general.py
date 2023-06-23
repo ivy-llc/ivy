@@ -177,59 +177,22 @@ def test_array_equal(
     )
 
 
-@st.composite
-def array_and_boolean_mask(
-    draw,
-    *,
-    array_dtypes,
-    allow_inf=False,
-    min_num_dims=1,
-    max_num_dims=5,
-    min_dim_size=1,
-    max_dim_size=10,
-):
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=array_dtypes,
-            allow_inf=allow_inf,
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims,
-            min_dim_size=min_dim_size,
-            max_dim_size=max_dim_size,
-        )
-    )
-    boolean_mask_dtype, boolean_mask = draw(
-        helpers.dtype_and_values(
-            dtype=["bool"],
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims,
-            min_dim_size=min_dim_size,
-            max_dim_size=max_dim_size,
-        )
-    )
-    return [x_dtype[0], boolean_mask_dtype[0]], x[0], boolean_mask[0]
-
-
 # get_item
 # TODO: add container and array instance methods
 @handle_test(
     fn_tree="functional.ivy.get_item",
-    dtype_x_indices=st.one_of(
-        helpers.array_indices_axis(
-            array_dtypes=helpers.get_dtypes("valid"),
-            indices_dtypes=helpers.get_dtypes("integer"),
-            disable_random_axis=True,
-            first_dimension_only=True,
-        ),
-        array_and_boolean_mask(array_dtypes=helpers.get_dtypes("valid")),
+    ground_truth_backend="numpy",
+    dtypes_x_query=helpers.dtype_array_index(
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     copy=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_get_item(
-    dtype_x_indices,
+    dtypes_x_query,
     copy,
     test_flags,
     backend_fw,
@@ -237,7 +200,7 @@ def test_get_item(
     on_device,
     ground_truth_backend,
 ):
-    dtypes, x, indices = dtype_x_indices
+    dtypes, x, query = dtypes_x_query
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
@@ -246,7 +209,7 @@ def test_get_item(
         fw=backend_fw,
         fn_name=fn_name,
         x=x,
-        query=indices,
+        query=query,
         copy=copy,
     )
 

@@ -242,7 +242,6 @@ def test_array_property_T(
     method_tree="Array.__getitem__",
     dtypes_x_query=helpers.dtype_array_index(
         available_dtypes=helpers.get_dtypes("valid"),
-        allow_neg_step=False,
     ),
 )
 def test_array__getitem__(
