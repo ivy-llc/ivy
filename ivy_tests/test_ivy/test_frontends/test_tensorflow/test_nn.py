@@ -15,6 +15,41 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.nn.embedding_lookup",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="2d",
+    ),
+)
+def test_tensorflow_embedding_lookup(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device
+):
+    input_dtype, x, filters, dilation, params, ids
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        params=params,
+        ids=ids,
+    )
+    
+
+@handle_frontend_test(
     fn_tree="tensorflow.nn.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
