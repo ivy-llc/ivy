@@ -15,7 +15,7 @@ from paddle.fluid.libpaddle import Place
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -84,6 +84,7 @@ def poisson(
     device: Place,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
+    fill_value: Optional[Union[float, int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ):
     raise IvyNotImplementedException()
