@@ -163,6 +163,11 @@ def rad2deg(x, name=None):
 def deg2rad(x, name=None):
     return ivy.deg2rad(x)
 
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def gcd(x, y, name=None):
+    return ivy.gcd(x,y)
+
 
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
