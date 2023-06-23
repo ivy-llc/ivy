@@ -139,3 +139,33 @@ def test_numpy_put_along_axis(
         axis=axis,
         values=values,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.place",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=3,
+        min_num_dims=1,
+        max_num_dims=3,
+        dtype=["float32", "bool", "float32"],
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_place(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x[0],
+        mask=x[1],
+        vals=x[2],
+    )
