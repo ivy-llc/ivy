@@ -4,7 +4,7 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes
 
 
-@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
     if len(x1.shape) == len(x2.shape) and len(x2.shape) >= 2:

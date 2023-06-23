@@ -422,7 +422,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.12 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,
@@ -438,6 +438,6 @@ def itemsize(x: JaxArray) -> int:
     return x.itemsize
 
 
-@with_unsupported_dtypes({"0.4.12 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
 def strides(x: JaxArray) -> Tuple[int]:
     return to_numpy(x).strides
