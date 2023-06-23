@@ -19,6 +19,11 @@ def _reduce_strides_dilations(dim, stride, dilations):
 
 
 @to_ivy_arrays_and_back
+def embedding_lookup(params, ids, max_norm=None, name=None):
+    return ivy.embedding_lookup(params, ids)
+
+
+@to_ivy_arrays_and_back
 def atrous_conv2d(value, filters, rate, padding):
     return ivy.conv2d(value, filters, 1, padding, dilations=[rate] * 2)
 
