@@ -211,7 +211,7 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int16")}},
+    {"2.5.0 and below": {"cpu": ("uint8", "int16")}},
     backend_version,
 )
 def cumprod(
@@ -264,7 +264,7 @@ def cumprod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},
+    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16")}},
     backend_version,
 )
 def cummin(
@@ -292,7 +292,7 @@ def cummin(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def cumsum(
@@ -349,7 +349,7 @@ def cumsum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def cummax(
     x: paddle.Tensor,

@@ -128,23 +128,23 @@ def reshape(
         if order == "F":
             ret = _reshape_fortran_paddle(newarr, shape)
             if out_scalar:
-                return paddle_backend.squeeze(ret, 0)
+                return paddle_backend.squeeze(ret, axis=0)
 
             return ret
         ret = paddle.reshape(newarr, shape)
         if out_scalar:
-            return paddle_backend.squeeze(ret, 0)
+            return paddle_backend.squeeze(ret, axis=0)
 
         return ret
     if order == "F":
         ret = _reshape_fortran_paddle(x, shape)
         if out_scalar:
-            return paddle_backend.squeeze(ret, 0)
+            return paddle_backend.squeeze(ret, axis=0)
 
         return ret
     ret = paddle.reshape(x, shape)
     if out_scalar:
-        return paddle_backend.squeeze(ret, 0)
+        return paddle_backend.squeeze(ret, axis=0)
 
     return ret
 
@@ -195,7 +195,7 @@ def squeeze(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
+    {"2.5.0 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
     backend_version,
 )
 def stack(
