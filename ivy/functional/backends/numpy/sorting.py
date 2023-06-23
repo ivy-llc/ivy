@@ -39,7 +39,7 @@ def sort(
 
 
 # msort
-@with_unsupported_dtypes({"1.24.3 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[np.ndarray, list, tuple], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
