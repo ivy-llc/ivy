@@ -167,12 +167,14 @@ multi_dot.support_native_out = True
 
 
 def dot(
-    x: torch.Tensor,
-    y: torch.Tensor,
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    assert x.dim() == 1 or y.dim() == 1, "One of the inputs is not a vector"
-    return torch.dot(x, y, out=out)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    torch.dot(x1, x2)
 
 
 dot.support_native_out = True

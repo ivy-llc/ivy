@@ -153,18 +153,15 @@ def multi_dot(
 
 
 def dot(
-    x: tf.Tensor,
-    y: tf.Tensor,
+    x1: tf.Tensor,
+    x2: tf.Tensor,
     out: Optional[tf.Tensor] = None
 ) -> tf.Tensor:
-    a = x.numpy()
-    b = y.numpy()
-
-    assert a.ndim == 1 or b.ndim == 1, "One of the inputs is not a vector"
-    return tf.convert_to_tensor(tf.experimental.numpy.dot(a, b))
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return tf.experimental.numpy.dot(x1, x2)
 
 
-dot.support_native_out = True
+# dot.support_native_out = True
 
 
 def cond(

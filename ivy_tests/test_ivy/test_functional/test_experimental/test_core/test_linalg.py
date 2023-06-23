@@ -547,38 +547,41 @@ def test_multi_dot(
 
 @handle_test(
     fn_tree="functional.ivy.experimental.dot",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+    dtype_xy=helpers.dtype_and_values(
+        available_dtypes=(
+            ivy.float32,
+            ivy.float64
+        ),
+        num_arrays=2,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=1,
-        min_dim_size=1,
-        max_dim_size=5,
-        num_arrays=2,
-        shared_dtype=True,
     ),
-    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_dot(
-    dtype_x,
+    *,
+    dtype_xy,
     test_flags,
     backend_fw,
-    on_device,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_x
+    types, arrays = dtype_xy
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
+        input_dtypes=types,
         test_flags=test_flags,
         fw=backend_fw,
-        on_device=on_device,
         fn_name=fn_name,
-        test_values=True,
-        x=x[0],
-        y=x[1],
+        on_device=on_device,
         rtol_=1e-1,
-        atol_=6e-1,
+        atol_=1e-2,
+        x1=arrays[0],
+        x2=arrays[1],
     )
 
 

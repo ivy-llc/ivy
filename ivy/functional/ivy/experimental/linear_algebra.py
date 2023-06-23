@@ -504,7 +504,7 @@ def multi_dot(
     return current_backend(x).multi_dot(x, out=out)
 
 
-@handle_nestable
+# @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions

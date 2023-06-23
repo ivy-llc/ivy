@@ -785,9 +785,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     @staticmethod
     def static_dot(
-        self: ivy.Container,
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        y: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -830,10 +829,10 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "dot",
-            x,
-            y,
+            x1,
+            x2,
             out=out,
-            precision=precision,
+            # precision=precision,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -842,8 +841,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     def dot(
         self: ivy.Container,
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        y: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -851,7 +849,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = True,
         out: Optional[ivy.Container] = None,
-        precision: Optional[jax.lax.Precision] = None
+        # precision: Optional[jax.lax.Precision] = None
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.dot. This method simply wraps
@@ -866,14 +864,13 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         """
         return self.static_dot(
             self,
-            x,
-            y,
+            x2,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            precision=precision
+            # precision=precision
         )
 
     @staticmethod

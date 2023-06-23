@@ -1,6 +1,7 @@
 # global
 import abc
 from typing import Optional, Union, Tuple, List, Sequence
+import jax.lax
 
 # local
 import ivy
@@ -132,6 +133,16 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         ivy.array([3, 4, 6, 8])
         """
         return ivy.kron(self._data, b, out=out)
+
+    def dot(
+        self: ivy.Array,
+        b: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        # precision: Optional[jax.lax.Precision] = None
+    ) -> ivy.Array:
+        return ivy.dot(self._data, b, out=out)
 
     def matrix_exp(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

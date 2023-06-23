@@ -2,8 +2,6 @@
 import abc
 from typing import Union, Optional, Literal, Tuple, List, Sequence
 
-import jax.lax
-
 # local
 import ivy
 
@@ -911,17 +909,6 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.vecdot(self._data, x2, axis=axis, out=out)
-
-    def dot(
-        self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        axis: int = -1,
-        out: Optional[ivy.Array] = None,
-        precision: Optional[jax.lax.Precision] = None
-    ) -> ivy.Array:
-        return ivy.dot(self._data, x2, axis=axis, out=out, precision=precision)
 
     def vector_norm(
         self: ivy.Array,

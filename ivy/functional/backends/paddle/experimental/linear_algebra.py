@@ -86,14 +86,13 @@ def adjoint(
 
 
 def dot(
-    x: paddle.Tensor,
-    y: paddle.Tensor,
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
     /,
     *,
     out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    assert x.ndim == 1 or y.ndim == 1, "One of the inputs is not a vector"
-    return paddle.dot(x, y)
+    return paddle.dot(x1, x2)
 
 
 def cond(
