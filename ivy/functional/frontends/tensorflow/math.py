@@ -10,7 +10,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.12.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -364,7 +364,7 @@ def subtract(x, y, name=None):
 
 @with_supported_dtypes(
     {
-        "2.9.0 and below": (
+        "2.12.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -389,7 +389,7 @@ def squared_difference(x, y, name=None):
 
 @with_supported_dtypes(
     {
-        "2.9.0 and below": (
+        "2.12.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -466,17 +466,10 @@ def argmin(input, axis=None, output_type="int64", name=None):
 def truediv(x, y, name="truediv"):
     x, y = check_tensorflow_casting(x, y)
     x_dtype = ivy.dtype(x)
-
-    if ivy.current_backend_str() == "torch":
-        if x_dtype in [ivy.int8, ivy.int16]:
-            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-        elif x_dtype in [ivy.int32, ivy.int64]:
-            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
-    else:
-        if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
-            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-        elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
-            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    if x_dtype in ["int8", "uint8", "int16", "uint16"]:
+        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+    elif x_dtype in ["int32", "uint32", "int64", "uint64"]:
+        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
 
 
@@ -523,7 +516,7 @@ def sigmoid(x, name=None):
 
 
 @with_supported_dtypes(
-    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.12.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -545,7 +538,7 @@ def nextafter(x1, x2, name=None):
     {
         "1.2.0": ("float16", "complex64", "complex128"),
         "1.8.0 and below": ("float16",),
-        "2.9.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
+        "2.12.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
     },
     "tensorflow",
 )
