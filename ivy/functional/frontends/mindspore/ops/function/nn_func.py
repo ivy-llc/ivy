@@ -15,4 +15,4 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 @to_ivy_arrays_and_back
 def softmax(x, name=None):
-    return ivy.softmax(x, /, *, axis=None, out=None)
+    return ivy.softmax(x, axis=None, out=None)
