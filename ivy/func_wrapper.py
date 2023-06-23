@@ -1119,7 +1119,7 @@ def casting_modes_ops(fn):
                 # no unsupported dtype specified
                 return fn(*args, **kwargs)
         # first make sure casting mode is not enabled
-        if not ivy.is_any_casting() and ivy.throw_error_for_unsupported_dtypes():
+        if not ivy.is_any_casting() and ivy.throw_error_for_dtypes:
             # we do our magic, and throw the unsupported dtype exception
             if "dtype" in kwargs and kwargs["dtype"] is not None:
                 raise_unsupported_dtype_error(kwargs["dtype"], intersect, True)

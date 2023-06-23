@@ -1063,7 +1063,9 @@ downcast_dtypes = False
 upcast_dtypes = False
 crosscast_dtypes = False
 cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
-throw_error_for_dtypes = True
+dtype_error_mode_stack = list()
+
+ivy.throw_error_for_dtypes = True
 
 
 def downcast_data_types(val=True):
@@ -1094,12 +1096,21 @@ def is_any_casting():
     return downcast_dtypes or upcast_dtypes or crosscast_dtypes
 
 
-def throw_error_for_unsupported_dtypes(val=None):
-    # set this to false to turn off the error message
-    global throw_error_for_dtypes
-    if val is None:
-        return throw_error_for_dtypes
-    throw_error_for_dtypes = val
+def set_dtype_error_mode(mode: bool):
+    # set  the mode to enable unsupported
+    # dtype error message
+    global dtype_error_mode_stack
+    dtype_error_mode_stack.append(mode)
+    ivy.__setattr__("throw_error_for_dtypes", mode, True)
+
+
+def unset_dtype_error_mode():
+    # reset the dtype error mode
+    global dtype_error_mode_stack
+    if dtype_error_mode_stack:
+        dtype_error_mode_stack.pop(-1)
+        mode = dtype_error_mode_stack[-1] if dtype_error_mode_stack else True
+        ivy.__setattr__("throw_error_for_dtypes", mode, True)
 
 
 # Promotion Tables #
