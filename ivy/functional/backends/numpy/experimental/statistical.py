@@ -7,7 +7,7 @@ from . import backend_version
 
 
 @with_unsupported_dtypes(
-    {"1.24.3 and below": ("bfloat16",)},
+    {"1.25.0 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
