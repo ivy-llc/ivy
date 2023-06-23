@@ -133,8 +133,8 @@ def roll(
 def squeeze(
     x: np.ndarray,
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
