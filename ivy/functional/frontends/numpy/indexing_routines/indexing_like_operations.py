@@ -78,3 +78,29 @@ def diag(v, k=0):
 @to_ivy_arrays_and_back
 def diagonal(a, offset, axis1, axis2):
     return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
+
+
+
+@inputs_to_ivy_arrays
+def place(arr, mask, vals):
+    arr_shape = arr.shape
+
+    if arr.shape != mask.shape:
+        raise ValueError("mask must have the same size as arr")
+
+    vals_new = ivy.reshape(vals, shape=(-1,), order="C")
+
+    # Reshape vals to have the same shape as arr and mask
+    total_size = 1
+    for diff_size in arr_shape:
+        total_size *= diff_size
+        if diff_size < 0:
+            raise ValueError("values must not be negative")
+    if vals_new.size == 0 or total_size == 0:
+        return ivy.zeros_like(vals_new)
+    repetition = -(-total_size // len(vals_new))
+    conc = (vals_new,) * repetition
+    vals_new = ivy.concat(conc)[:total_size]
+    vals_reshape = ivy.reshape(vals_new, shape=arr_shape, order="C")
+
+    arr = ivy.where(mask, vals_reshape, arr)
