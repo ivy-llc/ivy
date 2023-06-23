@@ -3,6 +3,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
+
 # nextafter
 @handle_frontend_test(
     fn_tree="numpy.nextafter",

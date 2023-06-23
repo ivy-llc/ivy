@@ -827,7 +827,7 @@ def test_paddle_square(
         x=x[0],
     )
 
-    
+
 # reciprocal
 @handle_frontend_test(
     fn_tree="paddle.reciprocal",
