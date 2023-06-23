@@ -14,6 +14,7 @@ def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
 
     if pred:
         return true_fun(*operands)
+    
     return false_fun(*operands)
 
 
