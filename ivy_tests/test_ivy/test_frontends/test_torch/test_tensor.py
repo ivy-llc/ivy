@@ -26,10 +26,11 @@ from hypothesis import strategies as st, given, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
-    _get_dtype_and_3dbatch_matrices,
-    _get_dtype_input_and_matrices,
-)
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops \
+    import (
+        _get_dtype_and_3dbatch_matrices,
+        _get_dtype_input_and_matrices,
+    )
 from ivy.functional.frontends.torch import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
@@ -618,7 +619,9 @@ def test_torch_instance_sub(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="new_ones",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float")
+    ),
     size=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -666,7 +669,8 @@ def test_torch_instance_new_ones(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="new_zeros",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")),
     size=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -2306,7 +2310,8 @@ def test_torch_instance_to(
     frontend,
     on_device,
 ):
-    input_dtype, x, method_num_positional_args, method_all_as_kwargs_np = args_kwargs
+    input_dtype, x, method_num_positional_args, \
+        method_all_as_kwargs_np = args_kwargs
     method_flags.num_positional_args = method_num_positional_args
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -2561,6 +2566,7 @@ def test_torch_instance_floor_(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # new_tensor
 @handle_frontend_method(
@@ -2844,10 +2850,12 @@ def test_torch_instance_ravel(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    split_size=_get_splits(allow_none=False, min_num_dims=1, allow_array_indices=False),
+    split_size=_get_splits(allow_none=False, min_num_dims=1,
+                           allow_array_indices=False),
     dim=st.shared(
         helpers.get_axis(
-            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            shape=st.shared(helpers.get_shape(min_num_dims=1),
+                            key="value_shape"),
             force_int=True,
         ),
         key="target_axis",
@@ -2896,7 +2904,8 @@ def test_torch_instance_split(
     ),
     dim=st.shared(
         helpers.get_axis(
-            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            shape=st.shared(helpers.get_shape(min_num_dims=1),
+                            key="value_shape"),
             force_int=True,
         ),
         key="target_axis",
@@ -3229,7 +3238,8 @@ def _fill_value_and_size(
             key="shape",
         )
     )
-    fill_value = draw(helpers.ints()) if "int" in dtype[0] else draw(helpers.floats())
+    fill_value = draw(helpers.ints()) if "int" in dtype[0] \
+        else draw(helpers.floats())
 
     return dtype, [array, size, fill_value]
 
@@ -3318,7 +3328,8 @@ def _expand_helper(draw):
     )
     new_shape = draw(
         helpers.get_shape(min_num_dims=num_dims, max_num_dims=num_dims).filter(
-            lambda x: all(x[i] == v if v != 1 else True for i, v in enumerate(shape))
+            lambda x: all(x[i] == v if v != 1
+                          else True for i, v in enumerate(shape))
         )
     )
     dtype, x = draw(
@@ -4958,7 +4969,8 @@ def _array_idxes_n_dtype(draw, **kwargs):
     num_dims = draw(helpers.ints(min_value=1, max_value=4))
     dtype, x = draw(
         helpers.dtype_and_values(
-            **kwargs, min_num_dims=num_dims, max_num_dims=num_dims, shared_dtype=True
+            **kwargs, min_num_dims=num_dims, max_num_dims=num_dims,
+            shared_dtype=True
         )
     )
     idxes = draw(
@@ -5559,7 +5571,8 @@ def _repeat_helper(draw):
         )
     )
 
-    repeats = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=len(shape)))
+    repeats = draw(st.lists(st.integers(min_value=1, max_value=5),
+                            min_size=len(shape)))
     return input_dtype, x, repeats
 
 
@@ -6278,7 +6291,8 @@ def test_torch_instance_index_select(
 
 @st.composite
 def _arrays_dim_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4),
+                              key="num_dims"))
     num_arrays = 2
     common_shape = draw(
         helpers.lists(
@@ -7005,7 +7019,8 @@ def test_torch_instance_numpy(
     ),
 )
 def test_torch_instance_atan2_(
-    dtype_and_x, frontend_method_data, init_flags, method_flags, frontend, on_device
+    dtype_and_x, frontend_method_data, init_flags, method_flags, frontend,
+    on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -7067,7 +7082,8 @@ def test_torch_instance_bitwise_and_(
     init_tree="torch.tensor",
     method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        available_dtypes=st.one_of(st.just(("bool",)),
+                                   helpers.get_dtypes("integer")),
         num_arrays=2,
         min_value=-1e04,
         max_value=1e04,
@@ -7106,7 +7122,8 @@ def test_torch_special_and(
     init_tree="torch.tensor",
     method_name="bitwise_xor",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        available_dtypes=st.one_of(st.just(("bool",)),
+                                   helpers.get_dtypes("integer")),
         num_arrays=2,
     ),
 )
@@ -8504,7 +8521,8 @@ def test_torch_instance_bitwise_right_shift(
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
     x[1] = np.asarray(
-        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1),
+        dtype=input_dtype[1]
     )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -8739,10 +8757,12 @@ def test_torch_instance_not_equal(
 @st.composite
 def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2,
+                                                              max_value=5))
     dtype = draw(helpers.get_dtypes("float", full=True))
     dtype = [
-        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16",
+                                                          "float16"}))))
     ]
     vec1 = draw(
         helpers.array_values(
@@ -8757,7 +8777,8 @@ def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
     if with_input:
         input = draw(
             helpers.array_values(
-                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2, max_value=5
+                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2,
+                max_value=5
             )
         )
         return dtype, input, vec1, vec2
@@ -9231,7 +9252,8 @@ def test_torch_instance_log1p(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="baddbmm",
-    dtype_and_matrices=_get_dtype_and_3dbatch_matrices(with_input=True, input_3d=True),
+    dtype_and_matrices=_get_dtype_and_3dbatch_matrices(with_input=True,
+                                                       input_3d=True),
     beta=st.floats(
         min_value=-5,
         max_value=5,
@@ -9279,42 +9301,11 @@ def test_torch_instance_baddbmm(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
-    method_name="floor_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_torch_instance_floor_(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
     method_name="diag",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2),
+                        key="shape"),
     ),
     diagonal=st.integers(min_value=-100, max_value=100),
 )
