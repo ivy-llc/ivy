@@ -434,7 +434,7 @@ class Tensor:
         if len(args) > 0:
             if hasattr(args[0], "ivy_array") or ivy.is_array(args[0]):
                 if self.dtype == ivy.dtype(args[0]) and \
-                     self.device == ivy.dev(args[0]):
+                        self.device == ivy.dev(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
