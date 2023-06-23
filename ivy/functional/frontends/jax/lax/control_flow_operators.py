@@ -1,6 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from typing import Callable, Optional, Tuple
 
 
 @to_ivy_arrays_and_back
@@ -61,7 +62,7 @@ def while_loop(cond_fun, body_fun, init_val):
 
 
 @to_ivy_arrays_and_back
-def scan(f, init, xs, length=None):
+def scan(f, init, xs, length=None, reverse=False, unroll=1):
     if xs is None:
         xs = [None] * length
     carry = init
@@ -69,4 +70,30 @@ def scan(f, init, xs, length=None):
     for x in xs:
         carry, y = f(carry, x)
         ys.append(y)
+    return carry, ivy.stack(ys)
+
+
+@to_ivy_arrays_and_back
+def scan(
+    f: Callable[[Carry, X], Tuple[Carry, Y]],
+    init: Carry,
+    xs: X,
+    length: Optional[int] = None,
+    reverse: bool = False,
+    unroll: int = 1,
+) -> Tuple[Carry, Y]:
+    if xs is None:
+        xs = [None] * length
+
+    if reverse:
+        xs = xs[::-1]
+
+    carry = init
+    ys = []
+
+    for _ in range(unroll):
+        for x in xs:
+            carry, y = f(carry, x)
+            ys.append(y)
+
     return carry, ivy.stack(ys)

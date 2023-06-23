@@ -2,9 +2,10 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import ivy
+from typing import Callable, List, Tuple
 
 
 @handle_frontend_test(
@@ -206,6 +207,53 @@ def test_jax_lax_while_loop(
     )
 
 
+# @handle_frontend_test(
+#     fn_tree="jax.lax.scan",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("numeric"),
+#         min_value=-1000,
+#         max_value=1000,
+#         min_num_dims=1,
+#         min_dim_size=1,
+#     ),
+# )
+# def test_jax_lax_scan(
+#     *,
+#     dtype_and_x,
+#     test_flags,
+#     on_device,
+#     fn_tree,
+#     frontend,
+# ):
+#     def _test_f(carry, x):
+#         y = carry * x
+#         new_carry = x + y
+#         return new_carry, y
+
+#     input_dtype, x = dtype_and_x
+#     length = len(x)
+#     expected_carry = 0
+#     expected_ys = []
+#     carry = expected_carry
+#     for elem in x:
+#         carry, y = _test_f(carry, elem)
+#         expected_ys.append(y)
+#     expected_result = (expected_carry, ivy.stack(expected_ys))
+
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         test_flags=test_flags,
+#         frontend=frontend,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         f=_test_f,
+#         # init=0,
+#         xs=x,
+#         length=length,
+#         expected_result=expected_result,
+#     )
+
+
 @handle_frontend_test(
     fn_tree="jax.lax.scan",
     dtype_and_x=helpers.dtype_and_values(
@@ -216,6 +264,24 @@ def test_jax_lax_while_loop(
         min_dim_size=1,
     ),
 )
+def scan(
+    f: Callable[[int, int], Tuple[int, int]],
+    init: int,
+    xs: List[int],
+    length: int,
+    reverse: bool = False,
+    unroll: int = 1,
+) -> Tuple[int, List[int]]:
+    carry = init
+    ys = []
+
+    for x in xs:
+        carry, y = f(carry, x)
+        ys.append(y)
+
+    return carry, ivy.stack(ys)
+
+
 def test_jax_lax_scan(
     *,
     dtype_and_x,
@@ -234,10 +300,23 @@ def test_jax_lax_scan(
     expected_carry = 0
     expected_ys = []
     carry = expected_carry
-    for elem in x:
-        carry, y = _test_f(carry, elem)
-        expected_ys.append(y)
+    for _ in range(unroll):
+        for elem in x:
+            carry, y = _test_f(carry, elem)
+            expected_ys.append(y)
+
     expected_result = (expected_carry, ivy.stack(expected_ys))
+
+    scan_result = scan(
+        _test_f,
+        expected_carry,
+        x,
+        length=length,
+        reverse=False,
+        unroll=unroll,
+    )
+
+    assert scan_result == expected_result
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -246,7 +325,7 @@ def test_jax_lax_scan(
         fn_tree=fn_tree,
         on_device=on_device,
         f=_test_f,
-        # init=0,
+        init=expected_carry,
         xs=x,
         length=length,
         expected_result=expected_result,
