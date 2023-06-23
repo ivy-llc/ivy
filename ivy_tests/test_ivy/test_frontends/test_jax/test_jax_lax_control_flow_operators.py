@@ -222,6 +222,47 @@ def test_jax_lax_while_loop(
         min_dim_size=1,
     ),
 )
+
+def test_jax_lax_scan(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    unroll=1,  # Define the unroll variable with a default value
+):
+    def _test_f(carry, x):
+        y = carry * x
+        new_carry = x + y
+        return new_carry, y
+
+    input_dtype, x = dtype_and_x
+    length = len(x)
+    expected_carry = 0
+    expected_ys = []
+    carry = expected_carry
+    for _ in range(unroll):
+        for elem in x:
+            carry, y = _test_f(carry, elem)
+            expected_ys.append(y)
+
+    # expected_result = (expected_carry, ivy.stack(expected_ys))
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        f=_test_f,
+        init=expected_carry,
+        xs=x,
+        length=length,
+        # expected_result=expected_result,
+    )
+
+
 # def test_jax_lax_scan(
 #     *,
 #     dtype_and_x,
@@ -296,44 +337,4 @@ def test_jax_lax_while_loop(
 
 
 
-
-
-def test_jax_lax_scan(
-    *,
-    dtype_and_x,
-    test_flags,
-    on_device,
-    fn_tree,
-    frontend,
-    unroll=1,  # Define the unroll variable with a default value
-):
-    def _test_f(carry, x):
-        y = carry * x
-        new_carry = x + y
-        return new_carry, y
-
-    input_dtype, x = dtype_and_x
-    length = len(x)
-    expected_carry = 0
-    expected_ys = []
-    carry = expected_carry
-    for _ in range(unroll):
-        for elem in x:
-            carry, y = _test_f(carry, elem)
-            expected_ys.append(y)
-
-    # expected_result = (expected_carry, ivy.stack(expected_ys))
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        f=_test_f,
-        init=expected_carry,
-        xs=x,
-        length=length,
-        # expected_result=expected_result,
-    )
 
