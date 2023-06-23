@@ -283,43 +283,82 @@ def _handle_backend_specific_vars(target, backend):
 
 
 def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
+    # Dynamic Backend
     from ivy.functional.ivy.gradients import _is_variable, _variable_data
 
     def _is_var(obj):
         if isinstance(obj, ivy.Container):
+            def _map_fn(x):
+                x = x.data if isinstance(x, ivy.Array) else x
+                if x.__class__.__module__ in (
+                        "numpy",
+                        "jax.interpreters.xla",
+                        "jaxlib.xla_extension",
+                ):
+                    return False
+                return _is_variable(x)
+
             return obj.cont_map(_map_fn).cont_all_true()
+
         else:
             obj = obj.data if isinstance(obj, ivy.Array) else obj
+            if obj.__class__.__module__ in (
+                    "numpy",
+                    "jax.interpreters.xla",
+                    "jaxlib.xla_extension",
+            ):
+                return False
             return _is_variable(obj)
 
-    def _map_fn(x, kc):
-        x = x.data if isinstance(x, ivy.Array) else x
-        if x.__class__.__module__ in ("numpy", "jax.interpreters.xla", "jaxlib.xla_extension"):
-            return False
-        return _is_variable(x)
-
     def _remove_intermediate_arrays(arr_list, cont_list):
+        def _get_id(item):
+            if isinstance(item, ivy.Array):
+                return id(item.data)
+            else:
+                return id(item)
+
         cont_list = [cont.cont_to_flat_list() for cont in cont_list]
-        cont_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for cont in cont_list for item in cont]
-        arr_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for item in arr_list]
+
+        cont_ids = [
+            _get_id(item)
+            for cont in cont_list
+            for item in cont
+        ]
+        arr_ids = [
+            _get_id(item)
+            for item in arr_list
+        ]
+
         new_objs = {k: v for k, v in zip(arr_ids, arr_list) if k not in cont_ids}
+
         return list(new_objs.values())
 
-    array_list, container_list = [obj for obj in gc.get_objects() if isinstance(obj, obj_type) for obj_type in (ivy.Array, ivy.Container)]
+    # get all ivy array and container instances in the project scope
+    array_list = [obj for obj in gc.get_objects() if isinstance(obj, ivy.Array)]
+    container_list = [obj for obj in gc.get_objects() if isinstance(obj, ivy.Container)]
+
+    # filter uninitialized arrays
     array_list = [arr for arr in array_list if arr.__dict__]
+
+    # remove numpy intermediate objects
     new_objs = _remove_intermediate_arrays(array_list, container_list)
     new_objs += container_list
 
+    # now convert all ivy.Array and ivy.Container instances
+    # to numpy using the current backend
     for obj in new_objs:
         if obj.dynamic_backend:
             numpy_objs.append(obj)
             devices.append(obj.device)
             if _is_var(obj):
+                # add variable object id to set
                 variable_ids.add(id(obj))
                 native_var = _variable_data(obj)
                 np_data = ivy.to_numpy(native_var)
+
             else:
                 np_data = obj.to_numpy()
+
             if isinstance(obj, ivy.Container):
                 obj.cont_inplace_update(np_data)
             else:
@@ -327,40 +366,35 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
 
     return variable_ids, numpy_objs, devices
 
-
-
 def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
+    # Dynamic Backend
     from ivy.functional.ivy.gradients import _variable
 
-    def convert_fn(x):
-        return current_backend().asarray(x, device=device)
-
+    # convert all ivy.Array and ivy.Container instances from numpy
+    # to native arrays using the newly set backend
     for obj, device in zip(numpy_objs, devices):
         np_arr = obj.data if isinstance(obj, ivy.Array) else obj
-
+        # check if object was originally a variable
         if id(obj) in variable_ids:
             native_arr = ivy.nested_map(
                 np_arr,
-                lambda x: convert_fn(x),
+                lambda x: current_backend().asarray(x, device=device),
                 include_derived=True,
-                shallow=False
+                shallow=False,
             )
             new_data = _variable(native_arr)
         else:
             new_data = ivy.nested_map(
                 np_arr,
-                lambda x: convert_fn(x),
+                lambda x: current_backend().asarray(x, device=device),
                 include_derived=True,
-                shallow=False
+                shallow=False,
             )
 
         if isinstance(obj, ivy.Container):
             obj.cont_inplace_update(new_data)
         else:
             obj.data = new_data.data
-
-    return variable_ids, numpy_objs, devices
-
 
 @prevent_access_locally
 def set_backend(backend: str, dynamic: bool = False):
