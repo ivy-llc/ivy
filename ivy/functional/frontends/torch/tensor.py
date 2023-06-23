@@ -4,7 +4,9 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 import ivy.functional.frontends.torch.nn.functional as torch_frontend_nn
-from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (array as np_frontend_array,)
+from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
+    array as np_frontend_array,
+)
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import _to_ivy_array
@@ -390,7 +392,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def floor(self, *, out=None):
         return torch_frontend.floor(self)
-    
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def floor_(self):
         self.ivy_array = self.floor().ivy_array
@@ -1149,7 +1151,7 @@ class Tensor:
         return torch_frontend.expm1(self)
 
     # fmt: off
-    @with_unsupported_dtypes({"2.0.1 and below": ("int8", "int16", "int32", "int64", "uint8", "bool", "float16",)},"torch",)  # noqa
+    @with_unsupported_dtypes({"2.0.1 and below": ("int8", "int16", "int32", "int64", "uint8", "bool", "float16",)}, "torch",)  # noqa
     def exp_(self):
         self.ivy_array = self.exp().ivy_array
         return self
@@ -1342,11 +1344,6 @@ class Tensor:
         return torch_frontend.baddbmm(
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
         )
-
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-    def floor_(self):
-        self.ivy_array = self.floor().ivy_array
-        return self
 
     def diag(self, diagonal=0):
         return torch_frontend.diag(self, diagonal=diagonal)
