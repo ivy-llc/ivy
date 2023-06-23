@@ -1,8 +1,6 @@
 # global
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from typing import Callable, Optional, List, Union
-import numpy as np
 
 
 @to_ivy_arrays_and_back
@@ -157,8 +155,6 @@ def while_loop(cond_fun, body_fun, init_val):
 #                 ys.append(y)
 
 #     return ivy.stack(ys)
-
-
 
 
 # @to_ivy_arrays_and_back
