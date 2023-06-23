@@ -2819,14 +2819,14 @@ def _broadcast_to(input, target_shape):
     else:
         input = ivy.expand_dims(input, axis=0) if not len(input.shape) else input
         new_dims = ()
-        i_i = 0
-        for i_t, t in enumerate(target_shape):
+        i_i = len(input.shape) - 1
+        for i_t in range(len(target_shape)-1, -1, -1):
             if len(input.shape) + len(new_dims) >= len(target_shape):
                 break
-            if i_i >= len(input.shape) or t != input.shape[i_i]:
+            if i_i < 0 or target_shape[i_t] != input.shape[i_i]:
                 new_dims += (i_t,)
             else:
-                i_i += 1
+                i_i -= 1
         input = ivy.expand_dims(input, axis=new_dims)
         return ivy.broadcast_to(input, target_shape)
 
