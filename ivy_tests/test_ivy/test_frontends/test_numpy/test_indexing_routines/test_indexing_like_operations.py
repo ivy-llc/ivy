@@ -10,15 +10,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @handle_frontend_test(
     fn_tree="numpy.take_along_axis",
-    arr=helpers.ints(min_value=3, max_value=10),
-    mask=helpers.ints(min_value=3, max_value=10),
-    vals=helpers.ints(min_value=3, max_value=10),
     test_with_out=st.just(False),
 )
 def test_numpy_take_along_axis(
-    arr,
-    mask,
-    vals,
     dtype_x_indices_axis,
     test_flags,
     frontend,
