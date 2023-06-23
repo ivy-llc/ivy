@@ -210,15 +210,30 @@ def split(tensor, split_size_or_sections, dim=0):
 
 @to_ivy_arrays_and_back
 def tensor_split(input, indices_or_sections, dim=0):
-    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
-        indices_or_sections = (
-            ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[dim]])
-            .astype(ivy.int8)
-            .to_list()
-        )
-    return ivy.split(
-        input, num_or_size_splits=indices_or_sections, axis=dim, with_remainder=True
-    )
+    if isinstance(indices_or_sections, ivy.Array) and indices_or_sections.dim() == 0:
+        indices_or_sections = indices_or_sections.item()
+    if isinstance(indices_or_sections, int):
+        if input.shape[dim] % indices_or_sections == 0:
+            return ivy.split(
+                input,
+                num_or_size_splits=indices_or_sections,
+                axis=dim,
+                with_remainder=True,
+            )
+
+    splits = [0, *indices_or_sections]
+    lengths = ivy.diff(
+        indices_or_sections, prepend=[0], append=[input.shape[dim]]
+    ).astype(ivy.int8)
+    lengths[lengths < 0] = 0
+    lengths = lengths.to_list()
+
+    ret = []
+
+    for split, length in zip(splits, lengths):
+        ret.append(narrow(input, dim, split, length))
+
+    return ret
 
 
 @to_ivy_arrays_and_back
