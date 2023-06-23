@@ -766,7 +766,6 @@ def fft2(
     return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)
 
 
-
 def ifftn(
     x: JaxArray,
     s: Optional[Union[int, Tuple[int]]] = None,
@@ -776,6 +775,7 @@ def ifftn(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.fft.ifftn(x, s, axes, norm)
+
 
 @with_unsupported_dtypes(
     {"0.4.12 and below": ("bfloat16", "float16", "complex")}, backend_version
@@ -797,4 +797,3 @@ def embedding(
         embeddings = jnp.where(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
-
