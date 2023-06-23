@@ -365,11 +365,11 @@ def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
 
     if hard:
         indices = y_soft.max(axis=dim, keepdims=True)[1]
-        y_hard = ivy.zeros_like(logits).scatter(dim, indices, 1.0)
+        y_hard = ivy.zeros_like(logits)
         updates = ivy.ones_like(indices)
-        ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
+        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
 
-        ret = y_hard - y_soft.detach() + y_soft
+        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
     else:
         ret = y_soft
 
