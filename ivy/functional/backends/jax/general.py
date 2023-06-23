@@ -16,6 +16,7 @@ import importlib
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax.device import _to_device, _to_array
+from ivy.functional.ivy.general import _broadcast_to
 from ivy.functional.backends.jax import JaxArray, NativeArray
 from . import backend_version
 
@@ -71,6 +72,15 @@ def set_item(
 ) -> JaxArray:
     if copy:
         x = x.copy()
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        if query.shape != x.shape:
+            if len(query.shape) > len(x.shape):
+                raise ivy.exceptions.IvyException("too many indices")
+            elif not len(query.shape):
+                query = jnp.tile(query, x.shape[0])
+        expected_shape = x[query].shape
+        val = _broadcast_to(val, expected_shape)._data
+        query = jnp.where(query)
     return x.at[query].set(val)
 
 
