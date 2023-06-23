@@ -108,7 +108,7 @@ class Tensor:
     def asin(self, name=None):
         return ivy.asin(self._ivy_array)
 
-    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def cosh(self, name=None):
         return ivy.cosh(self._ivy_array)
 
