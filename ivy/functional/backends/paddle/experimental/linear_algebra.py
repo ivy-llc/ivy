@@ -10,7 +10,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
 )
 def diagflat(
     x: paddle.Tensor,
@@ -43,7 +43,7 @@ def diagflat(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
 )
 def kron(
     a: paddle.Tensor,
