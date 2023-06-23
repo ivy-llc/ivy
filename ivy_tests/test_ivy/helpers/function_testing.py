@@ -43,6 +43,10 @@ def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
 
 available_frameworks = available_frameworkss()
 
+# set dtype error mode to false
+# so that we know the true failures
+ivy.set_dtype_error_mode(False)
+
 
 def empty_func(*args, **kwargs):
     return None
