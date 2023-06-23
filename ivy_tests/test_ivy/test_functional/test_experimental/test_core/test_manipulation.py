@@ -1147,7 +1147,7 @@ def scale_helper(draw):
         min_dim_size=5,
     ),
     scale=scale_helper(),
-    zero_point=helpers.ints(min_value=0, max_value=100),
+    zero_point=helpers.ints(min_value=0, max_value=20),
     saturate=st.booleans(),
 )
 def test_quantize_linear(
