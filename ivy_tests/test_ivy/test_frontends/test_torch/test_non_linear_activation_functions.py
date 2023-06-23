@@ -1092,7 +1092,7 @@ def mha_forward_args(draw, dtypes):
         batch_size,
         embed_dim,
     )
-    
+
     heads = draw(helpers.ints(min_value=1, max_value=4))
     head_dim = embed_dim // heads
     if head_dim * heads != embed_dim:
@@ -1103,7 +1103,7 @@ def mha_forward_args(draw, dtypes):
         is_causal = False
     else:
         is_causal = draw(helpers.array_bools(size=1))[0]
-    
+
     q = draw(
         helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
     )
@@ -1118,7 +1118,7 @@ def mha_forward_args(draw, dtypes):
             dtype=dtype[0],
             min_value=0.1,
             max_value=1,
-            shape=(embed_dim*3, embed_dim),
+            shape=(embed_dim * 3, embed_dim),
         )
     )
     in_proj_bias = draw(
@@ -1126,10 +1126,10 @@ def mha_forward_args(draw, dtypes):
             dtype=dtype[0],
             min_value=0.1,
             max_value=1,
-            shape=(embed_dim*3,),
+            shape=(embed_dim * 3,),
         )
     )
-    
+
     if random.randint(0, 1) == 0:
         use_separate_proj_weight = True
         q_proj_weight = draw(
@@ -1161,7 +1161,7 @@ def mha_forward_args(draw, dtypes):
         q_proj_weight = None
         k_proj_weight = None
         v_proj_weight = None
-    
+
     out_proj_weight = draw(
         helpers.array_values(
             dtype=dtype[0],
@@ -1178,42 +1178,48 @@ def mha_forward_args(draw, dtypes):
             shape=(embed_dim,),
         )
     )
-    bias_k = random.choice([
-        draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                min_value=0.1,
-                max_value=1,
-                shape=(embed_dim,),
-            )
-        ),
-        None,
-    ])
-    bias_v = bias_k
-
-    if bias_k is None:
-        static_k = random.choice([
+    bias_k = random.choice(
+        [
             draw(
                 helpers.array_values(
                     dtype=dtype[0],
                     min_value=0.1,
                     max_value=1,
-                    shape=(batch_size * heads, seq_len, head_dim),
+                    shape=(embed_dim,),
                 )
             ),
             None,
-        ])
+        ]
+    )
+    bias_v = bias_k
+
+    if bias_k is None:
+        static_k = random.choice(
+            [
+                draw(
+                    helpers.array_values(
+                        dtype=dtype[0],
+                        min_value=0.1,
+                        max_value=1,
+                        shape=(batch_size * heads, seq_len, head_dim),
+                    )
+                ),
+                None,
+            ]
+        )
         static_v = static_k
     else:
         static_k = None
         static_v = None
 
     attn_mask = ivy.ones((seq_len, seq_len), dtype=dtype[0])
-    key_padding_mask = random.choice([
-        ivy.random_normal(shape=(seq_len, seq_len), dtype=dtype[0]) > 0,
-        None,
-    ])
-    
+    key_padding_mask = random.choice(
+        [
+            ivy.random_normal(shape=(seq_len, seq_len), dtype=dtype[0]) > 0,
+            None,
+        ]
+    )
+
     return (
         dtype,
         q,
@@ -1239,6 +1245,47 @@ def mha_forward_args(draw, dtypes):
     )
 
 
+# gumbel_softmax
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.gumbel_softmax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    tau=st.floats(min_value=0),
+    hard=st.booleans(),
+    eps=st.floats(min_value=0, max_value=1),
+    dim=st.integers(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
+)
+def test_torch_gumbel_softmax(
+    *,
+    dtype_and_x,
+    tau,
+    hard,
+    eps,
+    dim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        logits=x[0],
+        tau=tau,
+        hard=hard,
+        eps=eps,
+        dim=dim,
+    )
+
+
 # multi_head_attention_forward
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multi_head_attention_forward",
@@ -1246,7 +1293,7 @@ def mha_forward_args(draw, dtypes):
         dtypes=helpers.get_dtypes("valid"),
     ),
     add_zero_attn=st.just(False),
-    dropout_p=st.sampled_from([0., 0.1, 0.2]),
+    dropout_p=st.sampled_from([0.0, 0.1, 0.2]),
     training=st.booleans(),
     need_weights=st.booleans(),
     average_attn_weights=st.booleans(),
@@ -1295,7 +1342,7 @@ def test_torch_multi_head_attention_forward(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=not training or dropout_p == 0.,
+        test_values=not training or dropout_p == 0.0,
         query=q,
         key=k,
         value=v,
