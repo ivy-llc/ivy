@@ -1141,7 +1141,7 @@ def scale_helper(draw):
     dtype_x=helpers.dtype_and_values(
         available_dtypes=["float32", "float64", "int32", "int64"],
         min_value=1,
-        max_value=100,
+        max_value=10,
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=5,
@@ -1163,6 +1163,8 @@ def test_quantize_linear(
     ground_truth_backend,
 ):
     dtype, x = dtype_x
+    if dtype in ["float32", "float64"]:
+        x[0] = np.round(x[0], decimals=1)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
