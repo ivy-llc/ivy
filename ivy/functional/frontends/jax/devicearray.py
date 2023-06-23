@@ -3,6 +3,7 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 class DeviceArray:
@@ -113,6 +114,10 @@ class DeviceArray:
             axis=axis,
             out=out_arr,
         )
+
+    def prod(self, axis=None):
+        self = promote_types_of_jax_inputs(self)
+        return jax_frontend.numpy.product(self, axis=axis)
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
