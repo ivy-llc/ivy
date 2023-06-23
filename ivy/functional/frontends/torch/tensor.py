@@ -4,7 +4,8 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 import ivy.functional.frontends.torch.nn.functional as torch_frontend_nn
-from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
+from ivy.functional.frontends.numpy.creation_routines.from_existing_data \
+    import (
     array as np_frontend_array,
 )
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -398,7 +399,7 @@ class Tensor:
     
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def floor_(self):
-        self.ivy_array =self.floor().ivy_array
+        self.ivy_array = self.floor().ivy_array
         return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
