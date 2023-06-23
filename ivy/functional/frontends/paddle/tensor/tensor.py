@@ -223,3 +223,7 @@ class Tensor:
     @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def astype(self, dtype):
         return ivy.astype(self._ivy_array, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def deg2rad(self, name=None):
+        return ivy.deg2rad(self._ivy_array)
