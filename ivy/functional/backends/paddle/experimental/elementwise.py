@@ -18,7 +18,7 @@ from .. import backend_version
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int32", "int64")},
+    {"2.5.0 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
@@ -34,7 +34,7 @@ def fmax(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
@@ -99,7 +99,7 @@ def copysign(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
 )
 def nansum(
     x: paddle.Tensor,
@@ -117,7 +117,7 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def isclose(
     a: paddle.Tensor,
@@ -181,7 +181,7 @@ def hypot(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -221,7 +221,7 @@ def fix(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def nextafter(
     x1: paddle.Tensor,
@@ -262,7 +262,7 @@ _BERNOULLI_COEFS = [
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -340,7 +340,7 @@ def _np_ndim(x):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32")},
+    {"2.5.0 and below": ("float64", "float32")},
     backend_version,
 )
 def gradient(
@@ -597,7 +597,7 @@ def count_nonzero(
 
 @with_supported_dtypes(
     {
-        "2.4.2 and below": (
+        "2.5.0 and below": (
             "complex64",
             "complex128",
             "float32",
