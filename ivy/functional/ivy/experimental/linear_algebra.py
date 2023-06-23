@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -25,6 +26,7 @@ def _check_valid_dimension_size(std):
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
+@handle_device_shifting
 def eigh_tridiagonal(
     alpha: Union[ivy.Array, ivy.NativeArray],
     beta: Union[ivy.Array, ivy.NativeArray],
@@ -164,6 +166,7 @@ def eigh_tridiagonal(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -230,6 +233,7 @@ def diagflat(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -271,6 +275,7 @@ def kron(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -312,6 +317,7 @@ def matrix_exp(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -374,6 +380,7 @@ def eig(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -417,6 +424,7 @@ def eigvals(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -455,6 +463,7 @@ def adjoint(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_device_shifting
 def multi_dot(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
@@ -507,6 +516,7 @@ def multi_dot(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

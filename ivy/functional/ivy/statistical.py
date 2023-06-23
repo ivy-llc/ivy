@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     handle_array_like_without_promotion,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -39,6 +40,7 @@ def _get_promoted_type_of_operands(operands):
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+@handle_device_shifting
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -145,6 +147,7 @@ def min(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -254,6 +257,7 @@ def max(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -362,6 +366,7 @@ def mean(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -486,6 +491,7 @@ def prod(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -623,6 +629,7 @@ def std(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -758,6 +765,7 @@ def sum(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -873,6 +881,7 @@ def var(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1016,6 +1025,7 @@ def cumsum(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1157,6 +1167,7 @@ def cumprod(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],

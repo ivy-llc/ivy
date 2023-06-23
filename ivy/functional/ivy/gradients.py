@@ -16,6 +16,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -307,6 +308,7 @@ def _variable_data(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -381,6 +383,7 @@ def stop_gradient(
 
 
 @handle_exceptions
+@handle_device_shifting
 def execute_with_gradients(
     func,
     xs: Union[ivy.Array, ivy.NativeArray],
@@ -570,6 +573,7 @@ grad.computes_gradients = True
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
@@ -724,6 +728,7 @@ adam_step.out_index = 0
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
@@ -847,6 +852,7 @@ def optimizer_update(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -940,6 +946,7 @@ def gradient_descent_update(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -991,6 +998,7 @@ def lars_update(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1156,6 +1164,7 @@ adam_update.out_index = 0
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],

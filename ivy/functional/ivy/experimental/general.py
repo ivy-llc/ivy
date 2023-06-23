@@ -9,6 +9,7 @@ from ivy import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 

@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_function,
     inputs_to_ivy_arrays,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -22,6 +23,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],

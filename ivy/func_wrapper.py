@@ -14,6 +14,7 @@ import numpy as np
 # for wrapping (sequence matters)
 FN_DECORATORS = [
     "infer_device",
+    "handle_device_shifting",
     "infer_dtype",
     "handle_array_function",
     "integer_arrays_to_float",
@@ -828,6 +829,46 @@ def infer_device(fn: Callable) -> Callable:
 
     _infer_device.infer_device = True
     return _infer_device
+
+
+def handle_device_shifting(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_device_shifting(*args, **kwargs):
+        """
+        Move all array inputs of the function to `ivy.default_device()`.
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+        kwargs
+            The keyword arguments to be passed to the function.
+        Returns
+        -------
+            The return of the function.
+        """
+        if ivy.get_soft_device_mode():
+            args, kwargs = ivy.current_backend().handle_soft_device_variable(
+                *args, **kwargs
+            )
+        else:
+            inputs = args + tuple(kwargs.values())
+            devices = set(ivy.dev(x) for x in inputs if isinstance(x, ivy.Array))
+            if len(devices) == 1:
+                array_device = next(iter(devices))
+                with ivy.DefaultDevice(array_device):
+                    args, kwargs = ivy.current_backend().handle_soft_device_variable(
+                        *args, **kwargs
+                    )
+            elif len(devices) > 1:
+                raise ivy.utils.exceptions.IvyException(
+                    "Expected all input arrays to be on the same device, "
+                    f"but found atleast two devices - {devices}, "
+                    "set `ivy.set_soft_device_mode(True)` to handle this problem."
+                )
+        return fn(*args, **kwargs)
+
+    _handle_device_shifting.handle_device_shifting = True
+    return _handle_device_shifting
 
 
 # Inplace Update Handling #

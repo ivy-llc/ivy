@@ -85,6 +85,10 @@ def to_device(
     return x
 
 
+def handle_soft_device_variable(*args, **kwargs):
+    return args, kwargs
+
+
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         # ToDO: add proper numpy profiler
