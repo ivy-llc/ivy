@@ -3,7 +3,6 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
-    inputs_to_ivy_arrays,
 )
 
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -48,7 +47,7 @@ def det(a):
 
 # slogdet
 @with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def slogdet(a):
     sign, logabsdet = ivy.slogdet(a)
