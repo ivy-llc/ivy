@@ -10,19 +10,15 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @handle_frontend_test(
     fn_tree="numpy.take_along_axis",
-    dtype_x_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-        indices_same_dims=True,
-    ),
+    arr=helpers.ints(min_value=3, max_value=10),
+    mask=helpers.ints(min_value=3, max_value=10),
+    vals=helpers.ints(min_value=3, max_value=10),
     test_with_out=st.just(False),
 )
 def test_numpy_take_along_axis(
-    *,
+    arr,
+    mask,
+    vals,
     dtype_x_indices_axis,
     test_flags,
     frontend,
@@ -138,4 +134,34 @@ def test_numpy_put_along_axis(
         indices=indices,
         axis=axis,
         values=values,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.place",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=3,
+        min_num_dims=1,
+        max_num_dims=3,
+        dtype=["float32", "bool", "float32"]
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_place(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x[0],
+        mask=x[2],
+        vals=x[2],
     )
