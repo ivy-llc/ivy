@@ -540,6 +540,21 @@ def tensordot(
     return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "unsigned",
+                "float16",
+                "complex",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def trace(
     x: paddle.Tensor,
     /,

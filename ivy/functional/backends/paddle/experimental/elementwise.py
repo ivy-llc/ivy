@@ -69,7 +69,17 @@ def ldexp(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException
+    out_dtype = x1.dtype
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    with ivy.ArrayMode(False):
+        if ivy.any(ivy.less(x2, 0)):
+            pos_exp = ivy.greater_equal(x2, 0).astype(x2.dtype) * x2
+            neg_exp = ivy.less(x2, 0).astype(x2.dtype) * x2
+            ret = ivy.multiply(ivy.pow(2, pos_exp), x1)
+            ret = ivy.divide(ret, ivy.pow(2, -neg_exp))
+        else:
+            ret = ivy.multiply(ivy.pow(2, x2), x1)
+        return ivy.astype(ret, out_dtype, copy=False)
 
 
 def copysign(

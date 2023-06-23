@@ -1248,12 +1248,27 @@ def _dtype_device_wrapper_creator(attrib, t):
             "unsigned": ivy.valid_uint_dtypes,
             "complex": ivy.valid_complex_dtypes,
         }
+
         for key, value in version_dict.items():
-            for i, v in enumerate(value):
-                if v in typesets:
-                    version_dict[key] = (
-                        version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
-                    )
+            # check if value is a dict too, in case of device_dtype decorators
+            if isinstance(value, dict):
+                for key2, value2 in value.items():
+                    for i, v in enumerate(value2):
+                        if v in typesets:
+                            version_dict[key][key2] = (
+                                version_dict[key][key2][:i]
+                                + typesets[v]
+                                + version_dict[key][key2][i + 1 :]
+                            )
+            else:
+                # usual decorator case
+                for i, v in enumerate(value):
+                    if v in typesets:
+                        version_dict[key] = (
+                            version_dict[key][:i]
+                            + typesets[v]
+                            + version_dict[key][i + 1 :]
+                        )
 
         def _wrapped(func):
             val = _versioned_attribute_factory(
