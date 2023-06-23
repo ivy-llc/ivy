@@ -77,18 +77,38 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
     )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def conv1d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
-    strides: Union[int, Tuple[int]],
-    padding: Union[str, int, Sequence[Tuple[int, int]]],
+    strides: Union[int, Tuple[int]] = 1,
+    padding: Union[str, int, Sequence[Tuple[int, int]]] = 0,
     /,
     *,
-    data_format: str = "NWC",
+    data_format: str = "NCL",
     dilations: Union[int, Tuple[int]] = 1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    """1D convolution layer."""
+
+    x = _pad_before_conv(x, filters, strides, padding, 1, dilations, data_format)
+    filters = paddle.transpose(filters, perm=(2, 2, 1))
+
+    res = paddle.nn.functional.conv1d(
+        x,
+        filters,
+        data_format=data_format,
+        stride=strides,
+        padding=padding,
+        dilation=dilations,
+    )
+
+    if data_format == "NCL":
+        res = paddle.transpose(res, perm=(1, 2, 2))
+    return res
 
 
 # noinspection PyUnresolvedReferences
