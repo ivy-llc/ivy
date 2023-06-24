@@ -59,22 +59,6 @@ def while_loop(cond_fun, body_fun, init_val):
         val = body_fun(val)
     return val
 
-# @to_ivy_arrays_and_back
-# def scan(f, init, xs, length=None, reverse=False, unroll=1):
-#     if length is None:
-#         length = len(xs[0]) if isinstance(xs[0], ivy.ndarray) else len(xs)
-
-#     if reverse:
-#         xs = xs[::-1]
-
-#     ys = []
-#     carry = init
-#     for x in xs:
-#         for _ in range(unroll):
-#             carry = f(carry)
-#             ys.append(carry)
-
-#     return ivy.stack(ys)
 
 @to_ivy_arrays_and_back
 def scan(f, init, xs, length=None, reverse=False, unroll=1):
