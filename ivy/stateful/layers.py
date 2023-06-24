@@ -262,10 +262,10 @@ class MultiHeadAttention(Module):
         """
         # proj
 
-        input_dim_args = sum([bool(dim) for dim in [embed_dim, num_heads, head_dim]])
-        assert (
-            input_dim_args == 2
-        ), "only two out of (embed_dim, num_heads, and head_dim) should be provided"
+        if num_heads and head_dim:
+            self._inner_dim = num_heads * head_dim
+        else:
+            self._inner_dim = embed_dim
 
         self._embed_dim = embed_dim if embed_dim else num_heads * head_dim
         self._key_dim = key_dim if key_dim else self._embed_dim
@@ -287,7 +287,6 @@ class MultiHeadAttention(Module):
             with_partial_v=True,
             dtype=dtype,
         )
-        
 
     def _create_variables(self, device, dtype=None):
         """
@@ -302,10 +301,10 @@ class MultiHeadAttention(Module):
         """
         v = dict(
             out_proj_weights=GlorotUniform().create_variables(
-                (self._embed_dim, self._embed_dim),
+                (self._embed_dim, self._inner_dim),
                 device,
                 self._embed_dim,
-                self._embed_dim,
+                self._inner_dim,
                 dtype=dtype,
             ),
         )
@@ -313,9 +312,9 @@ class MultiHeadAttention(Module):
             v = dict(
                 **v,
                 in_proj_weights=GlorotUniform().create_variables(
-                    (self._embed_dim * 3, self._embed_dim),
+                    (self._inner_dim * 3, self._embed_dim),
                     device,
-                    self._embed_dim * 3,
+                    self._inner_dim * 3,
                     self._embed_dim,
                     dtype=dtype,
                 ),
@@ -324,23 +323,23 @@ class MultiHeadAttention(Module):
             v = dict(
                 **v,
                 q_proj_weights=GlorotUniform().create_variables(
-                    (self._embed_dim, self._embed_dim),
+                    (self._inner_dim, self._embed_dim),
                     device,
-                    self._embed_dim,
+                    self._inner_dim,
                     self._embed_dim,
                     dtype=dtype,
                 ),
                 k_proj_weights=GlorotUniform().create_variables(
-                    (self._embed_dim, self._key_dim),
+                    (self._inner_dim, self._key_dim),
                     device,
-                    self._embed_dim,
+                    self._inner_dim,
                     self._key_dim,
                     dtype=dtype,
                 ),
                 v_proj_weights=GlorotUniform().create_variables(
-                    (self._embed_dim, self._value_dim),
+                    (self._inner_dim, self._value_dim),
                     device,
-                    self._embed_dim,
+                    self._inner_dim,
                     self._value_dim,
                     dtype=dtype,
                 ),
@@ -349,7 +348,7 @@ class MultiHeadAttention(Module):
             v = dict(
                 **v,
                 in_proj_bias=Zeros().create_variables(
-                    self._embed_dim * 3,
+                    self._inner_dim * 3,
                     device,
                     dtype=dtype,
                 ),
@@ -408,7 +407,7 @@ class MultiHeadAttention(Module):
             *[batch_shape,num_queries,out_feat_dim]* if input is batched
             otherwise *[num_queries, out_feat_dim]
         """
-        return ivy.multi_head_attention_2(
+        return ivy.multi_head_attention(
             query,
             key,
             value,
