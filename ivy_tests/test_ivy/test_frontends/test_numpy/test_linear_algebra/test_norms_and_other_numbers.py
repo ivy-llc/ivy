@@ -1,8 +1,6 @@
 # global
 from hypothesis import strategies as st, assume
 
-import ivy
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -10,9 +8,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
     matrix_is_stable,
     _matrix_rank_helper,
-)
-from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (
-    _get_dtype_and_matrix_non_singular,
 )
 
 
@@ -235,32 +230,4 @@ def test_numpy_trace(
         offset=offset,
         axis1=axes[0],
         axis2=axes[1],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.linalg.cond",
-    p=st.sampled_from([ivy.inf, -ivy.inf, "fro", None, 1, -1, 2, -2]),
-    dtype_and_x=_get_dtype_and_matrix_non_singular(),
-)
-def test_numpy_cond(
-    dtype_and_x,
-    p,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        p=p,
-        test_values=False,
-        atol=1e-3,
-        rtol=1e-2,
     )

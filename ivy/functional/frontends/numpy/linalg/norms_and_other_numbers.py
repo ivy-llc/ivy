@@ -9,7 +9,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 # solve
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def norm(x, ord=None, axis=None, keepdims=False):
@@ -59,13 +59,4 @@ def slogdet(a):
 @from_zero_dim_arrays_to_scalar
 def trace(a, offset=0, axis1=0, axis2=1, out=None):
     ret = ivy.trace(a, offset=offset, axis1=axis1, axis2=axis2, out=out)
-    return ret
-
-
-# cond
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
-@from_zero_dim_arrays_to_scalar
-@inputs_to_ivy_arrays
-def cond(x, p=None):
-    ret = ivy.cond(x, p=p)
     return ret
