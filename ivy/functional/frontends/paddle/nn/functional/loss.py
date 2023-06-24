@@ -49,7 +49,7 @@ def binary_cross_entropy_with_logits(
 
 @handle_exceptions
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def cosine_embedding_loss(
     input1, input2, label, margin=0.0, reduction="mean", name=None
 ):
@@ -69,8 +69,8 @@ def cosine_embedding_loss(
         )
 
     prod_sum = (input1 * input2).sum(axis=-1)
-    mag_square1 = ivy.square(input1).sum(axis=-1) + 10e-12
-    mag_square2 = ivy.square(input2).sum(axis=-1) + 10e-12
+    mag_square1 = ivy.square(input1).sum(axis=-1) + 1e-11
+    mag_square2 = ivy.square(input2).sum(axis=-1) + 1e-11
     denom = ivy.sqrt(mag_square1 * mag_square2)
     cos = prod_sum / denom
     zeros = ivy.zeros_like(cos)
@@ -81,13 +81,10 @@ def cosine_embedding_loss(
     out = out_pos + out_neg
 
     if reduction == "none":
-        out = ivy.expand_dims(out, axis=-1) if out.ndim == 0 else out
-        return out
+        pass
     if reduction == "mean":
         out = ivy.mean(out)
-        out = ivy.expand_dims(out, axis=-1) if out.ndim == 0 else out
-        return out
     elif reduction == "sum":
         out = ivy.sum(out)
-        out = ivy.expand_dims(out, axis=-1) if out.ndim == 0 else out
-        return out
+
+    return out
