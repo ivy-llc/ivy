@@ -262,7 +262,7 @@ def _split_helper(draw):
     )
     axis = draw(st.sampled_from(range(len(shape))))
     num_eles = shape[axis]
-    splits = [i for i in range(1, num_eles+1) if num_eles % i == 0]
+    splits = [i for i in range(1, num_eles + 1) if num_eles % i == 0]
     num_splits = draw(st.sampled_from(splits))
     return dtypes, values, num_splits, axis
 
@@ -289,5 +289,5 @@ def test_paddle_split(
         on_device=on_device,
         x=x[0],
         num_or_sections=num_splits,
-        axis=axis
+        axis=axis,
     )
