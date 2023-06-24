@@ -5,6 +5,7 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+
 @handle_frontend_test(
     fn_tree="jax.lax.cond",
     dtype_and_x=helpers.dtype_and_values(
@@ -238,8 +239,6 @@ def test_jax_lax_scan(
             carry, y = _test_f(carry, elem)
             expected_ys.append(y)
 
-    # expected_result = (expected_carry, ivy.stack(expected_ys))
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -252,5 +251,4 @@ def test_jax_lax_scan(
         length=length,
         reverse=False,
         unroll=unroll,
-        # expected_result=expected_result,
     )
