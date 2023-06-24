@@ -11,7 +11,7 @@ from .. import backend_version
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 
-@with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def diagflat(
     x: torch.Tensor,
     /,
@@ -180,7 +180,7 @@ def cond(
 cond.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: torch.Tensor,
     x2: torch.Tensor = None,

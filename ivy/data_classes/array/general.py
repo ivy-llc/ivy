@@ -588,6 +588,43 @@ class _ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_list(self)
 
+    def to_file(
+        self: ivy.Array, fid: Union[str, bytes, int], sep: str = "", format_: str = "%s"
+    ) -> None:
+        """
+        ivy.Array instance method variant of to_file. Write array to a file as text or
+        binary. The data is always written in 'C' order.
+
+        Parameters
+        ----------
+        self : ivy.Array
+            Input array.
+        fid : str, bytes, int
+            An open file object, or a string containing a filename.
+        sep : str, optional
+            Separator between array items for text output.
+            If '', a binary file is written.
+        format_ : str, optional
+            Format string for text file output.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        With ivy.Array instance method:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.to_file('data.txt', sep=',', format_='%d')
+
+        Notes
+        -----
+        The data produced by this method can be recovered using
+        appropriate methods or functions depending on the data type.
+        """
+        return ivy.to_file(self, fid, sep, format_)
+
     def supports_inplace_updates(self: ivy.Array, /) -> bool:
         """
         ivy.Array instance method variant of ivy.supports_inplace_updates. This method
@@ -1062,7 +1099,7 @@ class _ArrayWithGeneral(abc.ABC):
         exponent
             The exponent number.
         min_base
-            The minimum base to use, use global ivy._MIN_BASE by default.
+            The minimum base to use, use global ivy.min_base by default.
 
         Returns
         -------

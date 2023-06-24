@@ -115,7 +115,7 @@ def test_handle_mixed_function(x, weight, expected):
         test_fn = "ivy.matmul"
         expected = True
     with patch(test_fn) as test_mock_function:
-        ivy.linear(x, weight)
+        ivy.linear(ivy.array(x), ivy.array(weight))
         assert test_mock_function.called == expected
 
 

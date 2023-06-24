@@ -4,19 +4,16 @@ from numbers import Number
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
+import functools
+from operator import mul
 
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from . import backend_version
 import multiprocessing as _multiprocessing
 from ivy.functional.ivy.general import _parse_ellipsis, _parse_index
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, paddle.Tensor):
         if exclusive and not x.stop_gradient:
@@ -25,9 +22,6 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def array_equal(x0: paddle.Tensor, x1: paddle.Tensor, /) -> bool:
     return bool(paddle_backend.all(paddle_backend.equal(x0, x1)))
 
@@ -40,18 +34,33 @@ def current_backend_str() -> str:
     return "paddle"
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def get_item(
-    x: paddle.Tensor, query: Union[paddle.Tensor, Tuple], *, copy: bool = None
+    x: paddle.Tensor,
+    /,
+    query: Union[paddle.Tensor, Tuple],
+    *,
+    copy: bool = None,
 ) -> paddle.Tensor:
-    print(query)
+    if copy:
+        x = paddle.clone(x)
     # regular queries x[idx_1,idx_2,...,idx_i]
     if not isinstance(query, paddle.Tensor):
-        if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-            return x.cast("float32").__getitem__(query).cast(x.dtype)
-        return x.__getitem__(query)
+        x_dtype = x.dtype
+        if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+            x = x.cast("float32")
+        ret = x.__getitem__(query)
+        ret_numel = functools.reduce(mul, ret.shape) if len(ret.shape) > 0 else 0
+        if (
+            isinstance(query, Number)
+            or (
+                isinstance(query, tuple)
+                and all(isinstance(index, int) for index in query)
+            )
+        ) and ret_numel == 1:
+            ret = ret.squeeze(axis=-1)
+        if ret.dtype != x_dtype:
+            return ret.cast(x_dtype)
+        return ret
 
     # masked queries x[bool_1,bool_2,...,bool_i]
     if query.dtype == paddle.bool:
@@ -91,9 +100,6 @@ def get_item(
     return x.__getitem__(query)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def to_numpy(
     x: Union[paddle.Tensor, List[paddle.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
@@ -114,25 +120,16 @@ def to_numpy(
     raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def to_scalar(x: paddle.Tensor, /) -> Number:
     if isinstance(x, (Number, complex)):
         return x
     return x.item()
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def to_list(x: paddle.Tensor, /) -> list:
     return x.tolist()
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def gather(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -178,8 +175,10 @@ def gather(
         )
         return paddle_backend.reshape(result, shape=new_shape)
 
-    axis = axis % params.ndim
-    batch_dims = batch_dims % params.ndim
+    if axis is not None:
+        axis = axis % params.ndim
+    if batch_dims is not None:
+        batch_dims = batch_dims % params.ndim
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     if params.dtype in [
         paddle.int8,
@@ -195,9 +194,6 @@ def gather(
     return _gather(params)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def gather_nd(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -316,9 +312,6 @@ def gather_nd(
     return out
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def get_num_dims(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[paddle.Tensor, int]:
@@ -331,9 +324,6 @@ def inplace_arrays_supported():
     return False
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def inplace_decrement(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
@@ -346,9 +336,6 @@ def inplace_decrement(
     return paddle.assign(paddle_backend.subtract(x_native, val_native), target)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def inplace_increment(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
@@ -361,9 +348,6 @@ def inplace_increment(
     return paddle.assign(paddle_backend.add(x_native, val_native), target)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def inplace_update(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
@@ -381,6 +365,8 @@ def inplace_update(
             paddle.assign(val_native, x_native)
         else:
             x_native = val_native
+        if ivy.is_native_array(x):
+            return x_native
         if ivy.is_ivy_array(x):
             x.data = x_native
         else:
@@ -390,9 +376,6 @@ def inplace_update(
         return val
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def inplace_variables_supported():
     return False
 
@@ -403,9 +386,6 @@ def multiprocessing(context=None):
     )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def scatter_flat(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -418,8 +398,8 @@ def scatter_flat(
     if indices.dtype not in [paddle.int32, paddle.int64]:
         indices = indices.cast("int64")
     if ivy.exists(size) and ivy.exists(out):
-        ivy.utils.assertions.check_equal(out.ndim, 1)
-        ivy.utils.assertions.check_equal(out.shape[0], size)
+        ivy.utils.assertions.check_equal(out.ndim, 1, as_array=False)
+        ivy.utils.assertions.check_equal(out.shape[0], size, as_array=False)
     return paddle_backend.scatter_nd(
         indices.unsqueeze(-1), updates, shape=[size], reduction=reduction, out=out
     )
@@ -486,9 +466,6 @@ def _scatter_nd_replace(data, indices, updates, reduce):
     ).reshape(data.shape)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def scatter_nd(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -508,7 +485,7 @@ def scatter_nd(
     updates = paddle.to_tensor(
         updates,
         dtype=(
-            ivy.dtype(out, as_native=True)
+            ivy.promote_types(out.dtype, updates.dtype)
             if ivy.exists(out)
             else ivy.default_dtype(item=updates)
         ),
@@ -628,7 +605,7 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = paddle.to_tensor(indices)
         if len(indices.shape) < 2:
-            indices = paddle_backend.expand_dims(indices, axis=0)
+            indices = paddle_backend.expand_dims(indices, axis=-1)
         if paddle_backend.any(indices < 0):
             shape = list(shape) if ivy.exists(shape) else list(out.shape)
             indices = _parse_index(indices, shape)
@@ -661,7 +638,7 @@ def scatter_nd(
                 )
                 for index in indices
             ]
-            indices = paddle_backend.concat(indices, axis=0)
+            indices = paddle_backend.concat(indices, axis=-1)
     # broadcast updates to correct shape
     shape = list(shape) if shape is not None else None
     expected_shape = (
@@ -681,7 +658,9 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(
+            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
+        )
     shape = list(shape) if ivy.exists(shape) else out.shape
     if not target_given:
         target = paddle.zeros(shape=shape).astype(updates.dtype)
@@ -727,9 +706,6 @@ def scatter_nd(
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def shape(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.Array]:
@@ -739,9 +715,6 @@ def shape(
         return ivy.Shape(x.shape)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
@@ -761,6 +734,7 @@ def vmap(
                 message="""in_axes should have a length equivalent to the number
                 of positional arguments to the function being vectorized or it
                 should be an integer""",
+                as_array=False,
             )
 
         # checking axis_size consistency
@@ -784,6 +758,7 @@ def vmap(
             ivy.utils.assertions.check_any(
                 [ivy.exists(ax) for ax in in_axes],
                 message="At least one of the axes should be specified (not None)",
+                as_array=False,
             )
         else:
             ivy.utils.assertions.check_exists(
@@ -813,7 +788,7 @@ def vmap(
         # vectorisation - applying map_fn if only one arg provided as reduce requires
         # two elements to begin with.
         arr_results = [func(*arrays) for arrays in zip(*args)]
-        res = paddle_backend.stack(arr_results)
+        res = paddle_backend.concat(arr_results)
 
         if out_axes:
             res = paddle_backend.moveaxis(res, 0, out_axes)
@@ -823,9 +798,6 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def isin(
     elements: paddle.Tensor,
     test_elements: paddle.Tensor,

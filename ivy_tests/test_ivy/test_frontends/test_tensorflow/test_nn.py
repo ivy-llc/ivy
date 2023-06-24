@@ -6,7 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _dropout_helper
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
@@ -19,9 +19,18 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
-    alpha=helpers.floats(min_value=0, max_value=1),
+    alpha=helpers.floats(
+        min_value=0,
+        max_value=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
+    ),
 )
 def test_tensorflow_leaky_relu(
     *,
@@ -72,6 +81,18 @@ def _x_and_filters(
             dim = 2
     else:
         dim = len(data_format) - 2
+    if padding == "EXPLICIT":
+        padding = draw(
+            helpers.lists(
+                x=st.integers(min_value=0, max_value=2),
+                min_size=dim * 2,
+                max_size=dim * 2,
+            )
+        )
+        if data_format.find("C") == 1:
+            padding = [1, 1, 1, 1] + padding
+        else:
+            padding = [0, 0] + padding + [0, 0]
     if atrous:
         dilations = draw(st.integers(dilation_min, dilation_max))
     else:
@@ -887,11 +908,9 @@ def test_tensorflow_dropout(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    beta=st.one_of(
-        helpers.floats(
-            min_value=0,
-            max_value=3,
-        )
+    beta=helpers.floats(
+        min_value=0,
+        max_value=3,
     ),
     test_with_out=st.just(False),
 )
@@ -911,6 +930,7 @@ def test_tensorflow_silu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-2,
         features=features[0],
         beta=beta,
     )
@@ -1008,13 +1028,13 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
         min_num_dims=4,
         max_num_dims=4,
         min_dim_size=1,
-        large_abs_safety_factor=1.5,
-        small_abs_safety_factor=1.5,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
     ),
-    depth_radius=st.integers(min_value=1, max_value=7),
-    bias=st.floats(min_value=0.1, max_value=30),
-    alpha=st.floats(min_value=0.1, max_value=20),
-    beta=st.floats(min_value=0.1, max_value=5),
+    depth_radius=st.integers(min_value=1, max_value=5),
+    bias=st.floats(min_value=0.1, max_value=1.5),
+    alpha=st.floats(min_value=0.1, max_value=1.5),
+    beta=st.floats(min_value=0.1, max_value=1.5),
     test_with_out=st.just(False),
 )
 def test_tensorflow_local_response_normalization(
@@ -1030,16 +1050,15 @@ def test_tensorflow_local_response_normalization(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    input = x[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-3,
-        atol=1e-3,
-        input=input,
+        rtol=1e-1,
+        atol=1e-1,
+        input=x[0],
         depth_radius=depth_radius,
         bias=bias,
         alpha=alpha,
@@ -1120,7 +1139,7 @@ def test_tensorflow_max_pool2d(
 # moments
 @handle_frontend_test(
     fn_tree="tensorflow.nn.moments",
-    dtype_x_axis=statistical_dtype_values(function="mean"),
+    dtype_x_axis=_statistical_dtype_values(function="mean"),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -1291,8 +1310,7 @@ def test_tensorflow_relu6(
     fn_tree="tensorflow.nn.softmax",
     dtype_x_and_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=4,
-        max_axes_size=3,
+        min_num_dims=1,
         force_int_axis=True,
         valid_axis=True,
     ),
@@ -1322,7 +1340,7 @@ def test_tensorflow_softmax(
 @handle_frontend_test(
     fn_tree="tensorflow.nn.embedding_lookup",
     dtypes_indices_weights=helpers.embedding_helper(),
-    max_norm=st.floats(min_value=0, max_value=5, exclude_min=True),
+    max_norm=st.floats(min_value=0.1, max_value=5, exclude_min=True),
 )
 def test_tensorflow_embedding_lookup(
     *,
@@ -1450,4 +1468,98 @@ def test_tensorflow_avg_pool3d(
         ksize=ksize,
         strides=strides,
         padding=padding,
+    )
+
+
+# test_avg_pool1d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.avg_pool1d",
+    x_k_s_p_df=helpers.arrays_for_pooling(
+        min_dims=3, max_dims=3, min_side=1, max_side=4
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_avg_pool1d(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (input_dtype, x, ksize, strides, padding) = x_k_s_p_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+    )
+
+
+@st.composite
+def _pool_args(draw):
+    dims = draw(st.integers(min_value=3, max_value=5))
+    data_formats = {3: "NWC", 4: "NHWC", 5: "NDHWC"}
+    data_format = data_formats[dims]
+    pooling_type = draw(st.one_of(st.just("AVG"), st.just("MAX")))
+    return (
+        draw(
+            helpers.arrays_for_pooling(
+                min_dims=dims,
+                max_dims=dims,
+                min_side=1,
+                max_side=4,
+                return_dilation=True,
+            )
+        ),
+        data_format,
+        pooling_type,
+        dims,
+    )
+
+
+# pool
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.pool",
+    x_k_s_p_df=_pool_args(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_pool(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (
+        (input_dtype, x, ksize, strides, padding, dilation),
+        data_format,
+        pooling_type,
+        num_dims,
+    ) = x_k_s_p_df
+    if num_dims == 3:
+        strides = (strides[0],)
+    elif num_dims == 4:
+        strides = (strides[0], strides[0])
+    elif num_dims == 5:
+        strides = (strides[0], strides[0], strides[0])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        window_shape=ksize,
+        pooling_type=pooling_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
     )

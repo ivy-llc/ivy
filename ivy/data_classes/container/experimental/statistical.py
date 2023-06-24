@@ -1011,3 +1011,89 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             array([6.5, 2. , 2.5])
         """
         return self.static_bincount(self, weights=weights, minlength=minlength, out=out)
+
+    @staticmethod
+    def static_igamma(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.igamma. This method simply wraps the
+        function, and so the docstring for ivy.igamma also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        x
+            An additional input array.
+            `x` has the same type as `a`.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The lower incomplete gamma function of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([2.5])
+        >>> x = ivy.array([1.7, 1.2])
+        >>> a.igamma(x)
+            ivy.array([0.3614, 0.2085])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "igamma",
+            a,
+            x=x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def igamma(
+        self: ivy.Container,
+        /,
+        *,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.igamma. This method simply wraps
+        the function, and so the docstring for ivy.igamma also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        x
+            An additional input array.
+            `x` has the same type as `a`.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The lower incomplete gamma function of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([2.5])
+        >>> x = ivy.array([1.7, 1.2])
+        >>> a.igamma(x)
+            ivy.array([0.3614, 0.2085])
+        """
+        return self.static_igamma(self, x=x, out=out)

@@ -15,7 +15,7 @@ from ivy.func_wrapper import (
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
@@ -124,6 +124,7 @@ def sort(x, axis=-1, descending=False, stable=True, out=None):
     return x
 
 
+@to_ivy_arrays_and_back
 def flatnonzero(a):
     return ivy.nonzero(ivy.reshape(a, (-1,)))
 

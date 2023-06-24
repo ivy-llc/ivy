@@ -292,7 +292,7 @@ This helps to prevent our work growing in an unbounded manner, as we work toward
 If we always pulled the latest version of every framework into master, we might end up constantly battling new subtle bugs, without knowing whether the bugs come from the change in version or our own incremental changes to the code.
 Therefore, when working towards an Ivy release, keeping the backends temporarily pinned essentially ensures that our development target remains fixed for this period of time.
 
-As an example, at the time of writing the latest version of PyTorch is :code:`1.12.1`, whereas Ivy is pinned to version :code:`1.11.0`.
+As an example, at the time of writing the latest version of PyTorch is :code:`1.12.1`, whereas Ivy is pinned to version :code:`2.0.1`.
 Therefore, all frontend functions (see Ivy Frontends section) added to ivy should not include any arguments or behaviours which are exclusive to PyTorch version :code:`1.12.1`.
 
 **Round Up**
