@@ -11,12 +11,12 @@ import ivy.functional.backends.paddle as paddle_backend
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
-    _get_first_array,
 )
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
     asarray_handle_nestable,
+    asarray_infer_dtype,
     NestedSequence,
     SupportsBufferProtocol,
     asarray_inputs_to_native_shapes,
@@ -68,25 +68,11 @@ def arange(
         return to_device(paddle.arange(start, stop, step).cast(dtype), device)
 
 
-def _stack_tensors(x, dtype):
-    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
-        for i, item in enumerate(x):
-            x[i] = _stack_tensors(item, dtype)
-        x = paddle_backend.stack(x)
-    else:
-        if isinstance(x, (list, tuple)):
-            if isinstance(x[0], paddle.Tensor):
-                x = paddle_backend.stack([i for i in x])
-            else:
-                x = paddle.to_tensor(x, dtype=dtype)
-    x.stop_gradient = False
-    return x.cast(dtype)
-
-
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
 @asarray_inputs_to_native_shapes
+@asarray_infer_dtype
 def asarray(
     obj: Union[
         paddle.Tensor,
@@ -106,64 +92,18 @@ def asarray(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # TODO: Implement device support
-
-    if isinstance(obj, paddle.Tensor) and dtype is None:
+    if isinstance(obj, paddle.Tensor):
         if copy is True:
-            ret = obj.clone().detach()
+            ret = obj.astype(dtype).clone().detach()
             ret.stop_gradient = obj.stop_gradient
             return ret
-        return obj
-
-    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
-        contain_tensor = False
-        if isinstance(obj[0], (list, tuple)):
-            first_tensor = _get_first_array(obj)
-            if ivy.exists(first_tensor):
-                contain_tensor = True
-                dtype = first_tensor.dtype
-        if dtype is None:
-            dtype = ivy.default_dtype(item=obj, as_native=True)
-
-        # if `obj` is a list of specifically tensors or
-        # a multidimensional list which contains a tensor
-        if isinstance(obj[0], paddle.Tensor) or contain_tensor:
-            if copy is True:
-                ret = (
-                    paddle_backend.stack([i for i in obj]).cast(dtype).clone().detach()
-                )
-                ret.stop_gradient = obj[0].stop_gradient
-                return ret
-            else:
-                return _stack_tensors(obj, dtype)
-
-    elif isinstance(obj, np.ndarray) and dtype is None:
-        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
+        return obj.astype(dtype)
 
     elif isinstance(obj, (Number, bool, complex)):
-        if dtype is None:
-            dtype = ivy.default_dtype(item=obj)
         return paddle_backend.squeeze(paddle.to_tensor(obj, dtype=dtype), axis=0)
 
-    elif dtype is None:
-        dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
-
-    if dtype == paddle.bfloat16 and isinstance(obj, np.ndarray):
-        if copy is True:
-            ret = paddle.to_tensor(obj.tolist(), dtype=dtype).clone().detach()
-            return ret
-        else:
-            ret = paddle.to_tensor(obj.tolist(), dtype=dtype)
-            return ret
-
-    if copy is True:
-        ret = paddle.to_tensor(obj, dtype=dtype).clone().detach()
-        return ret
-    else:
-        if not ivy.is_native_array(obj):
-            ret = paddle.to_tensor(obj, dtype=dtype)
-        else:
-            ret = obj.cast(dtype)
-        return ret
+    ret = paddle.to_tensor(obj, dtype=dtype)
+    return ret.clone().detach() if copy else ret
 
 
 def empty(

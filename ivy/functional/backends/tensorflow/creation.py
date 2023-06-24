@@ -11,6 +11,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
+    asarray_infer_dtype,
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
@@ -75,6 +76,7 @@ def arange(
 @asarray_infer_device
 @asarray_handle_nestable
 @asarray_inputs_to_native_shapes
+@asarray_infer_dtype
 def asarray(
     obj: Union[
         tf.Tensor,
@@ -94,42 +96,13 @@ def asarray(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    def _infer_dtype(obj):
-        if isinstance(obj, tf.TensorShape):
-            return ivy.default_int_dtype()
-        elif hasattr(obj, "dtype"):
-            return obj.dtype
-        else:
-            return ivy.default_dtype(item=obj)
-
-    def _tf_to_tensor(x, dtype):
-        if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorShape)):
-            return tf.cast(x, dtype)
-        try:
-            ret = tf.convert_to_tensor(x, dtype)
-        except (TypeError, ValueError):
-            ret = tf.cast(x, dtype)
-        return ret
-
-    if dtype is None:
-        # get default dtypes for all elements
-        dtype_list = ivy.nested_map(obj, lambda x: _infer_dtype(x), shallow=False)
-        # flatten the nested structure
-        dtype_list = tf.nest.flatten(dtype_list)
-        # keep unique dtypes
-        dtype_list = list(set(dtype_list))
-        # promote all dtypes to a single dtype
-        dtype = dtype_list[0]
-        # we disable precise mode to avoid wider than necessary casting
-        # that might result from the mixing of int32 and float32
-        with ivy.PreciseMode(False):
-            for dt in dtype_list[1:]:
-                dtype = ivy.promote_types(dtype, dt)
-
     with tf.device(device):
         # convert the input to a tensor using the appropriate function
-        tensor = _tf_to_tensor(obj, dtype)
-        return tf.identity(tensor) if copy else tensor
+        try:
+            ret = tf.convert_to_tensor(obj, dtype)
+        except (TypeError, ValueError):
+            ret = tf.cast(obj, dtype)
+        return tf.identity(ret) if copy else ret
 
 
 def empty(
