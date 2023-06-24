@@ -1055,7 +1055,7 @@ def test_jax_numpy_correlate(
     dtype_and_q=helpers.dtype_and_values(min_value=1, max_value=100),
     keep_dims=st.booleans(),
 )
-def  test_jax_numpy_nanpercentile(
+def test_jax_numpy_nanpercentile(
     dtype_a_axis,
     dtype_and_q,
     frontend,
@@ -1088,6 +1088,7 @@ def  test_jax_numpy_nanpercentile(
         test_flags=test_flags,
         input_dtypes=a_input_dtypes,
         on_device=on_device,
+    )
 
 
 # cov
