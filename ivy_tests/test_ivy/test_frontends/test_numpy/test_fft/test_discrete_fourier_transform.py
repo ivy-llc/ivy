@@ -4,16 +4,19 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    x_and_ifft,
+)
+
+# ivy_tests/test_ivy/test_functional/test_experimental/test_nn/test_layers.py
 
 
 @handle_frontend_test(
     fn_tree="numpy.fft.ifft",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
-    ),
+    dtype_and_x=x_and_ifft(),
 )
 def test_numpy_iftt(dtype_and_x, frontend, test_flags, fn_tree, on_device):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, dim, norm, n = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -22,9 +25,9 @@ def test_numpy_iftt(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         on_device=on_device,
         test_values=True,
         a=x,
-        n=None,
-        axis=-1,
-        norm=None,
+        n=n,
+        axis=dim,
+        norm=norm,
     )
 
 
