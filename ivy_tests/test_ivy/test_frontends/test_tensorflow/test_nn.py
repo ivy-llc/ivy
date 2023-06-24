@@ -1563,3 +1563,56 @@ def test_tensorflow_pool(
         data_format=data_format,
         dilations=dilation,
     )
+
+
+# sufficient_statistics
+@st.composite
+def _axes_value(draw):
+    s = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+        )
+    )
+    dtype_and_x = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=s,
+            valid_axis=True,
+            force_tuple_axis=True,
+        )
+    )
+    return dtype_and_x
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.sufficient_statistics",
+    dtypes_x_axes_shift=_axes_value(),
+    sh=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float"), shape=()),
+    keepdims=st.booleans(),
+)
+def test_tensorflow_sufficient_statistics(
+    *,
+    dtypes_x_axes_shift,
+    sh,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, a = dtypes_x_axes_shift
+    return helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axes=a,
+        shift=sh[1][0],
+        keepdims=keepdims,
+        name=None,
+    )
