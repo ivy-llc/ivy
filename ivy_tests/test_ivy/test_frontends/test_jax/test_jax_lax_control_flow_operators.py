@@ -4,9 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-
 # from typing import Callable, List, Tuple
-
 
 @handle_frontend_test(
     fn_tree="jax.lax.cond",
@@ -220,11 +218,11 @@ def test_jax_lax_while_loop(
 def test_jax_lax_scan(
     *,
     dtype_and_x,
+    unroll,
     test_flags,
     on_device,
     fn_tree,
     frontend,
-    unroll=1,
 ):
     def _test_f(carry, x):
         y = carry * x
