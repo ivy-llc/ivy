@@ -563,10 +563,6 @@ def test_frontend_function(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
     )
 
-    create_frontend_array = importlib.import_module(
-        f"ivy.functional.frontends.{frontend}"
-    )._frontend_array
-
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
@@ -597,6 +593,7 @@ def test_frontend_function(
 
     # apply test flags etc.
     args, kwargs = create_args_kwargs(
+        backend=backend_to_test,
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,
@@ -607,6 +604,15 @@ def test_frontend_function(
         test_flags=test_flags,
         on_device=on_device,
     )
+
+    # Make copy for arguments for functions that might use
+    # inplace update by default
+    copy_kwargs = copy.deepcopy(kwargs)
+    copy_args = copy.deepcopy(args)
+    create_frontend_array = importlib.import_module(
+        f"ivy.functional.frontends.{frontend}"
+    )._frontend_array
+
     if test_flags.generate_frontend_arrays:
         args_for_test, kwargs_for_test = args_to_frontend(
             *args, frontend_array_fn=create_frontend_array, **kwargs
@@ -614,10 +620,6 @@ def test_frontend_function(
     else:
         args_for_test, kwargs_for_test = ivy.args_to_ivy(*args, **kwargs)
 
-    # Make copy for arguments for functions that might use
-    # inplace update by default
-    copy_kwargs = copy.deepcopy(kwargs)
-    copy_args = copy.deepcopy(args)
     # strip the decorator to get an Ivy array
     # ToDo, fix testing for jax frontend for x32
     if frontend == "jax":
