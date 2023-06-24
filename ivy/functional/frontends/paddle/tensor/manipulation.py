@@ -11,7 +11,7 @@ def reshape(x, shape):
     return ivy.reshape(x, shape)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def abs(x, name=None):
     return ivy.abs(x)
@@ -25,14 +25,14 @@ def stack(x, axis=0, name=None):
     return ivy.stack(x, axis=axis)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("int8", "int16")}, "paddle")
+@with_unsupported_dtypes({"2.5.0 and below": ("int8", "int16")}, "paddle")
 @to_ivy_arrays_and_back
 def concat(x, axis, name=None):
     return ivy.concat(x, axis=axis)
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "uint8", "int16", "float16")},
+    {"2.5.0 and below": ("int8", "uint8", "int16", "float16")},
     "paddle",
 )
 @to_ivy_arrays_and_back

@@ -119,7 +119,7 @@ def conv3d(
     )
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     input,
@@ -428,7 +428,7 @@ def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": "float16"}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": "float16"}, "tensorflow")
 @to_ivy_arrays_and_back
 def leaky_relu(features, alpha=0.2, name=None):
     return ivy.leaky_relu(features, alpha=alpha)
