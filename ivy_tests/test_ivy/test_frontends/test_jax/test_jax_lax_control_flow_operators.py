@@ -255,5 +255,7 @@ def test_jax_lax_scan(
         init=expected_carry,
         xs=x,
         length=length,
+        reverse=False,
+        unroll=1,
         # expected_result=expected_result,
     )
