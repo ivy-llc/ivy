@@ -3935,9 +3935,6 @@ def test_tensorflow_Imag(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    print(
-        f"input dtype is: {input_dtype} and value is: {x[0]} on device : {on_device} "
-    )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
