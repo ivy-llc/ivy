@@ -21,6 +21,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_shapes,
     handle_nestable,
+    handle_mixed_function,
     handle_array_like_without_promotion,
     handle_view,
     inputs_to_ivy_arrays,
@@ -32,6 +33,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 @handle_exceptions
 @handle_nestable
+@handle_mixed_function
 @handle_array_like_without_promotion
 @handle_view
 @inputs_to_ivy_arrays
@@ -953,6 +955,7 @@ def _check_arguments(
 
 @handle_exceptions
 @handle_nestable
+@handle_mixed_function
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_ivy_arrays
@@ -1681,6 +1684,7 @@ def expand(
 
 
 @handle_out_argument
+@handle_mixed_function
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -1773,6 +1777,7 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 
 
 @handle_exceptions
+@handle_mixed_function
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
@@ -1948,6 +1953,7 @@ def _interleave(a, b, axis):
 
 @handle_exceptions
 @handle_nestable
+@handle_mixed_function
 @inputs_to_ivy_arrays
 def associative_scan(
     x: Union[ivy.Array, ivy.NativeArray],
