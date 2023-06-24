@@ -5,6 +5,7 @@ from hypothesis import strategies as st, assume
 from hypothesis.internal.floats import float_of
 from functools import reduce as _reduce
 from operator import mul
+import sys
 
 # local
 import ivy
@@ -1854,3 +1855,20 @@ def dtype_array_index(
                 step = draw(st.integers(max_value=-1, min_value=-s))
             index += (slice(start, end, step),)
     return dtype, array, index
+
+
+@st.composite
+def cond_data_gen_helper(draw):
+    dtype_x = helpers.dtype_and_values(
+        available_dtypes=(ivy.float32, ivy.float64),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        max_value=10,
+        min_value=-10,
+        allow_nan=False,
+        shared_dtype=True,
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon)
+    p = draw(
+        st.sampled_from([None, 2, -2, 1, -1, "fro", "nuc", float("inf"), -float("inf")])
+    )
+    dtype, x = draw(dtype_x)
+    return dtype, (x[0], p)
