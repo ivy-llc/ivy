@@ -380,8 +380,7 @@ def sparse_cross_entropy(
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     true = ivy.one_hot(true, pred.shape[axis])
     return ivy.cross_entropy(
-        true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
-    )
+        true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out)
 
 
 @handle_exceptions
