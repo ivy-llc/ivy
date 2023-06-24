@@ -514,6 +514,7 @@ def test_frontend_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     test_flags: pf.frontend_function_flags,
+    backend_to_test: str,
     on_device="cpu",
     frontend: str,
     fn_tree: str,
@@ -612,31 +613,6 @@ def test_frontend_function(
         )
     else:
         args_for_test, kwargs_for_test = ivy.args_to_ivy(*args, **kwargs)
-
-    # check and replace NativeClass object in arguments with ivy counterparts
-    from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
-
-    convs = {"numpy": convnumpy}
-
-    if "torch" in available_frameworks:
-        from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
-
-        convs["torch"] = convtorch
-
-    if "tensorflow" in available_frameworks:
-        from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
-
-        convs["tensorflow"] = convtensor
-
-    if "jax" in available_frameworks:
-        from ivy_tests.test_ivy.test_frontends.test_jax import convjax
-
-        convs["jax"] = convjax
-
-    if frontend in convs:
-        conv = convs[frontend]
-        args = ivy.nested_map(args, fn=conv, include_derived=True)
-        kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
 
     # Make copy for arguments for functions that might use
     # inplace update by default
