@@ -1,6 +1,6 @@
 from typing import Union, Optional, Tuple, List, Sequence
 import tensorflow as tf
-from functools import reduce
+from functools import reduce as _reduce
 
 import ivy
 
@@ -146,7 +146,7 @@ def multi_dot(
     # TODO: reimplement this function once tf adds multi_dot or inplace updates
     if len(x) < 2:
         raise ValueError("Expecting at least two tensors.")
-    dot_out = reduce(tf.matmul, x)
+    dot_out = _reduce(tf.matmul, x)
     return dot_out
 
 

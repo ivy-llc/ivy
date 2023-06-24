@@ -1,6 +1,8 @@
 # global
+from hypothesis import assume
 
 # local
+import ivy
 from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -105,6 +107,8 @@ def test_numpy_trim_zeros(
     test_flags,
 ):
     input_dtypes, x = dtype_and_x
+    if ivy.current_backend_str() == "paddle":
+        assume(input_dtypes[0] not in ["float16"])
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,

@@ -795,6 +795,56 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.eigh. This method simply wraps the
+        function, and so the docstring for ivy.eigh also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self : ivy.Container
+            Ivy container having shape `(..., M, M)` and whose
+            innermost two dimensions form square matrices.
+            Should have a floating-point data type.
+        UPLO : str, optional
+            Specifies whether the upper or lower triangular part of the
+            Hermitian matrix should be
+            used for the eigenvalue decomposition. Default is 'L'.
+        key_chains : Union[List[str], Dict[str, str]], optional
+            The key-chains to apply or not apply the method to. Default is `None`.
+        to_apply : bool, optional
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is `True`.
+        prune_unapplied : bool, optional
+            Whether to prune key_chains for which the function was not applied.
+            Default is `False`.
+        map_sequences : bool, optional
+            Whether to also map method to sequences (lists, tuples).
+            Default is `False`.
+        out : ivy.Container, optional
+            Optional output container, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ivy.Container
+            A container containing the computed eigenvalues.
+            The returned array must have shape `(..., M)` and have the same
+            data type as `self`.
+
+        Examples
+        --------
+        With `ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([[[1.,2.],[2.,1.]]]),
+        ...                   b=ivy.array([[[2.,4.],[4.,2.]]]))
+        >>> y = x.eigh()
+        >>> print(y)
+        {
+            'a': ivy.array([[-1., 3.]]),
+            'b': ivy.array([[-2., 6.]])
+        }
+        """
         return self._static_eigh(
             self,
             UPLO=UPLO,
@@ -1472,6 +1522,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         *,
         atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
+        hermitian: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1505,6 +1556,13 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             with the floating-point data type determined by :ref:`type-promotion`
             (as applied to ``x``).
             Default: ``None``.
+
+        hermitian
+            indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is
+            assumed to be Hermitian, enabling a more efficient method for finding
+            eigenvalues, but x is not checked inside the function. Instead, We just use
+            the lower triangular of the matrix to compute.
+            Default: ``False``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1549,6 +1607,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
             atol=atol,
             rtol=rtol,
+            hermitian=hermitian,
             out=out,
         )
 
@@ -1558,6 +1617,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         *,
         atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
+        hermitian: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1589,6 +1649,13 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated
             with the floating-point data type determined by :ref:`type-promotion`
             (as applied to ``x``). Default: ``None``.
+
+        hermitian
+            indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is
+            assumed to be Hermitian, enabling a more efficient method for finding
+            eigenvalues, but x is not checked inside the function. Instead, We just use
+            the lower triangular of the matrix to compute.
+            Default: ``False``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1627,6 +1694,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             self,
             atol=atol,
             rtol=rtol,
+            hermitian=hermitian,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

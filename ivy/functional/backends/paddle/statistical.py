@@ -225,7 +225,7 @@ def cumprod(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else x.dtype
-    if dtype in [paddle.uint8, paddle.int8, paddle.int16]:
+    if ivy.as_native_dtype(dtype) in [paddle.uint8, paddle.int8, paddle.int16]:
         x = paddle.cast(x, "int32")
     else:
         x = paddle.cast(x, dtype)
@@ -311,7 +311,7 @@ def cumsum(
         paddle.float16,
         paddle.bool,
     ]:
-        x = paddle.cast(x, "float32")
+        x = paddle.cast(x, "int32")
     else:
         x = paddle.cast(x, dtype)
     if not (exclusive or reverse):

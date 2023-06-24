@@ -109,7 +109,7 @@ def test_jax_lax_cholesky(
     x = np.asarray(x[0], dtype=dtype[0])
     # make symmetric positive-definite beforehand
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    helpers.test_frontend_function(
+    fw_ret, gt_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
@@ -118,7 +118,11 @@ def test_jax_lax_cholesky(
         rtol=1e-02,
         x=x,
         symmetrize_input=symmetrize_input,
+        test_values=False,
     )
+    # ToDo: turn value test on when jax cholesky is fixed in issue
+    # https: // github.com / google / jax / issues / 16185
+    helpers.assertions.assert_same_type_and_shape([fw_ret, gt_ret])
 
 
 # eigh
