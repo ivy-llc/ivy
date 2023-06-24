@@ -128,23 +128,23 @@ def reshape(
         if order == "F":
             ret = _reshape_fortran_paddle(newarr, shape)
             if out_scalar:
-                return paddle_backend.squeeze(ret, 0)
+                return paddle_backend.squeeze(ret, axis=0)
 
             return ret
         ret = paddle.reshape(newarr, shape)
         if out_scalar:
-            return paddle_backend.squeeze(ret, 0)
+            return paddle_backend.squeeze(ret, axis=0)
 
         return ret
     if order == "F":
         ret = _reshape_fortran_paddle(x, shape)
         if out_scalar:
-            return paddle_backend.squeeze(ret, 0)
+            return paddle_backend.squeeze(ret, axis=0)
 
         return ret
     ret = paddle.reshape(x, shape)
     if out_scalar:
-        return paddle_backend.squeeze(ret, 0)
+        return paddle_backend.squeeze(ret, axis=0)
 
     return ret
 
