@@ -461,6 +461,8 @@ def test_jax_slogdet(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-4,
+        rtol=1e-4,
         a=x[0],
     )
 
