@@ -9,7 +9,8 @@ import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
@@ -640,7 +641,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.24.3 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.25.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -889,3 +890,35 @@ def fft2(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.fft2(x, s, dim, norm).astype(np.complex128)
+
+
+def ifftn(
+    x: np.ndarray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
+
+
+@with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
+def embedding(
+    weights: np.ndarray,
+    indices: np.ndarray,
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    embeddings = np.take(weights, indices, axis=0)
+    if max_norm is not None:
+        norms = np.linalg.norm(embeddings, axis=-1, keepdims=True)
+        embeddings = np.where(
+            norms > max_norm, embeddings * max_norm / norms, embeddings
+        )
+        embeddings = np.where(
+            norms < -max_norm, embeddings * -max_norm / norms, embeddings
+        )
+    return embeddings

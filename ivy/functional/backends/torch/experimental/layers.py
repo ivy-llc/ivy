@@ -792,6 +792,7 @@ def ifft(
     return torch.fft.ifft(x, n, dim, norm, out=out).resolve_conj()
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def embedding(
     weights: torch.Tensor,
     indices: torch.Tensor,
@@ -891,6 +892,18 @@ def fft2(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")   
-    return torch.tensor(torch.fft.fft2(x, s, dim, norm, out=out),
-                        dtype=torch.complex128)
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return torch.tensor(
+        torch.fft.fft2(x, s, dim, norm, out=out), dtype=torch.complex128
+    )
+
+
+def ifftn(
+    x: torch.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, out=out)

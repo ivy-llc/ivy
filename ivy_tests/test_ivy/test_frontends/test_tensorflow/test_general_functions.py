@@ -267,6 +267,58 @@ def test_tensorflow_eye(
     )
 
 
+# foldl
+@handle_frontend_test(
+    fn_tree="tensorflow.foldl",
+    fn=st.sampled_from(
+        [
+            lambda a, b: a + b,
+            lambda a, b: a - b,
+            lambda a, b: a * b,
+        ],
+    ),
+    initializer=st.one_of(st.none(), st.floats(min_value=-1000, max_value=1000)),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=-1000,
+        max_value=1000,
+        max_dim_size=10,
+        max_num_dims=4,
+        min_dim_size=1,
+        min_num_dims=1,
+    ),
+    parallel_iterations=st.just(10),
+    swap_memory=st.booleans(),
+    name=st.none(),
+)
+def test_tensorflow_foldl(
+    *,
+    fn,
+    initializer,
+    dtype_and_values,
+    frontend,
+    fn_tree,
+    test_flags,
+    parallel_iterations,
+    swap_memory,
+    name,
+):
+    dtype, elems = dtype_and_values
+    elems = np.atleast_1d(elems)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        fn=fn,
+        elems=elems,
+        initializer=initializer,
+        parallel_iterations=parallel_iterations,
+        swap_memory=swap_memory,
+        name=name,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+    )
+
+
 # ones
 @handle_frontend_test(
     fn_tree="tensorflow.ones",
@@ -2062,6 +2114,38 @@ def test_tensorflow_truncatediv(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# Truncatemod
+@handle_frontend_test(
+    fn_tree="tensorflow.truncatemod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_truncatemod(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],

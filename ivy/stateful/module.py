@@ -493,11 +493,9 @@ class Module(ModuleConverters, ModuleHelpers):
             v = v if v else self.v
             return self._module_graph(*args, v=v, **kwargs)
 
-        with ivy.utils.backend.ContextManager("numpy") as backend:
-            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
-            self.submod_call_order = ivy.Container(
-                alphabetical_keys=False, ivyh=backend
-            )
+        backend = ivy.with_backend("numpy")
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._set_submod_flags(
             track_submod_rets,
             submod_depth,

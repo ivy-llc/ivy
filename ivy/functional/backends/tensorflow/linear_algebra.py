@@ -202,7 +202,7 @@ def inv(
             return ret
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -280,7 +280,7 @@ def matmul(
 
 
 @with_supported_dtypes(
-    {"2.12.0 and below": ("float32", "float64", "float16", "complex")}, backend_version
+    {"2.12.0 and below": ("float32", "float64", "complex")}, backend_version
 )
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
@@ -297,8 +297,6 @@ def matrix_norm(
             tf.linalg.svd(x, compute_uv=False),
             axis=-1,
         )
-        if keepdims:
-            ret = tf.reshape(ret, (*ret.shape, 1, 1))
     elif ord == -1:
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True),
@@ -311,8 +309,6 @@ def matrix_norm(
             tf.linalg.svd(x, compute_uv=False),
             axis=-1,
         )
-        if keepdims:
-            ret = tf.reshape(ret, (*ret.shape, 1, 1))
     elif ord == float("-inf"):
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True),
@@ -321,10 +317,10 @@ def matrix_norm(
         )
     else:
         ret = tf.norm(x, ord=ord, axis=axis, keepdims=keepdims)
-        if ret.dtype is tf.complex64:
-            ret = tf.cast(ret, tf.float32)
-        elif ret.dtype is tf.complex128:
-            ret = tf.cast(ret, tf.float64)
+    ret = tf.cast(ret, ret.dtype.real_dtype)
+    if keepdims and ord in [-2, "nuc"]:
+        for dim in axis:
+            ret = tf.expand_dims(ret, dim % tf.rank(x))
     return ret
 
 
@@ -374,81 +370,27 @@ def matrix_rank(
     hermitian: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    def dim_reduction(array):
-        if array.ndim == 1:
-            ret = array[0]
-        elif array.ndim == 2:
-            ret = array[0][0]
-        elif array.ndim == 3:
-            ret = array[0][0][0]
-        elif array.ndim == 4:
-            ret = array[0][0][0][0]
-        return ret
-
-    if len(x.shape) == 3:
-        if x.shape[-3] == 0:
-            return tf.constant(0, dtype=x.dtype)
-    elif len(x.shape) > 3:
-        if x.shape[-3] == 0 or x.shape[-4] == 0:
-            return tf.constant(0, dtype=x.dtype)
-    axis = None
-    ret_shape = x.shape[:-2]
-    if len(x.shape) == 2:
-        singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
-    elif len(x.shape) > 2:
-        y = tf.reshape(x, (-1, *x.shape[-2:]))
-        singular_values = tf.stack(
-            [
-                tf.linalg.svd(split[0], full_matrices=False, compute_uv=False)
-                for split in tf.split(y, y.shape[0], axis=0)
-            ]
-        )
-        axis = 1
-    if len(x.shape) < 2 or len(singular_values.shape) == 0:
-        return tf.constant(0, dtype=x.dtype)
-    max_values = tf.math.reduce_max(singular_values, axis=axis)
-    if atol is None:
-        if rtol is None:
-            ret = ivy.sum(singular_values != 0, axis=axis)
-        else:
-            try:
-                max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
-                    rtol, dtype=tf.float32
-                )
-            except ValueError:
-                if ivy.all(
-                    element == rtol[0] for element in rtol
-                ):  # all elements are same in rtol
-                    rtol = dim_reduction(rtol)
-                    max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
-                        rtol, dtype=tf.float32
-                    )
-            if not isinstance(rtol, float) and tf.size(rtol) > 1:
-                if ivy.all(
-                    tf.math.equal(
-                        max_rtol, tf.fill(max_rtol.shape, dim_reduction(max_rtol))
-                    )
-                ):
-                    max_rtol = dim_reduction(max_rtol)
-            elif not isinstance(max_values, float) and tf.size(max_values) > 1:
-                if ivy.all(
-                    tf.math.equal(max_values, tf.fill(max_values.shape, max_values[0]))
-                ):
-                    max_rtol = dim_reduction(max_rtol)
-            ret = ivy.sum(
-                tf.cast(singular_values, dtype=tf.float32)
-                > tf.cast(max_rtol, dtype=tf.float32),
-                axis=axis,
-            )
-    else:  # atol is not None
-        if rtol is None:  # atol is not None, rtol is None
-            ret = ivy.sum(singular_values > atol, axis=axis)
-        else:
-            tol = tf.experimental.numpy.max(atol, max_values * rtol)
-            ret = ivy.sum(singular_values > tol, axis=axis)
-    if len(ret_shape):
-        ret = ivy.reshape(ret, ret_shape)
-    return ivy.astype(ret, x.dtype)
+    if (tf.rank(x) < 2) or (0 in x.shape):
+        return tf.convert_to_tensor(0, dtype=tf.int64)
+    # we don't use the native matrix_rank function because the behaviour of the
+    # tolerance argument is difficult to unify,
+    # and the native implementation is compositional
+    if hermitian:
+        svd_values = tf.abs(tf.linalg.eigh(x)[0])
+    else:
+        svd_values = tf.linalg.svd(x, compute_uv=False)
+    sigma = tf.reduce_max(svd_values, axis=-1, keepdims=False)
+    atol = (
+        atol
+        if atol is not None
+        else tf.experimental.numpy.finfo(x.dtype).eps * max(x.shape[-2:]) * sigma
+    )
+    rtol = rtol if rtol is not None else 0.0
+    tol = tf.maximum(atol, rtol * sigma)
+    # make sure it's broadcastable again with svd_values
+    tol = tf.expand_dims(tol, axis=-1)
+    ret = tf.math.count_nonzero(svd_values > tol, axis=-1)
+    return ret
 
 
 @with_unsupported_dtypes(
@@ -475,7 +417,7 @@ def matrix_transpose(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if conjugate:
-        tf.math.conj(x)
+        x = tf.math.conj(x)
     return tf.linalg.matrix_transpose(x)
 
 
