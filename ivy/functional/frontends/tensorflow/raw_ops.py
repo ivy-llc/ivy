@@ -875,8 +875,8 @@ Zeta = to_ivy_arrays_and_back(
 Imag = to_ivy_arrays_and_back(
     with_supported_dtypes(
         {
-         "3.10.0 and below":("complex64", "complex128"),
+         "2.12.0 and below": ("complex64", "complex128"),
         },
-        "tensorflow",)
-(map_raw_ops_alias(tf_frontend.math.imag))
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.imag))
 )
