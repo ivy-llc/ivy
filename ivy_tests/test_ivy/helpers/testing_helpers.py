@@ -8,11 +8,11 @@ from typing import List
 from hypothesis import given, strategies as st
 
 # local
-import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
+from . import test_globals as t_globals
 from .pipeline_helper import update_backend
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInstanceStrategy,
@@ -111,11 +111,13 @@ def num_positional_args(draw, *, fn_name: str = None):
     num_keyword_only = 0
     total = 0
     fn = None
-    for i, fn_name_key in enumerate(fn_name.split(".")):
-        if i == 0:
-            fn = ivy.__dict__[fn_name_key]
-        else:
-            fn = fn.__dict__[fn_name_key]
+    with update_backend(t_globals.CURRENT_BACKEND) as ivy_backend:
+        ivy_backend.utils.dynamic_import.import_module(fn_name.rpartition(".")[0])
+        for i, fn_name_key in enumerate(fn_name.split(".")):
+            if i == 0:
+                fn = ivy_backend.__dict__[fn_name_key]
+            else:
+                fn = fn.__dict__[fn_name_key]
     for param in inspect.signature(fn).parameters.values():
         if param.name == "self":
             continue
