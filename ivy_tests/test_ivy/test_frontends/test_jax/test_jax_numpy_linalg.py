@@ -785,7 +785,7 @@ def _get_inv_square_matrices(draw):
             )
         )
         try:
-            np.linalg.inv(a)
+            np.linalg.tensorinv(a, ind)
             invertible = True
         except np.linalg.LinAlgError:
             pass
@@ -794,7 +794,8 @@ def _get_inv_square_matrices(draw):
 
 
 @handle_frontend_test(
-    fn_tree="jax.numpy.linalg.tensorinv", params=_get_inv_square_matrices()
+    fn_tree="jax.numpy.linalg.tensorinv",
+    params=_get_inv_square_matrices()
 )
 def test_jax_numpy_tensorinv(
     *,
