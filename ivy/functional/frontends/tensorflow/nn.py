@@ -20,7 +20,7 @@ def _reduce_strides_dilations(dim, stride, dilations):
 
 @to_ivy_arrays_and_back
 def embedding_lookup(params, ids, max_norm=None, name=None):
-    return ivy.embedding_lookup(params, ids)
+    return ivy.embedding(params, ids)
 
 
 @to_ivy_arrays_and_back
