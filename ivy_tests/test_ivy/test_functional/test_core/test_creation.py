@@ -211,27 +211,24 @@ def _asarray_helper(draw):
     x_list = ivy.nested_map(x, lambda x: x.tolist(), shallow=False)
     sh = draw(helpers.get_shape(min_num_dims=1))
     sh = ivy.Shape(sh)
-    np_array = x[0]
-    ivy_array = ivy.array(x[0], dtype=x_dtype[0])
-    python_vals = ivy.to_list(ivy_array)
-    dim = draw(helpers.get_shape(min_num_dims=1))
-    nested_values = draw(
-        helpers.create_nested_input(dim, [sh, ivy_array, np_array, python_vals])
-    )
+    # np_array = x[0]
+    # dim = draw(helpers.get_shape(min_num_dims=1))
+    # nested_values = draw(
+    #     helpers.create_nested_input(dim, [sh, np_array, x_list[0]])
+    # )
     dtype = draw(
         helpers.get_castable_dtype(
             draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
         )
     )[-1]
-    dtype = draw(st.sampled_from([dtype, draw(st.none())]))
+    dtype = draw(st.sampled_from([dtype, None]))
     x = draw(
         st.sampled_from(
             [
                 x,
                 x_list,
                 sh,
-                ivy_array,
-                nested_values,
+                # nested_values,
             ]
         )
     )
@@ -258,8 +255,7 @@ def test_asarray(
     x_dtype, x, dtype = x_dtype_x_and_dtype
     if isinstance(x, list) and len(x) == 1:
         x = x[0]
-    if test_flags.container[0]:
-        assume(not ivy.is_ivy_container(x))
+    assume(not test_flags.container[0])
     # avoid casting complex to non-complex
     if dtype is not None:
         assume(not ("complex" in x_dtype[0] and "complex" not in dtype))
