@@ -116,7 +116,7 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int32", "int64")}, "paddle"
+    {"2.5.0 and below": ("float64", "float32", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def triu(input, diagonal=0, *, out=None):
