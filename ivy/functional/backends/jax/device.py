@@ -43,6 +43,8 @@ def dev(
         )
         if as_native:  # fallback
             return jax.devices()[0]
+        # TODO: Find the code where JaxprTracer device is required 
+        # and get a cleaner workaround for this issue
         return ""  # change might break something
     try:
         dv = _to_array(x).device()
