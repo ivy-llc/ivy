@@ -16,6 +16,7 @@ def dropout(input, p=0.5, training=True, inplace=False):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def dropout2d(input, p=0.5, training=True, inplace=False):
     if input.ndim < 2:
         raise ValueError("Feature dropout requires at least 2 dimensions in the input")
