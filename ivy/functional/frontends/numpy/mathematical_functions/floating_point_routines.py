@@ -10,6 +10,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
 )
 
+
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -28,8 +29,6 @@ def _nextafter(
     subok=True,
 ):
     return ivy.nextafter(x1, x2, out=out)
-
-
 
 
 @handle_numpy_out

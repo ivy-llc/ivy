@@ -200,7 +200,7 @@ def cov(
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.25.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
