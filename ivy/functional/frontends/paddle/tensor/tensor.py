@@ -223,3 +223,8 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def astype(self, dtype):
         return ivy.astype(self._ivy_array, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("bfloat16")}, "paddle")
+    def fmin(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.fmin(self._ivy_array, y_ivy)
