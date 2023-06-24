@@ -113,10 +113,8 @@ def _determine_backend_from_args(args):
             if lib:
                 return lib
     else:
-        # check and exclude if arg is a frontend array
-        if not hasattr(args, "ivy_array"):
-            # check if the class module of the arg is in _array_types
-            return _get_backend_for_arg(args.__class__.__module__)
+        # check if the class module of the arg is in _array_types
+        return _get_backend_for_arg(args.__class__.__module__)
 
 
 def fn_name_from_version_specific_fn_name(name, version):

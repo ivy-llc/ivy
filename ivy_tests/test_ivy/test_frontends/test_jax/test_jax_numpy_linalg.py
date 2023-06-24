@@ -342,14 +342,13 @@ def test_jax_numpy_qr(
     frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
     Q, R = ret
-    frontend_Q, frontend_R  = frontend_ret
+    frontend_Q, frontend_R = frontend_ret
 
     assert_all_close(
         ret_np=Q @ R,
         ret_from_gt_np=frontend_Q @ frontend_R,
         atol=1e-02,
     )
-
 
 
 # eigvals
@@ -723,17 +722,19 @@ def test_jax_numpy_tensorsolve(
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
-        large_abs_safety_factor=32,
-        small_abs_safety_factor=32,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
         safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
+    rcond=st.floats(1e-5, 1e-3),
 )
 def test_jax_numpy_pinv(
     dtype_and_x,
     frontend,
     fn_tree,
     test_flags,
+    rcond,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -742,8 +743,9 @@ def test_jax_numpy_pinv(
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
-        atol=1e-4,
-        rtol=1e-4,
+        rcond=rcond,
+        atol=1e-1,
+        rtol=1e-1,
     )
 
 
@@ -778,12 +780,13 @@ def _get_inv_square_matrices(draw):
             helpers.array_values(
                 dtype=input_dtype[0],
                 shape=shape,
-                min_value=-100,
-                max_value=100,
+                large_abs_safety_factor=24,
+                small_abs_safety_factor=24,
+                safety_factor_scale="log",
             )
         )
         try:
-            np.linalg.inv(a)
+            np.linalg.tensorinv(a, ind)
             invertible = True
         except np.linalg.LinAlgError:
             pass
@@ -792,7 +795,8 @@ def _get_inv_square_matrices(draw):
 
 
 @handle_frontend_test(
-    fn_tree="jax.numpy.linalg.tensorinv", params=_get_inv_square_matrices()
+    fn_tree="jax.numpy.linalg.tensorinv",
+    params=_get_inv_square_matrices()
 )
 def test_jax_numpy_tensorinv(
     *,

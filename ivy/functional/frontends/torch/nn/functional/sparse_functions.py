@@ -1,6 +1,5 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_supported_dtypes
 
 
@@ -21,7 +20,7 @@ def embedding(
     if max_norm is None:
         ret = ivy.embedding(weight, input)
     else:
-        if norm_type == 2.:
+        if norm_type == 2.0:
             ret = ivy.embedding(weight, input, max_norm=max_norm)
         else:
             ret = ivy.embedding(weight, input, max_norm=None)
