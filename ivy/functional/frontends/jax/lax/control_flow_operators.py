@@ -59,126 +59,22 @@ def while_loop(cond_fun, body_fun, init_val):
         val = body_fun(val)
     return val
 
-
 # @to_ivy_arrays_and_back
 # def scan(f, init, xs, length=None, reverse=False, unroll=1):
-#     if xs is None:
-#         xs = [None] * length
-#     carry = init
-#     ys = []
-#     for x in xs:
-#         carry, y = f(carry, x)
-#         ys.append(y)
-#     return carry, ivy.stack(ys)
-
-
-# @to_ivy_arrays_and_back
-# def scan(
-#     f: Callable[[Carry, X], Tuple[Carry, Y]],
-#     init: Carry,
-#     xs: X,
-#     length: Optional[int] = None,
-#     reverse: bool = False,
-#     unroll: int = 1,
-# ) -> Tuple[Carry, Y]:
-#     if xs is None:
-#         xs = [None] * length
-
-#     if reverse:
-#         xs = xs[::-1]
-
-#     carry = init
-#     ys = []
-
-#     for _ in range(unroll):
-#         for x in xs:
-#             carry, y = f(carry, x)
-#             ys.append(y)
-
-#     return carry, ivy.stack(ys)
-
-
-# @to_ivy_arrays_and_back
-# def scan(
-#     f: Callable[[Carry, X], Tuple[Carry, Y]],
-#     init: Carry,
-#     xs: X,
-#     length: Optional[int] = None,
-#     reverse: bool = False,
-#     unroll: int = 1,
-# ) -> Tuple[Carry, Y]:
-#     if xs is None:
-#         xs = [None] * length
-
-#     if reverse:
-#         xs = xs[::-1]
-
-#     carry = init
-#     ys = []
-
-#     if length is None:
-#         length = len(xs[0]) if isinstance(xs[0], np.ndarray) else len(xs)
-
-#     for _ in range(length):
-#         for _ in range(unroll):
-#             for x in xs:
-#                 carry, y = f(carry, x)
-#                 ys.append(y)
-
-#     return carry, ivy.stack(ys)
-
-
-# @to_ivy_arrays_and_back
-# def scan(
-#     f: Callable[[X], Y],
-#     init: X,
-#     xs: X,
-#     length: Optional[int] = None,
-#     reverse: bool = False,
-#     unroll: int = 1,
-# ) -> Y:
-#     if xs is None:
-#         xs = [None] * length
-
-#     if reverse:
-#         xs = xs[::-1]
-
-#     ys = []
-
-#     if length is None:
-#         length = len(xs[0]) if isinstance(xs[0], np.ndarray) else len(xs)
-
-#     for _ in range(length):
-#         for _ in range(unroll):
-#             for x in xs:
-#                 y = f(x)
-#                 ys.append(y)
-
-#     return ivy.stack(ys)
-
-
-# @to_ivy_arrays_and_back
-# def scan(f, init, xs, length=None, reverse=False, unroll=1):
-#     if xs is None:
-#         xs = [None] * length
-
-#     if reverse:
-#         xs = xs[::-1]
-
-#     ys = []
-
 #     if length is None:
 #         length = len(xs[0]) if isinstance(xs[0], ivy.ndarray) else len(xs)
 
-#     for _ in range(length):
-#         carry = init
+#     if reverse:
+#         xs = xs[::-1]
+
+#     ys = []
+#     carry = init
+#     for x in xs:
 #         for _ in range(unroll):
-#             for x in xs:
-#                 carry = f(x)
-#                 ys.append(carry)
+#             carry = f(carry)
+#             ys.append(carry)
 
 #     return ivy.stack(ys)
-
 
 @to_ivy_arrays_and_back
 def scan(f, init, xs, length=None, reverse=False, unroll=1):
