@@ -257,3 +257,18 @@ def characteristic_equation_solver(matrix):
         [1.0, *[-1.0] * (len(eigenvalues) + 1)], dtype=matrix.dtype
     )
     return ivy.roots(coefficients)
+
+@to_ivy_arrays_and_back
+def solve_ex(A, B, *, left=True, check_errors=False, out=None):
+    try:
+        result = ivy.solve(A, B, out=out)
+        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
+        return result, info
+    except RuntimeError as e:
+        if check_errors:
+            raise RuntimeError(e)
+        else:
+            result = A * math.nan
+            info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
+            return result, info
+        
