@@ -35,8 +35,14 @@ def current_backend_str() -> str:
 
 
 def get_item(
-    x: paddle.Tensor, query: Union[paddle.Tensor, Tuple], *, copy: bool = None
+    x: paddle.Tensor,
+    /,
+    query: Union[paddle.Tensor, Tuple],
+    *,
+    copy: bool = None,
 ) -> paddle.Tensor:
+    if copy:
+        x = paddle.clone(x)
     # regular queries x[idx_1,idx_2,...,idx_i]
     if not isinstance(query, paddle.Tensor):
         x_dtype = x.dtype

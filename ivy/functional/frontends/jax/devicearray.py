@@ -92,7 +92,7 @@ class DeviceArray:
             dtype=dtype,
             out=out,
         )
-    
+
     def nonzero(self, *, size=None, fill_value=None):
         return jax_frontend.numpy.nonzero(
             self,
@@ -237,3 +237,6 @@ class DeviceArray:
             raise TypeError("iteration over a 0-d devicearray not supported")
         for i in range(self.shape[0]):
             yield self[i]
+
+    def round(self, decimals=0):
+        return jax_frontend.numpy.round(self, decimals)

@@ -1,0 +1,44 @@
+name: 📚 Documentation Bug Report
+description: File a bug for the documentation.
+title: "[Documentation]: <TITLE>"
+labels: ["Documentation"]
+assignees: ["KareemMAX"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Path
+      description: "Path to the documentation which have the issue. Can be a documentation URL or path to docstring (file::function-name)."
+      placeholder: https://unify.ai/docs/ivy/, ivy\functional\ivy\activations.py::relu
+    validations:
+      required: true
+  - type: input
+    id: section
+    attributes:
+      label: Section
+      description: Section of the documentation which have the issue.
+      placeholder: e.g. Setting up for Free
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What is the actual behavior of the documentation?
+      placeholder: e.g. The documentation is not clear.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What is the expected behavior of the documentation?
+      placeholder: e.g. The documentation should be clear.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+      placeholder: Drag and drop screenshots here.
