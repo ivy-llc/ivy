@@ -165,7 +165,7 @@ class Tensor:
     def tanh(self, name=None):
         return ivy.tanh(self._ivy_array)
 
-    @with_supported_dtypes({"2.4.3 and below": ("float32", "float64")}, "paddle")
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def add_(self, name=None):
         return ivy.add(self._ivy_array)
 
@@ -199,27 +199,27 @@ class Tensor:
     def all(self, axis=None, keepdim=False, dtype=None, name=None):
         return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
 
-    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def allclose(self, other, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
         return ivy.allclose(
             self._ivy_array, other, rtol=rtol, atol=atol, equal_nan=equal_nan
         )
 
-    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
 
     @with_supported_dtypes(
-        {"2.4.2 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
+        {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
         "paddle",
     )
     def bitwise_xor(self, y, out=None, name=None):
         return paddle_frontend.bitwise_xor(self, y)
 
-    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def any(self, axis=None, keepdim=False, name=None):
         return ivy.any(self._ivy_array, axis=axis, keepdims=keepdim)
 
-    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def astype(self, dtype):
         return ivy.astype(self._ivy_array, dtype=dtype)
