@@ -5,6 +5,7 @@ from hypothesis import strategies as st, assume
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+import random
 
 
 @handle_test(
@@ -181,6 +182,11 @@ def test_avg_pool2d(
     fn_name,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
+
+    data_format = random.choice(["NCHW", "NHWC"])
+    if data_format == "NCHW":
+        x[0] = x[0].reshape((x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2]))
+
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,
@@ -194,6 +200,7 @@ def test_avg_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
         divisor_override=divisor_override,

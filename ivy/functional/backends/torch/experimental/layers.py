@@ -369,7 +369,12 @@ def avg_pool2d(
         value=0.0,
     )
     res = torch.nn.functional.avg_pool2d(
-        x, kernel, strides, 0, ceil_mode, divisor_override=divisor_override
+        x,
+        kernel,
+        strides,
+        0,
+        ceil_mode,
+        divisor_override=divisor_override,
     )
 
     if not count_include_pad and any(pad_specific) and not divisor_override:

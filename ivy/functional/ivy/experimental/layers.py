@@ -332,6 +332,7 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -399,6 +400,7 @@ def avg_pool2d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
         out=out,
     )
 
