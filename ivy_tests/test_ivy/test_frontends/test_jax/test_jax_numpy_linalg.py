@@ -780,8 +780,9 @@ def _get_inv_square_matrices(draw):
             helpers.array_values(
                 dtype=input_dtype[0],
                 shape=shape,
-                min_value=-100,
-                max_value=100,
+                large_abs_safety_factor=24,
+                small_abs_safety_factor=24,
+                safety_factor_scale="log",
             )
         )
         try:
