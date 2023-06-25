@@ -750,7 +750,6 @@ def test_paddle_tan(
     )
 
 
-
 # atan2
 @handle_frontend_test(
     fn_tree="paddle.atan2",

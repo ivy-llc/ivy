@@ -175,7 +175,7 @@ def tan(x, name=None):
 def atan2(x, y, name=None):
     return ivy.atan2(x, y)
 
-  
+
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def square(x, name=None):
