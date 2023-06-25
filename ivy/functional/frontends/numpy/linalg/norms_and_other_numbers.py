@@ -13,7 +13,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def norm(x, ord=None, axis=None, keepdims=False):
-    if axis is None and not (ord is None):
+    if axis is None and ord is not None:
         if x.ndim not in (1, 2):
             raise ValueError("Improper number of dimensions to norm.")
         else:
@@ -24,6 +24,8 @@ def norm(x, ord=None, axis=None, keepdims=False):
     elif axis is None and ord is None:
         x = ivy.flatten(x)
         ret = ivy.vector_norm(x, axis=0, keepdims=keepdims, ord=2)
+    if x.ndim > 1 and ord == 0:
+        raise ValueError("Invalid norm order for matrices.")
     if isinstance(axis, int):
         ret = ivy.vector_norm(x, axis=axis, keepdims=keepdims, ord=ord)
     elif isinstance(axis, tuple):

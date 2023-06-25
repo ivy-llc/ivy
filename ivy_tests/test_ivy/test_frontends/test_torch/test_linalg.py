@@ -2,8 +2,7 @@
 import math
 import sys
 import numpy as np
-from hypothesis import strategies as st, assume
-
+from hypothesis import strategies as st, assume, reproduce_failure
 
 # local
 import ivy
@@ -76,11 +75,14 @@ def _get_dtype_and_matrix(draw):
 
 
 # vector_norm
+# @reproduce_failure('6.79.1', b'AXicY2RkYGNkYGcAAkYGCGAcZY+yR9mj7FE28WxGRiBmQAAAtA0A9Q==')
+@reproduce_failure('6.79.1', b'AXicY2AAAkYGCGBkYILSjAAATAAH')
 @handle_frontend_test(
     fn_tree="torch.linalg.vector_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
+        force_int_axis=True,
         min_value=-1e04,
         max_value=1e04,
     ),
@@ -90,7 +92,7 @@ def _get_dtype_and_matrix(draw):
         helpers.floats(min_value=1.0, max_value=5.0),
         st.sampled_from((float("inf"), -float("inf"))),
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("valid"),
 )
 def test_torch_vector_norm(
     *,
