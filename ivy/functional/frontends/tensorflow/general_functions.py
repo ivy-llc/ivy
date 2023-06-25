@@ -606,3 +606,8 @@ def truncatemod(x, y):
     x = ivy.broadcast_to(x, ivy.shape(y))
     y = ivy.broadcast_to(y, ivy.shape(x))
     return ivy.trunc(x / y) * y + (x % y)
+
+
+@to_ivy_arrays_and_back
+def unravel_index(indices, dims, out=None, name=None):
+    return ivy.unravel_index(indices, dims, out=out)
