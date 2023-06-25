@@ -42,7 +42,8 @@ def test_paddle_cosine_similarity(
         axis=axis,
     )
 
-#dropout
+
+# dropout
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.dropout",
     d_type_and_x=helpers.dtype_and_values(
@@ -56,9 +57,11 @@ def test_paddle_cosine_similarity(
         min_dim_size=2,
     ),
     p=st.floats(min_value=0.0, max_value=1.0),
-    axis= st.integers(min_value=0, max_value=1),
-    training= st.booleans() ,
-    mode= st.one_of(*[st.just(seq) for seq in ['upscale_in_train','downscale_in_infer']]),
+    axis=st.integers(min_value=0, max_value=1),
+    training=st.booleans() ,
+    mode=st.one_of(
+        *[st.just(seq) for seq in ['upscale_in_train','downscale_in_infer']]
+    ),
 )
 def test_paddle_dropout(
     *,
