@@ -207,7 +207,7 @@ def permutation(key, x, axis=0, independent=False):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
@@ -230,7 +230,7 @@ def shuffle(key, x, axis=0):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
@@ -248,7 +248,7 @@ def exponential(key, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
@@ -267,7 +267,7 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
