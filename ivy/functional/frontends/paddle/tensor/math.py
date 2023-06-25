@@ -204,3 +204,9 @@ def exp(x, name=None):
 @to_ivy_arrays_and_back
 def reciprocal(x, name=None):
     return ivy.reciprocal(x)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def gcd(x, y, name=None):
+    return ivy.gcd(x, y)
