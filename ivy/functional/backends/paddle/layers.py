@@ -103,8 +103,8 @@ def conv1d_transpose(
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    res = paddle.nn.functional.Conv1DTranspose(
+):
+    res = paddle.nn.functional.conv1d_transpose(
         x,
         filters,
         data_format=data_format,
