@@ -7,7 +7,6 @@ import importlib
 import inspect
 from collections import OrderedDict
 
-from ivy import frontend_outputs_to_ivy_arrays, output_to_native_arrays
 from ivy.utils.exceptions import IvyException
 
 
@@ -22,6 +21,7 @@ from .pipeline_helper import update_backend
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+import ivy_tests.test_ivy.helpers.globals as t_globals
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
@@ -578,213 +578,227 @@ def test_frontend_function(
         ]
 
     # update var flags to be compatible with float dtype and with_out args
-    test_flags.as_variable = [
-        v if ivy.is_float_dtype(d) and not test_flags.with_out else False
-        for v, d in zip(test_flags.as_variable, input_dtypes)
-    ]
+    # TODO enable back
+    # test_flags.as_variable = [
+    #     v if ivy.is_float_dtype(d) and not test_flags.with_out else False
+    #     for v, d in zip(test_flags.as_variable, input_dtypes)
+    # ]
 
     # frontend function
     # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
 
-    split_index = fn_tree.rfind(".")
-    frontend_submods, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
-    function_module = importlib.import_module(frontend_submods)
-    frontend_fn = getattr(function_module, fn_name)
+    # Frontend with backend start
 
-    # apply test flags etc.
-    args, kwargs = create_args_kwargs(
-        backend=backend_to_test,
-        args_np=args_np,
-        arg_np_vals=arg_np_vals,
-        args_idxs=args_idxs,
-        kwargs_np=kwargs_np,
-        kwarg_np_vals=kwarg_np_vals,
-        kwargs_idxs=kwargs_idxs,
-        input_dtypes=input_dtypes,
-        test_flags=test_flags,
-        on_device=on_device,
-    )
+    gt_args_np = copy.deepcopy(args_np)
+    gt_kwargs_np = copy.deepcopy(kwargs_np)
 
-    # Make copy for arguments for functions that might use
-    # inplace update by default
-    copy_kwargs = copy.deepcopy(kwargs)
-    copy_args = copy.deepcopy(args)
-    create_frontend_array = importlib.import_module(
-        f"ivy.functional.frontends.{frontend}"
-    )._frontend_array
+    with update_backend(backend_to_test) as ivy_backend:
+        local_importer = ivy_backend.utils.dynamic_import
 
-    if test_flags.generate_frontend_arrays:
-        args_for_test, kwargs_for_test = args_to_frontend(
-            *args, frontend_array_fn=create_frontend_array, **kwargs
-        )
-    else:
-        args_for_test, kwargs_for_test = ivy.args_to_ivy(*args, **kwargs)
+        # strip the decorator to get an Ivy array
+        # TODO, fix testing for jax frontend for x32
+        if frontend == "jax":
+            local_importer.import_module("ivy.functional.frontends.jax").config.update(
+                "jax_enable_x64", True
+            )
 
-    # strip the decorator to get an Ivy array
-    # ToDo, fix testing for jax frontend for x32
-    if frontend == "jax":
-        importlib.import_module("ivy.functional.frontends.jax").config.update(
-            "jax_enable_x64", True
+        split_index = fn_tree.rfind(".")
+        frontend_submods, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
+        function_module = local_importer.import_module(frontend_submods)
+        frontend_fn = getattr(function_module, fn_name)
+
+        # apply test flags etc.
+        args, kwargs = create_args_kwargs(
+            backend=backend_to_test,
+            args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
+            kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
+            input_dtypes=input_dtypes,
+            test_flags=test_flags,
+            on_device=on_device,
         )
 
-    _as_ivy_arrays = not test_flags.generate_frontend_arrays
-    ret = get_frontend_ret(
-        frontend_fn, *args_for_test, as_ivy_arrays=_as_ivy_arrays, **kwargs_for_test
-    )
+        # Make copy for arguments for functions that might use
+        # inplace update by default
+        copy_kwargs = copy.deepcopy(kwargs)
+        copy_args = copy.deepcopy(args)
 
-    if test_flags.with_out:
-        if not inspect.isclass(ret):
-            is_ret_tuple = issubclass(ret.__class__, tuple)
-        else:
-            is_ret_tuple = issubclass(ret, tuple)
+        # Frontend array generation
+        create_frontend_array = local_importer.import_module(
+            f"ivy.functional.frontends.{frontend}"
+        )._frontend_array
 
         if test_flags.generate_frontend_arrays:
-            if is_ret_tuple:
-                ret = ivy.nested_map(
-                    ret,
-                    lambda _x: (
-                        arrays_to_frontend(create_frontend_array)(_x)
-                        if not _is_frontend_array(_x)
-                        else _x
-                    ),
-                    include_derived=True,
-                )
-            elif not _is_frontend_array(ret):
-                ret = arrays_to_frontend(create_frontend_array)(ret)
+            args_for_test, kwargs_for_test = args_to_frontend(
+                backend=backend_to_test,
+                *args,
+                frontend_array_fn=create_frontend_array,
+                **kwargs,
+            )
         else:
-            if is_ret_tuple:
-                ret = ivy.nested_map(
-                    ret,
-                    lambda _x: ivy.array(_x) if not ivy.is_array(_x) else _x,
-                    include_derived=True,
-                )
-            elif not ivy.is_array(ret):
-                ret = ivy.array(ret)
+            args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(*args, **kwargs)
 
-        out = ret
-        # pass return value to out argument
-        # check if passed reference is correctly updated
-        kwargs["out"] = out
-        if is_ret_tuple:
-            if test_flags.generate_frontend_arrays:
-                flatten_ret = flatten_frontend(
-                    ret=ret, frontend_array_fn=create_frontend_array
-                )
-                flatten_out = flatten_frontend(
-                    ret=out, frontend_array_fn=create_frontend_array
-                )
+        ret = get_frontend_ret(
+            backend_to_test,
+            frontend_fn,
+            *args_for_test,
+            as_ivy_arrays=(not test_flags.generate_frontend_arrays),
+            **kwargs_for_test,
+        )
+
+        if test_flags.with_out:
+            if not inspect.isclass(ret):
+                is_ret_tuple = issubclass(ret.__class__, tuple)
             else:
-                flatten_ret = flatten(ret=ret)
-                flatten_out = flatten(ret=out)
-            for ret_array, out_array in zip(flatten_ret, flatten_out):
-                if ivy.native_inplace_support and not any(
-                    (ivy.isscalar(ret), ivy.isscalar(out))
+                is_ret_tuple = issubclass(ret, tuple)
+
+            if test_flags.generate_frontend_arrays:
+                if is_ret_tuple:
+                    ret = ivy_backend.nested_map(
+                        ret,
+                        lambda _x: (
+                            arrays_to_frontend(create_frontend_array)(_x)
+                            if not _is_frontend_array(_x)
+                            else _x
+                        ),
+                        include_derived=True,
+                    )
+                elif not _is_frontend_array(ret):
+                    ret = arrays_to_frontend(create_frontend_array)(ret)
+            else:
+                if is_ret_tuple:
+                    ret = ivy_backend.nested_map(
+                        ret,
+                        lambda _x: (
+                            ivy_backend.array(_x)
+                            if not ivy_backend.is_array(_x)
+                            else _x
+                        ),
+                        include_derived=True,
+                    )
+                elif not ivy_backend.is_array(ret):
+                    ret = ivy_backend.array(ret)
+
+            out = ret
+            # pass return value to out argument
+            # check if passed reference is correctly updated
+            kwargs["out"] = out
+            if is_ret_tuple:
+                if test_flags.generate_frontend_arrays:
+                    flatten_ret = flatten_frontend(
+                        ret=ret,
+                        backend=backend_to_test,
+                        frontend_array_fn=create_frontend_array,
+                    )
+                    flatten_out = flatten_frontend(
+                        ret=out,
+                        backend=backend_to_test,
+                        frontend_array_fn=create_frontend_array,
+                    )
+                else:
+                    flatten_ret = flatten(backend=backend_to_test, ret=ret)
+                    flatten_out = flatten(backend=backend_to_test, ret=out)
+                for ret_array, out_array in zip(flatten_ret, flatten_out):
+                    if ivy_backend.native_inplace_support and not any(
+                        (ivy_backend.isscalar(ret), ivy_backend.isscalar(out))
+                    ):
+                        if test_flags.generate_frontend_arrays:
+                            assert ret_array.ivy_array.data is out_array.ivy_array.data
+                        else:
+                            assert ret_array.data is out_array.data
+                    assert ret_array is out_array
+            else:
+                if ivy_backend.native_inplace_support and not any(
+                    (ivy_backend.isscalar(ret), ivy_backend.isscalar(out))
                 ):
                     if test_flags.generate_frontend_arrays:
-                        assert ret_array.ivy_array.data is out_array.ivy_array.data
+                        assert ret.ivy_array.data is out.ivy_array.data
                     else:
-                        assert ret_array.data is out_array.data
-                assert ret_array is out_array
-        else:
-            if ivy.native_inplace_support and not any(
-                (ivy.isscalar(ret), ivy.isscalar(out))
-            ):
-                if test_flags.generate_frontend_arrays:
-                    assert ret.ivy_array.data is out.ivy_array.data
-                else:
-                    assert ret.data is out.data
-            assert ret is out
-    elif test_flags.inplace:
-        assert not isinstance(ret, tuple)
+                        assert ret.data is out.data
+                assert ret is out
+        elif test_flags.inplace:
+            assert not isinstance(ret, tuple)
 
-        if test_flags.generate_frontend_arrays:
-            assert _is_frontend_array(ret)
-        else:
-            assert ivy.is_array(ret)
+            if test_flags.generate_frontend_arrays:
+                assert _is_frontend_array(ret)
+                array_fn = _is_frontend_array
+            else:
+                assert ivy_backend.is_array(ret)
+                array_fn = ivy_backend.is_array
 
-        if test_flags.generate_frontend_arrays:
-            array_fn = _is_frontend_array
-        else:
-            array_fn = ivy.is_array
-        if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
-            # the function provides optional inplace update
-            # set inplace update to be True and check
-            # if returned reference is inputted reference
-            # and if inputted reference's content is correctly updated
-            copy_kwargs["inplace"] = True
-            first_array = ivy.func_wrapper._get_first_array(
-                *copy_args, array_fn=array_fn, **copy_kwargs
-            )
-            ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
-            assert first_array is ret_
-        else:
-            # the function provides inplace update by default
-            # check if returned reference is inputted reference
-            first_array = ivy.func_wrapper._get_first_array(
-                *args, array_fn=array_fn, **kwargs
-            )
-            ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
-            assert first_array is ret_
-            args, kwargs = copy_args, copy_kwargs
-    # create NumPy args
+            if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
+                # the function provides optional inplace update
+                # set inplace update to be True and check
+                # if returned reference is inputted reference
+                # and if inputted reference's content is correctly updated
+                copy_kwargs["inplace"] = True
+                first_array = ivy_backend.func_wrapper._get_first_array(
+                    *copy_args, array_fn=array_fn, **copy_kwargs
+                )
+                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
+                assert first_array is ret_
+            else:
+                # the function provides inplace update by default
+                # check if returned reference is inputted reference
+                first_array = ivy_backend.func_wrapper._get_first_array(
+                    *args, array_fn=array_fn, **kwargs
+                )
+                ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
+                assert first_array is ret_
 
-    def arrays_to_numpy(x):
-        if test_flags.generate_frontend_arrays:
-            return ivy.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
-        return ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x
+        ret_np_flat = flatten_and_to_np(backend=backend_to_test, ret=ret)
 
-    args_np = ivy.nested_map(
-        args_for_test,
-        arrays_to_numpy,
-        shallow=False,
-    )
-    kwargs_np = ivy.nested_map(
-        kwargs_for_test,
-        arrays_to_numpy,
-        shallow=False,
-    )
-
-    # temporarily set frontend framework as backend
-    ivy.set_backend(frontend)
-    try:
+    with update_backend(frontend) as ivy_frontend:
         # create frontend framework args
-        args_frontend = ivy.nested_map(
-            args_np,
+        args_frontend = ivy_frontend.nested_map(
+            gt_args_np,
             lambda x: (
-                ivy.native_array(x)
+                ivy_frontend.native_array(x)
                 if isinstance(x, np.ndarray)
-                else ivy.as_native_dtype(x) if isinstance(x, ivy.Dtype) else x
+                else (
+                    ivy_frontend.as_native_dtype(x)
+                    if isinstance(x, ivy_frontend.Dtype)
+                    else x
+                )
             ),
             shallow=False,
         )
-        kwargs_frontend = ivy.nested_map(
-            kwargs_np,
-            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        kwargs_frontend = ivy_frontend.nested_map(
+            gt_kwargs_np,
+            lambda x: ivy_frontend.native_array(x) if isinstance(x, np.ndarray) else x,
             shallow=False,
         )
 
         # change ivy dtypes to native dtypes
         if "dtype" in kwargs_frontend:
-            kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
+            kwargs_frontend["dtype"] = ivy_frontend.as_native_dtype(
+                kwargs_frontend["dtype"]
+            )
 
         # change ivy device to native devices
         if "device" in kwargs_frontend:
-            kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
+            kwargs_frontend["device"] = ivy_frontend.as_native_dev(
+                kwargs_frontend["device"]
+            )
 
-        # check and replace the NativeClass objects in arguments
-        # with true counterparts
-        args_frontend = ivy.nested_map(
-            args_frontend, fn=convtrue, include_derived=True, max_depth=10
-        )
-        kwargs_frontend = ivy.nested_map(
-            kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
-        )
+        # # check and replace the NativeClass objects in arguments
+        # # with true counterparts
+        # TODO is needed?
+        # args_frontend = ivy_frontend.nested_map(
+        #     args_frontend, fn=convtrue, include_derived=True, max_depth=10
+        # )
+        # kwargs_frontend = ivy_frontend.nested_map(
+        #     kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+        # )
 
         # wrap the frontend function objects in arguments to return native arrays
-        args_frontend = ivy.nested_map(
+        args_frontend = ivy_frontend.nested_map(
             args_frontend, fn=wrap_frontend_function_args, max_depth=10
         )
-        kwargs_frontend = ivy.nested_map(
+        kwargs_frontend = ivy_frontend.nested_map(
             kwargs_frontend, fn=wrap_frontend_function_args, max_depth=10
         )
 
@@ -793,27 +807,27 @@ def test_frontend_function(
         frontend_fw = importlib.import_module(module_name)
         frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
-        if ivy.isscalar(frontend_ret):
+        if ivy_frontend.isscalar(frontend_ret):
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
         else:
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
-            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
-        # unset frontend framework from backend
-        ivy.previous_backend()
-    except Exception as e:
-        ivy.previous_backend()
-        raise e
+            frontend_ret_idxs = ivy_frontend.nested_argwhere(
+                frontend_ret, ivy_frontend.is_native_array
+            )
+            frontend_ret_flat = ivy_frontend.multi_index_nest(
+                frontend_ret, frontend_ret_idxs
+            )
+            frontend_ret_np_flat = [ivy_frontend.to_numpy(x) for x in frontend_ret_flat]
 
-    if test_flags.generate_frontend_arrays:
-        ret_np_flat = flatten_frontend_to_np(
-            ret=ret, frontend_array_fn=create_frontend_array
-        )
-    else:
-        ret_np_flat = flatten_and_to_np(ret=ret)
+    # TODO enable back
+    # if test_flags.generate_frontend_arrays:
+    #     ret_np_flat = flatten_frontend_to_np(
+    #         ret=ret, frontend_array_fn=create_frontend_array
+    #     )
+    # else:
+    #     ret_np_flat = flatten_and_to_np(ret=ret)
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -823,15 +837,16 @@ def test_frontend_function(
         )
 
     if isinstance(rtol, dict):
-        rtol = _get_framework_rtol(rtol, ivy.backend)
+        rtol = _get_framework_rtol(rtol, t_globals.CURRENT_BACKEND)
     if isinstance(atol, dict):
-        atol = _get_framework_atol(atol, ivy.backend)
+        atol = _get_framework_atol(atol, t_globals.CURRENT_BACKEND)
 
     value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol,
         atol=atol,
+        backend=backend_to_test,
         ground_truth_backend=frontend,
     )
 
@@ -1766,12 +1781,16 @@ def convtrue(argument):
 
 def wrap_frontend_function_args(argument):
     """Wrap frontend function arguments to return native arrays."""
-    if ivy.nested_any(
-        argument,
-        lambda x: hasattr(x, "__module__")
-        and x.__module__.startswith("ivy.functional.frontends"),
-    ):
-        return output_to_native_arrays(frontend_outputs_to_ivy_arrays(argument))
+    # TODO pass as an argument and do not rely on global state
+    with update_backend(t_globals.CURRENT_FRONTEND_STR) as ivy_frontend:
+        if ivy_frontend.nested_any(
+            argument,
+            lambda x: hasattr(x, "__module__")
+            and x.__module__.startswith("ivy.functional.frontends"),
+        ):
+            return ivy_frontend.output_to_native_arrays(
+                ivy_frontend.frontend_outputs_to_ivy_arrays(argument)
+            )
     return argument
 
 
