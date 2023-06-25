@@ -361,11 +361,14 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("unsigned", "int8", "int16")},
+    backend_version,
+)
 def einsum(
     equation: str,
     *operands: Union[tf.Tensor, tf.Variable],
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (tf.cast(operand, tf.float32) for operand in operands)
     return tf.cast(tf.einsum(equation, *operands), dtype)
