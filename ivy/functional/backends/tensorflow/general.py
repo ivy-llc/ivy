@@ -52,7 +52,11 @@ def current_backend_str() -> str:
 @with_unsupported_dtypes(
     {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def get_item(x: tf.Tensor, /, query: tf.Tensor, *, copy: bool = None) -> tf.Tensor:
+def get_item(
+    x: Union[tf.Tensor, tf.Variable], /, query: tf.Tensor, *, copy: bool = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if copy:
+        x = tf.identity(x)
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
@@ -179,6 +183,10 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
+        if ensure_in_backend or ivy.is_native_array(x):
+            raise ivy.utils.exceptions.IvyException(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
@@ -188,10 +196,6 @@ def inplace_update(
                 x.data = x_native
             else:
                 x = ivy.Array(x_native)
-        elif ensure_in_backend:
-            raise ivy.utils.exceptions.IvyException(
-                "TensorFlow does not support inplace updates of the tf.Tensor"
-            )
         elif ivy.is_ivy_array(x):
             x.data = val_native
             # Handle view updates
@@ -261,8 +265,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(len(target.shape), 1)
-        ivy.utils.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1, as_array=False)
+        ivy.utils.assertions.check_equal(target.shape[0], size, as_array=False)
     if not target_given:
         target = tf.zeros([size], dtype=updates.dtype)
         return tf.tensor_scatter_nd_update(target, tf.expand_dims(indices, -1), updates)
@@ -303,15 +307,15 @@ def scatter_nd(
             else out
         )
     # handle numeric updates
+    if hasattr(updates, "dtype"):
+        updates_dtype = updates.dtype
+    else:
+        updates_dtype = ivy.default_dtype(item=updates)
     if ivy.exists(out):
-        dtype = ivy.promote_types(out.dtype, updates.dtype)
+        dtype = ivy.promote_types(out.dtype, updates_dtype)
     updates = tf.cast(
         updates,
-        (
-            ivy.as_native_dtype(dtype)
-            if ivy.exists(out)
-            else ivy.default_dtype(item=updates)
-        ),
+        (ivy.as_native_dtype(dtype) if ivy.exists(out) else updates_dtype),
     )
     contains_slices = (
         any(isinstance(idx, slice) for idx in indices)
@@ -425,7 +429,7 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
-            indices = tf.expand_dims(indices, 0)
+            indices = tf.expand_dims(indices, -1)
         if tf.reduce_any(indices < 0):
             shape = list(shape) if ivy.exists(shape) else list(out.shape)
             indices = _parse_index(indices, shape)
@@ -458,7 +462,7 @@ def scatter_nd(
                 )
                 for index in indices
             ]
-            indices = tf.concat(indices, axis=0)
+            indices = tf.concat(indices, axis=-1)
     # broadcast updates to correct shape
     expected_shape = (
         indices.shape[:-1] + out.shape[indices.shape[-1] :]
@@ -470,14 +474,25 @@ def scatter_nd(
     elif sum(updates.shape) >= sum(expected_shape):
         indices_shape = updates.shape[:1] + indices.shape[-1:]
         if sum(indices.shape) < sum(indices_shape):
-            indices = ivy.broadcast_to(indices, indices_shape)._data
+            indices = (
+                tf.broadcast_to(indices, shape)
+                if len(indices_shape) > tf.rank(indices)
+                else tf.broadcast_to(tf.reshape(indices, -1), indices_shape)
+            )
         else:
-            updates = ivy.broadcast_to(updates, expected_shape)._data
+            updates = (
+                tf.broadcast_to(updates, expected_shape)
+                if len(expected_shape) > tf.rank(updates)
+                else tf.broadcast_to(tf.reshape(updates, -1), expected_shape)
+            )
+
     # implementation
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(
+            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
+        )
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if not target_given:
         target = tf.zeros(shape, dtype=updates.dtype)
@@ -535,6 +550,7 @@ def vmap(
                 message="""in_axes should have a length equivalent to the number
                 of positional arguments to the function being vectorized or it
                 should be an integer""",
+                as_array=False,
             )
 
         # checking axis_size consistency
@@ -558,6 +574,7 @@ def vmap(
             ivy.utils.assertions.check_any(
                 [ivy.exists(ax) for ax in in_axes],
                 message="At least one of the axes should be specified (not None)",
+                as_array=False,
             )
         else:
             ivy.utils.assertions.check_exists(

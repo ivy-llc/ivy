@@ -65,7 +65,6 @@ def vorbis_window(
 @infer_dtype
 def hann_window(
     size: int,
-    /,
     *,
     periodic: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -204,8 +203,6 @@ def kaiser_bessel_derived_window(
     half_w = ivy.sqrt(kaiser_w_csum[:-1] / kaiser_w_csum[-1:])
     window = ivy.concat((half_w, half_w[::-1]), axis=0)
     result = window.astype(dtype)
-    if ivy.exists(out):
-        ivy.inplace_update(out, result)
     return result
 
 
@@ -215,7 +212,6 @@ def kaiser_bessel_derived_window(
 @infer_dtype
 def hamming_window(
     window_length: int,
-    /,
     *,
     periodic: bool = True,
     alpha: float = 0.54,
@@ -263,8 +259,6 @@ def hamming_window(
     else:
         count = ivy.linspace(0, window_length, window_length)
     result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
-    if ivy.exists(out):
-        ivy.inplace_update(out, result)
     return result
 
 
@@ -276,7 +270,6 @@ def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: int = 0,
-    /,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
@@ -372,7 +365,6 @@ def tril_indices(
 @infer_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
     k: int = 0,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -544,6 +536,7 @@ def ndindex(
 @handle_exceptions
 def indices(
     dimensions: Sequence,
+    *,
     dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     sparse: bool = False,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:

@@ -21,11 +21,11 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_shapes,
     handle_nestable,
+    handle_mixed_function,
     handle_array_like_without_promotion,
     handle_view,
     inputs_to_ivy_arrays,
     handle_array_function,
-    to_ivy_arrays_and_back,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -33,17 +33,19 @@ from ivy.utils.exceptions import handle_exceptions
 
 @handle_exceptions
 @handle_nestable
+@handle_mixed_function
 @handle_array_like_without_promotion
 @handle_view
-@handle_out_argument
+@inputs_to_ivy_arrays
+@handle_array_function
 def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
-    start_dim: int = 0,
-    end_dim: int = -1,
-    order: str = "C",
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -55,6 +57,13 @@ def flatten(
     ----------
     x
         input array to flatten.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     start_dim
         first dim to flatten. If not set, defaults to 0.
     end_dim
@@ -145,7 +154,7 @@ def flatten(
     if x.shape == ():
         x = ivy.reshape(x, (1, -1))[0, :]
     if start_dim == end_dim:
-        return x
+        return ivy.inplace_update(out, x) if ivy.exists(out) else x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             "Dimension out of range (expected to be in range of"
@@ -169,7 +178,17 @@ def flatten(
             lst.insert(i, x.shape[i])
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
-    return ivy.reshape(x, tuple(lst), order=order)
+    return ivy.reshape(x, tuple(lst), order=order, out=out)
+
+
+flatten.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_nestable
@@ -198,6 +217,13 @@ def moveaxis(
     destination
         Destination positions for each of the original axes.
         These must also be unique.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to.
 
@@ -284,6 +310,13 @@ def flipud(
     ----------
     m
         The array to be flipped.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to.
 
@@ -409,6 +442,13 @@ def rot90(
     ----------
     m
         Input array of two or more dimensions.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     k
         Number of times the array is rotated by 90 degrees.
     axes
@@ -570,6 +610,13 @@ def fliplr(
     ----------
     m
         The array to be flipped. Must be at least 2-D.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to.
 
@@ -808,6 +855,7 @@ def _to_pairs(x, n):
                 "ndim pairs where ndim is the number of "
                 "the input's dimensions"
             ),
+            as_array=False,
         )
     return x
 
@@ -826,26 +874,27 @@ def _to_dilated(x, n):
                 "ndim groups where ndim is the number of "
                 "the input's dimensions"
             ),
+            as_array=False,
         )
     return x
 
 
-def _check_tuple_arg(arg, name, b_float=False):
-    scalar_types = (int, float) if b_float else int
+def _check_tuple_arg(arg, name, force_integer=True):
+    is_scalar = ivy.isscalar if not force_integer else ivy.is_int_dtype
     flag_assert = False
     if isinstance(arg, (tuple, list)):
         for nested in arg:
             if isinstance(nested, (tuple, list)):
                 for sub_nested in nested:
-                    if not isinstance(sub_nested, scalar_types):
+                    if not is_scalar(sub_nested):
                         flag_assert = True
                         break
-            elif not isinstance(nested, scalar_types):
+            elif not is_scalar(nested):
                 flag_assert = True
-    elif not isinstance(arg, scalar_types):
+    elif not is_scalar(arg):
         flag_assert = True
     if flag_assert:
-        if b_float:
+        if not force_integer:
             raise ivy.utils.exceptions.IvyException(
                 name + " should be scalar, tuple of scalars or tuple of scalar tuples"
             )
@@ -895,9 +944,9 @@ def _check_arguments(
             message="the stat lengths must be greater than zero",
         )
     elif mode == "constant":
-        _check_tuple_arg(constant_values, "constant_values", b_float=True)
+        _check_tuple_arg(constant_values, "constant_values", force_integer=False)
     elif mode == "linear_ramp":
-        _check_tuple_arg(end_values, "end_values", b_float=True)
+        _check_tuple_arg(end_values, "end_values", force_integer=False)
     ivy.utils.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
@@ -906,9 +955,11 @@ def _check_arguments(
 
 @handle_exceptions
 @handle_nestable
+@handle_mixed_function
 @handle_array_like_without_promotion
 @handle_out_argument
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_array_function
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
@@ -1161,13 +1212,15 @@ def pad(
     return padded
 
 
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
+@handle_array_function
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
@@ -1182,8 +1235,15 @@ def vsplit(
     indices_or_sections
         If indices_or_sections is an integer n, the array is split into n
         equal sections, provided that n must be a divisor of the split axis.
-        If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple.
+        If indices_or_sections is a sequence of ints or 1-D array,
+        then input is split at each of the indices.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1204,13 +1264,14 @@ def vsplit(
     return ivy.current_backend(ary).vsplit(ary, indices_or_sections, copy=copy)
 
 
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
@@ -1228,8 +1289,15 @@ def dsplit(
         equal size. If input is not divisible by n, the sizes of the first
         int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
         the rest will have size int(ary.size(0) / n).
-        If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple.
+        If indices_or_sections is a sequence of ints or 1-D array,
+        then input is split at each of the indices.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1267,6 +1335,13 @@ def atleast_1d(
     ----------
     arys
         One or more input arrays.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1346,6 +1421,13 @@ def atleast_2d(
         One or more array-like sequences. Non-array inputs are
         converted to arrays. Arrays that already have two or more
         dimensions are preserved.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1368,6 +1450,8 @@ def atleast_2d(
 
 
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_view
 @to_native_arrays_and_back
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
@@ -1383,6 +1467,13 @@ def atleast_3d(
         One or more array-like sequences. Non-array inputs are
         converted to arrays. Arrays that already have three or more
         dimensions are preserved.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1463,13 +1554,15 @@ def take_along_axis(
     )
 
 
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
+@handle_array_function
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
     /,
     *,
     copy: Optional[bool] = None,
@@ -1486,6 +1579,13 @@ def hsplit(
         equal sections, provided that n must be a divisor of the split axis.
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -1564,7 +1664,14 @@ def expand(
         Array input.
     shape
         A 1-D Array indicates the shape you want to expand to,
-        following the broadcast rule
+        following the broadcast rule.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to.
 
@@ -1573,7 +1680,91 @@ def expand(
     ret
         Output Array
     """
-    return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
+    return ivy.current_backend(x).expand(x, shape, out=out, copy=None)
+
+
+@handle_out_argument
+@handle_mixed_function
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def put_along_axis(
+    arr: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    values: Union[ivy.Array, ivy.NativeArray],
+    axis: int,
+    /,
+    *,
+    mode: str = "raise",
+    out: Optional[ivy.Array] = None,
+) -> None:
+    """
+    Put values into the input array by matching 1d index and data slices along a
+    specified axis.
+
+    Parameters
+    ----------
+    arr : array_like
+        The input array to modify.
+    indices : array_like
+        The indices of the values to put into `arr`.
+    values : array_like
+        The values to put into `arr`.
+    axis : int
+        The axis over which to put the `values`.
+    mode : {'raise', 'wrap', 'clip'}, optional
+        Specifies how out-of-bounds indices will be handled.
+        The following modes are available:
+
+        - 'raise': a `ValueError` is raised when an index is out of bounds.
+        - 'wrap': the index is wrapped around to the corresponding index
+        at the other end of the axis.
+        - 'clip': the index is clipped to the closest in-bounds index.
+    out : ndarray, optional
+        Output array in which to place the result.
+        If not specified, a new array is created.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
+    >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
+    >>> values = ivy.array([[9, 8, 7], [6, 5, 4]])
+    >>> put_along_axis(arr, indices, values, 1, mode='clip')
+    >>> print(arr)
+    ivy.array([[3, 7, 5],
+               [6, 4, 1]])
+    """
+    if out is None:
+        out = ivy.zeros_like(arr)
+
+    indices = ivy.expand_dims(indices, axis=axis)
+    values = ivy.expand_dims(values, axis=axis)
+
+    stacked = ivy.concat((arr, values), axis=axis)
+
+    sorted_indices = ivy.argsort(indices, axis=axis)
+    sorted_stacked = ivy.take_along_axis(stacked, sorted_indices, axis=axis)
+
+    arr = ivy.where(
+        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis),
+        sorted_stacked,
+        arr,
+    )
+
+    if mode == "clip":
+        indices = ivy.clip(indices, 0, arr.shape[axis] - 1)
+    elif mode == "wrap":
+        indices = ivy.mod(indices, arr.shape[axis])
+
+    arr = ivy.where(
+        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis), arr, values
+    )
+
+    ivy.assign(out, arr)
 
 
 def _check_bounds(shape0, shape1, strides1, itemsize):
@@ -1586,10 +1777,11 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 
 
 @handle_exceptions
+@handle_mixed_function
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
-@to_ivy_arrays_and_back
+@inputs_to_ivy_arrays
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
@@ -1761,6 +1953,7 @@ def _interleave(a, b, axis):
 
 @handle_exceptions
 @handle_nestable
+@handle_mixed_function
 @inputs_to_ivy_arrays
 def associative_scan(
     x: Union[ivy.Array, ivy.NativeArray],

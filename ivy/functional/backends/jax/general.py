@@ -6,8 +6,8 @@ import numpy as np
 import jax.numpy as jnp
 from numbers import Number
 from operator import mul
-from functools import reduce
-from typing import Iterable, Optional, Union, Sequence, Callable, Tuple
+from functools import reduce as _reduce
+from typing import Optional, Union, Sequence, Callable, Tuple
 import multiprocessing as _multiprocessing
 import importlib
 
@@ -49,7 +49,15 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
-def get_item(x: JaxArray, /, query: JaxArray, *, copy: bool = None) -> JaxArray:
+def get_item(
+    x: JaxArray,
+    /,
+    query: JaxArray,
+    *,
+    copy: bool = None,
+) -> JaxArray:
+    if copy:
+        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 
@@ -57,7 +65,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.8 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -116,7 +124,7 @@ def gather_nd_helper(params, indices):
     else:
         num_index_dims = indices_shape[-1]
     res_dim_sizes_list = [
-        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = jnp.array(res_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -208,7 +216,7 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        if ensure_in_backend:
+        if ensure_in_backend or ivy.is_native_array(x):
             raise ivy.utils.exceptions.IvyException(
                 "JAX does not natively support inplace updates"
             )
@@ -242,10 +250,6 @@ def inplace_update(
                     view = ref()
                     if ivy.exists(view):
                         _update_view(view, x)
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "JAX does not natively support inplace updates"
-            )
         return x
     else:
         return val
@@ -281,8 +285,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(len(target.shape), 1)
-        ivy.utils.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1, as_array=False)
+        ivy.utils.assertions.check_equal(target.shape[0], size, as_array=False)
     if not target_given:
         reduction = "replace"
     if reduction == "sum":
@@ -319,17 +323,19 @@ def scatter_nd(
     if (
         indices != Ellipsis
         and not (
-            isinstance(indices, Iterable) and (Ellipsis in indices or len(indices) != 0)
+            isinstance(indices, (tuple, list))
+            and (Ellipsis in indices or len(indices) != 0)
         )
         and not isinstance(indices, slice)
         and not (
-            isinstance(indices, Iterable) and any(isinstance(k, slice) for k in indices)
+            isinstance(indices, (tuple, list))
+            and any(isinstance(k, slice) for k in indices)
         )
     ):
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = jnp.array(indices)
         if len(indices.shape) < 2:
-            indices = jnp.expand_dims(indices, 0)
+            indices = jnp.expand_dims(indices, -1)
     # keep below commented out, array API tests are passing without this
     # updates = [updates] if isinstance(updates, Number) else updates
 
@@ -364,7 +370,9 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(
+            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
+        )
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if not target_given:
         reduction = "replace"
@@ -414,7 +422,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.10 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,
@@ -430,6 +438,6 @@ def itemsize(x: JaxArray) -> int:
     return x.itemsize
 
 
-@with_unsupported_dtypes({"0.4.10 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
 def strides(x: JaxArray) -> Tuple[int]:
     return to_numpy(x).strides
