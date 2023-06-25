@@ -38,3 +38,12 @@ def concat(x, axis, name=None):
 @to_ivy_arrays_and_back
 def tile(x, repeat_times, name=None):
     return ivy.tile(x, repeats=repeat_times)
+
+
+@with_unsupported_dtypes(
+    {"2.5.0 and below": ("int8", "uint8", "int16", "float16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def flip(x, axis, name=None):
+    return ivy.flip(x, axis=axis)
