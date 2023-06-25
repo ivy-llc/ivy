@@ -202,7 +202,7 @@ def inv(
             return ret
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
