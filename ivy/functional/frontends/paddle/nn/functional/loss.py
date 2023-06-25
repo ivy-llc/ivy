@@ -51,4 +51,8 @@ def mse_loss(input, label, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
     ret = ivy.square(input - label)
     ret = reduction(ret)
-    return paddle.to_tensor(ret.reshape([-1]))
+
+    if ret.shape == ():
+        ret = ret.expand_dims()
+
+    return paddle.to_tensor(ret)
