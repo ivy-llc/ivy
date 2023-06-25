@@ -555,10 +555,9 @@ class Tensor:
 
         return torch_frontend.tensor(ivy.expand(self.ivy_array, tuple(size)))
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def expand_as(self, other):
         return self.expand(
-            size=ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
+            ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
         )
 
     def detach(self):
@@ -601,6 +600,9 @@ class Tensor:
 
     def dim(self):
         return self.ivy_array.ndim
+
+    def heaviside(self, values, *, out=None):
+        return torch_frontend.heaviside(self, values, out=out)
 
     def new_full(
         self,
@@ -939,6 +941,9 @@ class Tensor:
     def fix_(self):
         self.ivy_array = self.fix().ivy_array
         return self
+
+    def isinf(self):
+        return torch_frontend.isinf(self._ivy_array)
 
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
