@@ -26,6 +26,7 @@ Function Wrapping
 .. _`stored as an attribute`: https://github.com/unifyai/ivy/blob/6a57477daa87e3b3c6d157f10b935ba4fa21c39f/ivy/func_wrapper.py#L701
 .. _`ivy.linear`: https://github.com/unifyai/ivy/blob/7a8fc1ea4eca6d061ae7a3efd1814518d4a6016f/ivy/functional/ivy/layers.py#L172
 .. _`handle_exceptions`: https://github.com/unifyai/ivy/blob/40c3f381043d1c470fb4f04a0a5fd380a8a95130/ivy/utils/exceptions.py#L189
+.. _`example`: https://github.com/unifyai/ivy/blob/7354979d7336e5138e8cae660f792ece507405b4/ivy/functional/backends/torch/layers.py#L30
 
 When a backend framework is set by calling :code:`ivy.set_backend(backend_name)`, then all Ivy functions are `wrapped`_.
 This is achieved by calling `_wrap_function`_, which will apply the appropriate wrapping to the given function, based on what decorators it has.
@@ -74,7 +75,10 @@ Nestable Support
 Partial Mixed Function Support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-#. `handle_mixed_function`_: This wrapping function enables switching between compositional and primary implementations of :ref:`Mixed Functions` based on some condition on the arguments of the function. The condition is specified through a lambda function which when evaluates to `True` the primary implementation is run and otherwise the compositional implementation is executed. For backends that have a primary implementation of a mixed function, the reference to the compositional implementation is `stored as an attribute`_ inside the backend function during backend setting. To make use of this wrapper, it is necessary to set the `mixed_function` attribute of the function to True, as is done for example in `ivy.linear`_. This attribute also automatically activates the :code:`inputs_to_ivy_arrays` wrapper when calling the compositional implementation of the mixed function, and the :code:`outputs_to_ivy_arrays` and :code:`inputs_to_native_arrays` wrappers when calling the backend implementation. It is therefore preferable to avoid adding those decorators to mixed functions manually.
+#. `handle_mixed_function`_: This wrapping function enables switching between compositional and primary implementations of :ref:`Mixed Functions` based on some condition on the arguments of the function.
+#.  The condition is specified through a lambda function which when evaluates to `True` the primary implementation is run and otherwise the compositional implementation is executed.
+#.  For backends that have a primary implementation of a mixed function, the reference to the compositional implementation is `stored as an attribute`_ inside the backend function during backend setting. To make use of this decorator, one must
+#.  add the :code:`partial_mixed_handler` attribute containing the lambda function to the backend implementation. Here's an `example`_ from the torch backend implementation of linear.
 
 Exception Handling 
 ^^^^^^^^^^^^^^^^^^
