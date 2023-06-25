@@ -98,10 +98,9 @@ def test_mae_loss(
         pred = pred[0]
     # Adjust shapes for broadcasting
     while len(pred.shape) < len(true.shape):
-	pred = pred.unsqueeze(0)
+        pred = pred.unsqueeze(0)
     while len(pred.shape) > len(true.shape):
-	true = true.unsqueeze(0)
-
+        true = true.unsqueeze(0)
     # Add dimension handling
     if len(pred.shape) > len(true.shape):
         pred = pred[: true.ndim]
@@ -116,5 +115,4 @@ def test_mae_loss(
         on_device=on_device,
         true=true,
         pred=pred,
-        reduction=reduction,
-    )
+        reduction=reduction,)
