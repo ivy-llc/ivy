@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.cond",
     dtype_and_x=_get_dtype_and_matrix_non_singular(),
-    mode=st.sampled_from([None, np.inf, -np.inf, 1, -1, 2, -2, 'fro']),
+    mode=st.sampled_from([None, np.inf, -np.inf, 1, -1, 2, -2, "fro"]),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_cond(
