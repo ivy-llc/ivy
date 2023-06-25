@@ -7,11 +7,6 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
-def cond(x, p=None):
-    return ivy.cond(x, p=p)
-
-
-@to_ivy_arrays_and_back
 def inv(a):
     return ivy.inv(a)
 
