@@ -243,7 +243,6 @@ def setxor1d(ar1, ar2, assume_unique=False):
             ret = ivy.astype(sorted_sy_d, ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))))
         except TypeError as e:
             print("TypeError:", e)
-    print("ret: ", ret)
     return ret
 
 

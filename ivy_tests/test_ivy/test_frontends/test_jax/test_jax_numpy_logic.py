@@ -978,6 +978,7 @@ def test_jax_numpy_iscomplexobj(
         num_arrays=2,
     ),
     assume_unique=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_setxor1d(
     dtypes_values,
