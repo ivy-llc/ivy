@@ -211,7 +211,7 @@ class Tensor:
 
     @with_supported_dtypes(
         {
-            "2.4.2 and below": (
+            "2.5.0 and below": (
                 "bool",
                 "int8",
                 "int16",
@@ -224,8 +224,7 @@ class Tensor:
         "paddle",
     )
     def logical_or(self, y, out=None, name=None):
-        y_ivy = _to_ivy_array(y)
-        return ivy.logical_or(self._ivy_array, y_ivy, out=out)
+        return paddle_frontend.logical_or(self, y, out=out)
 
     @with_supported_dtypes(
         {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
