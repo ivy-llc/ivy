@@ -111,6 +111,37 @@ def test_numpy_diag_indices(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.mask_indices",
+    n=helpers.ints(min_value=1, max_value=10),
+    mask_func=st.sampled_from([triu, tril]),
+    k=helpers.ints(min_value=-10, max_value=10),
+    input_dtype=helpers.get_dtypes("numeric"),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(2),
+)
+def test_numpy_mask_indices(
+    n,
+    mask_func,
+    k,
+    input_dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        mask_func=mask_func,
+        k=k,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.tril_indices",
     n=helpers.ints(min_value=1, max_value=10),
     m=helpers.ints(min_value=1, max_value=10),

@@ -25,5 +25,14 @@ def diag_indices(n, ndim=2):
 
 
 @to_ivy_arrays_and_back
+def mask_indices(n, mask_func, k=0):
+    a = ivy.ones((n, n))
+    mask = mask_func(a, k=k)
+    mask = ivy.array(mask)
+    indices = ivy.argwhere(mask)
+    return indices[:, 0], indices[:, 1]
+
+
+@to_ivy_arrays_and_back
 def tril_indices(n, k=0, m=None):
     return ivy.tril_indices(n, m, k)
