@@ -1055,6 +1055,44 @@ def nested_map(
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
+     Examples
+    --------
+    With :class:`Tuple` inputs:
+
+    >>> x = ([[1., 2.], [3., 4.]])
+    >>> function = lambda a : a * 2
+    >>> ivy.nested_map(x, function)
+    >>> print(x)
+    ([[2., 4.], [6., 8.]])
+
+    With :code:`Dict` input:
+
+    >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
+    >>> function = lambda a : a + 1
+    >>> ivy.nested_map(x, function)
+    >>> print(x)
+    {1: [1, 2], 2: (4, 5)}
+
+    With :code:`List` inputs:
+
+    >>> x = [['a', 'b', 'c'],
+    ...      ['d', 'e', 'f'],
+    ...      ['g', ['h', 'i']]]
+    >>> function = lambda a: a + 'H'
+    >>> ivy.nested_map(x, function)
+    >>> print(x)
+    [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
+    >>> function = lambda _: ivy.array([3., 4.])
+    >>> ivy.nested_map(x, function)
+    >>> print(x)
+    {
+        a: ivy.array([3., 4.]),
+        b: ivy.array([3., 4.])
+    }
     """
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
