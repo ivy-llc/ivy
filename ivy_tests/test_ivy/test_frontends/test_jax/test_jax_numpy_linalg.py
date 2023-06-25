@@ -17,7 +17,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
 )
 
 
-#cond
+# cond
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.cond",
     dtype_and_x=_get_dtype_and_matrix_non_singular(),
