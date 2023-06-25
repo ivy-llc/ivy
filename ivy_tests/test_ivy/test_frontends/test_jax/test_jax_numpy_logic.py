@@ -967,3 +967,40 @@ def test_jax_numpy_iscomplexobj(
         on_device=on_device,
         x=x[0],
     )
+
+
+
+# setxor1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.setxor1d",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+    assume_unique=st.booleans(),
+)
+def test_jax_numpy_setxor1d(
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    assume_unique,
+):
+    x_dtypes, x = dtypes_values
+
+    print("###############################################################")
+    print("genearated test data: ------------------")
+    print("dtype_and_x: ", dtypes_values)
+    print("assume_unique: ", assume_unique)
+
+    helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+        assume_unique=assume_unique,
+    )

@@ -218,3 +218,27 @@ def iscomplex(x: any):
 @to_ivy_arrays_and_back
 def iscomplexobj(x):
     return ivy.is_complex_dtype(ivy.dtype(x))
+
+
+@to_ivy_arrays_and_back
+def setxor1d(ar1, ar2, assume_unique=False):
+    print("chain created data: ------------------")
+    print("assume_unique: ",assume_unique)
+    if assume_unique:
+        print("ar1: ", ar1)
+        try:
+            print("set(ar1): ", set(ivy.nested_map(ar1, lambda x: (x,))))
+        except Exception as e:
+            print("An error occurred:", e)
+
+        print("ar2: ", ar2)
+        print("set(ar1).union(ar2): ", set(ar1).union(ar2))
+
+        ret = set(ivy.nested_map(ar1, lambda x: (x,))).union(set(ivy.nested_map(ar2, lambda x: (x,))))
+    else:
+        ret = set(ar1).union(ar2)
+        ret = ret - set(ar1).intersection(ar2)
+
+    print("ret: ", ret)
+
+    return ret
