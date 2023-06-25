@@ -402,13 +402,15 @@ class Tensor:
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
-    def new_zeros(self, *size, dtype=None, device=None, requires_grad=False):
+    def new_zeros(
+        self, size, *, dtype=None, device=None, requires_grad=False, layout=None
+    ):
         if isinstance(size[0], tuple):
             return torch_frontend.zeros(
-                size[0], dtype=dtype, device=device, requires_grad=requires_grad
+                size=size[0], dtype=dtype, device=device, requires_grad=requires_grad
             )
         return torch_frontend.zeros(
-            size, dtype=dtype, device=device, requires_grad=requires_grad
+            size=size, dtype=dtype, device=device, requires_grad=requires_grad
         )
 
     def to(self, *args, **kwargs):
@@ -553,10 +555,9 @@ class Tensor:
 
         return torch_frontend.tensor(ivy.expand(self.ivy_array, tuple(size)))
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def expand_as(self, other):
         return self.expand(
-            size=ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
+            ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
         )
 
     def detach(self):
@@ -599,6 +600,9 @@ class Tensor:
 
     def dim(self):
         return self.ivy_array.ndim
+
+    def heaviside(self, values, *, out=None):
+        return torch_frontend.heaviside(self, values, out=out)
 
     def new_full(
         self,
@@ -938,6 +942,9 @@ class Tensor:
         self.ivy_array = self.fix().ivy_array
         return self
 
+    def isinf(self):
+        return torch_frontend.isinf(self._ivy_array)
+
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
 
@@ -1076,6 +1083,10 @@ class Tensor:
         return torch_frontend.greater(self, other)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def __ge__(self, other):
+        return torch_frontend.greater_equal(self, other)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __ne__(self, other):
         return self.ne(other)
 
@@ -1155,7 +1166,7 @@ class Tensor:
         self.ivy_array = self.to(self.dtype).ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def round(self, *, decimals=0):
         return torch_frontend.round(self, decimals=decimals)
 
@@ -1280,16 +1291,25 @@ class Tensor:
         return torch_frontend.copysign(self, other, out=out)
 
     @with_unsupported_dtypes(
-        {"2.0.1 and below": ("complex", "float16", "bfloat16", "bool")}, "torch"
+        {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
     )
     def greater(self, other, *, out=None):
         return torch_frontend.greater(self, other, out=out)
 
-    @with_unsupported_dtypes(
-        {"2.0.1 and below": ("complex", "float16", "bfloat16", "bool")}, "torch"
-    )
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
     def greater_(self, other):
         self.ivy_array = ivy.astype(self.greater(other).ivy_array, self.dtype)
+        return self
+
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
+    )
+    def greater_equal(self, other, *, out=None):
+        return torch_frontend.greater_equal(self, other, out=out)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
+    def greater_equal_(self, other):
+        self.ivy_array = ivy.astype(self.greater_equal(other).ivy_array, self.dtype)
         return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
