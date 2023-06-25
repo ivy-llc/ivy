@@ -370,7 +370,7 @@ def test_tensorflow_gamma(
             min_dim_size=1,
             max_dim_size=10,
         ),
-        dtype=helpers.get_dtypes("float", full=False),
+        dtype=helpers.get_dtypes("int", full=False),
     ),
     num_samples=helpers.ints(min_value=1, max_value=10),
     seed=helpers.ints(min_value=0, max_value=10),
