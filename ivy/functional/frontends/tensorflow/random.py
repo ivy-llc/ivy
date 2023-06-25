@@ -83,3 +83,16 @@ def stateless_poisson(shape, seed, lam, dtype=ivy.int32, name=None):
 @to_ivy_arrays_and_back
 def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
     return ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed)
+
+# stateless_categorical
+@to_ivy_arrays_and_back
+def stateless_categorical(logits, num_samples, seed,dtype=tf.dtypes.int64,name=None):
+    ivy.seed(seed)
+    probabilities = ivy.softmax(logits)
+    samples = ivy.empty((num_samples,), dtype=ivy.int64)
+    for i in range(num_samples):
+        random_number = ivy.random_uniform(shape=(1,), low=0.0, high=1.0)
+        cumulative_probs = ivy.cumsum(probabilities)
+        sample = ivy.argmax(cumulative_probs > random_number)
+        samples = ivy.assign(samples, sample, indices=i)
+    return samples
