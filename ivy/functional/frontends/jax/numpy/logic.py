@@ -222,21 +222,21 @@ def iscomplexobj(x):
 
 @to_ivy_arrays_and_back
 def packbits(x, axis=None, bitorder="big"):
-    a = ivy.greater(a, ivy.zeros_like(a)).astype("uint8")
+    x = ivy.greater(x, ivy.zeros_like(x)).astype("uint8")
     bits = ivy.arange(8, dtype="uint8")
     if bitorder == "big":
         bits = bits[::-1]
     if axis is None:
-        ivy.reshape(a, -1)
+        ivy.reshape(x, -1)
         axis = 0
-    a = ivy.swapaxes(a, axis, -1)
+    x = ivy.swapaxes(x, axis, -1)
 
-    remainder = a.shape[-1] % 8
+    remainder = x.shape[-1] % 8
     if remainder:
         pad_config = [(0, 8 - remainder)]
-        a = ivy.zero_pad(a, pad_config)
+        x = ivy.zero_pad(x, pad_config)
 
-    a = a.reshape(a.shape[:-1] + (a.shape[-1] // 8, 8))
-    bits = ivy.expand_dims(bits, tuple(range(a.ndim - 1)))
-    packed = (a << bits).sum(-1).astype("uint8")
+    x = x.reshape(x.shape[:-1] + (x.shape[-1] // 8, 8))
+    bits = ivy.expand_dims(bits, tuple(range(x.ndim - 1)))
+    packed = (x << bits).sum(-1).astype("uint8")
     return ivy.swapaxes(packed, axis, -1)
