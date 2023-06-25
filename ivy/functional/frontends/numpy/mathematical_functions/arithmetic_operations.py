@@ -390,6 +390,7 @@ def _divmod(
         )
     return ret
 
+
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back

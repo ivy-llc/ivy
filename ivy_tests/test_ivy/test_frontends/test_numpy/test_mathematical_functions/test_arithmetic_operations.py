@@ -732,6 +732,7 @@ def test_numpy_divmod(
         x2=xs[1],
     )
 
+
 # remainder
 @handle_frontend_test(
     fn_tree="numpy.remainder",
@@ -740,8 +741,6 @@ def test_numpy_divmod(
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
-                min_value=0,
-                exclude_min=True,
                 shared_dtype=True,
             )
         ],
@@ -779,6 +778,4 @@ def test_numpy_remainder(
         order="K",
         dtype=dtype,
         subok=True,
-        rtol=1e-5,
-        atol=1e-5,
     )
