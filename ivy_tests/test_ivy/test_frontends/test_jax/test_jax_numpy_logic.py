@@ -988,19 +988,16 @@ def test_jax_numpy_setxor1d(
     assume_unique,
 ):
     x_dtypes, x = dtypes_values
-
     print("###############################################################")
     print("genearated test data: ------------------")
-    print("dtype_and_x: ", dtypes_values)
-    print("assume_unique: ", assume_unique)
-
+    print("dtypes_values: ", dtypes_values)
     helpers.test_frontend_function(
         input_dtypes=x_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x1=x[0],
-        x2=x[1],
+        ar1=x[0],
+        ar2=x[1],
         assume_unique=assume_unique,
     )

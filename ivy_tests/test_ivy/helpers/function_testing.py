@@ -804,6 +804,12 @@ def test_frontend_function(
     if isinstance(atol, dict):
         atol = _get_framework_atol(atol, ivy.backend)
 
+    print("functioned data from both ends: ------------------")
+    print("from chained backend: ", ret_np_flat)
+    print("from ground truth backend: ", frontend_ret_np_flat)
+    print("gt_backend is : ", frontend)
+    print("###############################################################")
+
     value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=frontend_ret_np_flat,

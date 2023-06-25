@@ -223,22 +223,27 @@ def iscomplexobj(x):
 @to_ivy_arrays_and_back
 def setxor1d(ar1, ar2, assume_unique=False):
     print("chain created data: ------------------")
-    print("assume_unique: ",assume_unique)
-    if assume_unique:
-        print("ar1: ", ar1)
-        try:
-            print("set(ar1): ", set(ivy.nested_map(ar1, lambda x: (x,))))
-        except Exception as e:
-            print("An error occurred:", e)
+    print("ar1: ", ar1)
+    print("ar2: ", ar2)
+    print("assume_unique: ", assume_unique)
 
-        print("ar2: ", ar2)
-        print("set(ar1).union(ar2): ", set(ar1).union(ar2))
-
-        ret = set(ivy.nested_map(ar1, lambda x: (x,))).union(set(ivy.nested_map(ar2, lambda x: (x,))))
+    ar1 = ivy.unique_values(ar1)
+    ar2 = ivy.unique_values(ar2)
+    ar = ivy.unique_values(ivy.concat((ar1, ar2)))
+    ret = ivy.Array
+    if assume_unique and (len(ar) == (2* (len(ar1)+len(ar2)))):
+        ret = ivy.astype(ivy.sort(ar), ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))))
     else:
-        ret = set(ar1).union(ar2)
-        ret = ret - set(ar1).intersection(ar2)
-
+        try:
+            _ar1 = ivy.to_list(ar1)
+            _ar2 = ivy.to_list(ar2)
+            _ar = ivy.to_list(ar)
+            sy_d = [i for i in _ar if (i in _ar1 and i not in _ar2) or (i in _ar2 and i not in _ar1)]
+            sorted_sy_d = ivy.sort(sy_d)
+            ret = ivy.astype(sorted_sy_d, ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))))
+        except TypeError as e:
+            print("TypeError:", e)
     print("ret: ", ret)
-
     return ret
+
+
