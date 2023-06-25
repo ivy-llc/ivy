@@ -223,3 +223,20 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def astype(self, dtype):
         return ivy.astype(self._ivy_array, dtype=dtype)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def logical_xor(self, y, out=None, name=None):
+        return paddle_frontend.logical_xor(self, y, out=out)
