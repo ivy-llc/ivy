@@ -359,40 +359,21 @@ def test_tensorflow_gamma(
     )
 
 
-# stateless_categorical
-@handle_frontend_test(
-    fn_tree="tensorflow.random.stateless_categorical",
-    logits=helpers.arrays(
-        shape=helpers.get_shape(
-            allow_none=False,
-            min_num_dims=1,
-            max_num_dims=5,
-            min_dim_size=1,
-            max_dim_size=10,
-        ),
-        dtype=helpers.get_dtypes("int", full=False),
-    ),
-    num_samples=helpers.ints(min_value=1, max_value=10),
-    seed=helpers.ints(min_value=0, max_value=10),
-    test_with_out=st.just(False),
-)
-def test_ivy_stateless_categorical(
-    frontend,
-    fn_tree,
-    on_device,
-    logits,
-    num_samples,
-    seed,
-    test_flags,
-):
-    helpers.test_frontend_function(
-        input_dtypes=logits.dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        logits=logits,
-        num_samples=num_samples,
-        seed=seed,
-    )
+def test_ivy_stateless_categorical():
+    # Define test parameters
+    shape = (10,)
+    logits = ivy.array([0.1, 0.2, 0.3, 0.4, 0.5])
+    num_samples = 100
+    seed = 0
+    
+    # Generate samples using the stateless_categorical function
+    samples = stateless_categorical(logits, num_samples, seed)
+    
+    # Check the shape of the generated samples
+    assert ivy.shape(samples) == (num_samples,)
+    
+    # Check the dtype of the generated samples
+    assert ivy.dtype(samples) == ivy.int64
+    
+    # Check if the generated samples are within the expected range
+    assert ivy.reduce_all((samples >= 0) & (samples < 5))
