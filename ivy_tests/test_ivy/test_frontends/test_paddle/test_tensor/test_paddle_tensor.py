@@ -1319,15 +1319,13 @@ def test_paddle_logical_xor(
 
 
 # log1p
-SAFETY_FACTOR = 0.5  # Adjust the safety factor as per your requirements
-
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="log1p",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=2,
     ),
 )
 def test_paddle_log1p(
@@ -1339,18 +1337,11 @@ def test_paddle_log1p(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-
-    # Apply safety factor to the test inputs
-    x_safety = [elem * SAFETY_FACTOR for elem in x]
-
-    # Ensure the shape of x_safety remains the same as x
-    x_safety = [np.broadcast_to(elem, x[0].shape) for elem in x_safety]
-
     # Test the frontend method
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "data": x_safety[0],
+            "data": x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
