@@ -357,3 +357,42 @@ def test_tensorflow_gamma(
         seed=seed,
         test_values=False,
     )
+
+
+# stateless_categorical
+@handle_frontend_test(
+    fn_tree="tensorflow.random.stateless_categorical",
+    logits=helpers.arrays(
+        shape=helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+        dtype=helpers.get_dtypes("float", full=False),
+    ),
+    num_samples=helpers.ints(min_value=1, max_value=10),
+    seed=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_ivy_stateless_categorical(
+    frontend,
+    fn_tree,
+    on_device,
+    logits,
+    num_samples,
+    seed,
+    test_flags,
+):
+    helpers.test_frontend_function(
+        input_dtypes=logits.dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        logits=logits,
+        num_samples=num_samples,
+        seed=seed,
+    )
