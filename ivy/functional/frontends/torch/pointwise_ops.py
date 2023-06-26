@@ -148,6 +148,7 @@ def atan2(input, other, *, out=None):
 arctan2 = atan2
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
 @to_ivy_arrays_and_back
 def negative(input, *, out=None):
     return ivy.negative(input, out=out)
@@ -427,7 +428,7 @@ def frac(input, *, out=None):
     return input - ivy.sign(input) * ivy.floor(ivy.abs(input))
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def xlogy(input, other, *, out=None):
     return ivy.xlogy(input, other, out=out)
@@ -534,7 +535,7 @@ def sgn(input, *, out=None):
         return ivy.sign(input, out=out)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
     return ivy.nan_to_num(input, nan=nan, posinf=posinf, neginf=neginf, out=out)

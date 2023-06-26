@@ -116,6 +116,13 @@ def expand_dims(
     ----------
     x
         input array.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     axis
         axis position (zero-based). If x has rank (i.e, number of dimensions) N, a
         valid axis must reside on the closed-interval [-N-1, N]. If provided a negative
@@ -246,6 +253,13 @@ def flip(
     ----------
     x
         input array.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     axis
         axis (or axes) along which to flip. If axis is None, all input array axes are
         flipped. If axis is negative, axis is counted from the last dimension. If
@@ -336,6 +350,13 @@ def permute_dims(
     axes
         tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes
         (dimensions) of x.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -646,8 +667,8 @@ def roll(
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -661,6 +682,13 @@ def squeeze(
     axis
         axis (or axes) to squeeze. If a specified axis has a size greater than one, a
         ValueError is. If None, then all squeezable axes are squeezed. Default: ``None``
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1118,6 +1146,13 @@ def split(
     ----------
     x
         array to be divided into sub-arrays.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     num_or_size_splits
         Number of equal arrays to divide the array into along the given axis if an
         integer. The size of each split element if a sequence of integers or 1-D array.
@@ -1201,6 +1236,13 @@ def swapaxes(
         First axis to be swapped.
     axis1
         Second axis to be swapped.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1379,6 +1421,13 @@ def unstack(
     ----------
     x
         Input array to unstack.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
     axis
         Axis for which to unpack the array.
     keepdims

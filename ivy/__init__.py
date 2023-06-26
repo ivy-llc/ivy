@@ -6,6 +6,7 @@ import builtins
 import numpy as np
 import sys
 import inspect
+import os
 
 
 import ivy.utils.backend.handler
@@ -646,7 +647,7 @@ _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
     from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722
-    compile, transpile, unify = None, None, None
+    pass  # Added for the finally statment
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():
@@ -843,22 +844,16 @@ def _assert_array_significant_figures_formatting(sig_figs):
 
 
 # ToDo: SF formating for complex number
-def _sf(x, sig_fig=3):
+def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
     if isinstance(x, complex):
         return complex(x)
-    if "float" in type(x).__name__:
-        x = float(
-            np.format_float_positional(
-                x, precision=sig_fig, unique=False, fractional=False, trim="k"
-            )
-        )
+    if np.issubdtype(x.dtype, np.floating):
+        x_positive = np.where(np.isfinite(x) & (x != 0), np.abs(x), 10 ** (sig_fig - 1))
+        mags = 10 ** (sig_fig - 1 - np.floor(np.log10(x_positive)))
+        return np.round(x * mags) / mags
     return x
-
-
-vec_sig_fig = np.vectorize(_sf)
-vec_sig_fig.__name__ = "vec_sig_fig"
 
 
 ivy.array_significant_figures = 10
@@ -1285,19 +1280,19 @@ GLOBAL_PROPS = [
 
 
 INTERNAL_FILENAMES = [
-    "ivy/compiler",
-    "ivy/functional",
-    "ivy/data_classes",
-    "ivy/stateful",
-    "ivy/utils",
-    "ivy_tests/test_ivy",
-    "ivy/func_wrapper.py",
-    "ivy/__init__.py",
+    os.path.join("ivy", "compiler"),
+    os.path.join("ivy", "functional"),
+    os.path.join("ivy", "data_classes"),
+    os.path.join("ivy", "stateful"),
+    os.path.join("ivy", "utils"),
+    os.path.join("ivy_tests", "test_ivy"),
+    os.path.join("ivy", "func_wrapper.py"),
+    os.path.join("ivy", "__init__.py"),
 ]
 
 
 def _is_from_internal(filename):
-    return ivy.any([fn in filename for fn in INTERNAL_FILENAMES])
+    return builtins.any([fn in filename for fn in INTERNAL_FILENAMES])
 
 
 class IvyWithGlobalProps(sys.modules[__name__].__class__):

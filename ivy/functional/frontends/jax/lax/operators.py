@@ -277,6 +277,7 @@ def dot(lhs, rhs, precision=None, preferred_element_type=None):
     return ret
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("bool",)}, "jax")
 @to_ivy_arrays_and_back
 def dot_general(
     lhs, rhs, dimension_numbers, precision=None, preferred_element_type=None
@@ -608,7 +609,7 @@ def reduce_window(
 
 @to_ivy_arrays_and_back
 def squeeze(array, dimensions):
-    return ivy.squeeze(array, dimensions)
+    return ivy.squeeze(array, axis=dimensions)
 
 
 @to_ivy_arrays_and_back

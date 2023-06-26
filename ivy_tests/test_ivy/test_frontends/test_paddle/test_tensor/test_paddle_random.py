@@ -2,8 +2,40 @@
 from hypothesis import strategies as st
 
 # local
+
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+
+# randint
+@handle_frontend_test(
+    fn_tree="paddle.randint",
+    low=helpers.ints(min_value=0, max_value=10),
+    high=helpers.ints(min_value=11, max_value=20),
+    dtype=helpers.get_dtypes("integer"),
+    shape=helpers.get_shape(
+        allow_none=False, min_num_dims=2, max_num_dims=7, min_dim_size=2
+    ),
+)
+def test_paddle_randint(
+    low,
+    high,
+    dtype,
+    frontend,
+    test_flags,
+    shape,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_values=False,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        low=low,
+        high=high,
+        shape=shape,
+    )
 
 
 @handle_frontend_test(
@@ -39,4 +71,56 @@ def test_paddle_uniform(
         min=min,
         max=max,
         seed=seed,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.poisson",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+)
+def test_paddle_poisson(dtype_and_x, frontend, test_flags, fn_tree):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.randn",
+    input_dtypes=st.sampled_from(["int32", "int64"]),
+    shape=helpers.get_shape(
+        allow_none=False, min_num_dims=1, max_num_dims=1, min_dim_size=2
+    ),
+    dtype=st.sampled_from(["float32", "float64"]),
+)
+def test_paddle_randn(
+    *,
+    input_dtypes,
+    shape,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtypes],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        shape=shape,
+        dtype=dtype,
     )

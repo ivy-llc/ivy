@@ -490,3 +490,22 @@ def igamma(
         ivy.array([0.3614, 0.2085])
     """
     return ivy.current_backend().igamma(a, x=x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def nanquantile(
+    a: ivy.Array,
+    q: Union[ivy.Array, float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    keepdims: bool = False,
+    interpolation: str = "linear",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.current_backend(a).nanquantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
+    )
