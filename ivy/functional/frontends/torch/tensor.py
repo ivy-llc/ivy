@@ -889,6 +889,9 @@ class Tensor:
     def softmax(self, dim=None, dtype=None):
         return torch_frontend.nn.functional.softmax(self, dim=dim, dtype=dtype)
 
+    def repeat_interleave(self, repeats, dim=None, *, output_size=None):
+        return torch_frontend.repeat_interleave(self, repeats, dim)
+
     def repeat(self, *args, repeats=None):
         if args and repeats:
             raise ivy.utils.exceptions.IvyException(
@@ -911,6 +914,10 @@ class Tensor:
 
     def remainder(self, other, *, out=None):
         return torch_frontend.remainder(self, other, out=out)
+
+    def bitwise_not_(self):
+        self.ivy_array = self.bitwise_not().ivy_array
+        return self
 
     def bitwise_and_(self, other):
         self.ivy_array = self.bitwise_and(other).ivy_array
