@@ -97,7 +97,7 @@ kron.support_native_out = False
 
 
 @with_supported_dtypes(
-    {"1.24.3 and below": ("float32", "float64", "complex64", "complex128")},
+    {"1.25.0 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def matrix_exp(

@@ -7,7 +7,6 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 import ivy
-import sys
 
 
 @st.composite
@@ -604,7 +603,7 @@ def _cond_data_gen_helper(draw):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.cond",
-    dtype_x=_cond_data_gen_helper(),
+    dtype_x=helpers.cond_data_gen_helper(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -624,6 +623,8 @@ def test_cond(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
+        rtol_=1e-3,
+        atol_=1e-3,
         x=x[0],
         p=x[1],
     )

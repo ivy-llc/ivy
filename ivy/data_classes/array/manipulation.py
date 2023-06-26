@@ -82,6 +82,13 @@ class _ArrayWithManipulation(abc.ABC):
             position in the expanded array where a new axis (dimension) of size one
             will be added. If array ``self`` has the rank of ``N``, the ``axis`` needs
             to be between ``[-N-1, N]``. Default: ``0``.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -124,6 +131,13 @@ class _ArrayWithManipulation(abc.ABC):
             input array axes are flipped. If axis is negative, axis
             is counted from the last dimension. If provided more than
             one axis, only the specified axes. Default: None.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -170,6 +184,13 @@ class _ArrayWithManipulation(abc.ABC):
         axes
             tuple containing a permutation of (0, 1, ..., N-1) where N is
             the number of axes (dimensions) of x.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -332,8 +353,8 @@ class _ArrayWithManipulation(abc.ABC):
     def squeeze(
         self: ivy.Array,
         /,
-        axis: Union[int, Sequence[int]],
         *,
+        axis: Optional[Union[int, Sequence[int]]],
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -341,6 +362,31 @@ class _ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.squeeze. This method simply wraps the
         function, and so the docstring for ivy.squeeze also applies to this method with
         minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            axis (or axes) to squeeze. If a specified axis has a size greater than one,
+            a ValueError is. If None, then all squeezable axes are squeezed.
+            Default: ``None``.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output array having the same data type and elements as x.
+
 
         Examples
         --------
@@ -549,6 +595,13 @@ class _ArrayWithManipulation(abc.ABC):
         ----------
         self
             array to be divided into sub-arrays.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         num_or_size_splits
             Number of equal arrays to divide the array into along the given axis if an
             integer. The size of each split element if a sequence of integers or
@@ -602,6 +655,13 @@ class _ArrayWithManipulation(abc.ABC):
             First axis to be swapped.
         axis1
             Second axis to be swapped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -694,6 +754,13 @@ class _ArrayWithManipulation(abc.ABC):
         ----------
         self
             Input array to unstack.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         axis
             Axis for which to unpack the array.
         keepdims
