@@ -1,6 +1,10 @@
 # global
 import ivy
-
+from ivy.core.container import Container
+from ivy.core.operations import arithmetic_ops
+from ivy.core.tensor import Tensor
+from ivy.numpy.base import promote_types_of_numpy_inputs
+from ivy import numpy as ivy_np
 
 def _quantile_is_valid(q):
     # avoid expensive reductions, relevant for arrays with < O(1000) elements
@@ -104,21 +108,6 @@ def nanpercentile(
                     arrayofpercentiles.append(_cpercentile(ii, i))
                 resultarray.append(arrayofpercentiles)
         return resultarray
-from ivy.core.container import Container
-from ivy.core.operations import arithmetic_ops
-from ivy.core.tensor import Tensor
-from ivy.numpy.base import promote_types_of_numpy_inputs
-from ivy import numpy as ivy_np
-from ivy_tests.helpers import assert_allclose
-from ivy_tests.frontend_helpers import (
-    handle_frontend_test,
-    handle_frontend_method,
-    get_dtypes,
-    dtype_and_values,
-    get_shape,
-    where,
-    test_frontend_function,
-)
 
 def quantile(arr, q, axis=None, out=None, overwrite_input=False, interpolation='linear'):
     arr = promote_types_of_numpy_inputs(arr)
