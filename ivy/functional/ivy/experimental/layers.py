@@ -490,6 +490,82 @@ def avg_pool3d(
     )
 
 
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def pool(
+    x: Union[ivy.Array, ivy.NativeArray],
+    window_shape: Union[int, Tuple[int], Tuple[int, int]],
+    pool_type: str,
+    /,
+    *,
+    strides: Optional[Union[int, Tuple[int], Tuple[int, int]]] = None,
+    padding: str = "VALID",
+    data_format: Optional[str] = None,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = None,
+    ceil_mode: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Perform an N-D pooling operation.
+
+    Parameters
+    ----------
+    x
+        Input array to pool over.
+    window_shape
+        Shape of the pooling window.
+    pool_type
+        Type of pooling operation, either 'MAX' or 'AVG'.
+    strides
+        Strides of the pooling operation.
+    padding
+        Padding type, either 'VALID' or 'SAME'.
+    data_format
+        Data format of the input and output data, either 'NCHW' or 'NHWC'.
+    dilations
+        Dilation rate of the pooling operation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Examples
+    --------
+    >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
+    >>> print(ivy.pool(x, (2, 2), 'MAX', (1, 1), 'SAME'))
+    ivy.array([[[[ 1.,  2.],
+                [ 3.,  4.],
+                [ 4.,  5.]]],
+            [[[ 7.,  8.],
+                [ 9., 10.],
+                [10., 11.]]]])
+    >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
+    >>> print(ivy.pool(x, 3, 'AVG', 1, 'VALID'))
+    ivy.array([[[[ 8.,  9.]],
+            [[14., 15.]]],
+            [[[32., 33.]],
+            [[38., 39.]]]])
+    """
+    return ivy.current_backend(x).pool(
+        x,
+        window_shape,
+        pool_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+        ceil_mode=ceil_mode,
+        out=out,
+    )
+
+
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -1619,6 +1695,8 @@ def interpolate(
             equation = "ijkl,km,ln->ijmn"
         elif mode == "trilinear" or dims == 3:
             equation = "ijklm,kn,lo,mp->ijnop"
+        if mode == "bicubic":
+            return _upsample_bicubic2d_default(x, size, align_corners)
         if mode == "bicubic_tensorflow":
             kernel_func = lambda inputs: _cubic_kernel(inputs)
         if mode == "lanczos3":
@@ -1704,8 +1782,6 @@ def interpolate(
                         ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
                             1 / scale_x
                         )
-    elif mode == "bicubic":
-        return _upsample_bicubic2d_default(x, size, align_corners)
     elif mode == "mitchellcubic":
         batch, channels, in_height, in_width = x.shape
         out_height, out_width = size
@@ -2323,3 +2399,80 @@ def fft2(
               0.  +0.j        ,   0.  +0.j        ]])
     """
     return ivy.current_backend(x).fft2(x, s=s, dim=dim, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def ifftn(
+    x: Union[ivy.Array, ivy.NativeArray],
+    s: Optional[Union[int, Tuple[int, ...]]] = None,
+    axes: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute the N-dimensional inverse discrete Fourier Transform.
+
+    Parameters
+    ----------
+    x
+        Input array of complex numbers.
+    s
+        Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
+        `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
+        the input is cropped. If larger, input is padded with zeros. If `s` is not
+        given, shape of input along axes specified by axes is used.
+    axes
+        Axes over which to compute the IFFT. If not given, last `len(s)` axes are
+        used, or all axes if `s` is also not specified. Repeated indices in axes
+        means inverse transform over that axis is performed multiple times.
+    norm
+        Indicates direction of the forward/backward pair of transforms is scaled
+        and with what normalization factor. "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$. "forward"
+        indicates normalization by $\frac{1}{n}$.
+    out
+        Optional output array for writing the result to. It must have a shape that
+        the inputs broadcast to.
+
+    Returns
+    -------
+    out
+        The truncated or zero-padded input, transformed along the axes indicated
+        by axes, or by a combination of s or x, as explained in the parameters
+        section above.
+
+    Raises
+    ------
+    ValueError
+        If `s` and `axes` have different length.
+    IndexError
+        If an element of axes is larger than the number of axes of x.
+
+    Examples
+    --------
+    >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+                        0.98193269+0.49560517j],
+                        [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+                        0.2343787 +0.83528011j],
+                        [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+                        0.44719226+0.72654048j]])
+    >>> y = ivy.ifftn(x)
+    >>> print(y)
+    ivy.array([[ 0.51476765+0.66160417j, -0.04319742-0.05411636j,
+            -0.015561  -0.04216015j],
+            [ 0.06310689+0.05347854j, -0.13392983+0.16052352j,
+            -0.08371392+0.17252843j],
+            [-0.0031429 +0.05421245j, -0.10446617-0.17747098j,
+            0.05344324+0.07972424j]])
+
+    >>> b = ivy.ifftn(x, s=[2, 1], axes=[0, 1], norm='ortho')
+    >>> print(b)
+    ivy.array([[ 0.8344667 +0.98222595j],
+            [-0.48472244+0.30233797j]])
+    """
+    return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)
