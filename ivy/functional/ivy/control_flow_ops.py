@@ -186,6 +186,7 @@ def for_loop(
 
 # todo (nightcrab) find a better place for these cmp functions
 
+
 def cmp_is(left, right):
     return left is right
 
