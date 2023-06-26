@@ -211,7 +211,7 @@ class Tensor:
 
     @with_supported_dtypes(
         {
-            "2.4.2 and below": (
+            "2.5.0 and below": (
                 "bool",
                 "int8",
                 "int16",
@@ -223,8 +223,8 @@ class Tensor:
         },
         "paddle",
     )
-    def logical_not(self, out=None, name=None):
-        return ivy.logical_not(self.ivy_array)
+    def logical_or(self, y, out=None, name=None):
+        return paddle_frontend.logical_or(self, y, out=out)
 
     @with_supported_dtypes(
         {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
@@ -257,3 +257,20 @@ class Tensor:
     )
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def logical_not(self, out=None, name=None):
+        return ivy.logical_not(self.ivy_array)
