@@ -18,7 +18,7 @@
 
 ..
 
-   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this README won't work as expected as of now!
+   🚀 We are granting pilot access to **Ivy's Compiler and Transpiler** to some users, `join the waitlist <https://console.unify.ai/>`_ if you want to test them out!
 
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only
