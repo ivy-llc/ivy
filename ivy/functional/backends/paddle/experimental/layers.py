@@ -51,7 +51,7 @@ def max_pool1d(
 
 @with_supported_dtypes(
     {
-        "2.4.2 and below": (
+        "2.5.0 and below": (
             "float32",
             "float64",
         )
@@ -316,3 +316,14 @@ def interpolate(
     antialias: Optional[bool] = False,
 ):
     raise IvyNotImplementedException()
+
+
+def ifftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.fft.ifftn(x, s, axes, norm)

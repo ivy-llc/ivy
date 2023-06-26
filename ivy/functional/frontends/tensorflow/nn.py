@@ -119,7 +119,7 @@ def conv3d(
     )
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     input,
@@ -428,7 +428,7 @@ def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": "float16"}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": "float16"}, "tensorflow")
 @to_ivy_arrays_and_back
 def leaky_relu(features, alpha=0.2, name=None):
     return ivy.leaky_relu(features, alpha=alpha)
@@ -459,3 +459,32 @@ def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
 @to_ivy_arrays_and_back
 def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+# pool
+@to_ivy_arrays_and_back
+def pool(
+    input,
+    window_shape,
+    pooling_type,
+    strides=None,
+    padding="VALID",
+    data_format=None,
+    dilations=None,
+    name=None,
+):
+    return ivy.pool(
+        input,
+        window_shape,
+        pooling_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
+# log_poisson_loss
+@to_ivy_arrays_and_back
+def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
+    return ivy.log_poisson_loss(targets, log_input, compute_full_loss, name)

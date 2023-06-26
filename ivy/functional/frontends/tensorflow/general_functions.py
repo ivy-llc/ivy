@@ -12,6 +12,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
+import functools
 
 
 @to_ivy_arrays_and_back
@@ -26,7 +27,7 @@ def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -71,7 +72,7 @@ def clip_by_norm(t, clip_norm, axes=None):
     return t_clip
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
@@ -83,7 +84,38 @@ def fill(dims, value, name=None):
     return ivy.full(dims, value)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def foldl(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    swap_memory=False,
+    name=None,
+):
+    ivy.utils.assertions.check_isinstance(
+        elems, (list, ivy.Array), "elems must be an iterable object"
+    )
+    ivy.utils.assertions.check_true(
+        callable(fn), f"{fn.__name__} must be a callable function"
+    )
+    if len(ivy.shape(elems)) == 0 or ivy.get_num_dims(elems) == 0:
+        raise ivy.utils.exceptions.IvyValueError(
+            "elems must be a non-empty iterable object with at least one dimension"
+        )
+    if initializer is not None:
+        result = functools.reduce(fn, elems, initializer)
+    elif initializer is None and ivy.shape(elems)[0] > 0:
+        result = functools.reduce(fn, elems[1:], elems[0])
+    else:
+        result = elems
+    if all(ivy.get_num_dims(e) == 0 for e in elems):
+        result = ivy.to_scalar(result)
+
+    return result
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
@@ -566,9 +598,16 @@ def truncatediv(x, y, name=None):
     return x.trunc_divide(y)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("int16", "int8","uint8"," uint16")}, "tensorflow")
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("int16", "int8", "uint8", " uint16")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def truncatemod(x, y):
     x = ivy.broadcast_to(x, ivy.shape(y))
     y = ivy.broadcast_to(y, ivy.shape(x))
     return ivy.trunc(x / y) * y + (x % y)
+
+
+@to_ivy_arrays_and_back
+def unravel_index(indices, dims, out=None, name=None):
+    return ivy.unravel_index(indices, dims, out=out)
