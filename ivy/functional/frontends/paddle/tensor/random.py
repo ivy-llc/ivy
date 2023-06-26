@@ -35,3 +35,14 @@ def randn(shape, dtype=None, name=None):
             "Unsupported dtype for randn, only float32 and float64 are supported, "
         )
     return ivy.random_normal(shape=shape, dtype=dtype, seed=None)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
+    return ivy.random_uniform(
+        low=min, high=max, shape=None, dtype=None, seed=seed, out=x
+    )
