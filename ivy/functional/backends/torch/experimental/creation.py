@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 import math
 import torch
 
@@ -124,3 +124,50 @@ def tril_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
+
+
+def unsorted_segment_min(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
+) -> torch.Tensor:
+    if not (isinstance(num_segments, int)):
+        raise ValueError("num_segments must be of integer type")
+
+    valid_dtypes = [torch.int32, torch.int64]
+
+    if segment_ids.dtype not in valid_dtypes:
+        raise ValueError("segment_ids must have an int32 or int64 dtype")
+
+    if data.shape[0] != segment_ids.shape[0]:
+        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
+
+    if isinstance(num_segments, torch.Tensor):
+        num_segments = num_segments.item()
+
+    if torch.max(segment_ids) >= num_segments:
+        error_message = (
+            f"segment_ids[{torch.argmax(segment_ids)}] = "
+            f"{torch.max(segment_ids)} is out of range [0, {num_segments})"
+        )
+        raise ValueError(error_message)
+
+    if num_segments <= 0:
+        raise ValueError("num_segments must be positive")
+
+    if data.dtype in [torch.float32, torch.float64, torch.float16, torch.bfloat16]:
+        init_val = torch.finfo(data.dtype).max
+    elif data.dtype in [torch.int32, torch.int64, torch.int8, torch.int16, torch.uint8]:
+        init_val = torch.iinfo(data.dtype).max
+    else:
+        raise ValueError("Unsupported data type")
+
+    res = torch.full(
+        (num_segments,) + data.shape[1:], init_val, dtype=data.dtype, device=data.device
+    )
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if torch.any(mask_index):
+            res[i] = torch.min(data[mask_index], 0)[0]
+
+    return res

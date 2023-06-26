@@ -1,14 +1,18 @@
 # global
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 import math
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
 from paddle.fluid.libpaddle import Place
 from ivy.functional.backends.paddle.device import to_device
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+)
+
 
 # local
 import ivy
-
+from .. import backend_version
 
 # noinspection PyProtectedMember
 # Helpers for calculating Window Functions
@@ -92,3 +96,55 @@ def tril_indices(
             paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
         )
     )
+
+
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32", "int32", "int64")},
+    backend_version,
+)
+def unsorted_segment_min(
+    data: paddle.Tensor,
+    segment_ids: paddle.Tensor,
+    num_segments: Union[int, paddle.Tensor],
+) -> paddle.Tensor:
+    if not (isinstance(num_segments, int)):
+        raise ValueError("num_segments must be of integer type")
+    valid_dtypes = [paddle.int32, paddle.int64]
+
+    if segment_ids.dtype not in valid_dtypes:
+        raise ValueError("segment_ids must have an int32 or int64 dtype")
+    if data.shape[0] != segment_ids.shape[0]:
+        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
+
+    if isinstance(num_segments, paddle.Tensor):
+        num_segments = num_segments.item()
+
+    if paddle.max(segment_ids) >= num_segments:
+        error_message = (
+            f"segment_ids[{paddle.argmax(segment_ids)}] = "
+            f"{paddle.max(segment_ids)} is out of range [0, {num_segments})"
+        )
+        raise ValueError(error_message)
+
+    if num_segments <= 0:
+        raise ValueError("num_segments must be positive")
+
+    if data.dtype == paddle.float32:
+        init_val = 3.4028234663852886e38  # float32 max
+    elif data.dtype == paddle.float64:
+        init_val = 1.7976931348623157e308  # float64 max
+    elif data.dtype == paddle.int32:
+        init_val = 2147483647
+    elif data.dtype == paddle.int64:
+        init_val = 9223372036854775807
+    else:
+        raise ValueError("Unsupported data type")
+    # Using paddle.full is causing interger overflow for int64
+    res = paddle.empty((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
+    res[:] = init_val
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if paddle.any(mask_index):
+            res[i] = paddle.min(data[mask_index], 0)
+
+    return res

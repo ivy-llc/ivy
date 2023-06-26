@@ -85,3 +85,45 @@ def indices(
     sparse: bool = False,
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
     return np.indices(dimensions, dtype=dtype, sparse=sparse)
+
+
+def unsorted_segment_min(
+    data: np.ndarray,
+    segment_ids: np.ndarray,
+    num_segments: int,
+) -> np.ndarray:
+    if not (isinstance(num_segments, int)):
+        raise ValueError("num_segments must be of integer type")
+
+    valid_dtypes = [np.int32, np.int64]
+    if segment_ids.dtype not in valid_dtypes:
+        raise ValueError("segment_ids must have an integer dtype")
+
+    if num_segments <= 0:
+        raise ValueError("num_segments must be positive")
+
+    if data.shape[0] != segment_ids.shape[0]:
+        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
+
+    if np.max(segment_ids) >= num_segments:
+        error_message = (
+            f"segment_ids[{np.argmax(segment_ids)}] = "
+            f"{np.max(segment_ids)} is out of range [0, {num_segments})"
+        )
+        raise ValueError(error_message)
+
+    if data.dtype in [np.float32, np.float64]:
+        init_val = np.finfo(data.dtype).max
+    elif data.dtype in [np.int32, np.int64, np.int8, np.int16, np.uint8]:
+        init_val = np.iinfo(data.dtype).max
+    else:
+        raise ValueError("Unsupported data type")
+
+    res = np.full((num_segments,) + data.shape[1:], init_val, dtype=data.dtype)
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if np.any(mask_index):
+            res[i] = np.min(data[mask_index], axis=0)
+
+    return res

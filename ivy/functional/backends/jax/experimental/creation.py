@@ -1,6 +1,7 @@
 # global
 from typing import Optional, Tuple
 import math
+import jax
 import jax.numpy as jnp
 import jaxlib.xla_extension
 
@@ -78,3 +79,33 @@ def tril_indices(
         jnp.tril_indices(n=n_rows, k=k, m=n_cols),
         device=device,
     )
+
+
+def unsorted_segment_min(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
+) -> JaxArray:
+    # added these check to keep the same behaviour as tensorflow
+    if not (isinstance(num_segments, int)):
+        raise ValueError("num_segments must be of integer type")
+
+    valid_dtypes = [jnp.int32, jnp.int64]
+
+    if segment_ids.dtype not in valid_dtypes:
+        raise ValueError("segment_ids must have an int32 or int64 dtype")
+
+    if num_segments <= 0:
+        raise ValueError("num_segments must be positive")
+
+    if data.shape[0] != segment_ids.shape[0]:
+        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
+
+    if jnp.max(segment_ids) >= num_segments:
+        error_message = (
+            f"segment_ids[{jnp.argmax(segment_ids)}] = "
+            f"{jnp.max(segment_ids)} is out of range [0, {num_segments})"
+        )
+        raise ValueError(error_message)
+
+    return jax.ops.segment_min(data, segment_ids, num_segments)
