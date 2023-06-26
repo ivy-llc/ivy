@@ -12,7 +12,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy import numpy as ivy_np
 from ivy_tests.helpers import assert_allclose
 from ivy_tests.frontend_helpers import (
-    handle_frontend_test,
     handle_frontend_method,
     get_dtypes,
     dtype_and_values,
@@ -66,31 +65,39 @@ def test_numpy_nanpercentile(
 
 @handle_frontend_test(
     fn_tree="ivy_np.quantile",
-    dtypes_values_casting=dtype_and_values(
-        available_dtypes=get_dtypes("float"),
+    dtype_values_axis=dtype_values_axis(
+        function="nanquantile",
+        dtypes=get_dtypes("float"),
     ),
     where=where(),
-    number_positional_args=2,
+    keep_dims=[True, False],
 )
 def test_ivy_quantile(
-    dtypes_values_casting,
+    dtype_values_axis,
     where,
     frontend,
     test_flags,
     fn_tree,
     on_device,
+    keep_dims,
 ):
-    input_dtypes, x = dtypes_values_casting
+    input_dtypes, values, axis = dtype_values_axis
+    if isinstance(axis, tuple):
+        axis = axis[0]
 
     # Prepare the inputs for testing
-    arr = x[0]
-    q = 50.0  # Quantile value
+    arr = values[0][0]
+    q = values[0][1]
+    keepdims = keep_dims
 
     # Calculate the expected result using NumPy
-    expected_result = ivy_np.quantile(arr, q, axis=None, interpolation='linear')
+    expected_result = ivy_np.nanquantile(arr, q, axis=axis, keepdims=keepdims)
 
     # Apply the quantile function using the Ivy frontend
-    result = frontend.quantile(arr, q, axis=None, interpolation='linear')
+    result = frontend.quantile(arr, q, axis=axis, keepdims=keepdims)
+
+    # Convert the Ivy result back to a NumPy array
+    result_np = ivy_np.to_numpy(result)
 
     # Assert that the Ivy result matches the expected result
-    assert_allclose(result, expected_result)
+    assert_allclose(result_np, expected_result)
