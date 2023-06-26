@@ -39,7 +39,7 @@ def get_mask(shape, device, prob, seed=None):
 def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=None):
     if axis > 1:
         raise ValueError("Axis value can only be 0 or 1 or None.")
-    elif axis == None or (isinstance(axis, list) and len(axis) == 2):
+    elif axis is None or (isinstance(axis, list) and len(axis) == 2):
         mask = get_mask(shape=x.shape, device=ivy.dev(x), prob=p, seed=None)
     elif axis == 0:
         mask = get_mask(shape=(x.shape[0], 1), device=ivy.dev(x), prob=p)
