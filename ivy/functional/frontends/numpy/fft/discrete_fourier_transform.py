@@ -37,8 +37,8 @@ def ifftshift(x, axes=None):
         axes = tuple(range(x.ndim))
         shift = [-(dim // 2) for dim in x.shape]
     elif isinstance(
-        axes,
-        (int, type(ivy.uint8), type(ivy.uint16), type(ivy.uint32), type(ivy.uint64)),
+            axes,
+            (int, type(ivy.uint8), type(ivy.uint16), type(ivy.uint32), type(ivy.uint64)),
     ):
         shift = -(x.shape[axes] // 2)
     else:
@@ -63,8 +63,8 @@ def fftshift(x, axes=None):
         axes = tuple(range(x.ndim))
         shift = [(dim // 2) for dim in x.shape]
     elif isinstance(
-        axes,
-        (int, type(ivy.uint8), type(ivy.uint16), type(ivy.uint32), type(ivy.uint64)),
+            axes,
+            (int, type(ivy.uint8), type(ivy.uint16), type(ivy.uint32), type(ivy.uint64)),
     ):
         shift = x.shape[axes] // 2
     else:
@@ -98,7 +98,7 @@ def ihfft(a, n=None, axis=-1, norm=None):
 @to_ivy_arrays_and_back
 def fftfreq(n, d=1.0):
     if not isinstance(
-        n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
+            n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
     ):
         raise ValueError("n should be an integer")
 
@@ -117,7 +117,7 @@ def fftfreq(n, d=1.0):
 @to_ivy_arrays_and_back
 def rfftfreq(n, d=1.0):
     if not isinstance(
-        n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
+            n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
     ):
         raise ValueError("n should be an integer")
 
@@ -130,8 +130,13 @@ def rfftfreq(n, d=1.0):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.24.3 and above": ("float16",)}, "numpy")
 def rfft2(a, s=None, axes=(-2, -1), norm=None):
-    a = ivy.array(a, "float64")
+    a = ivy.astype(a, "float64")
     if norm is None:
         norm = "backward"
     s = a.shape if s is None else tuple(s)
-    return ivy.dft(a, axes=axes, inverse=False, onesided=True, dft_length=s, norm=norm)
+    result = a
+
+    for axis in axes:
+        result = rfft(result, axis=axis, norm=None)
+    return result
+    # return ivy.dft(a, axes=axes, inverse=False, onesided=True, dft_length=s, norm=norm)
