@@ -737,36 +737,46 @@ def test_torch_frombuffer(
 
 
 # complex
+@st.composite
+def _complex_helper(draw):
+    input_dtype, data = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+        )
+    )
+    _, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=input_dtype,
+            shape=helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=1,
+                max_dim_size=1,
+            ),
+        )
+    )
+    return input_dtype, data, values
+
+
 @handle_frontend_test(
     fn_tree="torch.complex",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype_and_input=_complex_helper(),
 )
 def test_torch_complex(
     *,
-    real,
-    imag,
-    out,
-    dtype_and_x,
-    dtype,
+    dtype_and_input,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, input = dtype_and_x
+    input_dtype, data, values = dtype_and_input
     helpers.test_frontend_function(
-        real=real,
-        imag=imag,
-        out=out,
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input[0],
-        dtype=dtype[0],
-        device=on_device,
+        input=data[0],
+        values=values[0],
     )

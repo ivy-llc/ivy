@@ -2162,8 +2162,8 @@ def triu_indices(
 @infer_dtype
 @infer_device
 def complex(
-    real: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    imag: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    real: Union[ivy.Array, ivy.NativeArray],
+    imag: Union[ivy.Array, ivy.NativeArray],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
