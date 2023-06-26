@@ -1306,7 +1306,7 @@ def test_torch_characteristic_equation_solver(
         and np.linalg.det(x[1][0][:, :-1]) != 0
         and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
     ),
-    check=st.booleans()
+    check=st.booleans(),
 )
 def test_torch_solve_ex(
     *,
@@ -1330,4 +1330,3 @@ def test_torch_solve_ex(
         B=other,
         check_errors=check,
     )
-    

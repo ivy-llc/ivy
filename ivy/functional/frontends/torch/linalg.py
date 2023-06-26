@@ -272,4 +272,3 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
             result = A * math.nan
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
             return result, info
-        
