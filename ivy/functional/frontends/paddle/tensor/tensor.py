@@ -257,3 +257,9 @@ class Tensor:
     )
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle")
+    def minimum(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.minimum(self._ivy_array, y_ivy)
+
