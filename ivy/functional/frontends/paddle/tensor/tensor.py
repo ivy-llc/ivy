@@ -265,4 +265,3 @@ class Tensor:
     def angle(self, name=None):
         return ivy.angle(self._ivy_array)
 
-    
