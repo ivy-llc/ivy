@@ -257,3 +257,8 @@ class Tensor:
     )
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def cumsum(self, axis=None, dtype=None, name=None):
+        return ivy.cumsum(self._ivy_array, axis=axis, dtype=dtype)
+
