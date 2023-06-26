@@ -9,18 +9,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy import numpy as ivy_np
-from ivy_tests.helpers import assert_allclose
-from ivy_tests.frontend_helpers import (
-    handle_frontend_method,
-    get_dtypes,
-    dtype_and_values,
-    get_shape,
-    where,
-    test_frontend_function,
-)
-
-
 
 # nanpercentile
 @handle_frontend_test(
@@ -63,41 +51,40 @@ def test_numpy_nanpercentile(
         input_dtypes=input_dtypes,
     )
 
+# quantile
 @handle_frontend_test(
-    fn_tree="ivy_np.quantile",
-    dtype_values_axis=dtype_values_axis(
-        function="nanquantile",
-        dtypes=get_dtypes("float"),
+    fn_tree="ivy.quantile",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
     ),
-    where=where(),
-    keep_dims=[True, False],
+    q=st.floats(),
+    keepdims=st.booleans(),
+    mode=st.sampled_from(["valid", "same", "full"]),
+    test_with_out=st.just(False),
 )
-def test_ivy_quantile(
-    dtype_values_axis,
-    where,
+def test_numpy_quantile(
+    dtype_and_x,
+    q,
+    keepdims,
+    mode,
     frontend,
     test_flags,
     fn_tree,
     on_device,
-    keep_dims,
 ):
-    input_dtypes, values, axis = dtype_values_axis
-    if isinstance(axis, tuple):
-        axis = axis[0]
-
-    # Prepare the inputs for testing
-    arr = values[0][0]
-    q = values[0][1]
-    keepdims = keep_dims
-
-    # Calculate the expected result using NumPy
-    expected_result = ivy_np.nanquantile(arr, q, axis=axis, keepdims=keepdims)
-
-    # Apply the quantile function using the Ivy frontend
-    result = frontend.quantile(arr, q, axis=axis, keepdims=keepdims)
-
-    # Convert the Ivy result back to a NumPy array
-    result_np = ivy_np.to_numpy(result)
-
-    # Assert that the Ivy result matches the expected result
-    assert_allclose(result_np, expected_result)
+    input_dtypes, xs = dtype_and_x
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        q=q,
+        keepdims=keepdims,
+        mode=mode,
+    )
