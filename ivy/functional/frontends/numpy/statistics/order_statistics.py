@@ -165,34 +165,3 @@ def quantile(arr, q, axis=None, out=None, overwrite_input=False, interpolation='
         return arr
     else:
         return ret
-
-@handle_frontend_test(
-    fn_tree="ivy_np.quantile",
-    dtypes_values_casting=dtype_and_values(
-        available_dtypes=get_dtypes("float"),
-    ),
-    where=where(),
-    number_positional_args=2,
-)
-def test_ivy_quantile(
-    dtypes_values_casting,
-    where,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtypes, x = dtypes_values_casting
-
-    # Prepare the inputs for testing
-    arr = x[0]
-    q = 50.0  # Quantile value
-
-    # Calculate the expected result using NumPy
-    expected_result = ivy_np.quantile(arr, q, axis=None, interpolation='linear')
-
-    # Apply the quantile function using the Ivy frontend
-    result = frontend.quantile(arr, q, axis=None, interpolation='linear')
-
-    # Assert that the Ivy result matches the expected result
-    assert_allclose(result, expected_result)
