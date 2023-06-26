@@ -1,5 +1,4 @@
 # global
-import numpy
 import numpy as np
 from hypothesis import assume, strategies as st, given
 
