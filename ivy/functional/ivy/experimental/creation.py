@@ -1,5 +1,4 @@
 # global
-from __future__ import annotations
 from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
 
 # local
@@ -93,10 +92,10 @@ def hann_window(
 
     Functional Examples
     -------------------
-    >>> ivy.hann_window(4, True)
+    >>> ivy.hann_window(4, periodic = True)
     ivy.array([0. , 0.5, 1. , 0.5])
 
-    >>> ivy.hann_window(7, False)
+    >>> ivy.hann_window(7, periodic = False)
     ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
     """
     return ivy.current_backend().hann_window(
