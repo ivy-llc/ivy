@@ -265,7 +265,7 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
             return result, info
 def cholesky_ex(A, *, upper=False, check_errors=False, out=None):
     try:
-        matrix = ivy.cholesky(A,upper=upper, out=out)
+        matrix = ivy.cholesky(A, upper=upper, out=out)
         info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
         return matrix, info
     except RuntimeError as e:
