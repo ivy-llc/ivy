@@ -378,7 +378,7 @@ def isinf(
         return tf.zeros_like(x, tf.bool)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex", "bool")}, backend_version)
 def isnan(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -471,13 +471,53 @@ def logaddexp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    # ToDo: implement using tf.experimental.numpy.logaddexp if this becomes stable and
-    # supports gradients in future
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    dtype = x1.dtype
-    x1 = tf.cast(x1, tf.float64)
-    x2 = tf.cast(x2, tf.float64)
-    return ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype)
+    return tf.experimental.numpy.logaddexp(x1, x2)
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, backend_version)
+def real(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.real(x)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.12.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
+def logaddexp2(
+    x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = tf.cast(x1, ivy.default_float_dtype(as_native=True))
+        x2 = tf.cast(x2, ivy.default_float_dtype(as_native=True))
+    amax = ivy.maximum(x1, x2)
+    delta = x1 - x2
+    return ivy.where(
+        ivy.isnan(delta),
+        x1 + x2,
+        amax + ivy.log1p(ivy.exp2(-ivy.abs(delta))) / ivy.log(2.0).astype(amax.dtype),
+    )
 
 
 def logical_and(
@@ -631,12 +671,15 @@ def sign(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    np_variant: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
-    if ivy.is_complex_dtype(x):
-        return tf.cast(tf.math.sign(tf.math.real(x)), x.dtype)
+    if x.dtype in [tf.complex64, tf.complex128] and np_variant:
+        real = tf.math.real(x)
+        imag = tf.math.imag(x)
+        return tf.cast(tf.where(real != 0, tf.sign(real), tf.sign(imag)), x.dtype)
     return tf.math.sign(x)
 
 
@@ -870,7 +913,8 @@ def isreal(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("unsigned", "complex", "bool")}, backend_version
+    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64", "complex", "bool")},
+    backend_version,
 )
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
@@ -880,6 +924,7 @@ def fmod(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = promote_types_of_inputs(x1, x2)
+    # tf.math.floormod returns wrong results
     res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
     return tf.where(x1 < 0, -res, res)
 
@@ -947,3 +992,28 @@ def imag(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.imag(val, name=None)
+
+
+def nan_to_num(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    posinf = posinf if posinf is not None else x.dtype.max
+    neginf = neginf if neginf is not None else x.dtype.min
+    posinf = tf.constant(posinf, x.dtype)
+    neginf = tf.constant(neginf, x.dtype)
+    nan = tf.constant(nan, x.dtype)
+    ret = tf.where(tf.math.is_nan(x), nan, x)
+    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret > 0), posinf, ret)
+    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret < 0), neginf, ret)
+    if copy:
+        return ret
+    else:
+        x = ret
+        return x

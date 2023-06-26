@@ -243,7 +243,7 @@ def relu6(
 @handle_out_argument
 @to_native_arrays_and_back
 def logsigmoid(
-    input: Union[ivy.NativeArray, ivy.Array],
+    input: Union[ivy.NativeArray, ivy.Array], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
     Apply element-wise Log-sigmoid of x.
@@ -283,7 +283,7 @@ def logsigmoid(
         b: ivy.array([-0.59813893, -0.43748799])
     }
     """
-    return ivy.current_backend(input).logsigmoid(input)
+    return ivy.current_backend(input).logsigmoid(input, out=out)
 
 
 @handle_exceptions

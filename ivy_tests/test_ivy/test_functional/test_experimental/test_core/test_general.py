@@ -63,7 +63,7 @@ def test_reduce(
         on_device=on_device,
         operand=operand,
         init_value=init_value,
-        func=func,
+        computation=func,
         axes=axes,
         keepdims=keepdims,
     )

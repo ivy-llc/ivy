@@ -20,9 +20,13 @@ def _fn(*args, dtype=None, check_default=False):
         and not ivy.exists(dtype)
     ):
         ivy.utils.assertions.check_equal(
-            ivy.default_float_dtype(), torch_frontend.get_default_dtype()
+            ivy.default_float_dtype(),
+            torch_frontend.get_default_dtype(),
+            as_array=False,
         )
-        ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int64")
+        ivy.utils.assertions.check_equal(
+            ivy.default_int_dtype(), "int64", as_array=False
+        )
     return args[0]
 
 

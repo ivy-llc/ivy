@@ -406,102 +406,6 @@ def isclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-def nan_to_num(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Replace NaN with zero and infinity with large finite numbers (default behaviour) or
-    with the numbers defined by the user using the nan, posinf and/or neginf keywords.
-
-    Parameters
-    ----------
-    x
-        Array input.
-    copy
-        Whether to create a copy of x (True) or to replace values in-place (False).
-        The in-place operation only occurs if casting to an array does not require
-        a copy. Default is True.
-    nan
-        Value to be used to fill NaN values. If no value is passed then NaN values
-        will be replaced with 0.0.
-    posinf
-        Value to be used to fill positive infinity values. If no value is passed
-        then positive infinity values will be replaced with a very large number.
-    neginf
-        Value to be used to fill negative infinity values.
-        If no value is passed then negative infinity values
-        will be replaced with a very small (or negative) number.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Array with the non-finite values replaced.
-        If copy is False, this may be x itself.
-
-    Examples
-    --------
-    >>> x = ivy.array([1, 2, 3, nan])
-    >>> ivy.nan_to_num(x)
-    ivy.array([1.,    1.,   3.,   0.0])
-    >>> x = ivy.array([1, 2, 3, inf])
-    >>> ivy.nan_to_num(x, posinf=5e+100)
-    ivy.array([1.,   2.,   3.,   5e+100])
-    """
-    return ivy.current_backend(x).nan_to_num(
-        x, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
-    )
-
-
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-def logaddexp2(
-    x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
-    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Calculate log2(2**x1 + 2**x2).
-
-    Parameters
-    ----------
-    x1
-        First array-like input.
-    x2
-        Second array-input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Element-wise logaddexp2 of x1 and x2.
-
-    Examples
-    --------
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> x2 = ivy.array([4, 5, 6])
-    >>> ivy.logaddexp2(x1, x2)
-    ivy.array([4.169925, 5.169925, 6.169925])
-    """
-    return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)
-
-
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -939,71 +843,6 @@ def xlogy(
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
-@to_native_arrays_and_back
-def real(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Test each element ``x_i`` of the input array ``x`` to
-    take only real part from it.
-    Returns a float array, where it only contains .
-    If element has complex type with zero complex part, the return value
-    will be that element, else it only returns real part.
-
-    Parameters
-    ----------
-    x
-        input array.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing test results. An element ``out_i`` is
-        ``real number`` if ``x_i`` contain real number part only
-        and if it is ``real number with complex part also`` then it
-        returns the real number part.
-        The returned array should have a data type of ``float``.
-
-    The descriptions above assume an array input for simplicity, but
-    the method also accepts :class:`ivy.Container` instances
-    in place of: class:`ivy.Array` or :class:`ivy.NativeArray`
-    instances, as shown in the type hints and also the examples below.
-
-    Examples
-    --------
-    With :class:`ivy.Array` inputs:
-    >>> x = ivy.array([[[1.1], [2], [-6.3]]])
-    >>> z = ivy.real(x)
-    >>> print(z)
-    ivy.array([[[1.1], [2.], [-6.3]]])
-
-    >>> x = ivy.array([4.2-0j, 3j, 7+5j])
-    >>> z = ivy.real(x)
-    >>> print(z)
-    ivy.array([4.2, 0., 7.])
-
-    With :class:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
-                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
-    >>> z = ivy.real(x)
-    >>> print(z)
-    {
-        a: ivy.array([-6.7, 0.314, 1.23]),
-        b: ivy.array([0., 5.32, 3.001])
-    }
-    """
-    return ivy.current_backend(x).real(x, out=out)
-
-
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 def binarizer(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1141,7 +980,6 @@ def ldexp(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def lerp(
@@ -1249,6 +1087,16 @@ def lerp(
             weight = ivy.astype(ivy.array([weight]), "float64")
 
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
+
+
+lerp.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions

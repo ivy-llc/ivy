@@ -352,6 +352,7 @@ def ones_like(
         return tf.ones_like(x, dtype=dtype)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
 def tril(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -359,6 +360,8 @@ def tril(
     k: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # TODO: A way around tf.experimental.numpy.tril as it doesn't support bool
+    #  and neither rank 1 tensors while np.tril does support both. Needs superset.
     return tf.experimental.numpy.tril(x, k)
 
 

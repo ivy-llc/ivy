@@ -7,11 +7,11 @@ from . import backend_version
 from ivy import with_unsupported_dtypes
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
 def reduce(
     operand: np.ndarray,
     init_value: Union[int, float],
-    func: Callable,
+    computation: Callable,
     /,
     *,
     axes: Union[int, Sequence[int]] = 0,
@@ -22,7 +22,7 @@ def reduce(
         if isinstance(axes, int)
         else tuple(axes) if isinstance(axes, list) else axes
     )
-    reduced_func = np.frompyfunc(func, 2, 1).reduce
+    reduced_func = np.frompyfunc(computation, 2, 1).reduce
     op_dtype = operand.dtype
     for axis in axes:
         operand = reduced_func(operand, axis=axis, initial=init_value, keepdims=True)
