@@ -990,3 +990,4 @@ def test_paddle_angle(
         on_device=on_device,
         x=x[0],
     )
+
