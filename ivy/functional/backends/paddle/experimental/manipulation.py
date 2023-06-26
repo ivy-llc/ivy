@@ -91,7 +91,7 @@ def moveaxis(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -130,7 +130,7 @@ def flipud(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int16", "float16")}},
+    {"2.5.0 and below": {"cpu": ("int16", "float16")}},
     backend_version,
 )
 def vstack(
@@ -176,7 +176,7 @@ def rot90(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -325,7 +325,7 @@ def dsplit(
 
 
 def atleast_1d(
-    *arys: paddle.Tensor, copy: Optional[bool] = False
+    *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -357,7 +357,7 @@ def dstack(
 
 
 def atleast_2d(
-    *arys: paddle.Tensor, copy: Optional[bool] = False
+    *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -373,11 +373,11 @@ def atleast_2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}},
+    {"2.5.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def atleast_3d(
-    *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = False
+    *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -398,7 +398,7 @@ def atleast_3d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8",)}},
+    {"2.5.0 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def take_along_axis(
@@ -557,7 +557,7 @@ def concat_from_sequence(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
     x: paddle.Tensor,

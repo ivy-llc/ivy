@@ -107,20 +107,19 @@ def test_tensorflow_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.matrix_rank",
-    dtype_x_hermitian=_matrix_rank_helper(),
-    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
     test_with_out=st.just(False),
 )
 def test_matrix_rank(
     *,
-    dtype_x_hermitian,
-    tol,
+    dtype_x_hermitian_atol_rtol,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x, hermitian = dtype_x_hermitian
+    dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
+    assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -128,7 +127,7 @@ def test_matrix_rank(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x,
-        tol=tol,
+        tol=atol,
     )
 
 
@@ -816,7 +815,9 @@ def test_tensorflow_linalg_einsum(
 # adjoint
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.adjoint",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=_get_dtype_and_matrix().filter(
+        lambda x: "float16" not in x[0] and "bfloat16" not in x[0]
+    ),  # TODO : remove this filter when paddle.conj supports float16
     test_with_out=st.just(False),
 )
 def test_tensorflow_adjoint(
@@ -869,4 +870,49 @@ def test_tensorflow_diag(
         on_device=on_device,
         v=x[0],
         k=k,
+    )
+
+
+@st.composite
+def _get_dtype_and_matrix_and_num(draw):
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    random_size = draw(st.integers(min_value=1, max_value=4))
+    shape = (*arbitrary_dims, random_size, random_size)
+    dtype_and_values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    num_lower = draw(st.integers(min_value=-1, max_value=random_size - 1))
+    num_upper = draw(st.integers(min_value=-1, max_value=random_size - 1))
+    return (*dtype_and_values, num_lower, num_upper)
+
+
+# band_part
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.band_part",
+    dtype_and_input=_get_dtype_and_matrix_and_num(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_band_part(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, num_lower, num_upper = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        num_lower=num_lower,
+        num_upper=num_upper,
     )

@@ -11,7 +11,7 @@ from . import backend_version
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -33,7 +33,7 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # keepdims is set to True because in versions up to 2.4.2
+    # keepdims is set to True because in versions up to 2.5.0
     # there was a problem when the axis was defined and it was the
     # only axis in the tensor so it needs to be handled manually
 
@@ -214,9 +214,10 @@ def _compute_quantile(
 
     return outputs.astype(ret_dtype)
 
+
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -303,7 +304,7 @@ def nanmedian(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -335,7 +336,7 @@ def unravel_index(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",

@@ -19,7 +19,7 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16", "complex")}, backend_version)
 def cholesky(
     x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -31,7 +31,7 @@ def cholesky(
     return ret
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def cross(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -47,7 +47,7 @@ def cross(
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.det(x)
 
@@ -64,7 +64,7 @@ def diagonal(
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def eigh(
     x: np.ndarray, /, *, UPLO: str = "L", out: Optional[np.ndarray] = None
 ) -> Tuple[np.ndarray]:
@@ -75,7 +75,7 @@ def eigh(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def eigvalsh(
     x: np.ndarray, /, *, UPLO: str = "L", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -91,7 +91,7 @@ def inner(
 
 
 @with_unsupported_dtypes(
-    {"1.24.3 and below": ("bfloat16", "float16", "complex")},
+    {"1.25.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def inv(
@@ -113,7 +113,7 @@ def inv(
             return ret
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -143,7 +143,7 @@ matmul.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_norm(
     x: np.ndarray,
     /,
@@ -165,7 +165,7 @@ def matrix_power(
 
 
 @with_unsupported_dtypes(
-    {"1.24.3 and below": ("float16", "bfloat16", "complex")},
+    {"1.25.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 @_scalar_output_to_0d_array
@@ -178,78 +178,33 @@ def matrix_rank(
     hermitian: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    def dim_reduction(array):
-        if array.ndim == 1:
-            ret = array[0]
-        elif array.ndim == 2:
-            ret = array[0][0]
-        elif array.ndim == 3:
-            ret = array[0][0][0]
-        elif array.ndim == 4:
-            ret = array[0][0][0][0]
-        return ret
-
-    if len(x.shape) == 3:
-        if x.shape[-3] == 0:
-            return np.asarray(0).astype(x.dtype)
-    elif len(x.shape) > 3:
-        if x.shape[-3] == 0 or x.shape[-4] == 0:
-            return np.asarray(0).astype(x.dtype)
-    axis = None
-    ret_shape = x.shape[:-2]
-    if len(x.shape) == 2:
-        singular_values = np.linalg.svd(x, compute_uv=False)
-    elif len(x.shape) > 2:
-        y = x.reshape((-1, *x.shape[-2:]))
-        singular_values = np.asarray(
-            [
-                np.linalg.svd(split[0], compute_uv=False)
-                for split in np.split(y, y.shape[0], axis=0)
-            ]
-        )
-        axis = 1
-    if len(x.shape) < 2 or len(singular_values.shape) == 0:
-        return np.array(0, dtype=x.dtype)
-    max_values = np.max(singular_values, axis=axis)
-    if atol is None:
-        if rtol is None:
-            ret = np.sum(singular_values != 0, axis=axis)
-        else:
-            try:
-                max_rtol = max_values * rtol
-            except ValueError:
-                if ivy.all(
-                    element == rtol[0] for element in rtol
-                ):  # all elements are same in rtol
-                    rtol = dim_reduction(rtol)
-                    max_rtol = max_values * rtol
-            if not isinstance(rtol, float) and rtol.size > 1:
-                if ivy.all(element == max_rtol[0] for element in max_rtol):
-                    max_rtol = dim_reduction(max_rtol)
-            elif not isinstance(max_values, float) and max_values.size > 1:
-                if ivy.all(element == max_values[0] for element in max_values):
-                    max_rtol = dim_reduction(max_rtol)
-            ret = ivy.sum(singular_values > max_rtol, axis=axis)
-    else:  # atol is not None
-        if rtol is None:  # atol is not None, rtol is None
-            ret = np.sum(singular_values > atol, axis=axis)
-        else:
-            tol = np.max(atol, max_values * rtol)
-            ret = np.sum(singular_values > tol, axis=axis)
-    if len(ret_shape):
-        ret = ret.reshape(ret_shape)
-    return ret.astype(x.dtype)
+    if (x.ndim < 2) or (0 in x.shape):
+        return np.asarray(0, np.int64)
+    # we don't use the native matrix_rank function because the behaviour of the
+    # tolerance argument is difficult to unify,
+    # and the native implementation is compositional
+    svd_values = np.linalg.svd(x, hermitian=hermitian, compute_uv=False)
+    sigma = np.max(svd_values, axis=-1, keepdims=False)
+    atol = (
+        atol if atol is not None else np.finfo(x.dtype).eps * max(x.shape[-2:]) * sigma
+    )
+    rtol = rtol if rtol is not None else 0.0
+    tol = np.maximum(atol, rtol * sigma)
+    # make sure it's broadcastable again with svd_values
+    tol = np.expand_dims(tol, axis=-1)
+    ret = np.count_nonzero(svd_values > tol, axis=-1)
+    return ret
 
 
 def matrix_transpose(
     x: np.ndarray, /, *, conjugate: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if conjugate:
-        np.conjugate(x)
+        x = np.conjugate(x)
     return np.swapaxes(x, -1, -2)
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def outer(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -264,7 +219,7 @@ def outer(
 outer.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def pinv(
     x: np.ndarray,
     /,
@@ -278,7 +233,7 @@ def pinv(
         return np.linalg.pinv(x, rtol)
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def qr(
     x: np.ndarray,
     /,
@@ -291,7 +246,7 @@ def qr(
     return res(q, r)
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def slogdet(
     x: np.ndarray,
     /,
@@ -306,7 +261,7 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def solve(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -331,7 +286,7 @@ def solve(
     return ret
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def svd(
     x: np.ndarray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
@@ -345,7 +300,7 @@ def svd(
         return results(D)
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def svdvals(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
 
@@ -374,7 +329,7 @@ def tensordot(
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: np.ndarray,
     /,
@@ -402,7 +357,7 @@ def vecdot(
     return np.tensordot(x1, x2, axes=(axis, axis))
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
 def eig(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Tuple[np.ndarray]:
     result_tuple = NamedTuple(
         "eig", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
@@ -429,7 +384,9 @@ def vector_norm(
         x = np.expand_dims(x, 0)
         ret_scalar = True
 
-    if isinstance(axis, list):
+    if axis is None:
+        x = x.reshape([-1])
+    elif isinstance(axis, list):
         axis = tuple(axis)
 
     np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
@@ -466,7 +423,7 @@ def vander(
 
 @with_unsupported_dtypes(
     {
-        "1.24.3 and below": (
+        "1.25.0 and below": (
             "complex",
             "unsigned",
         )

@@ -66,22 +66,6 @@ Regarding the **only mathematics** rule regarding the superset considerations, t
 Neither of these relate to the pure mathematics of the function.
 However, as is discussed below, we always strive to implement Ivy functions such that they support as many data types and devices as possible.
 
-When the Superset is Too Much
------------------------------
-
-Despite this general approach, the total superset is not always actually strived for, especially in cases where the behaviour can very easily be replicated by a simple composition of other functions, or where the extra behaviour is redundant as it is already covered by another function.
-
-As an example, many pointwise functions in NumPy support the :code:`where` argument, which enables a mask array to be specified, with the function then only evaluated at elements for which the :code:`where` array is :code:`True`.
-This inclusion of this feature in NumPy is totally understandable, compositions of NumPy functions are never compiled into computation graphs which span multiple operations, and therefore a good way to maximize efficiency of NumPy code is to minimize the number of unique NumPy functions which are called, each of which are implemented with very high efficiency in :code:`C`.
-In this case, the inclusion of :code:`where` as an argument also prevents unnecessary values from being computed in the first place, only to then be masked out in the immediately subsequent operation.
-For these reasons, calling :code:`np.absolute(x, where=mask)` is much more efficient than calling :code:`np.where(mask, np.absolute(x), np.empty_like(x))` in NumPy.
-:func:`ivy.logical_and` is another example where the superset is too much, as we explain in the extra examples given at the end of this section.
-
-However, other frameworks are able to compile compositions of python operations directly to computation graphs in low-level languages, and are also able to intelligently fuse operations into combined kernels, via libraries such as `TensorRT <https://github.com/NVIDIA/TensorRT>`_.
-This removes the need for highly general function signatures such as those found in NumPy.
-Instead, a compositional approach is preferred, where each function in Python generally serves a particular and non-overlapping purpose.
-This helps to keep things more clean and clear at the Python level, without sacrificing efficiency at the lower level.
-
 Balancing Generalization with Efficiency
 ----------------------------------------
 
@@ -200,18 +184,18 @@ Most frameworks contain some kind of interpolation function, usually limited to 
 On top of this, different framework-specific functions support different sets of modes for interpolation.
 For example, if we look at the framework-specific functions available that serve the purpose of interpolation
 
-1. :func:`torch.nn.functional.interpolate` supports larger number of dimensions in the input but doesn't support the :code:`gaussian` or :code:`mitchellcubic` modes which are supported by :func:`tf.image.resize`.
-2. :func:`tf.image.resize` supports the :code:`gaussian` or :code:`mitchellcubic` modes but doesn't support some other modes in :func:`torch.nn.functional.interpolate` and it also doesn't support larger than a 4-dimensional input.
-3. :func:`jax.image.resize` also has missing modes and doesn't support larger number of dimensions.
-4. :code:`numpy` doesn't have an equivalent function for interpolation (:func:`numpy.interp` is very different from the functionality required).
+    1. :func:`torch.nn.functional.interpolate` supports larger number of dimensions in the input but doesn't support the :code:`gaussian` or :code:`mitchellcubic` modes which are supported by :func:`tf.image.resize`.
+    2. :func:`tf.image.resize` supports the :code:`gaussian` or :code:`mitchellcubic` modes but doesn't support some other modes in :func:`torch.nn.functional.interpolate` and it also doesn't support larger than a 4-dimensional input.
+    3. :func:`jax.image.resize` also has missing modes and doesn't support larger number of dimensions.
+    4. :code:`numpy` doesn't have an equivalent function for interpolation (:func:`numpy.interp` is very different from the functionality required).
 
 So the ideal superset implementation for :func:`ivy.interpolate` would be supporting the union of all modes supported by different implementations and support a larger number of dimensions in the input.
 
 But there are a few considerations to be made,
 
-1. Implementing all the modes for all the backend-specific implementations would be tedious and repetitive as some modes may not be supported by more than one framework.
-2. We would need a completely compositional implementation for the :code:`numpy` backend which doesn't have an equivalent framework-specific function.
-3. But also having a single compositional implementation for all backends would be considerably inefficient as compared to the framework-specific functions with overlapping functionality.
+    1. Implementing all the modes for all the backend-specific implementations would be tedious and repetitive as some modes may not be supported by more than one framework.
+    2. We would need a completely compositional implementation for the :code:`numpy` backend which doesn't have an equivalent framework-specific function.
+    3. But also having a single compositional implementation for all backends would be considerably inefficient as compared to the framework-specific functions with overlapping functionality.
 
 As a workaround, we can simply make use of the backend-specific implementations for a certain number of dimensions and modes for each backend, and then have a general compositional implementation which covers all the remaining cases.
 This will make sure that we don't introduce any inefficiencies and also avoid re-implementation for all the backends.

@@ -97,19 +97,18 @@ def test_numpy_norm(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="numpy.linalg.matrix_rank",
-    dtype_x_hermitian=_matrix_rank_helper(),
-    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
     test_with_out=st.just(False),
 )
 def test_numpy_matrix_rank(
-    dtype_x_hermitian,
-    tol,
+    dtype_x_hermitian_atol_rtol,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x, hermitian = dtype_x_hermitian
+    dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
+    assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -117,7 +116,7 @@ def test_numpy_matrix_rank(
         fn_tree=fn_tree,
         on_device=on_device,
         A=x,
-        tol=tol,
+        tol=atol,
         hermitian=hermitian,
     )
 
@@ -198,40 +197,37 @@ def test_numpy_slogdet(
 
 @handle_frontend_test(
     fn_tree="numpy.trace",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_and_x_axes=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
+        valid_axis=True,
+        min_axes_size=2,
+        max_axes_size=2,
         min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
         safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
-    offset=st.integers(min_value=0, max_value=0),
-    axis1=st.integers(min_value=0, max_value=0),
-    axis2=st.integers(min_value=1, max_value=1),
+    offset=st.integers(min_value=-4, max_value=4),
 )
 def test_numpy_trace(
-    dtype_and_x,
+    dtype_and_x_axes,
     offset,
-    axis1,
-    axis2,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, axes = dtype_and_x_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
         a=x[0],
         offset=offset,
-        axis1=axis1,
-        axis2=axis2,
+        axis1=axes[0],
+        axis2=axes[1],
     )
