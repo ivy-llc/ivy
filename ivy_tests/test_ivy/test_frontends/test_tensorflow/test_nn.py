@@ -1616,3 +1616,43 @@ def test_tensorflow_sufficient_statistics(
         keepdims=keepdims,
         name=None,
     )
+  
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.log_poisson_loss",
+    dtype_target_log_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        max_value=1,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        shared_dtype=True,
+    ),
+    compute_full_loss=st.sampled_from([True, False]),
+    test_with_out=st.just(False),
+)
+def test_log_poisson_loss(
+    *,
+    dtype_target_log_inputs,
+    compute_full_loss,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, input_values = dtype_target_log_inputs
+    targets, log_input = input_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        targets=targets,
+        log_input=log_input,
+        compute_full_loss=compute_full_loss,
+        atol=1e-2,
+    )
