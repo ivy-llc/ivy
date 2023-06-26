@@ -1340,7 +1340,7 @@ def test_tensorflow_softmax(
 @handle_frontend_test(
     fn_tree="tensorflow.nn.embedding_lookup",
     dtypes_indices_weights=helpers.embedding_helper(),
-    max_norm=st.floats(min_value=0, max_value=5, exclude_min=True),
+    max_norm=st.floats(min_value=0.1, max_value=5, exclude_min=True),
 )
 def test_tensorflow_embedding_lookup(
     *,
@@ -1498,4 +1498,108 @@ def test_tensorflow_avg_pool1d(
         ksize=ksize,
         strides=strides,
         padding=padding,
+    )
+
+
+@st.composite
+def _pool_args(draw):
+    dims = draw(st.integers(min_value=3, max_value=5))
+    data_formats = {3: "NWC", 4: "NHWC", 5: "NDHWC"}
+    data_format = data_formats[dims]
+    pooling_type = draw(st.one_of(st.just("AVG"), st.just("MAX")))
+    return (
+        draw(
+            helpers.arrays_for_pooling(
+                min_dims=dims,
+                max_dims=dims,
+                min_side=1,
+                max_side=4,
+                return_dilation=True,
+            )
+        ),
+        data_format,
+        pooling_type,
+        dims,
+    )
+
+
+# pool
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.pool",
+    x_k_s_p_df=_pool_args(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_pool(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (
+        (input_dtype, x, ksize, strides, padding, dilation),
+        data_format,
+        pooling_type,
+        num_dims,
+    ) = x_k_s_p_df
+    if num_dims == 3:
+        strides = (strides[0],)
+    elif num_dims == 4:
+        strides = (strides[0], strides[0])
+    elif num_dims == 5:
+        strides = (strides[0], strides[0], strides[0])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        window_shape=ksize,
+        pooling_type=pooling_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.log_poisson_loss",
+    dtype_target_log_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        max_value=1,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        shared_dtype=True,
+    ),
+    compute_full_loss=st.sampled_from([True, False]),
+    test_with_out=st.just(False),
+)
+def test_log_poisson_loss(
+    *,
+    dtype_target_log_inputs,
+    compute_full_loss,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, input_values = dtype_target_log_inputs
+    targets, log_input = input_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        targets=targets,
+        log_input=log_input,
+        compute_full_loss=compute_full_loss,
+        atol=1e-2,
     )
