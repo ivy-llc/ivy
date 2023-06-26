@@ -219,3 +219,4 @@ def reciprocal(x, name=None):
 @to_ivy_arrays_and_back
 def fmax(x, y, name=None):
     return ivy.fmax(x, y)
+
