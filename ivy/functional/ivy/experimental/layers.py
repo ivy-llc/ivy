@@ -490,6 +490,82 @@ def avg_pool3d(
     )
 
 
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def pool(
+    x: Union[ivy.Array, ivy.NativeArray],
+    window_shape: Union[int, Tuple[int], Tuple[int, int]],
+    pool_type: str,
+    /,
+    *,
+    strides: Optional[Union[int, Tuple[int], Tuple[int, int]]] = None,
+    padding: str = "VALID",
+    data_format: Optional[str] = None,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = None,
+    ceil_mode: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Perform an N-D pooling operation.
+
+    Parameters
+    ----------
+    x
+        Input array to pool over.
+    window_shape
+        Shape of the pooling window.
+    pool_type
+        Type of pooling operation, either 'MAX' or 'AVG'.
+    strides
+        Strides of the pooling operation.
+    padding
+        Padding type, either 'VALID' or 'SAME'.
+    data_format
+        Data format of the input and output data, either 'NCHW' or 'NHWC'.
+    dilations
+        Dilation rate of the pooling operation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Examples
+    --------
+    >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
+    >>> print(ivy.pool(x, (2, 2), 'MAX', (1, 1), 'SAME'))
+    ivy.array([[[[ 1.,  2.],
+                [ 3.,  4.],
+                [ 4.,  5.]]],
+            [[[ 7.,  8.],
+                [ 9., 10.],
+                [10., 11.]]]])
+    >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
+    >>> print(ivy.pool(x, 3, 'AVG', 1, 'VALID'))
+    ivy.array([[[[ 8.,  9.]],
+            [[14., 15.]]],
+            [[[32., 33.]],
+            [[38., 39.]]]])
+    """
+    return ivy.current_backend(x).pool(
+        x,
+        window_shape,
+        pool_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+        ceil_mode=ceil_mode,
+        out=out,
+    )
+
+
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -1030,7 +1106,9 @@ def ifft(
 
 @handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
 @handle_out_argument
+@to_native_arrays_and_back
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1070,19 +1148,23 @@ def embedding(
     ivy.utils.assertions.check_equal(
         len(weights.shape), 2, message="weights must be 2-d", as_array=False
     )
-
-    ret = ivy.empty(
-        indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
-    )
-    if not ivy.is_ivy_array(indices):
-        indices = ivy.array(indices, dtype=ivy.int32)
-
-    for i, x in ivy.ndenumerate(indices):
-        if ivy.exists(max_norm):
-            ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
-        else:
-            ret[i] = weights[x, :]
-    return ret if not ivy.exists(out) else ivy.inplace_update(out, ret)
+    if ivy.exists(out):
+        return ivy.inplace_update(
+            out,
+            ivy.current_backend(indices).embedding(
+                weights,
+                indices,
+                max_norm=max_norm,
+                out=out,
+            ),
+        )
+    else:
+        return ivy.current_backend(indices).embedding(
+            weights,
+            indices,
+            max_norm=max_norm,
+            out=out,
+        )
 
 
 @handle_exceptions
@@ -1504,8 +1586,8 @@ def _upsample_bicubic2d_default(
     return result
 
 
+@handle_exceptions
 @handle_nestable
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def interpolate(
@@ -1613,6 +1695,8 @@ def interpolate(
             equation = "ijkl,km,ln->ijmn"
         elif mode == "trilinear" or dims == 3:
             equation = "ijklm,kn,lo,mp->ijnop"
+        if mode == "bicubic":
+            return _upsample_bicubic2d_default(x, size, align_corners)
         if mode == "bicubic_tensorflow":
             kernel_func = lambda inputs: _cubic_kernel(inputs)
         if mode == "lanczos3":
@@ -1698,8 +1782,6 @@ def interpolate(
                         ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
                             1 / scale_x
                         )
-    elif mode == "bicubic":
-        return _upsample_bicubic2d_default(x, size, align_corners)
     elif mode == "mitchellcubic":
         batch, channels, in_height, in_width = x.shape
         out_height, out_width = size
@@ -1833,6 +1915,16 @@ def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
     return p
 
 
+interpolate.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 def _compute_idx(in_size, out_size, device):
     out_range = ivy.arange(out_size, device=device, dtype=ivy.int64)
     i0 = ivy.trunc_divide(out_range * in_size, out_size).astype(ivy.int64)
@@ -1878,6 +1970,7 @@ def _mask(vals, length, range_max, dim):
 
 
 @handle_nestable
+@inputs_to_ivy_arrays
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -1944,7 +2037,11 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
+@handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -2134,6 +2231,22 @@ def _get_identity(func, dtype, init):
     return init
 
 
+def _int_arg_to_tuple(arg, dims):
+    if isinstance(arg, int):
+        arg = tuple([arg] * dims)
+    return arg
+
+
+avg_pool2d.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
@@ -2188,7 +2301,22 @@ def reduce_window(
     """
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
-    op, dims, strides = operand, window_dimensions, window_strides
+    op = operand
+
+    dims, strides, padding, base_dilation, window_dilation = ivy.map(
+        _int_arg_to_tuple,
+        unique={
+            "arg": [
+                window_dimensions,
+                window_strides,
+                padding,
+                base_dilation,
+                window_dilation,
+            ]
+        },
+        constant={"dims": len(op.shape)},
+    )
+
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
@@ -2202,3 +2330,149 @@ def reduce_window(
     view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
     ret = ivy.reduce(view, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
+
+
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+# @outputs_to_ivy_arrays
+def fft2(
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute the 2-dimensional discrete Fourier Transform.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs FFT2.
+    s
+        sequence of ints, optional
+        Shape (length of each transformed axis) of the output (s[0] refers to axis 0,
+        s[1] to axis 1, etc.). This corresponds to n for fft(x, n). Along each axis,
+        if the given shape is smaller than that of the input, the input is cropped.
+        If it is larger, the input is padded with zeros. if s is not given, the shape
+        of the input along the axes specified by axes is used.
+    dim
+        Axes over which to compute the FFT2. If not given, the last two axes are used.
+        A repeated index in axes means the transform over that axis is performed
+        multiple times. A one-element sequence means that a one-dimensional FFT is
+        performed.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\frac{1}{n}$.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the FFT2 operation.
+
+    Examples
+    --------
+    >>> a = ivy.array([[0, 0, 0, 0, 0],
+                       [1, 1, 1, 1, 1],
+                       [2, 2, 2, 2, 2],
+                       [3, 3, 3, 3, 3],
+                       [4, 4, 4, 4, 4]])
+    >>> ivy.fft2(a)
+    array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        , # may vary
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5+17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5 +4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5 -4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+             0.  +0.j        ,   0.  +0.j        ],
+           [-12.5-17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+              0.  +0.j        ,   0.  +0.j        ]])
+    """
+    return ivy.current_backend(x).fft2(x, s=s, dim=dim, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def ifftn(
+    x: Union[ivy.Array, ivy.NativeArray],
+    s: Optional[Union[int, Tuple[int, ...]]] = None,
+    axes: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute the N-dimensional inverse discrete Fourier Transform.
+
+    Parameters
+    ----------
+    x
+        Input array of complex numbers.
+    s
+        Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
+        `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
+        the input is cropped. If larger, input is padded with zeros. If `s` is not
+        given, shape of input along axes specified by axes is used.
+    axes
+        Axes over which to compute the IFFT. If not given, last `len(s)` axes are
+        used, or all axes if `s` is also not specified. Repeated indices in axes
+        means inverse transform over that axis is performed multiple times.
+    norm
+        Indicates direction of the forward/backward pair of transforms is scaled
+        and with what normalization factor. "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$. "forward"
+        indicates normalization by $\frac{1}{n}$.
+    out
+        Optional output array for writing the result to. It must have a shape that
+        the inputs broadcast to.
+
+    Returns
+    -------
+    out
+        The truncated or zero-padded input, transformed along the axes indicated
+        by axes, or by a combination of s or x, as explained in the parameters
+        section above.
+
+    Raises
+    ------
+    ValueError
+        If `s` and `axes` have different length.
+    IndexError
+        If an element of axes is larger than the number of axes of x.
+
+    Examples
+    --------
+    >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+                        0.98193269+0.49560517j],
+                        [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+                        0.2343787 +0.83528011j],
+                        [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+                        0.44719226+0.72654048j]])
+    >>> y = ivy.ifftn(x)
+    >>> print(y)
+    ivy.array([[ 0.51476765+0.66160417j, -0.04319742-0.05411636j,
+            -0.015561  -0.04216015j],
+            [ 0.06310689+0.05347854j, -0.13392983+0.16052352j,
+            -0.08371392+0.17252843j],
+            [-0.0031429 +0.05421245j, -0.10446617-0.17747098j,
+            0.05344324+0.07972424j]])
+
+    >>> b = ivy.ifftn(x, s=[2, 1], axes=[0, 1], norm='ortho')
+    >>> print(b)
+    ivy.array([[ 0.8344667 +0.98222595j],
+            [-0.48472244+0.30233797j]])
+    """
+    return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)

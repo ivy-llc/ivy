@@ -9,20 +9,20 @@ from ivy.func_wrapper import (
 
 
 def if_else(
-    cond: bool,
+    cond: Callable,
     body_fn: Callable,
     orelse_fn: Callable,
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
-    Take a boolean condition and two functions as input. If the condition is True, the
+    Take a condition function and two functions as input. If the condition is True, the
     first function is executed and its result is returned. Otherwise, the second
     function is executed and its result is returned.
 
     Parameters
     ----------
     cond
-        A boolean value representing the condition to be evaluated.
+        A function returning a boolean.
     body_fn
         A callable function to be executed if the condition is True.
     orelse_fn
@@ -38,7 +38,7 @@ def if_else(
 
     Examples
     --------
-    >>> cond = True
+    >>> cond = lambda x: True
     >>> body_fn = lambda x: x + 1
     >>> orelse_fn = lambda x: x - 1
     >>> vars = (1,)
@@ -46,7 +46,7 @@ def if_else(
     >>> print(result)
     2
 
-    >>> cond = False
+    >>> cond = lambda x: True
     >>> body_fn = lambda x: x * 2
     >>> orelse_fn = lambda x: x / 2
     >>> vars = ivy.array([1, 2, 3])
@@ -182,6 +182,17 @@ def for_loop(
     packed_vars = (iterator, body_fn, vars_dict)
 
     return _dict_to_tuple(while_loop(test_fn, empty_function, packed_vars)[2])
+
+
+# todo (nightcrab) find a better place for these cmp functions
+
+
+def cmp_is(left, right):
+    return left is right
+
+
+def cmp_isnot(left, right):
+    return left is not right
 
 
 def _tuple_to_dict(t):

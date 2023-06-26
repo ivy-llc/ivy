@@ -76,11 +76,11 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and all(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
-            (
-                ivy.set_default_int_dtype("int64") 
-                if ivy.current_backend_str() != "jax"
-                else ivy.set_default_int_dtype("int32")
-            )
+            if ivy.current_backend_str() == "jax":
+                import jax
+
+                jax.config.update("jax_enable_x64", True)
+            ivy.set_default_int_dtype("int64")
             ivy.set_default_float_dtype(torch_frontend.get_default_dtype())
             set_default_dtype = True
         try:
@@ -93,11 +93,17 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         ret = _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
         )
+        array_fn = lambda x: ivy.is_array(x) or hasattr(x, "ivy_array")
         if "inplace" in kwargs and kwargs["inplace"]:
             first_array = ivy.func_wrapper._get_first_array(
-                *args, array_fn=lambda x: hasattr(x, "ivy_array"), **kwargs
+                *args, array_fn=array_fn, **kwargs
             )
-            ivy.inplace_update(first_array, ret.ivy_array)
+            # ivy.inplace_update with ensure_in_backend=True fails in jax and tf
+            # so update ._data directly
+            if ivy.is_array(first_array):
+                first_array._data = ret.ivy_array._data
+            else:
+                first_array.ivy_array._data = ret.ivy_array._data
             return first_array
         else:
             return ret

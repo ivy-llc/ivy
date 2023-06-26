@@ -119,9 +119,9 @@ def prod(
     return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
-@with_unsupported_dtypes(	
-    {"2.0.1 and below": ("int8", "int16", "int32", "int64", "float16")},	
-    backend_version,	
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("int8", "int16", "int32", "int64", "float16")},
+    backend_version,
 )
 def std(
     x: torch.Tensor,
@@ -298,7 +298,7 @@ cummin.support_native_out = True
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": ("uint8", "float16", "bfloat16"),	
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
         "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,
@@ -387,14 +387,14 @@ def cummax(
 cummax.support_native_out = True
 
 
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16",)},
+    backend_version,
+)
 def einsum(
     equation: str,
     *operands: torch.Tensor,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (
-        ivy.astype(operand, torch.float32, copy=False).to_native()
-        for operand in operands
-    )
     return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)

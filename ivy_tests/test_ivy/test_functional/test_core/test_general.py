@@ -221,12 +221,14 @@ def array_and_boolean_mask(
         ),
         array_and_boolean_mask(array_dtypes=helpers.get_dtypes("valid")),
     ),
+    copy=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
 )
 def test_get_item(
     dtype_x_indices,
+    copy,
     test_flags,
     backend_fw,
     fn_name,
@@ -243,6 +245,7 @@ def test_get_item(
         fn_name=fn_name,
         x=x,
         query=indices,
+        copy=copy,
     )
 
 

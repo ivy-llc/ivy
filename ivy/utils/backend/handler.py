@@ -456,6 +456,11 @@ def set_backend(backend: str, dynamic: bool = False):
         backend_stack.append(backend)
         set_backend_to_specific_version(backend)
         _set_backend_as_ivy(ivy_original_dict, ivy, backend)
+        # following snippet is required to update the ivy.functional namespace with
+        # backend-specific functions
+        for key, _ in ivy.__dict__.items():
+            if key in ivy.functional.__dict__ and not key.startswith("__"):
+                ivy.functional.__dict__[key] = ivy.__dict__[key]
 
         if dynamic:
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
@@ -580,6 +585,8 @@ def previous_backend():
                 v = _wrap_function(k, v, ivy_original_dict[k])
             if k in ivy_original_dict:
                 ivy.__dict__[k] = v
+            if k in ivy.functional.__dict__ and not k.startswith("__"):
+                ivy.functional.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     return backend

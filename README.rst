@@ -18,7 +18,7 @@
 
 ..
 
-   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this README won't work as expected as of now!
+   🚀 We are granting pilot access to **Ivy's Compiler and Transpiler** to some users, `join the waitlist <https://console.unify.ai/>`_ if you want to test them out!
 
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only
@@ -35,23 +35,23 @@
 
     <div style="display: block;" align="center">
     <a href="https://unify.ai/">
-        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.svg">
     </a>
-    <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/docs/ivy">
-        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.svg">
     </a>
-    <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/demos">
-        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.svg">
     </a>
-    <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/docs/ivy/overview/design.html">
-        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.svg">
     </a>
-    <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/docs/ivy/overview/faq.html">
-        <img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.svg">
     </a>
     </div>
 
@@ -102,21 +102,21 @@ Unified AI
         <a href="https://jax.readthedocs.io">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
         </a>
-        <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         
-        <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://www.tensorflow.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
         </a>
-        <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         
-        <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://pytorch.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
         </a>
-        <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         
-        <img width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://numpy.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
         </a>
@@ -232,16 +232,17 @@ The `Ivy Stateful API <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framew
 
     import ivy
 
+
     class Regressor(ivy.Module):
         def __init__(self, input_dim, output_dim):
-            self.linear = ivy.Linear(input_dim, output_dim)
-            self.sigmoid = ivy.Sigmoid()
-            self.dropout = ivy.Dropout(0.5)
+            self.linear0 = ivy.Linear(input_dim, 128)
+            self.linear1 = ivy.Linear(128, output_dim)
             ivy.Module.__init__(self)
 
-        def _forward(self, x, is_training=True):
-            x = self.sigmoid(self.linear(x))
-            x = self.dropout(x, is_training=is_training)
+        def _forward(self, x):
+            x = self.linear0(x)
+            x = ivy.functional.relu(x)
+            x = self.linear1(x)
             return x
 
 
@@ -252,31 +253,34 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
 
     import ivy
 
+
     class Regressor(ivy.Module):
         def __init__(self, input_dim, output_dim):
-            self.linear = ivy.Linear(input_dim, output_dim)
-            self.sigmoid = ivy.Sigmoid()
-            self.dropout = ivy.Dropout(0.5)
+            self.linear0 = ivy.Linear(input_dim, 128)
+            self.linear1 = ivy.Linear(128, output_dim)
             ivy.Module.__init__(self)
 
-        def _forward(self, x, is_training=True):
-            x = self.sigmoid(self.linear(x))
-            x = self.dropout(x, is_training=is_training)
+        def _forward(self, x):
+            x = self.linear0(x)
+            x = ivy.functional.relu(x)
+            x = self.linear1(x)
             return x
 
-    ivy.set_backend('torch')  # set backend to PyTorch
+    ivy.set_backend('torch')  # set backend to PyTorch (or any other backend!)
 
-    model = Regressor(input_dim=3, output_dim=1)
-    optimizer = ivy.Adam(1e-4)
+    model = Regressor(input_dim=1, output_dim=1)
+    optimizer = ivy.Adam(0.3)
 
-    # generate some random data
-    x = ivy.random.random_normal(shape=(100, 3))
-    y = ivy.random.random_normal(shape=(100, 1))
+    n_training_examples = 2000
+    noise = ivy.random.random_normal(shape=(n_training_examples, 1), mean=0, std=0.1)
+    x = ivy.linspace(-6, 3, n_training_examples).reshape((n_training_examples, 1))
+    y = 0.2 * x ** 2 + 0.5 * x + 0.1 + noise
+
 
     def loss_fn(pred, target):
-        return ivy.mean((pred - target)**2)
+        return ivy.mean((pred - target) ** 2)
 
-    for epoch in range(50):
+    for epoch in range(40):
         # forward pass
         pred = model(x)
 
@@ -296,7 +300,7 @@ The model's output can be visualized as follows:
 .. raw:: html
 
    <div align="center">
-      <img width="50%" src="https://i.imgur.com/DUc97i2.gif">
+      <img width="50%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/regressor_lq.gif">
    </div>
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
@@ -1632,7 +1636,7 @@ Join our amazing community as a code contributor, and help accelerate our journe
 .. raw:: html
 
    <a href="https://github.com/unifyai/ivy/graphs/contributors">
-     <img src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
+     <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
    </a>
 
 |
