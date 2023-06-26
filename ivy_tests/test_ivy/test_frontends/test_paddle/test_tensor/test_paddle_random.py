@@ -126,7 +126,6 @@ def test_paddle_randn(
     )
 
 
-
 @handle_frontend_test(
     fn_tree="paddle.tensor.random.uniform_",
     min=helpers.floats(min_value=-1, max_value=0),
@@ -151,7 +150,6 @@ def test_paddle_uniform_(
     frontend,
     test_flags,
 ):
-
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
