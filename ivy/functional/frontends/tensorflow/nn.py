@@ -462,7 +462,7 @@ def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
 
 #weighted_moments
 @to_ivy_arrays_and_back
-def weighted_moments2(x, axes, frequency_weights, keepdims=False, name=None):
+def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
     fw_x_prod=frequency_weights * x
     fw_x_prod=ivy.array(fw_x_prod)
     weighted_input_sum = ivy.sum(fw_x_prod, axis=axes, keepdims=True).astype(fw_x_prod.dtype)
