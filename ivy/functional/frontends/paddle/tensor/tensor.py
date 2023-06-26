@@ -240,3 +240,19 @@ class Tensor:
     )
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def greater_than(self, y, name=None):
+        return paddle_frontend.greater_than(self, y)
