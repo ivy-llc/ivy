@@ -195,7 +195,6 @@ class Tensor:
     def isfinite(self, name=None):
         return ivy.isfinite(self._ivy_array)
 
-    @with_supported_dtypes({"2.5.0 and below": "bool"}, "paddle")
     def all(self, axis=None, keepdim=False, name=None):
         return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim)
 
