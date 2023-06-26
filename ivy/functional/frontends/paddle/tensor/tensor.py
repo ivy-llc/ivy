@@ -210,6 +210,23 @@ class Tensor:
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
 
     @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def logical_or(self, y, out=None, name=None):
+        return paddle_frontend.logical_or(self, y, out=out)
+
+    @with_supported_dtypes(
         {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
         "paddle",
     )
