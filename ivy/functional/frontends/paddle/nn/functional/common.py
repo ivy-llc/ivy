@@ -27,5 +27,5 @@ def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def dropout2d(x, *, p=0.5, training=True, data_format='NCHW', name=None):
+def dropout2d(x, *, p=0.5, training=True, data_format="NCHW", name=None):
     return ivy.dropout2d(x, p=p, training=training, data_format=data_format)

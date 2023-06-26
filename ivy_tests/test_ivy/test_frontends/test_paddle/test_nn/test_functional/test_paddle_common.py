@@ -87,4 +87,3 @@ def test_paddle_dropout2d(
         training=training,
         data_format=data_format,
     )
-    
