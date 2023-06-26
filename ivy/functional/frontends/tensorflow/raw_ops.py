@@ -24,9 +24,13 @@ Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 
 ArgMax = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.math.argmax,
-        kwargs_to_update={"dimension": "axis"},
+    with_unsupported_dtypes(
+        {"2.12.0 and below": ("complex",)},
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.argmax, kwargs_to_update={"dimension": "axis"}
+        )
     )
 )
 
@@ -36,7 +40,7 @@ AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 @with_unsupported_dtypes(
     {
-        "2.10.0 and below": (
+        "2.12.0 and below": (
             "float16",
             "bool",
             "bfloat16",
@@ -53,8 +57,7 @@ def ApproximateEqual(
     name="ApproximateEqual",
 ):
     x, y = check_tensorflow_casting(x, y)
-    ret = ivy.abs(x - y)
-    return ret < tolerance
+    return ivy.abs(x - y) < tolerance
 
 
 @to_ivy_arrays_and_back
@@ -64,15 +67,20 @@ def Angle(
     Tout=ivy.float32,
     name="Angle",
 ):
+    Tout = ivy.as_ivy_dtype(Tout) if Tout is not None else ivy.float32
     return ivy.astype(ivy.angle(input), Tout)
 
 
-@to_ivy_arrays_and_back
-def ArgMin(*, input, dimension, output_type=None, name=None):
-    output_type = to_ivy_dtype(output_type)
-    if output_type in ["int32", "int64"]:
-        return ivy.astype(ivy.argmin(input, axis=dimension), output_type)
-    return ivy.astype(ivy.argmin(input, axis=dimension), "int64")
+ArgMin = to_ivy_arrays_and_back(
+    with_unsupported_dtypes(
+        {"2.12.0 and below": ("complex",)},
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.argmin, kwargs_to_update={"dimension": "axis"}
+        )
+    )
+)
 
 
 @to_ivy_arrays_and_back
@@ -270,7 +278,14 @@ def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
 
-LessEqual = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.less_equal))
+LessEqual = to_ivy_arrays_and_back(
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex",),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.less_equal))
+)
 
 
 @to_ivy_arrays_and_back
@@ -309,31 +324,47 @@ MatrixDeterminant = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.linalg.
 
 
 Max = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.math.reduce_max,
-        kwargs_to_update={
-            "input": "input_tensor",
-            "keep_dims": "keepdims",
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex",),
         },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.reduce_max,
+            kwargs_to_update={
+                "input": "input_tensor",
+                "keep_dims": "keepdims",
+            },
+        )
     )
 )
 
 
 Maximum = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.math.maximum,
-        kwargs_to_update={"x": "a", "y": "b"},
-    )
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex",),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.maximum))
 )
 
 
 Min = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.math.reduce_min,
-        kwargs_to_update={
-            "input": "input_tensor",
-            "keep_dims": "keepdims",
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex",),
         },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.reduce_min,
+            kwargs_to_update={
+                "input": "input_tensor",
+                "keep_dims": "keepdims",
+            },
+        )
     )
 )
 
@@ -392,19 +423,24 @@ Relu = to_ivy_arrays_and_back(
             "2.12.0 and below": ("complex", "float16"),
         },
         "tensorflow",
-    )(
-        map_raw_ops_alias(
-            tf_frontend.keras.activations.relu,
-            kwargs_to_update={"features": "x"},
-        )
-    )
+    )(map_raw_ops_alias(tf_frontend.nn.relu))
 )
 
 
-@to_ivy_arrays_and_back
-def RealDiv(*, x, y, name="RealDiv"):
-    x, y = check_tensorflow_casting(x, y)
-    return ivy.divide(x, y)
+RealDiv = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.12.0 and below": (
+                "complex",
+                "bfloat16",
+                "float16",
+                "float64",
+                "float32",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.general_functions.realdiv))
+)
 
 
 Reshape = to_ivy_arrays_and_back(
@@ -442,25 +478,22 @@ def Sinh(*, x, name="Sinh"):
 
 
 @with_unsupported_dtypes(
-    {
-        "2.10.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-        )
-    },
+    {"2.12.0 and below": ("unsigned",)},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
 def Sign(*, x, name="Sign"):
-    return ivy.sign(x)
+    return ivy.sign(x, np_variant=False)
 
 
 Size = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.size))
 
 
-Split = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.split))
+Split = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.split, kwargs_to_update={"num_split": "num_or_size_splits"}
+    )
+)
 
 
 @to_ivy_arrays_and_back
@@ -478,7 +511,9 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-Squeeze = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.squeeze))
+Squeeze = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.general_functions.squeeze)
+)
 
 
 Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))
@@ -514,7 +549,7 @@ def TruncateDiv(*, x, y, name="TruncateDiv"):
     return ivy.astype(ivy.trunc_divide(x, y), x.dtype)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def Unpack(*, value, num, axis=0, name="Unpack"):
     return ivy.unstack(value, axis=axis)[:num]
@@ -536,15 +571,19 @@ Mean = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def Pow(*, x, y, name="Pow"):
-    return ivy.pow(x, y)
+Pow = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.pow))
 
 
 Relu6 = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.nn.relu6,
-        kwargs_to_update={"x": "features"},
+    with_unsupported_dtypes(
+        {
+            "2.12.0 and below": ("complex", "float16"),
+        },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.nn.relu6,
+        )
     )
 )
 
@@ -576,7 +615,7 @@ def Xdivy(*, x, y, name="Xdivy"):
     return ivy.divide(x, y)
 
 
-@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def Xlog1py(*, x, y, name="Xlog1py"):
     if (x == 0).all():
@@ -597,33 +636,51 @@ def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
 ConcatV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.concat))
 
 
+def _tf_to_ivy_ivy_arguments_for_conv(
+    padding, ex_pading, strides, dilations, data_format
+):
+    if data_format.find("C") == 1:
+        strides = strides[2:]
+        dilations = dilations[2:]
+        data_format = "channel_first"
+        pad_index = [4, 8]
+    else:
+        strides = strides[1:-1]
+        dilations = dilations[1:-1]
+        data_format = "channel_last"
+        pad_index = [2, 6]
+    if padding == "EXPLICIT":
+        padding = [
+            (ex_pading[i], ex_pading[i + 1])
+            for i in range(pad_index[0], pad_index[1], 2)
+        ]
+    return padding, strides, dilations, data_format
+
+
 @to_ivy_arrays_and_back
 def Conv2D(
     *,
     input,
-    output,
+    filter,
     strides,
     padding,
+    use_cudnn_on_gpu,
+    explicit_paddings,
     data_format="NHWC",
     dilations=[1, 1, 1, 1],
     name="Conv2D",
 ):
-    if data_format == "NDHWC":
-        strides = [1] + strides[1:-1] + [1]
-        dilations = [1] + dilations[1:-1] + [1]
-    elif data_format == "NCDHW":
-        strides = [1, 1] + strides[2:] + [1]
-        dilations = [1, 1] + dilations[2:] + [1]
-    filter = ivy.variable(ivy.random_normal(shape=output + input, stddev=0.1))
-    return ivy.conv2d(
+    padding, strides, dilations, data_format = _tf_to_ivy_ivy_arguments_for_conv(
+        padding, explicit_paddings, strides, dilations, data_format
+    )
+    return ivy.conv_general_dilated(
         input,
-        output,
         filter,
         strides,
         padding,
         data_format=data_format,
         dilations=dilations,
-        name=name,
+        dims=2,
     )
 
 
@@ -808,7 +865,7 @@ def Prod(*, input, axis, keep_dims=False, name="Prod"):
 Zeta = to_ivy_arrays_and_back(
     with_supported_dtypes(
         {
-            "2.11.0 and below": ("float32", "float64"),
+            "2.12.0 and below": ("float32", "float64"),
         },
         "tensorflow",
     )(map_raw_ops_alias(tf_frontend.math.zeta))

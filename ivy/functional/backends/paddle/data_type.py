@@ -143,6 +143,7 @@ def broadcast_to(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:

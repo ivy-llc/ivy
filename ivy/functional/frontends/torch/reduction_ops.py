@@ -2,6 +2,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -53,7 +54,9 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def mean(input, dim=None, keepdim=False, *, out=None):
+def mean(input, dim=None, axis=None, keepdim=False, *, out=None):
+    if dim is None:
+        dim = axis
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
@@ -123,7 +126,13 @@ def var(input, dim, unbiased, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def min(input, dim=None, keepdim=False, *, out=None):
+def min(*input, dim=None, axis=None, keepdim=False, out=None):
+    if len(input) == 1:
+        input = input[0]
+    elif len(input) == 2:
+        return torch_frontend.minimum(*input)
+    if dim is None:
+        dim = axis
     if dim is None:
         return ivy.min(input, axis=dim, keepdims=keepdim, out=out)
     elif out is not None:
@@ -139,7 +148,13 @@ def min(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def max(input, dim=None, keepdim=False, *, out=None):
+def max(*input, dim=None, axis=None, keepdim=False, out=None):
+    if len(input) == 1:
+        input = input[0]
+    elif len(input) == 2:
+        return torch_frontend.maximum(*input)
+    if dim is None:
+        dim = axis
     if dim is None:
         return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
     elif out is not None:
@@ -160,6 +175,7 @@ def moveaxis(input, source, destination):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     temp_std = ivy.std(
         input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
@@ -232,9 +248,11 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
 
 @to_ivy_arrays_and_back
 def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
-    results = ivy.unique_all(input, axis=dim)
+    if dim is not None:
+        sorted = True
+    results = ivy.unique_all(input, by_value=sorted, axis=dim)
 
-    fields = ["values"]
+    fields = ["output"]
     if return_inverse:
         fields.append("inverse_indices")
     if return_counts:
@@ -244,7 +262,12 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
 
     values = [results.values]
     if return_inverse:
-        values.append(results.inverse_indices)
+        inverse_indices = results.inverse_indices
+
+        if dim is None:
+            inverse_indices = inverse_indices.reshape(input.shape)
+
+        values.append(inverse_indices)
     if return_counts:
         values.append(results.counts)
 
@@ -252,8 +275,18 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("bfloat16",)},
+    "torch",
+)
 def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
-    if (type(dim) in [tuple, list]) and (len(dim) == 2):
+    if (
+        p == "fro" and (dim is None or isinstance(dim, int) or len(dim) <= 2)
+    ) or p is None:
+        p = 2
+    if isinstance(p, str):
+        if dim is None:
+            dim = tuple(range(input.dim()))
         return ivy.matrix_norm(input, ord=p, axis=dim, keepdims=keepdim, out=out)
     else:
         return ivy.vector_norm(

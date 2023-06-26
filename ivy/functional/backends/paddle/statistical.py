@@ -211,7 +211,7 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int16")}},
+    {"2.5.0 and below": {"cpu": ("uint8", "int16")}},
     backend_version,
 )
 def cumprod(
@@ -225,7 +225,7 @@ def cumprod(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else x.dtype
-    if dtype in [paddle.uint8, paddle.int8, paddle.int16]:
+    if ivy.as_native_dtype(dtype) in [paddle.uint8, paddle.int8, paddle.int16]:
         x = paddle.cast(x, "int32")
     else:
         x = paddle.cast(x, dtype)
@@ -264,7 +264,7 @@ def cumprod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},
+    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16")}},
     backend_version,
 )
 def cummin(
@@ -292,7 +292,7 @@ def cummin(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def cumsum(
@@ -311,7 +311,7 @@ def cumsum(
         paddle.float16,
         paddle.bool,
     ]:
-        x = paddle.cast(x, "float32")
+        x = paddle.cast(x, "int32")
     else:
         x = paddle.cast(x, dtype)
     if not (exclusive or reverse):
@@ -349,7 +349,7 @@ def cumsum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def cummax(
     x: paddle.Tensor,

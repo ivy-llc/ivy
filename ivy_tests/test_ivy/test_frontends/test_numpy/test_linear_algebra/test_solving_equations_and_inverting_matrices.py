@@ -1,9 +1,10 @@
 # global
 import sys
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
@@ -155,6 +156,9 @@ def test_numpy_tensorinv(
     frontend,
 ):
     dtype, x, ind = params
+    if ivy.current_backend_str() == "paddle":
+        # Paddle only supports ndim from 0 to 9
+        assume(x.shape[0] < 10)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,

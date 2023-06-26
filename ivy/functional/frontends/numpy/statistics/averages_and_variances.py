@@ -173,62 +173,34 @@ def nanstd(
 
 
 @to_ivy_arrays_and_back
-def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=None):
-    # check if inputs are valid
-    input_check = ivy.valid_dtype(dtype) and x.ndim in [0, 1]
-
-    if input_check:
-        x = ivy.array(x)
-        x = x.stack([], axis=0)
-        # if two input arrays are given
-        if ivy.exists(y) and y.ndim > 0:
-            x = x.stack(ivy.array(y), axis=0)
-
-        # compute the weights array
-        w = None
-        # if weights are 1D and positive
-        if ivy.exists(fweights):
-            if fweights.ndim < 2 and not fweights.min(keepdims=True)[0] > 0:
-                w = ivy.array(fweights)
-        if ivy.exists(aweights):
-            if aweights.ndim < 2 and not aweights.min(keepdims=True)[0] > 0:
-                w = w.multiply(aweights) if ivy.exists(w) else ivy.array(aweights)
-
-            # if w exists, use weighted average
-            xw = x.multiply(w)
-            w_sum = ivy.sum(w)
-            average = ivy.stable_divide(ivy.sum(xw, axis=1), w_sum)
-        else:
-            # else compute arithmetic average
-            average = ivy.mean(x, axis=1)
-
-        # compute the normalization
-        if ddof is None:
-            ddof = 1 if bias == 0 else 0
-
-        if w is None:
-            norm = x.shape[0] - ddof
-        elif ddof == 0:
-            norm = w_sum
-        elif aweights is None:
-            norm = w_sum - ddof
-        else:
-            norm = w_sum - ivy.stable_divide(ddof * ivy.sum(w * aweights), w_sum)
-
-        # compute residuals from average
-        x -= average[:]
-        # compute transpose matrix
-        x_t = ivy.matrix_transpose(x * w) if ivy.exists(w) else ivy.matrix_transpose(x)
-        # compute covariance matrix
-        c = ivy.stable_divide(ivy.matmul(x, x_t), norm).astype(dtype)
-
-        return c
+def cov(
+    m,
+    y=None,
+    /,
+    *,
+    rowVar=True,
+    bias=False,
+    ddof=None,
+    fweights=None,
+    aweights=None,
+    dtype=None,
+):
+    return ivy.cov(
+        m,
+        y,
+        rowVar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+        dtype=dtype,
+    )
 
 
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.25.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
