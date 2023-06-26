@@ -42,7 +42,7 @@ def test_paddle_cosine_similarity(
         axis=axis,
     )
 
-    
+
 # Dropout2d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.dropout2d",
@@ -87,8 +87,8 @@ def test_paddle_dropout2d(
         training=training,
         data_format=data_format,
     )
-    
-    
+
+
 # dropout
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.dropout",
