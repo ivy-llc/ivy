@@ -787,8 +787,7 @@ def _get_inv_square_matrices(draw):
 
 
 @handle_frontend_test(
-    fn_tree="jax.numpy.linalg.tensorinv",
-    params=_get_inv_square_matrices()
+    fn_tree="jax.numpy.linalg.tensorinv", params=_get_inv_square_matrices()
 )
 def test_jax_numpy_tensorinv(
     *,
