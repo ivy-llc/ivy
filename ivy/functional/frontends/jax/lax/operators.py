@@ -609,7 +609,7 @@ def reduce_window(
 
 @to_ivy_arrays_and_back
 def squeeze(array, dimensions):
-    return ivy.squeeze(array, dimensions)
+    return ivy.squeeze(array, axis=dimensions)
 
 
 @to_ivy_arrays_and_back

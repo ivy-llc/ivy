@@ -523,3 +523,6 @@ class ndarray:
         xmax = self.max(axis=axis, out=out, keepdims=keepdims)
         xmin = self.min(axis=axis, out=out, keepdims=keepdims)
         return np_frontend.subtract(xmax, xmin)
+
+    def __rshift__(self, value, /):
+        return ivy.bitwise_right_shift(self.ivy_array, value)
