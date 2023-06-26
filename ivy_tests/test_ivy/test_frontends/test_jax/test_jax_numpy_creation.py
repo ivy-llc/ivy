@@ -766,26 +766,33 @@ def test_jax_numpy_single(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    input_fill_dtype=_input_fill_and_dtype(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    max_line_width=st.integers(min_value=1, max_value=100),
+    precision=st.integers(min_value=1, max_value=50),
+    suppress_small=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_array_str(
-    shape,
-    input_fill_dtype,
+    dtype_and_x,
+    max_line_width,
+    precision,
+    suppress_small,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, _, fill_value, dtype = input_fill_dtype
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        shape=shape,
-        fill_value=fill_value,
-        dtype=dtype,
+        a=x[0],
+        max_line_width=max_line_width,
+        precision=precision,
+        suppress_small=suppress_small,
     )
-    

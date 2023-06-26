@@ -186,8 +186,8 @@ def single(x):
 
 @to_ivy_arrays_and_back
 def array_str(a, max_line_width=None, precision=None, suppress_small=False):
-    if precision is None:
-        precision = ivy.array_significant_figures()
+    # handles if precision is none or if invalid
+    precision = ivy.array_significant_figures(precision)
 
     def round_suppress(ele, precision_):
         count_after_decimal = str(ele)[::-1].find(".")
