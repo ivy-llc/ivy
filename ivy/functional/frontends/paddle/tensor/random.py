@@ -43,6 +43,7 @@ def randn(shape, dtype=None, name=None):
 )
 @to_ivy_arrays_and_back
 def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
+    x = ivy.array(x)
     return ivy.random_uniform(
         low=min, high=max, shape=x.shape, dtype=x.dtype, seed=seed
     )
