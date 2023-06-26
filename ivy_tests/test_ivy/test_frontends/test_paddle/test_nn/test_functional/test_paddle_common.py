@@ -58,9 +58,9 @@ def test_paddle_cosine_similarity(
     ),
     p=st.floats(min_value=0.0, max_value=1.0),
     axis=st.integers(min_value=0, max_value=1),
-    training=st.booleans() ,
+    training=st.booleans(),
     mode=st.one_of(
-        *[st.just(seq) for seq in ['upscale_in_train','downscale_in_infer']]
+        *[st.just(seq) for seq in ["upscale_in_train", "downscale_in_infer"]]
     ),
 )
 def test_paddle_dropout(
