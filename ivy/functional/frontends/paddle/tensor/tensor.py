@@ -257,3 +257,10 @@ class Tensor:
     )
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("complex64", "complex128","float32", "float64")},
+        "paddle",
+    )
+    def angle(self, name=None):
+        return ivy.angle(self._ivy_array)
