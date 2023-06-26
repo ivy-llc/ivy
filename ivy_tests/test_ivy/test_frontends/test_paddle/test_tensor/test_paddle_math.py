@@ -560,6 +560,32 @@ def test_paddle_abs(
     )
 
 
+# conj
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.conj",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_paddle_conj(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # floor
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.floor",
@@ -750,7 +776,6 @@ def test_paddle_tan(
     )
 
 
-
 # atan2
 @handle_frontend_test(
     fn_tree="paddle.atan2",
@@ -911,4 +936,33 @@ def test_paddle_reciprocal(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# gcd
+@handle_frontend_test(
+    fn_tree="paddle.gcd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("int"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_gcd(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
     )
