@@ -1383,3 +1383,4 @@ def test_paddle_cumsum(
         frontend=frontend,
         on_device=on_device,
     )
+
