@@ -58,10 +58,6 @@ def test_paddle_binary_cross_entropy_with_logits(
     )
 
 
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
-
-
 # cosine embedding loss
 @st.composite
 def _cos_embd_loss_helper(draw):
