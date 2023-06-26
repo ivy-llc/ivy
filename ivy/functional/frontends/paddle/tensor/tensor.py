@@ -257,3 +257,7 @@ class Tensor:
     )
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16","bfloat16")}, "paddle")
+    def cumprod(self, dim=None, dtype=None, name=None):
+        return ivy.cumprod(self._ivy_array, axis=dim, dtype=dtype)
