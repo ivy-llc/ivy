@@ -136,6 +136,7 @@ def rfft2(a, s=None, axes=(-2, -1), norm=None):
     s = a.shape if s is None else tuple(s)
     result = a
     for axis in axes:
-        result = ivy.dft(result, axes=axis, inverse=False, onesided=True, dft_length=s, norm=norm)
-
+        result = ivy.dft(
+            result, axes=axis, inverse=False, onesided=True, dft_length=s, norm=norm
+        )
     return result
