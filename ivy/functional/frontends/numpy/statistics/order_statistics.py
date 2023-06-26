@@ -1,6 +1,11 @@
 # global
 import ivy
-
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
+)
 def _quantile_is_valid(q):
     # avoid expensive reductions, relevant for arrays with < O(1000) elements
     if q.ndim == 1 and q.size < 10:
@@ -104,28 +109,25 @@ def nanpercentile(
                 resultarray.append(arrayofpercentiles)
         return resultarray
 
-
-
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
 def quantile(
     x,
     q,
     /,
-    out=None,
     *,
+    axis=None,
     interpolation="linear",
     kind="increasing",
     order="k",
     dtype=None,
     keepdims=False,
 ):
-  
-    x = ivy.as_array(x)
-    ret = ivy.quantile(x, q, interpolation=interpolation, kind=kind, order=order, out=out)
+    with with_unsupported_dtypes():
+        x = ivy.as_array(x)
+    ret = ivy.quantile(x, q, axis=axis, interpolation=interpolation, kind=kind, order=order)
     if keepdims:
-        ret = ivy.expand_dims(ret, -1)
-    return ret
+        ret = ivy.expand_dims(ret, axis)
+    return ret.astype(dtype, copy=False)
