@@ -86,7 +86,7 @@ def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
 
 # stateless_categorical
 @to_ivy_arrays_and_back
-def stateless_categorical(logits, num_samples, seed,dtype=tf.dtypes.int64,name=None):
+def stateless_categorical(logits, num_samples, seed, dtype=ivy.int64, name=None):
     ivy.seed(seed)
     probabilities = ivy.softmax(logits)
     samples = ivy.empty((num_samples,), dtype=ivy.int64)
@@ -94,5 +94,5 @@ def stateless_categorical(logits, num_samples, seed,dtype=tf.dtypes.int64,name=N
         random_number = ivy.random_uniform(shape=(1,), low=0.0, high=1.0)
         cumulative_probs = ivy.cumsum(probabilities)
         sample = ivy.argmax(cumulative_probs > random_number)
-        samples = ivy.assign(samples, sample, indices=i)
+        samples = ivy.concat([samples[:i], sample, samples[i+1:]], axis=0)
     return samples
