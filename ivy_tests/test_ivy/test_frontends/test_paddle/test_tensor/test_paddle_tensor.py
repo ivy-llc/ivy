@@ -1378,3 +1378,4 @@ def test_paddle_angle(
         frontend=frontend,
         on_device=on_device,
     )
+
