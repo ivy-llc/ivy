@@ -187,10 +187,10 @@ def single(x):
 @to_ivy_arrays_and_back
 def array_str(a, max_line_width=None, precision=None, suppress_small=False):
     if precision is None:
-        # TODO: need implementation of get_printoptions() functional API
-        precision = ivy.get_printoptions()['precision']
+        precision = ivy.array_significant_figures()
+
     def round_suppress(ele, precision_):
-        count_after_decimal = str(ele)[::-1].find('.')
+        count_after_decimal = str(ele)[::-1].find(".")
         if suppress_small and (count_after_decimal > precision_):
             # supress to zero
             return 0
@@ -199,11 +199,15 @@ def array_str(a, max_line_width=None, precision=None, suppress_small=False):
 
     a = list(map(round_suppress, a, precision))
     a = str(a)
-    
     if max_line_width is None:
-        # TODO: need implementation of get_printoptions() functional API
-        max_line_width = ivy.get_printoptions()['linewidth']
-    if len(a)>max_line_width:
-        for line in range(len(a)/max_line_width):
-            a = a[:max_line_width] + '\n' + a[max_line_width:]
+        # TODO: max_line_width handler func
+        max_line_width = 75
+
+    def chop_string(string, chunk_size):
+        chopped_string = ""
+        for i in range(0, len(string), chunk_size):
+            chopped_string += string[i : i + chunk_size] + "\n"
+        return chopped_string
+
+    a = chop_string(a, max_line_width)
     return a
