@@ -6,7 +6,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, matrix_is_stable
 
 
 # Helpers #
@@ -628,7 +628,7 @@ def _get_dtype_and_matrix_non_singular(draw, dtypes):
                 allow_nan=False,
             )
         )
-        if np.linalg.det(matrix[1][0]) != 0:
+        if np.linalg.det(matrix[1][0]) != 0 and matrix_is_stable(matrix[1][0]):
             break
 
     return matrix[0], matrix[1]
@@ -651,7 +651,7 @@ def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags
         on_device=on_device,
         test_values=True,
         x=x[0],
-        rtol=0,
-        atol=0,
+        rtol=1e-5,
+        atol=1e-5,
         p=p,
     )

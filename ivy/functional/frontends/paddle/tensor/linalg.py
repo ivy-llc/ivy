@@ -146,7 +146,8 @@ def matrix_power(x, n, name=None):
     return ivy.matrix_power(x, n)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+# cond
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def cond(x, p=None, name=None):
     return ivy.cond(x, p=p, out=name)
