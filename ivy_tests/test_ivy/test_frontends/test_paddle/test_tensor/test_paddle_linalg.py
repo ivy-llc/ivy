@@ -651,7 +651,7 @@ def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags
         on_device=on_device,
         test_values=True,
         x=x[0],
-        rtol=1e-2,
-        atol=1e-3,
+        rtol=0,
+        atol=0,
         p=p,
     )
