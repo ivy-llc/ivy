@@ -214,3 +214,10 @@ def exp(x, name=None):
 @to_ivy_arrays_and_back
 def reciprocal(x, name=None):
     return ivy.reciprocal(x)
+
+
+# maximum
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def maximum(x, y, name=None):
+    return ivy.maximum(x, y)
