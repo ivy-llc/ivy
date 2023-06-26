@@ -210,11 +210,21 @@ class Tensor:
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
 
     @with_supported_dtypes(
-        {"2.4.2 and below": ("float16", "float32", "float64", "int32", "int64")},
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
         "paddle",
     )
-    def isnan(self, name=None):
-        return ivy.isnan(self._ivy_array)
+    def logical_or(self, y, out=None, name=None):
+        return paddle_frontend.logical_or(self, y, out=out)
 
     @with_supported_dtypes(
         {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
@@ -247,3 +257,10 @@ class Tensor:
     )
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def isnan(self, name=None):
+        return ivy.isnan(self._ivy_array)
