@@ -610,15 +610,11 @@ def test_paddle_matrix_power(
 
 # cond
 @st.composite
-def _get_dtype_and_matrix_non_singular(draw):
-    [None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]
+def _get_dtype_and_matrix_non_singular(draw, dtypes):
     while True:
         matrix = draw(
             helpers.dtype_and_values(
-                available_dtypes=(
-                    ivy.float64,
-                    ivy.double,
-                ),
+                available_dtypes=dtypes,
                 min_value=-10,
                 max_value=10,
                 min_num_dims=2,
@@ -640,19 +636,20 @@ def _get_dtype_and_matrix_non_singular(draw):
 
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.cond",
-    dtype_and_x=_get_dtype_and_matrix_non_singular(),
+    dtype_and_x=_get_dtype_and_matrix_non_singular(dtypes=["float32", "float64"]),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     test_with_out=st.just(False),
 )
 def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
     dtype, x = dtype_and_x
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=False,
+        test_values=True,
         x=x[0],
         rtol=1e-2,
         atol=1e-3,
