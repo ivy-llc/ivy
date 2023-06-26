@@ -133,7 +133,7 @@ def test_numpy_ndarray_property_flat(dtype_x):
     flat_ivy = flat_ivy.ivy_array.to_numpy()
     flat_generated = ivy.to_numpy(data[0]).reshape(-1)
 
-    assert_all_close(flat_ivy, flat_generated)
+    assert np.allclose(flat_ivy, flat_generated)
 
 
 @handle_frontend_method(
