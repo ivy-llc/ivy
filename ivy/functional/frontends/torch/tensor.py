@@ -889,6 +889,9 @@ class Tensor:
     def softmax(self, dim=None, dtype=None):
         return torch_frontend.nn.functional.softmax(self, dim=dim, dtype=dtype)
 
+    def repeat_interleave(self, repeats, dim=None, *, output_size=None):
+        return torch_frontend.repeat_interleave(self, repeats, dim)
+
     def repeat(self, *args, repeats=None):
         if args and repeats:
             raise ivy.utils.exceptions.IvyException(
@@ -1166,7 +1169,7 @@ class Tensor:
         self.ivy_array = self.to(self.dtype).ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def round(self, *, decimals=0):
         return torch_frontend.round(self, decimals=decimals)
 
