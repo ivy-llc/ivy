@@ -1,8 +1,11 @@
 # global
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+ivy.set_backend("paddle")
 
 
 # sin
@@ -965,4 +968,31 @@ def test_paddle_gcd(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# logit
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.logit",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        safety_factor_scale="log",
+    ),
+)
+def test_paddle_logit(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
