@@ -51,7 +51,7 @@ def max_pool1d(
 
 @with_supported_dtypes(
     {
-        "2.4.2 and below": (
+        "2.5.0 and below": (
             "float32",
             "float64",
         )
