@@ -299,10 +299,10 @@ def set_soft_device_mode(mode: bool) -> None:
     Examples
     --------
     >>> ivy.set_soft_device_mode(False)
-    >>> ivy.get_soft_device_mode()
+    >>> ivy.soft_device_mode
     False
     >>> ivy.set_soft_device_mode(True)
-    >>> ivy.get_soft_device_mode()
+    >>> ivy.soft_device_mode
     True
     """
     global soft_device_mode_stack
@@ -320,10 +320,10 @@ def unset_soft_device_mode() -> None:
     Examples
     --------
     >>> ivy.set_soft_device_mode(False)
-    >>> ivy.get_soft_device_mode()
+    >>> ivy.soft_device_mode
     False
     >>> ivy.unset_soft_device_mode()
-    >>> ivy.get_soft_device_mode()
+    >>> ivy.soft_device_mode
     True
     """
     global soft_device_mode_stack

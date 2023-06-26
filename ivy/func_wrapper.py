@@ -848,7 +848,7 @@ def handle_device_shifting(fn: Callable) -> Callable:
         -------
             The return of the function.
         """
-        if ivy.get_soft_device_mode():
+        if ivy.soft_device_mode:
             args, kwargs = ivy.current_backend().handle_soft_device_variable(
                 *args, **kwargs
             )
