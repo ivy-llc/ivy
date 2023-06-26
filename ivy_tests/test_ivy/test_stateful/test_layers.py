@@ -13,8 +13,9 @@ from ivy.functional.ivy.gradients import _variable
 from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_method
 from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
-from ivy_tests.test_ivy.test_functional.test_experimental.test_nn import \
-    test_layers as exp_layers_tests
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn import (
+    test_layers as exp_layers_tests,
+)
 
 # Helpers #
 # --------#

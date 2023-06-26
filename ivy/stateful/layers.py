@@ -1884,7 +1884,7 @@ class FFT(Module):
         self._n = n
         self._out = out
         Module.__init__(self, device=device, dtype=dtype)
-        
+
     def _forward(self, inputs):
         """
         Forward pass of the layer.
