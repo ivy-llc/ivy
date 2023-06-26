@@ -1,4 +1,5 @@
 # global
+import numpy
 import numpy as np
 from hypothesis import assume, strategies as st, given
 
@@ -118,7 +119,8 @@ def test_numpy_ndarray_property_T(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        available_dtypes=helpers.get_dtypes("numeric", prune_function=False),
+        num_arrays=1,
         ret_shape=True,
     )
 )
@@ -129,8 +131,10 @@ def test_numpy_ndarray_property_flat(dtype_x):
     x.ivy_array = data[0]
 
     flat_ivy = x.flat
-    flat_generated = data[0].reshape(-1)
-    assert np.allclose(flat_ivy, flat_generated)
+    flat_ivy = flat_ivy.ivy_array.to_numpy()
+    flat_generated = ivy.to_numpy(data[0]).reshape(-1)
+
+    assert_all_close(flat_ivy, flat_generated)
 
 
 @handle_frontend_method(
