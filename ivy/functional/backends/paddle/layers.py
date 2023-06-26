@@ -88,26 +88,40 @@ def conv1d(
     padding: Union[str, int, Sequence[Tuple[int, int]]] = 0,
     /,
     *,
-    data_format: str = "NCL",
+    data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    """1D convolution layer."""
+    if data_format == "NWC":
+        x = paddle.transpose(x, perm=(0, 2, 1))
 
-    x = _pad_before_conv(x, filters, strides, padding, 1, dilations, data_format)
-    filters = paddle.transpose(filters, perm=(2, 2, 1))
+    df = "NCL"
+    x_pad = _pad_before_conv(x, filters, strides, padding, 1, dilations, data_format=df)
+    padding = "VALID"
+
+    # Adjust the shape of the filter tensor based on the data format
+    if data_format == "NWC":
+        filters = filters.unsqueeze(0).unsqueeze(-1)
+    elif data_format == "NCW":
+        filters = filters.unsqueeze(0).unsqueeze(1)
+        x_pad = x_pad.unsqueeze(0)
+
+    # Adjust the dimensions of the filter tensor
+    filter_dim = filters.shape[-1]
+    x_pad.shape[-1]
+    filters = filters.reshape((-1, 1, filter_dim, 1))
 
     res = paddle.nn.functional.conv1d(
-        x,
-        filters,
-        data_format=data_format,
+        x=x_pad,
+        weight=filters,
+        data_format=df,
         stride=strides,
         padding=padding,
         dilation=dilations,
     )
 
-    if data_format == "NCL":
-        res = paddle.transpose(res, perm=(1, 2, 2))
+    if data_format == "NWC":
+        res = paddle.transpose(res.unsqueeze(0).squeeze(-1), perm=(0, 2, 1))
     return res
 
 
