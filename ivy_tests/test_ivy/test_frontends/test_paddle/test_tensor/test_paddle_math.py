@@ -991,3 +991,4 @@ def test_paddle_fmin(
         x=x[0],
         y=x[1],
     )
+
