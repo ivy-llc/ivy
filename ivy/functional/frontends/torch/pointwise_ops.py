@@ -148,6 +148,7 @@ def atan2(input, other, *, out=None):
 arctan2 = atan2
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
 @to_ivy_arrays_and_back
 def negative(input, *, out=None):
     return ivy.negative(input, out=out)
@@ -246,7 +247,7 @@ def logical_xor(input, other, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def round(input, *, decimals=0, out=None):
-    m = ivy.full(input.shape, 10**decimals)
+    m = ivy.full(input.shape, 10.0**decimals)
     upscale = ivy.multiply(input, m)
     rounded = ivy.round(upscale)
     return ivy.divide(rounded, m, out=out)
@@ -347,13 +348,13 @@ def log1p(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.divide(tensor1, tensor2)), out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def addcmul(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.multiply(tensor1, tensor2)), out=out)
 
@@ -363,6 +364,7 @@ def pow(input, exponent, *, out=None):
     return ivy.pow(input, exponent, out=out)
 
 
+@with_unsupported_dtypes({"1.12.0 and below": ("bfloat16", "float16")}, "jax")
 @to_ivy_arrays_and_back
 def float_power(input, exponent, *, out=None):
     input, exponent = torch_frontend.promote_types_of_torch_inputs(input, exponent)
@@ -426,7 +428,7 @@ def frac(input, *, out=None):
     return input - ivy.sign(input) * ivy.floor(ivy.abs(input))
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def xlogy(input, other, *, out=None):
     return ivy.xlogy(input, other, out=out)
@@ -533,7 +535,7 @@ def sgn(input, *, out=None):
         return ivy.sign(input, out=out)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
     return ivy.nan_to_num(input, nan=nan, posinf=posinf, neginf=neginf, out=out)

@@ -127,7 +127,7 @@ def test_torch_tanh(
     fn_tree="torch.abs",
     aliases=["torch.absolute"],
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
     ),
 )
 def test_torch_abs(
@@ -2173,6 +2173,8 @@ def test_torch_sigmoid(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        min_value=-1e3,
+        max_value=1e3,
     ),
 )
 def test_torch_lerp(
@@ -2191,7 +2193,6 @@ def test_torch_lerp(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-1,
         input=start,
         end=end,
         weight=weight,
@@ -2228,7 +2229,7 @@ def test_torch_signbit(
 @handle_frontend_test(
     fn_tree="torch.angle",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float64", "complex64", "complex128"],
     ),
 )
 def test_torch_angle(
@@ -2478,7 +2479,6 @@ def test_torch_frexp(
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
-        out=None,
     )
 
 

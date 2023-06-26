@@ -5,7 +5,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def l1_normalize(
     x: torch.Tensor,
     /,
@@ -42,10 +41,10 @@ def batch_norm(
     *,
     scale: Optional[torch.Tensor] = None,
     offset: Optional[torch.Tensor] = None,
-    training: bool = False,
-    eps: float = 1e-5,
-    momentum: float = 1e-1,
-    data_format: str = "NSC",
+    training: Optional[bool] = False,
+    eps: Optional[float] = 1e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
     out: Optional[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     xdims = x.ndim
@@ -90,10 +89,10 @@ def instance_norm(
     *,
     scale: Optional[torch.Tensor] = None,
     offset: Optional[torch.Tensor] = None,
-    training: bool = False,
-    eps: float = 0e-5,
-    momentum: float = 1e-1,
-    data_format: str = "NSC",
+    training: Optional[bool] = False,
+    eps: Optional[float] = 0e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
     out: Optional[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mean.requires_grad = False

@@ -14,24 +14,16 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_value=1e-04,
         max_value=1,
         allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=1e-04,
         max_value=1,
         allow_inf=False,
-        exclude_min=True,
-        exclude_max=True,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
     ),
     reduction=st.sampled_from(["none", "sum", "mean"]),
     axis=helpers.ints(min_value=-1, max_value=0),
-    epsilon=helpers.floats(min_value=0, max_value=0.49),
+    epsilon=helpers.floats(min_value=0.0, max_value=1.0),
 )
 def test_cross_entropy(
     dtype_and_true,
@@ -216,4 +208,58 @@ def test_sparse_cross_entropy(
         axis=axis,
         epsilon=epsilon,
         reduction=reduction,
+    )
+
+
+# log_poisson_loss
+@handle_test(
+    fn_tree="functional.ivy.log_poisson_loss",
+    dtype_and_targets=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=3,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_and_log_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
+        min_value=0,
+        max_value=3,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    compute_full_loss=st.sampled_from([True, False]),
+    test_with_out=st.just(False),
+)
+def test_log_poisson_loss(
+    dtype_and_targets,
+    dtype_and_log_input,
+    compute_full_loss,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    targets_dtype, targets = dtype_and_targets
+    log_input_dtype, log_input = dtype_and_log_input
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=targets_dtype + log_input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        targets=targets[0],
+        log_input=log_input[0],
+        compute_full_loss=compute_full_loss,
+        atol_=1e-2,
     )

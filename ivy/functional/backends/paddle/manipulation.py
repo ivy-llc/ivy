@@ -25,15 +25,10 @@ def concat(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtypes_list = list(set(map(lambda x: x.dtype, xs)))
-    num_dtypes = len(dtypes_list)
-    if num_dtypes == 1:
-        dtype = dtypes_list[0]
-    elif num_dtypes == 2:
-        dtype = ivy.promote_types(*dtypes_list)
-    else:
-        raise ivy.utils.exceptions.IvyException(
-            "Tensor list contains more than two dtypes"
-        )
+    dtype = dtypes_list.pop()
+    if len(dtypes_list) > 0:
+        for d in dtypes_list:
+            dtype = ivy.promote_types(dtype, d)
     if dtype == paddle.int16:
         xs = list(map(lambda x: x.cast("int32"), xs))
         return paddle.concat(xs, axis).cast("int16")
@@ -133,23 +128,23 @@ def reshape(
         if order == "F":
             ret = _reshape_fortran_paddle(newarr, shape)
             if out_scalar:
-                return paddle_backend.squeeze(ret, 0)
+                return paddle_backend.squeeze(ret, axis=0)
 
             return ret
         ret = paddle.reshape(newarr, shape)
         if out_scalar:
-            return paddle_backend.squeeze(ret, 0)
+            return paddle_backend.squeeze(ret, axis=0)
 
         return ret
     if order == "F":
         ret = _reshape_fortran_paddle(x, shape)
         if out_scalar:
-            return paddle_backend.squeeze(ret, 0)
+            return paddle_backend.squeeze(ret, axis=0)
 
         return ret
     ret = paddle.reshape(x, shape)
     if out_scalar:
-        return paddle_backend.squeeze(ret, 0)
+        return paddle_backend.squeeze(ret, axis=0)
 
     return ret
 
@@ -176,8 +171,8 @@ def roll(
 def squeeze(
     x: paddle.Tensor,
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -200,7 +195,7 @@ def squeeze(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
+    {"2.5.0 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
     backend_version,
 )
 def stack(
@@ -211,12 +206,10 @@ def stack(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype_list = set(map(lambda x: x.dtype, arrays))
-    if len(dtype_list) == 1:
-        dtype = dtype_list.pop()
-    elif len(dtype_list) == 2:
-        dtype = ivy.promote_types(*dtype_list)
-    else:
-        raise ValueError("Cannot promote more than 2 dtypes per stack.")
+    dtype = dtype_list.pop()
+    if len(dtype_list) > 0:
+        for d in dtype_list:
+            dtype = ivy.promote_types(dtype, d)
 
     arrays = list(map(lambda x: x.cast(dtype), arrays))
 
@@ -302,13 +295,20 @@ def repeat(
     axis: int = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if isinstance(repeats, Number) and repeats == 0:
-        return paddle.to_tensor([], dtype=x.dtype)
-    elif isinstance(repeats, paddle.Tensor):
-        if max(repeats.shape) == 1:
-            repeats = repeats.item()
-            if repeats == 0:
-                return paddle.to_tensor([], dtype=x.dtype)
+    # handle the case when repeats contains 0 as paddle doesn't support it
+    if (isinstance(repeats, Number) and repeats == 0) or (
+        isinstance(repeats, paddle.Tensor) and repeats.size == 1 and repeats.item() == 0
+    ):
+        if axis is None:
+            return paddle.to_tensor([], dtype=x.dtype)
+        else:
+            shape = x.shape
+            shape[axis] = 0
+            return paddle.zeros(shape=shape).cast(x.dtype)
+
+    if isinstance(repeats, paddle.Tensor) and repeats.size == 1:
+        repeats = repeats.item()
+
     if axis is not None:
         axis = axis % x.ndim
     if x.dtype in [

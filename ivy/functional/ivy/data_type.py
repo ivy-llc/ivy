@@ -506,7 +506,8 @@ def can_cast(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.can_cast.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -547,9 +548,13 @@ def can_cast(
         b: true
     }
     """
-    if isinstance(from_, ivy.Dtype):
-        return (from_, to) in ivy.promotion_table
-    return (from_.dtype, to) in ivy.promotion_table
+    if isinstance(from_, (ivy.Array, ivy.NativeArray)):
+        from_ = from_.dtype
+    try:
+        ivy.promote_types(from_, to)
+        return True
+    except KeyError:
+        return False
 
 
 @handle_exceptions
@@ -595,7 +600,8 @@ def finfo(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.finfo.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.finfo.html>`_
     in the standard.
 
     Examples
@@ -671,7 +677,8 @@ def iinfo(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.iinfo.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.iinfo.html>`_
     in the standard.
 
     Examples
@@ -738,7 +745,8 @@ def result_type(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.result_type.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.result_type.html>`_
     in the standard.
 
     Examples
@@ -908,6 +916,28 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
     1
     """
     return current_backend(dtype_in).dtype_bits(dtype_in)
+
+
+@handle_exceptions
+def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
+    """
+    Check if the given data type is hashable or not.
+
+    Parameters
+    ----------
+    dtype_in
+        The data type to check.
+
+    Returns
+    -------
+    ret
+        True if data type is hashable else False
+    """
+    try:
+        hash(dtype_in)
+        return True
+    except TypeError:
+        return False
 
 
 @handle_exceptions
@@ -1435,7 +1465,7 @@ def default_complex_dtype(
     input
         Number or array for inferring the complex dtype.
     complex_dtype
-        The float dtype to be returned.
+        The complex dtype to be returned.
     as_native
         Whether to return the complex dtype as native dtype.
 
@@ -1950,7 +1980,7 @@ def is_uint_dtype(
 def is_complex_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
-) -> complex:
+) -> bool:
     """
     Determine whether the input data type is a complex dtype.
 
@@ -2015,17 +2045,28 @@ def promote_types(
     ret
         The type that both input types promote to
     """
-    try:
+    query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
+    query.sort(key=lambda x: str(x))
+    query = tuple(query)
+
+    def _promote(query):
         if array_api_promotion:
-            ret = ivy.array_api_promotion_table[
-                (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
-            ]
-        else:
-            ret = ivy.promotion_table[
-                (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
-            ]
+            return ivy.array_api_promotion_table[query]
+        return ivy.promotion_table[query]
+
+    try:
+        ret = _promote(query)
     except KeyError:
-        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
+        # try again with the dtypes swapped
+        query = (query[1], query[0])
+        try:
+            ret = _promote(query)
+        except KeyError:
+            raise ivy.utils.exceptions.IvyDtypePromotionError(
+                "these dtypes ({} and {}) are not type promotable, ".format(
+                    type1, type2
+                )
+            )
     return ret
 
 

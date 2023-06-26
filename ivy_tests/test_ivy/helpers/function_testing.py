@@ -7,6 +7,7 @@ import importlib
 import inspect
 from collections import OrderedDict
 
+from ivy import frontend_outputs_to_ivy_arrays, output_to_native_arrays
 from ivy.utils.exceptions import IvyException
 
 
@@ -337,7 +338,10 @@ def test_function(
         assert not ivy.nested_any(
             ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
             lambda x: not x,
-        ), "the array in out argument does not contain same value as the returned"
+        ), (
+            f"the array: {test_ret} in out argument is not the same as the returned:"
+            f" {out}"
+        )
         if not max(test_flags.container) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert not ivy.nested_any(
@@ -345,7 +349,10 @@ def test_function(
                     lambda x, _: x[0].data is x[1].data, [test_ret, out]
                 ),
                 lambda x: not x,
-            ), "the array in out argument does not contain same value as the returned"
+            ), (
+                f"the array: {test_ret} in out argument is not the same as the"
+                f" returned: {out}"
+            )
     # compute the return with a Ground Truth backend
 
     ivy.set_backend(ground_truth_backend)
@@ -427,15 +434,15 @@ def test_function(
     if gt_returned_array:
         ret_device = ivy.dev(ret_from_target)
 
-        assert (
-            ret_device == ret_from_gt_device
-        ), f"ground truth backend ({ground_truth_backend}) returned array on device "
-        f"{ret_from_gt_device} but target backend ({ivy.backend}) returned array on "
-        f"device {ret_device}"
-        assert (
-            ret_device == on_device
-        ), f"device is set to {on_device}, but ground truth "
-        f"produced array on {ret_device}"
+        assert ret_device == ret_from_gt_device, (
+            f"ground truth backend ({ground_truth_backend}) returned array on device"
+            f" {ret_from_gt_device} but target backend ({ivy.backend}) returned array"
+            f" on device {ret_device}"
+        )
+        assert ret_device == on_device, (
+            f"device is set to {on_device}, but ground truth "
+            f"produced array on {ret_device}"
+        )
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -588,8 +595,8 @@ def test_frontend_function(
 
     # Make copy for arguments for functions that might use
     # inplace update by default
-    copy_kwargs = copy.deepcopy(kwargs)
-    copy_args = copy.deepcopy(args)
+    copy_kwargs = copy.deepcopy(kwargs_for_test)
+    copy_args = copy.deepcopy(args_for_test)
     # strip the decorator to get an Ivy array
     # ToDo, fix testing for jax frontend for x32
     if frontend == "jax":
@@ -682,6 +689,7 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             copy_kwargs["inplace"] = True
+            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *copy_args, array_fn=array_fn, **copy_kwargs
             )
@@ -690,12 +698,13 @@ def test_frontend_function(
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
+            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
             ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
             assert first_array is ret_
-            args, kwargs = copy_args, copy_kwargs
+
     # create NumPy args
 
     def arrays_to_numpy(x):
@@ -748,6 +757,14 @@ def test_frontend_function(
         )
         kwargs_frontend = ivy.nested_map(
             kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+        )
+
+        # wrap the frontend function objects in arguments to return native arrays
+        args_frontend = ivy.nested_map(
+            args_frontend, fn=wrap_frontend_function_args, max_depth=10
+        )
+        kwargs_frontend = ivy.nested_map(
+            kwargs_frontend, fn=wrap_frontend_function_args, max_depth=10
         )
 
         # compute the return via the frontend framework
@@ -1617,6 +1634,19 @@ def convtrue(argument):
     """Convert NativeClass in argument to true framework counter part."""
     if isinstance(argument, NativeClass):
         return argument._native_class
+    return argument
+
+
+def wrap_frontend_function_args(argument):
+    """Wrap frontend function arguments to return native arrays."""
+    if ivy.nested_any(
+        argument,
+        lambda x: hasattr(x, "__module__")
+        and x.__module__.startswith("ivy.functional.frontends"),
+    ):
+        return output_to_native_arrays(frontend_outputs_to_ivy_arrays(argument))
+    if ivy.nested_any(argument, lambda x: isinstance(x, ivy.Shape)):
+        return argument.shape
     return argument
 
 
