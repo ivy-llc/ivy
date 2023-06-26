@@ -858,7 +858,7 @@ def test_paddle_reciprocal(
 @handle_frontend_test(
     fn_tree="paddle.isnan",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_isnan(
@@ -884,7 +884,7 @@ def test_paddle_isnan(
 @handle_frontend_test(
     fn_tree="paddle.isfinite",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_isfinite(
@@ -910,7 +910,7 @@ def test_paddle_isfinite(
 @handle_frontend_test(
     fn_tree="paddle.isinf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_isinf(
