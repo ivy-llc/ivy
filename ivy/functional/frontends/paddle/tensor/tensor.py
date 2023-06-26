@@ -257,3 +257,7 @@ class Tensor:
     )
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def rsqrt(self, name=None):
+        return ivy.reciprocal(ivy.sqrt(self._ivy_array))
