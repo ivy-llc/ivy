@@ -145,28 +145,6 @@ def conv3d_transpose(
     )
 
 
-# ctc_unique_labels
-@with_unsupported_dtypes(
-    {
-        "2.12.0 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-        )
-    },
-    "tensorflow",
-)
-@to_ivy_arrays_and_back
-def ctc_unique_labels(labels, out_idx=ivy.int32, name=None):
-    ctc_labels = ivy.unique_all(labels)
-    unique_pad = ivy.pad(
-        ctc_labels[0], (0, labels.size - ctc_labels[0].size), mode="constant"
-    )
-    return unique_pad, ctc_labels[2]
-
-
 @with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def depthwise_conv2d(
@@ -340,31 +318,24 @@ def moments(x, axes, shift=None, keepdims=False, name=None):
     )
 
 
-@with_unsupported_dtypes(
-    {
-        "2.12.0 and below": (
+@with_unsupported_dtypes({"2.12.0 and below":(
             "int8",
             "int16",
             "int32",
             "int64",
             "bool",
-        )
-    },
-    "tensorflow",
-)
+        )}, "tensorflow")
 @to_ivy_arrays_and_back
-def normalize_moments(counts, mean_ss, variance_ss, shift=None, name=None):
+def normalize_moments( counts, mean_ss, variance_ss, shift=None, name=None):
     divisor = ivy.reciprocal(counts)
     if shift is not None:
-        shifted_mean = ivy.multiply(mean_ss, divisor)
-        mean = ivy.add(shifted_mean, shift)
+        shifted_mean = ivy.multiply(mean_ss,divisor)
+        mean = ivy.add(shifted_mean,shift)
     else:
-        shifted_mean = ivy.multiply(mean_ss, divisor)
+        shifted_mean = ivy.multiply(mean_ss,divisor)
         mean = shifted_mean
-
-    variance = ivy.subtract(
-        ivy.multiply(variance_ss, divisor), ivy.square(shifted_mean)
-    )
+        
+    variance = ivy.subtract(ivy.multiply(variance_ss,divisor), ivy.square(shifted_mean))
     return mean, variance
 
 
@@ -475,8 +446,6 @@ def relu6(features, name=None):
 @with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
-    ret = ivy.unique_all(logits, by_value=False)
-    print("========================", ret)
     return ivy.softmax(logits, axis=axis)
 
 
